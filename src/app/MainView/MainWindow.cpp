@@ -1,6 +1,5 @@
 ﻿#include "precomp.h"
 #include "MainWindow.h"
-#include "MainToolBar.h"
 #include "MainStatusBar.h"
 #include "CentralWidget.h"
 
