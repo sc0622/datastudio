@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icdsystem/com_simulator/image"/>
+    <qresource prefix="/icdsystem/com_simulator/qss">
+        <file alias="default.qss">qss/default.qss</file>
+    </qresource>
+</RCC>

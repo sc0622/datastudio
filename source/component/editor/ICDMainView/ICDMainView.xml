@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <ribbon>
+    <page objectName="page_editor" title="编辑系统" visible="true" contextTitle="" contextColor="blue" tooltip="H">
+      <group objectName="group_option" title="数据编辑">
+        <action objectName="action_add" text="新增数据项" icon=":/icd/editor/images/new-32.png" iconSize="32,32" />
+        <action objectName="action_insert" text="插入数据项" icon=":/icd/editor/images/insert-32.png" iconSize="32,32" />
+        <action objectName="action_up" text="数据项上移" icon=":/icd/editor/images/up_arrow-32.png" iconSize="32,32" />
+        <action objectName="action_down" text="数据项下移" icon=":/icd/editor/images/down_arrow-32.png" iconSize="32,32" />
+        <action objectName="action_delete" text="删除数据项" icon=":/icd/editor/images/delete-32.png" iconSize="32,32" />
+        <action objectName="action_clear" text="清空数据项" icon=":/icd/editor/images/clear-32.png" iconSize="32,32" />
+      </group>
+      <group objectName="group_save" title="数据存储">
+        <action objectName="action_database" text="保存数据库" icon=":/icd/editor/images/database-32.png" iconSize="32,32" />
+        <action objectName="action_file" text="保存文件" icon=":/icd/editor/images/file-32.png" iconSize="32,32" />
+      </group>
+      <group objectName="group_tools" title="工具">
+        <action objectName="action_table_guid" text="表GUID" icon=":/icd/editor/images/copy.png" iconSize="32,32" />
+      </group>
+    </page>
+  </ribbon>
+  <window>
+  </window>
+</component>

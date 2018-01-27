@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <ribbon>
+    <page objectName="page_monitor" title="监控系统" visible="true" contextTitle="" contextColor="blue" tooltip="">
+        <group objectName="group_window" title="窗口">
+          <checkBox objectName="check_show_utraledit" text="显示内存数据" checked="false" autosave="true" />
+        </group>
+   </page>
+  </ribbon>
+  <window>
+  </window>
+</component>

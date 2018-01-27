@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <ribbon>
+    <systemButton objectName="systemButton" text="偏好设置" icon="../config/icdsystem/resource/home-page.png">
+      <backstageView objectNmae="backstageView" activePage="page_database_mgr">
+        <page objectName="page_database_mgr" text="数据库管理" />
+      </backstageView>
+    </systemButton>
+  </ribbon>
+  <window>
+  </window>
+</component>

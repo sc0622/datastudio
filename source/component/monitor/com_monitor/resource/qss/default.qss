@@ -1,0 +1,18 @@
+﻿
+QToolBar {
+    background: transparent;
+}
+
+QToolBar QToolButton {
+    background: transparent;
+}
+
+/****************************************************************/
+
+/* MainViewWidget */
+
+MainViewWidget#mainView {
+    background: #95a5a6;
+}
+
+/****************************************************************/

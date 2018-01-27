@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icdsystem/com_channelmgr/image">
+        <file alias="file.png">image/file.png</file>
+        <file alias="indicator.png">image/indicator.png</file>
+        <file alias="qtlogo.png">image/qtlogo.png</file>
+        <file alias="serial.ico">image/serial.ico</file>
+        <file alias="udp.ico">image/udp.ico</file>
+    </qresource>
+    <qresource prefix="/icdsystem/com_channelmgr/qss">
+        <file alias="default.qss">qss/default.qss</file>
+    </qresource>
+</RCC>

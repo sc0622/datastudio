@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <ribbon>
+    <page objectName="page_monitor" title="监控系统" visible="true" contextTitle="" contextColor="blue" tooltip="H">
+        <group objectName="group_chart_settings" title="图表属性" index="3">
+          <action objectName="action_chart_clear" iconText="清空图表" icon=":/icd/common/images/clear.png" iconSize="32,32" />
+          <action objectName="action_chart_colwidth" iconText="均衡列宽" icon=":/icd/common/images/colwidth-same.png" iconSize="32,32" />
+          <action objectName="action_chart_y_label" text="纵轴标签" checkable="true" checked="true" autosave="true" icon=":/icd/common/images/ylabel.png" iconSize="32,32" toolTip="显示或隐藏纵轴刻度值" />
+          <action objectName="action_chart_y_align" text="纵轴对齐" checkable="true" checked="true" autosave="true" icon=":/icd/common/images/align-left.png" iconSize="32,32" toolTip="启用或禁用纵轴起始点对齐" />
+          <action objectName="action_chart_sync_track" text="同步跟踪" checkable="true" checked="true" autosave="true" icon=":/icd/common/images/sync-track.png" iconSize="32,32" toolTip="启用或禁用横轴同步跟踪" />
+          <spinBox objectName="spin_chart_colcnt" label="图表列数：" value="2" minimum="1" maximum="10" toolTip="范围：[1, 10]" autosave="true" />
+          <spinBox objectName="spin_chart_y_width" label="纵轴位宽：" value="10" minimum="1" maximum="20" toolTip="纵轴标签字符长度，范围：[1, 20]" autosave="true" />
+        </group>
+        <group objectName="group_window" title="窗口">
+          <checkBox objectName="check_show_chartview" text="显示图表视图" checked="true" autosave="true" />
+        </group>
+    </page>
+  </ribbon>
+  <window>
+  </window>
+</component>

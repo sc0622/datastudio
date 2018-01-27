@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <ribbon>
+    <systemButton objectName="systemButton" text="偏好设置" icon="../config/icdsystem/resource/home-page.png">
+      <backstageView objectNmae="backstageView" activePage="page_channel_mgr">
+        <action objectName="action_exit_settings" text="退出设置" />
+        <page objectName="page_channel_mgr" text="通道管理" />
+      </backstageView>
+    </systemButton>
+  </ribbon>
+  <window>
+  </window>
+</component>
