@@ -80,5 +80,6 @@ CMakeLists.txt.user*
 /config/~*
 Thumbs.db
 
+#
 /setup/pack/bin
 /setup/pack/packages/com.smartsoft*/**/data
