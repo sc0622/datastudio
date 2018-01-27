@@ -1,0 +1,191 @@
+#include "precomp.h"
+#include "JChannelPool.h"
+#include "JChannel.h"
+
+namespace icdmeta {
+
+// class JChannelPoolPrivate
+
+class JChannelPoolPrivate
+{
+public:
+    JChannelPoolPrivate(JChannelPool *q)
+        : q_ptr(q)
+    {
+
+    }
+
+    void init();
+    void clearChannel();
+    static int channelCount(QQmlListProperty<JChannel> *property);
+    static JChannel *channelAt(QQmlListProperty<JChannel> *property, int index);
+
+private:
+    J_DECLARE_PUBLIC(JChannelPool)
+    JChannelPtrArray channels;
+};
+
+void JChannelPoolPrivate::init()
+{
+
+}
+
+void JChannelPoolPrivate::clearChannel()
+{
+    foreach (auto &channel, channels) {
+        if (channel) {
+            channel->close();
+        }
+    }
+    channels.clear();
+    Q_Q(JChannelPool);
+    emit q->channelsChanged();
+}
+
+int JChannelPoolPrivate::channelCount(QQmlListProperty<JChannel> *property)
+{
+    JChannelPool *q = qobject_cast<JChannelPool *>(property->object);
+    return q->d_ptr->channels.count();
+}
+
+JChannel *JChannelPoolPrivate::channelAt(QQmlListProperty<JChannel> *property, int index)
+{
+    JChannelPool *q = qobject_cast<JChannelPool *>(property->object);
+    return q->d_ptr->channels[index].data();
+}
+
+}
+
+using namespace icdmeta;
+
+// class JChannelPool
+
+J_QML_IMPLEMENT_SINGLE_INSTANCE(JChannelPool, QQmlEngine::CppOwnership, IcdCore)
+
+JChannelPool::JChannelPool(QObject *parent)
+    : QObject(parent)
+    , d_ptr(new JChannelPoolPrivate(this))
+{
+    Q_D(JChannelPool);
+    d->init();
+}
+
+JChannelPool::~JChannelPool()
+{
+    Q_D(JChannelPool);
+    delete d;
+}
+
+void JChannelPool::registerQmlType()
+{
+    jRegisterSingletonTypeCpp2(JChannelPool);
+
+    JChannel::registerQmlType();
+}
+
+QQmlListProperty<JChannel> JChannelPool::channels()
+{
+    return QQmlListProperty<JChannel>(this, nullptr,
+                                           &JChannelPoolPrivate::channelCount,
+                                               &JChannelPoolPrivate::channelAt);
+}
+
+bool JChannelPool::loadConfig(const QString &filePath, const QString &nodePath)
+{
+    Q_D(JChannelPool);
+
+    d->channels.clear();
+    emit channelsChanged();
+
+    const Json::Value channelJson =
+            Icd::JJson::value(filePath.toStdString(), nodePath.toStdString());
+    if (channelJson.isNull() || !channelJson.isArray()) {
+        return false;
+    }
+
+    foreach (auto itemJson, channelJson) {
+        if (!itemJson.isObject()) {
+            continue;
+        }
+        const std::string id = itemJson["id"].asString();
+        if (id.empty()) {
+            continue;
+        }
+        JChannelPtr newChannel = JChannelPtr(
+                    new JChannel(QString::fromStdString(id), this), j_delete_qobject);
+        newChannel->restore(itemJson);
+        d->channels.append(newChannel);
+    }
+
+    return true;
+}
+
+bool JChannelPool::saveConfig(const QString &filePath, const QString &nodePath)
+{
+    Q_D(JChannelPool);
+    if (d->channels.isEmpty()) {
+        return true;
+    }
+
+    Json::Value json;
+
+    foreach (auto &channel, d->channels) {
+        if (channel) {
+            json.append(channel->save());
+        }
+    }
+
+    Icd::JJson::setValue(filePath.toStdString(), nodePath.toStdString(), json, true, false);
+
+    return true;
+}
+
+JChannel *JChannelPool::identityOf(const QString &identity) const
+{
+    Q_D(const JChannelPool);
+    for (auto &channel : d->channels) {
+        if (channel->identity() == identity) {
+            return channel.data();
+        }
+    }
+
+    return nullptr;
+}
+
+QList<JChannel *> JChannelPool::identityOf(const QString &identity, bool fuzzy) const
+{
+    Q_D(const JChannelPool);
+    QList<JChannel *> channels;
+    for (auto &channel : d->channels) {
+        if (fuzzy) {
+            if (channel->identity().contains(QRegExp(identity))) {
+                channels.append(channel.data());
+            }
+        } else {
+            if (channel->identity() == identity) {
+                channels.append(channel.data());
+                break;
+            }
+        }
+    }
+
+    return channels;
+}
+
+JChannel *JChannelPool::domainOf(const QString &domain) const
+{
+    Q_D(const JChannelPool);
+    for (auto &channel : d->channels) {
+        if (channel->domain() == domain) {
+            return channel.data();
+        }
+    }
+
+    return nullptr;
+}
+
+void JChannelPool::reset()
+{
+    Q_D(JChannelPool);
+    d->clearChannel();
+}

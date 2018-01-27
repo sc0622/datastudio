@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<jframe>
+  <app seatEditable="true" name="analyse" system="数据分析" userName="****">
+    <config>
+      <switch remember="true"/>
+      <splitter opacity="0.2" color="#666" width="4" opaqueResize="true"/>
+      <dock/>
+      <busyIndicator visible="true" model="true" duration="2000" image=""/>
+    </config>
+    <system module="module #1" name="数据分析">
+      <seat-module>
+        <item seat="seat #1" module="module #1"/>
+      </seat-module>
+      <module submodule="" name="module #1">
+        <layout>
+          <view>
+            <horizontal collapsibile="0:true;1:true" scales="0.56:2.1" opaqueResize="false">
+              <vertical collapsibile="0:true;1:true" scales="1.8:0.73" opaqueResize="false">
+                <component load="true" id="com_analyse_nav"/>
+              </vertical>
+              <component load="true" id="com_analyse"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+    </system>
+    <!-- 以下为框架默认配置，请谨慎修改 -->
+    <!-- list属性值：为[用户管理]、[系统管理]、[模块管理]、[权限管理]的组合 -->
+    <system module="权限管理" list="用户管理|系统管理|模块管理|权限管理" name="管理员系统">
+      <module submodule="" name="权限管理">
+        <layout>
+          <view>
+            <horizontal scales="1:1">
+              <component id="jcom_usermgr"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+    </system>
+  </app>
+</jframe>

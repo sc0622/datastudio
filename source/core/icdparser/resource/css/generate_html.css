@@ -1,0 +1,23 @@
+table {
+        font-family:"microsoft yahei",verdana,arial,sans-serif;
+        font-size:16px;
+        color:steelblue;
+        border-width:1px;
+        border-color:darkgray;
+        border-collapse:collapse;
+}
+
+table th {
+        border-width:1px;
+        padding:8px;
+        border-style:solid;
+        border-color:#666;
+        background:#dedede;
+}
+
+table td {
+        border-width:1px;
+        padding:8px;
+        border-style:solid;
+        background-color:#fff;
+}

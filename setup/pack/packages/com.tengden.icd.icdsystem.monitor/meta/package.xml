@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package>
+  <Name>com.tengden.icd.icdsystem.monitor</Name>
+  <DisplayName>监控系统</DisplayName>
+  <Description>xxx</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2016-12-12</ReleaseDate>
+  <Script>installscript.js</Script>
+  <Default>true</Default>
+  <SortingPriority>2</SortingPriority>
+  <Dependencies>com.tengden.icd.3rdpart,com.tengden.icd.core.icdchart,com.tengden.icd.core.icdcomm,com.tengden.icd.core.icdcore,com.tengden.icd.core.icdparser,com.tengden.icd.core.icdwidget,com.tengden.icd.core.icdworker,com.tengden.icd.core.KernelClass,com.tengden.icd.core.DBAccess</Dependencies>
+</Package>

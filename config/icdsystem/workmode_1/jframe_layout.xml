@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='utf-8'?>
+<jframe>
+  <app seatEditable="true" name="icdsystem" system="ICD综合管理系统" userName="****">
+    <config>
+      <switch remember="true"/>
+      <splitter opacity="0.2" width="4" opaqueResize="true" color="#666"/>
+      <dock/>
+      <busyIndicator duration="2000" model="true" image="" visible="true"/>
+    </config>
+    <system name="ICD综合管理系统" module="监控系统">
+      <seat-module>
+        <item seat="seat #1" module="module #1"/>
+      </seat-module>
+      <module submodule="" name="编辑系统">
+        <popup>
+          <component load="true" id="DataManegement"/>
+        </popup>
+        <layout>
+          <view>
+            <horizontal collapsibile="0:true;1:true" scales="0.25:0.83" opaqueResize="false">
+              <component id="ICDNavigation"/>
+              <component id="ICDMainView"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+      <module submodule="" name="监控系统">
+        <layout>
+          <view>
+            <horizontal collapsibile="0:true;1:true" scales="0.25:0.55" opaqueResize="false">
+              <vertical collapsibile="0:true;1:true" scales="1.4:0.93" opaqueResize="false">
+                <component load="true" id="com_monitor_nav"/>
+                <component load="true" id="com_utraledit"/>
+              </vertical>
+              <component load="true" id="com_monitor"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+      <module submodule="" name="仿真系统">
+        <layout>
+          <view>
+            <horizontal collapsibile="0:true;1:true" scales="0.52:1.1" opaqueResize="false">
+              <component load="true" id="com_simulator_nav"/>
+              <vertical collapsibile="0:true;1:true" scales="0.28:0.6" opaqueResize="false">
+                <component load="true" id="com_monitor"/>
+                <component load="true" id="com_simulator"/>
+              </vertical>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+      <module submodule="" name="数据分析">
+        <layout>
+          <view>
+            <horizontal collapsibile="0:true;1:true" scales="0.57:1.3" opaqueResize="false">
+              <component load="true" id="com_analyse_nav"/>
+              <component load="true" id="com_analyse"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+    </system>
+    <!-- 以下为框架默认配置，请谨慎修改 -->
+    <!-- list属性值：为[用户管理]、[系统管理]、[模块管理]、[权限管理]的组合 -->
+    <system list="用户管理|系统管理|模块管理|权限管理" name="管理员系统" module="权限管理">
+      <module submodule="" name="权限管理">
+        <layout>
+          <view>
+            <horizontal scales="1:1">
+              <component id="jcom_usermgr"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+    </system>
+  </app>
+</jframe>

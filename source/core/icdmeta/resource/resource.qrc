@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icdmeta/lang">
+        <file alias="icdmeta_zh_CN.qm">lang/icdmeta_zh_CN.qm</file>
+    </qresource>
+    <qresource prefix="/icdmeta/qss"/>
+    <qresource prefix="/icdmeta/image"/>
+</RCC>

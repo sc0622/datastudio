@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<jframe>
+  <app userName="****" seatEditable="true" name="editor" system="system #1">
+    <config>
+      <switch remember="true"/>
+      <splitter opacity="0.5" opaqueResize="true" color="#444" width="8"/>
+      <dock/>
+      <busyIndicator model="true" image="" duration="2000" visible="true"/>
+    </config>
+    <system module="module #1" name="system #1">
+      <seat-module>
+        <item module="module #1" seat="seat #1"/>
+      </seat-module>
+      <module submodule="" name="module #1">
+        <popup>
+          <component id="DataManegement" load="true"/>
+        </popup>
+        <layout>
+          <view>
+            <horizontal opaqueResize="false" scales="0.97:3.3" collapsibile="0:true;1:true">
+              <component id="ICDNavigation"/>
+              <component id="ICDMainView"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+    </system>
+    <!-- 以下为框架默认配置，请谨慎修改 -->
+    <!-- list属性值：为[用户管理]、[系统管理]、[模块管理]、[权限管理]的组合 -->
+    <system module="权限管理" list="用户管理|系统管理|模块管理|权限管理" name="管理员系统">
+      <module submodule="" name="权限管理">
+        <layout>
+          <view>
+            <horizontal scales="1:1">
+              <component id="jcom_usermgr"/>
+            </horizontal>
+          </view>
+        </layout>
+      </module>
+    </system>
+  </app>
+</jframe>

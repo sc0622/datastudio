@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icdparser/css">
+        <file alias="generate_html.css">css/generate_html.css</file>
+    </qresource>
+</RCC>

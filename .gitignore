@@ -6,9 +6,12 @@
 *.a
 *.la
 *.lai
-*.so
-*.dll
-*.dylib
+#*.so
+#*.dll
+#*.dylib
+
+# xxx
+Thumbs.db
 
 # Qt-es
 
@@ -29,13 +32,10 @@ ui_*.h
 Makefile*
 *build-*
 
-
 # Qt unit tests
 target_wrapper.*
 
-
 # QtCreator
-
 *.autosave
 
 # QtCtreator Qml
@@ -45,3 +45,23 @@ target_wrapper.*
 # QtCtreator CMake
 CMakeLists.txt.user*
 
+# 
+.system
+bin/analyse*
+bin/editor*
+bin/monitor*
+bin/simulator*
+bin/icdsystem*
+bin/analyse*
+bin/qt.conf
+bin/core
+bin/log
+bin/qml
+bin/meta
+component
+include/*
+lib/*
+release
+
+setup/pack/bin
+setup/pack/packages/com.tengden*/**/data

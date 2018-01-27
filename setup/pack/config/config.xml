@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+  <Name>ICD</Name>
+  <Version>2.1.2</Version>
+  <Title>ICD系统软件</Title>
+  <Publisher>Tengden</Publisher>
+  <StartMenuDir>Tengden Software</StartMenuDir>
+  <TargetDir>@HomeDir@/Documents/@Publisher@/ICD Software/@Version@</TargetDir>
+  <MaintenanceToolName>Uninstall</MaintenanceToolName>
+  <InstallerApplicationIcon>:/image/app.png</InstallerApplicationIcon>
+  <InstallerWindowIcon>:/image/app.png</InstallerWindowIcon>
+  <Logo>:/image/app.png</Logo>
+</Installer>

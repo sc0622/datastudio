@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+product: jxmltable
+company: smartsoft
+author: closure(lkh)
+date: 9/1/2015 15:15
+link: http://www.smartsoft.com/
+copyright (c) 2015 smartsoft inc. all right reserved.
+-->
+<jxmltable version="1.0">
+  <table name="" orientation="horizontal" headerWidth="400" sync="true" >
+    <item name="name1" type="string" maxLength="200" editable="false" />
+    <item name="name2" type="numeric" decimals="4" range="[-180,180]" prefix="" suffix="" default="0" >
+      <without>[50,60)</without>
+    </item>
+    <item name="name3" type="numeric" range="[-180,180]" headerWidth="" filterType="string" >
+      <without>[-20,-15]</without>
+      <without>[60,85)</without>
+    </item>
+    <item name="图片" type="delegate" delegateType="picture" default="E://222.png" />
+    <item name="进度条" type="delegate" delegateType="progress" default="10" minimum="0" maximum="50" headerSize="100" />
+    <item name="IP地址" type="IPv4" default="127.0.0.1" headerSize="100" />
+    <item name="十六进制" type="numeric" radix="16" maskCount="4" />
+    <item name="枚举" type="enum" default="section1" filterType="enum" >
+      <option encode="0"> section1 </option>
+      <option encode="1"> section2 </option>
+    </item>
+    <item name="多选组合控件" type="enum" multiable="true" default="section1|section2|section3" headerSize="100">
+      <option encode="0x01"> section1 </option>
+      <option encode="0x02"> section2 </option>
+      <option encode="0x04"> section3 </option>
+    </item>
+  </table>
+
+  <table name="" orientation="horizontal|vertical" headerWidth="100" sync="false">
+    <row>
+      <column name="名称" type="string" editable="false" alignment="right" default="name xx" />
+      <column name="数值" type="string" />
+      <column name="单位" type="string" editable="false" />
+      <column name="说明" type="string" editable="false" />
+    </row>
+  </table>
+</jxmltable>

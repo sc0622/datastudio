@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<jframe>
+  <app applicationName="ICD System" organizationName="Tengden" displayName="ICD System" frameVersion="local" name="editor">
+    <envval>
+      <global>
+        <path base="@FrameDir@/bin" type="prefix">
+          <item path="3rdpart"/>
+          <item path="3rdpart/Qt"/>
+          <item path="3rdpart/ice"/>
+          <item path="core"/>
+        </path>
+        <path base="@AppDir@" type="append">
+          <item path="core"/>
+          <item path="3rdpart/moxa"/>
+        </path>
+      </global>
+    </envval>
+    <qtconf desc="qt.conf content">
+      <paths>
+        <item value="@FrameDir@/bin/3rdpart/Qt/plugins" key="Plugins"/>
+        <item value="@FrameDir@/bin/3rdpart/Qt/imports" key="Imports"/>
+        <item value="@FrameDir@/bin/3rdpart/Qt/qml" key="Qml2Imports"/>
+      </paths>
+    </qtconf>
+    <icddata name="file1">
+      <file name="file1">
+        <path>@ThisDir@/bin/data/Default.xml</path>
+      </file>
+      <database name="db1">
+        <driver>SQL SERVER</driver>
+        <serverName>DELL-0101\SQLSERVER2016</serverName>
+        <database>ICDDB</database>
+        <userName>ICDUser</userName>
+        <password>ICDUser</password>
+        <tableLimitation>100</tableLimitation>
+      </database>
+    </icddata>
+    <workMode dir="@ConfigDir@/workmode_1" id="1" name="Test1"/>
+    <logging filePath="@ConfigDir@/jframe_logging.conf">
+      <icdChannel filePath="@ThisDir@/config/icdsystem/icd_channels.conf"/>
+    </logging>
+    <system>
+      <language path="@FrameDir@/config/language" name="Chinese (China)"/>
+    </system>
+    <textCodec encoding="gbk"/>
+    <dbus path="/com/smartsoft/jframe/notify" serviceName="com.smartsoft.jframe1" enabled="false"/>
+    <ice enabled="false">
+      <server host="192.168.0.182" port="20000" serviceName="com.smartsoft.jframe1"/>
+    </ice>
+    <mainWindow windowTitle="ICD编辑系统" windowTheme="Office2010Blue" closeKilled="true" systemFont="΢���ź�,9,-1,5,50,0,0,0,0,0,Regula" windowIcon="@ConfigDir@/resource/app.ico">
+      <splash imageFinish="@ConfigDir@/resource/finish.png" fullScreen="true" imageStart="@ThisDir@/config/icdsystem/resource/start.png" msgAlign="AlignHCenter|AlignBottom" font="Microsoft Yahei, 24, blue"/>
+      <toolBar type="ribbonBar">
+        <menuBar/>
+        <toolButton/>
+        <ribbonBar minimized="false" visible="true"/>
+      </toolBar>
+      <statusBar type=""/>
+      <layout type="splitter"/>
+    </mainWindow>
+  </app>
+</jframe>

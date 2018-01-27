@@ -1,0 +1,117 @@
+﻿
+-- V2.1.2
+    depends:
+        1) jframework: v2.0.9
+
+    fixed:
+        1) icdcore: 修复framecode型数据项frameid属性导出问题
+        2） icdmeta: 修复部分icdcore的meta接口规范
+        3) icdmeta: 修复protocol模块数据项搜索问题
+        3) icdmeta: 修复JDataChannelMgr的search函数功能缺陷（搜索完成后错误调用removePostEvents函数，导致部分属性修改未通知到target）
+        4) icdcore: 修复frame数据项bufferSize更新问题
+        5) icdmeta: 修复协议和通道绑定逻辑问题
+        6) icdworker、icdmeta: 增加多帧数据类型发送的计数器和多帧循环属性读写接口
+
+-- V2.1.1
+    depends:
+        1) jframework: v2.0.9
+
+    fixed:
+        1) icdmeta: 新增protocol模块
+        2) icdplugins: 增加自动生成qmltypes需要的icdmeta依赖库
+
+- V2.1.0
+   depends:
+       1) jframework: v2.0.9
+
+   fixed:
+        1) icdcore: 修复序列化和反序列化接口虚函数继承问题
+        2) icdcore: 修复json数据类型转换错误问题（屏蔽转换无效时的断言语句）
+        3) 编辑系统: 增加表GUID生成快捷按钮
+        4) 修复Frame（数据帧）类型在协议树控件中无法显示偏移量的问题
+        5) 更名icdcoremeta工程为icdmeta，并集成通道等模块源码
+        6) 修改icdplugins工程，增加自动生成qmltypes编译语句
+
+-- V2.0.10
+    depends:
+        1) jframework: v2.0.8
+
+    fixed:
+        1) jchart: 修复调用shiftSample后，再调用jchart的updateScale函数导致追加多个数据点后只删除一个点的问题
+        2) 增加软件加密注册功能
+        3) 修复协议导出word文档失败的问题
+
+-- V2.0.9
+    depends:
+        1) jframework: v2.0.7
+
+    fixed:
+        1) 数据分析: 修复清除数据功能导致软件崩溃的问题
+
+-- V2.0.8
+    depends:
+        1) jframework: v2.0.7
+
+    fixed:
+        1) icdchart: 修复纵轴标签对齐功能BUG
+
+-- V2.0.7
+    depends:
+        1) jframework: v2.0.6
+
+    fixed:
+        1) icdcore: 修复frame类型数据的json导出问题
+        2) icdcore: 增加numeric数据类型原是数值获取接口
+        3) icdcore: 增加numeric数据类型超限判定接口
+        3) icdcore: 修复header数据类型defaultValue保存和恢复失效的问题
+        4) 监控系统: 增加超限标红显示功能
+
+-- V2.0.6
+    depends:
+        1) jframework: v2.0.6
+
+    fixed:
+        1) 修复log4cpp创建多级文件夹失败的问题
+        2) 修复json解析逻辑问题
+
+-- V2.0.5
+    depends:
+        1) jframework: v2.0.5
+
+    fixed:
+        1) 修复jchart的zoomer问题
+
+-- V2.0.4
+    depends:
+        1) jframework: v2.0.4
+
+    fixed:
+        1) 支持json文件导入导出功能
+        2) 修复数据编辑模块问题
+
+-- V2.0.3
+    depends:
+        1) jframework: v2.0.3;
+
+    fixed:
+        1) 升级jchart库，修复zoomReset问题；
+
+-- V2.0.1
+    depends:
+        1) jframework: v2.0.1;
+
+    fixed:
+        1) 数据分析: 图表可显示多列（可调）；
+        2) 数据分析: 图表第一条曲线颜色调为红色（可改为可调）、每条曲线颜色可调；
+        3) 数据分析: 图表风格改为Light风格；
+        4) 数据分析: 增加多个图标跟踪线同步显示功能；
+        5) 数据分析: 同一个选项可以多次拖放到曲线视图中；
+
+-- V2.0.0
+    depends:
+        1) jframework: 2.0.1
+
+    fixed:
+        1) 升级打包工程
+
+

@@ -1,0 +1,3 @@
+module Icd.Core
+plugin icdcoreplugin
+typeinfo icdcore.qmltypes
