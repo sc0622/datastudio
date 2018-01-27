@@ -15,23 +15,8 @@ PKG_EXCLUDE =
 #-------------------------------------------------
 
 this_dir = $$absolute_path($$PWD/../..)    #
-jframe_dir = $$getenv(jframe_dir)
-
-## check variables
-isEmpty(jframe_dir):error(jframe_dir is empty!)
 
 DEFINES += PACKAGE          # pack/clear flag
-#DEFINES += BCG              # BCG library flag
-#DEFINES += ICE              # ICE library flag
-#DEFINES += EXAMPLE          # example flag
-#DEFINES += DEVELOP          # develop library flag
-
-## modules
-DEFINES += ICD_EDITOR       # editor system flag
-DEFINES += ICD_MONITOR      # monitor system flag
-DEFINES += ICD_SIMULATOR    # simulator system flag
-DEFINES += ICD_ANALYSE      # analyse system flag
-DEFINES += JFRAMEWORK       # jframework flag
 
 execludes = $$PWD/copy.ignore
 
@@ -73,8 +58,5 @@ $$compiler($$group($${ROOT}.setup), $$commands)
 
 DISTFILES += \
     copy.ignore \
-    config/config.xml
-
-RESOURCES += \
+    config/config.xml \
     config/config.qrc
-

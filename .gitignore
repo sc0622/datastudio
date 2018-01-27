@@ -10,9 +10,6 @@
 #*.dll
 #*.dylib
 
-# xxx
-Thumbs.db
-
 # Qt-es
 
 object_script.*.Release
@@ -35,7 +32,9 @@ Makefile*
 # Qt unit tests
 target_wrapper.*
 
+
 # QtCreator
+
 *.autosave
 
 # QtCtreator Qml
@@ -45,23 +44,41 @@ target_wrapper.*
 # QtCtreator CMake
 CMakeLists.txt.user*
 
-# 
-/.system
-/bin/analyse*
-/bin/editor*
-/bin/monitor*
-/bin/simulator*
-/bin/icdsystem*
-/bin/analyse*
-/bin/qt.conf
-/bin/core
+#
 /bin/log
+/bin/plugins
 /bin/qml
 /bin/meta
-/component
-/include
-/lib
-/release
+/bin/bearer
+/bin/iconengines
+/bin/imageformats
+/bin/platforms
 
-setup/pack/bin
-setup/pack/packages/com.tengden*/**/data
+/bin/d3dcompiler_*.*
+/bin/opengl*
+/bin/lib*GL*
+/bin/Qt*.dll
+/bin/DataStudio*
+/bin/jchart*
+/bin/jwt*
+/bin/jencrypt*
+/bin/jutraledit*
+/bin/log4cpp*
+/bin/qwt*
+/bin/tinyxml*
+/bin/icdchart*
+/bin/icdcomm*
+/bin/icdcore*
+/bin/icdparser*
+/bin/icdwidget*
+/bin/icdworker*
+/bin/pcomm*
+
+/include/core
+/lib/core
+/release
+/config/~*
+Thumbs.db
+
+/setup/pack/bin
+/setup/pack/packages/com.smartsoft*/**/data

@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/icdsystem/com_monitor/image"/>
-    <qresource prefix="/icdsystem/com_monitor/qss">
-        <file alias="default.qss">qss/default.qss</file>
-    </qresource>
-</RCC>

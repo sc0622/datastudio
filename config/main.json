@@ -1,0 +1,91 @@
+{
+   "global" : {
+      "channel" : {
+         "filePath" : "@ConfigDir@/channel.conf"
+      },
+      "chart" : {
+         "autoSave" : true,
+         "filePath" : "chart.json"
+      },
+      "language" : "Chinese (China)",
+      "theme" : {
+         "name" : "dark"
+      }
+   },
+   "module" : {
+      "analyse" : {
+         "option" : {
+            "chart" : {
+               "showYAlign" : true,
+               "showYLabel" : true,
+               "syncTrack" : true,
+               "xAxisSync" : true
+            },
+            "tree" : {
+               "showOffset" : true,
+               "showType" : true
+            }
+         },
+         "parser" : {
+            "filePath" : "@ConfigDir@/protocol.json",
+            "sourceType" : "file"
+         }
+      },
+      "edit" : {
+         "option" : {
+            "chart" : {},
+            "tree" : {
+               "loadDeep" : 1
+            }
+         },
+         "parser" : {
+            "filePath" : "@ConfigDir@/protocol.json",
+            "sourceType" : "file"
+         }
+      },
+      "monitor" : {
+         "option" : {
+            "chart" : {
+               "columnCount" : 1,
+               "flushEnabled" : true,
+               "showYAlign" : true,
+               "showYLabel" : true,
+               "syncTrack" : true,
+               "xAxisSync" : true,
+               "yLabelWidth" : 10
+            },
+            "tree" : {
+               "deep" : 2,
+               "flushEnabled" : true,
+               "loadDeep" : 1,
+               "showDesc" : false,
+               "showOffset" : true,
+               "showOrignal" : 10,
+               "showType" : true,
+               "showValue" : false
+            }
+         },
+         "parser" : {
+            "filePath" : "@ConfigDir@/protocol.json",
+            "sourceType" : "file"
+         }
+      },
+      "simulate" : {
+         "option" : {
+            "tree" : {
+               "flushEnabled" : true,
+               "loadDeep" : 1,
+               "showDesc" : false,
+               "showOffset" : true,
+               "showOrignal" : 10,
+               "showType" : true,
+               "showValue" : false
+            }
+         },
+         "parser" : {
+            "filePath" : "@ConfigDir@/protocol.json",
+            "sourceType" : "file"
+         }
+      }
+   }
+}
