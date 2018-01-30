@@ -33,7 +33,9 @@ void SearchEditPrivate::init()
 
     QLabel *labelIcon = new QLabel(q);
     labelIcon->setFixedSize(q->height(), q->height());
-    labelIcon->setPixmap(QPixmap(":/icdwidget/image/search.png").scaled(labelIcon->size()));
+    labelIcon->setPixmap(QPixmap(":/icdwidget/image/search.png")
+                         .scaled(labelIcon->size(), Qt::KeepAspectRatio,
+                                 Qt::SmoothTransformation));
     horiLayoutMain->addWidget(labelIcon);
 
     lineEdit = new QLineEdit(q);
@@ -41,8 +43,7 @@ void SearchEditPrivate::init()
     horiLayoutMain->addWidget(lineEdit);
 
     //
-    QObject::connect(lineEdit, &QLineEdit::textChanged,
-                     q, &SearchEdit::textChanged);
+    QObject::connect(lineEdit, &QLineEdit::textChanged, q, &SearchEdit::textChanged);
 }
 
 // class SearchEdit

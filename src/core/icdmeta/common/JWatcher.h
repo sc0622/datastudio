@@ -31,8 +31,6 @@ public:
         //qDebug() << "~JWatcher";
     }
 
-    static void registerQmlType();
-
     QJSValue callback() const
     {
         return _callback;

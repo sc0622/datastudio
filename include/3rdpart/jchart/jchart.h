@@ -571,6 +571,24 @@ public:
      */
     void markTrackerPos(const QPointF &pos);
 
+    /**
+     * @brief colorPalette
+     * @return
+     */
+    QList<QColor> colorPalette();
+
+    /**
+     * @brief colorPalette
+     * @return
+     */
+    const QList<QColor> &colorPalette() const;
+
+    /**
+     * @brief setColorPalette
+     * @param colors
+     */
+    void setColorPalette(const QList<QColor> &colors);
+
 signals:
     void axisIntervalChanged(int axisId, qreal minimum, qreal maximum);
     void scaleDivChanged(int axisId, qreal minimum, qreal maximum);
@@ -581,6 +599,7 @@ signals:
     void trackerMarked(const QPointF &pos);
     void defShiftCountChanged(int count);
     void defaultShiftTimeZoneChanged(qreal value);
+    void colorPaletteChanged();
 
 public slots:
     void togglePlay(bool checked);

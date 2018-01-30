@@ -1,7 +1,7 @@
 #ifndef JUTRALEDIT_VIEW_H
 #define JUTRALEDIT_VIEW_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include "jutraledit_global.h"
 
 namespace JUtralEdit {

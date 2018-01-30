@@ -3,8 +3,6 @@
         <file alias="file.png">image/file.png</file>
         <file alias="indicator.png">image/indicator.png</file>
         <file alias="qtlogo.png">image/qtlogo.png</file>
-        <file alias="serial.ico">image/serial.ico</file>
-        <file alias="udp.ico">image/udp.ico</file>
         <file alias="search.png">image/search.png</file>
         <file alias="window_shadow_active.png">image/window_shadow_active.png</file>
         <file alias="window_shadow_inactive.png">image/window_shadow_inactive.png</file>
@@ -24,5 +22,13 @@
         <file alias="run.png">image/tree/run.png</file>
         <file alias="stop.png">image/tree/stop.png</file>
         <file alias="icon-bit.png">image/tree/icon-bit.png</file>
+        <file alias="export_all.png">image/tree/export_all.png</file>
+        <file alias="export_exists.png">image/tree/export_exists.png</file>
+        <file alias="remove.png">image/tree/remove.png</file>
+        <file alias="collapse.png">image/tree/collapse.png</file>
+        <file alias="expand.png">image/tree/expand.png</file>
+        <file alias="update.png">image/tree/update.png</file>
+        <file alias="load.png">image/tree/load.png</file>
+        <file alias="unload.png">image/tree/unload.png</file>
     </qresource>
 </RCC>

@@ -9,7 +9,7 @@ include($$PWD/common/common.pri)
 #-------------------------------------------------
 #CONFIG(debug, debug|release):DEFINES += DEVELOP
 
-#DEFINES *= SETENV
+DEFINES *= SETENV
 
 include($$this_dir/tools/function.pri)
 

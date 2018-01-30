@@ -27,7 +27,7 @@
             }
          },
          "parser" : {
-            "filePath" : "@ConfigDir@/protocol.json",
+            "filePath" : "C:/Users/iclosure/Documents/GitHub/icdsystem/bin/data/Default.json",
             "sourceType" : "file"
          }
       },
@@ -39,8 +39,12 @@
             }
          },
          "parser" : {
-            "filePath" : "@ConfigDir@/protocol.json",
-            "sourceType" : "file"
+            "databaseName" : "22",
+            "password" : "22",
+            "serverName" : "11",
+            "sourceType" : "sql",
+            "sqlType" : "SQL Server",
+            "userName" : "22"
          }
       },
       "monitor" : {

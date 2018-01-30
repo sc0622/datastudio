@@ -1,19 +1,15 @@
-#ifndef ICDWIDGET_NOTIFY_H
-#define ICDWIDGET_NOTIFY_H
+﻿#ifndef ICDMETA_NOTIFY_H
+#define ICDMETA_NOTIFY_H
 
-#include "icdwidget_global.h"
+#include "../icdmeta_global.h"
 #include <functional>
+#include <QJSValue>
 
-namespace Icd {
-
-//
-class JNEvent;
-typedef std::function<void()> JNotifyCallbackEmpty;
-typedef std::function<void(JNEvent &event)> JNotifyCallback;
+namespace icdmeta {
 
 // class JNEvent
 
-class ICDWIDGET_EXPORT JNEvent
+class ICDMETA_EXPORT JNEvent
 {
 public:
     explicit JNEvent();
@@ -33,7 +29,6 @@ public:
         _channel = other._channel;
         _argument = other._argument;
         _returnValue = other._returnValue;
-        _disposeCallback = other._disposeCallback;
         return *this;
     }
 
@@ -42,16 +37,18 @@ public:
     const QVariant &returnValue() const { return _returnValue; }
     void setReturnValue(const QVariant &value) { _returnValue = value; }
 
-    JNotifyCallbackEmpty disposeCallback() const { return _disposeCallback; }
-    void setDisposeCallback(JNotifyCallbackEmpty callback) { _disposeCallback = callback; }
+    QJSValueList toList() const;
 
 private:
     QString _channel;
     QVariant _argument;
     QVariant _returnValue;
-    JNotifyCallbackEmpty _disposeCallback;
     friend class JNotify;
 };
+
+//
+typedef std::function<void()> JNotifyCallbackEmpty;
+typedef std::function<void(JNEvent &event)> JNotifyCallback;
 
 // class JNotify
 
@@ -59,10 +56,12 @@ class JNotify;
 typedef JHandlePtr<JNotify> JNotifyPtr;
 class JNotifyPrivate;
 
-class ICDWIDGET_EXPORT JNotify : public QObject
+class ICDMETA_EXPORT JNotify : public QObject
 {
     Q_OBJECT
 public:
+    static void registerQmlType();
+
     enum InternalEvent {
         Evt_PostMsg = QEvent::User + 1
     };
@@ -75,10 +74,16 @@ public:
     Q_INVOKABLE QVariant send(const QString &channel, QObject *receiver, const QVariant &data = QVariant());
     Q_INVOKABLE void post(const QString &channel, const QVariant &argument = QVariant());
     Q_INVOKABLE void post(const QString &channel, QObject *receiver, const QVariant &arguments = QVariant());
+    Q_INVOKABLE void postJs(const QString &channel, const QString &argument = QString());
     Q_INVOKABLE bool has(const QString &channel) const;
     Q_INVOKABLE void un(const QString &channel);
     Q_INVOKABLE void un(QObject *receiver);
     Q_INVOKABLE void clear();
+
+    // for qml/js
+    Q_INVOKABLE void on(const QString &channel, QJSValue callback, bool sync = true);
+    Q_INVOKABLE void on(const QString &channel, QObject *receiver, QJSValue callback, bool sync = true);
+    Q_INVOKABLE QJSValue jsSend(const QString &channel, const QJSValue &argument = QJSValue());
 
 signals:
 
@@ -99,4 +104,4 @@ private:
 
 }
 
-#endif // ICDWIDGET_NOTIFY_H
+#endif // ICDMETA_NOTIFY_H

@@ -9,7 +9,7 @@ namespace icdmeta {
 
 // class JSearchWatcher
 
-class JSearchWatcher : public JWatcher<QString>
+class ICDMETA_EXPORT JSearchWatcher : public JWatcher<QString>
 {
     Q_OBJECT
 public:

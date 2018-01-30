@@ -13,12 +13,14 @@ namespace Icd {
 class Parser;
 typedef JHandlePtr<Parser> ParserPtr;
 
-}
-
-// class JMain
-
 class JNotify;
 typedef JHandlePtr<JNotify> JNotifyPtr;
+
+}
+
+using Icd::JNEvent;
+
+// class JMain
 
 class QWidget;
 class JMainPrivate;
@@ -64,8 +66,8 @@ public:
 
     QWidget *mainWindow() const;
 
-    JNotifyPtr notify();
-    const JNotifyPtr notify() const;
+    Icd::JNotifyPtr notify();
+    const Icd::JNotifyPtr notify() const;
 
     static void saveWidgetState(QWidget *widget, const QString prefix = QString());
     static void restoreWidgetState(QWidget *widget, const QString prefix = QString());

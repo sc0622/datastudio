@@ -5,5 +5,6 @@
 #include "channel/jchannel_inc.h"
 #include "protocol/jprotocol_inc.h"
 #include "common/JSearchWatcher.h"
+#include "common/JNotify.h"
 
 #endif // ICDMETA_INC_H

@@ -20,7 +20,7 @@ public:
         , neeedToRestart(false)
     {
         const QString fileName = "main.json";
-        configDir = QDir(QApplication::applicationDirPath().append("/../config"))
+        configDir = QDir(QCoreApplication::applicationDirPath().append("/../config"))
                 .canonicalPath();
         configFile = configDir + "/~" + fileName;
         QFile::copy(configDir + "/" + fileName, configFile);
@@ -33,10 +33,10 @@ public:
                 file.resize(0);
                 file.write(content);
             }
+            file.close();
         } else {
             qDebug() << QString("File \"%1\" open failure!").arg(configFile);
         }
-        file.close();
     }
 
     ~JMainPrivate()
@@ -67,7 +67,7 @@ public:
 
 private:
     J_DECLARE_PUBLIC(JMain)
-    JNotifyPtr notify;
+    Icd::JNotifyPtr notify;
     QList<SingletonReleaseCallback> callbacks;
     QString configDir;
     QString configFile;
@@ -77,13 +77,13 @@ private:
 void JMainPrivate::init()
 {
     Q_Q(JMain);
-    notify = JNotifyPtr(JNotify::inst(QCoreApplication::applicationName(), q));
+    notify = Icd::JNotifyPtr(Icd::JNotify::inst(QCoreApplication::applicationName(), q));
     Q_ASSERT(notify != nullptr);
 }
 
 QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
 {
-    const QByteArray appDir = QApplication::applicationDirPath().toLocal8Bit();
+    const QByteArray appDir = QCoreApplication::applicationDirPath().toLocal8Bit();
     const QByteArray thisDir = QDir(appDir + "/../").canonicalPath().toLocal8Bit();
     if (reverse) {
         return content.replace(appDir, QByteArray("@AppDir@"))
@@ -98,7 +98,7 @@ QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
 
 QString &JMainPrivate::replaceConfig(QString &content, bool reverse) const
 {
-    const QString appDir = QApplication::applicationDirPath();
+    const QString appDir = QCoreApplication::applicationDirPath();
     const QString thisDir = QDir(appDir + "/../").canonicalPath();
     if (reverse) {
         return content.replace(appDir, "@AppDir@")
@@ -377,13 +377,13 @@ QWidget *JMain::mainWindow() const
     return widget;
 }
 
-JNotifyPtr JMain::notify()
+Icd::JNotifyPtr JMain::notify()
 {
     Q_D(JMain);
     return d->notify;
 }
 
-const JNotifyPtr JMain::notify() const
+const Icd::JNotifyPtr JMain::notify() const
 {
     Q_D(const JMain);
     return d->notify;

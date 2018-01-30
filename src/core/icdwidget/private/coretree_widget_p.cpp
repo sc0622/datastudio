@@ -917,14 +917,17 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
     case CoreTreeWidget::TreeModeTableSel:
     {
         if (isItemSelected(item)) {
-            menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                           QStringLiteral("全部收起"), &menu, [=](){
                 expandItem(item, false, -1);
             });
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         } else {
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         }
@@ -933,7 +936,8 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
     default:
     {
         if (item->hasChildren()) {
-            menu.addAction(QStringLiteral("更新分机项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
+                           QStringLiteral("更新分机项"), &menu, [=](){
                 //
                 unbindChannelItem(item);
                 //
@@ -945,7 +949,8 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
                     expandItem(item, true, 2);
                 }
             });
-            menu.addAction(QStringLiteral("卸载分机项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
+                           QStringLiteral("卸载分机项"), &menu, [=](){
                 //
                 unbindChannelItem(item);
                 //
@@ -954,19 +959,23 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
                 emit itemUnloaded(item, Q_NULLPTR);
             });
             if (isItemSelected(item)) {
-                menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                               QStringLiteral("全部收起"), &menu, [=](){
                     expandItem(item, false, -1);
                 });
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             } else {
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             }
         } else {
-            menu.addAction(QStringLiteral("加载分机项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
+                           QStringLiteral("加载分机项"), &menu, [=](){
                 //
                 if (this->loadVehicle(item, deep)) {
                     expandItem(item, true, 2);
@@ -975,10 +984,12 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
         }
 
         //
-        menu.addAction(QStringLiteral("导出全部数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                       QStringLiteral("导出全部数据"), &menu, [=](){
             exportData(item, true);
         });
-        menu.addAction(QStringLiteral("导出已加载数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                       QStringLiteral("导出已加载数据"), &menu, [=](){
             exportData(item, false);
         });
         break;
@@ -1002,14 +1013,17 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
     case CoreTreeWidget::TreeModeTableSel:
     {
         if (isItemExpanded(item)) {
-            menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                           QStringLiteral("全部收起"), &menu, [=](){
                 expandItem(item, false, -1);
             });
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         } else {
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         }
@@ -1018,7 +1032,8 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
     default:
     {
         if (item->hasChildren()) {
-            menu.addAction(QStringLiteral("更新系统项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
+                           QStringLiteral("更新系统项"), &menu, [=](){
                 //
                 unbindChannelItem(item);
                 //
@@ -1030,7 +1045,8 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
                     expandItem(item, true, 2);
                 }
             });
-            menu.addAction(QStringLiteral("卸载系统项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
+                           QStringLiteral("卸载系统项"), &menu, [=](){
                 //
                 unbindChannelItem(item);
                 //
@@ -1039,19 +1055,23 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
                 emit itemUnloaded(item, Q_NULLPTR);
             });
             if (isItemExpanded(item)) {
-                menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                               QStringLiteral("全部收起"), &menu, [=](){
                     expandItem(item, false, -1);
                 });
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             } else {
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             }
         } else {
-            menu.addAction(QStringLiteral("加载系统项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
+                           QStringLiteral("加载系统项"), &menu, [=](){
                 //
                 if (this->loadSystem(item, deep)) {
                     //
@@ -1061,10 +1081,12 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
         }
 
         //
-        menu.addAction(QStringLiteral("导出全部数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                       QStringLiteral("导出全部数据"), &menu, [=](){
             exportData(item, true);
         });
-        menu.addAction(QStringLiteral("导出已加载数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                       QStringLiteral("导出已加载数据"), &menu, [=](){
             exportData(item, false);
         });
         break;
@@ -1087,14 +1109,17 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
     case CoreTreeWidget::TreeModeTableSel:
     {
         if (isItemExpanded(item)) {
-            menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                           QStringLiteral("全部收起"), &menu, [=](){
                 expandItem(item, false, -1);
             });
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         } else {
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         }
@@ -1103,7 +1128,8 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
     default:
     {
         if (item->hasChildren()) {
-            menu.addAction(QStringLiteral("更新表项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
+                           QStringLiteral("更新表项"), &menu, [=](){
                 //
                 unbindChannelItem(item);
                 //
@@ -1115,7 +1141,8 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
                     expandItem(item, true, 1);
                 }
             });
-            menu.addAction(QStringLiteral("卸载表项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
+                           QStringLiteral("卸载表项"), &menu, [=](){
                 //
                 unbindChannelItem(item);
                 //
@@ -1124,19 +1151,23 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
                 emit itemUnloaded(item, Q_NULLPTR);
             });
             if (isItemExpanded(item)) {
-                menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                               QStringLiteral("全部收起"), &menu, [=](){
                     expandItem(item, false, -1);
                 });
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             } else {
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             }
         } else {
-            menu.addAction(QStringLiteral("加载表项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
+                           QStringLiteral("加载表项"), &menu, [=](){
                 //
                 if (this->loadTable(item, deep)) {
                     expandItem(item, true, 1);
@@ -1145,10 +1176,12 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
         }
 
         //
-        menu.addAction(QStringLiteral("导出全部数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                       QStringLiteral("导出全部数据"), &menu, [=](){
             exportData(item, true);
         });
-        menu.addAction(QStringLiteral("导出已加载数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                       QStringLiteral("导出已加载数据"), &menu, [=](){
             exportData(item, false);
         });
         break;
@@ -1172,7 +1205,8 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
     case CoreTreeWidget::TreeModeAnalyse:
     {
         if (item->hasChildren()) {
-            menu.addAction(QStringLiteral("删除数据项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/remove.png"),
+                           QStringLiteral("删除数据项"), &menu, [=](){
                 //
                 removeTableItem(item);
             });
@@ -1186,14 +1220,17 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             }
             //
             if (isItemExpanded(item)) {
-                menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                               QStringLiteral("全部收起"), &menu, [=](){
                     expandItem(item, false, -1);
                 });
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             } else {
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             }
@@ -1207,7 +1244,8 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
     default:
     {
         if (item->hasChildren()) {
-            menu.addAction(QStringLiteral("更新数据项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
+                           QStringLiteral("更新数据项"), &menu, [=](){
                 //
                 unbindChannel(item);
                 //
@@ -1219,7 +1257,8 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
                     expandItem(item, true, 1);
                 }
             });
-            menu.addAction(QStringLiteral("卸载数据项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
+                           QStringLiteral("卸载数据项"), &menu, [=](){
                 //
                 unbindChannel(item);
                 //
@@ -1275,19 +1314,23 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             }
             //
             if (isItemExpanded(item)) {
-                menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                               QStringLiteral("全部收起"), &menu, [=](){
                     expandItem(item, false, -1);
                 });
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             } else {
-                menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                               QStringLiteral("全部展开"), &menu, [=](){
                     expandItem(item, true, -1);
                 });
             }
         } else {
-            menu.addAction(QStringLiteral("加载数据项"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
+                           QStringLiteral("加载数据项"), &menu, [=](){
                 //
                 if (this->loadItem(item, deep)) {
                     expandItem(item, true, 1);
@@ -1296,10 +1339,12 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
         }
 
         //
-        menu.addAction(QStringLiteral("导出全部数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                       QStringLiteral("导出全部数据"), &menu, [=](){
             exportData(item, true);
         });
-        menu.addAction(QStringLiteral("导出已加载数据"), &menu, [=](){
+        menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                       QStringLiteral("导出已加载数据"), &menu, [=](){
             exportData(item, false);
         });
 
@@ -1358,7 +1403,8 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
                 action->setToolTip(QStringLiteral("从视图窗口中删除对应数据项视图"));
             }
             if (d_treeModes == CoreTreeWidget::TreeModeAnalyse) {
-                menu.addAction(QStringLiteral("导出数据"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                               QStringLiteral("导出数据"), &menu, [=](){
                     QStandardItem *itemTable = findItemTable(item);
                     if (!itemTable) {
                         return;
@@ -1380,14 +1426,17 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
     //
     if (item->hasChildren()) {
         if (isItemExpanded(item)) {
-            menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                           QStringLiteral("全部收起"), &menu, [=](){
                 expandItem(item, false, -1);
             });
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         } else {
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         }
@@ -1401,10 +1450,12 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
         }
     }
 
-    menu.addAction(QStringLiteral("导出全部数据"), &menu, [=](){
+    menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                   QStringLiteral("导出全部数据"), &menu, [=](){
         exportData(item, true);
     });
-    menu.addAction(QStringLiteral("导出已加载数据"), &menu, [=](){
+    menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                   QStringLiteral("导出已加载数据"), &menu, [=](){
         exportData(item, false);
     });
 
@@ -1460,14 +1511,17 @@ void CoreTreeWidgetPrivate::itemItemTableRightClicked(QStandardItem *item, int d
     //
     if (item->hasChildren()) {
         if (isItemExpanded(item)) {
-            menu.addAction(QStringLiteral("全部收起"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                           QStringLiteral("全部收起"), &menu, [=](){
                 expandItem(item, false, -1);
             });
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         } else {
-            menu.addAction(QStringLiteral("全部展开"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("全部展开"), &menu, [=](){
                 expandItem(item, true, -1);
             });
         }
@@ -1501,7 +1555,8 @@ void CoreTreeWidgetPrivate::itemItemBitMapRightClicked(QStandardItem *item, int 
     case CoreTreeWidget::TreeModeAnalyse:
     default:
         if (d_treeModes == CoreTreeWidget::TreeModeAnalyse) {
-            menu.addAction(QStringLiteral("导出数据"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                           QStringLiteral("导出数据"), &menu, [=](){
                 QStandardItem *itemTable = findItemTable(item);
                 if (!itemTable) {
                     return;

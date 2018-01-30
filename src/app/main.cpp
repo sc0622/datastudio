@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     Logging::instance()->init();
     JMain::initTranslators();
 
-    QApplication::setFont(QFont("Microsoft Yahei", 10));
+    QApplication::setFont(QFont("Microsoft Yahei", 9));
     QApplication::setOrganizationName("Smartsoft");
     QApplication::setApplicationName("Data Studio");
     QApplication::setApplicationDisplayName(QObject::tr("Data Studio"));

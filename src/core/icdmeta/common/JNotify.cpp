@@ -1,7 +1,91 @@
-#include "precomp.h"
-#include "jnotify.h"
+﻿#include "precomp.h"
+#include "JNotify.h"
+#include <QQmlEngine>
 
-namespace Icd {
+namespace icdmeta {
+
+QJSValue jVariantToJSValue(const QVariant &value)
+{
+    switch (value.type()) {
+    case QVariant::Bool:
+        return value.toBool();
+    case QVariant::Char:
+    case QVariant::Int:
+        return value.toInt();
+    case QVariant::UInt:
+        return value.toUInt();
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+        return value.toDouble();
+    case QVariant::String:
+        return value.toString();
+    case QVariant::List:
+    default:
+        return value.toString();
+    }
+}
+
+// class JNotifyCallbackData
+
+class JNotifyCallbackData
+{
+public:
+    JNotifyCallbackData()
+    {
+
+    }
+
+    explicit JNotifyCallbackData(JNotifyCallback callback)
+        : callback(callback)
+    {
+
+    }
+
+    explicit JNotifyCallbackData(QJSValue callback)
+        : jsCallback(callback)
+    {
+
+    }
+
+    JNotifyCallbackData(const JNotifyCallbackData &other)
+    {
+        *this = other;
+    }
+
+    JNotifyCallbackData &operator =(const JNotifyCallbackData &other)
+    {
+        if (this == &other) {
+            return *this;
+        }
+        callback = other.callback;
+        jsCallback = other.jsCallback;
+        return *this;
+    }
+
+    void call(JNEvent &event)
+    {
+        if (callback) {
+            callback(event);
+        } else if (jsCallback.isCallable()) {
+            jsCallback.call(event.toList());    //TODO
+        }
+    }
+
+    void operator ()(JNEvent &event)
+    {
+        call(event);
+    }
+
+    bool isValid() const
+    {
+        return (callback || jsCallback.isCallable());
+    }
+
+private:
+    JNotifyCallback callback;
+    QJSValue jsCallback;
+};
 
 // class JNEvent
 
@@ -9,7 +93,6 @@ class JNEvent;
 typedef JHandlePtr<JNEvent> JNEventPtr;
 
 JNEvent::JNEvent()
-    : _returnValue(false)
 {
 
 }
@@ -17,16 +100,22 @@ JNEvent::JNEvent()
 JNEvent::JNEvent(const QString &channel, const QVariant &data)
     : _channel(channel)
     , _argument(data)
-    , _returnValue(false)
 {
 
 }
 
 JNEvent::~JNEvent()
 {
-    if (_disposeCallback) {
-        _disposeCallback();
-    }
+
+}
+
+QJSValueList JNEvent::toList() const
+{
+    QJSValueList args;
+    args.append(_channel);
+    args.append(jVariantToJSValue(_argument));
+    args.append(jVariantToJSValue(_returnValue));
+    return args;
 }
 
 // class JPostMsgEvent
@@ -34,8 +123,18 @@ JNEvent::~JNEvent()
 class JPostMsgEvent : public QEvent
 {
 public:
-    explicit JPostMsgEvent(JNotifyCallback callback, const QString &channel,
-                           const QVariant &argument)
+    JPostMsgEvent(JNotifyCallback callback, const QString &channel,
+                  const QVariant &argument)
+        : QEvent(static_cast<QEvent::Type>(JNotify::Evt_PostMsg))
+        , callback(callback)
+        , channel(channel)
+        , argument(argument)
+    {
+
+    }
+
+    JPostMsgEvent(QJSValue callback, const QString &channel,
+                  const QVariant &argument)
         : QEvent(static_cast<QEvent::Type>(JNotify::Evt_PostMsg))
         , callback(callback)
         , channel(channel)
@@ -46,13 +145,11 @@ public:
 
     void execute()
     {
-        if (callback) {
-            callback(JNEvent(channel, argument));
-        }
+        callback(JNEvent(channel, argument));
     }
 
 private:
-    JNotifyCallback callback;
+    JNotifyCallbackData callback;
     QString channel;
     QVariant argument;
 };
@@ -66,17 +163,23 @@ typedef std::list<JNotifyDataPtr> JNotifyDataPtrArray;
 class JNotifyData
 {
 public:
-    JNotifyCallback callback;
+    JNotifyCallbackData callback;
     bool sync;
 
     explicit JNotifyData()
-        : callback(nullptr)
-        , sync(true)
+        : sync(true)
     {
 
     }
 
     JNotifyData(JNotifyCallback callback, bool sync)
+        : callback(callback)
+        , sync(sync)
+    {
+
+    }
+
+    JNotifyData(QJSValue callback, bool sync)
         : callback(callback)
         , sync(sync)
     {
@@ -96,6 +199,11 @@ public:
         callback = other.callback;
         sync = other.sync;
         return *this;
+    }
+
+    bool isValid() const
+    {
+        return callback.isValid();
     }
 };
 
@@ -138,7 +246,7 @@ QVariant JNotifyPrivate::send(const JNotifyDataPtrArray &notifyDatas, const QStr
     Q_Q(JNotify);
     QVariant ret;
     foreach (auto notifyData, notifyDatas) {
-        if (notifyData->callback) {
+        if (notifyData->isValid()) {
             if (notifyData->sync) {
                 JNEvent event(channel, argument);
                 notifyData->callback(event);
@@ -155,13 +263,18 @@ void JNotifyPrivate::post(const JNotifyDataPtrArray &notifyDatas, const QString 
 {
     Q_Q(JNotify);
     foreach (auto notifyData, notifyDatas) {
-        if (notifyData->callback) {
+        if (notifyData->isValid()) {
             QCoreApplication::postEvent(q, new JPostMsgEvent(notifyData->callback, channel, data));
         }
     }
 }
 
 // class JNotify
+
+void JNotify::registerQmlType()
+{
+    jRegisterUncreatableType(JNotify);
+}
 
 JNotify *JNotify::inst(const QString &name, QObject *parent)
 {
@@ -297,6 +410,11 @@ void JNotify::post(const QString &channel, QObject *receiver, const QVariant &ar
     }
 }
 
+void JNotify::postJs(const QString &channel, const QString &argument)
+{
+    post(channel, nullptr, QVariant(argument));
+}
+
 bool JNotify::has(const QString &channel) const
 {
     Q_D(const JNotify);
@@ -347,6 +465,67 @@ void JNotify::clear()
     d->callbacks.clear();
     d->pendings.clear();
     d->mutex.unlock();
+}
+
+void JNotify::on(const QString &channel, QJSValue callback, bool sync)
+{
+    on(channel, nullptr, callback, sync);
+}
+
+void JNotify::on(const QString &channel, QObject *receiver, QJSValue callback, bool sync)
+{
+    Q_D(JNotify);
+    // auto-removing
+    if (receiver) {
+        connect(receiver, &QObject::destroyed, this, [=](QObject *object){
+            un(object);
+        });
+    }
+    d->mutex.lock();
+    // callbacks
+    const JNotifyDataPtr notifyData = JNotifyDataPtr(new JNotifyData(callback, sync));
+    auto iterCalbacks = d->callbacks.find(channel);
+    if (iterCalbacks != d->callbacks.end()) {
+        QMap<QObject*,JNotifyDataPtrArray> &receivers = iterCalbacks.value();
+        auto iterDatas = receivers.find(receiver);
+        if (iterDatas != receivers.end()) {
+            JNotifyDataPtrArray &datas = iterDatas.value();
+            datas.push_back(notifyData);
+        } else {
+            JNotifyDataPtrArray datas;
+            datas.push_back(notifyData);
+            receivers[receiver] = datas;
+        }
+    } else {
+        JNotifyDataPtrArray datas;
+        datas.push_back(notifyData);
+        QMap<QObject*,JNotifyDataPtrArray> receivers;
+        receivers[receiver] = datas;
+        d->callbacks[channel] = receivers;
+    }
+    // pendings
+    QMutableListIterator<JNEventPtr> iterPendings(d->pendings);
+    while (iterPendings.hasNext()) {
+        const JNEventPtr &event = iterPendings.next();
+        if (channel == event->channel()) {
+            const QVariant argument = event->argument();
+            const QJSValueList arguments = event->toList();
+            d->mutex.unlock();
+            if (sync) {
+                callback.call(arguments);
+            } else {
+                QCoreApplication::postEvent(this, new JPostMsgEvent(callback, channel, argument));
+            }
+            d->mutex.lock();
+            iterPendings.remove();
+        }
+    }
+    d->mutex.unlock();
+}
+
+QJSValue JNotify::jsSend(const QString &channel, const QJSValue &argument)
+{
+    return jVariantToJSValue(send(channel, nullptr, argument.toVariant()));
 }
 
 void JNotify::customEvent(QEvent *event)
