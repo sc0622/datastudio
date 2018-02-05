@@ -169,7 +169,8 @@ bool JDataChannel::binding(JChannel *channel, JProtocol *protocolSend, JProtocol
     // worker
     if (!d->worker) {
         Icd::WorkerPtr worker(new Icd::Worker(channel->channel()->channel(), this));
-        connect(worker.get(), &Icd::Worker::toggled, channel->channel(), &JSuperChannel::isOpenChanged);
+        connect(worker.get(), &Icd::Worker::toggled,
+                channel->channel(), &JSuperChannel::isOpenChanged);
         d->setWorker(worker);
     }
 

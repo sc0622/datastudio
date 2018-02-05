@@ -112,7 +112,7 @@ void WorkerRecvPrivate::recvData()
                 memcpy(tableBuffer, parseBuffer, tableSize);
                 table->updateRecv();
                 //
-                if (relayer) {
+                if (relayer && relayer->isOpen()) {
                     relayer->write(parseBuffer, tableSize);
                 }
                 // queue

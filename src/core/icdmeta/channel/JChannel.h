@@ -4,6 +4,12 @@
 #include "../icdmeta_global.h"
 #include "icdcore/icdcore_global.h"
 
+namespace Icd {
+template<typename T> class JHandlePtr;
+class Channel;
+typedef JHandlePtr<Channel> ChannelPtr;
+}
+
 namespace icdmeta {
 
 J_TYPEDEF_QT_SHAREDPTR(JChannel)
@@ -29,6 +35,7 @@ public:
     QString identity() const;
     QString domain() const;
     icdmeta::JSuperChannel *channel() const;
+    Icd::ChannelPtr nativeChannel() const;
     bool isActive() const;
     bool isValid() const;
     bool isOpen() const;

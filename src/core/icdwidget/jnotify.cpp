@@ -234,6 +234,20 @@ void JNotify::on(const QString &channel, QObject *receiver, JNotifyCallback call
     d->mutex.unlock();
 }
 
+void JNotify::once(const QString &channel, JNotifyCallback callback, bool sync)
+{
+    once(channel, nullptr, callback, sync);
+}
+
+void JNotify::once(const QString &channel, QObject *receiver, JNotifyCallback callback, bool sync)
+{
+    Q_UNUSED(channel);
+    Q_UNUSED(receiver);
+    Q_UNUSED(callback);
+    Q_UNUSED(sync);
+    Q_ASSERT_X(false, "JNotify", "Not supported!");
+}
+
 QVariant JNotify::send(const QString &channel, const QVariant &data)
 {
     return send(channel, nullptr, data);

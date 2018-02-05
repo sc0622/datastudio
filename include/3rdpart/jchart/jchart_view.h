@@ -157,6 +157,13 @@ public:
      */
     void setColumnWidthSame();
 
+    /**
+     * @brief lastChart
+     * @param except
+     * @return
+     */
+    JChart::Chart *lastChart(JChart::Chart *except) const;
+
 signals:
     void triggleClose(JChart::Chart *chart);
     void columnCountChanged(int);

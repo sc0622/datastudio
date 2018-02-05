@@ -514,40 +514,41 @@ QString JMain::settingsGroupPrefix(const QString prefix)
     }
 }
 
+Json::Value JMain::config(const QString &domain) const
+{
+    return Icd::JJson::value(configFile().toStdString(), domain.toStdString(), false);
+}
+
+bool JMain::setConfig(const QString &domain, const Json::Value &config, bool merge)
+{
+    const std::string configFile = this->configFile().toStdString();
+    const std::string _domain = domain.toStdString();
+    if (merge) {
+        return Icd::JJson::merge(configFile, _domain, config, true, false);
+    } else {
+        return Icd::JJson::setValue(configFile, _domain, config, true, false);
+    }
+}
+
 Json::Value JMain::option(const QString &module) const
 {
-    return Icd::JJson::value(configFile().toStdString(),
-                             "module/" + module.toStdString(), false);
+    return config("module/" + module);
 }
 
 Json::Value JMain::option(const QString &module, const QString &key) const
 {
-    return Icd::JJson::value(configFile().toStdString(),
-                             "module/" + module.toStdString() + '/' + key.toStdString(),
-                             false);
+    return config("module/" + module + '/' + key);
 }
 
 bool JMain::setOption(const QString &module, const Json::Value &option, bool merge)
 {
-    const std::string configFile = this->configFile().toStdString();
-    const std::string domain = "module/" + module.toStdString();
-    if (merge) {
-        return Icd::JJson::merge(configFile, domain, option, true, false);
-    } else {
-        return Icd::JJson::setValue(configFile, domain, option, true, false);
-    }
+    return setConfig("module/" + module, option, merge);
 }
 
 bool JMain::setOption(const QString &module, const QString &key,
                       const Json::Value &option, bool merge)
 {
-    const std::string configFile = this->configFile().toStdString();
-    const std::string domain = "module/" + module.toStdString() + '/' + key.toStdString();
-    if (merge) {
-        return Icd::JJson::merge(configFile, domain, option, true, false);
-    } else {
-        return Icd::JJson::setValue(configFile, domain, option, true, false);
-    }
+    return setConfig("module/" + module + '/' + key, option, merge);
 }
 
 Icd::ParserPtr JMain::parser(const QString &module) const
@@ -568,17 +569,20 @@ Icd::ParserPtr JMain::parser(const QString &module) const
 void JMain::setTheme(const QString &value)
 {
     const QString previous = theme();
-    if (!JJson::setValue(configFile(), "global/theme/name", value, true)) {
+    if (!setConfig("global/theme/name", Json::Value(value.toStdString()), true)) {
         return;
     }
 
-    const QString filePath(":/datastudio/qss/stylesheet-" + value + ".qss");
-    if (!QFile::exists(filePath)) {
-        qWarning() << "Theme" <<value << "is invalid!";
-        return;
+    if (value == "none") {
+        qApp->setStyleSheet(QString());
+    } else {
+        const QString filePath(":/datastudio/qss/stylesheet-" + value + ".qss");
+        if (!QFile::exists(filePath)) {
+            qWarning() << "Theme" <<value << "is invalid!";
+            return;
+        }
+        JMainPrivate::setStyleSheet(filePath);
     }
-
-    JMainPrivate::setStyleSheet(filePath);
 
     emit themeChanged(value, previous);
 }

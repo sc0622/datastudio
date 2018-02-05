@@ -14,27 +14,33 @@ bool MenuBar::init()
 {
     bool result = true;
 
+    Json::Value config = JMain::instance()->config("global/menubar");
+    if (config.isNull()) {
+        //return false;
+    }
+
     if (result) {
-        updateMenuBar();
+        updateMenuBar(config);
     }
 
     return result;
 }
 
-void MenuBar::updateMenuBar()
+void MenuBar::updateMenuBar(const Json::Value &config)
 {
     clear();
 
-    addSettingsMenu();
-    addAnalyseToolAction();
-    addScreenshotAction();
-    addPaletteAction();
-    addCalcToolAction();
-    addShowToolbarAction();
+    addSettingsMenu(config);
+    addAnalyseToolAction(config);
+    addScreenshotAction(config);
+    addPaletteAction(config);
+    addCalcToolAction(config);
+    addShowToolbarAction(config);
 }
 
-void MenuBar::addSettingsMenu()
+void MenuBar::addSettingsMenu(const Json::Value &config)
 {
+    Q_UNUSED(config);
     QMenu *menu = addMenu(QIcon(":/datastudio/image/toolbar/list.png"),
                           tr("Main menu"));
     // global settings
@@ -47,8 +53,9 @@ void MenuBar::addSettingsMenu()
     });
 }
 
-void MenuBar::addAnalyseToolAction()
+void MenuBar::addAnalyseToolAction(const Json::Value &config)
 {
+    Q_UNUSED(config);
 #ifdef _MSC_VER
     QAction *action = addAction(tr("Data analyse tool"));
     action->setIcon(QIcon(":/datastudio/image/toolbar/ruler.png"));
@@ -59,8 +66,9 @@ void MenuBar::addAnalyseToolAction()
 #endif
 }
 
-void MenuBar::addCalcToolAction()
+void MenuBar::addCalcToolAction(const Json::Value &config)
 {
+    Q_UNUSED(config);
 #ifdef _MSC_VER
     QAction *action = addAction(tr("Calculate"));
     action->setIcon(QIcon(":/datastudio/image/toolbar/calc.png"));
@@ -70,8 +78,9 @@ void MenuBar::addCalcToolAction()
 #endif
 }
 
-void MenuBar::addScreenshotAction()
+void MenuBar::addScreenshotAction(const Json::Value &config)
 {
+    Q_UNUSED(config);
 #ifdef _MSC_VER
     QAction *action = addAction(tr("Screenshot"));
     action->setIcon(QIcon(":/datastudio/image/toolbar/screenshot.png"));
@@ -82,8 +91,9 @@ void MenuBar::addScreenshotAction()
 #endif
 }
 
-void MenuBar::addPaletteAction()
+void MenuBar::addPaletteAction(const Json::Value &config)
 {
+    Q_UNUSED(config);
 #ifdef _MSC_VER
     QAction *action = addAction(tr("Palette"));
     action->setIcon(QIcon(":/datastudio/image/toolbar/palette.png"));
@@ -93,7 +103,7 @@ void MenuBar::addPaletteAction()
 #endif
 }
 
-void MenuBar::addShowToolbarAction()
+void MenuBar::addShowToolbarAction(const Json::Value &config)
 {
     QAction *actionShowToolBar = addAction(tr("Show toolbar"));
     actionShowToolBar->setCheckable(true);
@@ -106,10 +116,16 @@ void MenuBar::addShowToolbarAction()
     connect(actionShowToolBar, &QAction::toggled, this, [=](bool checked){
         setIcon(checked);
         jnotify->send("main.toolbar.show", checked);
+        //
+        JMain::instance()->setConfig("global/menubar/toolBarVisible", checked);
     });
     jnotify->on("main.toolbar.show.toggle", this, [=](JNEvent &){
         actionShowToolBar->toggle();
     });
+
+    if (config.isMember("toolBarVisible")) {
+        actionShowToolBar->setChecked(config["toolBarVisible"].asBool());
+    }
 }
 
 }

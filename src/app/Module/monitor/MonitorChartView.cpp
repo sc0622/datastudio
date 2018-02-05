@@ -10,7 +10,7 @@ ChartView::ChartView(QWidget *parent)
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    d_chartView = new Icd::ChartView(this);
+    d_chartView = new Icd::ChartView(false, this);
     vertLayoutMain->addWidget(d_chartView);
 
     jnotify->on("monitor.toolbar.chart.clean", this, [=](JNEvent &){

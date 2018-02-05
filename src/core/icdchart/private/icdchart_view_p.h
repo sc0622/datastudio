@@ -95,100 +95,23 @@ class ChartViewPrivate : public QObject
 public:
     explicit ChartViewPrivate(ChartView *q);
 
-    /**
-     * @brief init
-     */
-    void init();
+    void init(bool styled);
 
-    /**
-     * @brief addDataItem
-     * @param worker
-     * @param dataItem
-     * @param item
-     * @param chart
-     * @return
-     */
     bool addDataItem(const Icd::WorkerPtr &worker, const Icd::ItemPtr &dataItem,
                      QStandardItem *item, JChart::Chart *chart);
-
-    /**
-     * @brief addDataItem
-     * @param worker
-     * @param table
-     * @param item
-     * @param chart
-     * @return
-     */
     bool addDataItem(const Icd::WorkerPtr &worker, const Icd::TablePtr &table,
                      QStandardItem *item, JChart::Chart *chart);
-
-    /**
-     * @brief addDataItem
-     * @param worker
-     * @param frame
-     * @param item
-     * @param chart
-     * @return
-     */
     bool addDataItem(const Icd::WorkerPtr &worker, const Icd::FrameItemPtr &frame,
                      QStandardItem *item, JChart::Chart *chart);
-
-    /**
-     * @brief addDataItem
-     * @param domain
-     * @param worker
-     * @param dataObject
-     * @param item
-     * @param chart
-     * @return
-     */
     bool addDataItem(const QString &domain, const Icd::WorkerPtr &worker,
                      const Icd::ObjectPtr &dataObject, QStandardItem *item,
                      JChart::Chart *chart);
-
-    /**
-     * @brief createChart
-     * @param dataItem
-     * @return
-     */
     JChart::Chart *createChart(const Icd::ItemPtr &dataItem);
-
-    /**
-     * @brief findChart
-     * @param chart
-     * @return
-     */
     bool findChart(JChart::Chart *chart);
-
-    /**
-     * @brief findSeries
-     * @param domain
-     * @return
-     */
     JChart::AbstractSeries *findSeries(const QString &domain) const;
-
-    /**
-     * @brief isRunning
-     * @return
-     */
     bool isRunning() const;
-
-    /**
-     * @brief start
-     */
     void setRunning(bool value);
-
-    /**
-     * @brief setChartTitle
-     * @param chart
-     * @param sectionOffset
-     * @param item
-     */
     void setChartTitle(JChart::Chart *chart, int sectionOffset, QStandardItem *item);
-
-    /**
-     * @brief updateXAxisSync
-     */
     void updateXAxisSync();
 
 signals:

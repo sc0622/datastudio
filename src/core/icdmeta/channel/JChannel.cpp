@@ -93,6 +93,15 @@ JSuperChannel *JChannel::channel() const
     return d->channel;
 }
 
+Icd::ChannelPtr JChannel::nativeChannel() const
+{
+    Q_D(const JChannel);
+    if (!d->channel) {
+        return nullptr;
+    }
+    return d->channel->channel();
+}
+
 bool JChannel::isActive() const
 {
     Q_D(const JChannel);

@@ -257,25 +257,29 @@ std::string BitItem::specAt(icd_uint64 key) const
 
 std::string BitItem::nameAt(int offset) const
 {
-    const std::string spec = specAt(offset);
-    if (spec.empty()) {
-        return std::string();
-    }
-    //
+    const std::string spec = BitItem::nameOf(specAt(offset));
     switch (type()) {
     case Icd::ItemBitMap:
-    {
-        std::string::size_type index = spec.find_first_of(':');
-        if (index == std::string::npos) {
-            return spec;
-        } else {
-            return BitItemData::trim(spec.substr(0, index));
-        }
-        break;
-    }
+        return BitItem::nameOf(spec);
     case Icd::ItemBitValue:
     default:
         return spec;
+    }
+
+    return std::string();
+}
+
+std::string BitItem::nameOf(const std::string &spec)
+{
+    if (spec.empty()) {
+        return std::string();
+    }
+
+    std::string::size_type index = spec.find_first_of(':');
+    if (index == std::string::npos) {
+        return spec;
+    } else {
+        return BitItemData::trim(spec.substr(0, index));
     }
 
     return std::string();

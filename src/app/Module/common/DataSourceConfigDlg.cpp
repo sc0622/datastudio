@@ -28,10 +28,9 @@ FileSourceWidget::FileSourceWidget(QWidget *parent)
     connect(buttonView, &QPushButton::clicked, this, [=](){
         const QString filePath = QFileDialog::getOpenFileName(
                     this, tr("Select file"), d_editFilePath->text(),
-                    "JSON file (*.json);;"
-                    "XML file (*.xml)").trimmed();
+                    "JSON file (*.json);;XML file (*.xml)").trimmed();
         if (filePath.isEmpty()) {
-           return;
+            return;
         }
         d_editFilePath->setText(filePath);
     });

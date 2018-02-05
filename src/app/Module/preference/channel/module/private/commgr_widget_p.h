@@ -9,6 +9,8 @@ namespace Icd {
 class ChannelWidget;
 }
 
+class JSplitter;
+class QScrollArea;
 class CommDetailWidget;
 class QPushButton;
 
@@ -28,6 +30,7 @@ public slots:
 
 private:
     J_DECLARE_PUBLIC(ComMgrWidget)
+    JSplitter *splitterTop;
     QScrollArea *scrollArea;
     Icd::ChannelWidget *channelWidget;
     CommDetailWidget *commDetailWidget;

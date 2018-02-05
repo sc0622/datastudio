@@ -69,7 +69,7 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("analyse.toolbar.tree.loadDeep", this, [=](JNEvent &event){
         const int deep = event.argument().toInt();
-        JMain::instance()->setOption("analyse", "option/tree/deep", deep, true);
+        JMain::instance()->setOption("analyse", "option/tree/loadDeep", deep, true);
     });
     jnotify->on("analyse.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
@@ -290,7 +290,7 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
                     if (tempFile) {
                         d_tempFiles[newFilePath] = tempFile;
                     }
-                    struct Data { Icd::TablePtr table; } data { d_table };
+                    struct { Icd::TablePtr table; } data { d_table };
                     QVariantList args;
                     args.append(newFilePath);
                     args.append(qVariantFromValue((void*)&data));

@@ -203,7 +203,7 @@ public:
     explicit ChartFileViewPrivate(ChartFileView *q);
     ~ChartFileViewPrivate();
 
-    void init();
+    void init(bool styled);
     void reset();
 
     bool addDataItem(const FileBaseInfo &baseInfo, const Icd::ItemPtr &dataItem,

@@ -15,7 +15,15 @@ ChartView::ChartView(QWidget *parent)
     , d_ptr(new ChartViewPrivate(this))
 {
     Q_D(ChartView);
-    d->init();
+    d->init(true);
+}
+
+ChartView::ChartView(bool styled, QWidget *parent)
+    : QWidget(parent)
+    , d_ptr(new ChartViewPrivate(this))
+{
+    Q_D(ChartView);
+    d->init(styled);
 }
 
 ChartView::~ChartView()

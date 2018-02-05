@@ -146,6 +146,13 @@ public:
     std::string nameAt(int offset) const;
 
     /**
+     * @brief nameOf
+     * @param spec
+     * @return
+     */
+    static std::string nameOf(const std::string &spec);
+
+    /**
      * @brief descAt, for bitmap type
      * @param offset
      * @return

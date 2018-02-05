@@ -2,7 +2,6 @@
     <qresource prefix="/icdwidget/image">
         <file alias="file.png">image/file.png</file>
         <file alias="indicator.png">image/indicator.png</file>
-        <file alias="qtlogo.png">image/qtlogo.png</file>
         <file alias="search.png">image/search.png</file>
         <file alias="window_shadow_active.png">image/window_shadow_active.png</file>
         <file alias="window_shadow_inactive.png">image/window_shadow_inactive.png</file>
@@ -30,5 +29,12 @@
         <file alias="update.png">image/tree/update.png</file>
         <file alias="load.png">image/tree/load.png</file>
         <file alias="unload.png">image/tree/unload.png</file>
+        <file alias="connect.png">image/tree/connect.png</file>
+        <file alias="disconnect.png">image/tree/disconnect.png</file>
+        <file alias="view_off.png">image/tree/view_off.png</file>
+        <file alias="record_start.png">image/tree/record_start.png</file>
+        <file alias="record_stop.png">image/tree/record_stop.png</file>
+        <file alias="channel.png">image/tree/channel.png</file>
+        <file alias="channel_exchange.png">image/tree/channel_exchange.png</file>
     </qresource>
 </RCC>

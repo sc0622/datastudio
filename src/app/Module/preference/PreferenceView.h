@@ -1,17 +1,25 @@
 ﻿#ifndef PREFERENCEVIEW_H
 #define PREFERENCEVIEW_H
 
-#include <QDockWidget>
+#include <QWidget>
+
+class JSplitter;
+class QListWidget;
+class QScrollArea;
 
 namespace Preference {
 
-class ChannelView;
-
-class View : public QDockWidget
+class View : public QWidget
 {
     Q_OBJECT
 public:
-    explicit View(QWidget *parent = 0);
+    enum ItemType {
+        ItemTypeInvalid = -1,
+        ItemTypeChannel,
+        ItemTypeDataSource
+    };
+
+    explicit View(QWidget *parent = nullptr);
     ~View();
 
     bool init();
@@ -19,9 +27,12 @@ public:
 signals:
 
 public slots:
+    void onCurrentRowChanged(int currentRow);
 
 private:
-    ChannelView *d_channelView;
+    JSplitter *d_splitter;
+    QListWidget *d_listWidget;
+    QScrollArea *d_scrollArea;
 };
 
 }

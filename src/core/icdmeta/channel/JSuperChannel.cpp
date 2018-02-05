@@ -5,6 +5,7 @@
 #include "icdcore/3rdpart/jsoncpp/json/json.h"
 #include "JSerialChannel.h"
 #include "JUdpChannel.h"
+#include "JFileChannel.h"
 
 namespace icdmeta {
 
@@ -220,7 +221,7 @@ JSuperChannel *JSuperChannel::create(const QString &identity,
     switch (channelType) {
     case ChannelSerial: return new JSerialChannel(identity);
     case ChannelUdp: return new JUdpChannel(identity);
-    //case ChannelFile: return new JFileChannel(identity);
+    case ChannelFile: return new JFileChannel(identity);
     default: return nullptr;
     }
 }

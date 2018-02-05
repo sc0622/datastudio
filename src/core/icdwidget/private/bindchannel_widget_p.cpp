@@ -25,7 +25,7 @@ void BindChannelWidgetPrivate::init()
     q->resize(800, 600);
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(q);
-    vertLayoutMain->setContentsMargins(0, 0, 0, 5);
+    vertLayoutMain->setContentsMargins(0, 0, 0, 10);
 
     tabWidget = new QTabWidget(q);
     vertLayoutMain->addWidget(tabWidget);
@@ -34,21 +34,27 @@ void BindChannelWidgetPrivate::init()
     widgetSerial = new ChannelWidget(tabWidget);
     widgetUdp = new ChannelWidget(tabWidget);
 
-    tabWidget->addTab(widgetFile, QStringLiteral("文件通道"));
-    tabWidget->addTab(widgetSerial, QStringLiteral("串口通道"));
-    tabWidget->addTab(widgetUdp, QStringLiteral("网络通道"));
+    tabWidget->addTab(widgetFile, QIcon(":/icdwidget/image/file.png"),
+                      QStringLiteral("文件通道"));
+    tabWidget->addTab(widgetSerial, QIcon(":/icdwidget/image/serial.png"),
+                      QStringLiteral("串口通道"));
+    tabWidget->addTab(widgetUdp, QIcon(":/icdwidget/image/udp.png"),
+                      QStringLiteral("网络通道"));
+
+    vertLayoutMain->addSpacing(10);
 
     QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
     vertLayoutMain->addLayout(horiLayoutBottom);
 
     //
     buttonOk = new QPushButton(QStringLiteral("确定"), q);
-    buttonOk->setFixedWidth(70);
+    buttonOk->setMinimumWidth(100);
+    buttonOk->setDefault(true);
     horiLayoutBottom->addStretch();
     horiLayoutBottom->addWidget(buttonOk);
 
     buttonCancel = new QPushButton(QStringLiteral("取消"), q);
-    buttonCancel->setFixedWidth(70);
+    buttonCancel->setMinimumWidth(100);
     horiLayoutBottom->addSpacing(10);
     horiLayoutBottom->addWidget(buttonCancel);
 

@@ -12,6 +12,8 @@ ChannelView::ChannelView(QWidget *parent)
 
     d_comMgrWidget = new ComMgrWidget(this);
     vertLayoutMain->addWidget(d_comMgrWidget);
+
+    init();
 }
 
 ChannelView::~ChannelView()

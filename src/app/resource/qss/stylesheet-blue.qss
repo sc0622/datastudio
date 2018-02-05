@@ -2,7 +2,7 @@
 /** QWidget **/
 
 QDialog {
-    background: white;
+    /*background: #293956;*/
 }
 
 /** * **/
@@ -45,7 +45,7 @@ QTabWidget::pane {
     border: 0px solid #3a3a3a;
     position: absolute;
     top: 0.0em;
-    background: #394966;
+    /*background: #394966;*/
 }
 
 QTabWidget::tab-bar {
@@ -86,7 +86,7 @@ QTabWidget QTabBar QToolButton:disabled {
 /** QTabBar **/
 
 QTabBar {
-    background: #293956;
+    /*background: #293956;*/
 }
 
 QTabBar::tab:selected {
@@ -318,7 +318,7 @@ QTreeView {
 }
 
 QTreeView::item {
-    background: #d6dbe9;
+    background: #e6ebf9;
     color: black;
     border-left: 1px solid white;
     border-bottom: 1px solid white;
@@ -329,7 +329,7 @@ QTreeView::item {
 }
 
 QTreeView::item:hover {
-    background: #fff29d;
+    background: #ffe24d;
 }
 
 QTreeView::item:focus {
@@ -338,8 +338,7 @@ QTreeView::item:focus {
 
 QTreeView::item:selected,
 QTreeView::item:selected:!focus {
-    background: #3399ff;
-    color: white;
+    background: #fff29d;
     font-weight: bold;
 }
 
@@ -369,7 +368,7 @@ QTreeView::branch:open:has-children:has-siblings  {
 
 QTableView {
     background: white;
-    gridline-color: #ddd;
+    gridline-color: #aaa;
     outline: none;
 }
 
@@ -963,16 +962,16 @@ QTreeView QPushButton:disabled, QTableView QPushButton:disabled {
 /****************************************************************/
 
 QwtPlot {
-    background: #d6dbe9;
+    background: #d6fbf9;
     padding: 2px; 
 }
 
 QwtPlot:hover {
-    background: #ccc;
+    background: #f6fbf9;
 }
    
 QwtPlotCanvas {
-    background: #333;
+    background: #fff;
 }
 
 QwtPlotZoomer {
@@ -994,13 +993,17 @@ QwtScaleWidget {
 
 QwtLegend {
     font-size: 16px;
-    background-color: #aaa;
+    background: transparent;
 }
 
 QwtLegendLabel { 
     color: black;
-    background: #aaa;
+    background: transparent;
     font-size: 13px;
+}
+
+QwtPlot QScrollArea {
+    background: transparent;
 }
 
 /**********************************************************/

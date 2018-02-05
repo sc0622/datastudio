@@ -9,7 +9,15 @@ ChartFileView::ChartFileView(QWidget *parent)
     , d_ptr(new ChartFileViewPrivate(this))
 {
     Q_D(ChartFileView);
-    d->init();
+    d->init(true);
+}
+
+ChartFileView::ChartFileView(bool styled, QWidget *parent)
+    : QWidget(parent)
+    , d_ptr(new ChartFileViewPrivate(this))
+{
+    Q_D(ChartFileView);
+    d->init(styled);
 }
 
 ChartFileView::~ChartFileView()
@@ -446,10 +454,10 @@ void ChartFileView::dropEvent(QDropEvent *event)
         return;
     }
 
+    JAutoCursor cursor(Qt::BusyCursor);
+
     //
     QApplication::processEvents(QEventLoop::EventLoopExec);
-
-    JAutoCursor cursor(Qt::BusyCursor);
 
     //
     if (!d->addDataItem({ table, filePath, hasTimeFormat, headerSize },

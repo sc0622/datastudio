@@ -59,7 +59,12 @@ bool TableSelWidget::init()
 {
     bool result = true;
 
-    const Icd::ParserPtr parser = JMain::instance()->parser("analyse");
+    const Json::Value config = JMain::instance()->option("analyse", "parser");
+    if (config.isNull()) {
+        return false;
+    }
+
+    const Icd::ParserPtr parser = Icd::Parser::create(config);
     if (!parser) {
         return false;
     }

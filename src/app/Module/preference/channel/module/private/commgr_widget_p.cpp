@@ -20,11 +20,11 @@ void ComMgrWidgetPrivate::init()
     Q_Q(ComMgrWidget);
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(q);
-    vertLayoutMain->setContentsMargins(0, 0, 0, 5);
+    vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    JSplitter *splitterTop = new JSplitter(q);
+    splitterTop = new JSplitter(q);
     splitterTop->setHandleWidth(4);
-    splitterTop->setHandleColor(QColor(100, 100, 100, 0));
+    splitterTop->setHandleColor(QColor(0, 0, 0, 0));
     splitterTop->setScales(QList<double>() << 2.5 << 1);
     vertLayoutMain->addWidget(splitterTop);
 
@@ -32,7 +32,7 @@ void ComMgrWidgetPrivate::init()
     splitterTop->addWidget(widgetArea);
 
     QVBoxLayout *vertLayoutArea = new QVBoxLayout(widgetArea);
-    vertLayoutArea->setContentsMargins(0, 0, 0, 0);
+    vertLayoutArea->setContentsMargins(0, 0, 0, 6);
 
     channelWidget = new Icd::ChannelWidget(q);
     vertLayoutArea->addWidget(channelWidget);

@@ -1,10 +1,11 @@
-﻿#include "precomp.h"
+#include "precomp.h"
 #include "icdcore_global.h"
 #include "3rdpart/jsoncpp/json/json.h"
 #include <sstream>
 #include <fstream>
 #include <iostream>
 #include <io.h>
+#include <assert.h>
 
 #if defined(_MSC_VER)
 #include <direct.h>
@@ -76,7 +77,12 @@ bool JJson::parse(const std::string &filePath, Json::Value &rootJson,
         return false;
     }
 
-    ifs >> rootJson;
+    try {
+        ifs >> rootJson;
+    } catch (Json::RuntimeError msg) {
+        printf("%s\n", msg.what());
+        return false;
+    }
 
     ifs.close();
 
@@ -230,7 +236,14 @@ bool JJson::save(const std::string &filePath, const Json::Value &json, bool fast
     if (!ofs.is_open()) {
         return false;
     }
-    ofs << rootJson;
+
+    try {
+        ofs << rootJson;
+    } catch (Json::RuntimeError msg) {
+        printf("%s\n", msg.what());
+        return false;
+    }
+
     ofs.close();
 
     return true;

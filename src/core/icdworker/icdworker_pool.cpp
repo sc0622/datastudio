@@ -282,7 +282,7 @@ bool WorkerPool::loadConfig()
         // parse
         const std::map<std::string, std::string> items = Icd::Channel::parseConfig(config);
         if (items.empty()) {
-            return false;
+            continue;
         }
         // create worker
         Icd::WorkerPtr newWorker = Icd::WorkerPtr(new Icd::Worker(newChannel, this));

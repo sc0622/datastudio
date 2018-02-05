@@ -21,113 +21,26 @@ class ICDCHART_EXPORT ChartFileView : public QWidget
     Q_PROPERTY(bool replaying READ isReplaying NOTIFY replayingChanged)
     Q_PROPERTY(int replayPeriod READ replayPeriod WRITE setReplayPeriod NOTIFY replayPeriodChanged)
 public:
-    /**
-     * @brief ChartFileView
-     * @param parent
-     */
-    explicit ChartFileView(QWidget *parent = 0);
-
+    explicit ChartFileView(QWidget *parent = nullptr);
+    explicit ChartFileView(bool styled, QWidget *parent = nullptr);
     ~ChartFileView();
 
-    /**
-     * @brief focusItem
-     * @param domain
-     */
     void focusItem(const QString &domain);
-
-    /**
-     * @brief removeItem
-     * @param domain
-     */
     void removeItem(const QString &domain);
-
-    /**
-     * @brief removeChart
-     * @param domain
-     */
     void removeChart(const QString &domain);
-
-    /**
-     * @brief reset
-     */
     void reset();
-
-    /**
-     * @brief xAxisSync
-     * @return
-     */
     bool xAxisSync() const;
-
-    /**
-     * @brief isReplaying
-     * @return
-     */
     bool isReplaying() const;
-
-    /**
-     * @brief replayPeriod
-     * @return
-     */
     int replayPeriod() const;
-
-    /**
-     * @brief clearCharts
-     */
     void clearCharts();
-
-    /**
-     * @brief addTable
-     * @param filePath
-     * @param table
-     */
     void addTable(const QString &filePath, const Icd::TablePtr &table);
-
-    /**
-     * @brief removeTable
-     * @param filePath
-     */
     void removeTable(const QString &filePath);
-
-    /**
-     * @brief tableByDomain
-     * @param filePath
-     * @return
-     */
     Icd::TablePtr tableByFilePath(const QString &filePath) const;
-
-    /**
-     * @brief showYLabel
-     * @param checked
-     */
     void showYLabel(bool checked);
-
-    /**
-     * @brief showYAlign
-     * @param align
-     */
     void showYAlign(bool align);
-
-    /**
-     * @brief setYLabelLength
-     * @param length
-     */
     void setYLabelLength(int length);
-
-    /**
-     * @brief setColumnCount
-     * @param count
-     */
     void setColumnCount(int count);
-
-    /**
-     * @brief setColumnWidthSame
-     */
     void setColumnWidthSame();
-
-    /**
-     * @brief setSyncTrack
-     * @param enabled
-     */
     void setSyncTrack(bool enabled);
 
 signals:
@@ -153,6 +66,6 @@ private:
     J_DECLARE_PRIVATE(ChartFileView)
 };
 
-} // end of namespace Icd
+}
 
 #endif // ICDCHART_FILEVIEW_H

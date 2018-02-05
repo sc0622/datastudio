@@ -74,6 +74,7 @@ CMakeLists.txt.user*
 /bin/icdworker*
 /bin/pcomm*
 
+/bin/record
 /include/core
 /lib/core
 /release

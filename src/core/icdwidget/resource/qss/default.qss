@@ -1,7 +1,7 @@
 ﻿
 /** QPushButton **/
 
-QPushButton { 
+QPushButton {
     border-radius: 3px;
     background: #6e64a0;
     color: #dbdbdb;
@@ -38,14 +38,14 @@ QMainWindow {
     background: #333;
     color: #dbdbdb;
 }
-  
+
 /* QLabel */
 
 QLabel {
     color: #dbdbdb;
     font-family: "Microsoft Yahei";
 }
- 
+
 /* QGroupBox */
 
 QGroupBox {
@@ -56,7 +56,7 @@ QGroupBox {
     margin-top: 0.8em;
     padding-top: 0.5em;
     color: #ddd;
-} 
+}
 
 QGroupBox::title {
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -97,10 +97,10 @@ QProgressBar::chunk {
     border-radius: 0px;
     width: 3px;
     margin-left: 0.5px;
-} 
+}
 
 /* QStatusBar */
- 
+
 QStatusBar {
     background: #0075c3;
     font-family: "Microsoft Yahei";
@@ -124,7 +124,7 @@ QTimeEdit,QDateEdit,QDateTimeEdit {
     padding-bottom: 0.15em;
     outline: none;
     font-family: "Microsoft Yahei";
-} 
+}
 
 QComboBox:hover,QSpinBox:hover,QDoubleSpinBox:hover,
 QTimeEdit:hover,QDateEdit:hover,QDateTimeEdit:hover {
@@ -152,7 +152,7 @@ QTimeEdit::drop-down:hover,QDateEdit::drop-down:hover,QDateTimeEdit::drop-down:h
 
 QComboBox QListView {
     border: 2px solid #5a5a5a;
-    background: #404045; 
+    background: #404045;
     color: #bbb;
     outline: none;
     font-family: "Microsoft Yahei";
@@ -384,7 +384,7 @@ QScrollBar::sub-line:vertical {
 }
 
 QScrollBar::up-arrow:vertical,
-QScrollBar::down-arrow:vertical { 
+QScrollBar::down-arrow:vertical {
     border: 0;
     width: 0;
     height: 0;
@@ -450,7 +450,7 @@ QTableView {
     font-family: "Microsoft Yahei";
 }
 
-QTableView::item { 
+QTableView::item {
     background: #34495e;
     padding-left: 2px;
     padding-right: 2px;
@@ -477,7 +477,7 @@ QTableView::item:selected:!focus {
 QTreeView {
     border: 0;
     border-radius: 2px;
-    background: #34495f; 
+    background: #34495f;
     color: #dbdbdb;
     alternate-background-color: rgb(233, 237, 245);
     selection-background-color: darkgray;
@@ -529,7 +529,7 @@ QHeaderView::section {
 }
 
 QHeaderView::section:horizontal {
-    border-bottom: 0; 
+    border-bottom: 0;
     border-top: 1px solid #555;
     border-right: 1px solid #555;
     border-bottom: 1px solid #555;
@@ -537,7 +537,7 @@ QHeaderView::section:horizontal {
 }
 
 QHeaderView::section:vertical {
-    border-top: 0; 
+    border-top: 0;
     border-bottom: 1px solid #555;
     border-left: 1px solid #555;
     border-right: 1px solid #555;

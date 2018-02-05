@@ -26,7 +26,7 @@ ChartFileViewPrivate::~ChartFileViewPrivate()
     //
 }
 
-void ChartFileViewPrivate::init()
+void ChartFileViewPrivate::init(bool styled)
 {
     Q_Q(ChartFileView);
 
@@ -36,7 +36,7 @@ void ChartFileViewPrivate::init()
     QHBoxLayout *horiLayoutMain = new QHBoxLayout(q);
     horiLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    chartView = new JChart::View(false, q);
+    chartView = new JChart::View(styled, q);
     q->setAcceptDrops(true);
     horiLayoutMain->addWidget(chartView);
 
@@ -151,7 +151,6 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
             Q_ASSERT(false);    // logic error
             return false;       // create failure or not supported
         }
-        chart->setLegendVisible(showYAlign);
         chart->setAxisVisible(JChart::yLeft, showYLabel);
         chart->setAxisAlign(JChart::yLeft, showYAlign);
         chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
@@ -197,19 +196,6 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
             chart->setIdentity(QUuid::createUuid().toString());
         }
     }
-#if 0
-    if (chart->chartType() != JChart::ChartTypeFileBitMap) {
-        GroupSeries *seriesData = createGroupSeries(chart->chartType(), baseInfo, dataItem, item);
-        if (!seriesData) {
-            return false;
-        }
-        //
-        JChart::AbstractSeries *series = addSeries(chart, seriesData, domain);
-        if (!series) {
-            //
-        }
-    }
-#else
     GroupSeries *seriesData = createGroupSeries(chart->chartType(), baseInfo, dataItem, item);
     if (!seriesData) {
         return false;
@@ -219,7 +205,6 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
     if (!series) {
         //
     }
-#endif
     //
     item->setData(true, Icd::TreeBoundRole);
 
@@ -443,8 +428,7 @@ bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData) const
     return createBuffer(seriesData, file);
 }
 
-bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData,
-                                        QFile &file) const
+bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData, QFile &file) const
 {
     const SeriesInfoPtr seriesInfo = seriesData->seriesInfo;
     const FileBaseInfo &baseInfo = seriesInfo->baseInfo;
@@ -491,10 +475,10 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
 {
     Q_Q(ChartFileView);
     if (!dataItem) {
-        return false;
+        return nullptr;
     }
 
-    JChart::Chart *chart = Q_NULLPTR;
+    JChart::Chart *chart = nullptr;
 
     //
     switch (dataItem->type()) {
@@ -516,19 +500,20 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     {
         // convert
         Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
-        if (itemBit == 0) {
+        if (itemBit == nullptr) {
             Q_ASSERT(false);    //
-            return 0;
+            return nullptr;
         }
         // create
         JChart::FileBitChart *bitChart = new JChart::FileBitChart(q);
+        bitChart->setLegendVisible(showYAlign);
         bitChart->setBitsRange(itemBit->bitStart(), itemBit->bitStart() + itemBit->bitCount() - 1);
         const std::map<icd_uint64, std::string> &specs = itemBit->specs();
         for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
              citer != specs.cend(); ++citer) {
             JChart::AbstractSeries *series = bitChart->seriesAt(citer->first);
             if (series) {
-                series->setTitle(QString::fromStdString(citer->second));
+                series->setTitle(QString::fromStdString(Icd::BitItem::nameOf(citer->second)));
             }
         }
         // init
@@ -542,6 +527,8 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     //
     QObject::connect(chart, &JChart::Chart::scaleDivChanged, q,
                      [=](int axisId, qreal minimum, qreal maximum){
+        Q_UNUSED(minimum);
+        Q_UNUSED(maximum);
         //
         if (!xAxisSync || timerReplay->isActive()) {
             return;
@@ -550,6 +537,13 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         switch (axisId) {
         case JChart::xBottom:
         {
+            JChart::Chart *lastChart = chartView->lastChart(chart);
+            if (!lastChart) {
+                break;
+            }
+            QPair<qreal, qreal> interval = lastChart->axisInterval(JChart::xBottom);
+            chart->setAxisScale(axisId, interval.first, interval.second, 0);
+            /*
             int rowCount = chartView->rowCount();
             int columnCount = chartView->columnCount();
             for (int row = 0; row < rowCount; ++row) {
@@ -561,9 +555,9 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
                     if (_chart == chart) {
                         continue;
                     }
-                    _chart->setAxisScale(axisId, minimum, maximum, 0);
+                    _chart->setAxisScale(axisId, interval.first, interval.second, 0);
                 }
-            }
+            }*/
             break;
         }
         default:
@@ -579,13 +573,13 @@ JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, Gr
                                                         const QString &domain)
 {
     if (!chart || !seriesData) {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     const SeriesInfoPtr seriesInfo = seriesData->seriesInfo;
 
     const QString path = seriesData->item->data(Icd::TreeItemPathRole).toString();
-    JChart::AbstractSeries *series = Q_NULLPTR;
+    JChart::AbstractSeries *series = nullptr;
     switch (chart->chartType()) {
     case JChart::ChartTypeFileNumeric:
     {
@@ -684,8 +678,8 @@ void ChartFileViewPrivate::setChartTitle(JChart::Chart *chart, int sectionOffset
                                          QStandardItem *item)
 {
     const QString path = item->data(Icd::TreeItemPathRole).toString();
-    chart->setTitle("<font color=#ccc>" + path.section('@', sectionOffset, sectionOffset)
-                    + "</font><font color=#aaa size=2>@"
+    chart->setTitle(path.section('@', sectionOffset, sectionOffset)
+                    + "<font size=2 style='font-style:italic;'>@"
                     + path.section('@', sectionOffset + 1) + "</font>");
 }
 

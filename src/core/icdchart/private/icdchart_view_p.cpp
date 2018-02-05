@@ -24,14 +24,14 @@ ChartViewPrivate::ChartViewPrivate(ChartView *q)
 
 }
 
-void ChartViewPrivate::init()
+void ChartViewPrivate::init(bool styled)
 {
     Q_Q(ChartView);
 
     QHBoxLayout *horiLayoutMain = new QHBoxLayout(q);
     horiLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    chartView = new JChart::View(false, q);
+    chartView = new JChart::View(styled, q);
     q->setAcceptDrops(true);
     horiLayoutMain->addWidget(chartView);
 
@@ -113,7 +113,6 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
             Q_ASSERT(false);    // logic error
             return false;       // create failure or not supported
         }
-        chart->setLegendVisible(showYAlign);
         chart->setAxisVisible(JChart::yLeft, showYLabel);
         chart->setAxisAlign(JChart::yLeft, showYAlign);
         chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
@@ -327,19 +326,20 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     {
         // convert
         Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
-        if (itemBit == 0) {
+        if (itemBit == nullptr) {
             Q_ASSERT(false);    //
-            return 0;
+            return nullptr;
         }
         // create
         JChart::BitChart *chart = new JChart::BitChart(q);
+        chart->setLegendVisible(showYAlign);
         chart->setBitsRange(itemBit->bitStart(), itemBit->bitStart() + itemBit->bitCount() - 1);
         const std::map<icd_uint64, std::string> &specs = itemBit->specs();
         for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
              citer != specs.cend(); ++citer) {
             JChart::AbstractSeries *series = chart->seriesAt(citer->first);
             if (series) {
-                series->setTitle(QString::fromStdString(citer->second));
+                series->setTitle(QString::fromStdString(Icd::BitItem::nameOf(citer->second)));
             }
         }
         return chart;
@@ -349,7 +349,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     }
 
     //
-    return 0;
+    return nullptr;
 }
 
 bool ChartViewPrivate::findChart(JChart::Chart *chart)
@@ -427,7 +427,7 @@ void ChartViewPrivate::setRunning(bool value)
                 } else {
                     if (timer->isActive()) {
                         timer->stop();
-                        QApplication::removePostedEvents(chart, QEvent::Timer);
+                        QCoreApplication::removePostedEvents(chart, QEvent::Timer);
                     }
                 }
 
@@ -443,8 +443,8 @@ void ChartViewPrivate::setChartTitle(JChart::Chart *chart, int sectionOffset,
                                      QStandardItem *item)
 {
     const QString path = item->data(Icd::TreeItemPathRole).toString();
-    chart->setTitle("<font color=#ccc>" + path.section('@', sectionOffset, sectionOffset)
-                    + "</font><font color=#aaa size=2>@"
+    chart->setTitle(path.section('@', sectionOffset, sectionOffset)
+                    + "<font size=2 style='font-style:italic;'>@"
                     + path.section('@', sectionOffset + 1) + "</font>");
 }
 

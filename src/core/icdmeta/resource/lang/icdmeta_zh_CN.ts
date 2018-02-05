@@ -4,17 +4,17 @@
 <context>
     <name>icdmeta::JSuperChannel</name>
     <message>
-        <location filename="../../channel/JSuperChannel.cpp" line="101"/>
+        <location filename="../../channel/JSuperChannel.cpp" line="102"/>
         <source>Serial Port</source>
         <translation>串口通道</translation>
     </message>
     <message>
-        <location filename="../../channel/JSuperChannel.cpp" line="102"/>
+        <location filename="../../channel/JSuperChannel.cpp" line="103"/>
         <source>UDP Channel</source>
         <translation>UDP通道</translation>
     </message>
     <message>
-        <location filename="../../channel/JSuperChannel.cpp" line="103"/>
+        <location filename="../../channel/JSuperChannel.cpp" line="104"/>
         <source>File Channel</source>
         <translation>文件通道</translation>
     </message>

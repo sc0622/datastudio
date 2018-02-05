@@ -127,5 +127,6 @@
         <file alias="settings.png">image/global/settings.png</file>
         <file alias="simulate.png">image/global/simulate.png</file>
         <file alias="dataedit.png">image/global/dataedit.png</file>
+        <file alias="channel.png">image/global/channel.png</file>
     </qresource>
 </RCC>

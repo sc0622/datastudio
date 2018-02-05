@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "JChannelPool.h"
 #include "JChannel.h"
+#include "JSuperChannel.h"
 
 namespace icdmeta {
 
@@ -86,8 +87,8 @@ void JChannelPool::registerQmlType()
 QQmlListProperty<JChannel> JChannelPool::channels()
 {
     return QQmlListProperty<JChannel>(this, nullptr,
-                                           &JChannelPoolPrivate::channelCount,
-                                               &JChannelPoolPrivate::channelAt);
+                                      &JChannelPoolPrivate::channelCount,
+                                      &JChannelPoolPrivate::channelAt);
 }
 
 bool JChannelPool::loadConfig(const QString &filePath, const QString &nodePath)
@@ -103,6 +104,8 @@ bool JChannelPool::loadConfig(const QString &filePath, const QString &nodePath)
         return false;
     }
 
+    QMap<QString, JChannelPtr> relayers;
+
     foreach (auto itemJson, channelJson) {
         if (!itemJson.isObject()) {
             continue;
@@ -115,6 +118,31 @@ bool JChannelPool::loadConfig(const QString &filePath, const QString &nodePath)
                     new JChannel(QString::fromStdString(id), this), j_delete_qobject);
         newChannel->restore(itemJson);
         d->channels.append(newChannel);
+        // relayer
+        if (itemJson.isMember("relayer")) {
+            const QString relayerId = QString::fromStdString(itemJson["repayer"].asString()).trimmed();
+            if (!relayerId.isEmpty()) {
+                relayers[relayerId] = newChannel;
+            }
+        }
+    }
+
+    QMapIterator<QString, JChannelPtr> citerRelayers(relayers);
+    while (citerRelayers.hasNext()) {
+        citerRelayers.next();
+        icdmeta::JChannel *channel = identityOf(citerRelayers.key());
+        if (!channel || !channel->isValid()) {
+            continue;
+        }
+        Icd::ChannelPtr nativeChannel = channel->nativeChannel();
+        if (!nativeChannel) {
+            continue;
+        }
+        Icd::ChannelPtr nativeRelayer = citerRelayers.value()->nativeChannel();
+        if (!nativeRelayer) {
+            continue;
+        }
+        nativeRelayer->setRelayer(nativeChannel);
     }
 
     return true;

@@ -45,6 +45,18 @@ TreeView::TreeView(QWidget *parent)
         handle.parser = d_treeView->parser();
         event.setReturnValue(qVariantFromValue((void *)&handle));
     });
+    jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
+        QVariantList args;
+        // module
+        args.append("edit");
+        // receiver
+        args.append(qVariantFromValue((void*)this));
+        jnotify->send("database.config", args);
+    });
+    jnotify->on("edit.toolbar.tree.loadDeep", this, [=](JNEvent &event){
+        const int deep = event.argument().toInt();
+        JMain::instance()->setOption("edit", "option/tree/loadDeep", deep, true);
+    });
 }
 
 TreeView::~TreeView()
@@ -56,12 +68,14 @@ bool TreeView::init()
 {
     bool result = true;
 
-    Json::Value config = JMain::instance()->option("edit/option", "deep");
-    if (config.isNull()) {
+    Json::Value option = JMain::instance()->option("edit", "option/tree");
+    if (option.isNull()) {
         return false;
     }
-
-    d_treeView->setLoadingDeep(config.asInt());
+    // deep
+    if (option.isMember("loadDeep")) {
+        d_treeView->setLoadingDeep(option["loadDeep"].asInt());
+    }
 
     if (!updateParser()) {
         qDebug() << "edit: update parser failure!";

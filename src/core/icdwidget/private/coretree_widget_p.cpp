@@ -34,6 +34,7 @@ TableItemWidget::TableItemWidget(const QString &text,
     layoutMain->addWidget(d_labelTitle);
 
     d_buttonRun = new QPushButton(this);
+    d_buttonRun->setObjectName("buttonRun");
     d_buttonRun->setFixedSize(40, 20);
     d_buttonRun->setCheckable(true);
     layoutMain->addWidget(d_buttonRun);
@@ -1138,7 +1139,7 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
                 emit itemUnloaded(item, Q_NULLPTR);
                 //
                 if (this->loadTable(item, deep)) {
-                    expandItem(item, true, 1);
+                    expandItem(item, true, 2);
                 }
             });
             menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
@@ -1170,7 +1171,7 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
                            QStringLiteral("加载表项"), &menu, [=](){
                 //
                 if (this->loadTable(item, deep)) {
-                    expandItem(item, true, 1);
+                    expandItem(item, true, 2);
                 }
             });
         }
@@ -1213,7 +1214,8 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             //
             const bool bound = hasItemBound(item);
             if (bound) {
-                menu.addAction(QStringLiteral("删除所有视图"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
+                               QStringLiteral("删除所有视图"), &menu, [=](){
                     //
                     clearItemBoundRole(item, true);
                 });
@@ -1269,11 +1271,13 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             //
             const QVariant channelId = item->data(Icd::TreeChannelIdRole);
             if (channelId.isValid()) {
-                menu.addAction(QStringLiteral("更改通道绑定"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/channel.png"),
+                               QStringLiteral("更改通道绑定"), &menu, [=](){
                     //
                     changeChannel(item);
                 });
-                menu.addAction(QStringLiteral("解除通道绑定"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/disconnect.png"),
+                               QStringLiteral("解除通道绑定"), &menu, [=](){
                     //
                     unbindChannel(item);
                 });
@@ -1282,7 +1286,8 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
                     const Icd::WorkerPtr worker = queryWorker(item);
                     if (worker) {
                         if (worker->workerRecv()->isRecording()) {
-                            menu.addAction(QStringLiteral("停止数据记录"), &menu, [=](){
+                            menu.addAction(QIcon(":/icdwidget/image/tree/record_stop.png"),
+                                           QStringLiteral("停止数据记录"), &menu, [=](){
                                 // get oldWorker
                                 const Icd::WorkerPtr worker = queryWorker(item);
                                 if (worker == 0) {
@@ -1291,14 +1296,16 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
                                 worker->workerRecv()->stopRecord();
                             });
                         } else {
-                            menu.addAction(QStringLiteral("开始记录数据"), &menu, [=](){
+                            menu.addAction(QIcon(":/icdwidget/image/tree/record_start.png"),
+                                           QStringLiteral("开始记录数据"), &menu, [=](){
                                 worker->workerRecv()->startRecord();
                             });
                         }
                     }
                 }
             } else {
-                menu.addAction(QStringLiteral("绑定数据通道"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/connect.png"),
+                               QStringLiteral("绑定数据通道"), &menu, [=](){
                     //
                     bindChannel(item);
                 });
@@ -1307,7 +1314,8 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             //
             const bool bound = hasItemBound(item);
             if (bound) {
-                menu.addAction(QStringLiteral("删除所有视图"), &menu, [=](){
+                menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
+                               QStringLiteral("删除所有视图"), &menu, [=](){
                     //
                     clearItemBoundRole(item, true);
                 });
@@ -1396,7 +1404,8 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
         case CoreTreeWidget::TreeModeAnalyse:
         default:
             if (bound) {
-                QAction *action = menu.addAction(QStringLiteral("删除视图"), [=](){
+                QAction *action = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
+                                                 QStringLiteral("删除视图"), [=](){
                     QStandardItem *itemTable = findItemTable(item);
                     emit this->unbindItem(item, itemTable);
                 });
@@ -1487,14 +1496,16 @@ void CoreTreeWidgetPrivate::itemItemTableRightClicked(QStandardItem *item, int d
     case CoreTreeWidget::TreeModeAnalyse:
     default:
         if (bound || item->hasChildren()) {
-            QAction *action = menu.addAction(QStringLiteral("删除视图"), [=](){
+            QAction *action = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
+                                             QStringLiteral("删除视图"), [=](){
                 QStandardItem *itemTable = findItemTable(item);
                 emit this->unbindItem(item, itemTable);
             });
             action->setToolTip(QStringLiteral("从视图窗口中删除对应数据项视图"));
         }
         if (d_treeModes == CoreTreeWidget::TreeModeAnalyse) {
-            menu.addAction(QStringLiteral("导出数据"), &menu, [=](){
+            menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                           QStringLiteral("导出数据"), &menu, [=](){
                 QStandardItem *itemTable = findItemTable(item);
                 if (!itemTable) {
                     return;
@@ -1595,7 +1606,8 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     }
 
     //
-    BindChannelWidget *bindChannelWidget = new BindChannelWidget(this);
+    Q_Q(CoreTreeWidget);
+    BindChannelWidget *bindChannelWidget = new BindChannelWidget(q);
     if (bindChannelWidget->exec() != QDialog::Accepted) {
         return false; // cancel
     }

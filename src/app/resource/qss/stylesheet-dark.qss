@@ -1,12 +1,12 @@
 
 /** QWidget **/
 
-QDialog, QStackedWidget, QScrollArea {
-    background: #353535;
-}
-
 QWidget {
     color: #fff;
+}
+
+QDialog, QStackedWidget, QSplitter, QScrollArea {
+    background: #353535;
 }
 
 /** * **/
@@ -272,7 +272,6 @@ QHeaderView {
     background: transparent;
     border: 0;
     outline: none;
-    border-left: 1px solid #aaa; 
 }
 
 QHeaderView::section {
@@ -375,7 +374,7 @@ QTableView {
     border: -1px solid transparent;
     alternate-background-color: #28283f;
     selection-background-color: #282828;
-    gridline-color: #2f2f2f;
+    gridline-color: #202020;
     outline: none;
 }
 
@@ -972,20 +971,20 @@ QScrollBar::sub-page:vertical {
 
 /** QTreeView QTableView QPushButton **/
 
-QTreeView QPushButton, QTableView QPushButton { 
+QTreeView QPushButton#buttonRun, QTableView QPushButton { 
     background: #803a3a3a;
     min-width: 12px;
 }
 
-QTreeView QPushButton:hover, QTableView QPushButton:hover {
+QTreeView QPushButton#buttonRun:hover, QTableView QPushButton:hover {
     background: #305060;
 }
  
-QTreeView QPushButton:pressed, QTableView QPushButton:pressed {
+QTreeView QPushButton#buttonRun:pressed, QTableView QPushButton:pressed {
     background: #306070;
 }
 
-QTreeView QPushButton:disabled, QTableView QPushButton:disabled {
+QTreeView QPushButton#buttonRun:disabled, QTableView QPushButton:disabled {
     background: #80323232;
     color: #bbb;
 }
@@ -1022,11 +1021,16 @@ QwtScaleWidget {
 }
 
 QwtLegend {
+    background: transparent;
     font-size: 8px;
 }
 
-QwtLegendLabel { 
+QwtLegendLabel {
     color: #ccc;
+}
+
+QwtPlot QScrollArea {
+    background: transparent;
 }
 
 /**********************************************************/
@@ -1182,9 +1186,8 @@ DataTableWidget QTableView::item:selected:!focus {
     background: #353535;
 }
 
-QScrollArea,
 IcdTabWidget,
-DataTableWidget QWidget#scrollArea {
+DataTableWidget#scrollArea {
     background: #353535;
 }
 

@@ -10,7 +10,7 @@ ChartView::ChartView(QWidget *parent)
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    d_chartView = new Icd::ChartFileView(this);
+    d_chartView = new Icd::ChartFileView(false, this);
     vertLayoutMain->addWidget(d_chartView);
 
     jnotify->on("analyse.toolbar.chart.update", this, [=](JNEvent &){
@@ -116,6 +116,22 @@ ChartView::ChartView(QWidget *parent)
         const QString domain = item->data(Icd::TreeItemDomainRole).toString();
         d_chartView->removeItem(domain);
         item->setData(QVariant(), Icd::TreeBoundRole);
+    });
+    jnotify->on("analyse.tableLoaded", this, [=](JNEvent &event){
+        QVariantList args = event.argument().toList();
+        if (args.count() < 2) {
+            return;
+        }
+        const QString filePath = args.at(0).toString();
+        if (filePath.isEmpty()) {
+            return;
+        }
+        struct Data { Icd::TablePtr table; } *data = jVariantFromVoid<struct Data>(args.at(1));
+        if (!data || !data->table) {
+            return;
+        }
+
+        d_chartView->addTable(filePath, data->table);
     });
 }
 

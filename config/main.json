@@ -8,8 +8,11 @@
          "filePath" : "chart.json"
       },
       "language" : "Chinese (China)",
+      "menubar" : {
+         "toolBarVisible" : true
+      },
       "theme" : {
-         "name" : "dark"
+         "name" : "blue"
       }
    },
    "module" : {
@@ -22,12 +25,13 @@
                "xAxisSync" : true
             },
             "tree" : {
+               "loadDeep" : 1,
                "showOffset" : true,
                "showType" : true
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/icdsystem/bin/data/Default.json",
+            "filePath" : "@ConfigDir@/protocol.json",
             "sourceType" : "file"
          }
       },
@@ -39,12 +43,8 @@
             }
          },
          "parser" : {
-            "databaseName" : "22",
-            "password" : "22",
-            "serverName" : "11",
-            "sourceType" : "sql",
-            "sqlType" : "SQL Server",
-            "userName" : "22"
+            "filePath" : "@ConfigDir@/protocol.json",
+            "sourceType" : "file"
          }
       },
       "monitor" : {
@@ -59,14 +59,13 @@
                "yLabelWidth" : 10
             },
             "tree" : {
-               "deep" : 2,
                "flushEnabled" : true,
-               "loadDeep" : 1,
-               "showDesc" : false,
+               "loadDeep" : 3,
+               "showDesc" : true,
                "showOffset" : true,
                "showOrignal" : 10,
                "showType" : true,
-               "showValue" : false
+               "showValue" : true
             }
          },
          "parser" : {
@@ -79,11 +78,11 @@
             "tree" : {
                "flushEnabled" : true,
                "loadDeep" : 1,
-               "showDesc" : false,
+               "showDesc" : true,
                "showOffset" : true,
                "showOrignal" : 10,
                "showType" : true,
-               "showValue" : false
+               "showValue" : true
             }
          },
          "parser" : {

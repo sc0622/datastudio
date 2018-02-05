@@ -71,6 +71,8 @@ public:
 
     Q_INVOKABLE void on(const QString &channel, JNotifyCallback callback, bool sync = true);
     Q_INVOKABLE void on(const QString &channel, QObject *receiver, JNotifyCallback callback, bool sync = true);
+    Q_INVOKABLE void once(const QString &channel, JNotifyCallback callback, bool sync = true);
+    Q_INVOKABLE void once(const QString &channel, QObject *receiver, JNotifyCallback callback, bool sync = true);
     Q_INVOKABLE QVariant send(const QString &channel, const QVariant &argument = QVariant());
     Q_INVOKABLE QVariant send(const QString &channel, QObject *receiver, const QVariant &data = QVariant());
     Q_INVOKABLE void post(const QString &channel, const QVariant &argument = QVariant());

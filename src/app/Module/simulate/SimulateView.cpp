@@ -99,7 +99,7 @@ void View::updateToolBar()
     // clean
     d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
                          tr("Clear view"), this, [=](){
-        jnotify->send("monitor.toolbar.set.clean", d_setView);
+        jnotify->send("simulate.toolbar.set.clean", d_setView);
     });
     d_toolBar->addSeparator();
     addSettingsAction();

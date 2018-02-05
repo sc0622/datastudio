@@ -84,7 +84,7 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("monitor.toolbar.tree.loadDeep", this, [=](JNEvent &event){
         const int deep = event.argument().toInt();
-        JMain::instance()->setOption("monitor", "option/tree/deep", deep, true);
+        JMain::instance()->setOption("monitor", "option/tree/loadDeep", deep, true);
     });
     jnotify->on("monitor.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();

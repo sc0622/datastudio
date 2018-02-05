@@ -11,3 +11,5 @@ SOURCES += \
     $$PWD/MainStatusBar.cpp \
     $$PWD/MainMenuBar.cpp \
     $$PWD/MainSettingsDlg.cpp
+
+include($$PWD/settings/settings.pri)
