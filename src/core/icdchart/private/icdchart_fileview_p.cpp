@@ -51,8 +51,8 @@ void ChartFileViewPrivate::init(bool styled)
     });
     QObject::connect(timerReplay, &QTimer::timeout, this, [=](){
         //
-        qint64 minimum = currentXTime.toMSecsSinceEpoch();
-        qint64 maximum = currentXTime.addSecs(30).toMSecsSinceEpoch();
+        const qint64 minimum = currentXTime.toMSecsSinceEpoch();
+        const qint64 maximum = currentXTime.addSecs(30).toMSecsSinceEpoch();
         if (maximum >= xRange.second) {
             stopReplay();
             return;

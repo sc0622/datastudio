@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class QStandardItem;
+
 namespace Edit {
 
 class SetView : public QWidget
@@ -20,6 +22,9 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *event);
+
+private:
+    void onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous);
 
 private:
 };

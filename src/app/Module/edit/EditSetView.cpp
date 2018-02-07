@@ -6,7 +6,16 @@ namespace Edit {
 SetView::SetView(QWidget *parent)
     : QWidget(parent)
 {
+    //
 
+    jnotify->on("edit.tree.item.currentchanged", this, [=](JNEvent &event){
+        QVariantList args = event.argument().toList();
+        if (args.count() != 2) {
+            return;
+        }
+        onTreeCurrentChanged(jVariantFromVoid<QStandardItem>(args.at(0)),
+                             jVariantFromVoid<QStandardItem>(args.at(1)));
+    });
 }
 
 SetView::~SetView()
@@ -34,6 +43,11 @@ void SetView::paintEvent(QPaintEvent *event)
     QTextOption textOption(Qt::AlignCenter);
     painter.drawText(rect(), tr("Select left tree node to edit"), textOption);
     painter.restore();
+}
+
+void SetView::onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous)
+{
+
 }
 
 }
