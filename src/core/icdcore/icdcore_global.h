@@ -2,7 +2,7 @@
 #define ICDCORE_GLOBAL_H
 
 #include <string>
-#include <list>
+#include <vector>
 
 #ifdef ICDCORE_LIB
 #if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__MINGW32__)
@@ -105,21 +105,15 @@ public:
 class ICDCORE_EXPORT JJson
 {
 public:
-    static bool parse(const std::string &filePath, Json::Value &rootJson, bool create = false);
-    static Json::Value value(const Json::Value &rootJson, const std::string &domain, bool create = false);
-    static Json::Value value(const std::string &filePath, const std::string &domain, bool create = false);
-    static bool setValue(const std::string &filePath, const std::string &domain,
-                         const Json::Value &value, bool create = false, bool fast = true);
-    static bool merge(const std::string &filePath, const std::string &domain,
-                      const Json::Value &value, bool create = false, bool fast = true);
-    static bool merge(const Json::Value &source, Json::Value &target);
-    static bool save(const std::string &filePath, const Json::Value &json, bool fast = false);
-
-private:
-    static bool setValue(Json::Value &parentJson, const std::string &domain,
-                         const Json::Value &value);
-    static bool merge(Json::Value &parentJson, const std::string &domain,
-                      const Json::Value &value);
+    static bool resolve(const std::string &filePath, Json::Value &root);
+    static Json::Value resolve(const std::string &filePath, const std::string &path);
+    static Json::Value resolve(const Json::Value &root, const std::string &path);
+    static bool make(const std::string &filePath, const Json::Value &root,
+                     bool create, bool fast = false);
+    static bool make(const std::string &filePath, const std::string &path,
+                     const Json::Value &value, bool create, bool fast = false);
+    static Json::Value make(const Json::Value &root, const std::string &path,
+                            const Json::Value &value);
 };
 
 //
@@ -132,8 +126,11 @@ std::string ICDCORE_EXPORT u64toa(icd_uint64 value, bool hex = false);
 double ICDCORE_EXPORT atod(const std::string &str);
 std::string ICDCORE_EXPORT dtoa(double value);
 
+std::string ICDCORE_EXPORT stringSection(const std::string &str, char sep, int start = 0, int end = -1);
+std::string ICDCORE_EXPORT stringSection(const std::string &str, const std::string &sep,
+                                         int start = 0, int end = -1);
 void ICDCORE_EXPORT splitString(const std::string &str, const std::string &delim,
-                                std::list<std::string> &ret);
+                                std::vector<std::string> &ret, bool keepEmptyParts = false);
 std::string ICDCORE_EXPORT trimString(const std::string &str);
 std::string ICDCORE_EXPORT &replaceString(std::string &str, const std::string &old_str,
                                           const std::string &new_str);

@@ -392,6 +392,11 @@ QTableView::item:selected:!focus {
     color: #fff;
 }
 
+QTableView QTableCornerButton::section {
+    color: black;
+    background: transparent;
+}
+
 /** QStatusBar **/
 
 QStatusBar {

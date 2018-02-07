@@ -51,34 +51,27 @@ bool Serializable::restore(const std::string &json)
 
 // class JJson
 
-bool JJson::parse(const std::string &filePath, Json::Value &rootJson,
-                  bool create)
+bool JJson::resolve(const std::string &filePath, Json::Value &root)
 {
-    rootJson.clear();
-
     if (filePath.empty()) {
         std::cout << "filePath is empty!";
         return false;
     }
 
     const std::string path = pathOfFile(filePath);
-    if (!path.empty() && create) {
-        createPath(path);
+    if (!path.empty()) {
+        //return false;
     }
 
-    std::ios::openmode openMode = std::ios::in;
-    if (create) {
-        openMode |= std::ios::out;
-    }
-
-    std::ifstream ifs(filePath, openMode);
+    std::ifstream ifs(filePath);
     if (!ifs) {
         std::cout << "File \"" << filePath << "\" open failure!";
         return false;
     }
 
     try {
-        ifs >> rootJson;
+        root.clear();
+        ifs >> root;
     } catch (Json::RuntimeError msg) {
         printf("%s\n", msg.what());
         return false;
@@ -89,146 +82,38 @@ bool JJson::parse(const std::string &filePath, Json::Value &rootJson,
     return true;
 }
 
-Json::Value JJson::value(const Json::Value &rootJson, const std::string &domain,
-                         bool create)
+Json::Value JJson::resolve(const std::string &filePath, const std::string &path)
 {
-    if (rootJson.isNull()) {
-        return Json::Value();
+    Json::Value root;
+    if (!resolve(filePath, root)) {
+        return Json::Value::nullSingleton();
     }
 
-    Json::Value json = rootJson;
-    std::list<std::string> sections;
-    Icd::splitString(domain, "/", sections);
-    if (sections.empty()) {
-        return Json::Value();
-    }
-
-    for (std::list<std::string>::const_iterator citer = sections.cbegin();
-         citer != sections.cend(); ++citer) {
-        const std::string key = *citer;
-        if (key.empty()) {
-            continue;
-        }
-        if (json.isMember(key)) {
-            json = json[key];
-        } else if (create) {
-            json[key] = Json::Value();
-            json = json[key];
-        } else {
-            json = Json::Value();
-            break;
-        }
-    }
-
-    return json;
+    return Json::Path(path).resolve(root);
 }
 
-Json::Value JJson::value(const std::string &filePath, const std::string &domain,
-                         bool create)
+Json::Value JJson::resolve(const Json::Value &root, const std::string &path)
 {
-    Json::Value rootJson;
-    if (!parse(filePath, rootJson, create)) {
-        return Json::Value();
-    }
-
-    return value(rootJson, domain, create);
+    return Json::Path(path).resolve(root);
 }
 
-bool JJson::setValue(const std::string &filePath, const std::string &domain,
-                     const Json::Value &value, bool create, bool fast)
+bool JJson::make(const std::string &filePath, const Json::Value &root, bool create, bool fast)
 {
-    Json::Value rootJson;
-    if (domain.empty()) {
-        rootJson = value;
-    } else {
-        if (!parse(filePath, rootJson, create)) {
-            return false;
-        }
-
-        if (!setValue(rootJson, domain, value)) {
-            return false;
-        }
-    }
-
-    if (!save(filePath, rootJson, fast)) {
+    if (filePath.empty()) {
+        std::cout << "filePath is empty!";
         return false;
     }
 
-    return true;
-}
-
-bool JJson::merge(const std::string &filePath, const std::string &domain,
-                  const Json::Value &value, bool create, bool fast)
-{
-    Json::Value rootJson;
-    if (!parse(filePath, rootJson, create)) {
-        return false;
+    const std::string path = pathOfFile(filePath);
+    if (!path.empty() && create) {
+        createPath(path);
     }
 
-    if (!merge(rootJson, domain, value)) {
-        return false;
-    }
-
-    if (!save(filePath, rootJson, fast)) {
-        return false;
-    }
-
-    return true;
-}
-
-bool JJson::merge(const Json::Value &source, Json::Value &target)
-{
-    if (source.isNull()) {
-        return true;
-    }
-
-    for (Json::Value::const_iterator citer = source.begin();
-         citer != source.end(); ++citer) {
-        const std::string sourceKey = citer.key().asString();
-        const Json::Value sourceValue = *citer;
-        if (!target.isMember(sourceKey)) {
-            target[sourceKey] = sourceValue;    // replace
-            continue;
-        }
-        Json::Value subTarget = target[sourceKey];
-        if (subTarget.type() != sourceValue.type()) {
-            target[sourceKey] = sourceValue;    // replace
-            continue;
-        }
-        switch (sourceValue.type()) {
-        case Json::arrayValue:
-        {
-            target[sourceKey] = sourceValue;    // replace
-            break;
-        }
-        case Json::objectValue:
-        {
-            if (!merge(sourceValue, subTarget)) {
-                return false;
-            }
-            target[sourceKey] = subTarget;      // replace
-            break;
-        }
-        default:
-            target[sourceKey] = sourceValue;    // replace
-            break;
-        }
-    }
-
-    return true;
-}
-
-bool JJson::save(const std::string &filePath, const Json::Value &json, bool fast)
-{
-    if (json.isNull()) {
-        return false;
-    }
-
-    std::string rootJson;
+    std::string contents;
     if (fast) {
-        rootJson = Json::FastWriter().write(json);
+        contents = Json::FastWriter().write(root);
     } else {
-        rootJson = Json::StyledWriter().write(json);
+        contents = Json::StyledWriter().write(root);
     }
 
     std::ofstream ofs;
@@ -238,7 +123,7 @@ bool JJson::save(const std::string &filePath, const Json::Value &json, bool fast
     }
 
     try {
-        ofs << rootJson;
+        ofs << contents;
     } catch (Json::RuntimeError msg) {
         printf("%s\n", msg.what());
         return false;
@@ -249,105 +134,17 @@ bool JJson::save(const std::string &filePath, const Json::Value &json, bool fast
     return true;
 }
 
-bool JJson::setValue(Json::Value &parentJson, const std::string &domain,
-                     const Json::Value &value)
+bool JJson::make(const std::string &filePath, const std::string &path,
+                 const Json::Value &value, bool create, bool fast)
 {
-    if (domain.empty()) {
+    Json::Value root;
+    if (!resolve(filePath, root) && !create) {
         return false;
     }
 
-    std::size_t index = domain.find_first_of('/');
-    if (index == std::string::npos) {
-        parentJson[domain] = value;
-        return true;
-    }
+    Json::Path(path).make(root) = value;
 
-    const std::string first = trimString(domain.substr(0, index));
-    if (first.empty()) {
-        parentJson[domain] = value;
-        return true;
-    }
-
-    const std::string next = trimString(domain.substr(index + 1));
-    if (next.empty()) {
-        parentJson[first] = value;
-        return true;
-    }
-
-    Json::Value object = parentJson[first];
-
-    if (!setValue(object, next, value)) {
-        return false;
-    }
-
-    parentJson[first] = object;
-
-    return true;
-}
-
-bool JJson::merge(Json::Value &parentJson, const std::string &domain,
-                  const Json::Value &value)
-{
-    if (domain.empty()) {
-        return merge(value, parentJson);
-    }
-
-    std::size_t index = domain. find_first_of('/');
-    if (index == std::string::npos) {
-        switch (value.type()) {
-        case Json::objectValue:
-            return merge(value, parentJson);
-        default:
-            parentJson[domain] = value;
-            return true;
-        }
-    }
-
-    const std::string first = domain.substr(0, index);
-    if (first.empty()) {
-        return merge(value, parentJson);
-    }
-
-    Json::Value target = parentJson[first];
-
-    const std::string next = trimString(domain.substr(index + 1));
-    if (next.empty()) {
-        switch (value.type()) {
-        case Json::arrayValue:
-        {
-            parentJson[first] = value;  // replace
-            break;
-        }
-        case Json::objectValue:
-        {
-            if (target.type() != Json::objectValue) {
-                parentJson[first] = value;  // replace
-                break;
-            }
-            if (!merge(value, target)) {
-                return false;
-            }
-            parentJson[first] = target;
-            break;
-        }
-        default:
-            parentJson[first] = value;  // replace
-            break;
-        }
-        return true;
-    }
-
-    if (!target.isObject()) {
-        target = Json::Value(Json::objectValue);
-    }
-
-    if (!merge(target, next, value)) {
-        return false;
-    }
-
-    parentJson[first] = target;
-
-    return true;
+    return make(filePath, root, create, fast);
 }
 
 // functions
@@ -422,20 +219,85 @@ std::string dtoa(double value)
     return oss.str();
 }
 
+std::string stringSection(const std::string &str, char sep, int start, int end)
+{
+    return stringSection(str, std::string(&sep, 1), start, end);
+}
+
+std::string stringSection(const std::string &str, const std::string &sep, int start, int end)
+{
+    if (str.empty()) {
+        return std::string();
+    }
+
+    if (start == 0 && end == -1) {
+        return str;
+    }
+
+    std::vector<std::string> sections;
+    splitString(str, sep, sections, false);
+
+    const int sectionsSize = (int)sections.size();
+
+    if (start < 0) {
+        start += sectionsSize;
+    }
+    if (end < 0) {
+        end += sectionsSize;
+    }
+
+    if (start >= sectionsSize || end < 0 || start > end) {
+        return std::string();
+    }
+
+    std::string ret;
+    int first_i = start, last_i = end;
+    for (int x = 0, i = 0; x <= end && i < sectionsSize; ++i) {
+        const std::string &section = sections.at(i);
+        const bool empty = section.empty();
+        if (x >= start) {
+            if(x == start) {
+                first_i = i;
+            }
+            if(x == end) {
+                last_i = i;
+            }
+            if (x > start && i > 0) {
+                ret += sep;
+            }
+            ret += section;
+        }
+        if (!empty) {
+            x++;
+        }
+    }
+
+    return ret;
+}
+
 void splitString(const std::string &str, const std::string &delim,
-                 std::list<std::string> &ret)
+                 std::vector<std::string> &ret, bool keepEmptyParts)
 {
     ret.clear();
     std::size_t last = 0;
     std::size_t index = str.find_first_of(delim, last);
+    std::string sTemp;
     while (index != std::string::npos) {
-        ret.push_back(str.substr(last, index - last));
+        sTemp = str.substr(last, index - last);
+        if (!keepEmptyParts) {
+            sTemp = trimString(sTemp);
+        }
+        ret.push_back(sTemp);
         last = index + 1;
         index = str.find_first_of(delim, last);
     }
 
     if (index - last > 0) {
-        ret.push_back(str.substr(last, index - last));
+        sTemp = str.substr(last, index - last);
+        if (!keepEmptyParts) {
+            sTemp = trimString(sTemp);
+        }
+        ret.push_back(sTemp);
     }
 }
 

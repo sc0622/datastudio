@@ -10,3 +10,5 @@ SOURCES += \
     $$PWD/EditTreeView.cpp \
     $$PWD/EditSetView.cpp \
     $$PWD/EditSettingsDlg.cpp
+
+include($$PWD/details/details.pri)

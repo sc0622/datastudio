@@ -58,6 +58,57 @@ ParserPtr Parser::create(const Json::Value &config)
     return ParserPtr();
 }
 
+ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) const
+{
+    switch (objectType) {
+    case Icd::ObjectVehicle:
+    {
+        Icd::VehiclePtr vehicle;
+        if (!parseVehicle(domain, vehicle, objectType + deep)) {
+            return Icd::ObjectPtr();
+        }
+        return vehicle;
+        break;
+    }
+    case Icd::ObjectSystem:
+    {
+        Icd::SystemPtr system;
+        if (!parseSystem(Icd::stringSection(domain, '/', 0, 0),
+                         Icd::stringSection(domain, '/', 1, 1),
+                         system, objectType + deep)) {
+            return Icd::ObjectPtr();
+        }
+        return system;
+    }
+    case Icd::ObjectTable:
+    {
+        Icd::TablePtr table;
+        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
+                        Icd::stringSection(domain, '/', 1, 1),
+                        Icd::stringSection(domain, '/', 2, 2),
+                        table, objectType + deep)) {
+            return Icd::ObjectPtr();
+        }
+        return table;
+    }
+    case Icd::ObjectItem:
+    {
+        Icd::TablePtr table;
+        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
+                        Icd::stringSection(domain, '/', 1, 1),
+                        Icd::stringSection(domain, '/', 2, 2),
+                        table, objectType + deep)) {
+            return Icd::ObjectPtr();
+        }
+        return table->itemByDomain(Icd::stringSection(domain, '/', 3));
+    }
+    default:
+        break;
+    }
+
+    return Icd::ObjectPtr();
+}
+
 bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,
                     const std::string &filePath)
 {

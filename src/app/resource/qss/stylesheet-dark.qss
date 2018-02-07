@@ -398,6 +398,11 @@ QTableView::item:selected:!focus {
     color: #fff;
 }
 
+QTableView QTableCornerButton::section {
+    color: white;
+    background: transparent;
+}
+
 /** QStatusBar **/
 
 QStatusBar {
@@ -509,6 +514,10 @@ QToolBar QToolButton:checked {
     background: #445;
 }
 
+QToolBar QToolButton:disabled {
+    color: #888;
+}
+
 /** QToolBox **/
 
 QToolBox {
@@ -536,9 +545,9 @@ QToolBox::tab:selected {
 /* QGroupBox */
 
 QGroupBox {
-    background: #2b2b2b;
-    border-radius: 2px;
-    border: 1px solid #2f2f2f;
+    background: #262626;
+    border-radius: 0px;
+    border: 0px solid #2f2f2f;
     margin-top: 0.8em;
     padding-top: 0.5em;
     color: #ddd;
@@ -546,14 +555,14 @@ QGroupBox {
 } 
 
 QGroupBox::title {
-    background: #2b2b2b;
+    background: #262626;
     color: #ccc;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     border: 0px solid transparent;
-    border-top: 1px solid #2f2f2f;
-    border-left: 1px solid #2f2f2f;
-    border-right: 1px solid #2f2f2f;
+    border-top: 0px solid #2f2f2f;
+    border-left: 0px solid #2f2f2f;
+    border-right: 0px solid #2f2f2f;
     subcontrol-origin: margin;
     subcontrol-position: top left;
     left: 0.0em;
@@ -880,8 +889,8 @@ QScrollBar {
 QScrollBar:horizontal {
     height: 12px;
     margin: 0 12px 0 12px;
-    border-top: 1px solid #444;
-    border-bottom: 1px solid #444;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
 }
 
 QScrollBar::handle:horizontal {
@@ -896,14 +905,14 @@ QScrollBar:handle:horizontal:hover {
 }
 
 QScrollBar::add-line:horizontal {
-    background: #666;
+    background: #333;
     width: 12px;
     subcontrol-position: right;
     subcontrol-origin: margin;
 }
 
 QScrollBar::sub-line:horizontal {
-    background: #666;
+    background: #333;
     width: 12px;
     subcontrol-position: left;
     subcontrol-origin: margin;
@@ -925,8 +934,8 @@ QScrollBar::sub-page:horizontal {
 QScrollBar:vertical {
     width: 12px;
     margin: 12px 0 12px 0;
-    border-left: 1px solid #444;
-    border-right: 1px solid #444;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
 }
 
 QScrollBar::handle:vertical {
@@ -941,14 +950,14 @@ QScrollBar:handle:vertical:hover {
 }
 
 QScrollBar::add-line:vertical {
-    background: #666;
+    background: #333;
     height: 12px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
 }
 
 QScrollBar::sub-line:vertical {
-    background: #666;
+    background: #333;
     height: 12px;
     subcontrol-position: top;
     subcontrol-origin: margin;

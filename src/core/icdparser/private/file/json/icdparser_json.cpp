@@ -17,7 +17,7 @@ JsonParser::~JsonParser()
 
 }
 
-bool JsonParser::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
+bool JsonParser::parse(Icd::VehiclePtrArray &vehicles, int deep) const
 {
     vehicles.clear();
 
@@ -44,7 +44,8 @@ bool JsonParser::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
     return true;
 }
 
-bool JsonParser::parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep)
+bool JsonParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle,
+                       int deep) const
 {
     Json::Value vehicleJson = findVehicle(vehicleId);
     if (vehicleJson.isNull()) {
@@ -60,7 +61,8 @@ bool JsonParser::parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &veh
     return true;
 }
 
-bool JsonParser::parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep)
+bool JsonParser::parse(const std::string &vehicleId, Icd::SystemPtrArray &systems,
+                       int deep) const
 {
     systems.clear();
 
@@ -83,8 +85,8 @@ bool JsonParser::parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &
     return true;
 }
 
-bool JsonParser::parseSystem(const std::string &vehicleId, const std::string &systemId,
-                             Icd::SystemPtr &system, int deep)
+bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
+                       Icd::SystemPtr &system, int deep) const
 {
     Json::Value systemJson = findSystem(vehicleId, systemId);
     if (systemJson.isNull()) {
@@ -101,8 +103,8 @@ bool JsonParser::parseSystem(const std::string &vehicleId, const std::string &sy
     return true;
 }
 
-bool JsonParser::parseTable(const std::string &vehicleId, const std::string &systemId,
-                            Icd::TablePtrArray &tables, int deep)
+bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
+                       Icd::TablePtrArray &tables, int deep) const
 {
     tables.clear();
 
@@ -128,8 +130,8 @@ bool JsonParser::parseTable(const std::string &vehicleId, const std::string &sys
     return true;
 }
 
-bool JsonParser::parseTable(const std::string &vehicleId, const std::string &systemId,
-                            const std::string &tableId, Icd::TablePtr &table, int deep)
+bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
+                       const std::string &tableId, Icd::TablePtr &table, int deep) const
 {
     Json::Value tableJson = findTable(vehicleId, systemId, tableId);
     if (tableJson.isNull()) {
@@ -146,7 +148,7 @@ bool JsonParser::parseTable(const std::string &vehicleId, const std::string &sys
     return true;
 }
 
-bool JsonParser::parseTable(TablePtrArray &tables)
+bool JsonParser::parse(TablePtrArray &tables) const
 {
     tables.clear();
 
@@ -173,7 +175,7 @@ bool JsonParser::parseTable(TablePtrArray &tables)
     return true;
 }
 
-bool JsonParser::parseTable(const std::string &tableId, TablePtr &table)
+bool JsonParser::parse(const std::string &tableId, TablePtr &table) const
 {
     Json::Value tableJson = findTable(tableId);
     if (tableJson.isNull()) {
@@ -190,8 +192,8 @@ bool JsonParser::parseTable(const std::string &tableId, TablePtr &table)
     return true;
 }
 
-bool JsonParser::parseItem(const std::string &vehicleId, const std::string &systemId,
-                           const std::string &tableId, Icd::ItemPtrArray &items, int deep)
+bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
+                       const std::string &tableId, Icd::ItemPtrArray &items, int deep) const
 {
     items.clear();
 
@@ -225,9 +227,9 @@ bool JsonParser::parseItem(const std::string &vehicleId, const std::string &syst
     return true;
 }
 
-bool JsonParser::parseItem(const std::string &vehicleId, const std::string &systemId,
-                           const std::string &tableId, const std::string &itemId,
-                           Icd::ItemPtr &item, int deep)
+bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
+                       const std::string &tableId, const std::string &itemId,
+                       Icd::ItemPtr &item, int deep) const
 {
     Json::Value itemJson = findItem(vehicleId, systemId, tableId, itemId);
     if (itemJson.isNull()) {
@@ -249,7 +251,7 @@ bool JsonParser::parseItem(const std::string &vehicleId, const std::string &syst
     return true;
 }
 
-bool JsonParser::save(const Icd::VehiclePtrArray &vehicles)
+bool JsonParser::save(VehiclePtrArray &vehicles) const
 {
     Json::Value vehiclesJson(Json::arrayValue);
     for (Icd::VehiclePtrArray::const_iterator citer = vehicles.cbegin();
@@ -266,7 +268,65 @@ bool JsonParser::save(const Icd::VehiclePtrArray &vehicles)
     return JJson::setValue(filePath(), "", rootJson);
 }
 
-bool JsonParser::save(const TablePtrArray &tables)
+bool JsonParser::save(const std::string &vehicleId, const VehiclePtr &vehicle) const
+{
+    if (!vehicle) {
+        return false;
+    }
+
+    Json::Value vehiclesJson = JJson::value(filePath(), "vehicles", true);
+    if (!vehiclesJson.isArray()) {
+        return false;
+    }
+
+    vehiclesJson[vehicleId] = vehicle->save();
+
+    Json::Path;
+
+    return JJson::setValue(filePath(), "vehicles", vehiclesJson);
+}
+
+bool JsonParser::save(const std::string &vehicleId, const SystemPtrArray &systems) const
+{
+    Json::Value vehiclesJson = JJson::value(filePath(), "vehicles", true);
+    if (!vehiclesJson.isArray()) {
+        return false;
+    }
+
+    Json::Value systemsJson(Json::arrayValue);
+    for (Icd::SystemPtrArray::const_iterator citer = systems.cbegin();
+         citer != systems.cend(); ++citer) {
+        const Icd::SystemPtr &system = *citer;
+        if (!system) {
+            continue;
+        }
+        systemsJson.append(system->save());
+    }
+    Json::Value rootJson;
+    rootJson["vehicles"] = vehiclesJson;
+
+    return JJson::setValue(filePath(), "vehicles", vehiclesJson);
+}
+
+bool JsonParser::save(const std::string &vehicleId, const std::string &systemId,
+                      const SystemPtr &system) const
+{
+
+}
+
+bool JsonParser::save(const std::string &vehicleId, const std::string &systemId,
+                      const TablePtrArray &tables) const
+{
+
+}
+
+bool JsonParser::save(const std::string &vehicleId, const std::string &systemId,
+                      const std::string &tableId, const TablePtr &table) const
+{
+
+}
+
+bool JsonParser::save(const TablePtrArray &tables) const
 {
     Json::Value tablesJson(Json::arrayValue);
     for (Icd::TablePtrArray::const_iterator citer = tables.cbegin();
@@ -281,7 +341,25 @@ bool JsonParser::save(const TablePtrArray &tables)
     return JJson::setValue(filePath(), "", tablesJson);
 }
 
-bool JsonParser::save(const TablePtr &table)
+bool JsonParser::save(const std::string &tableId, const TablePtr &table) const
+{
+
+}
+
+bool JsonParser::save(const std::string &vehicleId, const std::string &systemId,
+                      const std::string &tableId, const ItemPtrArray &items) const
+{
+
+}
+
+bool JsonParser::save(const std::string &vehicleId, const std::string &systemId,
+                      const std::string &tableId, const std::string &itemId,
+                      const ItemPtr &item) const
+{
+
+}
+
+bool JsonParser::save(const TablePtr &table) const
 {
     Json::Value tablesJson(Json::arrayValue);
     tablesJson.append(table->save());
@@ -293,7 +371,7 @@ bool JsonParser::rootJson(Json::Value &value, bool create) const
     return JJson::parse(filePath(), value, create);
 }
 
-Json::Value JsonParser::findVehicle(const std::string &vehicleId)
+Json::Value JsonParser::findVehicle(const std::string &vehicleId) const
 {
     Json::Value rootJson;
     if (!this->rootJson(rootJson, false)) {
@@ -316,7 +394,7 @@ Json::Value JsonParser::findVehicle(const std::string &vehicleId)
     return Json::Value();
 }
 
-Json::Value JsonParser::findSystem(const std::string &vehicleId, const std::string &systemId)
+Json::Value JsonParser::findSystem(const std::string &vehicleId, const std::string &systemId) const
 {
     Json::Value vehicleJson = findVehicle(vehicleId);
     if (vehicleJson.isNull()) {
@@ -340,7 +418,7 @@ Json::Value JsonParser::findSystem(const std::string &vehicleId, const std::stri
 }
 
 Json::Value JsonParser::findTable(const std::string &vehicleId, const std::string &systemId,
-                                  const std::string &tableId)
+                                  const std::string &tableId) const
 {
     Json::Value systemJson = findSystem(vehicleId, systemId);
     if (systemJson.isNull()) {
@@ -363,7 +441,7 @@ Json::Value JsonParser::findTable(const std::string &vehicleId, const std::strin
     return Json::Value();
 }
 
-Json::Value JsonParser::findTable(const std::string &tableId)
+Json::Value JsonParser::findTable(const std::string &tableId) const
 {
     Json::Value rootJson;
     if (!this->rootJson(rootJson, false)) {
@@ -386,7 +464,7 @@ Json::Value JsonParser::findTable(const std::string &tableId)
 }
 
 Json::Value JsonParser::findItem(const std::string &vehicleId, const std::string &systemId,
-                                 const std::string &tableId, const std::string &itemId)
+                                 const std::string &tableId, const std::string &itemId) const
 {
     Json::Value tableJson = findTable(vehicleId, systemId, tableId);
     if (tableJson.isNull()) {

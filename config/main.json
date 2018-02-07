@@ -39,7 +39,7 @@
          "option" : {
             "chart" : {},
             "tree" : {
-               "loadDeep" : 1
+               "loadDeep" : 2
             }
          },
          "parser" : {
@@ -60,7 +60,7 @@
             },
             "tree" : {
                "flushEnabled" : true,
-               "loadDeep" : 3,
+               "loadDeep" : 1,
                "showDesc" : true,
                "showOffset" : true,
                "showOrignal" : 10,

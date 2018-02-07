@@ -10,6 +10,11 @@ namespace Json { class Value; }
 namespace Icd {
 
 //
+class Object;
+typedef JHandlePtr<Object> ObjectPtr;
+typedef std::vector<ObjectPtr> ObjectPtrArray;
+
+//
 class Vehicle;
 typedef JHandlePtr<Vehicle> VehiclePtr;
 typedef std::vector<VehiclePtr> VehiclePtrArray;
@@ -34,202 +39,63 @@ class Parser;
 class ParserData;
 typedef JHandlePtr<Parser> ParserPtr;
 
-/**
- * @brief The Parser class
- */
 class ICDPARSER_EXPORT Parser
 {
 public:
-    /**
-     * @brief Parser
-     * @param config
-     */
     explicit Parser(const Json::Value &config);
-
-    /**
-     * @brief ~Parser
-     */
     virtual ~Parser();
 
-    /**
-     * @brief create
-     * @param config
-     * @return
-     */
     static ParserPtr create(const Json::Value &config);
 
-    /**
-     * @brief parseVehicle
-     * @param vehicles
-     * @param deep
-     * @return
-     */
-    virtual bool parseVehicle(Icd::VehiclePtrArray &vehicles, int deep) = 0;
+    virtual bool parse(Icd::VehiclePtrArray &vehicles, int deep) const = 0;
+    virtual bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const = 0;
+    virtual bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
+                       Icd::SystemPtr &system, int deep) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
+                       Icd::TablePtrArray &tables, int deep) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
+                       const std::string &tableId, Icd::TablePtr &table, int deep) const = 0;
+    virtual bool parse(Icd::TablePtrArray &tables) const = 0;
+    virtual bool parse(const std::string &tableId, Icd::TablePtr &table) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
+                       const std::string &tableId, Icd::ItemPtrArray &items, int deep) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
+                       const std::string &tableId, const std::string &itemId,
+                       Icd::ItemPtr &item, int deep) const = 0;
+    Icd::ObjectPtr parse(const std::string &domain, int objectType, int deep = 1) const;
 
-    /**
-     * @brief parseVehicle
-     * @param vehicleId
-     * @param vehicle
-     * @param deep
-     * @return
-     */
-    virtual bool parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) = 0;
+    virtual bool save(Icd::VehiclePtrArray &vehicles,) const = 0;
+    virtual bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const = 0;
+    virtual bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const = 0;
+    virtual bool save(const std::string &vehicleId, const std::string &systemId,
+                      const Icd::SystemPtr &system) const = 0;
+    virtual bool save(const std::string &vehicleId, const std::string &systemId,
+                      const Icd::TablePtrArray &tables) const = 0;
+    virtual bool save(const std::string &vehicleId, const std::string &systemId,
+                      const std::string &tableId, const Icd::TablePtr &table) const = 0;
+    virtual bool save(const Icd::TablePtrArray &tables) const = 0;
+    virtual bool save(const std::string &tableId, const Icd::TablePtr &table) const = 0;
+    virtual bool save(const std::string &vehicleId, const std::string &systemId,
+                      const std::string &tableId, const Icd::ItemPtrArray &items) const = 0;
+    virtual bool save(const std::string &vehicleId, const std::string &systemId,
+                      const std::string &tableId, const std::string &itemId,
+                      const Icd::ItemPtr &item) const = 0;
+    virtual bool save(const std::string &domain, const Icd::ObjectPtr &object,
+                      bool merge = false, bool fast = false) const = 0;
 
-    /**
-     * @brief parseSystem
-     * @param vehicleId
-     * @param systems
-     * @param deep
-     * @return
-     */
-    virtual bool parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) = 0;
+    virtual bool save(const Icd::TablePtr &table) const = 0;
 
-    /**
-     * @brief parseVehicle
-     * @param vehicle
-     * @param deep
-     * @return
-     */
-    virtual bool parseSystem(const std::string &vehicleId, const std::string &systemId,
-                             Icd::SystemPtr &system, int deep) = 0;
-
-    /**
-     * @brief parseTable
-     * @param vehicleId
-     * @param systemId
-     * @param tables
-     * @param deep
-     * @return
-     */
-    virtual bool parseTable(const std::string &vehicleId, const std::string &systemId,
-                            Icd::TablePtrArray &tables, int deep) = 0;
-
-    /**
-     * @brief parseTable
-     * @param vehicleId
-     * @param systemId
-     * @param tableId
-     * @param table
-     * @param deep
-     * @return
-     */
-    virtual bool parseTable(const std::string &vehicleId, const std::string &systemId,
-                            const std::string &tableId, Icd::TablePtr &table, int deep) = 0;
-
-    /**
-     * @brief parseTable
-     * @param tables
-     * @return
-     */
-    virtual bool parseTable(Icd::TablePtrArray &tables) = 0;
-
-    /**
-     * @brief parseTable
-     * @param tableId
-     * @param table
-     * @return
-     */
-    virtual bool parseTable(const std::string &tableId, Icd::TablePtr &table) = 0;
-
-    /**
-     * @brief parseItem
-     * @param vehicleId
-     * @param systemId
-     * @param tableId
-     * @param items
-     * @param deep
-     * @return
-     */
-    virtual bool parseItem(const std::string &vehicleId, const std::string &systemId,
-                           const std::string &tableId, Icd::ItemPtrArray &items, int deep) = 0;
-
-    /**
-     * @brief parseItem
-     * @param vehicleId
-     * @param systemId
-     * @param tableId
-     * @param tableId
-     * @param itemId
-     * @param deep
-     * @return
-     */
-    virtual bool parseItem(const std::string &vehicleId, const std::string &systemId,
-                           const std::string &tableId, const std::string &itemId,
-                           Icd::ItemPtr &item, int deep) = 0;
-
-    /**
-     * @brief save
-     * @param vehicles
-     * @return
-     */
-    virtual bool save(const Icd::VehiclePtrArray &vehicles) = 0;
-
-    /**
-     * @brief save
-     * @param tables
-     * @return
-     */
-    virtual bool save(const Icd::TablePtrArray &tables) = 0;
-
-    /**
-     * @brief save
-     * @param table
-     * @return
-     */
-    virtual bool save(const Icd::TablePtr &table) = 0;
-
-    /**
-     * @brief saveAs
-     * @param item
-     * @param exportAll
-     * @param rt
-     * @param filePath
-     * @return
-     */
     bool saveAs(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath);
-
-    /**
-     * @brief saveAs
-     * @param table
-     * @param filePath
-     * @return
-     */
     bool saveAs(const Icd::TablePtr &table, const std::string &filePath);
 
-    /**
-     * @brief message
-     * @return
-     */
     std::string message() const;
-
-    /**
-     * @brief setMessage
-     * @param message
-     */
     void setMessage(const std::string &message);
 
-    /**
-     * @brief progressValue
-     * @return
-     */
     qreal progressValue() const;
-
-    /**
-     * @brief setProgressValue
-     * @param value
-     */
     void setProgressValue(qreal value);
 
-    /**
-     * @brief canceledSaveAs
-     * @return
-     */
     bool canceledSaveAs() const;
-
-    /**
-     * @brief cancelSaveAs
-     * @param cancel
-     */
     void cancelSaveAs(bool cancel = true);
 
 private:

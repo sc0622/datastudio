@@ -16,7 +16,7 @@ XmlParser::~XmlParser()
 
 }
 
-bool XmlParser::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
+bool XmlParser::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep) const
 {
     //
     vehicles.clear();
@@ -46,7 +46,7 @@ bool XmlParser::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
     return true;
 }
 
-bool XmlParser::parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep)
+bool XmlParser::parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const
 {
     vehicle = Q_NULLPTR;
 
@@ -78,7 +78,7 @@ bool XmlParser::parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehi
     return true;
 }
 
-bool XmlParser::parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep)
+bool XmlParser::parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const
 {
     //
     systems.clear();
@@ -108,7 +108,7 @@ bool XmlParser::parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &s
 }
 
 bool XmlParser::parseSystem(const std::string &vehicleId, const std::string &systemId,
-                            Icd::SystemPtr &system, int deep)
+                            Icd::SystemPtr &system, int deep) const
 {
     system = Q_NULLPTR;
 
@@ -143,7 +143,7 @@ bool XmlParser::parseSystem(const std::string &vehicleId, const std::string &sys
 }
 
 bool XmlParser::parseTable(const std::string &vehicleId, const std::string &systemId,
-                           Icd::TablePtrArray &tables, int deep)
+                           Icd::TablePtrArray &tables, int deep) const
 {
     //
     tables.clear();
@@ -174,7 +174,7 @@ bool XmlParser::parseTable(const std::string &vehicleId, const std::string &syst
 }
 
 bool XmlParser::parseTable(const std::string &vehicleId, const std::string &systemId,
-                           const std::string &tableId, Icd::TablePtr &table, int deep)
+                           const std::string &tableId, Icd::TablePtr &table, int deep) const
 {
     table = Q_NULLPTR;
 
@@ -210,7 +210,7 @@ bool XmlParser::parseTable(const std::string &vehicleId, const std::string &syst
     return false;
 }
 
-bool XmlParser::parseTable(TablePtrArray &tables)
+bool XmlParser::parseTable(TablePtrArray &tables) const
 {
     tables.clear();
 
@@ -238,7 +238,7 @@ bool XmlParser::parseTable(TablePtrArray &tables)
     return false;
 }
 
-bool XmlParser::parseTable(const std::string &tableId, TablePtr &table)
+bool XmlParser::parseTable(const std::string &tableId, TablePtr &table) const
 {
     table = Q_NULLPTR;
 
@@ -265,7 +265,7 @@ bool XmlParser::parseTable(const std::string &tableId, TablePtr &table)
 }
 
 bool XmlParser::parseItem(const std::string &vehicleId, const std::string &systemId,
-                          const std::string &tableId, Icd::ItemPtrArray &items, int deep)
+                          const std::string &tableId, Icd::ItemPtrArray &items, int deep) const
 {
     Q_UNUSED(deep);
     //
@@ -313,7 +313,7 @@ bool XmlParser::parseItem(const std::string &vehicleId, const std::string &syste
 
 bool XmlParser::parseItem(const std::string &vehicleId, const std::string &systemId,
                           const std::string &tableId, const std::string &itemId,
-                          Icd::ItemPtr &item, int deep)
+                          Icd::ItemPtr &item, int deep) const
 {
     Q_UNUSED(deep);
     item = Q_NULLPTR;
@@ -363,7 +363,58 @@ bool XmlParser::parseItem(const std::string &vehicleId, const std::string &syste
     return true;
 }
 
-bool XmlParser::save(const Icd::VehiclePtrArray &vehicles)
+bool XmlParser::saveObject(const std::string &domain, const Json::Value &value,
+                           bool merge, bool fast) const
+{
+    switch (objectType) {
+    case Icd::ObjectVehicle:
+    {
+        TiXmlElement *emVehicle = findVehicleElement(domain);
+        if (!emVehicle) {
+            return false;
+        }
+        break;
+    }
+    case Icd::ObjectSystem:
+    {
+        Icd::SystemPtr system;
+        if (!parseSystem(Icd::stringSection(domain, '/', 0, 0),
+                         Icd::stringSection(domain, '/', 1, 1),
+                         system, objectType + deep)) {
+            return Icd::ObjectPtr();
+        }
+        return system;
+    }
+    case Icd::ObjectTable:
+    {
+        Icd::TablePtr table;
+        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
+                        Icd::stringSection(domain, '/', 1, 1),
+                        Icd::stringSection(domain, '/', 2, 2),
+                        table, objectType + deep)) {
+            return Icd::ObjectPtr();
+        }
+        return table;
+    }
+    case Icd::ObjectItem:
+    {
+        Icd::TablePtr table;
+        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
+                        Icd::stringSection(domain, '/', 1, 1),
+                        Icd::stringSection(domain, '/', 2, 2),
+                        table, objectType + deep)) {
+            return Icd::ObjectPtr();
+        }
+        return table->itemByDomain(Icd::stringSection(domain, '/', 3));
+    }
+    default:
+        break;
+    }
+
+    return true;
+}
+
+bool XmlParser::save(const Icd::VehiclePtrArray &vehicles) const
 {
     // create root element
     TiXmlDocument *document = createDocument();
@@ -400,7 +451,7 @@ bool XmlParser::save(const Icd::VehiclePtrArray &vehicles)
     return true;
 }
 
-bool XmlParser::save(const TablePtrArray &tables)
+bool XmlParser::save(const TablePtrArray &tables) const
 {
     // create root element
     TiXmlDocument *document = createDocument();
@@ -437,7 +488,7 @@ bool XmlParser::save(const TablePtrArray &tables)
     return true;
 }
 
-bool XmlParser::save(const TablePtr &table)
+bool XmlParser::save(const TablePtr &table) const
 {
     // create root element
     TiXmlDocument *document = createDocument();

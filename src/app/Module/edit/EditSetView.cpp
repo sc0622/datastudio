@@ -1,12 +1,21 @@
 #include "precomp.h"
 #include "EditSetView.h"
+#include "details/DetailView.h"
 
 namespace Edit {
 
 SetView::SetView(QWidget *parent)
     : QWidget(parent)
 {
-    //
+    QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
+    vertLayoutMain->setContentsMargins(0, 0, 0, 0);
+    vertLayoutMain->setSpacing(0);
+
+    d_stackedWidget = new QStackedWidget(this);
+    vertLayoutMain->addWidget(d_stackedWidget);
+
+    d_detailView = new DetailView(this);
+    d_stackedWidget->addWidget(d_detailView);
 
     jnotify->on("edit.tree.item.currentchanged", this, [=](JNEvent &event){
         QVariantList args = event.argument().toList();
@@ -27,27 +36,27 @@ bool SetView::init()
 {
     bool result = true;
 
+    d_detailView->init();
+
     return result;
-}
-
-void SetView::paintEvent(QPaintEvent *event)
-{
-    QWidget::paintEvent(event);
-
-    QPainter painter(this);
-    painter.save();
-    QFont font = this->font();
-    font.setPointSize(24);
-    painter.setFont(font);
-    painter.setPen(QColor(128, 128, 80, 150));
-    QTextOption textOption(Qt::AlignCenter);
-    painter.drawText(rect(), tr("Select left tree node to edit"), textOption);
-    painter.restore();
 }
 
 void SetView::onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous)
 {
+    Q_UNUSED(previous);
 
+    if (!current) {
+        d_detailView->updateView(nullptr);
+        return;
+    }
+
+    const QString &domain = current->data(Icd::TreeItemDomainRole).toString();
+    if (domain.isEmpty()) {
+        d_detailView->updateView(nullptr);
+        return;
+    }
+
+    //
 }
 
 }

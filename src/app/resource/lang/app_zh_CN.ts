@@ -330,9 +330,8 @@
 <context>
     <name>Edit::SetView</name>
     <message>
-        <location filename="../../Module/edit/EditSetView.cpp" line="44"/>
         <source>Select left tree node to edit</source>
-        <translation>选择左边树节点进行编辑</translation>
+        <translation type="vanished">选择左边树节点进行编辑</translation>
     </message>
 </context>
 <context>
@@ -404,82 +403,82 @@
 <context>
     <name>Edit::View</name>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="58"/>
+        <location filename="../../Module/edit/EditView.cpp" line="59"/>
         <source>Database</source>
         <translation>数据来源</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="181"/>
+        <location filename="../../Module/edit/EditView.cpp" line="189"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="89"/>
+        <location filename="../../Module/edit/EditView.cpp" line="97"/>
         <source>Show data</source>
         <translation>数据显示</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="66"/>
+        <location filename="../../Module/edit/EditView.cpp" line="68"/>
         <source>Copy</source>
         <translation>复制数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="70"/>
+        <location filename="../../Module/edit/EditView.cpp" line="74"/>
         <source>Save</source>
         <translation>保存数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="74"/>
+        <location filename="../../Module/edit/EditView.cpp" line="81"/>
         <source>Save as</source>
         <translation>另存数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="97"/>
+        <location filename="../../Module/edit/EditView.cpp" line="105"/>
         <source>Show offset</source>
         <translation>显示偏移</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="103"/>
+        <location filename="../../Module/edit/EditView.cpp" line="111"/>
         <source>Show type</source>
         <translation>显示类型</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="109"/>
+        <location filename="../../Module/edit/EditView.cpp" line="117"/>
         <source>Real value</source>
         <translation>计算数值</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="115"/>
+        <location filename="../../Module/edit/EditView.cpp" line="123"/>
         <source>Orignal value</source>
         <translation>原始数值</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="122"/>
+        <location filename="../../Module/edit/EditView.cpp" line="130"/>
         <source>Description</source>
         <translation>数值描述</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="149"/>
+        <location filename="../../Module/edit/EditView.cpp" line="157"/>
         <source>Hide</source>
         <translation>不显示</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="154"/>
+        <location filename="../../Module/edit/EditView.cpp" line="162"/>
         <source>Decimal integer</source>
         <translation>十进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="159"/>
+        <location filename="../../Module/edit/EditView.cpp" line="167"/>
         <source>Hexadecimal integer</source>
         <translation>十六进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="164"/>
+        <location filename="../../Module/edit/EditView.cpp" line="172"/>
         <source>Binary integer</source>
         <translation>二进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="169"/>
+        <location filename="../../Module/edit/EditView.cpp" line="177"/>
         <source>Octal integer</source>
         <translation>八进制</translation>
     </message>

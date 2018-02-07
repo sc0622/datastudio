@@ -54,6 +54,7 @@ bool View::init()
 
 void View::updateToolBar()
 {
+    // database
     d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
                          tr("Database"), this, [=](){
         QVariantList args;
@@ -62,18 +63,25 @@ void View::updateToolBar()
         jnotify->send("database.config", args);
     });
     d_toolBar->addSeparator();
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/copy.png"),
-                         tr("Copy"), this, [=](){
+    // copy
+    QAction *actionCopy = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/copy.png"),
+                                               tr("Copy"), this, [=](){
         //
     });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save.png"),
-                         tr("Save"), this, [=](){
+    Q_UNUSED(actionCopy);
+    // save
+    QAction *actionSave = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save.png"),
+                                               tr("Save"), this, [=](){
         //
     });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save-as.png"),
-                         tr("Save as"), this, [=](){
+    Q_UNUSED(actionSave);
+    actionSave->setEnabled(false);
+    // saveAs
+    QAction *actionSaveAs = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save-as.png"),
+                                                 tr("Save as"), this, [=](){
         //
     });
+    Q_UNUSED(actionSaveAs);
     d_toolBar->addSeparator();
     addViewAction();
     d_toolBar->addSeparator();

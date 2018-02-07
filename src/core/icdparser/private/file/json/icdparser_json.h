@@ -20,35 +20,51 @@ public:
     explicit JsonParser(const Json::Value &config);
     ~JsonParser();
 
-    bool parseVehicle(Icd::VehiclePtrArray &vehicles, int deep);
-    bool parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep);
-    bool parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep);
-    bool parseSystem(const std::string &vehicleId, const std::string &systemId,
-                     Icd::SystemPtr &system, int deep);
-    bool parseTable(const std::string &vehicleId, const std::string &systemId,
-                    Icd::TablePtrArray &tables, int deep);
-    bool parseTable(const std::string &vehicleId, const std::string &systemId,
-                    const std::string &tableId, Icd::TablePtr &table, int deep);
-    bool parseTable(Icd::TablePtrArray &tables);
-    bool parseTable(const std::string &tableId, Icd::TablePtr &table);
-    bool parseItem(const std::string &vehicleId, const std::string &systemId,
-                   const std::string &tableId, Icd::ItemPtrArray &items, int deep);
-    bool parseItem(const std::string &vehicleId, const std::string &systemId,
-                   const std::string &tableId, const std::string &itemId,
-                   Icd::ItemPtr &item, int deep);
-    bool save(const Icd::VehiclePtrArray &vehicles);
-    bool save(const Icd::TablePtrArray &tables);
-    bool save(const Icd::TablePtr &table);
+    bool parse(Icd::VehiclePtrArray &vehicles, int deep) const;
+    bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const;
+    bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const;
+    bool parse(const std::string &vehicleId, const std::string &systemId,
+               Icd::SystemPtr &system, int deep) const;
+    bool parse(const std::string &vehicleId, const std::string &systemId,
+               Icd::TablePtrArray &tables, int deep) const;
+    bool parse(const std::string &vehicleId, const std::string &systemId,
+               const std::string &tableId, Icd::TablePtr &table, int deep) const;
+    bool parse(Icd::TablePtrArray &tables) const;
+    bool parse(const std::string &tableId, Icd::TablePtr &table) const;
+    bool parse(const std::string &vehicleId, const std::string &systemId,
+               const std::string &tableId, Icd::ItemPtrArray &items, int deep) const;
+    bool parse(const std::string &vehicleId, const std::string &systemId,
+               const std::string &tableId, const std::string &itemId,
+               Icd::ItemPtr &item, int deep) const;
+
+    bool save(Icd::VehiclePtrArray &vehicles,) const;
+    bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const;
+    bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const;
+    bool save(const std::string &vehicleId, const std::string &systemId,
+              const Icd::SystemPtr &system) const;
+    bool save(const std::string &vehicleId, const std::string &systemId,
+              const Icd::TablePtrArray &tables) const;
+    bool save(const std::string &vehicleId, const std::string &systemId,
+              const std::string &tableId, const Icd::TablePtr &table) const;
+    bool save(const Icd::TablePtrArray &tables) const;
+    bool save(const std::string &tableId, const Icd::TablePtr &table) const;
+    bool save(const std::string &vehicleId, const std::string &systemId,
+              const std::string &tableId, const Icd::ItemPtrArray &items) const;
+    bool save(const std::string &vehicleId, const std::string &systemId,
+              const std::string &tableId, const std::string &itemId,
+              const Icd::ItemPtr &item) const;
+
+    bool save(const Icd::TablePtr &table) const;
 
 public:
     bool rootJson(Json::Value &value, bool create = false) const;
-    Json::Value findVehicle(const std::string &vehicleId);
-    Json::Value findSystem(const std::string &vehicleId, const std::string &systemId);
+    Json::Value findVehicle(const std::string &vehicleId) const;
+    Json::Value findSystem(const std::string &vehicleId, const std::string &systemId) const;
     Json::Value findTable(const std::string &vehicleId, const std::string &systemId,
-                          const std::string &tableId);
-    Json::Value findTable(const std::string &tableId);
+                          const std::string &tableId) const;
+    Json::Value findTable(const std::string &tableId) const;
     Json::Value findItem(const std::string &vehicleId, const std::string &systemId,
-                         const std::string &tableId, const std::string &itemId);
+                         const std::string &tableId, const std::string &itemId) const;
 
     // Generator interface
 public:

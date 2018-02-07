@@ -308,14 +308,14 @@ bool CoreTreeWidgetPrivate::loadData()
     JTreeViewItem *itemRoot = invisibleRootItem();
 #endif
     //
-    result = result && loadVehicle(itemRoot, Icd::ObjectTable);
+    result = result && loadVehicle(itemRoot, d_loadingDeep);
 
     //
     if (result) {
         if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
-            expandItem(itemRoot, true, 2);
+            expandItem(itemRoot, true, 3);
         } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
-            expandItem(itemRoot, true, 2);
+            expandItem(itemRoot, true, 3);
         } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
             expandItem(itemRoot, true, 3);
         }
@@ -1999,6 +1999,8 @@ bool CoreTreeWidgetPrivate::loadVehicle(QStandardItem *itemRoot, int deep)
         // create item
         JTreeViewItem *itemVehicle = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
                                                        text, Icd::TreeItemTypeVehicle);
+        //Json::Value json;
+        //json.toStyledString();
         // add item
         itemRoot->appendRow(itemVehicle);
         // drag disabled

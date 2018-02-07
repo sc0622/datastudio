@@ -3,9 +3,12 @@
 
 #include <QWidget>
 
+class QStackedWidget;
 class QStandardItem;
 
 namespace Edit {
+
+class DetailView;
 
 class SetView : public QWidget
 {
@@ -21,12 +24,13 @@ signals:
 public slots:
 
 protected:
-    void paintEvent(QPaintEvent *event);
 
 private:
     void onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous);
 
 private:
+    QStackedWidget *d_stackedWidget;
+    DetailView *d_detailView;
 };
 
 }
