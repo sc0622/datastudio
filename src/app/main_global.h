@@ -10,6 +10,9 @@
 
 namespace Icd {
 
+class Item;
+typedef JHandlePtr<Item> ItemPtr;
+
 class Parser;
 typedef JHandlePtr<Parser> ParserPtr;
 
@@ -81,6 +84,8 @@ public:
     bool setOption(const QString &module, const QString &key, const Json::Value &option);
 
     Icd::ParserPtr parser(const QString &module) const;
+
+    static QString typeString(const Icd::ItemPtr &item);
 
 signals:
     void themeChanged(const QString &currnt, const QString &previous);

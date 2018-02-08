@@ -55,13 +55,9 @@ void DetailView::updateView(QStandardItem *item)
         return;
     }
 
-    const QString &domain = item->data(Icd::TreeItemDomainRole).toString();
-    if (domain.isEmpty()) {
-        return;
-    }
-
     int objectType = Icd::ObjectInvalid;
     switch (item->type()) {
+    case Icd::TreeItemTypeRoot: objectType = Icd::ObjectRoot; break;
     case Icd::TreeItemTypeVehicle: objectType = Icd::ObjectVehicle; break;
     case Icd::TreeItemTypeSystem: objectType = Icd::ObjectSystem; break;
     case Icd::TreeItemTypeTable: objectType = Icd::ObjectTable; break;
@@ -75,6 +71,8 @@ void DetailView::updateView(QStandardItem *item)
     if (objectType == Icd::ObjectInvalid) {
         return;
     }
+
+    const QString &domain = item->data(Icd::TreeItemDomainRole).toString();
 
     Icd::ObjectPtr object = parser->parse(domain.toStdString(), objectType, 1);
     if (!object) {

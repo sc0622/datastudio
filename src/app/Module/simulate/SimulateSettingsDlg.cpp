@@ -39,7 +39,7 @@ TreeViewSettings::~TreeViewSettings()
 bool TreeViewSettings::tryAccept()
 {
     if (d_modifyFlags.testBit(0)) {
-        const int deep = d_comboBoxDeep->currentIndex();
+        const int deep = d_comboBoxDeep->currentData().toInt();
         if (deep == -1) {
             QMessageBox::warning(this, tr("Warning"), tr("Deep cannot be empty!"));
             d_comboBoxDeep->setFocus();

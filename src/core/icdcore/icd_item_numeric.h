@@ -21,8 +21,8 @@ enum NumericType {
     NumericUint32,
     NumericInt64,
     NumericUint64,
-    NumericFloat64,
     NumericFloat32,
+    NumericFloat64,
     NumericTotal
 };
 

@@ -560,6 +560,51 @@ Icd::ParserPtr JMain::parser(const QString &module) const
     return handle.parser;
 }
 
+QString JMain::typeString(const Icd::ItemPtr &item)
+{
+    if (!item) {
+        return QString();
+    }
+
+    switch (item->type()) {
+    case Icd::ItemHead: return tr("Head");
+    case Icd::ItemCounter: return tr("Counter");
+    case Icd::ItemCheck: return tr("Check");
+    case Icd::ItemFrameCode: return tr("FrameCode");
+    case Icd::ItemNumeric:
+    {
+        const Icd::NumericItemPtr numericItem =
+                JHandlePtrCast<Icd::NumericItem, Icd::Item>(item);
+        if (!numericItem) {
+            break;
+        }
+        switch (numericItem->numericType()) {
+        case Icd::NumericInt8: return tr("Int8");
+        case Icd::NumericUint8: return tr("UInt8");
+        case Icd::NumericInt16: return tr("Int16");
+        case Icd::NumericUint16: return tr("UInt16");
+        case Icd::NumericInt32: return tr("Int32");
+        case Icd::NumericUint32: return tr("UInt32");
+        case Icd::NumericInt64: return tr("Int64");
+        case Icd::NumericUint64: return tr("UInt64");
+        case Icd::NumericFloat32: return tr("Float32");
+        case Icd::NumericFloat64: return tr("Float64");
+        default:
+            break;
+        }
+        break;
+    }
+    case Icd::ItemBitMap: return tr("BitMap");
+    case Icd::ItemBitValue: return tr("BitValue");
+    case Icd::ItemComplex: return tr("Complex");
+    case Icd::ItemFrame: return tr("Frame");
+    default:
+        break;
+    }
+
+    return tr("Unknown");
+}
+
 void JMain::setTheme(const QString &value)
 {
     const QString previous = theme();

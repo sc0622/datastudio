@@ -2621,13 +2621,20 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *item)
         } else {
             if (!item->hasChildren()) {
                 if (!isBoundChannel(item)) {
-                    TableItemWidget *itemWidget = qobject_cast<TableItemWidget *>
-                            (this->itemWidget(item));
-                    QString text = itemWidget->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
-                    if (d_showAttris & CoreTreeWidget::ShowType) {
-                        text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+                    TableItemWidget *itemWidget = qobject_cast<TableItemWidget *>(this->itemWidget(item));
+                    if (itemWidget) {
+                        QString text = itemWidget->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
+                        if (d_showAttris & CoreTreeWidget::ShowType) {
+                            text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+                        }
+                        itemWidget->setText(text);
+                    } else {
+                        QString text = item->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
+                        if (d_showAttris & CoreTreeWidget::ShowType) {
+                            text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+                        }
+                        item->setText(text);
                     }
-                    itemWidget->setText(text);
                 }
                 return;
             }

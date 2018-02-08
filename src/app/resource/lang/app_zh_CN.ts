@@ -12,12 +12,12 @@
 <context>
     <name>Analyse::ChartViewSettings</name>
     <message>
-        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="84"/>
+        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="85"/>
         <source>Column count:</source>
         <translation>图表列数：</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="89"/>
+        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="90"/>
         <source>Y-label width:</source>
         <translation>纵轴标签字符宽度：</translation>
     </message>
@@ -25,27 +25,27 @@
 <context>
     <name>Analyse::SettingsDlg</name>
     <message>
-        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="150"/>
+        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="151"/>
         <source>Other settings for analyse module</source>
         <translation>分析图模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="160"/>
+        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="161"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="164"/>
+        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="165"/>
         <source>Chart view</source>
         <translation>图表视图</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="173"/>
+        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="174"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="177"/>
+        <location filename="../../Module/analyse/AnalyseSettingsDlg.cpp" line="178"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -328,10 +328,64 @@
     </message>
 </context>
 <context>
-    <name>Edit::SetView</name>
+    <name>Edit::DetailTable</name>
     <message>
-        <source>Select left tree node to edit</source>
-        <translation type="vanished">选择左边树节点进行编辑</translation>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="71"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="94"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="117"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="142"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="170"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="216"/>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="71"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="94"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="117"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="142"/>
+        <source>Mark</source>
+        <translation>标识</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="71"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="94"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="118"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="143"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="217"/>
+        <source>Describe</source>
+        <translation>描述</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="117"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="143"/>
+        <source>Length</source>
+        <translation>长度</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="142"/>
+        <source>Byte index</source>
+        <translation>字节序号</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="143"/>
+        <source>Type</source>
+        <translation>数据类型</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="170"/>
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="216"/>
+        <source>Frame code</source>
+        <translation>帧码</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="216"/>
+        <source>Sequence</source>
+        <translation>时序</translation>
     </message>
 </context>
 <context>
@@ -524,6 +578,104 @@
         <location filename="../../MainView/settings/GeneralWidget.cpp" line="23"/>
         <source>Light</source>
         <translation>浅色</translation>
+    </message>
+</context>
+<context>
+    <name>JMain</name>
+    <message>
+        <location filename="../../main_global.cpp" line="570"/>
+        <source>Head</source>
+        <translation>帧头</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="571"/>
+        <source>Counter</source>
+        <translation>帧计数</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="572"/>
+        <source>Check</source>
+        <translation>校验和</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="573"/>
+        <source>FrameCode</source>
+        <translation>帧码</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="582"/>
+        <source>Int8</source>
+        <translation>有符号8位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="583"/>
+        <source>UInt8</source>
+        <translation>无符号8位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="584"/>
+        <source>Int16</source>
+        <translation>有符号16位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="585"/>
+        <source>UInt16</source>
+        <translation>无符号16位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="586"/>
+        <source>Int32</source>
+        <translation>有符号32位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="587"/>
+        <source>UInt32</source>
+        <translation>无符号32位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="588"/>
+        <source>Int64</source>
+        <translation>有符号64位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="589"/>
+        <source>UInt64</source>
+        <translation>无符号64位</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="590"/>
+        <source>Float32</source>
+        <translation>32位浮点数</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="591"/>
+        <source>Float64</source>
+        <translation>64位浮点数</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="597"/>
+        <source>BitMap</source>
+        <translation>比特映射</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="598"/>
+        <source>BitValue</source>
+        <translation>比特值</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="599"/>
+        <source>Complex</source>
+        <translation>复合数据</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="600"/>
+        <source>Frame</source>
+        <translation>帧数据</translation>
+    </message>
+    <message>
+        <location filename="../../main_global.cpp" line="605"/>
+        <source>Unknown</source>
+        <translation>未知类型</translation>
     </message>
 </context>
 <context>
@@ -880,18 +1032,14 @@
 <context>
     <name>Preference::View</name>
     <message>
-        <source>Channel view</source>
-        <translation type="vanished">通道视图</translation>
-    </message>
-    <message>
         <location filename="../../Module/preference/PreferenceView.cpp" line="53"/>
         <source>Channel management</source>
-        <translation type="unfinished"></translation>
+        <translation>通道管理</translation>
     </message>
     <message>
         <location filename="../../Module/preference/PreferenceView.cpp" line="59"/>
         <source>Data source management</source>
-        <translation type="unfinished"></translation>
+        <translation>数据源管理</translation>
     </message>
     <message>
         <location filename="../../Module/preference/PreferenceView.cpp" line="65"/>

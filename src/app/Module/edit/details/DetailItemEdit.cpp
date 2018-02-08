@@ -33,6 +33,9 @@ void DetailItemEdit::updateView(const Icd::ObjectPtr &object)
     }
 
     switch (object->objectType()) {
+    case Icd::ObjectRoot:
+        hide();
+        break;
     case Icd::ObjectVehicle:
         hide();
         break;

@@ -271,6 +271,7 @@ QToolTip {
 QHeaderView {
     background: transparent;
     border: 0;
+    border-bottom: 1px solid #262626;
     outline: none;
 }
 
@@ -281,7 +282,7 @@ QHeaderView::section {
 
 QHeaderView::section:horizontal {
     border-left: 0;
-    border-right: 1px solid #252525;
+    border-right: 1px solid #262626;
     border-top: 0;
     border-bottom: 0;
     padding-left: 5px;
@@ -291,7 +292,7 @@ QHeaderView::section:horizontal {
 
 QHeaderView::section:vertical {
     border-left: 0;
-    border-right: 0;
+    border-right: 1px solid #262626;
     border-top: 0; 
     border-bottom: 1px solid #282828;
     padding-left: 4px;
