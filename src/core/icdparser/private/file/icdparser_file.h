@@ -21,6 +21,17 @@ public:
     std::string filePath() const;
     void setFilePath(const std::string &filePath);
 
+    std::string basePath() const;
+    std::string fileName() const;
+    std::string suffix() const;
+
+    static std::string suffix(const std::string &fileName);
+    static bool exists(const std::string &filePath);
+    static bool copy(const std::string &from, const std::string &to);
+    static bool rename(const std::string &from, const std::string &to);
+    static bool remove(const std::string &filePath);
+    static std::string fullPath(const std::string &basePath, const std::string &fileName);
+
 private:
     FileParserData *d;
 };

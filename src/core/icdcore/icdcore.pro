@@ -31,6 +31,7 @@ HEADERS += \
     $$PWD/icd_item_numeric.h \
     $$PWD/icd_item.h \
     $$PWD/icd_object.h \
+    $$PWD/icd_root.h \
     $$PWD/icd_table.h \
     $$PWD/icd_system.h \
     $$PWD/icd_vehicle.h \
@@ -50,6 +51,7 @@ SOURCES += \
     $$PWD/icd_item_limit.cpp \
     $$PWD/icd_item_numeric.cpp \
     $$PWD/icd_item.cpp \
+    $$PWD/icd_root.cpp \
     $$PWD/icd_table.cpp \
     $$PWD/icd_system.cpp \
     $$PWD/icd_vehicle.cpp \

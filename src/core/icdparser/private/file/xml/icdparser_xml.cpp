@@ -16,6 +16,13 @@ XmlParser::~XmlParser()
 
 }
 
+bool XmlParser::parse(RootPtr &root, int deep) const
+{
+    Q_UNUSED(root);
+    Q_UNUSED(deep);
+    return false;
+}
+
 bool XmlParser::parse(Icd::VehiclePtrArray &vehicles, int deep) const
 {
     TiXmlElement *emRoot = readElementRoot();
@@ -357,6 +364,12 @@ bool XmlParser::parse(const std::string &tableId, TablePtr &table) const
     return true;
 }
 
+bool XmlParser::save(const RootPtr &root) const
+{
+    Q_UNUSED(root);
+    return false;
+}
+
 bool XmlParser::save(const Icd::VehiclePtrArray &vehicles) const
 {
     // create root element
@@ -533,6 +546,26 @@ bool XmlParser::save(const TablePtr &table) const
     delete document;
 
     return true;
+}
+
+bool XmlParser::beginModify()
+{
+    return false;
+}
+
+bool XmlParser::commitModify()
+{
+    return false;
+}
+
+bool XmlParser::cancelModify()
+{
+    return false;
+}
+
+bool XmlParser::endModify()
+{
+    return false;
 }
 
 bool XmlParser::startup()

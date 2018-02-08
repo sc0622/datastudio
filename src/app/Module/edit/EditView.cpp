@@ -67,27 +67,28 @@ void View::updateToolBar()
         jnotify->send("database.config", args);
     });
     d_toolBar->addSeparator();
+    // view
+    addViewAction(option);
+    d_toolBar->addSeparator();
     // copy
     QAction *actionCopy = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/copy.png"),
                                                tr("Copy"), this, [=](){
-        //
+        jnotify->send("edit.toolbar.tree.copy", d_treeView);
     });
     Q_UNUSED(actionCopy);
     // save
     QAction *actionSave = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save.png"),
                                                tr("Save"), this, [=](){
-        //
+        jnotify->send("edit.toolbar.tree.save", d_treeView);
     });
     Q_UNUSED(actionSave);
     actionSave->setEnabled(false);
     // saveAs
     QAction *actionSaveAs = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save-as.png"),
                                                  tr("Save as"), this, [=](){
-        //
+        jnotify->send("edit.toolbar.tree.saveas", d_treeView);
     });
     Q_UNUSED(actionSaveAs);
-    d_toolBar->addSeparator();
-    addViewAction(option);
     d_toolBar->addSeparator();
     addSettingsAction();
 }

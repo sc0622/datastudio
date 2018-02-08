@@ -7,6 +7,7 @@ namespace Edit {
 
 DetailView::DetailView(QWidget *parent)
     : QWidget(parent)
+    , d_currentData({nullptr, nullptr})
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -37,9 +38,51 @@ bool DetailView::init()
     return result;
 }
 
-bool DetailView::updateView(const Icd::ObjectPtr &object)
+void DetailView::updateView(QStandardItem *item)
 {
-    return true;
+    d_detailTable->resetView();
+    d_detailItemEdit->resetView();
+
+    d_currentData.item = item;
+    d_currentData.object = nullptr;
+
+    if (!item) {
+        return;
+    }
+
+    Icd::ParserPtr parser = JMain::instance()->parser("edit");
+    if (!parser) {
+        return;
+    }
+
+    const QString &domain = item->data(Icd::TreeItemDomainRole).toString();
+    if (domain.isEmpty()) {
+        return;
+    }
+
+    int objectType = Icd::ObjectInvalid;
+    switch (item->type()) {
+    case Icd::TreeItemTypeVehicle: objectType = Icd::ObjectVehicle; break;
+    case Icd::TreeItemTypeSystem: objectType = Icd::ObjectSystem; break;
+    case Icd::TreeItemTypeTable: objectType = Icd::ObjectTable; break;
+    case Icd::TreeItemTypeDataItem: objectType = Icd::ObjectItem; break;
+    case Icd::TreeItemTypeItemTable: objectType = Icd::ObjectItem; break;
+    //case Icd::TreeItemTypeItemBitMap: objectType = Icd::ObjectItem; break;
+    default:
+        break;
+    }
+
+    if (objectType == Icd::ObjectInvalid) {
+        return;
+    }
+
+    Icd::ObjectPtr object = parser->parse(domain.toStdString(), objectType, 1);
+    if (!object) {
+        return;
+    }
+
+    d_detailTable->updateView(object);
+    d_detailItemEdit->updateView(object);
 }
 
 }

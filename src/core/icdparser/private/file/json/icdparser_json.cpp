@@ -17,6 +17,23 @@ JsonParser::~JsonParser()
 
 }
 
+bool JsonParser::parse(RootPtr &root, int deep) const
+{
+    const Json::Value rootJson = queryRoot();
+    if (rootJson == Json::Value::null) {
+        return false;
+    }
+
+    Icd::RootPtr _root(new Icd::Root());
+    if (!_root->restore(rootJson, deep)) {
+        return false;
+    }
+
+    root = _root;
+
+    return true;
+}
+
 bool JsonParser::parse(Icd::VehiclePtrArray &vehicles, int deep) const
 {
     const Json::Value vehiclesJson = queryVehicles();
@@ -43,7 +60,7 @@ bool JsonParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle,
                        int deep) const
 {
     const Json::Value vehicleJson = queryVehicle(vehicleId);
-    if (vehicleJson.isNull()) {
+    if (vehicleJson == Json::Value::null) {
         return false;
     }
 
@@ -84,7 +101,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
                        Icd::SystemPtr &system, int deep) const
 {
     const Json::Value systemJson = querySystem(vehicleId, systemId);
-    if (systemJson.isNull()) {
+    if (systemJson == Json::Value::null) {
         return false;
     }
 
@@ -245,6 +262,15 @@ bool JsonParser::parse(const std::string &tableId, TablePtr &table) const
     return true;
 }
 
+bool JsonParser::save(const RootPtr &root) const
+{
+    if (!root) {
+        return false;
+    }
+
+    return Json::make(filePath(), root->save(), true, true);
+}
+
 bool JsonParser::save(const VehiclePtrArray &vehicles) const
 {
     Json::Value vehiclesJson(Json::arrayValue);
@@ -388,6 +414,135 @@ bool JsonParser::save(const TablePtr &table) const
     Json::Value tablesJson(Json::arrayValue);
     tablesJson.append(table->save());
     return Json::make(filePath(), tablesJson, true, true);
+}
+
+bool JsonParser::beginModify()
+{
+    if (Parser::isBeginModify()) {
+        return true;
+    }
+
+    const std::string basePath = this->basePath();
+    const std::string fileName = this->fileName();
+
+    if (fileName.empty() || fileName.at(0) == '~') {
+        return false;
+    }
+
+    const std::string tFilePath = FileParser::fullPath(basePath, '~' + fileName);
+    const std::string filePath = FileParser::fullPath(basePath, fileName);
+
+    if (FileParser::exists(tFilePath)) {
+        if (!FileParser::remove(tFilePath)) {
+            return false;
+        }
+    }
+
+    if (!FileParser::copy(filePath, tFilePath)) {
+        return false;
+    }
+
+    setFilePath(tFilePath);
+
+    return Parser::beginModify();
+}
+
+bool JsonParser::commitModify()
+{
+    if (!Parser::isBeginModify()) {
+        return false;
+    }
+
+    const std::string basePath = this->basePath();
+    const std::string fileName = this->fileName();
+
+    if (fileName.empty() || fileName.at(0) != '~') {
+        return false;
+    }
+
+    const std::string tFilePath = FileParser::fullPath(basePath, fileName);
+
+    if (!FileParser::exists(tFilePath)) {
+        return false;
+    }
+
+    const std::string filePath = FileParser::fullPath(basePath, fileName.substr(1));
+
+    if (!FileParser::remove(filePath)) {
+        return false;
+    }
+
+    if (!FileParser::copy(tFilePath, filePath)) {
+        return false;
+    }
+
+    return true;
+}
+
+bool JsonParser::cancelModify()
+{
+    if (!Parser::isBeginModify()) {
+        return true;
+    }
+
+    const std::string basePath = this->basePath();
+    const std::string fileName = this->fileName();
+
+    if (fileName.empty() || fileName.at(0) != '~') {
+        return false;
+    }
+
+    const std::string tFilePath = FileParser::fullPath(basePath, fileName);
+    const std::string filePath = FileParser::fullPath(basePath, fileName.substr(1));
+
+    if (FileParser::exists(tFilePath)) {
+        if (!FileParser::remove(tFilePath)) {
+            return false;
+        }
+    }
+
+    if (!FileParser::copy(filePath, tFilePath)) {
+        return false;
+    }
+
+    return Parser::cancelModify();
+}
+
+bool JsonParser::endModify()
+{
+    if (!Parser::isBeginModify()) {
+        return true;
+    }
+
+    const std::string basePath = this->basePath();
+    const std::string fileName = this->fileName();
+
+    if (fileName.empty() || fileName.at(0) != '~') {
+        return false;
+    }
+
+    const std::string tFilePath = FileParser::fullPath(basePath, fileName);
+    const std::string filePath = FileParser::fullPath(basePath, fileName.substr(1));
+
+    if (FileParser::exists(tFilePath)) {
+        if (!FileParser::remove(tFilePath)) {
+            return false;
+        }
+    }
+
+    setFilePath(filePath);
+
+    return Parser::endModify();
+}
+
+Json::Value JsonParser::queryRoot() const
+{
+    Json::Value rootJson;
+    if (!Json::resolve(filePath(), rootJson) || !rootJson.isObject()) {
+        return Json::Value::null;
+    }
+
+    return rootJson;
 }
 
 Json::Value JsonParser::queryVehicles() const

@@ -15,5 +15,6 @@
 #include "icd_table.h"
 #include "icd_system.h"
 #include "icd_vehicle.h"
+#include "icd_root.h"
 
 #endif // ICDCORE_INC_H

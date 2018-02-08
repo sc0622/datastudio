@@ -44,19 +44,7 @@ bool SetView::init()
 void SetView::onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous)
 {
     Q_UNUSED(previous);
-
-    if (!current) {
-        d_detailView->updateView(nullptr);
-        return;
-    }
-
-    const QString &domain = current->data(Icd::TreeItemDomainRole).toString();
-    if (domain.isEmpty()) {
-        d_detailView->updateView(nullptr);
-        return;
-    }
-
-    //
+    d_detailView->updateView(current);
 }
 
 }

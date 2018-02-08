@@ -2,7 +2,6 @@
 #define ICD_VEHICLE_H
 
 #include "icdcore_global.h"
-#include "icd_object.h"
 #include <string>
 #include <vector>
 #include "icd_system.h"

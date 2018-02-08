@@ -18,6 +18,7 @@ public:
 
     static SqlParserPtr create(const Json::Value &config);
 
+    bool parse(RootPtr &root, int deep) const;
     bool parse(Icd::VehiclePtrArray &vehicles, int deep) const;
     bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const;
     bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const;
@@ -35,6 +36,7 @@ public:
     bool parse(Icd::TablePtrArray &tables) const;
     bool parse(const std::string &tableId, Icd::TablePtr &table) const;
 
+    bool save(const RootPtr &root) const;
     bool save(Icd::VehiclePtrArray &vehicles) const;
     bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const;
     bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const;
@@ -53,8 +55,12 @@ public:
     bool save(const std::string &tableId, const Icd::TablePtr &table) const;
     bool save(const std::string &domain, const Icd::ObjectPtr &object,
               bool merge = false, bool fast = false) const;
-
     bool save(const Icd::TablePtr &table) const;
+
+    bool beginModify();
+    bool commitModify();
+    bool cancelModify();
+    bool endModify();
 
 private:
     SqlParserData *d;

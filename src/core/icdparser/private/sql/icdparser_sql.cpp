@@ -26,6 +26,13 @@ SqlParserPtr SqlParser::create(const Json::Value &config)
     return SqlParserPtr();
 }
 
+bool SqlParser::parse(RootPtr &root, int deep) const
+{
+    Q_UNUSED(root);
+    Q_UNUSED(deep);
+    return false;
+}
+
 bool SqlParser::parse(VehiclePtrArray &vehicles, int deep) const
 {
     Q_UNUSED(vehicles);
@@ -116,6 +123,12 @@ bool SqlParser::parse(const std::string &tableId, TablePtr &table) const
 {
     Q_UNUSED(tableId);
     Q_UNUSED(table);
+    return false;
+}
+
+bool SqlParser::save(const RootPtr &root) const
+{
+    Q_UNUSED(root);
     return false;
 }
 
@@ -215,6 +228,26 @@ bool SqlParser::save(const std::string &domain, const ObjectPtr &object, bool me
 bool SqlParser::save(const TablePtr &table) const
 {
     Q_UNUSED(table);
+    return false;
+}
+
+bool SqlParser::beginModify()
+{
+    return false;
+}
+
+bool SqlParser::commitModify()
+{
+    return false;
+}
+
+bool SqlParser::cancelModify()
+{
+    return false;
+}
+
+bool SqlParser::endModify()
+{
     return false;
 }
 

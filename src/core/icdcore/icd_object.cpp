@@ -196,6 +196,7 @@ int Object::childCount() const
 std::string Object::objectTypeString() const
 {
     switch (d->objectType) {
+    case ObjectRoot: return "Root";
     case ObjectVehicle: return "Vehicle";
     case ObjectSystem: return "System";
     case ObjectTable: return "Table";

@@ -16,6 +16,7 @@ public:
         : canceledSaveAs(true)
         , progressValue(0)
         , mutex(QMutex::Recursive)
+        , isBeginModify(false)
     {
 
     }
@@ -25,6 +26,7 @@ private:
     qreal progressValue;
     bool canceledSaveAs;
     QMutex mutex;
+    bool isBeginModify;
 };
 
 Parser::Parser(const Json::Value &config)
@@ -35,6 +37,7 @@ Parser::Parser(const Json::Value &config)
 
 Parser::~Parser()
 {
+    endModify();
     delete d;
 }
 
@@ -61,21 +64,28 @@ ParserPtr Parser::create(const Json::Value &config)
 ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) const
 {
     switch (objectType) {
+    case Icd::ObjectRoot:
+    {
+        Icd::RootPtr root;
+        if (!parse(root, qMin<int>(objectType + deep, Icd::ObjectItem))) {
+            return Icd::ObjectPtr();
+        }
+        return root;
+    }
     case Icd::ObjectVehicle:
     {
         Icd::VehiclePtr vehicle;
-        if (!parse(domain, vehicle, objectType + deep)) {
+        if (!parse(domain, vehicle, qMin<int>(objectType + deep, Icd::ObjectItem))) {
             return Icd::ObjectPtr();
         }
         return vehicle;
-        break;
     }
     case Icd::ObjectSystem:
     {
         Icd::SystemPtr system;
         if (!parse(Icd::stringSection(domain, '/', 0, 0),
                    Icd::stringSection(domain, '/', 1, 1),
-                   system, objectType + deep)) {
+                   system, qMin<int>(objectType + deep, Icd::ObjectItem))) {
             return Icd::ObjectPtr();
         }
         return system;
@@ -86,7 +96,7 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) con
         if (!parse(Icd::stringSection(domain, '/', 0, 0),
                    Icd::stringSection(domain, '/', 1, 1),
                    Icd::stringSection(domain, '/', 2, 2),
-                   table, objectType + deep)) {
+                   table, qMin<int>(objectType + deep, Icd::ObjectItem))) {
             return Icd::ObjectPtr();
         }
         return table;
@@ -97,7 +107,7 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) con
         if (!parse(Icd::stringSection(domain, '/', 0, 0),
                    Icd::stringSection(domain, '/', 1, 1),
                    Icd::stringSection(domain, '/', 2, 2),
-                   table, objectType + deep)) {
+                   table, qMin<int>(objectType + deep, Icd::ObjectItem))) {
             return Icd::ObjectPtr();
         }
         return table->itemByDomain(Icd::stringSection(domain, '/', 3));
@@ -117,6 +127,35 @@ bool Parser::save(const std::string &domain, const ObjectPtr &object,
     Q_UNUSED(merge);
     Q_UNUSED(fast);
     return false;
+}
+
+bool Parser::beginModify()
+{
+    d->isBeginModify = true;
+
+    return true;
+}
+
+bool Parser::commitModify()
+{
+    return true;
+}
+
+bool Parser::cancelModify()
+{
+    return true;
+}
+
+bool Parser::endModify()
+{
+    d->isBeginModify = false;
+
+    return true;
+}
+
+bool Parser::isBeginModify() const
+{
+    return d->isBeginModify;
 }
 
 bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,

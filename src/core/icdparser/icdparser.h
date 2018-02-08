@@ -10,6 +10,10 @@ namespace Json { class Value; }
 namespace Icd {
 
 //
+class Root;
+typedef JHandlePtr<Root> RootPtr;
+
+//
 class Object;
 typedef JHandlePtr<Object> ObjectPtr;
 typedef std::vector<ObjectPtr> ObjectPtrArray;
@@ -47,6 +51,7 @@ public:
 
     static ParserPtr create(const Json::Value &config);
 
+    virtual bool parse(RootPtr &root, int deep) const = 0;
     virtual bool parse(Icd::VehiclePtrArray &vehicles, int deep) const = 0;
     virtual bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const = 0;
     virtual bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const = 0;
@@ -65,6 +70,7 @@ public:
     virtual bool parse(const std::string &tableId, Icd::TablePtr &table) const = 0;
     Icd::ObjectPtr parse(const std::string &domain, int objectType, int deep = 1) const;
 
+    virtual bool save(const RootPtr &root) const = 0;
     virtual bool save(const Icd::VehiclePtrArray &vehicles) const = 0;
     virtual bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const = 0;
     virtual bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const = 0;
@@ -81,10 +87,15 @@ public:
                       const Icd::ItemPtr &item) const = 0;
     virtual bool save(const Icd::TablePtrArray &tables) const = 0;
     virtual bool save(const std::string &tableId, const Icd::TablePtr &table) const = 0;
+    virtual bool save(const Icd::TablePtr &table) const = 0;
     bool save(const std::string &domain, const Icd::ObjectPtr &object,
               bool merge = false, bool fast = false) const;
 
-    virtual bool save(const Icd::TablePtr &table) const = 0;
+    virtual bool beginModify();
+    virtual bool commitModify();
+    virtual bool cancelModify();
+    virtual bool endModify();
+    bool isBeginModify() const;
 
     bool saveAs(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath);
     bool saveAs(const Icd::TablePtr &table, const std::string &filePath);

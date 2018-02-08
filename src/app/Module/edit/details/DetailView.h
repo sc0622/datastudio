@@ -5,6 +5,7 @@
 #include "main_global.h"
 
 class JSplitter;
+class QStandardItem;
 
 namespace Icd {
 class Object;
@@ -25,7 +26,7 @@ public:
 
     bool init();
 
-    bool updateView(const Icd::ObjectPtr &object);
+    void updateView(QStandardItem *item);
 
 signals:
 
@@ -35,6 +36,10 @@ private:
     JSplitter *d_splitterMain;
     DetailTable *d_detailTable;
     DetailItemEdit *d_detailItemEdit;
+    struct {
+        QStandardItem *item;
+        Icd::ObjectPtr object;
+    } d_currentData;
 };
 
 }

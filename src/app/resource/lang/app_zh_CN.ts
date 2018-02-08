@@ -53,48 +53,48 @@
 <context>
     <name>Analyse::TreeView</name>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="117"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="121"/>
         <source>Any file (*.*)</source>
         <translation>Any (*.*)</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="119"/>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="235"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="123"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="239"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="238"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="242"/>
         <source>Parsing data file...</source>
         <translation>正在解析数据文件…</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="267"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="271"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="268"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="272"/>
         <source>Parse failure! There&apos;re no valid data.</source>
         <translation>解析失败！没有有效数据。</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="302"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="306"/>
         <source>Parse success</source>
         <translation>解析成功</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="304"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="308"/>
         <source>Parse failure!</source>
         <translation>解析失败！</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="307"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="311"/>
         <source>Parsing result</source>
         <translation>解析结果</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="379"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="383"/>
         <source>--</source>
         <translation>——</translation>
     </message>
@@ -337,27 +337,27 @@
 <context>
     <name>Edit::SettingsDlg</name>
     <message>
-        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="111"/>
+        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="112"/>
         <source>Other settings for edition module</source>
         <translation>编辑图模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="121"/>
+        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="122"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="125"/>
+        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="126"/>
         <source>Edition view</source>
         <translation>编辑视图</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="134"/>
+        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="135"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="138"/>
+        <location filename="../../Module/edit/EditSettingsDlg.cpp" line="139"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -408,37 +408,37 @@
         <translation>数据来源</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="192"/>
+        <location filename="../../Module/edit/EditView.cpp" line="193"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="101"/>
+        <location filename="../../Module/edit/EditView.cpp" line="102"/>
         <source>Show data</source>
         <translation>数据显示</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="72"/>
+        <location filename="../../Module/edit/EditView.cpp" line="75"/>
         <source>Copy</source>
         <translation>复制数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="78"/>
+        <location filename="../../Module/edit/EditView.cpp" line="81"/>
         <source>Save</source>
         <translation>保存数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="85"/>
+        <location filename="../../Module/edit/EditView.cpp" line="88"/>
         <source>Save as</source>
         <translation>另存数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="109"/>
+        <location filename="../../Module/edit/EditView.cpp" line="110"/>
         <source>Show offset</source>
         <translation>显示偏移</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="125"/>
+        <location filename="../../Module/edit/EditView.cpp" line="126"/>
         <source>Show type</source>
         <translation>显示类型</translation>
     </message>
@@ -455,27 +455,27 @@
         <translation type="vanished">数值描述</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="160"/>
+        <location filename="../../Module/edit/EditView.cpp" line="161"/>
         <source>Hide</source>
         <translation>不显示</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="165"/>
+        <location filename="../../Module/edit/EditView.cpp" line="166"/>
         <source>Decimal integer</source>
         <translation>十进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="170"/>
+        <location filename="../../Module/edit/EditView.cpp" line="171"/>
         <source>Hexadecimal integer</source>
         <translation>十六进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="175"/>
+        <location filename="../../Module/edit/EditView.cpp" line="176"/>
         <source>Binary integer</source>
         <translation>二进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="180"/>
+        <location filename="../../Module/edit/EditView.cpp" line="181"/>
         <source>Octal integer</source>
         <translation>八进制</translation>
     </message>
@@ -625,12 +625,12 @@
 <context>
     <name>Monitor::ChartViewSettings</name>
     <message>
-        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="84"/>
+        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="85"/>
         <source>Column count:</source>
         <translation>图表列数：</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="89"/>
+        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="90"/>
         <source>Y-label width:</source>
         <translation>纵轴标签字符宽度：</translation>
     </message>
@@ -638,27 +638,27 @@
 <context>
     <name>Monitor::SettingsDlg</name>
     <message>
-        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="150"/>
+        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="151"/>
         <source>Other settings for monitor module</source>
         <translation>监测模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="160"/>
+        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="161"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="164"/>
+        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="165"/>
         <source>Chart view</source>
         <translation>图表视图</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="173"/>
+        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="174"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="177"/>
+        <location filename="../../Module/monitor/MonitorSettingsDlg.cpp" line="178"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -666,32 +666,32 @@
 <context>
     <name>Monitor::TreeView</name>
     <message>
-        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="130"/>
+        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="134"/>
         <source>Input period of flushing</source>
         <translation>刷新周期输入</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="131"/>
+        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="135"/>
         <source>Flushing period:</source>
         <translation>刷新周期：</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="132"/>
+        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="136"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="133"/>
+        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="137"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="147"/>
+        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="151"/>
         <source>Select channel binding file</source>
         <translation>选择通道绑定文件</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="159"/>
+        <location filename="../../Module/monitor/MonitorTreeView.cpp" line="163"/>
         <source>Save channel binding relations</source>
         <translation>保存通道绑定关系</translation>
     </message>
@@ -918,27 +918,27 @@
 <context>
     <name>Simulate::SettingsDlg</name>
     <message>
-        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="111"/>
+        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="112"/>
         <source>Other settings for simulate module</source>
         <translation>仿真模块其他配置</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="121"/>
+        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="122"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="125"/>
+        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="126"/>
         <source>Set view</source>
         <translation>设置视图</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="134"/>
+        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="135"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="138"/>
+        <location filename="../../Module/simulate/SimulateSettingsDlg.cpp" line="139"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -946,32 +946,32 @@
 <context>
     <name>Simulate::TreeView</name>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="134"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="135"/>
         <source>Input period of flushing</source>
         <translation>刷新周期输入</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="135"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="136"/>
         <source>Flushing period:</source>
         <translation>刷新周期：</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="136"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="137"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="137"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="138"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="150"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="151"/>
         <source>Select channel binding file</source>
         <translation>选择通道绑定文件</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="162"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="163"/>
         <source>Save channel binding relations</source>
         <translation>保存通道绑定关系</translation>
     </message>

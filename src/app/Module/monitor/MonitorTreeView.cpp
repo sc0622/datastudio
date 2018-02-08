@@ -70,9 +70,13 @@ TreeView::TreeView(QWidget *parent)
         }
     });
     jnotify->on("monitor.parser.inst", this, [=](JNEvent &event){
-        Icd::JParserPtrHandle handle;
-        handle.parser = d_treeView->parser();
-        event.setReturnValue(qVariantFromValue((void *)&handle));
+        Icd::JParserPtrHandle *handle =
+                jVariantFromVoid<Icd::JParserPtrHandle>(event.argument());
+        if (!handle) {
+            return;
+        }
+        handle->parser = d_treeView->parser();
+        event.setReturnValue(true);
     });
     jnotify->on("monitor.toolbar.database.config", this, [=](JNEvent &){
         QVariantList args;

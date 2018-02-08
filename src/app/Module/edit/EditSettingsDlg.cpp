@@ -13,10 +13,10 @@ TreeViewSettings::TreeViewSettings(QWidget *parent)
     formLayoutMain->setLabelAlignment(Qt::AlignRight);
 
     d_comboBoxDeep = new QComboBox(this);
-    d_comboBoxDeep->addItem(tr("Vehicle"), 0);
-    d_comboBoxDeep->addItem(tr("System"), 1);
-    d_comboBoxDeep->addItem(tr("Table"), 2);
-    d_comboBoxDeep->addItem(tr("Item"), 3);
+    d_comboBoxDeep->addItem(tr("Vehicle"), Icd::ObjectVehicle);
+    d_comboBoxDeep->addItem(tr("System"), Icd::ObjectSystem);
+    d_comboBoxDeep->addItem(tr("Table"), Icd::ObjectTable);
+    d_comboBoxDeep->addItem(tr("Item"), Icd::ObjectItem);
     d_comboBoxDeep->setCurrentIndex(1);
     formLayoutMain->addRow(tr("Loading deep:"), d_comboBoxDeep);
 
@@ -60,7 +60,8 @@ bool TreeViewSettings::init()
     }
 
     if (option.isMember("loadDeep")) {
-        const int deep = qBound(0, option["loadDeep"].asInt(), d_comboBoxDeep->count() - 1);
+        const int deep = qBound(0, option["loadDeep"].asInt() - Icd::ObjectVehicle,
+                d_comboBoxDeep->count() - 1);
         d_comboBoxDeep->setCurrentIndex(deep);
     } else {
         d_comboBoxDeep->setCurrentIndex(1);

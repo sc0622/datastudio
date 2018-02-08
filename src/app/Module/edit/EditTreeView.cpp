@@ -41,9 +41,13 @@ TreeView::TreeView(QWidget *parent)
         }
     });
     jnotify->on("edit.parser.inst", this, [=](JNEvent &event){
-        Icd::JParserPtrHandle handle;
-        handle.parser = d_treeView->parser();
-        event.setReturnValue(qVariantFromValue((void *)&handle));
+        Icd::JParserPtrHandle *handle =
+                jVariantFromVoid<Icd::JParserPtrHandle>(event.argument());
+        if (!handle) {
+            return;
+        }
+        handle->parser = d_treeView->parser();
+        event.setReturnValue(true);
     });
     jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
         QVariantList args;
@@ -67,11 +71,24 @@ TreeView::TreeView(QWidget *parent)
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
         JMain::instance()->setOption("edit", "option.tree.showType", checked);
     });
+    jnotify->on("edit.toolbar.tree.copy", this, [=](JNEvent &){
+    });
+    jnotify->on("edit.toolbar.tree.save", this, [=](JNEvent &){
+        Icd::ParserPtr parser = d_treeView->parser();
+        if (parser) {
+            parser->commitModify();
+        }
+    });
+    jnotify->on("edit.toolbar.tree.saveas", this, [=](JNEvent &){
+    });
 }
 
 TreeView::~TreeView()
 {
-
+    Icd::ParserPtr parser = d_treeView->parser();
+    if (parser) {
+        parser->endModify();
+    }
 }
 
 bool TreeView::init()
@@ -113,6 +130,9 @@ bool TreeView::updateParser()
     if (!parser) {
         return false;
     }
+
+    //
+    parser->beginModify();
 
     d_treeView->setParser(parser);
 

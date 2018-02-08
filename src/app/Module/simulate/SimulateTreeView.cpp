@@ -70,7 +70,8 @@ TreeView::TreeView(QWidget *parent)
         }
     });
     jnotify->on("simulate.parser.inst", this, [=](JNEvent &event){
-        Icd::JParserPtrHandle *handle = jVariantFromVoid<Icd::JParserPtrHandle>(event.argument());
+        Icd::JParserPtrHandle *handle =
+                jVariantFromVoid<Icd::JParserPtrHandle>(event.argument());
         if (!handle) {
             return;
         }

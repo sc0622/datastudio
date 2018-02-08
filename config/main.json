@@ -25,7 +25,7 @@
                "xAxisSync" : true
             },
             "tree" : {
-               "loadDeep" : 1,
+               "loadDeep" : 2,
                "showOffset" : true,
                "showType" : true
             }
@@ -62,7 +62,7 @@
             },
             "tree" : {
                "flushEnabled" : true,
-               "loadDeep" : 1,
+               "loadDeep" : 2,
                "showDesc" : true,
                "showOffset" : true,
                "showOrignal" : 0,
@@ -79,7 +79,7 @@
          "option" : {
             "tree" : {
                "flushEnabled" : true,
-               "loadDeep" : 1,
+               "loadDeep" : 2,
                "showDesc" : true,
                "showOffset" : true,
                "showOrignal" : 0,

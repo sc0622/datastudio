@@ -11,6 +11,7 @@ namespace Icd {
  */
 enum ObjectType {
     ObjectInvalid = -1,
+    ObjectRoot,
     ObjectVehicle,
     ObjectSystem,
     ObjectTable,

@@ -4,6 +4,31 @@
 #include "../../../icdwidget/icdwidget_global.h"
 #include "json/icdparser_json.h"
 #include "xml/icdparser_xml.h"
+#include <fstream>
+#include <io.h>
+#if defined(_MSC_VER)
+#include <direct.h>
+#include <stdint.h>
+#elif defined(__unix__)
+#include <unistd.h>
+#include <sys/stat.h>
+#else
+#error(not supported os!)
+#endif
+
+#ifndef MAX_PATH_LEN
+#define MAX_PATH_LEN 256
+#endif
+
+#ifdef _MSC_VER
+#define ACCESS(fileName, accessMode) \
+    _access(fileName, accessMode)
+#define MKDIR(path) _mkdir(path)
+#else
+#define ACCESS(fileName, accessMode) \
+    access(fileName, accessMode)
+#define MKDIR(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#endif
 
 namespace Icd {
 
@@ -51,6 +76,97 @@ FileParserPtr FileParser::create(const Json::Value &config)
 std::string FileParser::filePath() const
 {
     return d->filePath;
+}
+
+void FileParser::setFilePath(const std::string &filePath)
+{
+    if (d->filePath.empty()) {
+        d->filePath = filePath;
+    } else if (suffix() == suffix(filePath)) {
+        d->filePath = filePath;
+    }
+}
+
+std::string FileParser::basePath() const
+{
+    std::string::size_type index = d->filePath.find_last_of('/');
+    if (index == std::string::npos) {
+        return d->filePath.substr(0, d->filePath.find_last_of('\\'));
+    } else {
+        return d->filePath.substr(0, index);
+    }
+}
+
+std::string FileParser::fileName() const
+{
+    std::string::size_type index = d->filePath.find_last_of('/');
+    if (index == std::string::npos) {
+        index = d->filePath.find_last_of('\\');
+        if (index == std::string::npos) {
+            return d->filePath;
+        } else {
+            return d->filePath.substr(index + 1);
+        }
+    } else {
+        return d->filePath.substr(index + 1);
+    }
+}
+
+std::string FileParser::suffix() const
+{
+    return suffix(d->filePath);
+}
+
+std::string FileParser::suffix(const std::string &fileName)
+{
+    std::string::size_type index = fileName.find_last_of('.');
+    if (index == std::string::npos) {
+        return std::string();
+    }
+
+    return fileName.substr(index + 1);
+}
+
+bool FileParser::exists(const std::string &filePath)
+{
+    return (ACCESS(filePath.c_str(), 0) != -1);
+}
+
+bool FileParser::copy(const std::string &from, const std::string &to)
+{
+    std::ifstream in(from, std::ios::binary);
+    if (!in.is_open()) {
+        return false;
+    }
+    std::ofstream out(to, std::ios::binary);
+    if (!out.is_open()) {
+        return false;
+    }
+
+    out << in.rdbuf();
+
+    return true;
+}
+
+bool FileParser::rename(const std::string &from, const std::string &to)
+{
+    return (::rename(from.c_str(), to.c_str()) != 0);
+}
+
+bool FileParser::remove(const std::string &filePath)
+{
+    return (::remove(filePath.c_str()) == 0);
+}
+
+std::string FileParser::fullPath(const std::string &basePath, const std::string &fileName)
+{
+    if (basePath.empty()) {
+        return fileName;
+    } else if (fileName.empty()) {
+        return basePath;
+    } else {
+        return basePath + '/' + fileName;
+    }
 }
 
 Json::Value queryTable(const std::string &filePath, const std::string &vehicleId,
