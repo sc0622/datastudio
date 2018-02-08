@@ -64,7 +64,7 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) con
     case Icd::ObjectVehicle:
     {
         Icd::VehiclePtr vehicle;
-        if (!parseVehicle(domain, vehicle, objectType + deep)) {
+        if (!parse(domain, vehicle, objectType + deep)) {
             return Icd::ObjectPtr();
         }
         return vehicle;
@@ -73,9 +73,9 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) con
     case Icd::ObjectSystem:
     {
         Icd::SystemPtr system;
-        if (!parseSystem(Icd::stringSection(domain, '/', 0, 0),
-                         Icd::stringSection(domain, '/', 1, 1),
-                         system, objectType + deep)) {
+        if (!parse(Icd::stringSection(domain, '/', 0, 0),
+                   Icd::stringSection(domain, '/', 1, 1),
+                   system, objectType + deep)) {
             return Icd::ObjectPtr();
         }
         return system;
@@ -83,10 +83,10 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) con
     case Icd::ObjectTable:
     {
         Icd::TablePtr table;
-        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
-                        Icd::stringSection(domain, '/', 1, 1),
-                        Icd::stringSection(domain, '/', 2, 2),
-                        table, objectType + deep)) {
+        if (!parse(Icd::stringSection(domain, '/', 0, 0),
+                   Icd::stringSection(domain, '/', 1, 1),
+                   Icd::stringSection(domain, '/', 2, 2),
+                   table, objectType + deep)) {
             return Icd::ObjectPtr();
         }
         return table;
@@ -94,10 +94,10 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) con
     case Icd::ObjectItem:
     {
         Icd::TablePtr table;
-        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
-                        Icd::stringSection(domain, '/', 1, 1),
-                        Icd::stringSection(domain, '/', 2, 2),
-                        table, objectType + deep)) {
+        if (!parse(Icd::stringSection(domain, '/', 0, 0),
+                   Icd::stringSection(domain, '/', 1, 1),
+                   Icd::stringSection(domain, '/', 2, 2),
+                   table, objectType + deep)) {
             return Icd::ObjectPtr();
         }
         return table->itemByDomain(Icd::stringSection(domain, '/', 3));
@@ -107,6 +107,16 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) con
     }
 
     return Icd::ObjectPtr();
+}
+
+bool Parser::save(const std::string &domain, const ObjectPtr &object,
+                  bool merge, bool fast) const
+{
+    Q_UNUSED(domain);
+    Q_UNUSED(object);
+    Q_UNUSED(merge);
+    Q_UNUSED(fast);
+    return false;
 }
 
 bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,

@@ -34,9 +34,8 @@ bool ComMgrWidget::init()
 
 bool ComMgrWidget::loadChannelConfig()
 {
-    const Json::Value value =
-            Icd::JJson::value(JMain::instance()->configFile().toStdString(),
-                              "global/channel/filePath", false);
+    const Json::Value value = Json::resolve(JMain::instance()->configFile().toStdString(),
+                                            "global.channel.filePath");
     if (value.isNull()) {
         return false;
     }

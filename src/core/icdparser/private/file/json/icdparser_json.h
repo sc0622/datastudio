@@ -29,15 +29,15 @@ public:
                Icd::TablePtrArray &tables, int deep) const;
     bool parse(const std::string &vehicleId, const std::string &systemId,
                const std::string &tableId, Icd::TablePtr &table, int deep) const;
-    bool parse(Icd::TablePtrArray &tables) const;
-    bool parse(const std::string &tableId, Icd::TablePtr &table) const;
     bool parse(const std::string &vehicleId, const std::string &systemId,
                const std::string &tableId, Icd::ItemPtrArray &items, int deep) const;
     bool parse(const std::string &vehicleId, const std::string &systemId,
                const std::string &tableId, const std::string &itemId,
                Icd::ItemPtr &item, int deep) const;
+    bool parse(Icd::TablePtrArray &tables) const;
+    bool parse(const std::string &tableId, Icd::TablePtr &table) const;
 
-    bool save(Icd::VehiclePtrArray &vehicles,) const;
+    bool save(const Icd::VehiclePtrArray &vehicles) const;
     bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const;
     bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const;
     bool save(const std::string &vehicleId, const std::string &systemId,
@@ -46,25 +46,29 @@ public:
               const Icd::TablePtrArray &tables) const;
     bool save(const std::string &vehicleId, const std::string &systemId,
               const std::string &tableId, const Icd::TablePtr &table) const;
-    bool save(const Icd::TablePtrArray &tables) const;
-    bool save(const std::string &tableId, const Icd::TablePtr &table) const;
     bool save(const std::string &vehicleId, const std::string &systemId,
               const std::string &tableId, const Icd::ItemPtrArray &items) const;
     bool save(const std::string &vehicleId, const std::string &systemId,
               const std::string &tableId, const std::string &itemId,
               const Icd::ItemPtr &item) const;
-
+    bool save(const Icd::TablePtrArray &tables) const;
+    bool save(const std::string &tableId, const Icd::TablePtr &table) const;
     bool save(const Icd::TablePtr &table) const;
 
 public:
-    bool rootJson(Json::Value &value, bool create = false) const;
-    Json::Value findVehicle(const std::string &vehicleId) const;
-    Json::Value findSystem(const std::string &vehicleId, const std::string &systemId) const;
-    Json::Value findTable(const std::string &vehicleId, const std::string &systemId,
-                          const std::string &tableId) const;
-    Json::Value findTable(const std::string &tableId) const;
-    Json::Value findItem(const std::string &vehicleId, const std::string &systemId,
-                         const std::string &tableId, const std::string &itemId) const;
+    Json::Value queryVehicles() const;
+    Json::Value queryVehicle(const std::string &vehicleId) const;
+    Json::Value querySystems(const std::string &vehicleId) const;
+    Json::Value querySystem(const std::string &vehicleId, const std::string &systemId) const;
+    Json::Value queryTables(const std::string &vehicleId, const std::string &systemId) const;
+    Json::Value queryTable(const std::string &vehicleId, const std::string &systemId,
+                           const std::string &tableId) const;
+    Json::Value queryItems(const std::string &vehicleId, const std::string &systemId,
+                           const std::string &tableId) const;
+    Json::Value queryItem(const std::string &vehicleId, const std::string &systemId,
+                          const std::string &tableId, const std::string &itemId) const;
+    Json::Value queryTables() const;
+    Json::Value queryTable(const std::string &tableId) const;
 
     // Generator interface
 public:

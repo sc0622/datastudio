@@ -25,32 +25,32 @@ ChartView::ChartView(QWidget *parent)
     jnotify->on("analyse.toolbar.chart.xAxisSync", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_chartView->setXAxisSync(checked);
-        JMain::instance()->setOption("analyse", "option/chart/xAxisSync", checked, true);
+        JMain::instance()->setOption("analyse", "option.chart.xAxisSync", checked);
     });
     jnotify->on("analyse.toolbar.chart.showYLabel", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_chartView->showYLabel(checked);
-        JMain::instance()->setOption("analyse", "option/chart/showYLabel", checked, true);
+        JMain::instance()->setOption("analyse", "option.chart.showYLabel", checked);
     });
     jnotify->on("analyse.toolbar.chart.showYAlign", this, [=](JNEvent &event){
         const bool align = event.argument().toBool();
         d_chartView->showYAlign(align);
-        JMain::instance()->setOption("analyse", "option/chart/showYAlign", align, true);
+        JMain::instance()->setOption("analyse", "option.chart.showYAlign", align);
     });
     jnotify->on("analyse.toolbar.chart.syncTrack", this, [=](JNEvent &event){
         const bool enabled = event.argument().toBool();
         d_chartView->setSyncTrack(enabled);
-        JMain::instance()->setOption("analyse", "option/chart/syncTrack", enabled, true);
+        JMain::instance()->setOption("analyse", "option.chart.syncTrack", enabled);
     });
     jnotify->on("analyse.toolbar.chart.columnCount", this, [=](JNEvent &event){
         const int count = event.argument().toInt();
         d_chartView->setColumnCount(count);
-        JMain::instance()->setOption("analyse", "option/chart/columnCount", count, true);
+        JMain::instance()->setOption("analyse", "option.chart.columnCount", count);
     });
     jnotify->on("analyse.toolbar.chart.yLabelWidth", this, [=](JNEvent &event){
         const int length = event.argument().toInt();
         d_chartView->setYLabelLength(length);
-        JMain::instance()->setOption("analyse", "option/chart/yLabelWidth", length, true);
+        JMain::instance()->setOption("analyse", "option.chart.yLabelWidth", length);
     });
     jnotify->on("analyse.toolbar.chart.flushToggle", this, [=](JNEvent &event){
         const bool running = event.argument().toBool();
@@ -144,7 +144,7 @@ bool ChartView::init()
 {
     bool result = true;
 
-    Json::Value option = JMain::instance()->option("analyse", "option/chart");
+    Json::Value option = JMain::instance()->option("analyse", "option.chart");
     if (option.isNull()) {
         return false;
     }

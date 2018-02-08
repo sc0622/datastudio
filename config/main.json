@@ -39,7 +39,9 @@
          "option" : {
             "chart" : {},
             "tree" : {
-               "loadDeep" : 2
+               "loadDeep" : 2,
+               "showOffset" : true,
+               "showType" : true
             }
          },
          "parser" : {
@@ -63,7 +65,7 @@
                "loadDeep" : 1,
                "showDesc" : true,
                "showOffset" : true,
-               "showOrignal" : 10,
+               "showOrignal" : 0,
                "showType" : true,
                "showValue" : true
             }
@@ -80,7 +82,7 @@
                "loadDeep" : 1,
                "showDesc" : true,
                "showOffset" : true,
-               "showOrignal" : 10,
+               "showOrignal" : 0,
                "showType" : true,
                "showValue" : true
             }

@@ -105,10 +105,10 @@ bool JProtocolPrivate::load(QJSValue callback)
         config["sourceType"] = "file";
         config["filePath"] = filePath.toStdString();
         Icd::ParserPtr parser = Icd::Parser::create(config);
-        if (!parser->parseTable(queryPath.section('/', 0, 0).toStdString(),
-                                queryPath.section('/', 1, 1).toStdString(),
-                                queryPath.section('/', 2, 2).toStdString(),
-                                table, Icd::ObjectItem)) {
+        if (!parser->parse(queryPath.section('/', 0, 0).toStdString(),
+                           queryPath.section('/', 1, 1).toStdString(),
+                           queryPath.section('/', 2, 2).toStdString(),
+                           table, Icd::ObjectItem)) {
             return nullptr;
         }
         return table;

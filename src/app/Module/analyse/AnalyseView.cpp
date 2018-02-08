@@ -58,136 +58,23 @@ void View::updateToolBar()
 {
     d_toolBar->clear();
 
-    Json::Value option = JMain::instance()->option("analyse", "option/tree");
-    if (option.isNull()) {
-        Q_ASSERT(false);
-        return;
-    }
+    const Json::Value option = JMain::instance()->option("analyse", "option");
 
     // database
     d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
                          tr("Database"), this, [=](){
-        QVariantList args;
-        args.append("analyse");
-        args.append(qVariantFromValue((void*)d_treeView));
+        QVariantList args{"analyse", qVariantFromValue((void*)d_treeView)};
         jnotify->send("database.config", args);
     });
     d_toolBar->addSeparator();
     // view
     addViewAction(option);
     d_toolBar->addSeparator();
-    // load data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/load.png"),
-                         tr("Load data"), this, [=](){
-        jnotify->send("analyse.toolbar.tree.loadData", d_treeView);
-    });
-    // unload data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/unload.png"),
-                         tr("Unload data"), this, [=](){
-        jnotify->send("analyse.toolbar.tree.unloadData", d_treeView);
-    });
-    // convert data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/convert.png"),
-                         tr("Convert data"), this, [=](){
-        convertRecordData();
-    });
-    // set coordinate
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/coordinate.png"),
-                         tr("Set coordinate"), this, [=](){
-        jnotify->send("analyse.toolbar.chart.setCoordinate");
-    });
+    // tree
+    addTreeAction(option["tree"]);
     d_toolBar->addSeparator();
-    // update data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/update.png"),
-                         tr("Update data"), this, [=](){
-        jnotify->send("analyse.toolbar.chart.update");
-    });
-    // clear chart
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
-                         tr("Clear chart"), this, [=](){
-        jnotify->send("analyse.toolbar.chart.clean");
-    });
-    // column-width-same
-    QAction *actionColumnWidthSame = d_toolBar->addAction(
-                QIcon(":/datastudio/image/toolbar/colwidth-same.png"),
-                tr("Same column width"), this, [=](){
-        jnotify->send("analyse.toolbar.chart.columnWidthSame", d_chartView);
-    });
-    actionColumnWidthSame->trigger();
-    // x-label-sync
-    QAction *actionXAxisSync = d_toolBar->addAction(
-                QIcon(":/datastudio/image/toolbar/xlabel_sync.png"),
-                tr(" Synchronize x-label"));
-    actionXAxisSync->setCheckable(true);
-    connect(actionXAxisSync, &QAction::toggled, this, [=](bool checked){
-        jnotify->send("analyse.toolbar.chart.xAxisSync", d_chartView, checked);
-    });
-    if (option.isMember("xAxisSync")) {
-        const bool xAxisSync = option["xAxisSync"].asBool();
-        if (xAxisSync) {
-            actionXAxisSync->setChecked(xAxisSync);
-        } else {
-            d_chartView->setXAxisSync(false);
-        }
-    } else {
-        actionXAxisSync->setChecked(true);
-    }
-
-    // show y-label
-    QAction *actionYLabel = d_toolBar->addAction(
-                QIcon(":/datastudio/image/toolbar/ylabel.png"),
-                tr(" Show y-label"));
-    actionYLabel->setCheckable(true);
-    connect(actionYLabel, &QAction::toggled, this, [=](bool checked){
-        jnotify->send("analyse.toolbar.chart.showYLabel", d_chartView, checked);
-    });
-    if (option.isMember("showYLabel")) {
-        const bool showYLabel = option["showYLabel"].asBool();
-        if (showYLabel) {
-            actionYLabel->setChecked(showYLabel);
-        } else {
-            d_chartView->showYLabel(false);
-        }
-    } else {
-        actionYLabel->setChecked(true);
-    }
-    // show y-align
-    QAction *actionYAlign = d_toolBar->addAction(
-                QIcon(":/datastudio/image/toolbar/align-left.png"),
-                tr(" Show y-align"));
-    actionYAlign->setCheckable(true);
-    connect(actionYAlign, &QAction::toggled, this, [=](bool checked){
-        jnotify->send("analyse.toolbar.chart.showYAlign", d_chartView, checked);
-    });
-    if (option.isMember("showYAlign")) {
-        const bool showYAlign = option["showYAlign"].asBool();
-        if (showYAlign) {
-            actionYAlign->setChecked(showYAlign);
-        } else {
-            d_chartView->showYAlign(false);
-        }
-    } else {
-        actionYAlign->setChecked(true);
-    }
-    // sync-track
-    QAction *actionSyncTrack = d_toolBar->addAction(
-                QIcon(":/datastudio/image/toolbar/sync-track.png"),
-                tr(" Synchronize track"));
-    actionSyncTrack->setCheckable(true);
-    connect(actionSyncTrack, &QAction::toggled, this, [=](bool checked){
-        jnotify->send("analyse.toolbar.chart.syncTrack", d_chartView, checked);
-    });
-    if (option.isMember("syncTrack")) {
-        const bool syncTrack = option["syncTrack"].asBool();
-        if (syncTrack) {
-            actionSyncTrack->setChecked(syncTrack);
-        } else {
-            d_chartView->setSyncTrack(false);
-        }
-    } else {
-        actionSyncTrack->setChecked(true);
-    }
-
+    // chart
+    addChartAction(option["chart"]);
     d_toolBar->addSeparator();
     addSettingsAction();
 }
@@ -242,6 +129,124 @@ void View::addViewAction(const Json::Value &option)
         actionOffset->setChecked(checked);
         actionType->setChecked(checked);
     });
+}
+
+void View::addTreeAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    // load data
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/load.png"),
+                         tr("Load data"), this, [=](){
+        jnotify->send("analyse.toolbar.tree.loadData", d_treeView);
+    });
+    // unload data
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/unload.png"),
+                         tr("Unload data"), this, [=](){
+        jnotify->send("analyse.toolbar.tree.unloadData", d_treeView);
+    });
+    // convert data
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/convert.png"),
+                         tr("Convert data"), this, [=](){
+        convertRecordData();
+    });
+}
+
+void View::addChartAction(const Json::Value &option)
+{
+    // set coordinate
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/coordinate.png"),
+                         tr("Set coordinate"), this, [=](){
+        jnotify->send("analyse.toolbar.chart.setCoordinate");
+    });
+    // update data
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/update.png"),
+                         tr("Update data"), this, [=](){
+        jnotify->send("analyse.toolbar.chart.update");
+    });
+    // clear chart
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
+                         tr("Clear chart"), this, [=](){
+        jnotify->send("analyse.toolbar.chart.clean");
+    });
+    // column-width-same
+    QAction *actionColumnWidthSame = d_toolBar->addAction(
+                QIcon(":/datastudio/image/toolbar/colwidth-same.png"),
+                tr("Same column width"), this, [=](){
+        jnotify->send("analyse.toolbar.chart.columnWidthSame", d_chartView);
+    });
+    actionColumnWidthSame->trigger();
+    // x-label-sync
+    QAction *actionXAxisSync = d_toolBar->addAction(
+                QIcon(":/datastudio/image/toolbar/xlabel_sync.png"),
+                tr(" Synchronize x-label"));
+    actionXAxisSync->setCheckable(true);
+    connect(actionXAxisSync, &QAction::toggled, this, [=](bool checked){
+        jnotify->send("analyse.toolbar.chart.xAxisSync", d_chartView, checked);
+    });
+    if (option.isMember("xAxisSync")) {
+        const bool xAxisSync = option["xAxisSync"].asBool();
+        if (xAxisSync) {
+            actionXAxisSync->setChecked(xAxisSync);
+        } else {
+            d_chartView->setXAxisSync(false);
+        }
+    } else {
+        actionXAxisSync->setChecked(true);
+    }
+    // show y-label
+    QAction *actionYLabel = d_toolBar->addAction(
+                QIcon(":/datastudio/image/toolbar/ylabel.png"),
+                tr(" Show y-label"));
+    actionYLabel->setCheckable(true);
+    connect(actionYLabel, &QAction::toggled, this, [=](bool checked){
+        jnotify->send("analyse.toolbar.chart.showYLabel", d_chartView, checked);
+    });
+    if (option.isMember("showYLabel")) {
+        const bool showYLabel = option["showYLabel"].asBool();
+        if (showYLabel) {
+            actionYLabel->setChecked(showYLabel);
+        } else {
+            d_chartView->showYLabel(false);
+        }
+    } else {
+        actionYLabel->setChecked(true);
+    }
+    // show y-align
+    QAction *actionYAlign = d_toolBar->addAction(
+                QIcon(":/datastudio/image/toolbar/align-left.png"),
+                tr(" Show y-align"));
+    actionYAlign->setCheckable(true);
+    connect(actionYAlign, &QAction::toggled, this, [=](bool checked){
+        jnotify->send("analyse.toolbar.chart.showYAlign", d_chartView, checked);
+    });
+    if (option.isMember("showYAlign")) {
+        const bool showYAlign = option["showYAlign"].asBool();
+        if (showYAlign) {
+            actionYAlign->setChecked(showYAlign);
+        } else {
+            d_chartView->showYAlign(false);
+        }
+    } else {
+        actionYAlign->setChecked(true);
+    }
+    // sync-track
+    QAction *actionSyncTrack = d_toolBar->addAction(
+                QIcon(":/datastudio/image/toolbar/sync-track.png"),
+                tr(" Synchronize track"));
+    actionSyncTrack->setCheckable(true);
+    connect(actionSyncTrack, &QAction::toggled, this, [=](bool checked){
+        jnotify->send("analyse.toolbar.chart.syncTrack", d_chartView, checked);
+    });
+    if (option.isMember("syncTrack")) {
+        const bool syncTrack = option["syncTrack"].asBool();
+        if (syncTrack) {
+            actionSyncTrack->setChecked(syncTrack);
+        } else {
+            d_chartView->setSyncTrack(false);
+        }
+    } else {
+        actionSyncTrack->setChecked(true);
+    }
 }
 
 void View::addSettingsAction()

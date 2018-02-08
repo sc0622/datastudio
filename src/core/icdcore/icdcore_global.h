@@ -100,22 +100,6 @@ public:
     virtual bool restore(const Json::Value &/*json*/, int /*deep*/ = -1) = 0;
 };
 
-// class JJson;
-
-class ICDCORE_EXPORT JJson
-{
-public:
-    static bool resolve(const std::string &filePath, Json::Value &root);
-    static Json::Value resolve(const std::string &filePath, const std::string &path);
-    static Json::Value resolve(const Json::Value &root, const std::string &path);
-    static bool make(const std::string &filePath, const Json::Value &root,
-                     bool create, bool fast = false);
-    static bool make(const std::string &filePath, const std::string &path,
-                     const Json::Value &value, bool create, bool fast = false);
-    static Json::Value make(const Json::Value &root, const std::string &path,
-                            const Json::Value &value);
-};
-
 //
 bool ICDCORE_EXPORT startsWith(const std::string &str, const std::string &header);
 bool ICDCORE_EXPORT endsWith(const std::string &str, const std::string &tail);
@@ -138,5 +122,25 @@ int ICDCORE_EXPORT createPath(const std::string &path);
 std::string ICDCORE_EXPORT pathOfFile(const std::string &filePath);
 
 } // end of namespace Icd
+
+#ifndef JSONCPP_EXTENDS
+#define JSONCPP_EXTENDS
+
+namespace Json {
+
+bool ICDCORE_EXPORT resolve(const std::string &filePath, Json::Value &root);
+Json::Value ICDCORE_EXPORT resolve(const std::string &filePath, const std::string &path);
+Json::Value ICDCORE_EXPORT resolve(const Json::Value &root, const std::string &path);
+bool ICDCORE_EXPORT make(const std::string &filePath, const Json::Value &root,
+                         bool create, bool fast = false);
+bool ICDCORE_EXPORT make(const std::string &filePath, const std::string &path,
+                         const Json::Value &value, bool create, bool fast = false);
+Json::Value ICDCORE_EXPORT make(const Json::Value &root, const std::string &path,
+                                const Json::Value &value);
+bool ICDCORE_EXPORT merge(const Json::Value &source, Json::Value &target);
+
+} // end of namespace Json
+
+#endif // JSONCPP_EXTENDS
 
 #endif // ICDCORE_GLOBAL_H

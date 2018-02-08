@@ -1641,8 +1641,8 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     // find table object
     Icd::TablePtr table = Icd::TablePtr(0);
     auto funcParseTable = [=,&table](){
-        if (!d_parser->parseTable(sections.at(0).toStdString(), sections.at(1).toStdString(),
-                                  sections.at(2).toStdString(), table, Icd::ObjectItem)) {
+        if (!d_parser->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
+                             sections.at(2).toStdString(), table, Icd::ObjectItem)) {
             return false; // parse failure
         }
         return true;
@@ -1755,8 +1755,8 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     }
     // find table object
     Icd::TablePtr table;
-    if (!d_parser->parseTable(sections.at(0).toStdString(), sections.at(1).toStdString(),
-                              sections.at(2).toStdString(), table, Icd::ObjectItem)) {
+    if (!d_parser->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
+                         sections.at(2).toStdString(), table, Icd::ObjectItem)) {
         return bindChannel(itemTable, worker, Q_NULLPTR);
     }
 
@@ -1978,7 +1978,7 @@ bool CoreTreeWidgetPrivate::loadVehicle(QStandardItem *itemRoot, int deep)
 
     // get vehicles informations
     Icd::VehiclePtrArray vehicles;
-    if (!d_parser || !d_parser->parseVehicle(vehicles, deep)) {
+    if (!d_parser || !d_parser->parse(vehicles, deep)) {
         //Q_ASSERT(false);
         return false;
     }
@@ -2042,7 +2042,7 @@ bool CoreTreeWidgetPrivate::loadSystem(QStandardItem *itemVehicle, int deep)
 
     // get systems informations
     Icd::SystemPtrArray systems;
-    if (!d_parser->parseSystem(domain.toStdString(), systems, deep)) {
+    if (!d_parser->parse(domain.toStdString(), systems, deep)) {
         Q_ASSERT(false);
         return false;
     }
@@ -2127,8 +2127,8 @@ bool CoreTreeWidgetPrivate::loadTable(QStandardItem *itemSystem, int deep)
 
     // get systems informations
     Icd::TablePtrArray tables;
-    if (!d_parser->parseTable(vehicleId.toStdString(),
-                              systemId.toStdString(), tables, deep)) {
+    if (!d_parser->parse(vehicleId.toStdString(),
+                         systemId.toStdString(), tables, deep)) {
         Q_ASSERT(false);
         return false;
     }
@@ -2225,8 +2225,8 @@ bool CoreTreeWidgetPrivate::loadItem(QStandardItem *itemTable, int deep)
 
     // get systems informations
     Icd::ItemPtrArray dataItems;
-    if (!d_parser->parseItem(vehicleId.toStdString(), systemId.toStdString(),
-                             tableId.toStdString(), dataItems, Icd::ObjectItem)) {
+    if (!d_parser->parse(vehicleId.toStdString(), systemId.toStdString(),
+                         tableId.toStdString(), dataItems, Icd::ObjectItem)) {
         Q_ASSERT(false);
         return false;
     }
@@ -2639,8 +2639,8 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *item)
             }
             // find table object
             Icd::TablePtr table;
-            if (!d_parser->parseTable(sections.at(0).toStdString(), sections.at(1).toStdString(),
-                                      sections.at(2).toStdString(), table, Icd::ObjectItem)) {
+            if (!d_parser->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
+                                 sections.at(2).toStdString(), table, Icd::ObjectItem)) {
                 return;
             }
             //
@@ -3258,10 +3258,10 @@ BindingData CoreTreeWidgetPrivate::bindingMapTask(BindingData data)
         return data;
     }
     // find table object
-    if (!data.d->d_parser->parseTable(sections.at(0).toStdString(),
-                                      sections.at(1).toStdString(),
-                                      sections.at(2).toStdString(),
-                                      data.table, Icd::ObjectItem)) {
+    if (!data.d->d_parser->parse(sections.at(0).toStdString(),
+                                 sections.at(1).toStdString(),
+                                 sections.at(2).toStdString(),
+                                 data.table, Icd::ObjectItem)) {
         return data;
     }
 

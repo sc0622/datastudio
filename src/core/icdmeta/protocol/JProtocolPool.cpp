@@ -89,9 +89,8 @@ bool JProtocolPool::loadConfig(const QString &filePath, const QString &nodePath)
     d->protocols.clear();
     emit protocolsChanged();
 
-    const Json::Value protocolJson =
-            Icd::JJson::value(filePath.toStdString(), nodePath.toStdString());
-    if (protocolJson.isNull() || !protocolJson.isArray()) {
+    const Json::Value protocolJson = Json::resolve(filePath.toStdString(), nodePath.toStdString());
+    if (protocolJson == Json::Value::null || !protocolJson.isArray()) {
         return false;
     }
 
@@ -128,9 +127,7 @@ bool JProtocolPool::saveConfig(const QString &filePath, const QString &nodePath)
         }
     }
 
-    Icd::JJson::setValue(filePath.toStdString(), nodePath.toStdString(), json, true);
-
-    return true;
+    return Json::make(filePath.toStdString(), nodePath.toStdString(), json, true, false);
 }
 
 JProtocol *JProtocolPool::identityOf(const QString &identity) const

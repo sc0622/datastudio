@@ -41,10 +41,10 @@ bool CppGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
 
     const QString domain = item->data(Icd::TreeItemDomainRole).toString();
     Icd::TablePtr table;
-    if (!parser()->parseTable(domain.section('/', 0, 0).toStdString(),
-                              domain.section('/', 1, 1).toStdString(),
-                              domain.section('/', 2).toStdString(),
-                              table, Icd::ObjectItem)) {
+    if (!parser()->parse(domain.section('/', 0, 0).toStdString(),
+                         domain.section('/', 1, 1).toStdString(),
+                         domain.section('/', 2).toStdString(),
+                         table, Icd::ObjectItem)) {
         return false;
     }
 

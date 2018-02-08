@@ -56,16 +56,16 @@ public:
                        Icd::TablePtrArray &tables, int deep) const = 0;
     virtual bool parse(const std::string &vehicleId, const std::string &systemId,
                        const std::string &tableId, Icd::TablePtr &table, int deep) const = 0;
-    virtual bool parse(Icd::TablePtrArray &tables) const = 0;
-    virtual bool parse(const std::string &tableId, Icd::TablePtr &table) const = 0;
     virtual bool parse(const std::string &vehicleId, const std::string &systemId,
                        const std::string &tableId, Icd::ItemPtrArray &items, int deep) const = 0;
     virtual bool parse(const std::string &vehicleId, const std::string &systemId,
                        const std::string &tableId, const std::string &itemId,
                        Icd::ItemPtr &item, int deep) const = 0;
+    virtual bool parse(Icd::TablePtrArray &tables) const = 0;
+    virtual bool parse(const std::string &tableId, Icd::TablePtr &table) const = 0;
     Icd::ObjectPtr parse(const std::string &domain, int objectType, int deep = 1) const;
 
-    virtual bool save(Icd::VehiclePtrArray &vehicles,) const = 0;
+    virtual bool save(const Icd::VehiclePtrArray &vehicles) const = 0;
     virtual bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const = 0;
     virtual bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const = 0;
     virtual bool save(const std::string &vehicleId, const std::string &systemId,
@@ -74,15 +74,15 @@ public:
                       const Icd::TablePtrArray &tables) const = 0;
     virtual bool save(const std::string &vehicleId, const std::string &systemId,
                       const std::string &tableId, const Icd::TablePtr &table) const = 0;
-    virtual bool save(const Icd::TablePtrArray &tables) const = 0;
-    virtual bool save(const std::string &tableId, const Icd::TablePtr &table) const = 0;
     virtual bool save(const std::string &vehicleId, const std::string &systemId,
                       const std::string &tableId, const Icd::ItemPtrArray &items) const = 0;
     virtual bool save(const std::string &vehicleId, const std::string &systemId,
                       const std::string &tableId, const std::string &itemId,
                       const Icd::ItemPtr &item) const = 0;
-    virtual bool save(const std::string &domain, const Icd::ObjectPtr &object,
-                      bool merge = false, bool fast = false) const = 0;
+    virtual bool save(const Icd::TablePtrArray &tables) const = 0;
+    virtual bool save(const std::string &tableId, const Icd::TablePtr &table) const = 0;
+    bool save(const std::string &domain, const Icd::ObjectPtr &object,
+              bool merge = false, bool fast = false) const;
 
     virtual bool save(const Icd::TablePtr &table) const = 0;
 
@@ -105,8 +105,8 @@ private:
 
 // extends
 
-Json::Value ICDPARSER_EXPORT findTable(const std::string &filePath, const std::string &vehicleId,
-                                       const std::string &systemId, const std::string &tableId);
+Json::Value ICDPARSER_EXPORT queryTable(const std::string &filePath, const std::string &vehicleId,
+                                        const std::string &systemId, const std::string &tableId);
 
 } // end of namespace Icd
 

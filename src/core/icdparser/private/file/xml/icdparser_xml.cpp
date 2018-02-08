@@ -16,16 +16,14 @@ XmlParser::~XmlParser()
 
 }
 
-bool XmlParser::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep) const
+bool XmlParser::parse(Icd::VehiclePtrArray &vehicles, int deep) const
 {
-    //
-    vehicles.clear();
-
-    //
     TiXmlElement *emRoot = readElementRoot();
     if (!emRoot) {
-        return false;   //
+        return false;
     }
+
+    vehicles.clear();
 
     // parse vehicle elements
     for (TiXmlElement *emVehicle = emRoot->FirstChildElement("vehicle");
@@ -46,14 +44,13 @@ bool XmlParser::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep) const
     return true;
 }
 
-bool XmlParser::parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const
+bool XmlParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const
 {
     vehicle = Q_NULLPTR;
 
-    //
     TiXmlElement *emRoot = readElementRoot();
     if (!emRoot) {
-        return false;   //
+        return false;
     }
 
     // parse vehicle elements
@@ -78,16 +75,15 @@ bool XmlParser::parseVehicle(const std::string &vehicleId, Icd::VehiclePtr &vehi
     return true;
 }
 
-bool XmlParser::parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const
+bool XmlParser::parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const
 {
-    //
-    systems.clear();
-
     // parse vehicle elements
     TiXmlElement *emVehicle = findVehicleElement(vehicleId);
     if (!emVehicle) {
         return false;
     }
+
+    systems.clear();
 
     // parse system elements
     for (TiXmlElement *emSystem = emVehicle->FirstChildElement("system");
@@ -107,7 +103,7 @@ bool XmlParser::parseSystem(const std::string &vehicleId, Icd::SystemPtrArray &s
     return true;
 }
 
-bool XmlParser::parseSystem(const std::string &vehicleId, const std::string &systemId,
+bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
                             Icd::SystemPtr &system, int deep) const
 {
     system = Q_NULLPTR;
@@ -142,17 +138,15 @@ bool XmlParser::parseSystem(const std::string &vehicleId, const std::string &sys
     return true;
 }
 
-bool XmlParser::parseTable(const std::string &vehicleId, const std::string &systemId,
+bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
                            Icd::TablePtrArray &tables, int deep) const
 {
-    //
-    tables.clear();
-
-    //
     TiXmlElement *emSystem = findSystemElement(vehicleId, systemId);
     if (!emSystem) {
-        return false;   //
+        return false;
     }
+
+    tables.clear();
 
     // parse table elements
     for (TiXmlElement *emTable = emSystem->FirstChildElement("table");
@@ -173,7 +167,7 @@ bool XmlParser::parseTable(const std::string &vehicleId, const std::string &syst
     return true;
 }
 
-bool XmlParser::parseTable(const std::string &vehicleId, const std::string &systemId,
+bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
                            const std::string &tableId, Icd::TablePtr &table, int deep) const
 {
     table = Q_NULLPTR;
@@ -210,72 +204,18 @@ bool XmlParser::parseTable(const std::string &vehicleId, const std::string &syst
     return false;
 }
 
-bool XmlParser::parseTable(TablePtrArray &tables) const
-{
-    tables.clear();
-
-    //
-    TiXmlElement *emRoot = readElementRoot();
-    if (!emRoot) {
-        return false;
-    }
-
-    // parse table elements
-    for (TiXmlElement *emTable = emRoot->FirstChildElement("table");
-         emTable != Q_NULLPTR;
-         emTable = emTable->NextSiblingElement("table")) {
-        TablePtr table(new Table());
-        if (!parseTable(emTable, table, Icd::ObjectItem)) {
-            continue;   // parse failure
-        }
-        table->setDomain(table->id());
-        // save
-        tables.push_back(table);
-    }
-
-    delete emRoot->GetDocument();
-
-    return false;
-}
-
-bool XmlParser::parseTable(const std::string &tableId, TablePtr &table) const
-{
-    table = Q_NULLPTR;
-
-    //
-    TiXmlElement *emTable = findTableElement(tableId);
-    if (!emTable) {
-        return false;   //
-    }
-
-    //
-    const QString _tableId = QString::fromStdString(tableId);
-
-    TablePtr _table(new Table());
-    if (!parseTable(emTable, _table, Icd::ObjectItem)) {
-        delete emTable->GetDocument();
-        return false;   // parse failure
-    }
-
-    table = _table;
-    table->setDomain(tableId);
-    delete emTable->GetDocument();
-
-    return true;
-}
-
-bool XmlParser::parseItem(const std::string &vehicleId, const std::string &systemId,
+bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
                           const std::string &tableId, Icd::ItemPtrArray &items, int deep) const
 {
     Q_UNUSED(deep);
-    //
-    items.clear();
 
     // find table element
     TiXmlElement *emTable = findTableElement(vehicleId, systemId, tableId);
     if (!emTable) {
         return false;   //
     }
+
+    items.clear();
 
     std::string sVal;
 
@@ -311,7 +251,7 @@ bool XmlParser::parseItem(const std::string &vehicleId, const std::string &syste
     return true;
 }
 
-bool XmlParser::parseItem(const std::string &vehicleId, const std::string &systemId,
+bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
                           const std::string &tableId, const std::string &itemId,
                           Icd::ItemPtr &item, int deep) const
 {
@@ -363,53 +303,56 @@ bool XmlParser::parseItem(const std::string &vehicleId, const std::string &syste
     return true;
 }
 
-bool XmlParser::saveObject(const std::string &domain, const Json::Value &value,
-                           bool merge, bool fast) const
+bool XmlParser::parse(TablePtrArray &tables) const
 {
-    switch (objectType) {
-    case Icd::ObjectVehicle:
-    {
-        TiXmlElement *emVehicle = findVehicleElement(domain);
-        if (!emVehicle) {
-            return false;
+    //
+    TiXmlElement *emRoot = readElementRoot();
+    if (!emRoot) {
+        return false;
+    }
+
+    tables.clear();
+
+    // parse table elements
+    for (TiXmlElement *emTable = emRoot->FirstChildElement("table");
+         emTable != Q_NULLPTR;
+         emTable = emTable->NextSiblingElement("table")) {
+        TablePtr table(new Table());
+        if (!parseTable(emTable, table, Icd::ObjectItem)) {
+            continue;   // parse failure
         }
-        break;
+        table->setDomain(table->id());
+        // save
+        tables.push_back(table);
     }
-    case Icd::ObjectSystem:
-    {
-        Icd::SystemPtr system;
-        if (!parseSystem(Icd::stringSection(domain, '/', 0, 0),
-                         Icd::stringSection(domain, '/', 1, 1),
-                         system, objectType + deep)) {
-            return Icd::ObjectPtr();
-        }
-        return system;
+
+    delete emRoot->GetDocument();
+
+    return false;
+}
+
+bool XmlParser::parse(const std::string &tableId, TablePtr &table) const
+{
+    table = Q_NULLPTR;
+
+    //
+    TiXmlElement *emTable = findTableElement(tableId);
+    if (!emTable) {
+        return false;   //
     }
-    case Icd::ObjectTable:
-    {
-        Icd::TablePtr table;
-        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
-                        Icd::stringSection(domain, '/', 1, 1),
-                        Icd::stringSection(domain, '/', 2, 2),
-                        table, objectType + deep)) {
-            return Icd::ObjectPtr();
-        }
-        return table;
+
+    //
+    const QString _tableId = QString::fromStdString(tableId);
+
+    TablePtr _table(new Table());
+    if (!parseTable(emTable, _table, Icd::ObjectItem)) {
+        delete emTable->GetDocument();
+        return false;   // parse failure
     }
-    case Icd::ObjectItem:
-    {
-        Icd::TablePtr table;
-        if (!parseTable(Icd::stringSection(domain, '/', 0, 0),
-                        Icd::stringSection(domain, '/', 1, 1),
-                        Icd::stringSection(domain, '/', 2, 2),
-                        table, objectType + deep)) {
-            return Icd::ObjectPtr();
-        }
-        return table->itemByDomain(Icd::stringSection(domain, '/', 3));
-    }
-    default:
-        break;
-    }
+
+    table = _table;
+    table->setDomain(tableId);
+    delete emTable->GetDocument();
 
     return true;
 }
@@ -451,6 +394,69 @@ bool XmlParser::save(const Icd::VehiclePtrArray &vehicles) const
     return true;
 }
 
+bool XmlParser::save(const std::string &vehicleId, const VehiclePtr &vehicle) const
+{
+    Q_UNUSED(vehicleId);
+    Q_UNUSED(vehicle);
+    return false;
+}
+
+bool XmlParser::save(const std::string &vehicleId, const SystemPtrArray &systems) const
+{
+    Q_UNUSED(vehicleId);
+    Q_UNUSED(systems);
+    return false;
+}
+
+bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
+                     const SystemPtr &system) const
+{
+    Q_UNUSED(vehicleId);
+    Q_UNUSED(systemId);
+    Q_UNUSED(system);
+    return false;
+}
+
+bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
+                     const TablePtrArray &tables) const
+{
+    Q_UNUSED(vehicleId);
+    Q_UNUSED(systemId);
+    Q_UNUSED(tables);
+    return false;
+}
+
+bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
+                     const std::string &tableId, const TablePtr &table) const
+{
+    Q_UNUSED(vehicleId);
+    Q_UNUSED(systemId);
+    Q_UNUSED(tableId);
+    Q_UNUSED(table);
+    return false;
+}
+
+bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
+                     const std::string &tableId, const ItemPtrArray &items) const
+{
+    Q_UNUSED(vehicleId);
+    Q_UNUSED(systemId);
+    Q_UNUSED(tableId);
+    Q_UNUSED(items);
+    return false;
+}
+
+bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
+                     const std::string &tableId, const std::string &itemId, const ItemPtr &item) const
+{
+    Q_UNUSED(vehicleId);
+    Q_UNUSED(systemId);
+    Q_UNUSED(tableId);
+    Q_UNUSED(itemId);
+    Q_UNUSED(item);
+    return false;
+}
+
 bool XmlParser::save(const TablePtrArray &tables) const
 {
     // create root element
@@ -486,6 +492,13 @@ bool XmlParser::save(const TablePtrArray &tables) const
     delete document;
 
     return true;
+}
+
+bool XmlParser::save(const std::string &tableId, const TablePtr &table) const
+{
+    Q_UNUSED(tableId);
+    Q_UNUSED(table);
+    return false;
 }
 
 bool XmlParser::save(const TablePtr &table) const

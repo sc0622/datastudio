@@ -53,13 +53,13 @@ std::string FileParser::filePath() const
     return d->filePath;
 }
 
-Json::Value findTable(const std::string &filePath, const std::string &vehicleId,
-                      const std::string &systemId, const std::string &tableId)
+Json::Value queryTable(const std::string &filePath, const std::string &vehicleId,
+                       const std::string &systemId, const std::string &tableId)
 {
     Json::Value config;
     config["filePath"] = filePath;
     JsonParserPtr parser = JsonParserPtr(new JsonParser(config));
-    Json::Value value = parser->findTable(vehicleId, systemId, tableId);
+    Json::Value value = parser->queryTable(vehicleId, systemId, tableId);
     return value;
 }
 

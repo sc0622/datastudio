@@ -259,7 +259,7 @@ void SetView::dropEvent(QDropEvent *event)
 }
 
 void SetView::changeWorker(const QString &vehicleId, const QString &systemId,
-                                  const QString &tableId, const Icd::WorkerPtr &worker)
+                           const QString &tableId, const Icd::WorkerPtr &worker)
 {
     DataTableWidget *widgetTable = findTabTable(vehicleId, systemId, tableId);
     if (!widgetTable) {
@@ -288,7 +288,7 @@ IcdTabWidget *SetView::findTabSystem(const QString &vehicleId, const QString &sy
 }
 
 DataTableWidget *SetView::findTabTable(const QString &vehicleId, const QString &systemId,
-                                              const QString &tableId)
+                                       const QString &tableId)
 {
     //
     IcdTabWidget *tabSystem = findTabSystem(vehicleId, systemId);
@@ -315,7 +315,7 @@ IcdTabWidget *SetView::addTabVehicle(const QString &domain)
 
     //
     Icd::VehiclePtr vehicle;
-    if (!parser->parseVehicle(domain.toStdString(), vehicle, Icd::ObjectVehicle)) {
+    if (!parser->parse(domain.toStdString(), vehicle, Icd::ObjectVehicle)) {
         return nullptr;
     }
 
@@ -365,8 +365,8 @@ IcdTabWidget *SetView::addTabSystem(const QString &domain)
         return nullptr;
     }
     Icd::SystemPtr system;
-    if (!parser->parseSystem(vehicleId.toStdString(), systemId.toStdString(),
-                             system, Icd::ObjectSystem)) {
+    if (!parser->parse(vehicleId.toStdString(), systemId.toStdString(),
+                       system, Icd::ObjectSystem)) {
         return nullptr;
     }
 
@@ -390,7 +390,7 @@ IcdTabWidget *SetView::addTabSystem(const QString &domain)
 }
 
 bool SetView::addDataItem(const QString &domain, const Icd::WorkerPtr &worker,
-                                 const Icd::ObjectPtr &object, QStandardItem *itemTable)
+                          const Icd::ObjectPtr &object, QStandardItem *itemTable)
 {
     if (domain.isEmpty() || !worker || !object || !itemTable) {
         return false;

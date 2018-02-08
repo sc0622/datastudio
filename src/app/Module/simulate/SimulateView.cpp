@@ -56,11 +56,7 @@ void View::updateToolBar()
 {
     d_toolBar->clear();
 
-    Json::Value option = JMain::instance()->option("monitor", "option/tree");
-    if (option.isNull()) {
-        Q_ASSERT(false);
-        return;
-    }
+    const Json::Value option = JMain::instance()->option("monitor", "option");
 
     d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
                          tr("Database"), this, [=](){
@@ -75,32 +71,11 @@ void View::updateToolBar()
     // flush-switch
     addFlushSwitchAction(option);
     d_toolBar->addSeparator();
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/connect.png"),
-                         tr("Binding channel"), this, [=](){
-        jnotify->send("simulate.toolbar.tree.channel.binding", d_treeView);
-    });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/disconnect.png"),
-                         tr("Unbinding channel"), this, [=](){
-        jnotify->send("simulate.toolbar.tree.channel.unbinding", d_treeView);
-    });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/export.png"),
-                         tr("Export status"), this, [=](){
-        jnotify->send("simulate.toolbar.tree.channel.export", d_treeView);
-    });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/run_all.png"),
-                         tr("Start all"), this, [=](){
-        jnotify->send("simulate.toolbar.tree.channel.runAll", d_treeView);
-    });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/stop_all.png"),
-                         tr("Stop all"), this, [=](){
-        jnotify->send("simulate.toolbar.tree.channel.stopAll", d_treeView);
-    });
+    // tree
+    addTreeAction(option["tree"]);
     d_toolBar->addSeparator();
-    // clean
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
-                         tr("Clear view"), this, [=](){
-        jnotify->send("simulate.toolbar.set.clean", d_setView);
-    });
+    // set
+    addSetAction(option["set"]);
     d_toolBar->addSeparator();
     addSettingsAction();
 }
@@ -294,7 +269,6 @@ QAction *View::addOrigValueRadixAction(QAction *action, const Json::Value &optio
 
 void View::addFlushSwitchAction(const Json::Value &option)
 {
-
     QToolButton *buttonFlush = new QToolButton(this);
     buttonFlush->setCheckable(true);
     buttonFlush->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -329,6 +303,41 @@ void View::addFlushSwitchAction(const Json::Value &option)
     } else {
         setFlushStatus(true);
     }
+}
+
+void View::addTreeAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/connect.png"),
+                         tr("Binding channel"), this, [=](){
+        jnotify->send("simulate.toolbar.tree.channel.binding", d_treeView);
+    });
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/disconnect.png"),
+                         tr("Unbinding channel"), this, [=](){
+        jnotify->send("simulate.toolbar.tree.channel.unbinding", d_treeView);
+    });
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/export.png"),
+                         tr("Export status"), this, [=](){
+        jnotify->send("simulate.toolbar.tree.channel.export", d_treeView);
+    });
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/run_all.png"),
+                         tr("Start all"), this, [=](){
+        jnotify->send("simulate.toolbar.tree.channel.runAll", d_treeView);
+    });
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/stop_all.png"),
+                         tr("Stop all"), this, [=](){
+        jnotify->send("simulate.toolbar.tree.channel.stopAll", d_treeView);
+    });
+}
+
+void View::addSetAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    // clean
+    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
+                         tr("Clear view"), this, [=](){
+        jnotify->send("simulate.toolbar.set.clean", d_setView);
+    });
 }
 
 void View::addSettingsAction()

@@ -32,6 +32,8 @@ private:
     void addViewAction(const Json::Value &option);
     QAction *addOrigValueRadixAction(QAction *action, const Json::Value &option);
     void addFlushSwitchAction(const Json::Value &option);
+    void addTreeAction(const Json::Value &option);
+    void addSetAction(const Json::Value &option);
     void addSettingsAction();
 
 private:

@@ -67,19 +67,15 @@ TreeView::TreeView(QWidget *parent)
         args.append(qVariantFromValue((void*)this));
         jnotify->send("database.config", args);
     });
-    jnotify->on("analyse.toolbar.tree.loadDeep", this, [=](JNEvent &event){
-        const int deep = event.argument().toInt();
-        JMain::instance()->setOption("analyse", "option/tree/loadDeep", deep, true);
-    });
     jnotify->on("analyse.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
-        JMain::instance()->setOption("analyse", "option/tree/showOffset", checked, true);
+        JMain::instance()->setOption("analyse", "option.tree.showOffset", checked);
     });
     jnotify->on("analyse.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
-        JMain::instance()->setOption("analyse", "option/tree/showType", checked, true);
+        JMain::instance()->setOption("analyse", "option.tree.showType", checked);
     });
     jnotify->on("analyse.toolbar.tree.loadData", this, [=](JNEvent &){
         loadRecordData();
@@ -98,7 +94,7 @@ bool TreeView::init()
 {
     bool result = true;
 
-    Json::Value option = JMain::instance()->option("analyse", "option/tree");
+    Json::Value option = JMain::instance()->option("analyse", "option.tree");
     if (option.isNull()) {
         return false;
     }
@@ -241,10 +237,10 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
     progressDialog->setCancelVisible(false);
     progressDialog->setMessage(tr("Parsing data file..."));
     QFuture<bool> future = QtConcurrent::run([=]() -> bool {
-        if (!parser->parseTable(domain.section('/', 0, 0).toStdString(),
-                                domain.section('/', 1, 1).toStdString(),
-                                domain.section('/', 2).toStdString(),
-                                d_table, Icd::ObjectItem)) {
+        if (!parser->parse(domain.section('/', 0, 0).toStdString(),
+                           domain.section('/', 1, 1).toStdString(),
+                           domain.section('/', 2).toStdString(),
+                           d_table, Icd::ObjectItem)) {
             return false;
         }
         return true;

@@ -55,7 +55,17 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("edit.toolbar.tree.loadDeep", this, [=](JNEvent &event){
         const int deep = event.argument().toInt();
-        JMain::instance()->setOption("edit", "option/tree/loadDeep", deep, true);
+        JMain::instance()->setOption("edit", "option.tree.loadDeep", deep);
+    });
+    jnotify->on("edit.toolbar.tree.showOffset", this, [=](JNEvent &event){
+        const bool checked = event.argument().toBool();
+        d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
+        JMain::instance()->setOption("edit", "option.tree.showOffset", checked);
+    });
+    jnotify->on("edit.toolbar.tree.showType", this, [=](JNEvent &event){
+        const bool checked = event.argument().toBool();
+        d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
+        JMain::instance()->setOption("edit", "option.tree.showType", checked);
     });
 }
 
@@ -68,7 +78,7 @@ bool TreeView::init()
 {
     bool result = true;
 
-    Json::Value option = JMain::instance()->option("edit", "option/tree");
+    Json::Value option = JMain::instance()->option("edit", "option.tree");
     if (option.isNull()) {
         return false;
     }
@@ -83,6 +93,11 @@ bool TreeView::init()
     }
 
     return result;
+}
+
+void TreeView::setShowAttribute(int attr, bool on)
+{
+    d_treeView->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
 }
 
 bool TreeView::updateParser()

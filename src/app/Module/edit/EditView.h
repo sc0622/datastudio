@@ -7,6 +7,8 @@ class QToolBar;
 class QAction;
 class JSplitter;
 
+namespace Json { class Value; }
+
 namespace Edit {
 
 class TreeView;
@@ -27,7 +29,7 @@ public slots:
 
 private:
     void updateToolBar();
-    void addViewAction();
+    void addViewAction(const Json::Value &option);
     QAction *addOrigValueRadixAction(QAction *action);
     void addSettingsAction();
 

@@ -16,6 +16,8 @@ public:
 
     bool init();
 
+    void setShowAttribute(int attr, bool on = true);
+
 signals:
 
 public slots:

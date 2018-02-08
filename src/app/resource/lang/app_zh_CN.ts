@@ -53,48 +53,48 @@
 <context>
     <name>Analyse::TreeView</name>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="121"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="117"/>
         <source>Any file (*.*)</source>
         <translation>Any (*.*)</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="123"/>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="239"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="119"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="235"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="242"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="238"/>
         <source>Parsing data file...</source>
         <translation>正在解析数据文件…</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="271"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="267"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="272"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="268"/>
         <source>Parse failure! There&apos;re no valid data.</source>
         <translation>解析失败！没有有效数据。</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="306"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="302"/>
         <source>Parse success</source>
         <translation>解析成功</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="308"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="304"/>
         <source>Parse failure!</source>
         <translation>解析失败！</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="311"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="307"/>
         <source>Parsing result</source>
         <translation>解析结果</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="383"/>
+        <location filename="../../Module/analyse/AnalyseTreeView.cpp" line="379"/>
         <source>--</source>
         <translation>——</translation>
     </message>
@@ -140,82 +140,82 @@
 <context>
     <name>Analyse::View</name>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="69"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="65"/>
         <source>Database</source>
         <translation>数据来源</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="81"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="139"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="86"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="144"/>
         <source>Unload data</source>
         <translation>清除数据</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="91"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="149"/>
         <source>Convert data</source>
         <translation>转换数据</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="96"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="158"/>
         <source>Set coordinate</source>
         <translation>设置坐标</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="102"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="163"/>
         <source>Update data</source>
         <translation>刷新数据</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="107"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="168"/>
         <source>Clear chart</source>
         <translation>清空图表</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="113"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="174"/>
         <source>Same column width</source>
         <translation>相同列宽</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="120"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="181"/>
         <source> Synchronize x-label</source>
         <translation>横轴同帧</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="139"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="199"/>
         <source> Show y-label</source>
         <translation>纵轴标签</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="157"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="217"/>
         <source> Show y-align</source>
         <translation>纵轴对齐</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="175"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="235"/>
         <source> Synchronize track</source>
         <translation>同步跟踪</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="201"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="88"/>
         <source>Show data</source>
         <translation>显示数据</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="209"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="96"/>
         <source>Show offset</source>
         <translation>显示偏移</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="225"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="112"/>
         <source>Show type</source>
         <translation>显示类型</translation>
     </message>
     <message>
-        <location filename="../../Module/analyse/AnalyseView.cpp" line="250"/>
+        <location filename="../../Module/analyse/AnalyseView.cpp" line="255"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>
@@ -403,82 +403,79 @@
 <context>
     <name>Edit::View</name>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="59"/>
+        <location filename="../../Module/edit/EditView.cpp" line="63"/>
         <source>Database</source>
         <translation>数据来源</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="189"/>
+        <location filename="../../Module/edit/EditView.cpp" line="192"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="97"/>
+        <location filename="../../Module/edit/EditView.cpp" line="101"/>
         <source>Show data</source>
         <translation>数据显示</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="68"/>
+        <location filename="../../Module/edit/EditView.cpp" line="72"/>
         <source>Copy</source>
         <translation>复制数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="74"/>
+        <location filename="../../Module/edit/EditView.cpp" line="78"/>
         <source>Save</source>
         <translation>保存数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="81"/>
+        <location filename="../../Module/edit/EditView.cpp" line="85"/>
         <source>Save as</source>
         <translation>另存数据</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="105"/>
+        <location filename="../../Module/edit/EditView.cpp" line="109"/>
         <source>Show offset</source>
         <translation>显示偏移</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="111"/>
+        <location filename="../../Module/edit/EditView.cpp" line="125"/>
         <source>Show type</source>
         <translation>显示类型</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="117"/>
         <source>Real value</source>
-        <translation>计算数值</translation>
+        <translation type="vanished">计算数值</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="123"/>
         <source>Orignal value</source>
-        <translation>原始数值</translation>
+        <translation type="vanished">原始数值</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="130"/>
         <source>Description</source>
-        <translation>数值描述</translation>
+        <translation type="vanished">数值描述</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="157"/>
+        <location filename="../../Module/edit/EditView.cpp" line="160"/>
         <source>Hide</source>
         <translation>不显示</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="162"/>
+        <location filename="../../Module/edit/EditView.cpp" line="165"/>
         <source>Decimal integer</source>
         <translation>十进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="167"/>
+        <location filename="../../Module/edit/EditView.cpp" line="170"/>
         <source>Hexadecimal integer</source>
         <translation>十六进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="172"/>
+        <location filename="../../Module/edit/EditView.cpp" line="175"/>
         <source>Binary integer</source>
         <translation>二进制</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/EditView.cpp" line="177"/>
+        <location filename="../../Module/edit/EditView.cpp" line="180"/>
         <source>Octal integer</source>
         <translation>八进制</translation>
     </message>
@@ -740,142 +737,142 @@
 <context>
     <name>Monitor::View</name>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="78"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="74"/>
         <source>Database</source>
         <translation>数据来源</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="89"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="322"/>
         <source>Binding channel</source>
         <translation>绑定通道</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="93"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="326"/>
         <source>Unbinding channel</source>
         <translation>解除绑定</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="97"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="330"/>
         <source>Export status</source>
         <translation>导出状态</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="101"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="334"/>
         <source>Start all</source>
         <translation>启动通道</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="105"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="338"/>
         <source>Stop all</source>
         <translation>关闭通道</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="111"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="347"/>
         <source>Clear chart</source>
         <translation>清空图表</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="117"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="353"/>
         <source>Same column width</source>
         <translation>相同列宽</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="124"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="360"/>
         <source> Synchronize x-label</source>
         <translation>横轴同帧</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="142"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="378"/>
         <source> Show y-label</source>
         <translation>纵轴标签</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="160"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="396"/>
         <source> Show y-align</source>
         <translation>纵轴对齐</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="178"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="414"/>
         <source> Synchronize track</source>
         <translation>同步跟踪</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="204"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="98"/>
         <source>Show data</source>
         <translation>数据显示</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="212"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="106"/>
         <source>Show offset</source>
         <translation>显示偏移</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="228"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="122"/>
         <source>Show type</source>
         <translation>显示类型</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="248"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="142"/>
         <source>Real value</source>
         <translation>计算数值</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="244"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="138"/>
         <source>Orignal value</source>
         <translation>原始数值</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="264"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="158"/>
         <source>Description</source>
         <translation>数值描述</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="301"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="195"/>
         <source>Hide</source>
         <translation>不显示</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="316"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="210"/>
         <source>Decimal integer</source>
         <translation>十进制</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="327"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="221"/>
         <source>Hexadecimal integer</source>
         <translation>十六进制</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="338"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="232"/>
         <source>Binary integer</source>
         <translation>二进制</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="349"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="243"/>
         <source>Octal integer</source>
         <translation>八进制</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="397"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="291"/>
         <source>Period of flush</source>
         <translation>刷新周期</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="404"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="298"/>
         <source>%1 flush</source>
         <translation>%1刷新</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="404"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="298"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="404"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="298"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../Module/monitor/MonitorView.cpp" line="426"/>
+        <location filename="../../Module/monitor/MonitorView.cpp" line="434"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>
@@ -969,12 +966,12 @@
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="151"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="150"/>
         <source>Select channel binding file</source>
         <translation>选择通道绑定文件</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="163"/>
+        <location filename="../../Module/simulate/SimulateTreeView.cpp" line="162"/>
         <source>Save channel binding relations</source>
         <translation>保存通道绑定关系</translation>
     </message>
@@ -1020,117 +1017,117 @@
 <context>
     <name>Simulate::View</name>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="114"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="89"/>
         <source>Show data</source>
         <translation>数据显示</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="66"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="62"/>
         <source>Database</source>
         <translation>数据来源</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="79"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="312"/>
         <source>Binding channel</source>
         <translation>绑定通道</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="83"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="316"/>
         <source>Unbinding channel</source>
         <translation>解除绑定</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="87"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="320"/>
         <source>Export status</source>
         <translation>导出状态</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="91"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="324"/>
         <source>Start all</source>
         <translation>启动通道</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="95"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="328"/>
         <source>Stop all</source>
         <translation>关闭通道</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="101"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="338"/>
         <source>Clear view</source>
         <translation>清空视图</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="122"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="97"/>
         <source>Show offset</source>
         <translation>显示偏移</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="138"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="113"/>
         <source>Show type</source>
         <translation>显示类型</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="158"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="133"/>
         <source>Real value</source>
         <translation>计算数值</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="154"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="129"/>
         <source>Orignal value</source>
         <translation>原始数值</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="174"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="149"/>
         <source>Description</source>
         <translation>数值描述</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="211"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="186"/>
         <source>Hide</source>
         <translation>不显示</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="226"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="201"/>
         <source>Decimal integer</source>
         <translation>十进制</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="237"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="212"/>
         <source>Hexadecimal integer</source>
         <translation>十六进制</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="248"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="223"/>
         <source>Binary integer</source>
         <translation>二进制</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="259"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="234"/>
         <source>Octal integer</source>
         <translation>八进制</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="308"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="282"/>
         <source>Period of flush</source>
         <translation>刷新周期</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="315"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="289"/>
         <source>%1 flush</source>
         <translation>%1刷新</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="315"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="289"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="315"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="289"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../Module/simulate/SimulateView.cpp" line="337"/>
+        <location filename="../../Module/simulate/SimulateView.cpp" line="346"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>

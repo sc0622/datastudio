@@ -54,6 +54,10 @@ bool View::init()
 
 void View::updateToolBar()
 {
+    d_toolBar->clear();
+
+    const Json::Value option = JMain::instance()->option("edit", "option");
+
     // database
     d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
                          tr("Database"), this, [=](){
@@ -83,12 +87,12 @@ void View::updateToolBar()
     });
     Q_UNUSED(actionSaveAs);
     d_toolBar->addSeparator();
-    addViewAction();
+    addViewAction(option);
     d_toolBar->addSeparator();
     addSettingsAction();
 }
 
-void View::addViewAction()
+void View::addViewAction(const Json::Value &option)
 {
     QToolButton *buttonView = new QToolButton(this);
     buttonView->setCheckable(true);
@@ -102,43 +106,42 @@ void View::addViewAction()
     buttonView->setMenu(menuView);
 
     // offset
-    QAction *actionOffset = menuView->addAction(tr("Show offset"),
-                                                this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
+    QAction *actionOffset = menuView->addAction(tr("Show offset"));
     actionOffset->setCheckable(true);
+    connect(actionOffset, &QAction::toggled, this, [=](bool checked){
+        jnotify->send("edit.toolbar.tree.showOffset", d_treeView, checked);
+    });
+    if (option.isMember("showOffset")) {
+        const bool showOffset = option["showOffset"].asBool();
+        if (showOffset) {
+            actionOffset->setChecked(showOffset);
+        } else {
+            d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, false);
+        }
+    } else {
+        actionOffset->setChecked(true);
+    }
     // type
-    QAction *actionType = menuView->addAction(tr("Show type"),
-                                              this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
+    QAction *actionType = menuView->addAction(tr("Show type"));
     actionType->setCheckable(true);
-    // real value
-    QAction *actionReal = menuView->addAction(tr("Real value"),
-                                              this, [=](bool checked){
-        Q_UNUSED(checked);
+    connect(actionType, &QAction::toggled, this, [=](bool checked){
+        jnotify->send("edit.toolbar.tree.showType", d_treeView, checked);
     });
-    actionReal->setCheckable(true);
-    // orignal value
-    QAction *actionOrignal = menuView->addAction(tr("Orignal value"),
-                                                 this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
-    actionOrignal->setCheckable(true);
-    QAction *actionNoOrigValue = addOrigValueRadixAction(actionOrignal);
-    // desc
-    QAction *actionDesc = menuView->addAction(tr("Description"),
-                                              this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
-    actionDesc->setCheckable(true);
+    if (option.isMember("showType")) {
+        const bool showType = option["showType"].asBool();
+        if (showType) {
+            actionType->setChecked(showType);
+        } else {
+            d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, false);
+        }
+    } else {
+        actionType->setChecked(true);
+    }
+
     //
     connect(buttonView, &QToolButton::clicked, this, [=](bool checked){
         actionOffset->setChecked(checked);
         actionType->setChecked(checked);
-        actionReal->setChecked(checked);
-        actionNoOrigValue->setChecked(!checked);
-        actionDesc->setChecked(checked);
     });
 }
 

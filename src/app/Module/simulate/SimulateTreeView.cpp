@@ -88,17 +88,17 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("simulate.toolbar.tree.loadDeep", this, [=](JNEvent &event){
         const int deep = event.argument().toInt();
-        JMain::instance()->setOption("simulate", "option/tree/loadDeep", deep, true);
+        JMain::instance()->setOption("simulate", "option.tree.loadDeep", deep);
     });
     jnotify->on("simulate.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
-        JMain::instance()->setOption("simulate", "option/tree/showOffset", checked, true);
+        JMain::instance()->setOption("simulate", "option.tree.showOffset", checked);
     });
     jnotify->on("simulate.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
-        JMain::instance()->setOption("simulate", "option/tree/showType", checked, true);
+        JMain::instance()->setOption("simulate", "option.tree.showType", checked);
     });
     jnotify->on("simulate.toolbar.tree.showOrignal", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
@@ -107,27 +107,27 @@ TreeView::TreeView(QWidget *parent)
         }
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowData, args.at(0).toBool());
         if (args.count() < 2) {
-            JMain::instance()->setOption("simulate", "option/tree/showOrignal", 0, true);
+            JMain::instance()->setOption("simulate", "option.tree.showOrignal", 0);
         } else {
             const int radix = args.at(1).toInt();
             d_treeView->setDataFormat(radix);
-            JMain::instance()->setOption("simulate", "option/tree/showOrignal", radix, true);
+            JMain::instance()->setOption("simulate", "option.tree.showOrignal", radix);
         }
     });
     jnotify->on("simulate.toolbar.tree.showReal", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowValue, checked);
-        JMain::instance()->setOption("simulate", "option/tree/showValue", checked, true);
+        JMain::instance()->setOption("simulate", "option.tree.showValue", checked);
     });
     jnotify->on("simulate.toolbar.tree.showDesc", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowSpec, checked);
-        JMain::instance()->setOption("simulate", "option/tree/showDesc", checked, true);
+        JMain::instance()->setOption("simulate", "option.tree.showDesc", checked);
     });
     jnotify->on("simulate.toolbar.tree.flushToggle", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setRunning(checked);
-        JMain::instance()->setOption("simulate", "option/tree/flushEnabled", checked, true);
+        JMain::instance()->setOption("simulate", "option.tree.flushEnabled", checked);
     });
     jnotify->on("simulate.toolbar.tree.flushPeriod", this, [=](JNEvent &){
         QInputDialog inputDlg(this);
@@ -143,8 +143,7 @@ TreeView::TreeView(QWidget *parent)
             return;
         }
         d_treeView->setIntervalUpdate(inputDlg.intValue());
-        JMain::instance()->setOption("simulate", "option/tree/flushPeriod",
-                                     inputDlg.intValue(), true);
+        JMain::instance()->setOption("simulate", "option.tree.flushPeriod", inputDlg.intValue());
     });
     jnotify->on("simulate.toolbar.tree.channel.binding", this, [=](JNEvent &){
         const QString filePath = QFileDialog::getOpenFileName(
@@ -184,7 +183,7 @@ bool TreeView::init()
 {
     bool result = true;
 
-    Json::Value option = JMain::instance()->option("simulate", "option/tree");
+    Json::Value option = JMain::instance()->option("simulate", "option.tree");
     if (option.isNull()) {
         return false;
     }

@@ -158,10 +158,10 @@ bool ConvertFromIcdWidget::loadData(const QString &domain, int headerSize,
     progressDialog->setCancelVisible(false);
     progressDialog->setMessage(QStringLiteral("正在解析数据文件……"));
     QFuture<bool> future = QtConcurrent::run([=]() -> bool {
-        if (!parser->parseTable(domain.section('/', 0, 0).toStdString(),
-                                domain.section('/', 1, 1).toStdString(),
-                                domain.section('/', 2).toStdString(),
-                                d_table, Icd::ObjectItem)) {
+        if (!parser->parse(domain.section('/', 0, 0).toStdString(),
+                           domain.section('/', 1, 1).toStdString(),
+                           domain.section('/', 2).toStdString(),
+                           d_table, Icd::ObjectItem)) {
             return false;
         }
         return true;

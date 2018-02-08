@@ -54,7 +54,7 @@ bool TreeViewSettings::tryAccept()
 
 bool TreeViewSettings::init()
 {
-    const Json::Value option = JMain::instance()->option("edit", "option/tree");
+    const Json::Value option = JMain::instance()->option("edit", "option.tree");
     if (option.isNull()) {
         return false;
     }
@@ -95,7 +95,7 @@ bool SetViewSettings::tryAccept()
 
 bool SetViewSettings::init()
 {
-    const Json::Value option = JMain::instance()->option("edit", "option/chart");
+    const Json::Value option = JMain::instance()->option("edit", "option.chart");
     if (option.isNull()) {
         return false;
     }

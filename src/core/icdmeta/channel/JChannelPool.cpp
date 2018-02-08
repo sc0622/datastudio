@@ -98,9 +98,8 @@ bool JChannelPool::loadConfig(const QString &filePath, const QString &nodePath)
     d->channels.clear();
     emit channelsChanged();
 
-    const Json::Value channelJson =
-            Icd::JJson::value(filePath.toStdString(), nodePath.toStdString());
-    if (channelJson.isNull() || !channelJson.isArray()) {
+    const Json::Value channelJson = Json::resolve(filePath.toStdString(), nodePath.toStdString());
+    if (channelJson == Json::Value::null || !channelJson.isArray()) {
         return false;
     }
 
@@ -163,9 +162,7 @@ bool JChannelPool::saveConfig(const QString &filePath, const QString &nodePath)
         }
     }
 
-    Icd::JJson::setValue(filePath.toStdString(), nodePath.toStdString(), json, true, false);
-
-    return true;
+    return Json::make(filePath.toStdString(), nodePath.toStdString(), json, true, false);
 }
 
 JChannel *JChannelPool::identityOf(const QString &identity) const

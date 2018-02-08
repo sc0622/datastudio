@@ -73,13 +73,12 @@ public:
     static void restoreWidgetState(QWidget *widget, const QString prefix = QString());
     static QString settingsGroupPrefix(const QString prefix = QString());
 
-    Json::Value config(const QString &domain) const;
-    bool setConfig(const QString &domain, const Json::Value &config, bool merge = true);
+    Json::Value config(const QString &path) const;
+    bool setConfig(const QString &path, const Json::Value &config);
     Json::Value option(const QString &module) const;
     Json::Value option(const QString &module, const QString &key) const;
-    bool setOption(const QString &module, const Json::Value &option, bool merge = true);
-    bool setOption(const QString &module, const QString &key,
-                   const Json::Value &option, bool merge = true);
+    bool setOption(const QString &module, const Json::Value &option);
+    bool setOption(const QString &module, const QString &key, const Json::Value &option);
 
     Icd::ParserPtr parser(const QString &module) const;
 

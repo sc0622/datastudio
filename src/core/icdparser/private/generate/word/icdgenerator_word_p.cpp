@@ -210,7 +210,7 @@ bool WordGeneratorData::generateRoot(const QStandardItem *itemRoot, bool exportA
                                     .toStdString());
 
         Icd::VehiclePtrArray vehicles;
-        if (!q_ptr->parser()->parseVehicle(vehicles, Icd::ObjectVehicle)) {
+        if (!q_ptr->parser()->parse(vehicles, Icd::ObjectVehicle)) {
             return false;
         }
         Icd::VehiclePtrArray::const_iterator citer = vehicles.cbegin();
@@ -251,8 +251,7 @@ bool WordGeneratorData::generateVehicle(const QStandardItem *itemVehicle, bool e
     //
     const QString vehicleId = itemVehicle->data(TreeItemDomainRole).toString();
     Icd::VehiclePtr vehicle;
-    if (!q_ptr->parser()->parseVehicle(vehicleId.toStdString(), vehicle,
-                                       Icd::ObjectVehicle)) {
+    if (!q_ptr->parser()->parse(vehicleId.toStdString(), vehicle, Icd::ObjectVehicle)) {
         return false;
     }
 
@@ -317,7 +316,7 @@ bool WordGeneratorData::generateVehicle(const VehiclePtr &vehicle, bool exportAl
         ++level;
         //
         Icd::SystemPtrArray systems;
-        if (!q_ptr->parser()->parseSystem(vehicle->id(), systems, Icd::ObjectSystem)) {
+        if (!q_ptr->parser()->parse(vehicle->id(), systems, Icd::ObjectSystem)) {
             return false;
         }
         Icd::SystemPtrArray::const_iterator citer = systems.cbegin();
@@ -348,9 +347,8 @@ bool WordGeneratorData::generateSystem(const QStandardItem *itemSystem, bool exp
     const QString domain = itemSystem->data(TreeItemDomainRole).toString();
     const std::string vehicleId = domain.section('/', 0, 0).toStdString();
     Icd::SystemPtr system;
-    if (!q_ptr->parser()->parseSystem(vehicleId,
-                                      domain.section('/', 1).toStdString(), system,
-                                      Icd::ObjectSystem)) {
+    if (!q_ptr->parser()->parse(vehicleId, domain.section('/', 1).toStdString(), system,
+                                Icd::ObjectSystem)) {
         return false;
     }
 
@@ -420,8 +418,7 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
                                     .toStdString());
         //
         Icd::TablePtrArray tables;
-        if (!q_ptr->parser()->parseTable(vehicleId, system->id(), tables,
-                                         Icd::ObjectItem)) {
+        if (!q_ptr->parser()->parse(vehicleId, system->id(), tables, Icd::ObjectItem)) {
             return false;
         }
         Icd::TablePtrArray::const_iterator citer = tables.cbegin();
@@ -469,10 +466,10 @@ bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool expor
                                     .toStdString());
         //
         const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
-        if (!q_ptr->parser()->parseTable(domain.section('/', 0, 0).toStdString(),
-                                         domain.section('/', 1, 1).toStdString(),
-                                         domain.section('/', 2).toStdString(),
-                                         table, Icd::ObjectItem)) {
+        if (!q_ptr->parser()->parse(domain.section('/', 0, 0).toStdString(),
+                                    domain.section('/', 1, 1).toStdString(),
+                                    domain.section('/', 2).toStdString(),
+                                    table, Icd::ObjectItem)) {
             return false;
         }
     }
@@ -620,7 +617,7 @@ bool WordGeneratorData::generateTableCaption(const QString &title, QAxObject *ta
 }
 
 bool WordGeneratorData::generateItem(const Icd::ItemPtr &item, QAxObject *axTable,
-                                         int row, int level)
+                                     int row, int level)
 {
     if (q_ptr->parser()->canceledSaveAs()) {
         return false;

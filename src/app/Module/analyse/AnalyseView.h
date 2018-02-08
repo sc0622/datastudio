@@ -29,6 +29,8 @@ public slots:
 private:
     void updateToolBar();
     void addViewAction(const Json::Value &option);
+    void addTreeAction(const Json::Value &option);
+    void addChartAction(const Json::Value &option);
     void addSettingsAction();
 
     void convertRecordData();

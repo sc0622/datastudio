@@ -90,10 +90,10 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
     });*/
     //
     auto parseFunc = [=]() -> bool {
-        if (!parser->parseTable(domain.section('/', 0, 0).toStdString(),
-                                domain.section('/', 1, 1).toStdString(),
-                                domain.section('/', 2).toStdString(),
-                                d_table, Icd::ObjectItem)) {
+        if (!parser->parse(domain.section('/', 0, 0).toStdString(),
+                           domain.section('/', 1, 1).toStdString(),
+                           domain.section('/', 2).toStdString(),
+                           d_table, Icd::ObjectItem)) {
             return false;
         }
         return true;

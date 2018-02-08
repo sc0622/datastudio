@@ -355,7 +355,7 @@ bool DataSourceConfigDlg::saveConfig()
         break;
     }
 
-    if (!JMain::instance()->setOption(d_module, "parser", config, false)) {
+    if (!JMain::instance()->setOption(d_module, "parser", config)) {
         QMessageBox::warning(this, tr("Warning"), tr("Save config failure!"));
         return false;
     }
