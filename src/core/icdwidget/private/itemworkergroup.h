@@ -38,8 +38,6 @@ public:
     void setBindTableType(CoreTreeWidget::BindTableTypes type);
     void setDirty();
 
-    int asciiCountOfSize(int format, int size);
-
     static QString generateItemOffset(const ObjectPtr &object);
 
 signals:

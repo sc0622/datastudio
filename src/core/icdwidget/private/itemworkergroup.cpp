@@ -305,26 +305,6 @@ void ItemWorkerGroup::setDirty()
     }
 }
 
-int ItemWorkerGroup::asciiCountOfSize(int format, int size)
-{
-    switch (format) {
-    case 2: return size * 8;
-    case 8:
-        switch (size) {
-        case 1: return 3;
-        case 2: return 6;
-        case 4: return 11;
-        case 8: return 22;
-            break;
-        }
-    case 16: return size * 2;
-    default:
-        break;
-    }
-
-    return 0;
-}
-
 QString ItemWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
 {
     if (!object) {
@@ -452,7 +432,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
 
     //
     QString info;
-    int asciiCount = asciiCountOfSize(d_dataFormat, dataItem->bufferSize());
+    int asciiCount = Icd::asciiCountOfSize(d_dataFormat, dataItem->bufferSize());
     const bool _showValue = [=]() -> bool {
         //
         if (!showValue) {

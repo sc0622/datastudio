@@ -85,7 +85,13 @@ public:
 
     Icd::ParserPtr parser(const QString &module) const;
 
+    // {{ for icdcore
     static QString typeString(const Icd::ItemPtr &item);
+    static QString numericTypeString(int numericType);
+    static QString counterTypeString(int counterType);
+    static QString checkTypeString(int checkType);
+    static QString frameCodeTypeString(int frameCodeType);
+    // }} for icdcore
 
 signals:
     void themeChanged(const QString &currnt, const QString &previous);

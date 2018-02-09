@@ -168,11 +168,68 @@ void DetailTable::updateItem()
 {
     // header
     d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Value")});
+
+    const Icd::ItemPtr item = JHandlePtrCast<Icd::Item, Icd::Object>(d_object);
+    if (!item) {
+        return;
+    }
+
+    int rowIndex = d_tableView->rowCount() - 1;
+
+    // type of data
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Type of data"));
+    d_tableView->setItemData(rowIndex, 1, JMain::typeString(item));
+    // name of data
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Name of data"));
+    d_tableView->setItemData(rowIndex, 1, QString::fromStdString(item->name()));
+    // Mark of data
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Mark of data"));
+    d_tableView->setItemData(rowIndex, 1, QString::fromStdString(item->mark()));
+    // Offset of data
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Offset of data"));
+    d_tableView->setItemData(rowIndex, 1, QString::number(item->bufferOffset()));
+    // Length of data
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Length of data"));
+    d_tableView->setItemData(rowIndex, 1, QString::number(item->bufferSize()));
+    // Describe
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Describe"));
+    d_tableView->setItemData(rowIndex, 1, QString::fromStdString(item->desc()));
+
+    switch (item->type()) {
+    case Icd::ItemHead: updateHead(); break;
+    case Icd::ItemCounter: updateCounter(); break;
+    case Icd::ItemCheck: updateCheck(); break;
+    case Icd::ItemFrameCode: updateFrameCode(); break;
+    case Icd::ItemNumeric: updateNumeric(); break;
+    case Icd::ItemBitMap: updateBitMap(); break;
+    case Icd::ItemBitValue: updateBitValue(); break;
+    default:
+        break;
+    }
 }
 
 void DetailTable::updateHead()
 {
+    const Icd::HeaderItemPtr headerItem =
+            JHandlePtrCast<Icd::HeaderItem, Icd::Object>(d_object);
+    if (!headerItem) {
+        return;
+    }
 
+    int rowIndex = d_tableView->rowCount() - 1;
+
+    // Default value
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Default value"));
+    d_tableView->setItemData(rowIndex, 1, "0x" + QString("%1")
+                             .arg(uint(headerItem->defaultValue()),
+                                  2, 16, QChar('0')).toUpper());
 }
 
 void DetailTable::updateCounter()
@@ -182,12 +239,41 @@ void DetailTable::updateCounter()
 
 void DetailTable::updateCheck()
 {
+    const Icd::CheckItemPtr checkItem =
+            JHandlePtrCast<Icd::CheckItem, Icd::Object>(d_object);
+    if (!checkItem) {
+        return;
+    }
 
+    int rowIndex = d_tableView->rowCount() - 1;
+
+    // Begin at
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Begin at"));
+    d_tableView->setItemData(rowIndex, 1, QString::number(checkItem->startPos()));
+    // End at
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("End at"));
+    d_tableView->setItemData(rowIndex, 1, QString::number(checkItem->endPos()));
 }
 
 void DetailTable::updateFrameCode()
 {
+    const Icd::FrameCodeItemPtr frameCodeItem =
+            JHandlePtrCast<Icd::FrameCodeItem, Icd::Object>(d_object);
+    if (!frameCodeItem) {
+        return;
+    }
 
+    int rowIndex = d_tableView->rowCount() - 1;
+
+    // Default value
+    d_tableView->insertRow(++rowIndex);
+    d_tableView->setItemData(rowIndex, 0, tr("Default value"));
+    d_tableView->setItemData(rowIndex, 1, "0x" + QString("%1")
+                             .arg(qulonglong(frameCodeItem->defaultValue()),
+                                  Icd::asciiCountOfSize(16, int(frameCodeItem->bufferSize())),
+                                  16, QChar('0')).toUpper());
 }
 
 void DetailTable::updateNumeric()

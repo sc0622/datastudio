@@ -15,6 +15,7 @@
          "name" : "dark"
       }
    },
+   "global/menubar/toolBarVisible" : true,
    "module" : {
       "analyse" : {
          "option" : {

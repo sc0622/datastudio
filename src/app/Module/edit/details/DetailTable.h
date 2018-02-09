@@ -27,7 +27,6 @@ signals:
 public slots:
 
 private:
-    void updateObject();
     void updateRoot();
     void updateVehicle();
     void updateSystem();

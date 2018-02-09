@@ -121,6 +121,8 @@ std::string ICDCORE_EXPORT &replaceString(std::string &str, const std::string &o
 int ICDCORE_EXPORT createPath(const std::string &path);
 std::string ICDCORE_EXPORT pathOfFile(const std::string &filePath);
 
+int ICDCORE_EXPORT asciiCountOfSize(int format, int size);
+
 } // end of namespace Icd
 
 #ifndef JSONCPP_EXTENDS
