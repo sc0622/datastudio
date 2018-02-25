@@ -12,42 +12,77 @@ DetailTable::DetailTable(QWidget *parent)
     vertLayoutMain->setSpacing(0);
 
     d_tableView = new JTableView(this);
+    d_tableView->setEditTriggers(QAbstractItemView::CurrentChanged
+                                 | QAbstractItemView::DoubleClicked
+                                 | QAbstractItemView::SelectedClicked);
     vertLayoutMain->addWidget(d_tableView);
 
-    connect(d_tableView, &JTableView::currentItemChanged, this,
-            [=](QStandardItem *current, QStandardItem *previous){
-        qDebug() << "selection";
+    connect(d_tableView, &JTableView::currentCellChanged, this,
+            [=](int currentRow, int currentColumn, int previousRow, int previuosColumn){
+        Q_UNUSED(currentColumn);
+        Q_UNUSED(previuosColumn);
+        if (currentRow == previousRow) {
+            return;
+        }
+        if (!d_object) {
+            emit currentItemChanged(QVariant::Invalid);
+            return;
+        }
+        switch (d_object->objectType()) {
+        case Icd::ObjectItem:
+        {
+            const Icd::ItemPtr item = JHandlePtrCast<Icd::Item, Icd::Object>(d_object);
+            if (!item) {
+                emit currentItemChanged(QVariant::Invalid);
+                return;
+            }
+            switch (item->type()) {
+            case Icd::ItemFrame:
+                emit currentItemChanged(d_tableView->itemData(currentRow, 0, Qt::UserRole + 1));
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+        default:
+            emit currentItemChanged(currentRow);
+            break;
+        }
     });
 }
 
 void DetailTable::resetView()
 {
+    enableChangedNotify(false);
     d_tableView->clear();
     d_object = nullptr;
 }
 
 void DetailTable::updateView(const Icd::ObjectPtr &object)
 {
-    d_tableView->clear();
-
-    d_object = object;
+    resetView();
 
     if (!object) {
         return;
     }
 
+    d_object = object;
+
+    bool result = false;
+
     switch (object->objectType()) {
     case Icd::ObjectRoot:
-        updateRoot();
+        result = updateRoot();
         break;
     case Icd::ObjectVehicle:
-        updateVehicle();
+        result = updateVehicle();
         break;
     case Icd::ObjectSystem:
-        updateSystem();
+        result = updateSystem();
         break;
     case Icd::ObjectTable:
-        updateTable();
+        result = updateTable();
         break;
     case Icd::ObjectItem:
     {
@@ -58,10 +93,10 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
 
         switch (item->type()) {
         case Icd::ItemFrame:
-            updateFrame();
+            result = updateFrame();
             break;
         default:
-            updateItem();
+            result = updateItem();
             break;
         }
         break;
@@ -69,15 +104,81 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
     default:
         break;
     }
+
+    if (result) {
+        enableChangedNotify(true);
+    }
 }
 
-void DetailTable::updateRoot()
+Icd::ObjectPtr DetailTable::object() const
+{
+    return d_object;
+}
+
+void DetailTable::onContentChanged(QStandardItem *item)
+{
+    if (!item) {
+        return;
+    }
+
+    const int row = item->row();
+    const int column = item->column();
+    QStandardItem *headerItem = d_tableView->horizontalHeaderItem(column);
+    if (!headerItem) {
+        return;
+    }
+
+    const QString name = headerItem->data().toString();
+
+    switch (d_object->objectType()) {
+    case Icd::ObjectItem:
+    {
+        const Icd::ItemPtr icdItem = JHandlePtrCast<Icd::Item, Icd::Object>(d_object);
+        if (!icdItem) {
+            return;
+        }
+        switch (icdItem->type()) {
+        case Icd::ItemFrame:
+            if (saveFrame(item)) {
+                emit contentChanged(d_tableView->itemData(row, 0, Qt::UserRole + 1), name);
+            }
+            break;
+        default:
+            break;
+        }
+        break;
+    }
+    default:
+    {
+        QStandardItem *headerItem = d_tableView->horizontalHeaderItem(column);
+        if (headerItem) {
+            bool changed = false;
+            switch (d_object->objectType()) {
+            case Icd::ObjectRoot: changed = saveRoot(item); break;
+            case Icd::ObjectVehicle: changed = saveVehicle(item); break;
+            case Icd::ObjectSystem: changed = saveSystem(item); break;
+            case Icd::ObjectTable: changed = saveTable(item); break;
+            default:
+                break;
+            }
+            if (changed) {
+                emit contentChanged(row, name);
+            }
+        }
+        break;
+    }}
+}
+
+bool DetailTable::updateRoot()
 {
     d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Describe")});
+    d_tableView->horizontalHeaderItem(0)->setData("name");
+    d_tableView->horizontalHeaderItem(1)->setData("mark");
+    d_tableView->horizontalHeaderItem(2)->setData("desc");
 
     const Icd::RootPtr root = JHandlePtrCast<Icd::Root, Icd::Object>(d_object);
     if (!root) {
-        return;
+        return false;
     }
 
     const Icd::VehiclePtrArray &vehicles = root->allVehicle();
@@ -92,15 +193,23 @@ void DetailTable::updateRoot()
             d_tableView->setItemData(row, 2, QString::fromStdString(vehicle->desc()));
         }
     }
+
+    //
+    //d_tableView->setItemDelegateForColumn(0, new NameItemDelegate());
+
+    return true;
 }
 
-void DetailTable::updateVehicle()
+bool DetailTable::updateVehicle()
 {
     d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Describe")});
+    d_tableView->horizontalHeaderItem(0)->setData("name");
+    d_tableView->horizontalHeaderItem(1)->setData("mark");
+    d_tableView->horizontalHeaderItem(2)->setData("desc");
 
     const Icd::VehiclePtr vehicle = JHandlePtrCast<Icd::Vehicle, Icd::Object>(d_object);
     if (!vehicle) {
-        return;
+        return false;
     }
 
     const Icd::SystemPtrArray &systems = vehicle->allSystem();
@@ -115,16 +224,22 @@ void DetailTable::updateVehicle()
             d_tableView->setItemData(row, 2, QString::fromStdString(system->desc()));
         }
     }
+
+    return true;
 }
 
-void DetailTable::updateSystem()
+bool DetailTable::updateSystem()
 {
     d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Length"),
                                             tr("Describe")});
+    d_tableView->horizontalHeaderItem(0)->setData("name");
+    d_tableView->horizontalHeaderItem(1)->setData("mark");
+    d_tableView->horizontalHeaderItem(2)->setData("length");
+    d_tableView->horizontalHeaderItem(3)->setData("desc");
 
     const Icd::SystemPtr system = JHandlePtrCast<Icd::System, Icd::Object>(d_object);
     if (!system) {
-        return;
+        return false;
     }
 
     const Icd::TablePtrArray &tables = system->allTable();
@@ -140,16 +255,24 @@ void DetailTable::updateSystem()
             d_tableView->setItemData(row, 3, QString::fromStdString(table->desc()));
         }
     }
+
+    return true;
 }
 
-void DetailTable::updateTable()
+bool DetailTable::updateTable()
 {
     d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Byte index"),
                                             tr("Length"), tr("Type"), tr("Describe")});
+    d_tableView->horizontalHeaderItem(0)->setData("name");
+    d_tableView->horizontalHeaderItem(1)->setData("mark");
+    d_tableView->horizontalHeaderItem(2)->setData("byteIndex");
+    d_tableView->horizontalHeaderItem(3)->setData("length");
+    d_tableView->horizontalHeaderItem(4)->setData("type");
+    d_tableView->horizontalHeaderItem(5)->setData("desc");
 
     const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(d_object);
     if (!table) {
-        return;
+        return false;
     }
 
     const Icd::ItemPtrArray &items = table->allItem();
@@ -167,16 +290,20 @@ void DetailTable::updateTable()
             d_tableView->setItemData(row, 5, QString::fromStdString(item->desc()));
         }
     }
+
+    return true;
 }
 
-void DetailTable::updateItem()
+bool DetailTable::updateItem()
 {
     // header
     d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Value")});
+    d_tableView->horizontalHeaderItem(0)->setData("name");
+    d_tableView->horizontalHeaderItem(1)->setData("value");
 
     const Icd::ItemPtr item = JHandlePtrCast<Icd::Item, Icd::Object>(d_object);
     if (!item) {
-        return;
+        return false;
     }
 
     int rowIndex = d_tableView->rowCount() - 1;
@@ -217,14 +344,16 @@ void DetailTable::updateItem()
     default:
         break;
     }
+
+    return true;
 }
 
-void DetailTable::updateHead()
+bool DetailTable::updateHead()
 {
     const Icd::HeaderItemPtr headerItem =
             JHandlePtrCast<Icd::HeaderItem, Icd::Object>(d_object);
     if (!headerItem) {
-        return;
+        return false;
     }
 
     int rowIndex = d_tableView->rowCount() - 1;
@@ -235,19 +364,21 @@ void DetailTable::updateHead()
     d_tableView->setItemData(rowIndex, 1, "0x" + QString("%1")
                              .arg(uint(headerItem->defaultValue()),
                                   2, 16, QChar('0')).toUpper());
+
+    return true;
 }
 
-void DetailTable::updateCounter()
+bool DetailTable::updateCounter()
 {
-
+    return true;
 }
 
-void DetailTable::updateCheck()
+bool DetailTable::updateCheck()
 {
     const Icd::CheckItemPtr checkItem =
             JHandlePtrCast<Icd::CheckItem, Icd::Object>(d_object);
     if (!checkItem) {
-        return;
+        return false;
     }
 
     int rowIndex = d_tableView->rowCount() - 1;
@@ -260,14 +391,16 @@ void DetailTable::updateCheck()
     d_tableView->insertRow(++rowIndex);
     d_tableView->setItemData(rowIndex, 0, tr("End at"));
     d_tableView->setItemData(rowIndex, 1, QString::number(checkItem->endPos()));
+
+    return true;
 }
 
-void DetailTable::updateFrameCode()
+bool DetailTable::updateFrameCode()
 {
     const Icd::FrameCodeItemPtr frameCodeItem =
             JHandlePtrCast<Icd::FrameCodeItem, Icd::Object>(d_object);
     if (!frameCodeItem) {
-        return;
+        return false;
     }
 
     int rowIndex = d_tableView->rowCount() - 1;
@@ -279,33 +412,239 @@ void DetailTable::updateFrameCode()
                              .arg(qulonglong(frameCodeItem->defaultValue()),
                                   Icd::asciiCountOfSize(16, int(frameCodeItem->bufferSize())),
                                   16, QChar('0')).toUpper());
+
+    return true;
 }
 
-void DetailTable::updateNumeric()
+bool DetailTable::updateNumeric()
 {
-
+    return true;
 }
 
-void DetailTable::updateBitMap()
+bool DetailTable::updateBitMap()
 {
-
+    return true;
 }
 
-void DetailTable::updateBitValue()
+bool DetailTable::updateBitValue()
 {
-
+    return true;
 }
 
-void DetailTable::updateComplex()
+bool DetailTable::updateComplex()
 {
-
+    return true;
 }
 
-void DetailTable::updateFrame()
+bool DetailTable::updateFrame()
 {
     // header
     d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Frame code"), tr("Sequence"),
                                             tr("Describe")});
+    d_tableView->horizontalHeaderItem(0)->setData("name");
+    d_tableView->horizontalHeaderItem(1)->setData("code");
+    d_tableView->horizontalHeaderItem(2)->setData("sequence");
+    d_tableView->horizontalHeaderItem(3)->setData("desc");
+
+    const Icd::FrameItemPtr frameItem = JHandlePtrCast<Icd::FrameItem, Icd::Object>(d_object);
+    if (!frameItem) {
+        return false;
+    }
+
+    const Icd::TablePtrMap &tables = frameItem->allTable();
+
+    d_tableView->setRowCount(tables.size());
+    const int rowCount = d_tableView->rowCount();
+    int row = 0;
+    foreach (auto &item, tables) {
+        const Icd::TablePtr table = item.second;
+        if (table) {
+            d_tableView->setItemData(row, 0, QString::fromStdString(table->name()));
+            d_tableView->setItemData(row, 0, item.first, Qt::UserRole + 1);
+            d_tableView->setItemData(row, 1, "0x" + QString("%1").arg(item.first, 0, 16).toUpper());
+            d_tableView->setItemData(row, 2, QString::number(table->sequence()));
+            d_tableView->setItemData(row, 3, QString::fromStdString(table->desc()));
+        }
+        if (++row >= rowCount) {
+            break;
+        }
+    }
+
+    return true;
+}
+
+bool DetailTable::saveRoot(QStandardItem *item)
+{
+    if (!item) {
+        return false;
+    }
+
+    const Icd::RootPtr root = JHandlePtrCast<Icd::Root, Icd::Object>(d_object);
+    if (!root) {
+        return false;
+    }
+
+    const Icd::VehiclePtr vehicle = root->vehicleAt(item->row());
+    if (!vehicle) {
+        return false;
+    }
+
+    switch (item->column()) {
+    case 0:
+        vehicle->setName(item->text().toStdString());
+        break;
+    case 1:
+        vehicle->setMark(item->text().toStdString());
+        break;
+    case 2:
+        vehicle->setDesc(item->text().toStdString());
+        break;
+    default:
+        return false;
+    }
+
+    return true;
+}
+
+bool DetailTable::saveVehicle(QStandardItem *item)
+{
+    if (!item) {
+        return false;
+    }
+
+    const Icd::VehiclePtr vehicle = JHandlePtrCast<Icd::Vehicle, Icd::Object>(d_object);
+    if (!vehicle) {
+        return false;
+    }
+
+    const Icd::SystemPtr system = vehicle->systemAt(item->row());
+    if (!system) {
+        return false;
+    }
+
+    switch (item->column()) {
+    case 0:
+        system->setName(item->text().toStdString());
+        break;
+    case 1:
+        system->setMark(item->text().toStdString());
+        break;
+    case 2:
+        system->setDesc(item->text().toStdString());
+        break;
+    default:
+        return false;
+    }
+
+    return true;
+}
+
+bool DetailTable::saveSystem(QStandardItem *item)
+{
+    if (!item) {
+        return false;
+    }
+
+    const Icd::SystemPtr system = JHandlePtrCast<Icd::System, Icd::Object>(d_object);
+    if (!system) {
+        return false;
+    }
+
+    const Icd::TablePtr table = system->tableAt(item->row());
+    if (!table) {
+        return false;
+    }
+
+    switch (item->column()) {
+    case 0:
+        table->setName(item->text().toStdString());
+        break;
+    case 1:
+        table->setMark(item->text().toStdString());
+        break;
+    case 3:
+        table->setDesc(item->text().toStdString());
+        break;
+    default:
+        return false;
+    }
+
+    return true;
+}
+
+bool DetailTable::saveTable(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveItem(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveHead(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveCounter(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveCheck(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveFrameCode(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveNumeric(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveBitMap(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveBitValue(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveComplex(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+bool DetailTable::saveFrame(QStandardItem *item)
+{
+    Q_UNUSED(item);
+    return true;
+}
+
+void DetailTable::enableChangedNotify(bool enabled)
+{
+    disconnect(d_tableView, &JTableView::itemChanged, this, &DetailTable::onContentChanged);
+
+    if (enabled) {
+        connect(d_tableView, &JTableView::itemChanged, this, &DetailTable::onContentChanged);
+    }
 }
 
 }

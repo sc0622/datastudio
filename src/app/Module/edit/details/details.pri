@@ -1,9 +1,11 @@
 HEADERS += \
     $$PWD/DetailView.h \
     $$PWD/DetailTable.h \
-    $$PWD/DetailItemEdit.h
+    $$PWD/DetailEdit.h
 
 SOURCES += \
     $$PWD/DetailView.cpp \
     $$PWD/DetailTable.cpp \
-    $$PWD/DetailItemEdit.cpp
+    $$PWD/DetailEdit.cpp
+
+include($$PWD/private/private.pri)

@@ -15,7 +15,7 @@ typedef JHandlePtr<Object> ObjectPtr;
 namespace Edit {
 
 class DetailTable;
-class DetailItemEdit;
+class DetailEdit;
 
 class DetailView : public QWidget
 {
@@ -31,12 +31,13 @@ public:
 signals:
 
 public slots:
-    void onCurrentRowChanged(int currentRow);
+    void onCurrentItemChanged(const QVariant &index);
+    void onContentChanged(const QVariant &index, const QString &name);
 
 private:
     JSplitter *d_splitterMain;
     DetailTable *d_detailTable;
-    DetailItemEdit *d_detailItemEdit;
+    DetailEdit *d_detailEdit;
     struct {
         QStandardItem *item;
         Icd::ObjectPtr object;

@@ -602,6 +602,34 @@ QLineEdit:focus:!read-only {
     color: #eee;
 }
 
+/** QPlainTextEdit **/
+
+QPlainTextEdit, QTextEdit {
+    background: #303030;
+    border-radius: 2px;
+    padding: 2px;
+    border: 1px solid #333;
+    color: #ccc;
+    outline: none;
+}
+
+QPlainTextEdit:read-only, QTextEdit:read-only {
+    background: #262626;
+    color: #ccc;
+}
+
+QPlainTextEdit:hover, QTextEdit:hover {
+    border: 1px solid #205375;
+    color: #ccc;
+} 
+
+QPlainTextEdit:focus:!read-only, QTextEdit:focus:!read-only {
+    border: 1px solid #205375;
+    border-radius: 2px;
+    background: #383838;
+    color: #eee;
+}
+
 /** QComboBox, QSpinBox, QDoubleSpinBox **/
 
 QComboBox,QSpinBox,QDoubleSpinBox,

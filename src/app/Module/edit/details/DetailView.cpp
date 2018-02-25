@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "DetailView.h"
 #include "DetailTable.h"
-#include "DetailItemEdit.h"
+#include "DetailEdit.h"
 
 namespace Edit {
 
@@ -20,13 +20,15 @@ DetailView::DetailView(QWidget *parent)
     d_detailTable = new DetailTable(this);
     d_splitterMain->addWidget(d_detailTable);
 
-    d_detailItemEdit = new DetailItemEdit(this);
-    d_splitterMain->addWidget(d_detailItemEdit);
+    d_detailEdit = new DetailEdit(this);
+    d_splitterMain->addWidget(d_detailEdit);
 
-    connect(d_detailTable, &DetailTable::currentRowChanged,
-            this, &DetailView::onCurrentRowChanged);
+    connect(d_detailTable, &DetailTable::currentItemChanged,
+            this, &DetailView::onCurrentItemChanged);
+    connect(d_detailTable, &DetailTable::contentChanged,
+            this, &DetailView::onContentChanged);
 
-    d_detailItemEdit->hide();
+    d_detailEdit->hide();
 }
 
 DetailView::~DetailView()
@@ -46,7 +48,7 @@ bool DetailView::init()
 void DetailView::updateView(QStandardItem *item)
 {
     d_detailTable->resetView();
-    d_detailItemEdit->resetView();
+    d_detailEdit->resetView();
 
     d_currentData.item = item;
     d_currentData.object = nullptr;
@@ -85,12 +87,23 @@ void DetailView::updateView(QStandardItem *item)
     }
 
     d_detailTable->updateView(object);
-    d_detailItemEdit->updateView(object);
+    d_detailEdit->updateView(object);
 }
 
-void DetailView::onCurrentRowChanged(int currentRow)
+void DetailView::onCurrentItemChanged(const QVariant &index)
 {
-    Q_UNUSED(currentRow);
+    d_detailEdit->updateView(d_detailTable->object(), index);
+}
+
+void DetailView::onContentChanged(const QVariant &index, const QString &name)
+{
+    Q_UNUSED(index);
+
+    if (d_detailEdit->isHidden()) {
+        return;
+    }
+
+    d_detailEdit->updateContent(name);
 }
 
 }

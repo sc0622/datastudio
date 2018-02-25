@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "main_global.h"
+#include <QStyledItemDelegate>
 
 class JTableView;
 
@@ -22,30 +23,63 @@ public:
     void resetView();
     void updateView(const Icd::ObjectPtr &object);
 
+    Icd::ObjectPtr object() const;
+
 signals:
-    void currentRowChanged(int currentRow);
+    void currentItemChanged(const QVariant &index);
+    void contentChanged(const QVariant &index, const QString &name);
 
 public slots:
+    void onContentChanged(QStandardItem *item);
 
 private:
-    void updateRoot();
-    void updateVehicle();
-    void updateSystem();
-    void updateTable();
-    void updateItem();
-    void updateHead();
-    void updateCounter();
-    void updateCheck();
-    void updateFrameCode();
-    void updateNumeric();
-    void updateBitMap();
-    void updateBitValue();
-    void updateComplex();
-    void updateFrame();
+    bool updateRoot();
+    bool updateVehicle();
+    bool updateSystem();
+    bool updateTable();
+    bool updateItem();
+    bool updateHead();
+    bool updateCounter();
+    bool updateCheck();
+    bool updateFrameCode();
+    bool updateNumeric();
+    bool updateBitMap();
+    bool updateBitValue();
+    bool updateComplex();
+    bool updateFrame();
+
+    bool saveRoot(QStandardItem *item);
+    bool saveVehicle(QStandardItem *item);
+    bool saveSystem(QStandardItem *item);
+    bool saveTable(QStandardItem *item);
+    bool saveItem(QStandardItem *item);
+    bool saveHead(QStandardItem *item);
+    bool saveCounter(QStandardItem *item);
+    bool saveCheck(QStandardItem *item);
+    bool saveFrameCode(QStandardItem *item);
+    bool saveNumeric(QStandardItem *item);
+    bool saveBitMap(QStandardItem *item);
+    bool saveBitValue(QStandardItem *item);
+    bool saveComplex(QStandardItem *item);
+    bool saveFrame(QStandardItem *item);
+
+private:
+    void enableChangedNotify(bool enabled);
 
 private:
     JTableView *d_tableView;
     Icd::ObjectPtr d_object;
+};
+
+//// private
+
+// class NameItemDelegate
+
+class NameItemDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+public:
+    explicit NameItemDelegate(QObject *parent = nullptr);
 };
 
 }

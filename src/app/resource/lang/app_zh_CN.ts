@@ -328,106 +328,132 @@
     </message>
 </context>
 <context>
+    <name>Edit::DetailEdit</name>
+    <message>
+        <location filename="../../Module/edit/details/DetailEdit.cpp" line="15"/>
+        <source>Details</source>
+        <translation>详细</translation>
+    </message>
+</context>
+<context>
     <name>Edit::DetailTable</name>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="76"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="99"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="122"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="147"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="175"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="307"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="174"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="205"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="233"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="264"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="300"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="442"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="76"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="99"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="122"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="147"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="174"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="205"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="233"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="264"/>
         <source>Mark</source>
         <translation>标识</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="76"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="99"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="123"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="148"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="206"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="308"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="174"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="205"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="234"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="265"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="333"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="443"/>
         <source>Describe</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="122"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="148"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="233"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="265"/>
         <source>Length</source>
         <translation>长度</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="147"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="264"/>
         <source>Byte index</source>
         <translation>字节序号</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="148"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="265"/>
         <source>Type</source>
         <translation>数据类型</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="175"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="300"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="186"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="313"/>
         <source>Type of data</source>
         <translation>数据类型</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="190"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="317"/>
         <source>Name of data</source>
         <translation>数据名称</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="194"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="321"/>
         <source>Mark of data</source>
         <translation>数据标识</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="198"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="325"/>
         <source>Offset of data</source>
         <translation>数据偏移</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="202"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="329"/>
         <source>Length of data</source>
         <translation>数据长度</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="234"/>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="277"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="363"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="410"/>
         <source>Default value</source>
         <translation>默认值</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="257"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="388"/>
         <source>Begin at</source>
         <translation>开始偏移量</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="261"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="392"/>
         <source>End at</source>
         <translation>结束偏移量</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="307"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="442"/>
         <source>Frame code</source>
         <translation>帧码</translation>
     </message>
     <message>
-        <location filename="../../Module/edit/details/DetailTable.cpp" line="307"/>
+        <location filename="../../Module/edit/details/DetailTable.cpp" line="442"/>
         <source>Sequence</source>
         <translation>时序</translation>
+    </message>
+</context>
+<context>
+    <name>Edit::ObjectEdit</name>
+    <message>
+        <location filename="../../Module/edit/details/DetailEdit.cpp" line="182"/>
+        <source>Name:</source>
+        <translation>名称：</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailEdit.cpp" line="185"/>
+        <source>Mark:</source>
+        <translation>标识：</translation>
+    </message>
+    <message>
+        <location filename="../../Module/edit/details/DetailEdit.cpp" line="188"/>
+        <source>Describe:</source>
+        <translation>描述：</translation>
     </message>
 </context>
 <context>
