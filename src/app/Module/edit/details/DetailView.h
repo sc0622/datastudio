@@ -31,6 +31,7 @@ public:
 signals:
 
 public slots:
+    void onCurrentRowChanged(int currentRow);
 
 private:
     JSplitter *d_splitterMain;

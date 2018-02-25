@@ -6,5 +6,6 @@
 #include "protocol/jprotocol_inc.h"
 #include "common/JSearchWatcher.h"
 #include "common/JNotify.h"
+#include "common/JWindowFrame.h"
 
 #endif // ICDMETA_INC_H

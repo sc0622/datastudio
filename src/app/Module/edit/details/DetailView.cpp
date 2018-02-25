@@ -22,6 +22,11 @@ DetailView::DetailView(QWidget *parent)
 
     d_detailItemEdit = new DetailItemEdit(this);
     d_splitterMain->addWidget(d_detailItemEdit);
+
+    connect(d_detailTable, &DetailTable::currentRowChanged,
+            this, &DetailView::onCurrentRowChanged);
+
+    d_detailItemEdit->hide();
 }
 
 DetailView::~DetailView()
@@ -50,7 +55,7 @@ void DetailView::updateView(QStandardItem *item)
         return;
     }
 
-    Icd::ParserPtr parser = JMain::instance()->parser("edit");
+    const Icd::ParserPtr parser = JMain::instance()->parser("edit");
     if (!parser) {
         return;
     }
@@ -81,6 +86,11 @@ void DetailView::updateView(QStandardItem *item)
 
     d_detailTable->updateView(object);
     d_detailItemEdit->updateView(object);
+}
+
+void DetailView::onCurrentRowChanged(int currentRow)
+{
+    Q_UNUSED(currentRow);
 }
 
 }

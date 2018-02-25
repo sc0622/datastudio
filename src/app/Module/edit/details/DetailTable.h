@@ -23,6 +23,7 @@ public:
     void updateView(const Icd::ObjectPtr &object);
 
 signals:
+    void currentRowChanged(int currentRow);
 
 public slots:
 

@@ -11,7 +11,7 @@ DetailItemEdit::DetailItemEdit(QWidget *parent)
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    d_groupBox = new QGroupBox("test", this);
+    d_groupBox = new QGroupBox("Details", this);
     vertLayoutMain->addWidget(d_groupBox);
 }
 

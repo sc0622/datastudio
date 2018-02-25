@@ -96,7 +96,7 @@ contains(SETENV_FLAGS, MODULE_CORE) {
     }
     # -- Qt - core
     items = Concurrent Core Gui Network PrintSupport SerialPort \
-        Qml Quick Svg Widgets WinExtras Xml
+        Svg Widgets Xml
     for (item, items) {
         name = Qt$${QT_MAJOR_VERSION}$${item}
         $$compiler($$group($${ROOT}.core.$$name), \

@@ -13,6 +13,11 @@ DetailTable::DetailTable(QWidget *parent)
 
     d_tableView = new JTableView(this);
     vertLayoutMain->addWidget(d_tableView);
+
+    connect(d_tableView, &JTableView::currentItemChanged, this,
+            [=](QStandardItem *current, QStandardItem *previous){
+        qDebug() << "selection";
+    });
 }
 
 void DetailTable::resetView()

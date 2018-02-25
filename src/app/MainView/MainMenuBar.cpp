@@ -14,7 +14,7 @@ bool MenuBar::init()
 {
     bool result = true;
 
-    Json::Value config = JMain::instance()->config("global/menubar");
+    Json::Value config = JMain::instance()->config("global.menubar");
     if (config.isNull()) {
         //return false;
     }
@@ -117,7 +117,7 @@ void MenuBar::addShowToolbarAction(const Json::Value &config)
         setIcon(checked);
         jnotify->send("main.toolbar.show", checked);
         //
-        JMain::instance()->setConfig("global/menubar/toolBarVisible", checked);
+        JMain::instance()->setConfig("global.menubar.toolBarVisible", checked);
     });
     jnotify->on("main.toolbar.show.toggle", this, [=](JNEvent &){
         actionShowToolBar->toggle();

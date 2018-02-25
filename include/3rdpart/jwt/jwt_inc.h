@@ -1,7 +1,6 @@
 ﻿#ifndef JWT_INC_H
 #define JWT_INC_H
 
-#include "jappwindoweventfilter.h"
 #include "jcheckcombobox.h"
 #include "jdialog.h"
 #include "jfiltertableview.h"

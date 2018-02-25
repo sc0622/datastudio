@@ -61,7 +61,7 @@ bool SettingsDlg::init()
 
     // environment - general
     auto generalItem = new JTreeViewItem(tr("General"));
-    generalItem->setData("environment/general", Icd::TreeItemDomainRole);
+    generalItem->setData("environment.general", Icd::TreeItemDomainRole);
     environmentItem->appendRow(generalItem);
     d_treeView->setCurrentItem(generalItem);
 
@@ -90,7 +90,7 @@ void SettingsDlg::onCurrentItemChanged(QStandardItem *current, QStandardItem *pr
         return;
     }
 
-    if (domain == "environment/general") {
+    if (domain == "environment.general") {
         auto generalWidget = new GeneralWidget(d_scrollArea);
         d_scrollArea->setWidget(generalWidget);
     } else {

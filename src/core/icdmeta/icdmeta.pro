@@ -25,6 +25,14 @@ include($$this_dir/src/common/build.pri)
 TARGET = $$qtLibraryTarget(icdmeta)
 #CONFIG += staticlib     ## static library
 
+win32 {
+    LIBS += -lws2_32 -ladvapi32 -luser32 -lgdi32
+}
+
+win32: {
+    DEFINES -= UNICODE
+}
+
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
     icdmeta_global.h \
