@@ -1,4 +1,4 @@
-#include "precomp.h"
+//#include "precomp.h"
 #include "icdcomm_serialchannel.h"
 #include <sstream>
 #include <assert.h>

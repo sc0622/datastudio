@@ -8,11 +8,11 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    icdchart \
     icdcomm \
     icdcore \
-    icdmeta \
+    icdworker \
     icdparser \
-    icdplugins \
     icdwidget \
-    icdworker
+    icdchart \
+    icdmeta \
+    icdplugins

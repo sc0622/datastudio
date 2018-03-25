@@ -1,12 +1,12 @@
-#include "precomp.h"
+//#include "precomp.h"
 #include "jserialport.h"
 #include <sstream>
 
 #ifdef SERIAL_USE_PCOMM
 #include "moxa/pcomm.h"
-#else
-#include <QtSeriaPort>
 #endif
+
+#include "icdcore/icdcore_global.h"
 
 //#pragma comment(lib, "pcomm.lib")
 
@@ -28,7 +28,7 @@ public:
         , isOpen(false)
         , errorCode(SIO_OK)
     #else
-        : serialPort(HandlePtr<QSerialPort>(new QSerialPort()))
+        : serialPort(JHandlePtr<QSerialPort>(new QSerialPort()))
     #endif
     {
 
@@ -49,7 +49,7 @@ private:
     bool isOpen;
     int errorCode;
 #else
-    HandlePtr<QSerialPort> serialPort;
+    JHandlePtr<QSerialPort> serialPort;
 #endif
 };
 
@@ -312,7 +312,7 @@ JSerialPort::Parity JSerialPort::parity() const
     case P_ODD: return JSerialPort::OddParity;
     case P_SPC: return JSerialPort::SpaceParity;
     case P_MRK: return JSerialPort::MarkParity;
-    default: return JSerialPort::UnknownParity;
+    default: return JSerialPort::InvalidParity;
     }
 #else
     return (SerialChannel::Parity)d->serialPort->parity();
@@ -447,7 +447,7 @@ void JSerialPort::flush()
 {
     sio_flush(d->portNumber, 1);    // 0,clear input; 1,clear output; 2,clear input and output
 }
-#include <QSerialPort>
+
 int JSerialPort::lastErrorCode() const
 {
 #ifdef SERIAL_USE_PCOMM

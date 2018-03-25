@@ -39,6 +39,12 @@
 #include <QtQuick>
 #endif
 
+#ifdef QT_SERIALPORT_LIB
+#include <QtSerialPort>
+#endif
+
+//
+
 #if defined(TINYXML_LIB)
 #include "tinyxml/tinyxml.h"
 #endif

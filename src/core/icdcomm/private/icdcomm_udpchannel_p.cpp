@@ -1,5 +1,4 @@
-
-#include "precomp.h"
+//#include "precomp.h"
 #include "icdcomm_udpchannel_p.h"
 #include <QNetworkConfigurationManager>
 #include <QNetworkDatagram>

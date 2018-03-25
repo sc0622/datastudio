@@ -1,4 +1,4 @@
-#include "precomp.h"
+//#include "precomp.h"
 #include "jcircularbuffer.h"
 
 // class JCircularBufferData

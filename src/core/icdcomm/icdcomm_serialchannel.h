@@ -23,7 +23,7 @@ public:
         Data6 = 6,
         Data7 = 7,
         Data8 = 8,
-        UnknownDataBits = -1
+        InvalidDataBits = -1
     };
 
     /**
@@ -33,7 +33,7 @@ public:
         OneStop = 1,
         OneAndHalfStop = 3,
         TwoStop = 2,
-        UnknownStopBits = -1
+        InvalidStopBits = -1
     };
 
     /**
@@ -45,7 +45,7 @@ public:
         OddParity = 3,
         SpaceParity = 4,
         MarkParity = 5,
-        UnknownParity = -1
+        InvalidParity = -1
     };
 
     /**

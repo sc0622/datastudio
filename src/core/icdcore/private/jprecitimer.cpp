@@ -1,4 +1,4 @@
-﻿#include "precomp.h"
+﻿//#include "precomp.h"
 #include "jprecitimer.h"
 
 JPreciTimer::JPreciTimer() : q_freq(0), q_ocount(0)

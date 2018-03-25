@@ -1,4 +1,4 @@
-#include "precomp.h"
+//#include "precomp.h"
 #include "icdcomm_channel.h"
 #include "icdcomm_serialchannel.h"
 #include "icdcomm_filechannel.h"

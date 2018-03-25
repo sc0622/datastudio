@@ -1,4 +1,4 @@
-﻿#include "precomp.h"
+﻿//#include "precomp.h"
 #include "icd_item_framecode.h"
 #include "icd_table.h"
 #include <algorithm>

@@ -1,4 +1,4 @@
-﻿#include "precomp.h"
+﻿//#include "precomp.h"
 #include "icd_root.h"
 #include <assert.h>
 
@@ -8,7 +8,7 @@ class RootData
 {
     friend class Root;
 public:
-    RootData()
+    RootData(int a)
     {
 
     }
@@ -19,21 +19,25 @@ private:
 
 Root::Root(Object *parent)
     : Object(ObjectRoot, parent)
-    , d(new RootData())
+    , d(new RootData(0))
 {
 
 }
 
 Root::Root(const std::string &id, Object *parent)
     : Object(id, ObjectRoot, parent)
-    , d(new RootData())
+    , d(new RootData(0))
 {
-
+#if defined(DEBUG) || defined(_DEBUG)
+    int i = 0;
+#else
+    int i = 0;
+#endif
 }
 
 Root::Root(const Root &other)
     : Object(other)
-    , d(new RootData())
+    , d(new RootData(0))
 {
     *this = other;
 }

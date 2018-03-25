@@ -4,13 +4,12 @@
 
 this_dir = $$absolute_path($$PWD/../../..)
 
-QT += gui network widgets serialport
+QT += network
 
 DEFINES += \
     PRO_CORE \
     ICDCOMM_LIB \
     ICDCOMM_BUILD \
-    JWT_LIB \
     SERIAL_USE_PCOMM
 
 !contains(DEFINES, SERIAL_USE_PCOMM): QT += serialport
@@ -31,8 +30,8 @@ HEADERS += \
     $$PWD/icdcomm_ringbuffer.h \
     $$PWD/private/icdcomm_udpchannel_p.h \
     $$PWD/private/jserialport.h \
-    private/jcircularbuffer.h
-
+    private/jcircularbuffer.h \
+    private/moxa/pcomm.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
