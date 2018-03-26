@@ -1,4 +1,4 @@
-//#include "precomp.h"
+#include "precomp.h"
 #include "icd_item.h"
 #include "icdcore_inc.h"
 #include <assert.h>

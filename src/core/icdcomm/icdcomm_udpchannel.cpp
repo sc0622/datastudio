@@ -1,4 +1,4 @@
-﻿//#include "precomp.h"
+﻿#include "precomp.h"
 #include "icdcomm_udpchannel.h"
 #include "private/icdcomm_udpchannel_p.h"
 #include <sstream>

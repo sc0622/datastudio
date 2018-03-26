@@ -1,4 +1,4 @@
-//#include "precomp.h"
+#include "precomp.h"
 #include "icdcore_global.h"
 #include "3rdpart/jsoncpp/json/json.h"
 #include <sstream>

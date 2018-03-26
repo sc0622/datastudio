@@ -11,6 +11,12 @@ Project {
         'tools/qbs'
     ]
 
+    Profile {
+        name: 'globalInclude'
+    }
+*/
+    qbs.profiles: [ 'globalInclude' ]
+
     references: [
         'src/src.qbs',
         'tools/tools.qbs'

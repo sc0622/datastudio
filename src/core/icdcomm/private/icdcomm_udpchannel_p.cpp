@@ -1,4 +1,4 @@
-//#include "precomp.h"
+#include "precomp.h"
 #include "icdcomm_udpchannel_p.h"
 #include <QNetworkConfigurationManager>
 #include <QNetworkDatagram>
@@ -16,6 +16,7 @@ UdpChannelPrivate::UdpChannelPrivate(QObject *parent)
     , d_remotePort(8080)
     , openMode(UdpChannel::ReadWrite)
 {
+
 }
 
 UdpChannelPrivate::~UdpChannelPrivate()

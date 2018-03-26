@@ -2,7 +2,7 @@ import qbs
 
 JCppDyLibrary {
     modulePath: 'core'
-    moduleName: 'icdcomm'
+    targetName: 'icdcomm'
 
     Depends { name: 'Qt.gui' }
     Depends { name: 'Qt.network' }
@@ -25,19 +25,16 @@ JCppDyLibrary {
     }
 
     cpp.cxxStandardLibrary: 'c++98'
-    cpp.includePaths: [
-        project.sourceDirectory + '/include/core'
-    ]
-    cpp.libraryPaths: [
-        sourceDirectory + '/private/moxa'
-    ]
-    cpp.dynamicLibraries: [
-        'pcomm',
-        'icdcore' + project.dynamicSuffix
-    ]
-    cpp.defines: [
-        'ICDCOMM_LIB',
-        'ICDCOMM_BUILD',
-        'SERIAL_USE_PCOMM'
-    ]
+    cpp.includePaths: base.concat([])
+    cpp.libraryPaths: base.concat([ sourceDirectory + '/private/moxa' ])
+    cpp.dynamicLibraries: base.concat([ 'pcomm', 'icdcore' + project.dynamicSuffix ])
+    cpp.defines: base.concat([ 'ICDCORE_LIB', 'SERIAL_USE_PCOMM' ])
+
+    Group {
+        name: "Special Group"
+        qbs.installDir: {
+            console.warn(outer);
+            return '';
+        }
+    }
 }

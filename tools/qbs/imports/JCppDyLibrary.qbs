@@ -1,53 +1,69 @@
 import qbs
 import qbs.File
 import qbs.FileInfo
+import qbs.Utilities
 
 DynamicLibrary {
 
     version: '1.0'
 
     property string modulePath: ''
-    property string moduleName: ''
+    //property string moduleName: ''
 
-    readonly property string includePath: project.sourceDirectory + '/include/'
-                                          + modulePath + '/' + moduleName
-    readonly property string installRoot: project.sourceDirectory + '/include/' + modulePath
+    readonly property path includePath: project.sourceDirectory + '/include/'
+                                        + modulePath + '/' + targetName
+    readonly property path installRoot: project.sourceDirectory + '/include/' + modulePath
 
     Depends { name: 'cpp' }
 
     destinationDirectory: {
-        if (moduleName.length == 0) {
+        if (targetName.length == 0) {
             return destinationDirectory;
         }
         return project.sourceDirectory + '/lib/' + modulePath;
     }
-
+/*
     targetName: {
-        if (moduleName.length == 0) {
+        if (name.length == 0) {
             return targetName;
         }
         return qbs.buildVariant == 'debug'
-                ? moduleName + 'd' : moduleName;
+                ? name + 'd' : name;
     }
-
-    cpp.compilerIncludePaths: [
-        project.sourceDirectory + '/src/common',
-        project.sourceDirectory + '/include',
-        project.sourceDirectory + '/include/3rdpart',
-        project.sourceDirectory + '/include/core'
-    ]
-
-    cpp.compilerLibraryPaths: [
-        project.sourceDirectory + '/lib',
-        project.sourceDirectory + '/lib/3rdpart',
-        project.sourceDirectory + '/lib/core'
-    ]
-
+*/
+    cpp.includePaths: base.concat([
+                                      project.sourceDirectory + '/src/common',
+                                      project.sourceDirectory + '/include',
+                                      project.sourceDirectory + '/include/3rdpart',
+                                      project.sourceDirectory + '/include/core'
+                                  ])
+    cpp.libraryPaths: base.concat([
+                                      project.sourceDirectory + '/lib',
+                                      project.sourceDirectory + '/lib/3rdpart',
+                                      project.sourceDirectory + '/lib/core'
+                                  ])
+    property path home: '~'
+    cpp.defines: {
+        var productName = Utilities.getNativeSetting("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion", "ProductName");
+        var name = Utilities.getHash('901219');
+        console.warn('-----: ' + productName);
+        console.warn('======: ' + name);
+        //console.warn(Utilities.nativeSettingGroups());
+        var upperName = product.name.toUpperCase();
+        var defines = base;
+        defines.push(upperName + '_LIB');
+        defines.push(upperName + '_BUILD');
+        console.warn(FileInfo.resolvePath(home));
+        return defines;
+    }
+    /*
     cpp.prefixHeaders: [
         //project.sourceDirectory + '/src/common/precomp.h'
     ]
+*/
+    //cpp.useCxxPrecompiledHeader: true
 
-    cpp.useCxxPrecompiledHeader: true
+    cpp.variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
 
     Group {
         name: "precomp"

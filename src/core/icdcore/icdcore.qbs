@@ -2,7 +2,7 @@ import qbs
 
 JCppDyLibrary {
     modulePath: 'core'
-    moduleName: 'icdcore'
+    targetName: 'icdcore'
 
     Group {
         name: 'headers'
@@ -33,11 +33,7 @@ JCppDyLibrary {
     }
 
     cpp.cxxStandardLibrary: 'c++98'
-    cpp.includePaths: [
-        '3rdpart/jsoncpp'
-    ]
-    cpp.defines: [
-        'ICDCORE_LIB',
-        'ICDCORE_BUILD'
-    ]
+    cpp.includePaths: {
+        return base.concat(['3rdpart/jsoncpp']);
+    }
 }
