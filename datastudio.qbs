@@ -11,6 +11,7 @@ Project {
         'tools/qbs'
     ]
 
+    /*
     Profile {
         name: 'globalInclude'
     }
