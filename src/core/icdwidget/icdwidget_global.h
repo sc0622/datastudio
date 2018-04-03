@@ -82,9 +82,17 @@ typedef void(*SingletonReleaseCallback)();
 
 #ifndef J_VARIANT_FROM_VOID
 #define J_VARIANT_FROM_VOID
+
+#ifdef QT_CORE_LIB
+
+#include <QVariant>
+
 template<typename T> inline
 T *jVariantFromVoid(const QVariant &value)
 { return reinterpret_cast<T *>(value.value<void *>()); }
+
+#endif
+
 #endif
 
 ////////////////////////////////

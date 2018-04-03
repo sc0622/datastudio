@@ -2,7 +2,7 @@
 #define EXPORTORGDATAWIDGET_H
 
 #include <QWidget>
-#include "icdcore_global.h"
+#include "icdcore/icdcore_global.h"
 
 namespace Icd {
 class Object;

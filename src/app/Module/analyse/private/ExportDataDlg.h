@@ -2,7 +2,7 @@
 #define EXPORTDATADLG_H
 
 #include <QDialog>
-#include "icdcore_global.h"
+#include "icdcore/icdcore_global.h"
 
 namespace Icd {
 

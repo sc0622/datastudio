@@ -1,7 +1,7 @@
 #ifndef BINDCHANNELWIDGETPRIVATE_H
 #define BINDCHANNELWIDGETPRIVATE_H
 
-#include "bindchannel_widget.h"
+#include "../bindchannel_widget.h"
 
 class QTabWidget;
 class QPushButton;

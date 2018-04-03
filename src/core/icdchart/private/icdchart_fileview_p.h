@@ -3,7 +3,7 @@
 
 #include "../icdchart_fileview.h"
 #include <QFile>
-#include "icdchart_view.h"
+#include "../icdchart_view.h"
 #include "jchart/jchart.h"
 #include "jchart/jabstractseries.h"
 #include "icdcore/icd_item_frame.h"

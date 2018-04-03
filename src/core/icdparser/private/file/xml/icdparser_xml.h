@@ -2,7 +2,7 @@
 #define ICDPARSER_XML_H
 
 #include "../../../icdparser.h"
-#include "tinyxml.h"
+#include "tinyxml/tinyxml.h"
 #include "icdcore/icdcore_inc.h"
 #include "../icdparser_file.h"
 #include "../../generate/icdgenerate.h"

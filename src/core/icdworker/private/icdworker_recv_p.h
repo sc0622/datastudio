@@ -6,7 +6,7 @@
 #include "../jrttimer.h"
 #include "icdcomm/icdcomm_channel.h"
 #include "icdcore/icd_table.h"
-#include "icdworker.h"
+#include "../icdworker.h"
 #include <QFile>
 
 namespace Icd {

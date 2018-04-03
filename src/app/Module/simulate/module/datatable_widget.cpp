@@ -4,8 +4,7 @@
 #include "icdcore/icd_table.h"
 #include "icdworker/icdworker.h"
 #include "icdwidget/icdwidget_global.h"
-#include "jtableview.h"
-#include "QtWidgets"
+#include "jwt/jtableview.h"
 
 namespace Simulate {
 

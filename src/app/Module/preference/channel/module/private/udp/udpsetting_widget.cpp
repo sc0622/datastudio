@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "udpsetting_widget.h"
-#include "jipaddressedit.h"
+#include "jwt/jipaddressedit.h"
 #include "icdcomm/icdcomm_udpchannel.h"
 #include "icdworker/icdworker_pool.h"
 #include "icdwidget/bindchannel_widget.h"

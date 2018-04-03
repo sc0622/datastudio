@@ -1,8 +1,8 @@
 ﻿#ifndef ICDPARSER_SQL_H
 #define ICDPARSER_SQL_H
 
-#include "icdparser_global.h"
-#include "icdparser.h"
+#include "../../icdparser_global.h"
+#include "../../icdparser.h"
 
 namespace Icd {
 

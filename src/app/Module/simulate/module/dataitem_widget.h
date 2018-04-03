@@ -3,6 +3,7 @@
 
 #include <QFrame>
 #include "icdcore/icd_item.h"
+#include <QMap>
 
 namespace Icd {
 

@@ -1,6 +1,6 @@
 ﻿#include "precomp.h"
 #include "icdparser.h"
-#include "icd_vehicle.h"
+#include "icdcore/icd_vehicle.h"
 #include "private/generate/icdgenerate.h"
 #include <QMutexLocker>
 #include "private/file/icdparser_file.h"

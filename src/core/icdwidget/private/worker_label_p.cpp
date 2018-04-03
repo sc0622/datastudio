@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "worker_label_p.h"
-#include "icdworker_pool.h"
+#include "icdworker/icdworker_pool.h"
 
 namespace Icd {
 

@@ -3,10 +3,10 @@
 
 #include <QMutex>
 #include "../icdworker_send.h"
-#include "jrttimer.h"
+#include "../jrttimer.h"
 #include "icdcomm/icdcomm_channel.h"
 #include "icdcore/icd_table.h"
-#include "icdworker.h"
+#include "../icdworker.h"
 
 namespace Icd {
 

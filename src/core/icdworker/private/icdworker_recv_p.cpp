@@ -5,7 +5,7 @@
 #include "icdcore/icd_item_framecode.h"
 #include "icdcore/icd_item_counter.h"
 #include "icdcore/icd_item_check.h"
-#include "icdworker_util.h"
+#include "../icdworker_util.h"
 #include <QtConcurrent>
 
 namespace Icd {

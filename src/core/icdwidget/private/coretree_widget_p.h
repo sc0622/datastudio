@@ -1,7 +1,7 @@
 ﻿#ifndef CORETREE_WIDGET_P_H
 #define CORETREE_WIDGET_P_H
 
-#include "jtreeview.h"
+#include "jwt/jtreeview.h"
 #include "../coretree_widget.h"
 #include "icdcore/icdcore_inc.h"
 #include "icdparser/icdparser.h"

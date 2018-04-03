@@ -7,7 +7,7 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QTabWidget>
-#include "jsoncpp/json/json.h"
+#include "icdcore/3rdpart/jsoncpp/json/json.h"
 
 // class JMainPrivate
 

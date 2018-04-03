@@ -1,7 +1,7 @@
 ﻿#include "precomp.h"
 #include "./icdparser_sql.h"
 #include "icdparser_sql_p.h"
-#include "../icdwidget/icdwidget_global.h"
+#include "icdwidget/icdwidget_global.h"
 
 namespace Icd {
 

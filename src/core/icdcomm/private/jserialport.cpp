@@ -6,8 +6,6 @@
 #include "moxa/pcomm.h"
 #endif
 
-#include "icdcore/icdcore_global.h"
-
 //#pragma comment(lib, "pcomm.lib")
 
 namespace Icd {
@@ -164,7 +162,7 @@ void JSerialPort::setPortName(const std::string &portName)
     }
     //
     std::string sPort = portName.substr(3);
-    d->portNumber = atoi(sPort.c_str());
+    d->portNumber = ::atoi(sPort.c_str());
     //
     if (isOpen) {
         open();

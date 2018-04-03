@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "channel_widget_p.h"
 #include "icdworker/icdworker_pool.h"
-#include "worker_label.h"
+#include "../worker_label.h"
 
 namespace Icd {
 

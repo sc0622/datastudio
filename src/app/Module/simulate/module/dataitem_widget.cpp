@@ -2,7 +2,6 @@
 #include "dataitem_widget.h"
 #include "icdcore/icdcore_inc.h"
 #include "icdworker/icdworker.h"
-#include "jwt_inc.h"
 #include "icdtab_widget.h"
 #include "datatable_widget.h"
 

@@ -1,25 +1,36 @@
 import qbs
-import 'tools/function.js' as Function
 
 Project {
 
-    qbs.enableDebugCode: true
+    readonly property string installPrefix: 'datastudio'
+    readonly property string variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
 
-    readonly property string dynamicSuffix: Function.dynamicSuffix(qbs)
+    qbs.enableDebugCode: true
 
     qbsSearchPaths: [
         'tools/qbs'
     ]
 
-    /*
-    Profile {
-        name: 'globalInclude'
-    }
-*/
-    qbs.profiles: [ 'globalInclude' ]
-
     references: [
+        'config/config.qbs',
         'src/src.qbs',
-        'tools/tools.qbs'
+        //'setup/setup.qbs',
+        'tools/tools.qbs',
+        'tools/setenv/setenv.qbs'
     ]
+
+    Product {
+        name: 'global'
+        Group {
+            name: 'config'
+            files: [
+                'CHANGE',
+                'LICENSE',
+                'README.md',
+                'VERSION'
+            ]
+            qbs.install: true
+            qbs.installPrefix: project.installPrefix
+        }
+    }
 }

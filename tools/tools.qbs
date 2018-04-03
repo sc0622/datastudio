@@ -1,9 +1,8 @@
 import qbs
 
 Product {
-    
+
     files: [
-        'function.js',
         'xcopy.py'
     ]
 
@@ -12,8 +11,9 @@ Product {
         prefix: 'qbs/'
         files: [
             // imports
-            "imports/JCppDyLibrary.qbs",
+            "imports/**/*.qbs",
             // modules
+            "modules/**/*.qbs",
         ]
     }
 }

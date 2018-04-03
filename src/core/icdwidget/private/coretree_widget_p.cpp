@@ -3,7 +3,7 @@
 #include "icdworker/icdworker.h"
 #include "icdworker/icdworker_pool.h"
 #include "../bindchannel_widget.h"
-#include "private/itemworkergroup.h"
+#include "itemworkergroup.h"
 #include "../icd_searchedit.h"
 #include "../progressdialog.h"
 #include <QFutureWatcher>

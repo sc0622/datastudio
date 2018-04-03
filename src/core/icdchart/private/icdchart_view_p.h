@@ -2,7 +2,7 @@
 #define ICDCHART_VIEW_P_H
 
 #include <QWidget>
-#include "icdchart_view.h"
+#include "../icdchart_view.h"
 #include "jchart/jchart.h"
 #include "jchart/jabstractseries.h"
 #include "icdcore/icd_item_frame.h"

@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "icdparser_json.h"
-#include "jsoncpp/json/json.h"
+#include "icdcore/3rdpart/jsoncpp/json/json.h"
 #include "../../../../icdwidget/icdwidget_global.h"
 
 namespace Icd {

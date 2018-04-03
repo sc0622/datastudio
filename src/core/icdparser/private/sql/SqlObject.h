@@ -1,7 +1,7 @@
 #ifndef SQLOBJECT_H
 #define SQLOBJECT_H
 
-#include "icdparser_global.h"
+#include "../../icdparser_global.h"
 
 namespace Json { class Value; }
 

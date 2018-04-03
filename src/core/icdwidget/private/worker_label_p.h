@@ -2,7 +2,7 @@
 #define CHANNEL_WIDGET_P_H
 
 #include "../worker_label.h"
-#include "channel_widget.h"
+#include "../channel_widget.h"
 
 class QLabel;
 class QPushButton;

@@ -2,7 +2,7 @@
 #define CHANNEL_WIDGET_P_H
 
 #include "../channel_widget.h"
-#include "jtableview.h"
+#include "jwt/jtableview.h"
 
 namespace Icd {
 

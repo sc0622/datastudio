@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "icdmeta_global.h"
-#include "jicdtable.h"
+#include "core/jicdtable.h"
 #include "channel/JChannelPool.h"
 #include "protocol/JProtocolPool.h"
 #include <QQuickStyle>
