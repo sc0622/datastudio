@@ -15,7 +15,7 @@ ChartFileViewPrivate::ChartFileViewPrivate(ChartFileView *q)
     , showYLabel(true)
     , showYAlign(false)
     , yLabelLength(10)
-    , timerReplay(Q_NULLPTR)
+    , timerReplay(nullptr)
     , syncTrack(true)
 {
 

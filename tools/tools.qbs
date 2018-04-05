@@ -2,9 +2,7 @@ import qbs
 
 Product {
 
-    files: [
-        'xcopy.py'
-    ]
+    files: []
 
     Group {
         name: 'qbs'
