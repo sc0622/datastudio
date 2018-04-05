@@ -11,6 +11,7 @@ Project {
 
         consoleApplication: false
         targetName: 'datastudio'
+        version: project.version
 
         translations: [ 'app_zh_CN.ts' ]
         defaultTranslation: true
@@ -45,6 +46,8 @@ Project {
 
         cpp.defines: base.concat([ 'PROJECT_APP' ])
         cpp.includePaths: base.concat([ '.' ])
+
+        desc.iconName: 'resource/image/app.ico'
 
         Group {
             fileTagsFilter: [ 'application' ]

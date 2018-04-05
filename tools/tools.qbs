@@ -2,7 +2,7 @@ import qbs
 
 Product {
 
-    files: []
+    files: [ '**/*.rc' ]
 
     Group {
         name: 'qbs'
@@ -13,5 +13,18 @@ Product {
             // modules
             "modules/**/*.qbs",
         ]
+    }
+
+    Group {
+        name: 'tools'
+        prefix: './'
+        files: [
+            'WinSnap/*.*',
+            'DataAnalyse.*'
+        ]
+        qbs.install: true
+        qbs.installPrefix: project.projectName
+        qbs.installDir: 'tools'
+        qbs.installSourceBase: prefix
     }
 }

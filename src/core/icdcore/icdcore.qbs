@@ -2,6 +2,7 @@ import qbs
 import qbs.FileInfo
 
 CoreDyLibrary {
+    version: '1.0.0'
     defaultExport: false
 
     Group {

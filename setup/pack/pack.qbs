@@ -50,6 +50,11 @@ Project {
         }
     }
 
+    Product {
+        name: 'pack-build'
+        Depends { name: 'cpp' }
+    }
+
     references: [
         'packages/packages.qbs'
     ]

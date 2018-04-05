@@ -15,9 +15,4 @@ Project {
         });
         return items;
     }
-
-    Product {
-        name: 'pack-build'
-        Depends { name: 'cpp' }
-    }
 }
