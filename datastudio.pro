@@ -12,7 +12,7 @@ CONFIG += ordered
 
 SUBDIRS += \
     src \
-#    setup
+    setup
 
 include($$PWD/config/config.pri)
 

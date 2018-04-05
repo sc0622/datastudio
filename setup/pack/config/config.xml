@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-  <Name>Model Simulator</Name>
-  <Version>1.0.4</Version>
-  <Title>VeriStand自动测试软件</Title>
+  <Name>Data Studio</Name>
+  <Version>@VERSION@</Version>
+  <Title>Data Studio Software</Title>
   <Publisher>Tengden</Publisher>
-  <StartMenuDir>Tengden Software</StartMenuDir>
+  <StartMenuDir>Smartsoft Software</StartMenuDir>
   <TargetDir>@HomeDir@/Documents/@Publisher@/@Name@/@Version@</TargetDir>
   <MaintenanceToolName>Uninstall</MaintenanceToolName>
   <InstallerApplicationIcon>:/image/app.png</InstallerApplicationIcon>

@@ -45,7 +45,7 @@ DynamicLibrary {
     Group {
         fileTagsFilter: installFileTags
         qbs.install: defaultInstall
-        qbs.installPrefix: project.installPrefix
+        qbs.installPrefix: project.projectName
         qbs.installDir: installPrefix
     }
 

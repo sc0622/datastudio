@@ -5,25 +5,17 @@ import qbs.Environment
 import 'setenv.js' as Func
 
 Project {
+
     Product {
-        name: 'sync'
+        name: 'setenv-sync'
+        type: base.concat([ 'header', 'library' ])
         Depends { name: 'cpp' }
+
+        //Depends { name: 'icdcomm'; cpp.link: false }
 
         readonly property stringList depends: [
             'jchart', 'jencrypt', 'jutraledit', 'jwt', 'log4cpp', 'nodeeditor', 'qwt', 'tinyxml'
         ]
-
-        FileTagger {
-            patterns: [ '*.h[h]*', '*.hpp' ]
-            fileTags: [ 'header' ]
-        }
-
-        FileTagger {
-            patterns: [ '*.dll', '*.lib' ]
-            fileTags: [ 'library' ]
-        }
-
-        cpp.additionalProductTypes: [ 'header', 'library' ]
 
         // headers
 
@@ -79,7 +71,7 @@ Project {
             }
             fileTags: [ name + '.in' ]
             qbs.install: true
-            qbs.installPrefix: project.installPrefix
+            qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'
         }
 
@@ -119,9 +111,11 @@ Project {
     }
 
     Product {
-        name: 'install'
+        name: 'setenv-install'
+
         Depends { name: 'cpp' }
         Depends { name: 'Qt.core' ; cpp.link: false }
+        Depends { name: 'setenv-sync'; cpp.link: false }
 
         // 3rdpart - moxa
 
@@ -130,7 +124,7 @@ Project {
             prefix: FileInfo.joinPaths(project.sourceDirectory, 'lib', '3rdpart', 'moxa') + '/'
             files: [ 'pcomm.dll' ]
             qbs.install: true
-            qbs.installPrefix: project.installPrefix
+            qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'
         }
 
@@ -148,7 +142,7 @@ Project {
                 return files;
             }
             qbs.install: true
-            qbs.installPrefix: project.installPrefix
+            qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'
         }
 
@@ -167,7 +161,7 @@ Project {
                 return files;
             }
             qbs.install: true
-            qbs.installPrefix: project.installPrefix
+            qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'
         }
 
@@ -185,7 +179,7 @@ Project {
                 return files;
             }
             qbs.install: true
-            qbs.installPrefix: project.installPrefix
+            qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'
             qbs.installSourceBase: prefix
         }
