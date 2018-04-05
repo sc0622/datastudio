@@ -20,6 +20,7 @@ ChartViewPrivate::ChartViewPrivate(ChartView *q)
     , showYAlign(false)
     , yLabelLength(10)
     , syncTrack(true)
+    , chartTheme(JChart::ChartThemeDark)
 {
 
 }
@@ -39,11 +40,11 @@ void ChartViewPrivate::init(bool styled)
     QObject::connect(chartView, &JChart::View::trackerChanged, this,
             [=](JChart::Chart *chart, const QPointF &pos, bool visible){
         onTrackerChanged(chart, pos, visible);
-    });
+    }, Qt::QueuedConnection);
     QObject::connect(chartView, &JChart::View::trackerMarked, this,
             [=](JChart::Chart *chart, const QPointF &pos){
         onTrackerMarked(chart, pos);
-    });
+    }, Qt::QueuedConnection);
 
     //
     QTimer *timerTemp = new QTimer(q);
@@ -113,6 +114,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
             Q_ASSERT(false);    // logic error
             return false;       // create failure or not supported
         }
+        chart->setChartTheme((JChart::ChartTheme)chartTheme);
         chart->setAxisVisible(JChart::yLeft, showYLabel);
         chart->setAxisAlign(JChart::yLeft, showYAlign);
         chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
@@ -122,13 +124,14 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         chartView->appendChart(chart);
         //
         QObject::connect(chart, &JChart::Chart::seriesRemoved, this, [=](int index){
+            Q_UNUSED(index);
             if (chart->seriesCount() > 1) {
                 chart->setTitle(QString());
                 chart->setLegendVisible(true);
             } else {
                 chart->setLegendVisible(false);
                 if (chart->seriesCount() == 1) {
-                    JChart::AbstractSeries *series = chart->seriesAt(index);
+                    JChart::AbstractSeries *series = chart->seriesAt(0);
                     if (series) {
                         chart->setTitle(series->title());
                     } else {
@@ -319,6 +322,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     {
         // create
         JChart::NumericChart *chart = new JChart::NumericChart(q);
+        chart->setChartTheme(JChart::ChartThemeDark);
         // specs
         return chart;
     }
@@ -332,6 +336,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         }
         // create
         JChart::BitChart *chart = new JChart::BitChart(q);
+        chart->setChartTheme(JChart::ChartThemeDark);
         chart->setLegendVisible(showYAlign);
         chart->setBitsRange(itemBit->bitStart(), itemBit->bitStart() + itemBit->bitCount() - 1);
         const std::map<icd_uint64, std::string> &specs = itemBit->specs();

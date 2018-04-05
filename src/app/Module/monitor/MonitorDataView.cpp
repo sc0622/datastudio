@@ -61,7 +61,7 @@ DataView::DataView(QWidget *parent)
             return;
         }
 
-        reset();
+        this->reset();
     });
 }
 

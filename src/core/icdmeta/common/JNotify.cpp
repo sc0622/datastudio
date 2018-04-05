@@ -273,7 +273,7 @@ void JNotifyPrivate::post(const JNotifyDataPtrArray &notifyDatas, const QString 
 
 void JNotify::registerQmlType()
 {
-    jRegisterUncreatableType(JNotify);
+    IcdMetaRegisterUncreatableType2(JNotify);
 }
 
 JNotify *JNotify::inst(const QString &name, QObject *parent)

@@ -114,7 +114,7 @@ J_QML_IMPLEMENT_SINGLE_INSTANCE(IcdCore, QQmlEngine::CppOwnership, IcdCore)
 
 void IcdCore::registerQmlType()
 {
-    jRegisterSingletonTypeCpp2(IcdCore);
+    IcdMetaRegisterSingletonType3(IcdCore);
 
     icdmeta::JIcdTable::registerQmlType();
     icdmeta::JChannelPool::registerQmlType();

@@ -1,5 +1,5 @@
-﻿#ifndef FILECHANNEL_H
-#define FILECHANNEL_H
+﻿#ifndef ICDCOMM_FILECHANNEL_H
+#define ICDCOMM_FILECHANNEL_H
 
 #include "icdcomm_channel.h"
 #include <fstream>
@@ -201,4 +201,4 @@ private:
 
 } // end of namespace Icd
 
-#endif // FILECHANNEL_H
+#endif // ICDCOMM_FILECHANNEL_H

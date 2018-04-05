@@ -70,6 +70,7 @@
 #if defined(ICDCORE_LIB) && !defined(ICDCORE_BUILD)
 #include "icdcore/icdcore_inc.h"
 #if defined(ICDCORE_JSON_LIB)
+#include "icdcore/3rdpart/jsoncpp/json_tool.h"
 #include "icdcore/3rdpart/jsoncpp/json/json.h"
 #endif
 #endif
@@ -98,7 +99,7 @@
 #include "icdwidget/icdwidget_inc.h"
 #endif
 
-#ifdef PRO_APP
+#ifdef PROJECT_APP
 #include "main_global.h"
 #endif
 

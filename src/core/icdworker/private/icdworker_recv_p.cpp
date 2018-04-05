@@ -168,8 +168,9 @@ void WorkerRecvPrivate::setTimeEvent(WorkerTrans::TimeEvent event)
 
 void WorkerRecvPrivate::clearQueue()
 {
-    for (auto buffer : bufferQueue) {
-        delete[] buffer;
+    for (QQueue<char*>::const_iterator citer = bufferQueue.cbegin();
+         citer != bufferQueue.cend(); ++citer) {
+        delete[] *citer;
     }
     bufferQueue.clear();
 }

@@ -50,7 +50,7 @@ ChannelPtr Channel::createInstance(Icd::ChannelType channelType)
     case ChannelFile:
         return ChannelPtr(new FileChannel());
     default:
-        return 0;
+        return ChannelPtr();
     }
 }
 
@@ -58,13 +58,13 @@ ChannelPtr Channel::createInstance(const std::string &config)
 {
     //
     if (config.empty()) {
-        return ChannelPtr(0);
+        return ChannelPtr();
     }
 
     // 获取通道类型
     std::string::size_type offset = config.find_first_of(':');
     if (offset == std::string ::npos) {
-        return false;
+        return ChannelPtr();
     }
 
     //
@@ -83,23 +83,23 @@ ChannelPtr Channel::createInstance(const std::string &config)
     } else if (type == "udp") {
         channelType = Icd::ChannelUdp;
     } else {
-        return false;   // not supported
+        return ChannelPtr();   // not supported
     }
 
     //
     if (channelType == Icd::ChannelInvalid) {
-        return false;
+        return ChannelPtr();
     }
 
     // create an instance
     ChannelPtr channel = Channel::createInstance(channelType);
     if (channel == 0) {
-        return false;
+        return ChannelPtr();
     }
 
     // set config
     if (!channel->setConfig(config.substr(offset + 1))) {
-        return ChannelPtr(0);
+        return ChannelPtr();
     }
 
     return channel;

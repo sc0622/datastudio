@@ -307,6 +307,13 @@ void ChartView::setSyncTrack(bool enabled)
     }
 }
 
+void ChartView::setChartTheme(int chartTheme)
+{
+    Q_D(ChartView);
+    d->chartTheme = chartTheme;
+    d->chartView->setChartTheme((JChart::ChartTheme)chartTheme);
+}
+
 void ChartView::setXAxisSync(bool value)
 {
     Q_D(ChartView);

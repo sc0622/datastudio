@@ -149,7 +149,7 @@ JDataChannelMgr::~JDataChannelMgr()
 
 void JDataChannelMgr::registerQmlType()
 {
-    jRegisterSingletonTypeCpp2(JDataChannelMgr);
+    IcdMetaRegisterSingletonType3(JDataChannelMgr);
 
     JDataChannel::registerQmlType();
 }

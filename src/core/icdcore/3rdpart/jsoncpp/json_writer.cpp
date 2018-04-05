@@ -254,7 +254,8 @@ static JSONCPP_STRING valueToQuotedStringN(const char* value, unsigned length) {
   if (value == NULL)
     return "";
 
-  if (!isAnyCharRequiredQuoting(value, length))
+  // modify by iclosure (comment)
+  //if (!isAnyCharRequiredQuoting(value, length))
     return JSONCPP_STRING("\"") + value + "\"";
   // We have to walk value and escape any special characters.
   // Appending to JSONCPP_STRING is not efficient, but this should be rare.

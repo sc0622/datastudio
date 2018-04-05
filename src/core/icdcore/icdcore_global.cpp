@@ -33,22 +33,6 @@
 
 namespace Icd {
 
-std::string Serializable::saveJson() const
-{
-    Json::Value value = save();
-    return value.toStyledString();
-}
-
-bool Serializable::restore(const std::string &json)
-{
-    Json::Reader reader;
-    Json::Value value;
-    if (!reader.parse(json, value)) {
-        return false;
-    }
-    return restore(value);
-}
-
 // functions
 
 bool startsWith(const std::string &str, const std::string &header)
@@ -70,6 +54,11 @@ int atoi(const std::string &str)
     int value = 0;
     iss >> value;
     return value;
+}
+
+icd_uint64 strtou64(const std::string &str, int radix)
+{
+    return _strtoui64(str.c_str(), 0, radix);
 }
 
 icd_uint64 atou64(const std::string &str)
@@ -298,149 +287,3 @@ int asciiCountOfSize(int format, int size)
 }
 
 }
-
-namespace Json {
-
-bool resolve(const std::string &filePath, Json::Value &root)
-{
-    if (filePath.empty()) {
-        std::cout << "filePath is empty!";
-        return false;
-    }
-
-    const std::string path = Icd::pathOfFile(filePath);
-    if (!path.empty()) {
-        //return false;
-    }
-
-    std::ifstream ifs(filePath);
-    if (!ifs) {
-        std::cout << "File \"" << filePath << "\" open failure!";
-        return false;
-    }
-
-    try {
-        root.clear();
-        ifs >> root;
-    } catch (Json::RuntimeError msg) {
-        printf("%s\n", msg.what());
-        return false;
-    }
-
-    ifs.close();
-
-    return true;
-}
-
-Json::Value resolve(const std::string &filePath, const std::string &path)
-{
-    Json::Value root;
-    if (!resolve(filePath, root)) {
-        return Json::Value::nullSingleton();
-    }
-
-    try {
-        return Json::Path(path).resolve(root);
-    } catch (Json::RuntimeError msg) {
-        printf("%s\n", msg.what());
-        return Json::Value::null;
-    }
-}
-
-Json::Value resolve(const Json::Value &root, const std::string &path)
-{
-    try {
-        return Json::Path(path).resolve(root);
-    } catch (Json::RuntimeError msg) {
-        printf("%s\n", msg.what());
-        return Json::Value::null;
-    }
-}
-
-bool make(const std::string &filePath, const Json::Value &root, bool create, bool fast)
-{
-    if (filePath.empty()) {
-        std::cout << "filePath is empty!";
-        return false;
-    }
-
-    const std::string path = Icd::pathOfFile(filePath);
-    if (!path.empty() && create) {
-        Icd::createPath(path);
-    }
-
-    std::string contents;
-    if (fast) {
-        contents = Json::FastWriter().write(root);
-    } else {
-        contents = Json::StyledWriter().write(root);
-    }
-
-    std::ofstream ofs;
-    ofs.open(filePath);
-    if (!ofs.is_open()) {
-        return false;
-    }
-
-    try {
-        ofs << contents;
-    } catch (Json::RuntimeError msg) {
-        printf("%s\n", msg.what());
-        return false;
-    }
-
-    ofs.close();
-
-    return true;
-}
-
-bool make(const std::string &filePath, const std::string &path,
-                 const Json::Value &value, bool create, bool fast)
-{
-    Json::Value root;
-    if (!resolve(filePath, root) && !create) {
-        return false;
-    }
-
-    try {
-        Json::Path(path).make(root) = value;
-    } catch (Json::RuntimeError msg) {
-        printf("%s\n", msg.what());
-        return false;
-    }
-
-    return make(filePath, root, create, fast);
-}
-
-bool merge(const Json::Value &source, Json::Value &target)
-{
-    if (source.isNull()) {
-        return true;
-    }
-
-    switch (source.type()) {
-    case Json::arrayValue:
-    {
-        for (Json::ValueConstIterator citer = source.begin();
-             citer != source.end(); ++citer) {
-            target.append(*citer);
-        }
-        break;
-    }
-    case Json::objectValue:
-    {
-        for (Json::ValueConstIterator citer = source.begin();
-             citer != source.end(); ++citer) {
-            target[citer.name()] = *citer;
-        }
-        break;
-    }
-    default:
-        target = source;
-        break;
-    }
-
-    return true;
-}
-
-} // end of namespace Json

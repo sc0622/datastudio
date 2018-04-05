@@ -297,6 +297,13 @@ void ChartFileView::setSyncTrack(bool enabled)
     }
 }
 
+void ChartFileView::setChartTheme(int chartTheme)
+{
+    Q_D(ChartFileView);
+    d->chartTheme = chartTheme;
+    d->chartView->setChartTheme((JChart::ChartTheme)chartTheme);
+}
+
 void ChartFileView::setXAxisSync(bool value)
 {
     Q_D(ChartFileView);

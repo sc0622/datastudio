@@ -124,6 +124,23 @@ void ItemWorkerGroup::updateItemData(CoreTreeWidget::ShowAttributes attrs,
     updateItemData();
 }
 
+int ItemWorkerGroup::timerInterval() const
+{
+    return d_timerInterval;
+}
+
+void ItemWorkerGroup::setTimerInterval(int interval)
+{
+    if (interval != d_timerInterval) {
+        d_timerInterval = interval;
+        if (d_timerId > 0) {
+            QObject::killTimer(d_timerId);
+            d_timerId = 0;
+            d_timerId = QObject::startTimer(interval);
+        }
+    }
+}
+
 void ItemWorkerGroup::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == d_timerId) {
@@ -179,20 +196,18 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const TablePtr &table,
 void ItemWorkerGroup::start()
 {
     if (d_timerId == 0) {
-        d_timerId = startTimer(d_timerInterval, Qt::PreciseTimer);
+        d_timerId = QObject::startTimer(d_timerInterval, Qt::PreciseTimer);
     }
 }
 
 void ItemWorkerGroup::start(int interval)
 {
     if (d_timerId > 0) {
-        killTimer(d_timerId);
+        QObject::killTimer(d_timerId);
         d_timerId = 0;
     }
-
     //
-    d_timerId = startTimer(interval);
-
+    d_timerId = QObject::startTimer(interval);
     //
     d_timerInterval = interval;
 }
@@ -200,7 +215,7 @@ void ItemWorkerGroup::start(int interval)
 void ItemWorkerGroup::stop()
 {
     if (d_timerId > 0) {
-        killTimer(d_timerId);
+        QObject::killTimer(d_timerId);
         d_timerId = 0;
         QApplication::removePostedEvents(this, QEvent::Timer);
     }
@@ -648,7 +663,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         if (info.isEmpty()) {
             text.append("]</font>");
         } else {
-            text.append(": </font><font color=blue>")
+            text.append(": </font><font color=#1296c3>")
                     .append(info).append("</font><font color=green>]</font>");
         }
     } else {
@@ -762,7 +777,7 @@ void ItemWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bi
 
         // value
         if (_showValue) {
-            text.append(" <font color=blue>[");
+            text.append(" <font color=#1296c3>[");
             QStringList values;
             if (d_showAttris & (CoreTreeWidget::ShowData | CoreTreeWidget::ShowValue)) {
                 values.append(QString("%1").arg(bitItem->testBit(bitOffset) ? 1 : 0,
@@ -802,24 +817,18 @@ void ItemWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &tabl
         }
         // channel
         if (!table->parent() && item->data(Icd::TreeChannelIdRole).isValid()) {
-            text.append(QStringLiteral(" [CH: <i><font color=blue size=3>")
+            text.append(QStringLiteral(" [CH: <i><font color=#1296c3 size=3>")
                         + QString::fromStdString(d_worker->channel()->name()) + "</font></i> ]");
         }
         //
         if (show) {
             // period
-            text.append("[<font color=blue>")
+            text.append("[<font color=#1296c3>")
                     .append(QStringLiteral("ÖÜÆÚ£º%1 ms").arg(table->period()))
                     .append("</font>]");
         }
         //
-        TableItemWidget *itemWidget = qobject_cast<TableItemWidget *>
-                (d_treeView->itemWidget(item));
-        if (itemWidget) {
-            itemWidget->setText(text);
-        } else {
-            item->setText(text);
-        }
+        item->setText(text);
     }
 }
 

@@ -183,10 +183,9 @@ signals:
 
 public slots:
 
-private:
-    J_FRIEND_HANDLEPTR()
-
-    WorkerPool(QObject *parent = 0);
+public:
+    //J_FRIEND_HANDLEPTR()
+    explicit WorkerPool(QObject *parent = nullptr);
     ~WorkerPool();
 
 private:

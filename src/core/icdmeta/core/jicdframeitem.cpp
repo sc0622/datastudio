@@ -68,7 +68,7 @@ JIcdFrameItem::~JIcdFrameItem()
 void JIcdFrameItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdFrameItem);
+    IcdMetaRegisterUncreatableType2(JIcdFrameItem);
 
     //
 }

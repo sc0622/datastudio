@@ -59,7 +59,7 @@ JUdpChannel::~JUdpChannel()
 void JUdpChannel::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JUdpChannel);
+    IcdMetaRegisterUncreatableType2(JUdpChannel);
 
     //
 }

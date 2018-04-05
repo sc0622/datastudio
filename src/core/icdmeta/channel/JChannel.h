@@ -17,7 +17,7 @@ J_TYPEDEF_QT_SHAREDPTR(JChannel)
 class JChannelPrivate;
 class JSuperChannel;
 
-class ICDMETA_EXPORT JChannel : public QObject, public Icd::Serializable
+class ICDMETA_EXPORT JChannel : public QObject, public Json::Serializable
 {
     Q_OBJECT
     Q_PROPERTY(QString identity READ identity NOTIFY identityChanged)
@@ -27,7 +27,7 @@ class ICDMETA_EXPORT JChannel : public QObject, public Icd::Serializable
     Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
     Q_PROPERTY(bool isOpen READ isOpen NOTIFY isOpenChanged)
 public:
-    explicit JChannel(const QString &identity, QObject *parent = 0);
+    explicit JChannel(const QString &identity, QObject *parent = nullptr);
     ~JChannel();
 
     static void registerQmlType();

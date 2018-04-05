@@ -1,4 +1,32 @@
 
+-- V3.0.3
+    tools: Qt5.10.1、VS2015
+    depends:
+        1) jframework: v2.3.2;
+
+    fixed:
+        1) 升级jframework库
+        2) 修复样式显示问题（协议树）
+        3) 修复仿真系统，拖放引起软件崩溃的问题
+        4) 修改图表显示曲线默认颜色
+        5) 修复数据分析系统中曲线同步问题（首次追加曲线后保持之前缩放状态）
+
+-- V3.0.2
+    depends:
+        1) jframework: v2.3.0;
+
+    fixed:
+        1) 升级jframework库
+        2) 修改icdmeta中对象注册的宏定义
+
+-- V3.0.1
+    depends:
+        1) jframework: v2.2.1;
+
+    fixed:
+        1) 修改core工程，支持Qt5.5.1编译
+        2) 完善软件打包工程
+
 -- V3.0.0
     depends:
         1) jframework: v2.0.9;

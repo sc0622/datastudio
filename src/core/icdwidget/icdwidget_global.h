@@ -30,19 +30,16 @@
 
 ////////////////////////////////
 
-#ifdef J_DECLARE_SINGLE_INSTANCE
-#undef J_DECLARE_SINGLE_INSTANCE
-#endif
+#ifndef J_DECLARE_SINGLE_INSTANCE
 #define J_DECLARE_SINGLE_INSTANCE(Class) \
     public: \
         static Class *instance(); \
         static void releaseInstance(); \
     private: \
         static Class *_instance;
-
-#ifdef J_IMPLEMENT_SINGLE_INSTANCE
-#undef J_IMPLEMENT_SINGLE_INSTANCE
 #endif
+
+#ifndef J_IMPLEMENT_SINGLE_INSTANCE
 #define J_IMPLEMENT_SINGLE_INSTANCE(Class, GlobalClass) \
     \
     static void __ ## Class ## _releaseInstance() { \
@@ -66,6 +63,7 @@
             Class::_instance = 0; \
         } \
     }
+#endif
 
 #ifndef J_SINGLE_RELEASE_CALLBACK
 #define J_SINGLE_RELEASE_CALLBACK
@@ -73,26 +71,17 @@ typedef void(*SingletonReleaseCallback)();
 #endif
 
 #ifndef J_TYPEDEF_QT_SHAREDPTR
-#undef J_TYPEDEF_QT_SHAREDPTR
-#endif
 #define J_TYPEDEF_QT_SHAREDPTR(_class_) \
     class _class_; \
     typedef QSharedPointer<_class_> _class_ ## Ptr; \
     typedef QList<_class_ ## Ptr> _class_ ## PtrArray;
+#endif
 
 #ifndef J_VARIANT_FROM_VOID
 #define J_VARIANT_FROM_VOID
-
-#ifdef QT_CORE_LIB
-
-#include <QVariant>
-
 template<typename T> inline
 T *jVariantFromVoid(const QVariant &value)
 { return reinterpret_cast<T *>(value.value<void *>()); }
-
-#endif
-
 #endif
 
 ////////////////////////////////

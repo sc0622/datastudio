@@ -153,12 +153,8 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
     connect(progressDialog, &Icd::ProgressDialog::finished, this, [=](){
         progressDialog->hide();
         progressDialog->disconnect(this);
-        QString message;
-        if (progressDialog->futureResult()) {
-            message = QStringLiteral("导出完成！");
-        } else {
-            message = QStringLiteral("解析失败！");
-        }
+        const QString message = progressDialog->futureResult()
+                ? QStringLiteral("导出完成！") : QStringLiteral("解析失败！");
         QMessageBox::information(this, QStringLiteral("导出结果"), message);
         progressDialog->deleteLater();
     });

@@ -1,5 +1,5 @@
-//#include "precomp.h"
-#include "icdcomm_filechannel.h"
+#include "precomp.h"
+#include "./icdcomm_filechannel.h"
 #include <sstream>
 #include <QDir>
 

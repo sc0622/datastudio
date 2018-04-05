@@ -2,7 +2,7 @@
 <Installer>
   <Name>Data Studio</Name>
   <Version>@VERSION@</Version>
-  <Title>Data Studio Software</Title>
+  <Title>数据监控分析软件</Title>
   <Publisher>Tengden</Publisher>
   <StartMenuDir>Smartsoft Software</StartMenuDir>
   <TargetDir>@HomeDir@/Documents/@Publisher@/@Name@/@Version@</TargetDir>

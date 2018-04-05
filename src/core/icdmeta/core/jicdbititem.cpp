@@ -50,7 +50,7 @@ JIcdBitItem::~JIcdBitItem()
 void JIcdBitItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdBitItem);
+    IcdMetaRegisterUncreatableType2(JIcdBitItem);
 
     //
 }

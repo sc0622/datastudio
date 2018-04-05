@@ -16,6 +16,7 @@ class JIcdLimitItem;
 class ICDMETA_EXPORT JIcdNumericItem : public JIcdItem
 {
     Q_OBJECT
+    Q_PROPERTY(IcdCore::NumericType numericType READ numericType NOTIFY numericTypeChanged)
     Q_PROPERTY(QString dataString READ dataString NOTIFY dataStringChanged)
     Q_PROPERTY(qreal scale READ scale NOTIFY scaleChanged)
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
@@ -31,6 +32,7 @@ public:
     static void registerQmlType();
     Icd::NumericItemPtr metaData() const;
 
+    IcdCore::NumericType numericType() const;
     QString dataString() const;
     qreal scale() const;
     qreal offset() const;
@@ -54,6 +56,7 @@ public:
     QString fullValue() const;
 
 signals:
+    void numericTypeChanged();
     void dataStringChanged();
     void scaleChanged();
     void offsetChanged();

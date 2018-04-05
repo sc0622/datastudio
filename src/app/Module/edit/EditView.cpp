@@ -17,7 +17,7 @@ View::View(QWidget *parent)
     d_toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     vertLayoutMain->addWidget(d_toolBar);
 
-    d_splitterMain = new JSplitter({1, 3}, this);
+    d_splitterMain = new JSplitter(QList<double>() << 1 << 3, this);
     d_splitterMain->setObjectName("Edit::splitterMain");
     vertLayoutMain->addWidget(d_splitterMain);
 
@@ -59,8 +59,9 @@ void View::updateToolBar()
     const Json::Value option = JMain::instance()->option("edit", "option");
 
     // database
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
-                         tr("Database"), this, [=](){
+    QAction *actionDatabase = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
+                                                   tr("Database"));
+    connect(actionDatabase, &QAction::triggered, this, [=](){
         QVariantList args;
         args.append("edit");
         args.append(qVariantFromValue((void*)d_treeView));
@@ -72,23 +73,23 @@ void View::updateToolBar()
     d_toolBar->addSeparator();
     // copy
     QAction *actionCopy = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/copy.png"),
-                                               tr("Copy"), this, [=](){
+                                               tr("Copy"));
+    connect(actionCopy, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tree.copy", d_treeView);
     });
-    Q_UNUSED(actionCopy);
     // save
     QAction *actionSave = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save.png"),
-                                               tr("Save"), this, [=](){
+                                               tr("Save"));
+    connect(actionSave, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tree.save", d_treeView);
     });
-    Q_UNUSED(actionSave);
     actionSave->setEnabled(false);
     // saveAs
     QAction *actionSaveAs = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/save-as.png"),
-                                                 tr("Save as"), this, [=](){
+                                                 tr("Save as"));
+    connect(actionSaveAs, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tree.saveas", d_treeView);
     });
-    Q_UNUSED(actionSaveAs);
     d_toolBar->addSeparator();
     addSettingsAction();
 }
@@ -158,27 +159,32 @@ QAction *View::addOrigValueRadixAction(QAction *action)
 
     QActionGroup *actionGroupView = new QActionGroup(menu);
 
-    QAction *actionNoOrigValue = menu->addAction(tr("Hide"), this, [=](bool checked){
+    QAction *actionNoOrigValue = menu->addAction(tr("Hide"));
+    connect(actionNoOrigValue, &QAction::toggled, this, [=](bool checked){
         Q_UNUSED(checked);
     });
     actionNoOrigValue->setCheckable(true);
     menu->addSeparator();
-    QAction *actionDecimal = menu->addAction(tr("Decimal integer"), this, [=](bool checked){
+    QAction *actionDecimal = menu->addAction(tr("Decimal integer"));
+    connect(actionDecimal, &QAction::toggled, this, [=](bool checked){
         Q_UNUSED(checked);
     });
     actionDecimal->setCheckable(true);
     actionDecimal->setActionGroup(actionGroupView);
-    QAction *actionHexadecimal = menu->addAction(tr("Hexadecimal integer"), this, [=](bool checked){
+    QAction *actionHexadecimal = menu->addAction(tr("Hexadecimal integer"));
+    connect(actionHexadecimal, &QAction::toggled, this, [=](bool checked){
         Q_UNUSED(checked);
     });
     actionHexadecimal->setCheckable(true);
     actionHexadecimal->setActionGroup(actionGroupView);
-    QAction *actionBinary = menu->addAction(tr("Binary integer"), this, [=](bool checked){
+    QAction *actionBinary = menu->addAction(tr("Binary integer"));
+    connect(actionBinary, &QAction::toggled, this, [=](bool checked){
         Q_UNUSED(checked);
     });
     actionBinary->setCheckable(true);
     actionBinary->setActionGroup(actionGroupView);
-    QAction *actionOctal = menu->addAction(tr("Octal integer"), this, [=](bool checked){
+    QAction *actionOctal = menu->addAction(tr("Octal integer"));
+    connect(actionOctal, &QAction::toggled, this, [=](bool checked){
         Q_UNUSED(checked);
     });
     actionOctal->setCheckable(true);
@@ -189,8 +195,9 @@ QAction *View::addOrigValueRadixAction(QAction *action)
 
 void View::addSettingsAction()
 {
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/settings.png"),
-                         tr("Settings"), this, [=](){
+    QAction *actinSettings = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/settings.png"),
+                                                  tr("Settings"));
+    connect(actinSettings, &QAction::triggered, this, [=](){
         Edit::SettingsDlg settingsDlg(this);
         if (settingsDlg.exec() != QDialog::Accepted) {
             return;

@@ -51,7 +51,7 @@ JIcdComplexItem::~JIcdComplexItem()
 void JIcdComplexItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdComplexItem);
+    IcdMetaRegisterUncreatableType2(JIcdComplexItem);
 
     //
 }

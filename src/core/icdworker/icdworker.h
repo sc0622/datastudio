@@ -113,7 +113,7 @@ public:
 signals:
     void opened();
     void closed();
-    void toggled(int isOpen);
+    void toggled(bool isOpen);
     void channelChanged(const Icd::ChannelPtr &channel);
     void channelConfigChanged();
 

@@ -18,7 +18,7 @@ View::View(QWidget *parent)
     d_toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     vertLayoutMain->addWidget(d_toolBar);
 
-    d_splitterMain = new JSplitter({1, 3}, this);
+    d_splitterMain = new JSplitter(QList<double>() << 1 << 3, this);
     d_splitterMain->setObjectName("Analyse::splitterMain");
     vertLayoutMain->addWidget(d_splitterMain);
 
@@ -61,9 +61,11 @@ void View::updateToolBar()
     const Json::Value option = JMain::instance()->option("analyse", "option");
 
     // database
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
-                         tr("Database"), this, [=](){
-        QVariantList args{"analyse", qVariantFromValue((void*)d_treeView)};
+    QAction *actionDatabase = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
+                                                   tr("Database"));
+    connect(actionDatabase, &QAction::triggered, this, [=](){
+        QVariantList args;
+        args << "analyse" << qVariantFromValue((void*)d_treeView);
         jnotify->send("database.config", args);
     });
     d_toolBar->addSeparator();
@@ -135,18 +137,21 @@ void View::addTreeAction(const Json::Value &option)
 {
     Q_UNUSED(option);
     // load data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/load.png"),
-                         tr("Load data"), this, [=](){
+    QAction *actionLoadData = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/load.png"),
+                                                   tr("Load data"));
+    connect(actionLoadData, &QAction::triggered, this, [=](){
         jnotify->send("analyse.toolbar.tree.loadData", d_treeView);
     });
     // unload data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/unload.png"),
-                         tr("Unload data"), this, [=](){
+    QAction *actionUnloadData = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/unload.png"),
+                                                     tr("Unload data"));
+    connect(actionUnloadData, &QAction::triggered, this, [=](){
         jnotify->send("analyse.toolbar.tree.unloadData", d_treeView);
     });
     // convert data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/convert.png"),
-                         tr("Convert data"), this, [=](){
+    QAction *actionConvertData = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/convert.png"),
+                                                      tr("Convert data"));
+    connect(actionConvertData, &QAction::triggered, this, [=](){
         convertRecordData();
     });
 }
@@ -154,24 +159,28 @@ void View::addTreeAction(const Json::Value &option)
 void View::addChartAction(const Json::Value &option)
 {
     // set coordinate
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/coordinate.png"),
-                         tr("Set coordinate"), this, [=](){
+    QAction *actionSetCoordinate = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/coordinate.png"),
+                                                        tr("Set coordinate"));
+    connect(actionSetCoordinate, &QAction::triggered, this, [=](){
         jnotify->send("analyse.toolbar.chart.setCoordinate");
     });
     // update data
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/update.png"),
-                         tr("Update data"), this, [=](){
+    QAction *actionUpdateData = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/update.png"),
+                                                     tr("Update data"));
+    connect(actionUpdateData, &QAction::triggered, this, [=](){
         jnotify->send("analyse.toolbar.chart.update");
     });
     // clear chart
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
-                         tr("Clear chart"), this, [=](){
+    QAction *actionClearChart = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
+                                                     tr("Clear chart"));
+    connect(actionClearChart, &QAction::triggered, this, [=](){
         jnotify->send("analyse.toolbar.chart.clean");
     });
     // column-width-same
     QAction *actionColumnWidthSame = d_toolBar->addAction(
                 QIcon(":/datastudio/image/toolbar/colwidth-same.png"),
-                tr("Same column width"), this, [=](){
+                tr("Same column width"));
+    connect(actionColumnWidthSame, &QAction::triggered, this, [=](){
         jnotify->send("analyse.toolbar.chart.columnWidthSame", d_chartView);
     });
     actionColumnWidthSame->trigger();
@@ -251,8 +260,9 @@ void View::addChartAction(const Json::Value &option)
 
 void View::addSettingsAction()
 {
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/settings.png"),
-                         tr("Settings"), this, [=](){
+    QAction *actionSettings = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/settings.png"),
+                                                   tr("Settings"));
+    connect(actionSettings, &QAction::triggered, this, [=](){
         Analyse::SettingsDlg settingsDlg(this);
         if (settingsDlg.exec() != QDialog::Accepted) {
             return;

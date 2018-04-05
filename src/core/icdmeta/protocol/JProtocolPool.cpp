@@ -69,7 +69,7 @@ JProtocolPool::~JProtocolPool()
 
 void JProtocolPool::registerQmlType()
 {
-    jRegisterSingletonTypeCpp2(JProtocolPool);
+    IcdMetaRegisterSingletonType3(JProtocolPool);
 
     JProtocol::registerQmlType();
     JDataChannelMgr::registerQmlType();

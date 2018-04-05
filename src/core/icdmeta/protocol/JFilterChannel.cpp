@@ -148,7 +148,7 @@ JFilterChannel::~JFilterChannel()
 
 void JFilterChannel::registerQmlType()
 {
-    jRegisterSingletonTypeCpp2(JFilterChannel);
+    IcdMetaRegisterSingletonType3(JFilterChannel);
 }
 
 JProtocol *JFilterChannel::protocol() const

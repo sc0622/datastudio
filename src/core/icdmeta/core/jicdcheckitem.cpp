@@ -47,7 +47,7 @@ JIcdCheckItem::~JIcdCheckItem()
 void JIcdCheckItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdCheckItem);
+    IcdMetaRegisterUncreatableType2(JIcdCheckItem);
 
     //
 }
@@ -61,7 +61,15 @@ Icd::CheckItemPtr JIcdCheckItem::metaData() const
 IcdCore::CheckType JIcdCheckItem::checkType() const
 {
     Q_D(const JIcdCheckItem);
-    return (IcdCore::CheckType)d->data->checkType();
+    switch (d->data->checkType()) {
+    case Icd::CheckSum8: return IcdCore::CheckSum8;
+    case Icd::CheckSum16: return IcdCore::CheckSum16;
+    case Icd::CheckCrc8: return IcdCore::CheckCrc8;
+    case Icd::CheckCrc16: return IcdCore::CheckCrc16;
+    case Icd::CheckXor8: return IcdCore::CheckXor8;
+    case Icd::CheckXor16: return IcdCore::CheckXor16;
+    default: return IcdCore::CheckNone;
+    };
 }
 
 int JIcdCheckItem::startPos() const

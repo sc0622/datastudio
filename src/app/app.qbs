@@ -15,8 +15,6 @@ Project {
         translations: [ 'app_zh_CN.ts' ]
         defaultTranslation: true
 
-        readonly property path langPath: FileInfo.joinPaths(path, 'resource', 'lang')
-
         Depends { name: 'Qt.concurrent' }
         Depends { name: 'Qt.network' }
         Depends { name: 'Qt.serialport' }
@@ -45,7 +43,7 @@ Project {
             files: [ 'resource/*.qrc' ]
         }
 
-        cpp.defines: base.concat([ 'PRO_APP' ])
+        cpp.defines: base.concat([ 'PROJECT_APP' ])
         cpp.includePaths: base.concat([ '.' ])
 
         Group {

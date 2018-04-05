@@ -18,11 +18,11 @@ View::View(QWidget *parent)
     d_toolBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     vertLayoutMain->addWidget(d_toolBar);
 
-    d_splitterMain = new JSplitter({1, 3}, this);
+    d_splitterMain = new JSplitter(QList<double>() << 1 << 3, this);
     d_splitterMain->setObjectName("Monitor::splitterMain");
     vertLayoutMain->addWidget(d_splitterMain);
 
-    d_splitterLeft = new JSplitter({1.5, 1}, Qt::Vertical, this);
+    d_splitterLeft = new JSplitter(QList<double>() << 1.5 << 1, Qt::Vertical, this);
     d_splitterLeft->setObjectName("Monitor::splitterLeft");
     d_splitterMain->addWidget(d_splitterLeft);
 
@@ -70,8 +70,9 @@ void View::updateToolBar()
     const Json::Value option = JMain::instance()->option("monitor", "option");
 
     // database
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
-                         tr("Database"), this, [=](){
+    QAction *actionDatabase = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/database.png"),
+                                                   tr("Database"));
+    connect(actionDatabase, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.database.config", d_treeView);
     });
     d_toolBar->addSeparator();
@@ -196,12 +197,12 @@ QAction *View::addOrigValueRadixAction(QAction *action, const Json::Value &optio
     actionNoOrigValue->setCheckable(true);
     connect(actionNoOrigValue, &QAction::toggled, this, [=](bool checked){
         if (checked) {
-            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList{false});
+            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList() << false);
         } else {
             QAction *action = actionGroupView->checkedAction();
             if (action) {
                 jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView,
-                              QVariantList{true, action->data().toInt()});
+                              QVariantList() << true << action->data().toInt());
             }
         }
     });
@@ -214,7 +215,7 @@ QAction *View::addOrigValueRadixAction(QAction *action, const Json::Value &optio
     connect(actionDecimal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
-            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList{true, 10});
+            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList() << true << 10);
         }
     });
     // hexadecimal action
@@ -225,7 +226,7 @@ QAction *View::addOrigValueRadixAction(QAction *action, const Json::Value &optio
     connect(actionHexadecimal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
-            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList{true, 16});
+            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList() << true << 16);
         }
     });
     // binary action
@@ -236,7 +237,7 @@ QAction *View::addOrigValueRadixAction(QAction *action, const Json::Value &optio
     connect(actionBinary, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
-            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList{true, 2});
+            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList() << true << 2);
         }
     });
     // octal action
@@ -247,7 +248,7 @@ QAction *View::addOrigValueRadixAction(QAction *action, const Json::Value &optio
     connect(actionOctal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
-            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList{true, 8});
+            jnotify->send("monitor.toolbar.tree.showOrignal", d_treeView, QVariantList() << true << 8);
         }
     });
     //
@@ -288,7 +289,8 @@ void View::addFlushSwitchAction(const Json::Value &option)
     buttonFlush->setMenu(menuFlush);
 
     // period of flush
-    menuFlush->addAction(tr("Period of flush"), this, [=](){
+    QAction *actionPeriodOfFlush = menuFlush->addAction(tr("Period of flush"));
+    connect(actionPeriodOfFlush, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.tree.flushPeriod");
     });
 
@@ -317,25 +319,29 @@ void View::addFlushSwitchAction(const Json::Value &option)
 void View::addTreeAction(const Json::Value &option)
 {
     Q_UNUSED(option);
-    // binding channel
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/connect.png"),
-                         tr("Binding channel"), this, [=](){
+    QAction *actionBindingChannel = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/connect.png"),
+                                                         tr("Binding channel"));
+    connect(actionBindingChannel, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.tree.channel.binding", d_treeView);
     });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/disconnect.png"),
-                         tr("Unbinding channel"), this, [=](){
+    QAction *actionUnbindingChannel = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/disconnect.png"),
+                                                           tr("Unbinding channel"));
+    connect(actionUnbindingChannel, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.tree.channel.unbinding", d_treeView);
     });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/export.png"),
-                         tr("Export status"), this, [=](){
+    QAction *actionExprtStatus = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/export.png"),
+                                                      tr("Export status"));
+    connect(actionExprtStatus, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.tree.channel.export", d_treeView);
     });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/run_all.png"),
-                         tr("Start all"), this, [=](){
+    QAction *actionStartAll = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/run_all.png"),
+                                                   tr("Start all"));
+    connect(actionStartAll, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.tree.channel.runAll", d_treeView);
     });
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/stop_all.png"),
-                         tr("Stop all"), this, [=](){
+    QAction *actionStopAll = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/stop_all.png"),
+                                                  tr("Stop all"));
+    connect(actionStopAll, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.tree.channel.stopAll", d_treeView);
     });
 }
@@ -343,14 +349,16 @@ void View::addTreeAction(const Json::Value &option)
 void View::addChartAction(const Json::Value &option)
 {
     // clean
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
-                         tr("Clear chart"), this, [=](){
+    QAction *actionClearChart = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
+                                                     tr("Clear chart"));
+    connect(actionClearChart, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.chart.clean", d_chartView);
     });
     // column-width-same
     QAction *actionColumnWidthSame = d_toolBar->addAction(
                 QIcon(":/datastudio/image/toolbar/colwidth-same.png"),
-                tr("Same column width"), this, [=](){
+                tr("Same column width"));
+    connect(actionColumnWidthSame, &QAction::triggered, this, [=](){
         jnotify->send("monitor.toolbar.chart.columnWidthSame", d_chartView);
     });
     actionColumnWidthSame->trigger();
@@ -430,8 +438,9 @@ void View::addChartAction(const Json::Value &option)
 
 void View::addSettingsAction()
 {
-    d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/settings.png"),
-                         tr("Settings"), this, [=](){
+    QAction *actionSettings = d_toolBar->addAction(QIcon(":/datastudio/image/toolbar/settings.png"),
+                                                   tr("Settings"));
+    connect(actionSettings, &QAction::triggered, this, [=](){
         Monitor::SettingsDlg settingsDlg(this);
         if (settingsDlg.exec() != QDialog::Accepted) {
             return;

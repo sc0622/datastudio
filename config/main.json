@@ -19,6 +19,7 @@
       "analyse" : {
          "option" : {
             "chart" : {
+               "columnCount" : 2,
                "showYAlign" : true,
                "showYLabel" : true,
                "syncTrack" : true,

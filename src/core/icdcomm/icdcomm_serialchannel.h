@@ -1,5 +1,5 @@
-﻿#ifndef SERIALCHANNEL_H
-#define SERIALCHANNEL_H
+﻿#ifndef ICDCOMM_SERIALCHANNEL_H
+#define ICDCOMM_SERIALCHANNEL_H
 
 #include "icdcomm_channel.h"
 
@@ -23,7 +23,7 @@ public:
         Data6 = 6,
         Data7 = 7,
         Data8 = 8,
-        InvalidDataBits = -1
+        UnknownDataBits = -1
     };
 
     /**
@@ -33,7 +33,7 @@ public:
         OneStop = 1,
         OneAndHalfStop = 3,
         TwoStop = 2,
-        InvalidStopBits = -1
+        UnknownStopBits = -1
     };
 
     /**
@@ -45,7 +45,7 @@ public:
         OddParity = 3,
         SpaceParity = 4,
         MarkParity = 5,
-        InvalidParity = -1
+        UnknownParity = -1
     };
 
     /**

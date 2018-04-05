@@ -20,7 +20,11 @@ TreeView::TreeView(QWidget *parent)
         jnotify->send("analyse.tree.item.pressed", qVariantFromValue((void*)item));
     });
     connect(d_treeView, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
-        jnotify->send("analyse.tree.item.clicked", qVariantFromValue((void*)item));
+        QVariantList args;
+        args.append(qVariantFromValue((void*)item));
+        QStandardItem *itemTable = d_treeView->findItemTable(item);
+        args.append(qVariantFromValue((void*)itemTable));
+        jnotify->send("analyse.tree.item.clicked", args);
     });
     connect(d_treeView, &Icd::CoreTreeWidget::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
@@ -290,7 +294,8 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
                     if (tempFile) {
                         d_tempFiles[newFilePath] = tempFile;
                     }
-                    struct { Icd::TablePtr table; } data { d_table };
+                    struct { Icd::TablePtr table; } data;
+                    data.table = d_table;
                     QVariantList args;
                     args.append(newFilePath);
                     args.append(qVariantFromValue((void*)&data));

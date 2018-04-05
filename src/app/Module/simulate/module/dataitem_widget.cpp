@@ -521,6 +521,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
             break;
         }
     });
+    const QString sByteUnit = QStringLiteral(" ×Ö½Ú");
     connect(d_spinStartPos, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
         //
@@ -530,8 +531,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
         }
         itemCheck->setStartPos(value);
         // CheckLength
-        d_labelCheckLength->setText(QString::number(itemCheck->checkLength())
-                                    + QStringLiteral(" ×Ö½Ú"));
+        d_labelCheckLength->setText(QString::number(itemCheck->checkLength()) + sByteUnit);
         //
         if (value > d_spinEndPos->value()) {
             d_spinStartPos->setValue(d_spinEndPos->value());
@@ -546,8 +546,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
         }
         itemCheck->setEndPos(value);
         // CheckLength
-        d_labelCheckLength->setText(QString::number(itemCheck->checkLength())
-                                    + QStringLiteral(" ×Ö½Ú"));
+        d_labelCheckLength->setText(QString::number(itemCheck->checkLength()) + sByteUnit);
         //
         if (value < d_spinStartPos->value()) {
             d_spinEndPos->setValue(d_spinStartPos->value());

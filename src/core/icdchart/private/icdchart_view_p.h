@@ -135,6 +135,7 @@ private:
     bool showYAlign;
     int yLabelLength;
     bool syncTrack;
+    int chartTheme;
 };
 
 } // end of namespace Icd

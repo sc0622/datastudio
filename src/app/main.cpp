@@ -9,7 +9,9 @@
 int main(int argc, char **argv)
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB2312"));
+#if QT_VERSION >= 0x050600
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     //QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
 

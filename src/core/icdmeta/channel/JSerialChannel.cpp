@@ -60,7 +60,7 @@ JSerialChannel::~JSerialChannel()
 void JSerialChannel::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JSerialChannel);
+    IcdMetaRegisterUncreatableType2(JSerialChannel);
 
     //
 }

@@ -378,7 +378,8 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
             //
             splitLine = line.split(' ');
             line.clear();
-            indexOfCounter = splitLine.indexOf(QStringLiteral("系统计数器").toLocal8Bit());
+            const QString msg = QStringLiteral("系统计数器");
+            indexOfCounter = splitLine.indexOf(msg.toLocal8Bit());
         } else {
             headerContents.append(sourceFile.readLine());
         }
@@ -589,54 +590,56 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
         return true;
     });
     bool parseTable = true;
-    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
+    auto runAgainFuture = [=]() -> QFuture<bool> {
+        return QtConcurrent::run([=]() -> bool {
+            QFile *sourceFile = Q_NULLPTR;
+            if (headerSize <= 0) {
+                QFile _sourceFile(filePath);
+                if (!_sourceFile.open(QIODevice::ReadOnly)) {
+                    return false;
+                }
+                QTemporaryFile *sourceTempFile = new QTemporaryFile(filePath);
+                if (!sourceTempFile->open()) {
+                    delete sourceTempFile;
+                    return false;
+                }
+                //
+                if (!Icd::checkData(d_table, headerSize, &_sourceFile, sourceTempFile)) {
+                    delete sourceTempFile;
+                    return false;
+                }
+                sourceTempFile->reset();
+                sourceFile = sourceTempFile;
+            } else {
+                sourceFile = new QFile(filePath);
+                if (!sourceFile->open(QIODevice::ReadOnly)) {
+                    delete sourceFile;
+                    return false;
+                }
+            }
+            //
+            if (!sourceFile) {
+                return false;
+            }
+            //
+            if (!splitFile(sourceFile, targetDir, splitSize, (int)d_table->bufferSize(),
+                           headerSize, hasTimeFormat)) {
+                delete sourceFile;
+                return false;
+            }
+
+            delete sourceFile;
+
+            return true;
+        });
+    };
+    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,this,&parseTable](){
         if (d_progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;
                 d_progressDialog->setWindowTitle(QStringLiteral("拆分文件"));
                 d_progressDialog->setMessage(QStringLiteral("正在拆分文件……"));
-                QFuture<bool> future = QtConcurrent::run([=]() -> bool {
-                    QFile *sourceFile = Q_NULLPTR;
-                    if (headerSize <= 0) {
-                        QFile _sourceFile(filePath);
-                        if (!_sourceFile.open(QIODevice::ReadOnly)) {
-                            return false;
-                        }
-                        QTemporaryFile *sourceTempFile = new QTemporaryFile(filePath);
-                        if (!sourceTempFile->open()) {
-                            delete sourceTempFile;
-                            return false;
-                        }
-                        //
-                        if (!Icd::checkData(d_table, headerSize, &_sourceFile, sourceTempFile)) {
-                            delete sourceTempFile;
-                            return false;
-                        }
-                        sourceTempFile->reset();
-                        sourceFile = sourceTempFile;
-                    } else {
-                        sourceFile = new QFile(filePath);
-                        if (!sourceFile->open(QIODevice::ReadOnly)) {
-                            delete sourceFile;
-                            return false;
-                        }
-                    }
-                    //
-                    if (!sourceFile) {
-                        return false;
-                    }
-                    //
-                    if (!splitFile(sourceFile, targetDir, splitSize, (int)d_table->bufferSize(),
-                                   headerSize, hasTimeFormat)) {
-                        delete sourceFile;
-                        return false;
-                    }
-
-                    delete sourceFile;
-
-                    return true;
-                });
-                d_progressDialog->setFuture(future);
+                d_progressDialog->setFuture(runAgainFuture());
             } else {
                 d_progressDialog->hide();
                 d_progressDialog->disconnect(this);
@@ -649,10 +652,9 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
         } else {
             d_progressDialog->hide();
             d_progressDialog->disconnect(this);
-            QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("拆分失败！");
-            QMessageBox::information(this, parseTable
-                                     ? QStringLiteral("解析结果") : QStringLiteral("拆分结果"),
-                                     message);
+            const QString title = parseTable ? QStringLiteral("解析结果") : QStringLiteral("拆分结果");
+            const QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("拆分失败！");
+            QMessageBox::information(this, title, message);
             d_progressDialog->deleteLater();
             d_progressDialog = Q_NULLPTR;
             d_table = Icd::TablePtr(0);

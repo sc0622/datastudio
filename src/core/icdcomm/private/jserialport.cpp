@@ -4,6 +4,8 @@
 
 #ifdef SERIAL_USE_PCOMM
 #include "moxa/pcomm.h"
+#else
+#include <QtSeriaPort>
 #endif
 
 //#pragma comment(lib, "pcomm.lib")
@@ -310,7 +312,7 @@ JSerialPort::Parity JSerialPort::parity() const
     case P_ODD: return JSerialPort::OddParity;
     case P_SPC: return JSerialPort::SpaceParity;
     case P_MRK: return JSerialPort::MarkParity;
-    default: return JSerialPort::InvalidParity;
+    default: return JSerialPort::UnknownParity;
     }
 #else
     return (SerialChannel::Parity)d->serialPort->parity();

@@ -47,7 +47,7 @@ JIcdHeaderItem::~JIcdHeaderItem()
 void JIcdHeaderItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdHeaderItem);
+    IcdMetaRegisterUncreatableType2(JIcdHeaderItem);
 
     //
 }

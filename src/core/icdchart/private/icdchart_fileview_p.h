@@ -234,9 +234,13 @@ public:
 public slots:
     void onTrackerChanged(JChart::Chart *chart, const QPointF &pos, bool visible);
     void onTrackerMarked(JChart::Chart *chart, const QPointF &pos);
+    void onScaleDivChanged(int axisId, qreal minimum, qreal maximum);
 
 private:
     void updateScale();
+    bool syncNewChartScaleX(JChart::Chart *chart);
+    bool updateSyncScale(JChart::Chart *chart, int axisId, qreal minimum, qreal maximum);
+    void enableSyncScale(JChart::Chart *chart, bool enabled);
 
 private:
     J_DECLARE_PUBLIC(ChartFileView)
@@ -247,6 +251,7 @@ private:
     int yLabelLength;
     QTimer *timerReplay;
     bool syncTrack;
+    int chartTheme;
     QDateTime currentXTime;
     QPair<qreal, qreal> xRange;
     QMap<QString/*filePath*/,Icd::TablePtr> fileTables;

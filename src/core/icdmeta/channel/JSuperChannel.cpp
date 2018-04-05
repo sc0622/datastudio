@@ -71,7 +71,7 @@ JSuperChannel::~JSuperChannel()
 void JSuperChannel::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JSuperChannel);
+    IcdMetaRegisterUncreatableType2(JSuperChannel);
 
     //
     JSerialChannel::registerQmlType();

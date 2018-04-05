@@ -17,6 +17,7 @@ ChartFileViewPrivate::ChartFileViewPrivate(ChartFileView *q)
     , yLabelLength(10)
     , timerReplay(nullptr)
     , syncTrack(true)
+    , chartTheme(JChart::ChartThemeLight)
 {
 
 }
@@ -42,13 +43,13 @@ void ChartFileViewPrivate::init(bool styled)
 
     //
     QObject::connect(chartView, &JChart::View::trackerChanged, this,
-            [=](JChart::Chart *chart, const QPointF &pos, bool visible){
+                     [=](JChart::Chart *chart, const QPointF &pos, bool visible){
         onTrackerChanged(chart, pos, visible);
-    });
+    }, Qt::QueuedConnection);
     QObject::connect(chartView, &JChart::View::trackerMarked, this,
-            [=](JChart::Chart *chart, const QPointF &pos){
+                     [=](JChart::Chart *chart, const QPointF &pos){
         onTrackerMarked(chart, pos);
-    });
+    }, Qt::QueuedConnection);
     QObject::connect(timerReplay, &QTimer::timeout, this, [=](){
         //
         const qint64 minimum = currentXTime.toMSecsSinceEpoch();
@@ -144,6 +145,9 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
             + item->data(Icd::TreeItemDomainRole).toString();
 
     //
+    bool isNewChart = false;
+
+    //
     if (!chart) {
         // create chart
         chart = createChart(dataItem);
@@ -151,9 +155,12 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
             Q_ASSERT(false);    // logic error
             return false;       // create failure or not supported
         }
+        isNewChart = true;
+        chart->setChartTheme((JChart::ChartTheme)chartTheme);
         chart->setAxisVisible(JChart::yLeft, showYLabel);
         chart->setAxisAlign(JChart::yLeft, showYAlign);
         chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
+        chart->setGridPen(QPen(QColor(60, 60, 60, 150), 0.4, Qt::DashLine));
         if (baseInfo.hasTimeFormat) {
             chart->setShiftType(JChart::ShiftByTime);
             chart->setXScaleDrawType(JChart::ScaleDrawTime);
@@ -165,13 +172,14 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
         chartView->appendChart(chart);
         //
         QObject::connect(chart, &JChart::Chart::seriesRemoved, this, [=](int index){
+            Q_UNUSED(index);
             if (chart->seriesCount() > 1) {
                 chart->setTitle(QString());
                 chart->setLegendVisible(true);
             } else {
                 chart->setLegendVisible(false);
                 if (chart->seriesCount() == 1) {
-                    JChart::AbstractSeries *series = chart->seriesAt(index);
+                    JChart::AbstractSeries *series = chart->seriesAt(0);
                     if (series) {
                         chart->setTitle(series->title());
                     } else {
@@ -207,6 +215,12 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
     }
     //
     item->setData(true, Icd::TreeBoundRole);
+
+    // sync scale
+    if (isNewChart) {
+        //
+        enableSyncScale(chart, true);
+    }
 
     return true;
 }
@@ -525,47 +539,6 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     }
 
     //
-    QObject::connect(chart, &JChart::Chart::scaleDivChanged, q,
-                     [=](int axisId, qreal minimum, qreal maximum){
-        Q_UNUSED(minimum);
-        Q_UNUSED(maximum);
-        //
-        if (!xAxisSync || timerReplay->isActive()) {
-            return;
-        }
-        //
-        switch (axisId) {
-        case JChart::xBottom:
-        {
-            JChart::Chart *lastChart = chartView->lastChart(chart);
-            if (!lastChart) {
-                break;
-            }
-            QPair<qreal, qreal> interval = lastChart->axisInterval(JChart::xBottom);
-            chart->setAxisScale(axisId, interval.first, interval.second, 0);
-            /*
-            int rowCount = chartView->rowCount();
-            int columnCount = chartView->columnCount();
-            for (int row = 0; row < rowCount; ++row) {
-                for (int column = 0; column < columnCount; ++column) {
-                    JChart::Chart *_chart = chartView->chartAt(row, column);
-                    if (!_chart) {
-                        continue;
-                    }
-                    if (_chart == chart) {
-                        continue;
-                    }
-                    _chart->setAxisScale(axisId, interval.first, interval.second, 0);
-                }
-            }*/
-            break;
-        }
-        default:
-            break;
-        }
-    });
-
-    //
     return chart;
 }
 
@@ -574,6 +547,15 @@ JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, Gr
 {
     if (!chart || !seriesData) {
         return nullptr;
+    }
+
+    const int seriesCount = chart->seriesCount();
+    JChart::Chart *lastChart = chartView->lastChart(chart);
+    QPair<qreal, qreal> axisXInterval;
+    if (lastChart) {
+        axisXInterval = lastChart->axisInterval(JChart::xBottom);
+    } else if (seriesCount > 0) {
+        axisXInterval = chart->axisInterval(JChart::xBottom);
     }
 
     const SeriesInfoPtr seriesInfo = seriesData->seriesInfo;
@@ -627,7 +609,12 @@ JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, Gr
         break;
     }
 
-    chart->updateScale(JChart::xBottom);
+    // sync scale
+    if (lastChart && xAxisSync || seriesCount > 0) {
+        chart->setAxisScale(JChart::xBottom, axisXInterval.first, axisXInterval.second, 0);
+    } else {
+        chart->updateScale(JChart::xBottom);
+    }
 
     return series;
 }
@@ -860,6 +847,19 @@ void ChartFileViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &
     }
 }
 
+void ChartFileViewPrivate::onScaleDivChanged(int axisId, qreal minimum, qreal maximum)
+{
+    JChart::Chart *chart = qobject_cast< JChart::Chart*>(sender());
+    if (!chart) {
+        return;
+    }
+
+    if (!updateSyncScale(chart, axisId, minimum, maximum)) {
+        //
+        return;
+    }
+}
+
 void ChartFileViewPrivate::updateScale()
 {
     int rowCount = chartView->rowCount();
@@ -873,6 +873,88 @@ void ChartFileViewPrivate::updateScale()
             chart->updateScale(JChart::xBottom);
             chart->updateScale(JChart::yLeft);
         }
+    }
+}
+
+bool ChartFileViewPrivate::syncNewChartScaleX(JChart::Chart *chart)
+{
+    if (!chart) {
+        return false;
+    }
+
+    JChart::Chart *lastChart = chartView->lastChart(chart);
+    if (!lastChart) {
+        return true;
+    }
+
+    QPair<qreal, qreal> interval = lastChart->axisInterval(JChart::xBottom);
+    chart->setAxisScale(JChart::xBottom, interval.first, interval.second, 0);
+
+    int rowCount = chartView->rowCount();
+    int columnCount = chartView->columnCount();
+    for (int row = 0; row < rowCount; ++row) {
+        for (int column = 0; column < columnCount; ++column) {
+            JChart::Chart *_chart = chartView->chartAt(row, column);
+            if (!_chart) {
+                continue;
+            }
+            if (_chart == chart) {
+                continue;
+            }
+            _chart->setAxisScale(JChart::xBottom, interval.first, interval.second, 0);
+        }
+    }
+
+    return true;
+}
+
+bool ChartFileViewPrivate::updateSyncScale(JChart::Chart *chart,
+                                           int axisId, qreal minimum, qreal maximum)
+{
+    //
+    if (!chart || !xAxisSync || timerReplay->isActive()) {
+        return false;
+    }
+    //
+    switch (axisId) {
+    case JChart::xBottom:
+    {
+        int rowCount = chartView->rowCount();
+        int columnCount = chartView->columnCount();
+        for (int row = 0; row < rowCount; ++row) {
+            for (int column = 0; column < columnCount; ++column) {
+                JChart::Chart *_chart = chartView->chartAt(row, column);
+                if (!_chart) {
+                    continue;
+                }
+                if (_chart == chart) {
+                    continue;
+                }
+                enableSyncScale(_chart, false);
+                _chart->setAxisScale(axisId, minimum, maximum, 0);
+                enableSyncScale(_chart, true);
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    return true;
+}
+
+void ChartFileViewPrivate::enableSyncScale(JChart::Chart *chart, bool enabled)
+{
+    if (!chart) {
+        return;
+    }
+
+    QObject::disconnect(chart, &JChart::Chart::scaleDivChanged,
+                        this, &ChartFileViewPrivate::onScaleDivChanged);
+    if (enabled) {
+        QObject::connect(chart, &JChart::Chart::scaleDivChanged,
+                         this, &ChartFileViewPrivate::onScaleDivChanged);
     }
 }
 

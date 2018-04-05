@@ -245,7 +245,7 @@ DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receive
         if (!saveConfig()) {
             return;
         }
-        accept();
+        this->accept();
         // notify
         jnotify->post(d_module + ".parser.changed", d_receiver);
     });

@@ -176,49 +176,51 @@ bool ParityDataDlg::loadData(const QString &domain, int headerSize,
         return true;
     });
     bool parseTable = true;
-    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
+    auto runAgainFuture = [=]() -> QFuture<bool> {
+        return QtConcurrent::run([=]() -> bool {
+            const QString sourcePath = d_editSource->text().trimmed();
+            const QString targetPath = [=]() -> QString {
+                QString path = d_editTarget->text().trimmed();
+                if (sourcePath == path) {
+                    path.append(".bak");
+                }
+                return path;
+            }();
+            QFile sourceFile(sourcePath);
+            if (!sourceFile.open(QIODevice::ReadOnly)) {
+                return false;
+            }
+            QFile targetFile(targetPath);
+            if (!targetFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                return false;
+            }
+            //
+            if (!Icd::checkData(d_table, headerSize, &sourceFile, &targetFile)) {
+                targetFile.close();
+                targetFile.remove();
+                return false;
+            }
+            //
+            sourceFile.close();
+            targetFile.close();
+            if (targetPath.endsWith(".bak")) {
+                if (!sourceFile.remove()) {
+                    qDebug() << "source:" << sourceFile.errorString();
+                }
+                if (!targetFile.rename(sourcePath)) {
+                    qDebug() << "target:" << targetFile.errorString();
+                }
+            }
+            //
+            return true;
+        });
+    };
+    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=,this,&parseTable](){
         if (progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;
                 progressDialog->setMessage(QStringLiteral("正在转换数据文件……"));
-                QFuture<bool> future = QtConcurrent::run([=]() -> bool {
-                    const QString sourcePath = d_editSource->text().trimmed();
-                    const QString targetPath = [=](){
-                        QString path = d_editTarget->text().trimmed();
-                        if (sourcePath == path) {
-                            path.append(".bak");
-                        }
-                        return path;
-                    }();
-                    QFile sourceFile(sourcePath);
-                    if (!sourceFile.open(QIODevice::ReadOnly)) {
-                        return false;
-                    }
-                    QFile targetFile(targetPath);
-                    if (!targetFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-                        return false;
-                    }
-                    //
-                    if (!Icd::checkData(d_table, headerSize, &sourceFile, &targetFile)) {
-                        targetFile.close();
-                        targetFile.remove();
-                        return false;
-                    }
-                    //
-                    sourceFile.close();
-                    targetFile.close();
-                    if (targetPath.endsWith(".bak")) {
-                        if (!sourceFile.remove()) {
-                            qDebug() << "source:" << sourceFile.errorString();
-                        }
-                        if (!targetFile.rename(sourcePath)) {
-                            qDebug() << "target:" << targetFile.errorString();
-                        }
-                    }
-                    //
-                    return true;
-                });
-                progressDialog->setFuture(future);
+                progressDialog->setFuture(runAgainFuture());
             } else {
                 progressDialog->hide();
                 progressDialog->disconnect(this);
@@ -231,10 +233,9 @@ bool ParityDataDlg::loadData(const QString &domain, int headerSize,
         } else {
             progressDialog->hide();
             progressDialog->disconnect(this);
-            QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
-            QMessageBox::information(this, parseTable
-                                     ? QStringLiteral("解析结果") : QStringLiteral("转换结果"),
-                                     message);
+            const QString title = parseTable ? QStringLiteral("解析结果") : QStringLiteral("转换结果");
+            const QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
+            QMessageBox::information(this, title, message);
             progressDialog->deleteLater();
             d_table = Icd::TablePtr(0);
         }

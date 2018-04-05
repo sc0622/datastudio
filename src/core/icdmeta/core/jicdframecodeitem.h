@@ -16,6 +16,7 @@ class JIcdFrameItem;
 class ICDMETA_EXPORT JIcdFrameCodeItem : public JIcdItem
 {
     Q_OBJECT
+    Q_PROPERTY(IcdCore::FrameCodeType frameCodeType READ frameCodeType NOTIFY frameCodeTypeChanged)
     Q_PROPERTY(QString dataString READ dataString NOTIFY dataStringChanged)
     Q_PROPERTY(icdmeta::JIcdFrameItem* frame READ metaFrame NOTIFY frameChanged)
 public:
@@ -25,6 +26,7 @@ public:
     static void registerQmlType();
     Icd::FrameCodeItemPtr metaData() const;
 
+    IcdCore::FrameCodeType frameCodeType() const;
     QString dataString() const;
     QSharedPointer<icdmeta::JIcdFrameItem> frame() const;
     icdmeta::JIcdFrameItem *metaFrame() const;
@@ -40,6 +42,7 @@ public:
     Q_INVOKABLE void clearData();
 
 signals:
+    void frameCodeTypeChanged();
     void dataStringChanged();
     void frameChanged();
 

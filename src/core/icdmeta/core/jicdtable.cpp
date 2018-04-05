@@ -166,7 +166,7 @@ JIcdTable::~JIcdTable()
 void JIcdTable::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdTable);
+    IcdMetaRegisterUncreatableType2(JIcdTable);
 
     //
     JIcdItem::registerQmlType();

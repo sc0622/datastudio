@@ -13,7 +13,7 @@ J_TYPEDEF_QT_SHAREDPTR(JProtocol)
 class JIcdTable;
 class JProtocolPrivate;
 
-class ICDMETA_EXPORT JProtocol : public QObject, public Icd::Serializable
+class ICDMETA_EXPORT JProtocol : public QObject, public Json::Serializable
 {
     Q_OBJECT
     Q_PROPERTY(QString identity READ identity NOTIFY identityChanged)

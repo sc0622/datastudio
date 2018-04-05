@@ -50,7 +50,7 @@ JIcdNumericItem::~JIcdNumericItem()
 void JIcdNumericItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdNumericItem);
+    IcdMetaRegisterUncreatableType2(JIcdNumericItem);
 
     //
     JIcdLimitItem::registerQmlType();
@@ -60,6 +60,24 @@ Icd::NumericItemPtr JIcdNumericItem::metaData() const
 {
     Q_D(const JIcdNumericItem);
     return d->data;
+}
+
+IcdCore::NumericType JIcdNumericItem::numericType() const
+{
+    Q_D(const JIcdNumericItem);
+    switch (d->data->numericType()) {
+    case Icd::NumericInt8: return IcdCore::NumericInt8;
+    case Icd::NumericUint8: return IcdCore::NumericUint8;
+    case Icd::NumericInt16: return IcdCore::NumericInt16;
+    case Icd::NumericUint16: return IcdCore::NumericUint16;
+    case Icd::NumericInt32: return IcdCore::NumericInt32;
+    case Icd::NumericUint32: return IcdCore::NumericUint32;
+    case Icd::NumericInt64: return IcdCore::NumericInt64;
+    case Icd::NumericUint64: return IcdCore::NumericUint64;
+    case Icd::NumericFloat64: return IcdCore::NumericFloat64;
+    case Icd::NumericFloat32: return IcdCore::NumericFloat32;
+    default: return IcdCore::NumericInvalid;
+    }
 }
 
 QString JIcdNumericItem::dataString() const

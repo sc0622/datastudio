@@ -193,6 +193,12 @@ void CoreTreeWidget::stopAllChannels()
     d->stopAllChannels();
 }
 
+QStandardItem *CoreTreeWidget::findItemTable(QStandardItem *item) const
+{
+    Q_D(const CoreTreeWidget);
+    return d->findItemTable(item);
+}
+
 void CoreTreeWidget::setRunning(bool value)
 {
     Q_D(CoreTreeWidget);

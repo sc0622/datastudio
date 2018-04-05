@@ -68,7 +68,7 @@ JFileChannel::~JFileChannel()
 void JFileChannel::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JFileChannel);
+    IcdMetaRegisterUncreatableType2(JFileChannel);
 
     //
 }

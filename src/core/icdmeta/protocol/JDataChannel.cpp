@@ -109,7 +109,7 @@ JDataChannel::~JDataChannel()
 
 void JDataChannel::registerQmlType()
 {
-    jRegisterUncreatableType(JDataChannel);
+    IcdMetaRegisterUncreatableType2(JDataChannel);
 }
 
 QString JDataChannel::identity() const

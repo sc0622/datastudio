@@ -1,4 +1,4 @@
-//#include "precomp.h"
+#include "precomp.h"
 #include "icd_item_frame.h"
 #include "icd_item_framecode.h"
 #include "icd_table.h"
@@ -128,7 +128,7 @@ FrameItem::~FrameItem()
 
 void FrameItem::addTable(const TablePtr &table)
 {
-    icd_uint64 code = std::strtoull(table->mark().c_str(), 0, 16);
+    icd_uint64 code = Icd::strtou64(table->mark().c_str(), 16);
     if (code <= 0) {
         return;
     }
@@ -438,7 +438,7 @@ icd_uint64 FrameItem::updateSend(icd_uint64 code)
 
             if (table) {
                 d->updateSend(this, table, true);
-                code = (icd_uint64)std::strtoull(table->mark().c_str(), 0, 16);
+                code = (icd_uint64)Icd::strtou64(table->mark().c_str(), 16);
             }
         }
 

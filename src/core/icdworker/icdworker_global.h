@@ -29,19 +29,17 @@
 #include <qglobal.h>
 
 // - private pointer
-#ifdef J_DECLARE_PRIVATE
-#undef J_DECLARE_PRIVATE
-#endif
+#ifndef J_DECLARE_PRIVATE
 #define J_DECLARE_PRIVATE(name) \
     Q_DECLARE_PRIVATE(name) \
     name ## Private *d_ptr;
-
-#ifdef J_DECLARE_PUBLIC
-#undef J_DECLARE_PUBLIC
 #endif
+
+#ifndef J_DECLARE_PUBLIC
 #define J_DECLARE_PUBLIC(name) \
     Q_DECLARE_PUBLIC(name) \
     name *q_ptr;
+#endif
 
 #endif
 

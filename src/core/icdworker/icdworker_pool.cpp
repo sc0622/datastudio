@@ -285,7 +285,7 @@ bool WorkerPool::loadConfig()
             continue;
         }
         // create worker
-        Icd::WorkerPtr newWorker = Icd::WorkerPtr(new Icd::Worker(newChannel, this));
+        Icd::WorkerPtr newWorker = Icd::WorkerPtr(new Icd::Worker(newChannel));
         // relayer
         std::map<std::string, std::string>::const_iterator citer = items.find("relayer");
         if (citer != items.cend()) {

@@ -99,26 +99,6 @@
 extern "C" {
 #endif
 
-#if 0
-
-#ifndef WINAPI
-#define WINAPI __cdecl
-#endif
-
-#ifndef CALLBACK
-#define CALLBACK __stdcall
-#endif
-
-#ifndef VOID
-#define VOID void
-#endif
-
-#ifndef DWORD
-#define DWORD unsigned long
-#endif
-
-#endif
-
 /* basic function phototype */
 int  WINAPI sio_ioctl(int port, int baud, int mode);
 int  WINAPI sio_getch(int port);

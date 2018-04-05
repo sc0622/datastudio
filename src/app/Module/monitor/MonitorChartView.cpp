@@ -147,6 +147,23 @@ ChartView::ChartView(QWidget *parent)
         d_chartView->removeItem(domain);
         item->setData(QVariant(), Icd::TreeBoundRole);
     });
+    //
+    auto setChartTheme = [=](const QString &theme){
+        if (theme == "none") {
+            d_chartView->setChartTheme(JChart::ChartThemeLight);
+        } else if (theme == "blue") {
+            d_chartView->setChartTheme(JChart::ChartThemeLight);
+        } else if (theme == "dark") {
+            d_chartView->setChartTheme(JChart::ChartThemeDark);
+        } else if (theme == "light") {
+            d_chartView->setChartTheme(JChart::ChartThemeLight);
+        }
+    };
+    jnotify->on("global.theme.changed", this, [=](JNEvent &event){
+        const QString theme = event.argument().toString();
+        setChartTheme(theme);
+    });
+    setChartTheme(JMain::instance()->theme());
 }
 
 ChartView::~ChartView()

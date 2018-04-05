@@ -249,6 +249,13 @@ public:
      */
     void stopAllChannels();
 
+    /**
+     * @brief findItemTable
+     * @param item
+     * @return
+     */
+    QStandardItem *findItemTable(QStandardItem *item) const;
+
 signals:
     void itemPressed(QStandardItem *item);
     void itemClicked(QStandardItem *item);

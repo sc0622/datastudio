@@ -47,7 +47,7 @@ JIcdLimitItem::~JIcdLimitItem()
 void JIcdLimitItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdLimitItem);
+    IcdMetaRegisterUncreatableType2(JIcdLimitItem);
 
     //
 }

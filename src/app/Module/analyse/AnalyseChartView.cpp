@@ -57,12 +57,22 @@ ChartView::ChartView(QWidget *parent)
         d_chartView->toggleReplay(running);
     });
     jnotify->on("analyse.tree.item.clicked", this, [=](JNEvent &event){
-        QStandardItem *item = jVariantFromVoid<QStandardItem>(event.argument());
+        const QVariantList args = event.argument().toList();
+        if (args.count() != 2) {
+            Q_ASSERT(args.count() == 2);
+            return;
+        }
+        QStandardItem *item = jVariantFromVoid<QStandardItem>(args.at(0));
         if (!item) {
             return;
         }
         const int itemType = item->type();
-        const QString domain = item->data(Icd::TreeItemDomainRole).toString();
+        QString domain = item->data(Icd::TreeItemDomainRole).toString();
+        QStandardItem *itemTable = jVariantFromVoid<QStandardItem>(args.at(1));
+        if (itemTable) {
+            const QString filePath = itemTable->data(Icd::TreeFilePathRole).toString();
+            domain = filePath + '/' + domain;
+        }
         switch (itemType) {
         case Icd::TreeItemTypeRoot:
             break;
@@ -88,7 +98,12 @@ ChartView::ChartView(QWidget *parent)
             return;
         }
         const int itemType = item->type();
-        const QString domain = item->data(Icd::TreeItemDomainRole).toString();
+        QString domain = item->data(Icd::TreeItemDomainRole).toString();
+        QStandardItem *itemTable = jVariantFromVoid<QStandardItem>(args.at(1));
+        if (itemTable) {
+            const QString filePath = itemTable->data(Icd::TreeFilePathRole).toString();
+            domain = filePath + '/' + domain;
+        }
         switch (itemType) {
         case Icd::TreeItemTypeRoot:
             break;
@@ -113,7 +128,12 @@ ChartView::ChartView(QWidget *parent)
         if (!item) {
             return;
         }
-        const QString domain = item->data(Icd::TreeItemDomainRole).toString();
+        QString domain = item->data(Icd::TreeItemDomainRole).toString();
+        QStandardItem *itemTable = jVariantFromVoid<QStandardItem>(args.at(1));
+        if (itemTable) {
+            const QString filePath = itemTable->data(Icd::TreeFilePathRole).toString();
+            domain = filePath + '/' + domain;
+        }
         d_chartView->removeItem(domain);
         item->setData(QVariant(), Icd::TreeBoundRole);
     });
@@ -133,6 +153,23 @@ ChartView::ChartView(QWidget *parent)
 
         d_chartView->addTable(filePath, data->table);
     });
+    //
+    auto setChartTheme = [=](const QString &theme){
+        if (theme == "none") {
+            d_chartView->setChartTheme(JChart::ChartThemeLight);
+        } else if (theme == "blue") {
+            d_chartView->setChartTheme(JChart::ChartThemeLight);
+        } else if (theme == "dark") {
+            d_chartView->setChartTheme(JChart::ChartThemeDark);
+        } else if (theme == "light") {
+            d_chartView->setChartTheme(JChart::ChartThemeLight);
+        }
+    };
+    jnotify->on("global.theme.changed", this, [=](JNEvent &event){
+        const QString theme = event.argument().toString();
+        setChartTheme(theme);
+    });
+    setChartTheme(JMain::instance()->theme());
 }
 
 ChartView::~ChartView()

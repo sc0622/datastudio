@@ -70,7 +70,7 @@ JChannel::~JChannel()
 
 void JChannel::registerQmlType()
 {
-    jRegisterUncreatableType(JChannel);
+    IcdMetaRegisterUncreatableType2(JChannel);
 
     JSuperChannel::registerQmlType();
 }

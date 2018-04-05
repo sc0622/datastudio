@@ -7,13 +7,15 @@ namespace Edit {
 
 DetailView::DetailView(QWidget *parent)
     : QWidget(parent)
-    , d_currentData({nullptr, nullptr})
 {
+    d_currentData.item = nullptr;
+    d_currentData.object = Icd::ObjectPtr();
+
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    d_splitterMain = new JSplitter({3, 1}, Qt::Vertical, this);
+    d_splitterMain = new JSplitter(QList<double>() << 3 << 1, Qt::Vertical, this);
     d_splitterMain->setObjectName("Edit::detail::splitterMain");
     vertLayoutMain->addWidget(d_splitterMain);
 

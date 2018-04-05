@@ -42,6 +42,7 @@ public:
     void setColumnCount(int count);
     void setColumnWidthSame();
     void setSyncTrack(bool enabled);
+    void setChartTheme(int chartTheme);
 
 signals:
     void xAxisSyncChanged(bool value);

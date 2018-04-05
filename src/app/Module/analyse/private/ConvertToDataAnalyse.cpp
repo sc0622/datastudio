@@ -188,7 +188,7 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
         d_progressDialog->setFuture(QtConcurrent::run(convertFunc));
     }
 
-    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
+    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,this,&parseTable](){
         if (d_progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;
@@ -209,10 +209,9 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
         } else {
             d_progressDialog->hide();
             d_progressDialog->disconnect(this);
-            QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
-            QMessageBox::information(this, parseTable
-                                     ? QStringLiteral("解析结果") : QStringLiteral("转换结果"),
-                                     message);
+            const QString title = parseTable ? QStringLiteral("解析结果") : QStringLiteral("转换结果");
+            const QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
+            QMessageBox::information(this, title, message);
             d_progressDialog->deleteLater();
             d_progressDialog = Q_NULLPTR;
             if (!d_objectItem) {
@@ -907,7 +906,8 @@ void ConvertToDataAnalyse::init()
     });
     connect(buttonTargetView, &QPushButton::clicked, this, [=](){
         const QString suffix = queryFileTypeSuffix();
-        QString selectedFilter = QStringLiteral("Data file (*%1)").arg(suffix);
+        QString selectedFilter = QStringLiteral("Data file (*%1)");
+        selectedFilter = selectedFilter.arg(suffix);
         const QString filePath = QFileDialog::getSaveFileName(
                     this, QStringLiteral("选择原始文件"), d_editTarget->text(),
                     QString("Any file (*.*);;"

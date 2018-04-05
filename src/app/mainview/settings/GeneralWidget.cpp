@@ -22,14 +22,14 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     d_comboBoxColorTheme->addItem(tr("Dark"), "dark");
     d_comboBoxColorTheme->addItem(tr("Light"), "light");
 
+    // initialize
+    setTheme(JMain::instance()->theme());
+
     connect(d_comboBoxColorTheme,
             static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, [=](int){
         JMain::instance()->setTheme(d_comboBoxColorTheme->currentData().toString());
     });
-
-    // initialize
-    setTheme(JMain::instance()->theme());
 }
 
 QString GeneralWidget::theme() const

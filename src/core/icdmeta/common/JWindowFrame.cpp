@@ -173,6 +173,9 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
     Q_UNUSED(eventType);
 #ifdef _WIN32
     Q_D(JWindowFrame);
+    if (!d->window) {
+        return false;
+    }
     const MSG *msg = reinterpret_cast<MSG *>(message);
     if (msg->hwnd != (HWND)d->window->winId()) {
         return false;

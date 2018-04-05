@@ -15,6 +15,7 @@ class JIcdCounterItemPrivate;
 class ICDMETA_EXPORT JIcdCounterItem : public JIcdItem
 {
     Q_OBJECT
+    Q_PROPERTY(IcdCore::CounterType counterType READ counterType NOTIFY counterTypeChanged)
     Q_PROPERTY(uchar value READ value NOTIFY valueChanged)
 public:
     explicit JIcdCounterItem(const Icd::CounterItemPtr &data, QObject *parent = 0);
@@ -23,6 +24,7 @@ public:
     static void registerQmlType();
     Icd::CounterItemPtr metaData() const;
 
+    IcdCore::CounterType counterType() const;
     uchar value() const;
     QString text() const;
     QString valueString() const;
@@ -35,6 +37,7 @@ public:
     static IcdCore::CounterType stringCounterType(const QString &str);
 
 signals:
+    void counterTypeChanged();
     void valueChanged();
 
 public slots:

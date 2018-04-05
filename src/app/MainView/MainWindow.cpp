@@ -16,9 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     d_centralWidget = new CentralWidget(this);
     setCentralWidget(d_centralWidget);
-
-    QPushButton *button1 = new QPushButton(tr("helloworld"), this);
-    button1->setToolTip(tr("what-=="));
 }
 
 MainWindow::~MainWindow()

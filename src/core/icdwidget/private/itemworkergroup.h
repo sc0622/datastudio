@@ -27,6 +27,8 @@ public:
     void updateItemData();
     void updateItemData(bool showValue);
     void updateItemData(CoreTreeWidget::ShowAttributes attrs, int dataFormat);
+    int timerInterval() const;
+    void setTimerInterval(int interval);
     void start();
     void start(int interval);
     void stop();

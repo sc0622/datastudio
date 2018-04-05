@@ -699,6 +699,8 @@ void JMain::setTheme(const QString &value)
     }
 
     emit themeChanged(value, previous);
+
+    jnotify->post("global.theme.changed", value);
 }
 
 bool JMain::init()

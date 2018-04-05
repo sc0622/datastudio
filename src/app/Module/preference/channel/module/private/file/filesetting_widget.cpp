@@ -180,9 +180,9 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
         }
         //
         if (channel->isOpen()) {
+            const QString message = QStringLiteral("[%1]通道已打开，不能修改属性！");
             QMessageBox::warning(this, QStringLiteral("警告"),
-                                 QStringLiteral("[%1]通道已打开，不能修改属性！")
-                                 .arg(QString::fromStdString(channel->name())));
+                                 message.arg(QString::fromStdString(channel->name())));
             return;
         }
         //

@@ -26,75 +26,71 @@
 
 #include <qglobal.h>
 #include <QEvent>
+#include <QJSValue>
 
 // - common -
 
 // - private pointer
-#ifdef J_DECLARE_PRIVATE
-#undef J_DECLARE_PRIVATE
-#endif
+#ifndef J_DECLARE_PRIVATE
 #define J_DECLARE_PRIVATE(name) \
     Q_DECLARE_PRIVATE(name) \
     name ## Private *d_ptr;
-
-#ifdef J_DECLARE_PUBLIC
-#undef J_DECLARE_PUBLIC
 #endif
+
+#ifndef J_DECLARE_PUBLIC
 #define J_DECLARE_PUBLIC(name) \
     Q_DECLARE_PUBLIC(name) \
     name *q_ptr;
-
-#ifdef J_DECLARE_SINGLE_INSTANCE
-#undef J_DECLARE_SINGLE_INSTANCE
 #endif
+
+#ifndef J_DECLARE_SINGLE_INSTANCE
 #define J_DECLARE_SINGLE_INSTANCE(Class) \
     public: \
     static Class *instance(); \
     static void releaseInstance(); \
     private: \
     static Class *_instance;
-
-#ifdef J_IMPLEMENT_SINGLE_INSTANCE
-#undef J_IMPLEMENT_SINGLE_INSTANCE
 #endif
+
+#ifndef J_IMPLEMENT_SINGLE_INSTANCE
 #define J_IMPLEMENT_SINGLE_INSTANCE(Class, GlobalClass) \
     \
     static void __ ## Class ## _releaseInstance() { \
-        Class::releaseInstance(); \
+    Class::releaseInstance(); \
     } \
     Class *Class::_instance = 0; \
     \
     Class *Class::instance() { \
-        if (Class::_instance == 0) { \
-            Class::_instance = new Class; \
-        } \
-        if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
-            GlobalClass::instance()->registerSingletonRelease(__ ## Class ## _releaseInstance); \
-        } \
-        return Class::_instance; \
+    if (Class::_instance == 0) { \
+    Class::_instance = new Class; \
+    } \
+    if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
+    GlobalClass::instance()->registerSingletonRelease(__ ## Class ## _releaseInstance); \
+    } \
+    return Class::_instance; \
     } \
     \
     void Class::releaseInstance() { \
-        if (Class::_instance != 0) { \
-            delete Class::_instance; \
-            Class::_instance = 0; \
-        } \
+    if (Class::_instance != 0) { \
+    delete Class::_instance; \
+    Class::_instance = 0; \
+    } \
     }
-
-#ifdef J_QML_IMPLEMENT_SINGLE_INSTANCE
-#undef J_QML_IMPLEMENT_SINGLE_INSTANCE
 #endif
+
+#ifndef J_QML_IMPLEMENT_SINGLE_INSTANCE
 #define J_QML_IMPLEMENT_SINGLE_INSTANCE(Class, Ownership, GlobalClass) \
     J_IMPLEMENT_SINGLE_INSTANCE(Class, GlobalClass) \
     \
     QObject *__ ## Class ## _Singleton_Callback(QQmlEngine *qmlEngine, QJSEngine *jsEngine) \
-    { \
-        Q_UNUSED(qmlEngine); \
-        Q_UNUSED(jsEngine); \
-        QObject *object = Class::instance(); \
-        QQmlEngine::setObjectOwnership(object, Ownership); \
-        return object; \
+{ \
+    Q_UNUSED(qmlEngine); \
+    Q_UNUSED(jsEngine); \
+    QObject *object = Class::instance(); \
+    QQmlEngine::setObjectOwnership(object, Ownership); \
+    return object; \
     }
+#endif
 
 #ifndef J_SINGLE_RELEASE_CALLBACK
 #define J_SINGLE_RELEASE_CALLBACK
@@ -106,12 +102,11 @@ typedef void(*SingletonReleaseCallback)();
 #include <vector>
 
 #ifndef J_TYPEDEF_QT_SHAREDPTR
-#undef J_TYPEDEF_QT_SHAREDPTR
-#endif
 #define J_TYPEDEF_QT_SHAREDPTR(_class_) \
     class _class_; \
     typedef QSharedPointer<_class_> _class_ ## Ptr; \
     typedef QList<_class_ ## Ptr> _class_ ## PtrArray;
+#endif
 
 ////////////////////////////////
 
@@ -125,51 +120,92 @@ class QJSValue;
 class QJSValueList;
 #endif
 
+// global
+
 #define ICDMETA_QML_VER_MAJOR 1
 #define ICDMETA_QML_VER_MINOR 0
 #define ICDMETA_DOMAIN "Icd.Core"
 
-#ifdef jRegisterSingletonType2
-#undef jRegisterSingletonType2
-#endif
-#define jRegisterSingletonType2(T, callback) \
-    jRegisterSingletonType(T, QT_STRINGIFY(T), callback)
-
-#ifdef jRegisterSingletonTypeCpp
-#undef jRegisterSingletonTypeCpp
-#endif
-#define jRegisterSingletonTypeCpp(T, qmlName) \
-    jRegisterSingletonType(T, qmlName, __ ## T ## _Singleton_Callback)
-
-#ifdef jRegisterSingletonTypeCpp2
-#undef jRegisterSingletonTypeCpp2
-#endif
-#define jRegisterSingletonTypeCpp2(T) \
-    jRegisterSingletonType2(T, __ ## T ## _Singleton_Callback)
-
-#ifdef jRegisterSingletonType
-#undef jRegisterSingletonType
-#endif
-#define jRegisterSingletonType(T, qmlName, callback) \
-    qmlRegisterSingletonType<T>(ICDMETA_DOMAIN, \
-    ICDMETA_QML_VER_MAJOR, ICDMETA_QML_VER_MINOR, qmlName, callback)
-
-#ifdef jRegisterUncreatableType
-#undef jRegisterUncreatableType
-#endif
-#define jRegisterUncreatableType(T) \
-    qmlRegisterUncreatableType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR, \
-    ICDMETA_QML_VER_MINOR, QT_STRINGIFY(T), "created by "ICDMETA_DOMAIN)
-
-#ifdef jRegisterType
-#undef jRegisterType
-#endif
+#ifndef jRegisterType
 #define jRegisterType(T) \
-    qmlRegisterType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR, \
-    ICDMETA_QML_VER_MINOR, QT_STRINGIFY(T))
+    registerType<T>(QT_STRINGIFY(T))
+#endif
+
+#ifndef jRegisterUncreatableType
+#define jRegisterUncreatableType(T) \
+    registerUncreatableType<T>(QT_STRINGIFY(T), "created by "ICDMETA_DOMAIN)
+#endif
+
+#ifndef jRegisterSingletonType
+#define jRegisterSingletonType(T, typeName, callback) \
+    registerSingletonType<T>(typeName, callback)
+#endif
+
+#ifndef jRegisterSingletonType2
+#define jRegisterSingletonType2(T, typeName) \
+    jRegisterSingletonType(T, typeName, __ ## T ## _Singleton_Callback)
+#endif
+
+#ifndef jRegisterSingletonType3
+#define jRegisterSingletonType3(T) \
+    jRegisterSingletonType2(T, QT_STRINGIFY(T))
+#endif
+
+/// for icdmeta
+
+#ifndef IcdMetaRegisterUncreatableType
+#define IcdMetaRegisterUncreatableType(T, reason) \
+    qmlRegisterUncreatableType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR, \
+        ICDMETA_QML_VER_MINOR, QT_STRINGIFY(T), reason)
+#endif
+
+#ifndef IcdMetaRegisterUncreatableType2
+#define IcdMetaRegisterUncreatableType2(T) \
+    IcdMetaRegisterUncreatableType(T, "created by "ICDMETA_DOMAIN)
+#endif
+
+#ifndef IcdMetaRegisterSingletonType
+#define IcdMetaRegisterSingletonType(T, typeName, callback) \
+    qmlRegisterSingletonType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR, ICDMETA_QML_VER_MINOR, \
+        typeName, callback)
+#endif
+
+#ifndef IcdMetaRegisterSingletonType2
+#define IcdMetaRegisterSingletonType2(T, typeName) \
+    IcdMetaRegisterSingletonType(T, typeName, __ ## T ## _Singleton_Callback)
+#endif
+
+#ifndef IcdMetaRegisterSingletonType3
+#define IcdMetaRegisterSingletonType3(T) \
+    IcdMetaRegisterSingletonType2(T, QT_STRINGIFY(T))
+#endif
 
 namespace icdmeta {
-
+#if 0
+//
+template<typename T>
+inline int registerType(const char *typeName)
+{
+    return qmlRegisterType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR,
+                              ICDMETA_QML_VER_MINOR, typeName);
+}
+//
+template<typename T>
+inline int registerUncreatableType(const char *typeName, const QString& reason = QString())
+{
+    return qmlRegisterUncreatableType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR,
+                                         ICDMETA_QML_VER_MINOR, typeName,
+                                         reason);
+}
+//
+template <typename T>
+inline int registerSingletonType(const char *typeName, QObject *(*callback)(QQmlEngine *, QJSEngine *))
+{
+    return qmlRegisterSingletonType<T>(ICDMETA_DOMAIN,
+                                       ICDMETA_QML_VER_MAJOR, ICDMETA_QML_VER_MINOR,
+                                       typeName, callback);
+}
+#endif
 /**
  * @brief The CustomEvent enum
  */
@@ -225,6 +261,7 @@ public:
      */
     enum ObjectType {
         ObjectInvalid = -1,
+        ObjectRoot,
         ObjectVehicle,
         ObjectSystem,
         ObjectTable,
@@ -236,17 +273,17 @@ public:
      * @brief The ItemType enum
      */
     enum ItemType {
-        ItemInvalid = -1,   /**< 无效 */
-        ItemHead,           /**< 包头 */
-        ItemCounter,        /**< 帧计数 */
-        ItemCheck,          /**< 校验 */
-        ItemFrameCode,      /**< 帧识别码 */
-        ItemNumeric,        /**< 数值类型 */
+        ItemInvalid = -1,   /**< Ч */
+        ItemHead,           /**<  */
+        ItemCounter,        /**<  */
+        ItemCheck,          /**< У */
+        ItemFrameCode,      /**<  */
+        ItemNumeric,        /**<  */
         ItemBitMap,         /**< BITMAP */
         ItemBitValue,       /**< BITVALUE */
-        ItemComplex,        /**< 复合数据 */
-        ItemFrame,          /**< 多帧数据 */
-        ItemTotal           /**< 类型总数 */
+        ItemComplex,        /**<  */
+        ItemFrame,          /**<  */
+        ItemTotal           /**<  */
     };
     Q_ENUM(ItemType)
 
@@ -254,14 +291,14 @@ public:
      * @brief The CheckType enum
      */
     enum CheckType {
-        CheckNone,      /**< 无校验 */
-        CheckSum8,      /**< 8位和校验 */
-        CheckSum16,     /**< 16位和校验 */
-        CheckCrc8,      /**< Crc8校验 */
-        CheckCrc16,     /**< Crc16校验 */
-        CheckXor8,      /**< Xor8校验 */
-        CheckXor16,     /**< Xor16校验 */
-        CheckTotal      /**< 类型总数 */
+        CheckNone,      /**< У */
+        CheckSum8,      /**< 8λУ */
+        CheckSum16,     /**< 16λУ */
+        CheckCrc8,      /**< Crc8У */
+        CheckCrc16,     /**< Crc16У */
+        CheckXor8,      /**< Xor8У */
+        CheckXor16,     /**< Xor16У */
+        CheckTotal      /**<  */
     };
     Q_ENUM(CheckType)
 

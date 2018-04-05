@@ -167,43 +167,45 @@ bool ConvertFromIcdWidget::loadData(const QString &domain, int headerSize,
         return true;
     });
     bool parseTable = true;
-    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
+    auto runAgainFuture = [=]() -> QFuture<bool> {
+        return QtConcurrent::run([=]() -> bool {
+            QFile sourceFile(d_editSource->text());
+            QFile targetFile(d_editTarget->text());
+            if (!sourceFile.open(QIODevice::ReadOnly)) {
+                return false;
+            }
+            if (!targetFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                return false;
+            }
+            //
+            if (d_checkParse->isChecked()) {
+                if (!Icd::checkData(d_table, headerSize, &sourceFile, &targetFile)) {
+                    return false;
+                }
+            } else {
+                if (hasTimeFormat) {
+                    while (!sourceFile.atEnd()) {
+                        sourceFile.seek(sourceFile.pos() + 8); // read time data
+                        targetFile.write(sourceFile.read((int)d_table->bufferSize()));
+                    }
+                } else {
+                    while (!sourceFile.atEnd()) {
+                        targetFile.write(sourceFile.read(10240));
+                    }
+                }
+            }
+            sourceFile.close();
+            targetFile.close();
+            //
+            return true;
+        });
+    };
+    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=,this,&parseTable](){
         if (progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;
                 progressDialog->setMessage(QStringLiteral("正在转换数据文件……"));
-                QFuture<bool> future = QtConcurrent::run([=]() -> bool {
-                    QFile sourceFile(d_editSource->text());
-                    QFile targetFile(d_editTarget->text());
-                    if (!sourceFile.open(QIODevice::ReadOnly)) {
-                        return false;
-                    }
-                    if (!targetFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-                        return false;
-                    }
-                    //
-                    if (d_checkParse->isChecked()) {
-                        if (!Icd::checkData(d_table, headerSize, &sourceFile, &targetFile)) {
-                            return false;
-                        }
-                    } else {
-                        if (hasTimeFormat) {
-                            while (!sourceFile.atEnd()) {
-                                sourceFile.seek(sourceFile.pos() + 8); // read time data
-                                targetFile.write(sourceFile.read((int)d_table->bufferSize()));
-                            }
-                        } else {
-                            while (!sourceFile.atEnd()) {
-                                targetFile.write(sourceFile.read(10240));
-                            }
-                        }
-                    }
-                    sourceFile.close();
-                    targetFile.close();
-                    //
-                    return true;
-                });
-                progressDialog->setFuture(future);
+                progressDialog->setFuture(runAgainFuture());
             } else {
                 progressDialog->hide();
                 progressDialog->disconnect(this);
@@ -216,10 +218,9 @@ bool ConvertFromIcdWidget::loadData(const QString &domain, int headerSize,
         } else {
             progressDialog->hide();
             progressDialog->disconnect(this);
-            QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
-            QMessageBox::information(this, parseTable
-                                     ? QStringLiteral("解析结果") : QStringLiteral("转换结果"),
-                                     message);
+            const QString title = parseTable ? QStringLiteral("解析结果") : QStringLiteral("转换结果");
+            const QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
+            QMessageBox::information(this, title, message);
             progressDialog->deleteLater();
             d_table = Icd::TablePtr(0);
         }

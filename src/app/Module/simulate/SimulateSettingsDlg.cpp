@@ -156,10 +156,10 @@ SettingsDlg::SettingsDlg(QWidget *parent)
         if (!saveConfig()) {
             return;
         }
-        accept();
+        this->accept();
     });
     connect(buttonCancel, &QPushButton::clicked, this, [=](){
-        reject();
+        this->reject();
     });
 
     buttonOk->setDisabled(true);

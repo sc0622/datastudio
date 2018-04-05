@@ -171,7 +171,9 @@ void DetailTable::onContentChanged(QStandardItem *item)
 
 bool DetailTable::updateRoot()
 {
-    d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Describe")});
+    QStringList labels;
+    labels << tr("Name") << tr("Mark") << tr("Describe");
+    d_tableView->setHorizontalHeaderLabels(labels);
     d_tableView->horizontalHeaderItem(0)->setData("name");
     d_tableView->horizontalHeaderItem(1)->setData("mark");
     d_tableView->horizontalHeaderItem(2)->setData("desc");
@@ -202,7 +204,9 @@ bool DetailTable::updateRoot()
 
 bool DetailTable::updateVehicle()
 {
-    d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Describe")});
+    QStringList labels;
+    labels << tr("Name") << tr("Mark") << tr("Describe");
+    d_tableView->setHorizontalHeaderLabels(labels);
     d_tableView->horizontalHeaderItem(0)->setData("name");
     d_tableView->horizontalHeaderItem(1)->setData("mark");
     d_tableView->horizontalHeaderItem(2)->setData("desc");
@@ -230,8 +234,9 @@ bool DetailTable::updateVehicle()
 
 bool DetailTable::updateSystem()
 {
-    d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Length"),
-                                            tr("Describe")});
+    QStringList labels;
+    labels << tr("Name") << tr("Mark") << tr("Length") << tr("Describe");
+    d_tableView->setHorizontalHeaderLabels(labels);
     d_tableView->horizontalHeaderItem(0)->setData("name");
     d_tableView->horizontalHeaderItem(1)->setData("mark");
     d_tableView->horizontalHeaderItem(2)->setData("length");
@@ -261,8 +266,10 @@ bool DetailTable::updateSystem()
 
 bool DetailTable::updateTable()
 {
-    d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Mark"), tr("Byte index"),
-                                            tr("Length"), tr("Type"), tr("Describe")});
+    QStringList labels;
+    labels << tr("Name") << tr("Mark") << tr("Byte index") << tr("Length")
+           << tr("Type") << tr("Describe");
+    d_tableView->setHorizontalHeaderLabels(labels);
     d_tableView->horizontalHeaderItem(0)->setData("name");
     d_tableView->horizontalHeaderItem(1)->setData("mark");
     d_tableView->horizontalHeaderItem(2)->setData("byteIndex");
@@ -297,7 +304,9 @@ bool DetailTable::updateTable()
 bool DetailTable::updateItem()
 {
     // header
-    d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Value")});
+    QStringList labels;
+    labels << tr("Name") << tr("Value");
+    d_tableView->setHorizontalHeaderLabels(labels);
     d_tableView->horizontalHeaderItem(0)->setData("name");
     d_tableView->horizontalHeaderItem(1)->setData("value");
 
@@ -439,8 +448,9 @@ bool DetailTable::updateComplex()
 bool DetailTable::updateFrame()
 {
     // header
-    d_tableView->setHorizontalHeaderLabels({tr("Name"), tr("Frame code"), tr("Sequence"),
-                                            tr("Describe")});
+    QStringList labels;
+    labels << tr("Name") << tr("Frame code") << tr("Sequence") << tr("Describe");
+    d_tableView->setHorizontalHeaderLabels(labels);
     d_tableView->horizontalHeaderItem(0)->setData("name");
     d_tableView->horizontalHeaderItem(1)->setData("code");
     d_tableView->horizontalHeaderItem(2)->setData("sequence");

@@ -1,15 +1,14 @@
 #include "precomp.h"
 #include "icdcomm_udpchannel_p.h"
 #include <QNetworkConfigurationManager>
-#include <QNetworkDatagram>
 #include "jcircularbuffer.h"
 
 namespace Icd {
 
 UdpChannelPrivate::UdpChannelPrivate(QObject *parent)
     : QObject(parent)
-    , d_socket(Q_NULLPTR)
-    , d_buffer(Q_NULLPTR)
+    , d_socket(nullptr)
+    , d_buffer(nullptr)
     , d_localHost("127.0.0.1")
     , d_localPort(8080)
     , d_remoteHost("127.0.0.1")
@@ -21,9 +20,7 @@ UdpChannelPrivate::UdpChannelPrivate(QObject *parent)
 
 UdpChannelPrivate::~UdpChannelPrivate()
 {
-    if (d_buffer) {
-        delete d_buffer;
-    }
+    reset();
 }
 
 bool UdpChannelPrivate::open()

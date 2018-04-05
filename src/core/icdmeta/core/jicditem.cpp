@@ -50,7 +50,7 @@ JIcdItem::JIcdItem(const Icd::ItemPtr &data, QObject *parent)
 void JIcdItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdItem);
+    IcdMetaRegisterUncreatableType2(JIcdItem);
 
     //
     JIcdObject::registerQmlType();
@@ -73,7 +73,18 @@ Icd::ItemPtr JIcdItem::metaData() const
 IcdCore::ItemType JIcdItem::itemType() const
 {
     Q_D(const JIcdItem);
-    return (IcdCore::ItemType)d->data->type();
+    switch (d->data->type()) {
+    case Icd::ItemHead: return IcdCore::ItemHead;
+    case Icd::ItemCounter: return IcdCore::ItemCounter;
+    case Icd::ItemCheck: return IcdCore::ItemCheck;
+    case Icd::ItemFrameCode: return IcdCore::ItemFrameCode;
+    case Icd::ItemNumeric: return IcdCore::ItemNumeric;
+    case Icd::ItemBitMap: return IcdCore::ItemBitMap;
+    case Icd::ItemBitValue: return IcdCore::ItemBitValue;
+    case Icd::ItemComplex: return IcdCore::ItemComplex;
+    case Icd::ItemFrame: return IcdCore::ItemFrame;
+    default: return IcdCore::ItemInvalid;
+    };
 }
 
 int JIcdItem::itemOffset() const

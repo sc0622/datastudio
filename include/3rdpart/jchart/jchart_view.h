@@ -164,6 +164,12 @@ public:
      */
     JChart::Chart *lastChart(JChart::Chart *except) const;
 
+    /**
+     * @brief setChartTheme
+     * @param chartTheme
+     */
+    void setChartTheme(JChart::ChartTheme chartTheme);
+
 signals:
     void triggleClose(JChart::Chart *chart);
     void columnCountChanged(int);

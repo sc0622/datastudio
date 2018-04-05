@@ -278,8 +278,8 @@ QHeaderView::section {
 }
 
 QHeaderView::section:horizontal {
-    border-left: 1px solid #bbb;
-    border-right: 0;
+    border-left: 0;
+    border-right: 1px solid #bbb;
     border-top: 0;
     border-bottom: 0;
     padding-left: 5px;
@@ -967,16 +967,16 @@ QTreeView QPushButton:disabled, QTableView QPushButton:disabled {
 /****************************************************************/
 
 QwtPlot {
-    background: #d6fbf9;
-    padding: 2px; 
+    background: white;
+    padding: 2px;
 }
 
 QwtPlot:hover {
-    background: #f6fbf9;
+    background: #eee;
 }
-   
+
 QwtPlotCanvas {
-    background: #fff;
+    background: white;
 }
 
 QwtPlotZoomer {
@@ -985,26 +985,17 @@ QwtPlotZoomer {
 
 QwtTextLabel#QwtPlotTitle {
     font-family: 'microsoft yahei';
-    font-weight: bold;
     font-size: 12px;
-    color: black;
-} 
+    font-weight: bold;
+}
 
 QwtScaleWidget {
-    color: black;
     font-family: 'Consolas';
-    font-size: 13px; 
 }
 
 QwtLegend {
-    font-size: 16px;
     background: transparent;
-}
-
-QwtLegendLabel { 
-    color: black;
-    background: transparent;
-    font-size: 13px;
+    font-size: 8px;
 }
 
 QwtPlot QScrollArea {

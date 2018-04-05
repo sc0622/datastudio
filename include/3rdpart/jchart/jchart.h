@@ -49,10 +49,10 @@ public:
     ChartTheme chartTheme() const;
 
     /**
-     * @brief JChart::setChartTheme
+     * @brief setChartTheme
      * @param value
      */
-    void Chart::setChartTheme(ChartTheme value);
+    void setChartTheme(ChartTheme value);
 
     /**
      * @brief xScaleDrawType

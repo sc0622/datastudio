@@ -2,7 +2,7 @@
 #define ICD_OBJECT_H
 
 #include "icdcore_global.h"
-#include <string>
+#include "./3rdpart/jsoncpp/json_tool.h"
 
 namespace Icd {
 
@@ -35,7 +35,7 @@ typedef JHandlePtr<Object> ObjectPtr;
 /**
  * @brief The Object class
  */
-class ICDCORE_EXPORT Object : public Serializable
+class ICDCORE_EXPORT Object : public Json::Serializable
 {
 public:
     /**

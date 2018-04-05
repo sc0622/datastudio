@@ -50,7 +50,7 @@ JIcdFrameCodeItem::~JIcdFrameCodeItem()
 void JIcdFrameCodeItem::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdFrameCodeItem);
+    IcdMetaRegisterUncreatableType2(JIcdFrameCodeItem);
 
     //
 }
@@ -59,6 +59,18 @@ Icd::FrameCodeItemPtr JIcdFrameCodeItem::metaData() const
 {
     Q_D(const JIcdFrameCodeItem);
     return d->data;
+}
+
+IcdCore::FrameCodeType JIcdFrameCodeItem::frameCodeType() const
+{
+    Q_D(const JIcdFrameCodeItem);
+    switch (d->data->frameCodeType()) {
+    case Icd::FrameCodeU8: return IcdCore::FrameCodeU8;
+    case Icd::FrameCodeU16: return IcdCore::FrameCodeU16;
+    case Icd::FrameCodeU32: return IcdCore::FrameCodeU32;
+    case Icd::FrameCodeU64: return IcdCore::FrameCodeU64;
+    default: return IcdCore::FrameCodeInvalid;
+    }
 }
 
 QString JIcdFrameCodeItem::dataString() const
@@ -120,7 +132,9 @@ IcdCore::FrameCodeType JIcdFrameCodeItem::stringFrameCodeType(const QString &str
 void JIcdFrameCodeItem::updateData()
 {
     Q_D(JIcdFrameCodeItem);
-    d->frame->updateData();
+    if (d->frame) {
+        d->frame->updateData();
+    }
 }
 
 void JIcdFrameCodeItem::resetData()

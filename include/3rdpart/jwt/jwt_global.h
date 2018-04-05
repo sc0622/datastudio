@@ -57,12 +57,19 @@
 #endif
 
 #ifndef J_IMPLEMENT_SINGLE_INSTANCE
-#define J_IMPLEMENT_SINGLE_INSTANCE(Class) \
+#define J_IMPLEMENT_SINGLE_INSTANCE(Class, GlobalClass) \
+    \
+    static void __ ## Class ## _releaseInstance() { \
+    Class::releaseInstance(); \
+    } \
     Class *Class::_instance = 0; \
     \
     Class *Class::instance() { \
     if (Class::_instance == 0) { \
     Class::_instance = new Class; \
+    } \
+    if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
+    GlobalClass::instance()->registerSingletonRelease(__ ## Class ## _releaseInstance); \
     } \
     return Class::_instance; \
     } \
@@ -73,6 +80,11 @@
     Class::_instance = 0; \
     } \
     }
+#endif
+
+#ifndef J_SINGLE_RELEASE_CALLBACK
+#define J_SINGLE_RELEASE_CALLBACK
+typedef void(*SingletonReleaseCallback)();
 #endif
 
 namespace JWT_NAMESPACE {
@@ -112,24 +124,27 @@ static inline bool fLessOrEqual(float a, float b)
 
 // - class JwtCore -
 
+#include <QObject>
+
 class JwtCorePrivate;
 
-class JWT_EXPORT JwtCore
+class JWT_EXPORT JwtCore : public QObject
 {
 public:
-    static JwtCore *instance();
-    static void releaseInstance();
-
     void init();
 
     bool loadSystemLang(const QString &systemName = QString());
 
+    void registerSingletonRelease(SingletonReleaseCallback callback);
+
 private:
-    explicit JwtCore();
+    explicit JwtCore(QObject *parent = nullptr);
     ~JwtCore();
 
 private:
-    JwtCorePrivate *d;
+    Q_DISABLE_COPY(JwtCore)
+    J_DECLARE_PRIVATE(JwtCore)
+    J_DECLARE_SINGLE_INSTANCE(JwtCore)
 };
 
 // - class JAutoCursor -

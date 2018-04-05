@@ -79,7 +79,7 @@ JChannelPool::~JChannelPool()
 
 void JChannelPool::registerQmlType()
 {
-    jRegisterSingletonTypeCpp2(JChannelPool);
+    IcdMetaRegisterSingletonType3(JChannelPool);
 
     JChannel::registerQmlType();
 }

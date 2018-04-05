@@ -8,7 +8,7 @@ class RootData
 {
     friend class Root;
 public:
-    RootData(int a)
+    RootData()
     {
 
     }
@@ -19,25 +19,21 @@ private:
 
 Root::Root(Object *parent)
     : Object(ObjectRoot, parent)
-    , d(new RootData(0))
+    , d(new RootData())
 {
 
 }
 
 Root::Root(const std::string &id, Object *parent)
     : Object(id, ObjectRoot, parent)
-    , d(new RootData(0))
+    , d(new RootData())
 {
-#if defined(DEBUG) || defined(_DEBUG)
-    int i = 0;
-#else
-    int i = 0;
-#endif
+
 }
 
 Root::Root(const Root &other)
     : Object(other)
-    , d(new RootData(0))
+    , d(new RootData())
 {
     *this = other;
 }

@@ -44,8 +44,9 @@ void MenuBar::addSettingsMenu(const Json::Value &config)
     QMenu *menu = addMenu(QIcon(":/datastudio/image/toolbar/list.png"),
                           tr("Main menu"));
     // global settings
-    menu->addAction(QIcon(":/datastudio/image/global/setting.png"),
-                    tr("Settings"), this, [=](){
+    QAction *actionSettings = menu->addAction(QIcon(":/datastudio/image/global/setting.png"),
+                                              tr("Settings"));
+    connect(actionSettings, &QAction::triggered, this, [=](){
         Main::SettingsDlg settingsDlg(this);
         if (settingsDlg.exec() != QDialog::Accepted) {
             return;

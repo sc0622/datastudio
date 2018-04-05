@@ -17,7 +17,7 @@ J_TYPEDEF_QT_SHAREDPTR(JSuperChannel)
 
 class JSuperChannelPrivate;
 
-class ICDMETA_EXPORT JSuperChannel : public QObject, public Icd::Serializable
+class ICDMETA_EXPORT JSuperChannel : public QObject, public Json::Serializable
 {
     Q_OBJECT
     Q_PROPERTY(QString identity READ identity NOTIFY identityChanged)

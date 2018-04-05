@@ -43,7 +43,7 @@ JIcdObject::JIcdObject(const Icd::ObjectPtr &data, QObject *parent)
 void JIcdObject::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JIcdObject);
+    IcdMetaRegisterUncreatableType2(JIcdObject);
 
     //
 }
@@ -57,7 +57,14 @@ Icd::ObjectPtr JIcdObject::metaData() const
 int JIcdObject::objectType() const
 {
     Q_D(const JIcdObject);
-    return d->data->objectType();
+    switch (d->data->objectType()) {
+    case Icd::ObjectRoot: return IcdCore::ObjectRoot;
+    case Icd::ObjectVehicle: return IcdCore::ObjectVehicle;
+    case Icd::ObjectSystem: return IcdCore::ObjectSystem;
+    case Icd::ObjectTable: return IcdCore::ObjectTable;
+    case Icd::ObjectItem: return IcdCore::ObjectItem;
+    default: return IcdCore::ObjectInvalid;
+    };
 }
 
 QString JIcdObject::id() const

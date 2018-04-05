@@ -29,39 +29,32 @@
 // for shared_ptr, unique_ptr
 #include <memory>
 
-#ifdef JHandlePtr
-#undef JHandlePtr
-#endif
+#ifndef JHandlePtr
 #define JHandlePtr ::std::shared_ptr
-
-#ifdef JUniquePtr
-#undef JUniquePtr
 #endif
+
+#ifndef JUniquePtr
 #define JUniquePtr ::std::unique_ptr
-
-#ifdef JHandlePtrCast
-#undef JHandlePtrCast
 #endif
+
+#ifndef JHandlePtrCast
 #define JHandlePtrCast ::std::dynamic_pointer_cast
-
-#ifdef J_FRIEND_HANDLEPTR
-#undef J_FRIEND_HANDLEPTR
 #endif
+
+#ifndef J_FRIEND_HANDLEPTR
 #define J_FRIEND_HANDLEPTR() \
     template<typename T> friend class ::std::_Ref_count; \
     template<typename T> friend class ::std::shared_ptr;
+#endif
 
 #ifndef J_TYPEDEF_SHAREDPTR
-#undef J_TYPEDEF_SHAREDPTR
-#endif
 #define J_TYPEDEF_SHAREDPTR(_class_) \
     class _class_; \
     typedef JHandlePtr<_class_> _class_ ## Ptr; \
     typedef std::vector<_class_ ## Ptr> _class_ ## PtrArray;
+#endif
 
 ////////////////////////////////
-
-namespace Json { class Value; }
 
 namespace Icd {
 
@@ -88,22 +81,11 @@ typedef double icd_float64;
 
 #endif // DEF_ICD_TYPE
 
-// class Serializable
-
-class ICDCORE_EXPORT Serializable
-{
-public:
-    virtual ~Serializable() {}
-    virtual std::string saveJson() const;
-    virtual Json::Value save() const = 0;
-    virtual bool restore(const std::string &json);
-    virtual bool restore(const Json::Value &/*json*/, int /*deep*/ = -1) = 0;
-};
-
 //
 bool ICDCORE_EXPORT startsWith(const std::string &str, const std::string &header);
 bool ICDCORE_EXPORT endsWith(const std::string &str, const std::string &tail);
 int ICDCORE_EXPORT atoi(const std::string &str);
+icd_uint64 ICDCORE_EXPORT strtou64(const std::string &str, int radix);
 icd_uint64 ICDCORE_EXPORT atou64(const std::string &str);
 std::string ICDCORE_EXPORT itoa(int value, bool hex = false);
 std::string ICDCORE_EXPORT u64toa(icd_uint64 value, bool hex = false);
@@ -124,25 +106,5 @@ std::string ICDCORE_EXPORT pathOfFile(const std::string &filePath);
 int ICDCORE_EXPORT asciiCountOfSize(int format, int size);
 
 } // end of namespace Icd
-
-#ifndef JSONCPP_EXTENDS
-#define JSONCPP_EXTENDS
-
-namespace Json {
-
-bool ICDCORE_EXPORT resolve(const std::string &filePath, Json::Value &root);
-Json::Value ICDCORE_EXPORT resolve(const std::string &filePath, const std::string &path);
-Json::Value ICDCORE_EXPORT resolve(const Json::Value &root, const std::string &path);
-bool ICDCORE_EXPORT make(const std::string &filePath, const Json::Value &root,
-                         bool create, bool fast = false);
-bool ICDCORE_EXPORT make(const std::string &filePath, const std::string &path,
-                         const Json::Value &value, bool create, bool fast = false);
-Json::Value ICDCORE_EXPORT make(const Json::Value &root, const std::string &path,
-                                const Json::Value &value);
-bool ICDCORE_EXPORT merge(const Json::Value &source, Json::Value &target);
-
-} // end of namespace Json
-
-#endif // JSONCPP_EXTENDS
 
 #endif // ICDCORE_GLOBAL_H

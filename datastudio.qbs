@@ -11,7 +11,7 @@ Project {
 
     readonly property int versionMajor: 3
     readonly property int versionMinor: 0
-    readonly property int versionPatch: 0
+    readonly property int versionPatch: 3
     readonly property string version: versionMajor + '.' + versionMinor + '.' + versionPatch
     readonly property string projectName: 'datastudio'
     readonly property string variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
@@ -26,7 +26,7 @@ Project {
 
     Product {
         name: 'global'
-        type: base.concat([ 'global.out' ])
+        type: [ 'global.out' ]
         Depends { name: 'cpp'; cpp.link: false }
         Group {
             name: 'config'

@@ -11,18 +11,22 @@ DynamicLibrary {
     readonly property path includePath: project.sourceDirectory + '/include/'
                                         + module + '/' + name
     readonly property path precompPath: project.sourceDirectory + '/src/common'
+
     property path langPath: FileInfo.joinPaths(sourceDirectory, 'resource', 'lang')
     property stringList translationFileTags: [ 'hpp', 'cpp' ]
     property stringList translations: []
     property bool defaultTranslation: false
+
     property string relativeDirectory: ''
     property bool defaultCopyHeader: true
     property bool defaultCopyDynamic: true
+
     property stringList installFileTags: [ 'dynamiclibrary' ]
-    property bool defaultExport: true
     property bool defaultInstall: true
     property string installPrefix: 'bin'
-    property string installDir: module
+    property string installDir: ''
+
+    property bool defaultExport: true
 
     Depends { name: 'cpp' }
 
@@ -52,7 +56,7 @@ DynamicLibrary {
         fileTagsFilter: installFileTags
         qbs.install: defaultInstall
         qbs.installPrefix: project.projectName
-        qbs.installDir: installPrefix
+        qbs.installDir: FileInfo.joinPaths(installPrefix, installDir)
     }
 
     Group {

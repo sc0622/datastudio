@@ -10,19 +10,22 @@
 
 template <> class QFutureWatcher<void>;
 
-// lambda
-
-template<typename T>
-struct isFunctor : std::false_type {};
-template<typename L, typename R, typename... Args>
-struct isFunctor<R (L::*)(Args...)> : std::true_type {};
-template<typename L>
-struct isLambda : isFunctor<decltype(&L::operator())> {};
-
 class QLabel;
 class QPushButton;
 
 namespace Icd {
+
+// class TreeItemDelegate
+
+class TreeItemDelegate : public JTreeItemDelegate
+{
+    Q_OBJECT
+public:
+    explicit TreeItemDelegate(QObject *parent = Q_NULLPTR);
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const Q_DECL_OVERRIDE;
+};
 
 // class TableItemWidget
 
@@ -30,31 +33,26 @@ class TableItemWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TableItemWidget(const QString &text, CoreTreeWidget::BindTableTypes bindingTypes,
-                             QWidget *parent = Q_NULLPTR);
+    explicit TableItemWidget(CoreTreeWidget::BindTableTypes bindingTypes,
+                             QWidget *parent = nullptr);
     ~TableItemWidget();
-
-    QString text() const;
-    void setText(const QString &text);
 
     Icd::WorkerPtr worker() const;
     void setWorker(const Icd::WorkerPtr &worker);
 
     void start();
     void stop();
-    void toggle(bool checked);
+    bool toggle(bool checked);
+    bool isRunning() const;
 
 signals:
     void clicked();
-
-protected:
-    bool eventFilter(QObject *watched, QEvent *event);
+    void toggled(bool checked);
 
 private:
     void updateButtonIcon(bool checked);
 
 private:
-    QLabel *d_labelTitle;
     QPushButton *d_buttonRun;
     Icd::WorkerPtr d_worker;
     CoreTreeWidget::BindTableTypes d_bindTableTypes;
@@ -132,6 +130,33 @@ public slots:
     void onWorkerRemoved(const Icd::WorkerPtr &worker);
     void onWorkerCleared();
 
+    // menu
+    void onActionExpandItemAll();
+    void onActionCollapseItemAll();
+    void onActionLoadVehicle();
+    void onActionUpdateVehicle();
+    void onActionUnloadVehicle();
+    void onActionExportAllData();
+    void onActionExportExistData();
+    void onActionLoadSystem();
+    void onActionUpdateSystem();
+    void onActionUnloadSystem();
+    void onActionLoadTable();
+    void onActionUpdateTable();
+    void onActionUnloadTable();
+    void onActionDeleteDataItem();
+    void onActionDeleteAllView();
+    void onActionLoadDataItem();
+    void onActionUpdateDataItem();
+    void onActionUnloadDataItem();
+    void onActionChangeChannelBound();
+    void onActionBindChannel();
+    void onActionUnboundChannel();
+    void onActionStartRecordData();
+    void onActionStopRecordData();
+    void onActionDeleteTableView();
+    void onActionExportTableData();
+
 protected:
     QStringList mimeTypes() const;
     QMimeData *mimeData(const QList<QStandardItem *> &items) const;
@@ -191,8 +216,7 @@ private:
     bool exportData(const QStandardItem *item, bool exportAll);
 
     // batch
-    QStandardItem *findTableItem(QStandardItem *itemParent,
-                                 const QString &domain);
+    QStandardItem *findTableItem(QStandardItem *itemParent, const QString &domain);
     void findAllTableItem(QList<QStandardItem *> &items,
                           QStandardItem *itemParent, bool binding);
     void procAllTableItem(QStandardItem *itemParent, bool binding,
@@ -200,6 +224,10 @@ private:
 
     static BindingData bindingMapTask(BindingData data);
     static void bindingMapReduce(int &count, const BindingData &data);
+
+    //
+    QStandardItem *itemFromAction(QObject *action) const;
+    QVariant varFromAction(QObject *action, const char *name) const;
 
 private:
     J_DECLARE_PUBLIC(CoreTreeWidget)

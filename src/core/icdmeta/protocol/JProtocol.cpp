@@ -186,7 +186,7 @@ JProtocol::~JProtocol()
 void JProtocol::registerQmlType()
 {
     //
-    jRegisterUncreatableType(JProtocol);
+    IcdMetaRegisterUncreatableType2(JProtocol);
 
     //
 }
@@ -319,7 +319,7 @@ void JProtocol::resetBuffer()
 {
     Q_D(JProtocol);
     if (d->table) {
-        d->table.data()->resetData();
+        d->table->resetData();
     }
 }
 

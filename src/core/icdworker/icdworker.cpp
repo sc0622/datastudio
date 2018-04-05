@@ -194,9 +194,7 @@ void Worker::close()
     }
 
     d->workerSend->stop();
-    d->workerSend->setTable(Icd::TablePtr());
     d->workerRecv->stop();
-    d->workerRecv->setTable(Icd::TablePtr());
 
     d->channel->close();
 
