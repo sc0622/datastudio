@@ -4,6 +4,7 @@ import qbs.FileInfo
 import '../../setenv/setenv.js' as Func
 
 Product {
+
     Depends { name: 'cpp'; cpp.link: false }
 
     readonly property string domain: FileInfo.relativePath(sourceDirectory + '/..',

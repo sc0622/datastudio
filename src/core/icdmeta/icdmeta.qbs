@@ -1,6 +1,11 @@
 import qbs
+import qbs.FileInfo
 
 CoreDyLibrary {
+
+    translationFileTags: base.concat([ 'qml', 'js' ])
+    translations: [ 'icdmeta_zh_CN.ts' ]
+    defaultTranslation: true
 
     Depends { name: 'Qt.qml' }
     Depends { name: 'Qt.quick' }

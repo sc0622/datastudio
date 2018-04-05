@@ -6,38 +6,16 @@ import qbs.ModUtils
 
 Project {
 
-    readonly property path langPath: FileInfo.joinPaths(path, 'resource', 'lang')
-
-    Product {
-        name: 'lupdate'
-        type: [ 'translation' ]
-        readonly property path currentPath: path
-
-        Rule {
-            multiplex: true
-            Artifact { fileTags: [ 'translation' ] }
-            prepare: {
-                var cmd = new Command('lupdate', [/*'-silent', */'-recursive', product.currentPath, '-ts',
-                                                  FileInfo.joinPaths(project.langPath, 'app_zh_CN.ts')]);
-                cmd.description = 'generating translation file';
-                return [ cmd ];
-            }
-        }
-    }
-
-    Product {
-        name: 'lrelease'
-        condition: false
-        type: [ 'ts' ]
-        Depends { name: 'Qt.core' }
-        Depends { name: 'lupdate'; required: false; cpp.link: false }
-        files: [ 'resource/lang/*.ts' ]
-        destinationDirectory: project.langPath
-    }
-
     WidgetApp {
+        id: app
+
         consoleApplication: false
         targetName: 'datastudio'
+
+        translations: [ 'app_zh_CN.ts' ]
+        defaultTranslation: true
+
+        readonly property path langPath: FileInfo.joinPaths(path, 'resource', 'lang')
 
         Depends { name: 'Qt.concurrent' }
         Depends { name: 'Qt.network' }
@@ -51,8 +29,6 @@ Project {
         Depends { name: 'icdparser' }
         Depends { name: 'icdworker' }
         Depends { name: 'icdwidget' }
-
-        Depends { name: 'lrelease'; required: false; cpp.link: false }
 
         Group {
             name: 'Headers'
@@ -78,5 +54,14 @@ Project {
             qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'
         }
+    }
+
+    Product {
+        name: 'lrelease'
+        condition: false
+        type: [ 'ts' ]
+        Depends { name: 'Qt.core' }
+        files: [ 'resource/lang/*.ts' ]
+        destinationDirectory: app.langPath
     }
 }

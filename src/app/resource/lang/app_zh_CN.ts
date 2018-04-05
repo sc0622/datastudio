@@ -883,7 +883,7 @@
     </message>
     <message>
         <location filename="../../mainview/MainWindow.cpp" line="21"/>
-        <source>what</source>
+        <source>what-==</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -5,10 +5,16 @@ import qbs.FileInfo
 DynamicLibrary {
     version: '1.0'
 
+    type: base.concat([ 'translation' ])
+
     property string module: ''
     readonly property path includePath: project.sourceDirectory + '/include/'
                                         + module + '/' + name
     readonly property path precompPath: project.sourceDirectory + '/src/common'
+    property path langPath: FileInfo.joinPaths(sourceDirectory, 'resource', 'lang')
+    property stringList translationFileTags: [ 'hpp', 'cpp' ]
+    property stringList translations: []
+    property bool defaultTranslation: false
     property string relativeDirectory: ''
     property bool defaultCopyHeader: true
     property bool defaultCopyDynamic: true
@@ -72,6 +78,22 @@ DynamicLibrary {
             //cmd.silent = true;
             cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
             return [cmd];
+        }
+    }
+
+    Rule {
+        condition: defaultTranslation && translations.length > 0
+        multiplex: true
+        inputs: translationFileTags
+        Artifact { fileTags: [ 'translation' ] }
+        prepare: {
+            var args = ['-recursive', product.sourceDirectory, '-ts'];
+            product.translations.forEach(function(item){
+                args.push(FileInfo.joinPaths(product.langPath, item));
+            });
+            var cmd = new Command('lupdate', args);
+            cmd.description = 'generating translation file...';
+            return [ cmd ];
         }
     }
 
