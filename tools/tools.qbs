@@ -9,9 +9,9 @@ Product {
         prefix: 'qbs/'
         files: [
             // imports
-            "imports/**/*.qbs",
+            'imports/**/*.qbs',
             // modules
-            "modules/**/*.qbs",
+            'modules/**/*.qbs'
         ]
     }
 

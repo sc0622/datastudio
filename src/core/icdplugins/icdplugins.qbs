@@ -1,13 +1,20 @@
 import qbs
+import qbs.FileInfo
 
-CppDyLibrary {
-    modulePath: 'core'
+QmlPluginLibrary {
+
+    uri: 'Icd.Core'
+
+    dynamicLibraryPaths: base.concat([project.sourceDirectory + '/lib/3rdpart/moxa'])
+
+    Depends { name: "Qt.qminimal"; condition: Qt.core.staticBuild; }
+    Depends { name: 'Qt.widgets' }
+    Depends { name: 'icdmeta' }
 
     Group {
         name: 'headers'
         files: [ '*.h' ]
         excludeFiles: [ 'private/*.h', '*_p.h' ]
-        fileTags: ['hpp.in' ]
     }
 
     Group {

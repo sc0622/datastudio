@@ -17,6 +17,7 @@ CoreDyLibrary {
     Depends { name: 'icdcore' }
     Depends { name: 'icdparser' }
     Depends { name: 'icdworker' }
+    Depends { name: 'icdwidget' }
 
     Group {
         name: 'Headers'

@@ -1,11 +1,12 @@
 import qbs
 import qbs.FileInfo
 import qbs.Environment
+import qbs.TextFile
 
 PackProduct {
 
     Depends { name: 'cpp' }
-    Depends { name: 'meta' }
+    Depends { name: 'meta'; enabledInstall: false }
 
     // global
     Group {
@@ -65,5 +66,38 @@ PackProduct {
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: FileInfo.joinPaths(installDir, 'bin')
+    }
+
+    Rule {
+        inputs: [ 'meta.in' ]
+        Artifact{
+            filePath: FileInfo.joinPaths(product.meta.targetPath, FileInfo.relativePath(
+                                             product.meta.sourcePath, input.filePath))
+            fileTags: [ 'meta.out' ]
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand;
+            cmd.highlight = 'gencode';
+            cmd.description = 'replacing content of \'' + input.fileName + '\' and moving to packages...';
+            cmd.sourceCode = function() {
+                var fileName = input.fileName;
+                if (fileName.endsWith('.js') || fileName.endsWith('.xml')) {
+                    var source = new TextFile(input.filePath, TextFile.ReadOnly);
+                    var target = new TextFile(output.filePath, TextFile.WriteOnly);
+                    var content = source.readAll();
+                    source.close();
+                    // replace @VERSION@
+                    content = content.replace(/@VERSION@/g, project.version);
+                    // replace @PROJECT_NAME@
+                    content = content.replace(/@PROJECT@/g, project.projectName);
+                    // replace @APPNAME@
+                    content = content.replace(/@APPNAME@/g, project.projectName + project.variantSuffix);
+                    //
+                    target.write(content);
+                    target.close();
+                }
+            }
+            return [ cmd ]
+        }
     }
 }

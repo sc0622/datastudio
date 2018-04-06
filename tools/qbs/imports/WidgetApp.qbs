@@ -15,7 +15,9 @@ QtGuiApplication {
     property stringList translations: []
     property bool defaultTranslation: false
 
+    Depends { name: 'Qt.core' }
     Depends { name: 'Qt.widgets' }
+    Depends { name: "Qt.qminimal"; condition: Qt.core.staticBuild }
     Depends { name: 'desc'; required: false }
 
     targetName: name

@@ -10,20 +10,20 @@ Component.prototype.createOperations = function() {
     if (systemInfo.productType === "windows") {
         //
         component.addOperation(
-                "CreateShortcut",
-                "@TargetDir@/modelsimu/bin/ModelSimu.exe",
-                "@StartMenuDir@/ModelSimu @Version@/Model Simulator.lnk",
-                "workingDirectory=@TargetDir@/modelsimu/bin/",
-                "iconPath=@TargetDir@/modelsimu/bin/ModelSimu.exe",
-                "iconId=0")
-            //
+                    "CreateShortcut",
+                    "@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
+                    "@StartMenuDir@/Data Studio @Version@/Data Studio.lnk",
+                    "workingDirectory=@TargetDir@/@PROJECT@/bin/",
+                    "iconPath=@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
+                    "iconId=0")
+        //
         component.addOperation(
-            "CreateShortcut",
-            "@TargetDir@/modelsimu/bin/ModelSimu.exe",
-            "@HomeDir@/Desktop/Model Simulator @Version@.lnk",
-            "workingDirectory=@TargetDir@/modelsimu/bin/",
-            "iconPath=@TargetDir@/modelsimu/bin/ModelSimu.exe",
-            "iconId=0")
+                    "CreateShortcut",
+                    "@TargetDir@/@PROJECT@/bin/@PROJECT@.exe",
+                    "@HomeDir@/Desktop/Data Studio @Version@.lnk",
+                    "workingDirectory=@TargetDir@/@PROJECT@/bin/",
+                    "iconPath=@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
+                    "iconId=0")
     }
 }
 

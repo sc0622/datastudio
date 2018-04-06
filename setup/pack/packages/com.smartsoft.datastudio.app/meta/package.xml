@@ -3,7 +3,7 @@
   <Name>com.smartsoft.datastudio.app</Name>
   <DisplayName>Data Studio Application</DisplayName>
   <Description>Data Studio Application</Description>
-  <Version>1.0.0</Version>
+  <Version>@VERSION@</Version>
   <ReleaseDate>2018-01-13</ReleaseDate>
   <Script>installscript.js</Script>
   <SortingPriority>1</SortingPriority>

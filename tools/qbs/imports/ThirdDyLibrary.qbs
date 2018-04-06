@@ -4,5 +4,5 @@ import qbs.FileInfo
 
 CppDyLibrary {
     module: '3rdpart'
-    destinationDirectory: project.sourceDirectory + '/lib/' + module
+    destinationDirectory: FileInfo.joinPaths(project.sourceDirectory, 'lib', module)
 }
