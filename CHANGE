@@ -1,4 +1,13 @@
 
+-- V4.0.0
+    tools: Qt5.10.1、VS2015、Qbs1.10.1
+    depends:
+        1) jframework: v2.4.0;
+
+    fixed:
+        1) 升级jframework库（支持Qbs编译）
+        2) 支持Qbs编译，去掉qmake编译相关文件及设置
+
 -- V3.0.3
     tools: Qt5.10.1、VS2015
     depends:
