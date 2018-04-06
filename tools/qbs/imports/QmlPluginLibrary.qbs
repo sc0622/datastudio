@@ -80,7 +80,7 @@ PluginLibrary {
             // windeployqt
             cmd = new Command(FileInfo.joinPaths(qtdir, 'bin', 'windeployqt'),
                               [targetPath, '--no-translations', '--' + product.qbs.buildVariant,
-                               '--list', 'relative']);
+                               '--verbose', '0'/*, '--list', 'relative'*/]);
             cmd.description = 'execute windeployqt...';
             cmd.workingDirectory = targetPath;
             cmd.environment = envs;
