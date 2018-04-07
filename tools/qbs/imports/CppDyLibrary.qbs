@@ -34,7 +34,8 @@ DynamicLibrary {
     property bool defaultExport: true
 
     Depends { name: 'cpp' }
-    Depends { name: 'desc'; required: false }
+    Depends { name: 'desc'; required: false; cpp.link: false }
+    //Depends { name: 'setenv-sync'; required: false; cpp.link: false } //
 
     targetName: name
     desc.condition: true
@@ -135,7 +136,7 @@ DynamicLibrary {
                                         'RC_VERSION_STRING=' + desc.displayVersion,
                                         'RC_COPYRIGHT=2016-' + desc.copyrightYear
                                         + ' ' + desc.companyName.replace(/ /g, '\\x20')])
-            if (desc.iconName.length > 0) {
+            if (desc.iconName && File.exists(desc.iconName)) {
                 defines.push('GENERATE_ICON');
             }
             return defines;

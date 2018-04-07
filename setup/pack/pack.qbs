@@ -64,18 +64,16 @@ Project {
 
         readonly property string ifwDir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTIFW_DIR'))
 
-        Depends { name: 'cpp' }
+        Depends { name: 'cpp'; cpp.link: false }
+        Depends { name: 'pack-config'; cpp.link: false }
+        Depends {
+            productTypes: [ 'package.in', 'dynamiclibrary', 'application' ];
+            cpp.link: false }
 
         Rule {
             condition: File.exists(ifwDir)
             multiplex: true
-            explicitlyDependsOn: [
-                'pack-config',
-                'packages',
-                'com.smartsoft.datastudio.3rdpart',
-                'com.smartsoft.datastudio.app',
-                'com.smartsoft.datastudio.core'
-            ]
+            auxiliaryInputs: [ 'config.out', 'package.in' ]
             Artifact { fileTags: [ 'pack-build' ] }
             prepare: {
                 var cmdMkBin = new JavaScriptCommand;
@@ -89,17 +87,17 @@ Project {
                 args.push('--verbose');
                 args.push('--offline-only');
                 // config.xml
-                args.push('-c');
+                args.push('--config');
                 args.push(FileInfo.joinPaths(project.completeSetupDir, 'config', 'config.xml'));
                 // packages
-                args.push('-p');
+                args.push('--packages');
                 args.push(FileInfo.joinPaths(project.completeSetupDir, 'packages'));
                 args.push(FileInfo.joinPaths(project.completeSetupDir, 'bin',
                                              project.projectName + '-v' + project.version));
                 // resources
                 var configQrc = FileInfo.joinPaths(project.completeSetupDir, 'config', 'config.qrc');
                 if (File.exists(configQrc)) {
-                    args.push('-r');
+                    args.push('--resources');
                     args.push(configQrc);
                 }
                 // create command

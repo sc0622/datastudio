@@ -10,8 +10,7 @@ Project {
     references: {
         var items = [];
         modules.forEach(function(module){
-            var name = 'com.smartsoft.datastudio.' + module;
-            items.push(FileInfo.joinPaths(name, name + '.qbs'));
+            items.push('com.smartsoft.datastudio.' + module + '/module.qbs');
         });
         return items;
     }

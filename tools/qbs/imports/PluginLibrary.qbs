@@ -8,6 +8,7 @@ CppDyLibrary {
     module: 'core/plugins'
 
     Depends { name: 'Qt.core' }
+    //Depends { name: 'setenv-sync'; required: false; cpp.link: false } //
 
     property string uri: ''
     property string uriDir: uri.replace('.', '/')

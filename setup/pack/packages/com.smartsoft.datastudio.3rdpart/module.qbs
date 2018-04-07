@@ -3,11 +3,9 @@ import qbs.File
 import qbs.FileInfo
 import qbs.Environment
 
-PackProduct {
+PackageProduct {
 
-    Depends { name: 'cpp' }
     Depends { name: 'Qt.core'; cpp.link: false }
-    Depends { name: 'meta' }
     Depends { name: 'setenv-install'; cpp.link: false }
 
     // 3rdpart
@@ -17,10 +15,11 @@ PackProduct {
         //prefix: FileInfo.joinPaths(project.sourceDirectory, 'lib', '3rdpart') + '/'
         files: {
             var files = [];
-            [ 'jchart', 'jencrypt', 'jutraledit', 'jwt', 'log4cpp',
-              'nodeeditor', 'qwt', 'tinyxml' ].forEach(function(item){
-                  files.push(item + project.variantSuffix + '.dll');
-              });
+            ['jchart', 'jencrypt', 'jutraledit', 'jwt', 'log4cpp',
+             'nodeeditor', 'qwt', 'tinyxml'
+            ].forEach(function(item){
+                files.push(item + project.variantSuffix + '.dll');
+            });
             return files;
         }
         qbs.install: true

@@ -1,16 +1,17 @@
 import qbs
-import qbs.FileInfo
+import qbs.File
 
 Product {
+    condition: false
     type: [ 'setup-clean' ]
+
     Rule {
-        condition: false
         multiplex: true
         Artifact { fileTags: [ 'setup-clean' ] }
         prepare: {
-            var cmd = new Command('rd', [ '/s', '/q',
-                                         FileInfo.toWindowsSeparators(project.completeSetupDir + '/config') ]);
-            cmd.description = 'clean setup folder...';
+            var cmd = new JavaScriptCommand;
+            cmd.description = 'removing setup dir...';
+            cmd.sourceCode = function(){ File.remove(project.completeSetupDir); }
             return [ cmd ];
         }
     }

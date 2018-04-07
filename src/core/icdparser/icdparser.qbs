@@ -3,8 +3,6 @@ import qbs.FileInfo
 
 CoreDyLibrary {
 
-    Depends { name: 'Qt.gui' }
-    Depends { name: 'Qt.xml' }
     Depends { name: 'Qt.printsupport' }
     Depends {
         condition: qbs.targetOS.contains('windows')
@@ -42,12 +40,13 @@ CoreDyLibrary {
     }
 
     Group {
+        id: tinyxml
         name: '3rdpart_tinyxml'
-        prefix: FileInfo.joinPaths(project.sourceDirectory, 'src', '3rdpart',
-                                   'tinyxml') + '/'
+        prefix: project.sourceDirectory + '/src/3rdpart/tinyxml/'
         files: [ '*.h', '*.cpp' ]
     }
 
     cpp.cxxStandardLibrary: 'c++98'
-    cpp.includePaths: base.concat([ FileInfo.joinPaths('..') ])
+    cpp.includePaths: base.concat([FileInfo.joinPaths('..'),
+                                   tinyxml.prefix + '/..'])
 }

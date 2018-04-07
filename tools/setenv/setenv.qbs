@@ -11,8 +11,6 @@ Project {
         type: base.concat([ 'header', 'library' ])
         Depends { name: 'cpp' }
 
-        //Depends { name: 'icdcomm'; cpp.link: false }
-
         readonly property stringList depends: [
             'jchart', 'jencrypt', 'jutraledit', 'jwt', 'log4cpp', 'nodeeditor', 'qwt', 'tinyxml'
         ]
@@ -22,14 +20,13 @@ Project {
         Group {
             id: header_3rdpart
             name: '3rdpart_header'
-            prefix: Func.jframeDir(project) + '/'
+            prefix: Func.jframeDir(project) + '/include/3rdpart/'
             files: {
                 var files = [];
                 product.depends.forEach(function(item){
-                    var path = FileInfo.joinPaths('include', '3rdpart', item);
-                    files.push(path + '/**/*.h');
-                    files.push(path + '/**/*.hh');
-                    files.push(path + '/**/*.hpp');
+                    files.push(item + '/**/*.h');
+                    files.push(item + '/**/*.hh');
+                    files.push(item + '/**/*.hpp');
                 });
                 return files;
             }
@@ -60,12 +57,11 @@ Project {
         Group {
             id: dynamic_3rdpart
             name: '3rdpart_dynamic'
-            prefix: Func.jframeDir(project) + '/'
+            prefix: Func.jframeDir(project) + '/lib/3rdpart/'
             files: {
                 var files = [];
                 product.depends.forEach(function(item){
-                    var path = FileInfo.joinPaths('lib', '3rdpart', item);
-                    files.push(path + '*.dll');
+                    files.push(item + '?.dll');
                 });
                 return files;
             }
@@ -78,12 +74,11 @@ Project {
         Group {
             id: library_3rdpart
             name: '3rdpart_library'
-            prefix: Func.jframeDir(project) + '/'
+            prefix: Func.jframeDir(project) + '/lib/3rdpart/'
             files: {
                 var files = [];
                 product.depends.forEach(function(item){
-                    var path = FileInfo.joinPaths('lib', '3rdpart', item);
-                    files.push(path + '*.lib');
+                    files.push(item + '?.lib');
                 });
                 return files;
             }

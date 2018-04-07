@@ -4,11 +4,11 @@ import qbs.FileInfo
 import '../../setenv/setenv.js' as Func
 
 Product {
+    name: domain
 
     Depends { name: 'cpp'; cpp.link: false }
 
-    readonly property string domain: FileInfo.relativePath(sourceDirectory + '/..',
-                                                           sourceDirectory)
+    readonly property string domain: FileInfo.relativePath(sourceDirectory + '/..', sourceDirectory)
     readonly property path jframeDir: Func.jframeDir(project)
     readonly property string projectDir: FileInfo.joinPaths(qbs.installRoot, project.projectName)
     readonly property string installPrefix: FileInfo.joinPaths(project.setupDir, 'packages')

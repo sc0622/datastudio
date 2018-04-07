@@ -1,12 +1,10 @@
 import qbs
+import qbs.File
 import qbs.FileInfo
 import qbs.Environment
 import qbs.TextFile
 
-PackProduct {
-
-    Depends { name: 'cpp' }
-    Depends { name: 'meta'; enabledInstall: false }
+PackageProduct {
 
     // global
     Group {

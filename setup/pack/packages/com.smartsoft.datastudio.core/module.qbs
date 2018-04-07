@@ -2,10 +2,7 @@ import qbs
 import qbs.File
 import qbs.FileInfo
 
-PackProduct {
-
-    Depends { name: 'cpp' }
-    Depends { name: 'meta' }
+PackageProduct {
 
     // 3rdpart
     Group {

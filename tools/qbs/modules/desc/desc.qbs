@@ -8,7 +8,7 @@ Module {
     property string copyrightYear: '?'
     property string copyrightDesc: '?'
     property string companyName: 'The Smartsoft Company Ltd'
-    property string iconName: ''
+    property path iconName
     readonly property int versionMajor: parseInt(version.split('.')[0])
     readonly property int versionMinor: parseInt(version.split('.')[1])
     readonly property int versionPatch: parseInt(version.split('.')[2])

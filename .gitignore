@@ -84,3 +84,7 @@ Thumbs.db
 #
 /setup/pack/bin
 /setup/pack/packages/com.smartsoft*/**/data
+datastudio-setup.qbs
+
+/include/3rdpart
+/lib/3rdpart
