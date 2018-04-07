@@ -87,5 +87,5 @@ Thumbs.db
 datastudio-setup.qbs
 
 /include/3rdpart
-/lib/3rdpart
-!/lib/3rdpart/moxa
+/lib/3rdpart/**/*.*
+!/lib/3rdpart/moxa/*.*
