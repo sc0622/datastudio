@@ -16,6 +16,7 @@ Product {
     }
 
     Group {
+        condition: !project.projectInstallRoot
         name: 'tools'
         prefix: './'
         files: [

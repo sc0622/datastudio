@@ -1,77 +1,80 @@
 import qbs
 import qbs.File
 import qbs.FileInfo
-import qbs.Process
-import qbs.Environment
 import qbs.TextFile
 
-Project {
+Product {
 
-    PackProduct {
-        name: 'pack-config'
-        type: base.concat([ 'config.out' ])
-        Group {
-            name: 'config'
-            prefix: 'config/'
-            files: [ '**/*' ]
-            excludeFiles: [ 'config.xml' ]
-            fileTags: [ 'pack.in' ]
-            qbs.install: true
-            qbs.installPrefix: project.setupDir
-            qbs.installDir: name
-            qbs.installSourceBase: prefix
-        }
+    qbsSearchPaths: [ '.' ]
 
-        Group {
-            name: 'config.xml'
-            prefix: 'config/'
-            files: [ 'config.xml' ]
-            fileTags: [ 'pack.in', 'config.in' ]
-        }
+    //Depends { name: 'common.data' }
+    Depends { name: 'test' }
 
-        Rule {
-            inputs: [ 'config.in' ]
-            Artifact {
-                filePath: FileInfo.joinPaths(project.completeSetupDir, 'config', input.fileName)
-                fileTags: [ 'pack.in', 'config.out' ]
-            }
-            prepare: {
-                var cmd = new JavaScriptCommand();
-                cmd.description = 'replacing ' + input.fileName;
-                cmd.sourceCode = function() {
-                    if (!project.version) {
-                        console.warn('\'project.version\' is not exists!');
-                        return;
-                    }
-                    var source = new TextFile(input.filePath, TextFile.ReadOnly);
-                    var target = new TextFile(output.filePath, TextFile.WriteOnly);
-                    var content = source.readAll().replace(/@VERSION@/g, project.version);
-                    source.close();
-                    target.write(content);
-                    target.close();
-                }
-                return [cmd];
-            }
-        }
-    }
+//    PackProduct {
+//        name: 'pack-config'
+//        type: base.concat([ 'config.out' ])
+//        Group {
+//            name: 'config'
+//            prefix: 'config/'
+//            files: [ '**/*' ]
+//            excludeFiles: [ 'config.xml' ]
+//            fileTags: [ 'pack.in' ]
+//            qbs.install: true
+//            qbs.installPrefix: project.setupDir
+//            qbs.installDir: name
+//            qbs.installSourceBase: prefix
+//        }
 
+//        Group {
+//            name: 'config.xml'
+//            prefix: 'config/'
+//            files: [ 'config.xml' ]
+//            fileTags: [ 'pack.in', 'config.in' ]
+//        }
+
+//        Rule {
+//            inputs: [ 'config.in' ]
+//            Artifact {
+//                filePath: FileInfo.joinPaths(project.completeSetupDir, 'config', input.fileName)
+//                fileTags: [ 'pack.in', 'config.out' ]
+//            }
+//            prepare: {
+//                var cmd = new JavaScriptCommand();
+//                cmd.description = 'replacing ' + input.fileName;
+//                cmd.sourceCode = function() {
+//                    if (!project.version) {
+//                        console.warn('\'project.version\' is not exists!');
+//                        return;
+//                    }
+//                    var source = new TextFile(input.filePath, TextFile.ReadOnly);
+//                    var target = new TextFile(output.filePath, TextFile.WriteOnly);
+//                    var content = source.readAll().replace(/@VERSION@/g, project.version);
+//                    source.close();
+//                    target.write(content);
+//                    target.close();
+//                }
+//                return [cmd];
+//            }
+//        }
+//    }
+/*
     references: [
-        'packages/packages.qbs'
+        //'packages/packages.qbs'
     ]
 
-    Product {
-        name: 'pack-build'
-        type: [ 'pack-build' ]
-
-        readonly property string ifwDir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTIFW_DIR'))
-
+    PackageProduct {
+        //name: 'pack-build'
+        //type: [ 'pack-build' ]
+*/
+/*
         Depends { name: 'cpp' }
         Depends { name: 'pack-config' }
         Depends {
             productTypes: [ 'package.in', 'dynamiclibrary', 'application' ];
             cpp.link: false
         }
-
+*/
+/*
         Rule {
             condition: File.exists(ifwDir)
             multiplex: true
@@ -108,6 +111,6 @@ Project {
                 cmdBuild.description = 'generating installer file...';
                 return [ cmdMkBin, cmdBuild ];
             }
-        }
-    }
+        }*/
+    //}
 }
