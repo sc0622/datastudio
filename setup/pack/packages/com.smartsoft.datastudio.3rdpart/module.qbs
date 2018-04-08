@@ -5,14 +5,10 @@ import qbs.Environment
 
 PackageProduct {
 
-    Depends { name: 'Qt.core'; cpp.link: false }
-    Depends { name: 'setenv-install'; cpp.link: false }
-
     // 3rdpart
     Group {
         name: 'data-3rdpart'
-        prefix: FileInfo.joinPaths(projectDir, 'bin') + '/'
-        //prefix: FileInfo.joinPaths(project.sourceDirectory, 'lib', '3rdpart') + '/'
+        prefix: FileInfo.joinPaths(project.sourceDirectory, 'lib', '3rdpart') + '/'
         files: {
             var files = [];
             ['jchart', 'jencrypt', 'jutraledit', 'jwt', 'log4cpp',
@@ -22,6 +18,7 @@ PackageProduct {
             });
             return files;
         }
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: installDir
@@ -32,6 +29,7 @@ PackageProduct {
         name: 'data-3rdpart-moxa'
         prefix: FileInfo.joinPaths(project.sourceDirectory, 'lib', '3rdpart', 'moxa') + '/'
         files: [ 'pcomm.dll' ]
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: installDir
@@ -49,6 +47,7 @@ PackageProduct {
             files.push('d3dcompiler*.dll');
             return files;
         }
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: installDir
@@ -67,6 +66,7 @@ PackageProduct {
             });
             return files;
         }
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: installDir
@@ -85,6 +85,7 @@ PackageProduct {
             });
             return files;
         }
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: installDir

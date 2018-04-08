@@ -15,7 +15,6 @@ Project {
     }
 
     references: [
-        'clear/clear.qbs',
         'pack/pack.qbs'
     ]
 }

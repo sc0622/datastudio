@@ -16,6 +16,7 @@ PackageProduct {
             'README.md',
             'VERSION'
         ]
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: installDir
@@ -27,6 +28,7 @@ PackageProduct {
         prefix: FileInfo.joinPaths(project.sourceDirectory, 'config') + '/'
         files: [ '**/*.*' ]
         excludeFiles: [ '**/*.pr[io]', '**/*.qbs' ]
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: FileInfo.joinPaths(installDir, 'config')
@@ -38,6 +40,7 @@ PackageProduct {
         name: 'data-app'
         prefix: FileInfo.joinPaths(projectDir, 'bin') + '/'
         files: [ project.projectName + project.variantSuffix + '.exe' ]
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: FileInfo.joinPaths(installDir, 'bin')
@@ -48,6 +51,7 @@ PackageProduct {
         name: 'data-tools'
         prefix: FileInfo.joinPaths(project.sourceDirectory, 'tools') + '/'
         files: [ 'WinSnap/*', 'DataAnalyse.exe' ]
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: FileInfo.joinPaths(installDir, 'tools')
@@ -61,6 +65,7 @@ PackageProduct {
                                    (qbs.buildVariant == 'debug' ? 'debug_*' : ''),
                                    qbs.architecture, 'Microsoft.VC*.*CRT') + '/'
         files: [ 'concrt*.dll', 'msvcp*.dll', 'vccorlib*.dll', 'vcruntime*.dll' ]
+        fileTags: [ 'pack.in' ]
         qbs.install: true
         qbs.installPrefix: installPrefix
         qbs.installDir: FileInfo.joinPaths(installDir, 'bin')
@@ -71,7 +76,7 @@ PackageProduct {
         Artifact{
             filePath: FileInfo.joinPaths(product.meta.targetPath, FileInfo.relativePath(
                                              product.meta.sourcePath, input.filePath))
-            fileTags: [ 'meta.out' ]
+            fileTags: [ 'pack.in', 'meta.out' ]
         }
         prepare: {
             var cmd = new JavaScriptCommand;

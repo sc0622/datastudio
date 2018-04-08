@@ -8,7 +8,7 @@ Component.prototype.createOperations = function() {
 
     //
     if (systemInfo.productType === "windows") {
-        //
+        // Start Menu
         component.addOperation(
                     "CreateShortcut",
                     "@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
@@ -16,10 +16,10 @@ Component.prototype.createOperations = function() {
                     "workingDirectory=@TargetDir@/@PROJECT@/bin/",
                     "iconPath=@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
                     "iconId=0")
-        //
+        // Home
         component.addOperation(
                     "CreateShortcut",
-                    "@TargetDir@/@PROJECT@/bin/@PROJECT@.exe",
+                    "@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
                     "@HomeDir@/Desktop/Data Studio @Version@.lnk",
                     "workingDirectory=@TargetDir@/@PROJECT@/bin/",
                     "iconPath=@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",

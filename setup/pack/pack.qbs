@@ -15,6 +15,7 @@ Project {
             prefix: 'config/'
             files: [ '**/*' ]
             excludeFiles: [ 'config.xml' ]
+            fileTags: [ 'pack.in' ]
             qbs.install: true
             qbs.installPrefix: project.setupDir
             qbs.installDir: name
@@ -25,14 +26,14 @@ Project {
             name: 'config.xml'
             prefix: 'config/'
             files: [ 'config.xml' ]
-            fileTags: [ 'config.in' ]
+            fileTags: [ 'pack.in', 'config.in' ]
         }
 
         Rule {
             inputs: [ 'config.in' ]
             Artifact {
                 filePath: FileInfo.joinPaths(project.completeSetupDir, 'config', input.fileName)
-                fileTags: [ 'config.out' ]
+                fileTags: [ 'pack.in', 'config.out' ]
             }
             prepare: {
                 var cmd = new JavaScriptCommand();
@@ -64,16 +65,17 @@ Project {
 
         readonly property string ifwDir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTIFW_DIR'))
 
-        Depends { name: 'cpp'; cpp.link: false }
-        Depends { name: 'pack-config'; cpp.link: false }
+        Depends { name: 'cpp' }
+        Depends { name: 'pack-config' }
         Depends {
             productTypes: [ 'package.in', 'dynamiclibrary', 'application' ];
-            cpp.link: false }
+            cpp.link: false
+        }
 
         Rule {
             condition: File.exists(ifwDir)
             multiplex: true
-            auxiliaryInputs: [ 'config.out', 'package.in' ]
+            auxiliaryInputs: [ 'pack.in', 'config.out', 'package.in' ]
             Artifact { fileTags: [ 'pack-build' ] }
             prepare: {
                 var cmdMkBin = new JavaScriptCommand;
