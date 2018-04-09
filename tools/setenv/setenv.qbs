@@ -148,7 +148,7 @@ Project {
             prefix: Environment.getEnv('QTDIR') + '/bin/'
             files: {
                 var files = [];
-                [ 'Concurrent', 'Core', 'Gui', 'Network', 'PrintSupport',
+                [ 'Concurrent', 'Core', 'Gui', 'Network', 'PrintSupport', 'OpenGL',
                   'SerialPort', 'Sql', 'Svg', 'Widgets', 'Xml']
                 .forEach(function(item){
                     files.push('Qt' + Qt.core.versionMajor + item + project.variantSuffix + '.dll');

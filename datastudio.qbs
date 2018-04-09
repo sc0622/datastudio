@@ -42,7 +42,7 @@ Project {
                     'LICENSE',
                     'README.md',
                     'VERSION',
-                    'setup.qbs.in'
+                    //'setup.qbs.in'
                 ]
                 fileTags: [ 'setup.generator.in' ]
                 qbs.install: true

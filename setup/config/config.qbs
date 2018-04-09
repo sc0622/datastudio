@@ -12,7 +12,6 @@ Product {
     Group {
         name: 'config'
         files: [ '**/*' ]
-        excludeFiles: [ 'config.xml' ]
         fileTags: [ 'config.in' ]
         qbs.install: true
         qbs.installPrefix: project.setupDir

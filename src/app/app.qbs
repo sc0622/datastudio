@@ -10,7 +10,7 @@ Project {
         id: app
 
         consoleApplication: false
-        targetName: 'datastudio'
+        targetName: project.projectName
         version: project.version
 
         translations: [ 'app_zh_CN.ts' ]
