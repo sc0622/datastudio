@@ -18,7 +18,9 @@ CppApp {
     property bool linkDefaultQpaPlugin: Qt.gui.isStaticLibrary
 
     // translation
-    property path langPath: sourceDirectory + '/resource/lang'
+    property path langPath: FileInfo.joinPaths(sourceDirectory, 'resource', 'lang')
+    property pathList noRecursivePaths: []
+    property pathList recursivePaths: []
     property stringList translationFileTags: [ 'hpp', 'cpp' ]
     property stringList translations: []
     property bool defaultTranslation: false
@@ -35,11 +37,32 @@ CppApp {
         inputs: translationFileTags
         Artifact { fileTags: [ 'translation' ] }
         prepare: {
-            var args = ['-recursive', product.sourceDirectory, '-ts'];
-            product.translations.forEach(function(item){
-                args.push(FileInfo.joinPaths(product.langPath, item));
-            });
-            var cmd = new Command('lupdate', args);
+            var args = [];
+            // no-recursive
+            if (product.noRecursivePaths.length > 0) {
+                args.push('-no-recursive');
+                product.noRecursivePaths.forEach(function(item){
+                    args.push(item);
+                });
+            }
+            // recursive
+            args.push('-recursive');
+            if (product.recursivePaths.length > 0) {
+                product.recursivePaths.forEach(function(item){
+                    args.push(item);
+                });
+            } else {
+                args.push(product.sourceDirectory);
+            }
+            // ts - files
+            if (product.translations.length > 0) {
+                args.push('-ts');
+                product.translations.forEach(function(item){
+                    args.push(FileInfo.joinPaths(product.langPath, item));
+                });
+            }
+            // create command
+            var cmd = new Command(product.Qt.core.binPath + '/lupdate', args);
             cmd.description = 'generating translation file...';
             return [ cmd ];
         }

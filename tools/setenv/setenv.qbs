@@ -61,7 +61,7 @@ Project {
             files: {
                 var files = [];
                 product.depends.forEach(function(item){
-                    files.push(item + '?.dll');
+                    files.push(item + '*.dll');
                 });
                 return files;
             }
@@ -78,7 +78,7 @@ Project {
             files: {
                 var files = [];
                 product.depends.forEach(function(item){
-                    files.push(item + '?.lib');
+                    files.push(item + '*.lib');
                 });
                 return files;
             }

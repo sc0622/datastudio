@@ -15,6 +15,8 @@ DynamicLibrary {
 
     // translation
     property path langPath: FileInfo.joinPaths(sourceDirectory, 'resource', 'lang')
+    property pathList noRecursivePaths: []
+    property pathList recursivePaths: []
     property stringList translationFileTags: [ 'hpp', 'cpp' ]
     property stringList translations: []
     property bool defaultTranslation: false
@@ -34,8 +36,8 @@ DynamicLibrary {
     property bool defaultExport: true
 
     Depends { name: 'cpp' }
-    Depends { name: 'desc'; required: false; cpp.link: false }
-    //Depends { name: 'setenv-sync'; required: false; cpp.link: false } //
+    Depends { name: 'desc'; cpp.link: false }
+    Depends { name: 'Qt.core'; cpp.link false }
 
     targetName: name
     desc.condition: true
@@ -43,13 +45,7 @@ DynamicLibrary {
     desc.version: version
     desc.productName: targetName
 
-    cpp.includePaths: base.concat([precompPath,
-                                   project.sourceDirectory + '/include',
-                                   project.sourceDirectory + '/include/3rdpart',
-                                   project.sourceDirectory + '/include/core'])
-    cpp.libraryPaths: base.concat([project.sourceDirectory + '/lib',
-                                   project.sourceDirectory + '/lib/3rdpart',
-                                   project.sourceDirectory + '/lib/core'])
+    cpp.includePaths: base.concat([ precompPath ]}
     cpp.defines: {
         var upperName = product.name.toUpperCase();
         var defines = base;
@@ -98,11 +94,32 @@ DynamicLibrary {
         inputs: translationFileTags
         Artifact { fileTags: [ 'translation' ] }
         prepare: {
-            var args = ['-recursive', product.sourceDirectory, '-ts'];
-            product.translations.forEach(function(item){
-                args.push(FileInfo.joinPaths(product.langPath, item));
-            });
-            var cmd = new Command('lupdate', args);
+            var args = [];
+            // no-recursive
+            if (product.noRecursivePaths.length > 0) {
+                args.push('-no-recursive');
+                product.noRecursivePaths.forEach(function(item){
+                    args.push(item);
+                });
+            }
+            // recursive
+            args.push('-recursive');
+            if (product.recursivePaths.length > 0) {
+                product.recursivePaths.forEach(function(item){
+                    args.push(item);
+                });
+            } else {
+                args.push(product.sourceDirectory);
+            }
+            // ts - files
+            if (product.translations.length > 0) {
+                args.push('-ts');
+                product.translations.forEach(function(item){
+                    args.push(FileInfo.joinPaths(product.langPath, item));
+                });
+            }
+            // create command
+            var cmd = new Command(product.Qt.core.binPath + '/lupdate', args);
             cmd.description = 'generating translation file...';
             return [ cmd ];
         }

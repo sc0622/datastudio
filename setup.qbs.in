@@ -14,6 +14,7 @@ Project {
     readonly property int versionPatch: parseInt(version.split('.')[2])
     readonly property string projectName: '@PROJECT_NAME@'
     readonly property string variantSuffix: '@VARIANT_SUFFIX@'
+    
     readonly property path qtdir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTDIR'))
     readonly property path projectInstallRoot:
         FileInfo.cleanPath(sourceDirectory + '/@PROJECT_INSTALL_ROOT@')
