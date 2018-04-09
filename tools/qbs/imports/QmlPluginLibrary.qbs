@@ -51,12 +51,14 @@ PluginLibrary {
             var targetPath = FileInfo.joinPaths(product.buildDirectory, targetName);
             var cmds = [], cmd;
             //
-            var qtdir = FileInfo.fromWindowsSeparators(Environment.getEnv('QTDIR'));
-            if (!File.exists(qtdir)) {
+            if (!project.qtdir || !File.exists(ptoject.qtdir)) {
                 console.warn('QTDIR is invalid!');
                 return [];
             }
-            var envs = ['PATH=' + Environment.getEnv('PATH') + ';' + product.dynamicLibraryPaths.join(';')];
+            var envs = ['PATH='
+                        + Environment.getEnv('PATH') + ';'
+                        + project.qtdir + '/bin;'
+                        + product.dynamicLibraryPaths.join(';')];
             // sync global depends
             cmd = new JavaScriptCommand;
             cmd.description = 'sync global depends ...';
@@ -68,17 +70,17 @@ PluginLibrary {
                 File.makePath(targetPath);
                 // qmlplugindump
                 filName = 'qmlplugindump' + exeSuffix;
-                File.copy(FileInfo.joinPaths(qtdir, 'bin', filName), targetPath + '/' + filName);
+                File.copy(FileInfo.joinPaths(project.qtdir, 'bin', filName), targetPath + '/' + filName);
                 // platforms - qminimal
                 var target = FileInfo.joinPaths(targetPath, 'platforms');
                 File.makePath(target);
                 filName = 'qminimal' + dylibsuffix;
-                File.copy(FileInfo.joinPaths(qtdir, 'plugins','platforms', filName),
+                File.copy(FileInfo.joinPaths(project.qtdir, 'plugins','platforms', filName),
                           target + '/' + filName);
             }
             cmds.push(cmd);
             // windeployqt
-            cmd = new Command(FileInfo.joinPaths(qtdir, 'bin', 'windeployqt'),
+            cmd = new Command(FileInfo.joinPaths(project.qtdir, 'bin', 'windeployqt'),
                               [targetPath, '--no-translations', '--' + product.qbs.buildVariant,
                                '--verbose', '0'/*, '--list', 'relative'*/]);
             cmd.description = 'execute windeployqt...';
@@ -99,7 +101,7 @@ PluginLibrary {
                 cmd = new JavaScriptCommand;
                 cmd.description = 'removing qmltypes dir...';
                 cmd.targetPath = targetPath;
-                cmd.sourceCode = function(){ File.remove(targetPath); }
+                cmd.sourceCode = function(){ try { File.remove(targetPath); } catch(msg) {} }
                 cmds.push(cmd);
             }
             return cmds;
