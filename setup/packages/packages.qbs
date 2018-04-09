@@ -7,8 +7,8 @@ Project {
     readonly property path packagesPath: path
 
     references: [
-        'com/smartsoft/datastudio/3rdpart/module.qbs',
-        'com/smartsoft/datastudio/core/module.qbs',
-        'com/smartsoft/datastudio/app/module.qbs'
+        'com.smartsoft.datastudio.3rdpart/module.qbs',
+        'com.smartsoft.datastudio.core/module.qbs',
+        'com.smartsoft.datastudio.app/module.qbs'
     ]
 }

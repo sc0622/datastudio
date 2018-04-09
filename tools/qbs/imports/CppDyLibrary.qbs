@@ -37,7 +37,7 @@ DynamicLibrary {
 
     Depends { name: 'cpp' }
     Depends { name: 'desc'; cpp.link: false }
-    Depends { name: 'Qt.core'; cpp.link false }
+    Depends { name: 'Qt.core'; cpp.link: false }
 
     targetName: name
     desc.condition: true
@@ -45,7 +45,7 @@ DynamicLibrary {
     desc.version: version
     desc.productName: targetName
 
-    cpp.includePaths: base.concat([ precompPath ]}
+    cpp.includePaths: base.concat([ precompPath ])
     cpp.defines: {
         var upperName = product.name.toUpperCase();
         var defines = base;

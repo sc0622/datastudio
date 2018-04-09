@@ -13,6 +13,7 @@ Project {
     readonly property int versionMinor: parseInt(version.split('.')[1])
     readonly property int versionPatch: parseInt(version.split('.')[2])
     readonly property string projectName: '@PROJECT_NAME@'
+    readonly property string projectDisplayName: '@PROJECT_DISPLAY_NAME@'
     readonly property string variantSuffix: '@VARIANT_SUFFIX@'
     
     readonly property path qtdir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTDIR'))

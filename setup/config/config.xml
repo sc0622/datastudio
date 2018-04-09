@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-  <Name>Data Studio</Name>
+  <Name>@PROJECT_DISPLAY_NAME@</Name>
   <Version>@VERSION@</Version>
   <Title>数据监控分析软件</Title>
   <Publisher>Smartsoft</Publisher>

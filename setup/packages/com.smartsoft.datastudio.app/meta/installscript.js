@@ -12,7 +12,7 @@ Component.prototype.createOperations = function() {
         component.addOperation(
                     "CreateShortcut",
                     "@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
-                    "@StartMenuDir@/Data Studio @Version@/Data Studio.lnk",
+                    "@StartMenuDir@/@PROJECT_DISPLAY_NAME@ @Version@/@PROJECT_DISPLAY_NAME@.lnk",
                     "workingDirectory=@TargetDir@/@PROJECT@/bin/",
                     "iconPath=@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
                     "iconId=0")
@@ -20,7 +20,7 @@ Component.prototype.createOperations = function() {
         component.addOperation(
                     "CreateShortcut",
                     "@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
-                    "@HomeDir@/Desktop/Data Studio @Version@.lnk",
+                    "@HomeDir@/Desktop/@PROJECT_DISPLAY_NAME@ @Version@.lnk",
                     "workingDirectory=@TargetDir@/@PROJECT@/bin/",
                     "iconPath=@TargetDir@/@PROJECT@/bin/@APPNAME@.exe",
                     "iconId=0")

@@ -20,10 +20,11 @@ Project {
 
         readonly property string ifwDir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTIFW_DIR'))
 
-        Depends { name: 'config' }
-        Depends { name: 'com.smartsoft.datastudio.3rdpart' }
-        Depends { name: 'com.smartsoft.datastudio.core' }
-        Depends { name: 'com.smartsoft.datastudio.app' }
+        Depends { name: 'cpp' }
+        Depends { name: 'config'; cpp.link: false }
+        Depends { name: 'com.smartsoft.datastudio.3rdpart'; cpp.link: false }
+        Depends { name: 'com.smartsoft.datastudio.core'; cpp.link: false }
+        Depends { name: 'com.smartsoft.datastudio.app'; cpp.link: false }
 
         Rule {
             condition: File.exists(ifwDir)

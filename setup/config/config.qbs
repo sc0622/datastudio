@@ -35,8 +35,12 @@ Product {
                 var targetPath = project.completeSetupDir + '/config/config.xml';
                 var source = new TextFile(sourcePath, TextFile.ReadOnly);
                 var target = new TextFile(targetPath, TextFile.WriteOnly);
-                var content = source.readAll().replace(/@VERSION@/g, project.version);
+                var content = source.readAll();
                 source.close();
+                // replace @VERSION@
+                content = content.replace(/@VERSION@/g, project.version);
+                // replace @PROJECT_DISPLAY_NAME@
+                content = content.replace(/@PROJECT_DISPLAY_NAME@/g, project.projectDisplayName);
                 target.write(content);
                 target.close();
             }

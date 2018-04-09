@@ -5,7 +5,7 @@ import qbs.Environment
 import qbs.TextFile
 
 Project {
-    minimumQbsVersion: '1.11.0'
+    minimumQbsVersion: '1.10.1'
     qbs.enableDebugCode: true
     qbsSearchPaths: [ 'tools/qbs' ]
 
@@ -14,6 +14,7 @@ Project {
     readonly property int versionMinor: parseInt(version.split('.')[1])
     readonly property int versionPatch: parseInt(version.split('.')[2])
     readonly property string projectName: 'datastudio'
+    readonly property string projectDisplayName: 'Data Studio'
     readonly property string variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
     readonly property path qtdir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTDIR'))
     readonly property path inatallRoot: qbs.installRoot
@@ -22,7 +23,6 @@ Project {
         'tools/setenv/setenv.qbs',
         'config/config.qbs',
         'src/src.qbs',
-        //'setup/setup.qbs',
         'tools/tools.qbs'
     ]
 
@@ -70,15 +70,9 @@ Project {
                     cmd = new JavaScriptCommand;
                     cmd.targetName = targetName;
                     cmd.description = 'generating \'' + cmd.targetName + '\' file...';
-                    cmd.minimumQbsVersion = project.minimumQbsVersion;
-                    cmd.projectVersion = project.version
-                    cmd.variantSuffix = project.variantSuffix
-                    cmd.projectDirectory = project.sourceDirectory;
-                    cmd.projectName = project.projectName;
-                    cmd.projectInstallRoot = project.inatallRoot;
                     cmd.sourceCode = function() {
-                        var targetPath = projectDirectory + '/' + targetName;
-                        var sourcePath = projectDirectory + '/' + 'setup.qbs.in';
+                        var targetPath = project.sourceDirectory + '/' + targetName;
+                        var sourcePath = project.sourceDirectory + '/' + 'setup.qbs.in';
                         if (!File.exists(sourcePath)) {
                             console.warn('file \'' + sourcePath + '\' is not exists!');
                             return;
@@ -87,17 +81,19 @@ Project {
                         var content = source.readAll();
                         source.close();
                         // replace @QBS_MIN_VER@
-                        content = content.replace(/@QBS_MIN_VER@/g, minimumQbsVersion);
+                        content = content.replace(/@QBS_MIN_VER@/g, project.minimumQbsVersion);
                         // replace @VERSION@
-                        content = content.replace(/@VERSION@/g, projectVersion);
+                        content = content.replace(/@VERSION@/g, project.version);
                         // replace @VARIANT_SUFFIX@
-                        content = content.replace(/@VARIANT_SUFFIX@/g, variantSuffix);
+                        content = content.replace(/@VARIANT_SUFFIX@/g, project.variantSuffix);
                         // replace @PROJECT_INSTALL_ROOT@
-                        var relativeInstallRoot = '../' + FileInfo.relativePath(projectDirectory + '/..',
-                                                                                projectInstallRoot);
+                        var relativeInstallRoot = '../' + FileInfo.relativePath(project.sourceDirectory + '/..',
+                                                                                project.inatallRoot);
                         content = content.replace(/@PROJECT_INSTALL_ROOT@/g, relativeInstallRoot);
                         // replace @PROJECT_NAME@
-                        content = content.replace(/@PROJECT_NAME@/g, projectName);
+                        content = content.replace(/@PROJECT_NAME@/g, project.projectName);
+                        // replace @PROJECT_NAME@
+                        content = content.replace(/@PROJECT_DISPLAY_NAME@/g, project.projectDisplayName);
                         //
                         var target = new TextFile(targetPath, TextFile.WriteOnly);
                         target.write(content);

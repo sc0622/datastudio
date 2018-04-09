@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package>
   <Name>com.smartsoft.datastudio.app</Name>
-  <DisplayName>Data Studio Application</DisplayName>
-  <Description>Data Studio Application</Description>
+  <DisplayName>@PROJECT_DISPLAY_NAME@ Application</DisplayName>
+  <Description>@PROJECT_DISPLAY_NAME@ Application</Description>
   <Version>@VERSION@</Version>
   <ReleaseDate>2018-01-13</ReleaseDate>
   <Script>installscript.js</Script>

@@ -51,7 +51,7 @@ PluginLibrary {
             var targetPath = FileInfo.joinPaths(product.buildDirectory, targetName);
             var cmds = [], cmd;
             //
-            if (!project.qtdir || !File.exists(ptoject.qtdir)) {
+            if (!project.qtdir || !File.exists(project.qtdir)) {
                 console.warn('QTDIR is invalid!');
                 return [];
             }
@@ -62,7 +62,7 @@ PluginLibrary {
             // sync global depends
             cmd = new JavaScriptCommand;
             cmd.description = 'sync global depends ...';
-            cmd.qtdir = qtdir;
+            cmd.qtdir = project.qtdir;
             cmd.exeSuffix = exeSuffix;
             cmd.dylibsuffix = dylibsuffix;
             cmd.targetPath = targetPath;

@@ -43,29 +43,41 @@
 #include <QtSerialPort>
 #endif
 
-//
+// from jframework - 3rdpart
 
-#if defined(TINYXML_LIB)
+#if defined(TINYXML_LIB) && !defined(TINYXML_BUILD)
 #include "tinyxml/tinyxml.h"
 #endif
 
-#if defined(LOG4CPP_LIB)
+#if defined(QTWINMIGRATE_LIB) && !defined(QTWINMIGRATE_BUILD)
+#include "qtwinmigrate/qmfcapp.h"
+#endif
+
+#if defined(QTRIBBON_LIB) && !defined(QTRIBBON_BUILD)
+#include "qtribbon/QtRibbon.h"
+#endif
+
+#if defined(LOG4CPP_LIB) && !defined(LOG4CPP_BUILD)
 #include "log4cpp/convenience.h"
 #endif
 
-#if defined(JWT_LIB)
+#if defined(JWT_LIB) && !defined(JWT_BUILD)
 #include "jwt/jwt_inc.h"
 #endif
 
-#if defined(JCHART_LIB)
+#if defined(JCHART_LIB) && !defined(JCHART_BUILD)
 #include "jchart/jchart_inc.h"
 #endif
 
-#if defined(JUTRALEDIT_LIB)
+#if defined(JUTRALEDIT_LIB) && !defined(JUTRALEDIT_BUILD)
 #include "jutraledit/jutraledit_inc.h"
 #endif
 
-// customer
+#if defined(JENCRYPT_LIB) && !defined(JENCRYPT_BUILD)
+#include "jencrypt/jencrypt_inc.h"
+#endif
+
+// from datastudio - core
 
 #if defined(ICDCORE_LIB) && !defined(ICDCORE_BUILD)
 #include "icdcore/icdcore_inc.h"

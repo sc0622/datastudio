@@ -1,6 +1,10 @@
 import qbs
+import qbs.File
+import qbs.FileInfo
 
 Product {
+
+    type: [ 'tools.exe.out' ]
 
     files: [ '**/*.rc' ]
 
@@ -23,9 +27,28 @@ Product {
             'WinSnap/*.*',
             'DataAnalyse.*'
         ]
-        qbs.install: true
-        qbs.installPrefix: project.projectName
-        qbs.installDir: 'tools'
-        qbs.installSourceBase: prefix
+        fileTags: [ 'tools.exe.in' ]
+    }
+
+    Rule {
+        inputs: [ 'tools.exe.in' ]
+        Artifact {
+            fileTags: [ 'tools.exe.out' ]
+            filePath: {
+                var filePath = input.filePath;
+                if (filePath.endsWith('.exe.in')) {
+                    filePath = FileInfo.path(filePath) + '/' + input.completeBaseName;
+                }
+                return project.projectInstallRoot + '/tools/' + FileInfo.relativePath(
+                            product.sourceDirectory, filePath);
+            }
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand;
+            cmd.description = 'coping ' + output.filePath;
+            //cmd.silent = true;
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
+            return [ cmd ];
+        }
     }
 }

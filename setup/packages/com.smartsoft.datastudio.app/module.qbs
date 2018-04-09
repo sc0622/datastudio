@@ -7,6 +7,8 @@ import qbs.TextFile
 PackageProduct {
     name: 'com.smartsoft.datastudio.app'
 
+    type: base.concat([ 'data.tools.exe.out' ])
+
     // global
     Group {
         name: 'data-global'
@@ -47,12 +49,30 @@ PackageProduct {
     // tools
     Group {
         name: 'data-tools'
-        prefix: FileInfo.joinPaths(project.sourceDirectory, 'tools') + '/'
-        files: [ 'WinSnap/*', 'DataAnalyse.exe' ]
-        qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: FileInfo.joinPaths(installDir, 'tools')
-        qbs.installSourceBase: prefix
+        prefix: project.sourceDirectory + '/tools/'
+        files: [ 'WinSnap/*', 'DataAnalyse.exe.in' ]
+        fileTags: [ 'data.tools.exe.in' ]
+    }
+
+    Rule {
+        inputs: [ 'data.tools.exe.in' ]
+        Artifact {
+            fileTags: [ 'data.tools.exe.out' ]
+            filePath: {
+                var filePath = input.filePath;
+                if (filePath.endsWith('.exe.in')) {
+                    filePath = FileInfo.path(filePath) + '/' + input.completeBaseName;
+                }
+                return product.dataDir + '/tools/' + FileInfo.relativePath(
+                            product.sourceDirectory, filePath);
+            }
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand;
+            cmd.silent = true;
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
+            return [ cmd ];
+        }
     }
 
     // msvc-runtime
@@ -91,6 +111,8 @@ PackageProduct {
                     content = content.replace(/@PROJECT@/g, project.projectName);
                     // replace @APPNAME@
                     content = content.replace(/@APPNAME@/g, project.projectName + project.variantSuffix);
+                    // replace @APPNAME@
+                    content = content.replace(/@PROJECT_DISPLAY_NAME@/g, project.projectDisplayName);
                     //
                     target.write(content);
                     target.close();
