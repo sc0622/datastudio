@@ -1,43 +1,41 @@
 import qbs
+import qbs.File
+import qbs.FileInfo
+import qbs.TextFile
 
-Module {
+Product {
+    name: 'config'
+    type: [ 'config.out' ]
 
-    additionalProductTypes: [ 'config.out' ]
+    Depends { name: 'cpp' }
 
     Group {
         name: 'config'
-        prefix: 'config/'
         files: [ '**/*' ]
         excludeFiles: [ 'config.xml' ]
-        fileTags: [ 'pack.in' ]
+        fileTags: [ 'config.in' ]
         qbs.install: true
         qbs.installPrefix: project.setupDir
         qbs.installDir: name
-        qbs.installSourceBase: prefix
-    }
-
-    Group {
-        name: 'config_xml'
-        files: [ 'config.xml' ]
-        fileTags: [ 'config.in' ]
+        qbs.installSourceBase: '.'
     }
 
     Rule {
         inputs: [ 'config.in' ]
-        Artifact {
-            filePath: FileInfo.joinPaths(project.completeSetupDir, 'config', input.fileName)
-            fileTags: [ 'pack.in', 'config.out' ]
-        }
+        multiplex: true
+        Artifact { fileTags: [ 'config.out' ] }
         prepare: {
             var cmd = new JavaScriptCommand();
-            cmd.description = 'replacing ' + input.fileName;
+            cmd.description = 'replacing config.xml...';
             cmd.sourceCode = function() {
                 if (!project.version) {
                     console.warn('\'project.version\' is not exists!');
                     return;
                 }
-                var source = new TextFile(input.filePath, TextFile.ReadOnly);
-                var target = new TextFile(output.filePath, TextFile.WriteOnly);
+                var sourcePath = product.sourceDirectory + '/config.xml';
+                var targetPath = project.completeSetupDir + '/config/config.xml';
+                var source = new TextFile(sourcePath, TextFile.ReadOnly);
+                var target = new TextFile(targetPath, TextFile.WriteOnly);
                 var content = source.readAll().replace(/@VERSION@/g, project.version);
                 source.close();
                 target.write(content);
