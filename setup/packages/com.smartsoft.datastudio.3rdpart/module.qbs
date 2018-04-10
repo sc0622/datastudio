@@ -4,7 +4,7 @@ import qbs.FileInfo
 import qbs.Environment
 
 PackageProduct {
-    name: 'com.smartsoft.datastudio.3rdpart'
+    productPath: path
 
     // 3rdpart
     Group {

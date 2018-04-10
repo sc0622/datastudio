@@ -61,7 +61,7 @@ Project {
             files: {
                 var files = [];
                 product.depends.forEach(function(item){
-                    files.push(item + '*.dll');
+                    files.push(item + Func.dylibSuffix(product));
                 });
                 return files;
             }
@@ -75,10 +75,12 @@ Project {
             id: library_3rdpart
             name: '3rdpart_library'
             prefix: Func.jframeDir(project) + '/lib/3rdpart/'
+            excludeFiles: [ Func.incDylibSuffixFuzzy(product) ]
             files: {
                 var files = [];
                 product.depends.forEach(function(item){
                     files.push(item + '*.lib');
+                    files.push(item + '*.dll');
                 });
                 return files;
             }
@@ -130,9 +132,10 @@ Project {
             prefix: Environment.getEnv('QTDIR') + '/bin/'
             files: {
                 var files = [];
-                [ 'lib*GL*', 'opengl*' ].forEach(function(item){
+                [ 'lib*GL*' ].forEach(function(item){
                     files.push(item + project.variantSuffix + '.dll');
                 });
+                files.push('opengl*.dll');
                 files.push('d3dcompiler*.dll');
                 return files;
             }

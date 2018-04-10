@@ -19,7 +19,6 @@ CppDyLibrary {
     destinationDirectory: FileInfo.joinPaths(destinationRoot, uriDir)
     installDir: FileInfo.joinPaths(installPrefix, 'meta', uriDir)
 
-    //desc.condition: false
     defaultCopyHeader: false
     defaultCopyDynamic: false
     defaultInstall: false

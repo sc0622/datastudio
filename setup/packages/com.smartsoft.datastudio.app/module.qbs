@@ -5,8 +5,7 @@ import qbs.Environment
 import qbs.TextFile
 
 PackageProduct {
-    name: 'com.smartsoft.datastudio.app'
-
+    productPath: path
     type: base.concat([ 'data.tools.exe.out' ])
 
     // global

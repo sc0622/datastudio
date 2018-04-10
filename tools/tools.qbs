@@ -3,10 +3,12 @@ import qbs.File
 import qbs.FileInfo
 
 Product {
-
     type: [ 'tools.exe.out' ]
 
-    files: [ '**/*.rc' ]
+    files: [
+        'common/**/*',
+        'resource/**/*'
+    ]
 
     Group {
         name: 'qbs'
@@ -14,6 +16,8 @@ Product {
         files: [
             // imports
             'imports/**/*.qbs',
+            // imports
+            'imports/**/*.js',
             // modules
             'modules/**/*.qbs'
         ]

@@ -17,7 +17,8 @@ Project {
     readonly property string projectDisplayName: 'Data Studio'
     readonly property string variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
     readonly property path qtdir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTDIR'))
-    readonly property path inatallRoot: qbs.installRoot
+    readonly property path installRoot: qbs.installRoot
+    readonly property path workDirectory: FileInfo.joinPaths(installRoot, projectName)
 
     references: [
         'tools/setenv/setenv.qbs',
@@ -88,7 +89,7 @@ Project {
                         content = content.replace(/@VARIANT_SUFFIX@/g, project.variantSuffix);
                         // replace @PROJECT_INSTALL_ROOT@
                         var relativeInstallRoot = '../' + FileInfo.relativePath(project.sourceDirectory + '/..',
-                                                                                project.inatallRoot);
+                                                                                project.installRoot);
                         content = content.replace(/@PROJECT_INSTALL_ROOT@/g, relativeInstallRoot);
                         // replace @PROJECT_NAME@
                         content = content.replace(/@PROJECT_NAME@/g, project.projectName);

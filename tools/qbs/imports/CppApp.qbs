@@ -5,8 +5,7 @@ import qbs.FileInfo
 CppApplication {
     version: '1.0.0'
 
-    // module
-    readonly property path precompPath: project.sourceDirectory + '/src/common'
+    readonly property path precompPath: path + '/common'
 
     Depends { name: 'Qt.core'; cpp.link: false }
     Depends { name: "Qt.qminimal"; condition: Qt.core.staticBuild }

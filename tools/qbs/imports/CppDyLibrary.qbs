@@ -11,7 +11,7 @@ DynamicLibrary {
     property string module: ''
     readonly property path includePath: project.sourceDirectory + '/include/'
                                         + module + '/' + name
-    readonly property path precompPath: project.sourceDirectory + '/src/common'
+    readonly property path precompPath: path + '/common'
 
     // translation
     property path langPath: FileInfo.joinPaths(sourceDirectory, 'resource', 'lang')

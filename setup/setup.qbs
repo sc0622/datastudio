@@ -16,15 +16,15 @@ Project {
 
     Product {
         name: 'pack-build'
-        type: 'pack.out'
+        type: [ 'pack.out' ]
 
         readonly property string ifwDir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTIFW_DIR'))
 
         Depends { name: 'cpp' }
         Depends { name: 'config'; cpp.link: false }
-        Depends { name: 'com.smartsoft.datastudio.3rdpart'; cpp.link: false }
-        Depends { name: 'com.smartsoft.datastudio.core'; cpp.link: false }
-        Depends { name: 'com.smartsoft.datastudio.app'; cpp.link: false }
+        Depends { name: 'com_smartsoft_datastudio_3rdpart'; cpp.link: false }
+        Depends { name: 'com_smartsoft_datastudio_core'; cpp.link: false }
+        Depends { name: 'com_smartsoft_datastudio_app'; cpp.link: false }
 
         Rule {
             condition: File.exists(ifwDir)

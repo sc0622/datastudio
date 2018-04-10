@@ -3,12 +3,14 @@ import qbs.File
 import qbs.FileInfo
 
 Product {
-    name: domain
+    condition: !!productPath
+    name: FileInfo.relativePath(productPath + '/..', productPath).replace(/\./g, '_')
 
     Depends { name: 'cpp' }
     Depends { name: 'pack.data'; cpp.link: false }
     Depends { name: 'pack.meta'; cpp.link: false }
 
+    property path productPath
     readonly property string domain: FileInfo.relativePath(sourceDirectory + '/..', sourceDirectory)
     readonly property path projectDir: FileInfo.joinPaths(project.projectInstallRoot, project.projectName)
     readonly property string installPrefix: FileInfo.joinPaths(project.setupDir, 'packages')
