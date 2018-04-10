@@ -10,6 +10,7 @@ CppApplication {
     Depends { name: 'Qt.core'; cpp.link: false }
     Depends { name: "Qt.qminimal"; condition: Qt.core.staticBuild }
     Depends { name: 'desc'; required: false }
+    Depends { name: 'setenv-sync'; required: false; cpp.link: false }
 
     targetName: name
     desc.condition: true

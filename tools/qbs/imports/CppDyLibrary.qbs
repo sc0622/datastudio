@@ -38,6 +38,7 @@ DynamicLibrary {
     Depends { name: 'cpp' }
     Depends { name: 'desc'; cpp.link: false }
     Depends { name: 'Qt.core'; cpp.link: false }
+    Depends { name: 'setenv-sync'; required: false; cpp.link: false }
 
     targetName: name
     desc.condition: true
