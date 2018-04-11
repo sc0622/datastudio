@@ -38,7 +38,7 @@ DynamicLibrary {
     Depends { name: 'cpp' }
     Depends { name: 'desc'; cpp.link: false }
     Depends { name: 'Qt.core'; cpp.link: false }
-    Depends { name: 'setenv-sync'; required: false; cpp.link: false }
+    Depends { name: 'setenv'; required: false; cpp.link: false }
 
     targetName: name
     desc.condition: true
@@ -54,7 +54,7 @@ DynamicLibrary {
         defines.push(upperName + '_BUILD');
         return defines;
     }
-    cpp.variantSuffix: project.variantSuffix
+    cpp.variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
 
     Group {
         fileTagsFilter: installFileTags

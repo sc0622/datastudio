@@ -11,12 +11,12 @@ Product {
     Depends { name: 'pack.meta'; cpp.link: false }
 
     property path productPath
-    readonly property string domain: FileInfo.relativePath(sourceDirectory + '/..', sourceDirectory)
+    readonly property path qtdir: FileInfo.cleanPath(Qt.core.binPath + '/..')
     readonly property path projectDir: FileInfo.joinPaths(project.projectInstallRoot, project.projectName)
+    readonly property string domain: FileInfo.relativePath(sourceDirectory + '/..', sourceDirectory)
     readonly property string installPrefix: FileInfo.joinPaths(project.setupDir, 'packages')
-    readonly property string installDir: FileInfo.joinPaths(domain, 'data')
-    readonly property path dataDir: FileInfo.joinPaths(project.completeSetupDir, 'packages', installDir)
-
     readonly property path metaSourcePath: pack.meta.sourcePath
     readonly property path metaTargetPath: pack.meta.targetPath
+    readonly property string dataInstallPrefix: pack.data.installPrefix
+    readonly property string metaInstallPrefix: pack.meta.installPrefix
 }

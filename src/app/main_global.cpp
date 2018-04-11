@@ -1,8 +1,8 @@
 ﻿#include "precomp.h"
 #include "main_global.h"
-#include "Common/LanguageMgr.h"
+#include "common/LanguageMgr.h"
 #include "SplashWidget.h"
-#include "MainView/MainWindow.h"
+#include "mainview/MainWindow.h"
 #include <QFileSystemWatcher>
 #include <QMainWindow>
 #include <QDockWidget>

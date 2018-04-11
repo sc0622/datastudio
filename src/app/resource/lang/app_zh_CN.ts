@@ -813,7 +813,7 @@
 <context>
     <name>Logging</name>
     <message>
-        <location filename="../../common/Logging.cpp" line="42"/>
+        <location filename="../../common/Logging.cpp" line="41"/>
         <source>Loading log configuration file failure![file: %1] [desc: %2]</source>
         <translation>加载日志配置文件失败！[文件：%1] [描述：%2]</translation>
     </message>

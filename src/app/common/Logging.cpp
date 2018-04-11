@@ -25,8 +25,7 @@ private:
 
 void LoggingPrivate::init()
 {
-    const QString filePath(JMain::instance()->configDir()
-                           .append("/logging.conf"));
+    const QString filePath(JMain::instance()->configDir().append("/logging.conf"));
     try {
         log4cpp::PropertyConfigurator::configure(filePath.toStdString());
     } catch (log4cpp::ConfigureFailure cf) {

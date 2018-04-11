@@ -82,8 +82,7 @@ CMakeLists.txt.user*
 Thumbs.db
 
 #
-/setup/pack/bin
-/setup/pack/packages/com.smartsoft*/**/data
+/setup/bin
 datastudio-setup.qbs
 
 /include/3rdpart

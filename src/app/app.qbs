@@ -55,6 +55,8 @@ Project {
             qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'
         }
+
+        //destinationDirectory: project.workDirectory +  '/bin'
     }
 
     Product {

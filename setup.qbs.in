@@ -8,7 +8,7 @@ Project {
     qbs.enableDebugCode: true
     qbsSearchPaths: [ 'tools/qbs' ]
 
-    property string version: '@VERSION@'
+    readonly property string version: '@VERSION@'
     readonly property int versionMajor: parseInt(version.split('.')[0])
     readonly property int versionMinor: parseInt(version.split('.')[1])
     readonly property int versionPatch: parseInt(version.split('.')[2])

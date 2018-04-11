@@ -8,12 +8,7 @@ CppApp {
 
     Depends { name: "Qt.gui" }
     Depends { name: 'Qt.widgets' }
-    Depends {
-        name: "Qt"
-        submodules: Qt.gui.defaultQpaPlugin
-        condition: linkDefaultQpaPlugin && Qt.gui.defaultQpaPlugin
-    }
-    //Depends { name: 'setenv-sync'; required: false; cpp.link: false } //
+    Depends { name: 'setenv'; required: false; cpp.link: false }
 
     property bool linkDefaultQpaPlugin: Qt.gui.isStaticLibrary
 

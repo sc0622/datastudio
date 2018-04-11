@@ -8,6 +8,8 @@ Module {
     readonly property path sourcePath: FileInfo.joinPaths(product.sourceDirectory, 'meta')
     readonly property path targetPath: FileInfo.joinPaths(project.completeSetupDir, 'packages',
                                                           product.domain, 'meta')
+    property string installPrefix: FileInfo.joinPaths(project.setupDir, 'packages',
+                                                      product.domain, 'meta')
 
     Depends { name: 'cpp' }
 
@@ -20,8 +22,7 @@ Module {
         prefix: root.sourcePath + '/'
         files: [ '**/*' ]
         qbs.install: root.enabledInstall
-        qbs.installPrefix: FileInfo.joinPaths(project.setupDir, 'packages')
-        qbs.installDir: FileInfo.joinPaths(product.domain, name)
+        qbs.installPrefix: product.metaInstallPrefix
         qbs.installSourceBase: name
     }
 }

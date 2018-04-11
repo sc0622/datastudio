@@ -19,7 +19,7 @@ CppApplication {
     desc.productName: targetName
 
     cpp.includePaths: base.concat([ precompPath ])
-    cpp.variantSuffix: project.variantSuffix
+    cpp.variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
 
     Properties {
         condition: qbs.targetOS.contains('linux')

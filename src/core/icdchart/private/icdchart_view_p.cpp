@@ -97,7 +97,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
     }
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
-        chart = 0;
+        chart = nullptr;
         break;
     default:
         break;
@@ -114,7 +114,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
             Q_ASSERT(false);    // logic error
             return false;       // create failure or not supported
         }
-        chart->setChartTheme((JChart::ChartTheme)chartTheme);
+        chart->setChartTheme(JChart::ChartTheme(chartTheme));
         chart->setAxisVisible(JChart::yLeft, showYLabel);
         chart->setAxisAlign(JChart::yLeft, showYAlign);
         chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
@@ -202,10 +202,10 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const TablePtr &tabl
     }
 
     int i = 0;
-    int count = item->rowCount();
+    const int rowCount = item->rowCount();
     const Icd::ItemPtrArray &dataItems = table->allItem();
     for (Icd::ItemPtrArray::const_iterator citer = dataItems.cbegin();
-         citer != dataItems.cend() && i < count; ++citer, ++i) {
+         citer != dataItems.cend() && i < rowCount; ++citer, ++i) {
         const Icd::ItemPtr &dataItem = *citer;
         QStandardItem *itemData = item->child(i);
         if (!itemData) {
@@ -218,7 +218,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const TablePtr &tabl
     }
 
     //
-    if (count > 0) {
+    if (rowCount > 0) {
         item->setData(true, Icd::TreeBoundRole);
     }
 
@@ -233,10 +233,10 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::FrameItem
     }
 
     int i = 0;
-    int count = item->rowCount();
+    const int rowCount = item->rowCount();
     const Icd::TablePtrMap &tables = frame->allTable();
     for (Icd::TablePtrMap::const_iterator citer = tables.cbegin();
-         citer != tables.cend() && i < count; ++citer, ++i) {
+         citer != tables.cend() && i < rowCount; ++citer, ++i) {
         const Icd::TablePtr &table = citer->second;
         QStandardItem *itemTable = item->child(i);
         if (!itemTable) {
@@ -249,7 +249,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::FrameItem
     }
 
     //
-    if (count > 0) {
+    if (rowCount > 0) {
         item->setData(true, Icd::TreeBoundRole);
     }
 
@@ -363,8 +363,8 @@ bool ChartViewPrivate::findChart(JChart::Chart *chart)
         return false;
     }
 
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             if (chartView->chartAt(row, column) == chart) {
@@ -378,8 +378,8 @@ bool ChartViewPrivate::findChart(JChart::Chart *chart)
 
 JChart::AbstractSeries *ChartViewPrivate::findSeries(const QString &domain) const
 {
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *chart = chartView->chartAt(row, column);
@@ -409,8 +409,8 @@ void ChartViewPrivate::setRunning(bool value)
     Q_Q(ChartView);
     if (value != isRunning()) {
         running = value;
-        int rowCount = chartView->rowCount();
-        int columnCount = chartView->columnCount();
+        const int rowCount = chartView->rowCount();
+        const int columnCount = chartView->columnCount();
         for (int row = 0; row < rowCount; ++row) {
             for (int column = 0; column < columnCount; ++column) {
                 JChart::Chart *chart = chartView->chartAt(row, column);
@@ -469,7 +469,7 @@ void ChartViewPrivate::updateChart(JChart::Chart *chart)
         return;
     }
 
-    int seriesCount = chart->seriesCount();
+    const int seriesCount = chart->seriesCount();
     if (!chart->isPlay() || seriesCount == 0) {
         return;
     }
@@ -525,8 +525,8 @@ void ChartViewPrivate::onTrackerChanged(JChart::Chart *chart, const QPointF &pos
         return;
     }
 
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *_chart = chartView->chartAt(row, column);
@@ -546,8 +546,8 @@ void ChartViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &pos)
         return;
     }
 
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *_chart = chartView->chartAt(row, column);
@@ -563,8 +563,8 @@ void ChartViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &pos)
 
 void ChartViewPrivate::updateScale()
 {
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *chart = chartView->chartAt(row, column);
