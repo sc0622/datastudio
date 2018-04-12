@@ -1,27 +1,28 @@
 import qbs
 import qbs.File
 import qbs.FileInfo
-import '../../setenv.js' as Func
+import '../../setenv/setenv.js' as Env
 
-Module {
-    id: root
-    additionalProductTypes: [ 'header.out', 'library.out' ]
+Product {
+    name: 'JFrameworkInstall'
+    type: [ 'header.out', 'library.out' ]
+
     Depends { name: 'cpp' }
 
-    readonly property path jframeDir: Func.jframeDir(project)
-    readonly property stringList depends3rdpart: [
-        'jchart', 'jencrypt', 'jutraledit', 'jwt', 'log4cpp', 'nodeeditor', 'qwt', 'tinyxml'
-    ]
+    readonly property path jframeDir: Env.jframeDir(project)
+    readonly property bool jframeExists: !!jframeDir
+    property stringList modules3rdpart: []
 
     // headers
 
     Group {
         id: _3rdpart_header
+        condition: jframeExists
         name: '3rdpart_header'
-        prefix: root.jframeDir + '/include/3rdpart/'
+        prefix: jframeDir + '/include/3rdpart/'
         files: {
             var files = [];
-            root.depends3rdpart.forEach(function(item){
+            modules3rdpart.forEach(function(item){
                 files.push(item + '/**/*.h');
                 files.push(item + '/**/*.hh');
                 files.push(item + '/**/*.hpp');
@@ -32,11 +33,12 @@ Module {
     }
 
     Rule {
+        condition: jframeExists
         inputs: _3rdpart_header.fileTags
         Artifact {
             fileTags: [ 'header.out' ]
             filePath: FileInfo.joinPaths(project.sourceDirectory,
-                                         FileInfo.relativePath(root.jframeDir, input.filePath))
+                                         FileInfo.relativePath(product.jframeDir, input.filePath))
         }
         prepare: {
             var cmd = new JavaScriptCommand();
@@ -51,12 +53,13 @@ Module {
 
     Group {
         id: _3rdpart_dynamic
+        condition: jframeExists
         name: '3rdpart_dynamic'
-        prefix: root.jframeDir + '/lib/3rdpart/'
+        prefix: jframeDir + '/lib/3rdpart/'
         files: {
             var files = [];
-            root.depends3rdpart.forEach(function(item){
-                files.push(item + Func.dylibSuffix(product));
+            modules3rdpart.forEach(function(item){
+                files.push(item + Env.dylibSuffix(product));
             });
             return files;
         }
@@ -68,12 +71,13 @@ Module {
 
     Group {
         id: _3rdpart_library
+        condition: jframeExists
         name: '3rdpart_library'
         prefix: _3rdpart_dynamic.prefix
-        excludeFiles: [ Func.incDylibSuffixFuzzy(product) ]
+        excludeFiles: [ Env.incDylibSuffixFuzzy(product) ]
         files: {
             var files = [];
-            root.depends3rdpart.forEach(function(item){
+            modules3rdpart.forEach(function(item){
                 files.push(item + '*.lib');
                 files.push(item + '*.dll');
             });
@@ -83,11 +87,12 @@ Module {
     }
 
     Rule {
+        condition: jframeExists
         inputs: _3rdpart_dynamic.fileTags.concat(_3rdpart_library.fileTags)
         Artifact {
             fileTags: [ 'library.out' ]
             filePath: FileInfo.joinPaths(project.sourceDirectory,
-                                         FileInfo.relativePath(root.jframeDir, input.filePath))
+                                         FileInfo.relativePath(product.jframeDir, input.filePath))
         }
         prepare: {
             var cmd = new JavaScriptCommand();

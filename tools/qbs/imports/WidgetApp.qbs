@@ -8,7 +8,6 @@ CppApp {
 
     Depends { name: "Qt.gui" }
     Depends { name: 'Qt.widgets' }
-    Depends { name: 'setenv'; required: false; cpp.link: false }
 
     property bool linkDefaultQpaPlugin: Qt.gui.isStaticLibrary
 

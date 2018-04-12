@@ -10,7 +10,7 @@ CppApplication {
     Depends { name: 'Qt.core'; cpp.link: false }
     Depends { name: "Qt.qminimal"; condition: Qt.core.staticBuild }
     Depends { name: 'desc'; required: false }
-    Depends { name: 'setenv-sync'; required: false; cpp.link: false }
+    Depends { name: 'setenv'; required: false; cpp.link: false }
 
     targetName: name
     desc.condition: true
@@ -57,5 +57,40 @@ CppApplication {
             return defines;
         }
         files: 'resource/windows/application.rc'
+    }
+
+    Rule {
+        inputs: [ 'j.scxml.compilable' ]
+        Artifact {
+            fileTags: [ 'hpp', 'unmocable' ]
+            filePath: FileInfo.joinPaths(product.moduleProperty('Qt.core', 'generatedHeadersDir'),
+                                         input.baseName + '.h')
+        }
+        Artifact {
+            fileTags: [ 'cpp' ]
+            filePath: input.baseName + '.cpp'
+        }
+        prepare: {
+            var compilerName = product.moduleProperty('Qt.scxml', 'qscxmlcName');
+            var compilerPath = FileInfo.joinPaths(input.moduleProperty('Qt.core', 'binPath'),
+                                                  compilerName);
+            var args = [ '--header', outputs['hpp'][0].filePath,
+                        '--impl', output['cpp'][0].filePath];
+            var cxx98 = input.moduleProperty('cpp', 'cxxLanguageVersion') === 'c++98';
+            if (cxx98)
+                args.push('-no-c++11');
+            var className = input.moduleProperty('Qt.scxml', 'className');
+            if (className)
+                args.push('--classname', className);
+            var namespace = input.moduleProperty('Qt.scxml', 'namespace');
+            if (namespace)
+                args.push('-namespace', namespace);
+            args.push('--statemethods');
+            args.push(input.filePath);
+            var cmd = new Command(compilerPath, args);
+            cmd.description = 'compiling ' + input.fileName;
+            cmd.highlight = 'codegen';
+            return [ cmd ];
+        }
     }
 }

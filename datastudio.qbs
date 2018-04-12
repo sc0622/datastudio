@@ -6,7 +6,7 @@ import qbs.TextFile
 
 Project {
     minimumQbsVersion: '1.10.1'
-    qbs.enableDebugCode: true
+    //qbs.enableDebugCode: true
     qbsSearchPaths: [ 'tools/qbs' ]
 
     property string version: probeVersion.version

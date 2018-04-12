@@ -21,6 +21,9 @@ function projectDir(project, projectName, envName) {
                 path = FileInfo.joinPaths(project.sourceDirectory, '..', '..', '..', projectName, 'project');
                 if (!File.exists(qbsFilePath(path, projectName))) {
                     path = FileInfo.joinPaths(project.sourceDirectory, '..', projectName);
+                    if (!File.exists(qbsFilePath(path, projectName))) {
+                        return null;
+                    }
                 }
             }
         }
@@ -43,16 +46,16 @@ function dylibSuffix(product) {
 
 function incDylibSuffixFuzzy(product) {
     if (product.qbs.buildVariant === 'debug') {
-        return '*d.dll';
+        return '**/*d.dll';
     } else {
-        return '*[^d].dll';
+        return '**/*[^d].dll';
     }
 }
 
 function excDylibSuffixFuzzy(product) {
     if (product.qbs.buildVariant === 'debug') {
-        return '*[^d].dll';
+        return '**/*[^d].dll';
     } else {
-        return '*d.dll';
+        return '**/*d.dll';
     }
 }

@@ -25,7 +25,7 @@ Product {
 
     Group {
         condition: !project.projectInstallRoot
-        name: 'tools'
+        name: 'setenv-tools'
         prefix: './'
         files: [
             'WinSnap/*.*',

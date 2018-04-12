@@ -6,6 +6,7 @@ CoreDyLibrary {
     translationFileTags: base.concat([ 'qml', 'js' ])
     translations: [ 'icdmeta_zh_CN.ts' ]
     defaultTranslation: true
+    defaultInstall: false
 
     Depends { name: 'Qt.qml' }
     Depends { name: 'Qt.quick' }

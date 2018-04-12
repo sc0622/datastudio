@@ -2,10 +2,9 @@ import qbs
 import qbs.FileInfo
 
 QmlPluginLibrary {
-
     uri: 'Icd.Core'
-
     dynamicLibraryPaths: base.concat([project.sourceDirectory + '/lib/3rdpart/moxa'])
+    defaultInstall: false
 
     Depends { name: "Qt.qminimal"; condition: Qt.core.staticBuild; }
     Depends { name: 'Qt.widgets' }
