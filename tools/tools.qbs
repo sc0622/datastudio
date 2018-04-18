@@ -5,22 +5,10 @@ import qbs.FileInfo
 Product {
     type: [ 'tools.exe.out' ]
 
-    files: [
-        'common/**/*',
-        'resource/**/*'
-    ]
-
     Group {
         name: 'qbs'
         prefix: 'qbs/'
-        files: [
-            // imports
-            'imports/**/*.qbs',
-            // imports
-            'imports/**/*.js',
-            // modules
-            'modules/**/*.qbs'
-        ]
+        files: [ '**/*' ]
     }
 
     Group {

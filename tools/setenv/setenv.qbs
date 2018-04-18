@@ -3,7 +3,6 @@ import qbs.FileInfo
 import 'setenv.js' as Env
 
 Project {
-    qbsSearchPaths: ['.']
 
     QtInstall {
         name: 'setenv-qt'

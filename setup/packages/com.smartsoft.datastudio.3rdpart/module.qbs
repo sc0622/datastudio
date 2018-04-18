@@ -20,8 +20,7 @@ PackageProduct {
             return files;
         }
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: installDir
+        qbs.installPrefix: dataInstallPrefix
     }
 
     // 3rdpart - moxa
@@ -30,8 +29,7 @@ PackageProduct {
         prefix: FileInfo.joinPaths(project.sourceDirectory, 'lib', '3rdpart', 'moxa') + '/'
         files: [ 'pcomm.dll' ]
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: installDir
+        qbs.installPrefix: dataInstallPrefix
     }
 
     // Qt - 3rdpart
@@ -47,8 +45,7 @@ PackageProduct {
             return files;
         }
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: installDir
+        qbs.installPrefix: dataInstallPrefix
     }
     // Qt - base
 
@@ -65,8 +62,7 @@ PackageProduct {
             return files;
         }
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: installDir
+        qbs.installPrefix: dataInstallPrefix
     }
 
     // Qt - plugins
@@ -83,8 +79,7 @@ PackageProduct {
             return files;
         }
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: installDir
+        qbs.installPrefix: dataInstallPrefix
         qbs.installSourceBase: prefix
     }
 

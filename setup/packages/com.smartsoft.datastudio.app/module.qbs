@@ -19,8 +19,7 @@ PackageProduct {
             'VERSION'
         ]
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: installDir
+        qbs.installPrefix: dataInstallPrefix
     }
 
     // config
@@ -30,8 +29,8 @@ PackageProduct {
         files: [ '**/*.*' ]
         excludeFiles: [ '**/*.pr[io]', '**/*.qbs', '**/~*' ]
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: FileInfo.joinPaths(installDir, 'config')
+        qbs.installPrefix: dataInstallPrefix
+        qbs.installDir: 'config'
         qbs.installSourceBase: prefix
     }
 
@@ -41,8 +40,8 @@ PackageProduct {
         prefix: FileInfo.joinPaths(projectDir, 'bin') + '/'
         files: [ project.projectName + project.variantSuffix + '.exe' ]
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: FileInfo.joinPaths(installDir, 'bin')
+        qbs.installPrefix: dataInstallPrefix
+        qbs.installDir: 'bin'
     }
 
     // tools
@@ -82,8 +81,8 @@ PackageProduct {
                                    qbs.architecture, 'Microsoft.VC*.*CRT') + '/'
         files: [ 'concrt*.dll', 'msvcp*.dll', 'vccorlib*.dll', 'vcruntime*.dll' ]
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: FileInfo.joinPaths(installDir, 'bin')
+        qbs.installPrefix: dataInstallPrefix
+        qbs.installDir: 'bin'
     }
 
     Rule {

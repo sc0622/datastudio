@@ -18,7 +18,6 @@ PackageProduct {
             return files;
         }
         qbs.install: true
-        qbs.installPrefix: installPrefix
-        qbs.installDir: installDir
+        qbs.installPrefix: dataInstallPrefix
     }
 }

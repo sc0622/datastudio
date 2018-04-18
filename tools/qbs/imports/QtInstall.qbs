@@ -3,6 +3,7 @@ import qbs.File
 import qbs.FileInfo
 import qbs.TextFile
 import qbs.Environment
+//import common.Install
 import '../../setenv/setenv.js' as Env
 
 Product {
