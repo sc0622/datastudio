@@ -88,3 +88,6 @@ datastudio-setup.qbs
 /include/3rdpart
 /lib/3rdpart/**/*.*
 !/lib/3rdpart/moxa/*.*
+
+# nodejs
+/node/datastudio/node_modules
