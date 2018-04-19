@@ -15,13 +15,13 @@ export class AppComponent {
   }
 */
 
-  answer: string = "";
-  answerDisplay: string = "";
-  showSpinner: boolean = false;
+  answer: String = '';
+  answerDisplay: String = '';
+  showSpinner: Boolean = false;
 
   showAnswer() {
     this.showSpinner = true;
-    this.answerDisplay = "";
+    this.answerDisplay = '';
 
     setTimeout(() => {
       this.answerDisplay = this.answer;

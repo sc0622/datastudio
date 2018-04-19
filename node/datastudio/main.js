@@ -3,6 +3,12 @@ const {app, BrowserWindow} = require('electron');
 const path = require('path')
 const url = require('url')
 
+//TEST
+const addon = require('./core/protocore/build/Release/addon');
+
+console.log(addon.hello());
+// Prints: 'world'
+
 let win = null;
 
 function createWindow() {

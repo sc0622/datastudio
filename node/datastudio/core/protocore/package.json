@@ -1,0 +1,14 @@
+{
+  "name": "protocore",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "hello.js",
+  "scripts": {
+    "gyp": "node-gyp configure build"
+  },
+  "private": true,
+  "dependencies": {
+    "node-gyp": "^3.6.2"
+  },
+  "devDependencies": {}
+}
