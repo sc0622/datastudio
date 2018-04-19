@@ -1,8 +1,11 @@
 {
   "targets": [
     {
-      "target_name": "addon",
-      "sources": [ "hello.cc" ]
+      "target_name": "protocore",
+      "sources": [
+        "main.cpp",
+        "src/MyObject.cpp"
+      ]
     }
   ]
 }
