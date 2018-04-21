@@ -14,11 +14,13 @@ DynamicLibrary {
     Group {
         name: 'Headers'
         files: [ '**/*.h' ]
+        excludeFiles: [ '**/node_modules/**/*' ]
     }
 
     Group {
         name: 'Sources'
         files: [ '**/*.cpp' ]
+        excludeFiles: [ '**/node_modules/**/*' ]
     }
 
     cpp.includePaths: [ nodePath + '/include' ]

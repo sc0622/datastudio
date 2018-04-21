@@ -37,7 +37,7 @@ Product {
         }
         prepare: {
             var cmd = new JavaScriptCommand;
-            cmd.description = 'coping ' + output.filePath;
+            cmd.description = 'coping ' + output.fileName;
             //cmd.silent = true;
             cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
             return [ cmd ];

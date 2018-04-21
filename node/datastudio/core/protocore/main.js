@@ -1,10 +1,10 @@
 // main.js
-const protocore = require('./build/Debug/protocore')
+//const protocore = require('./build/Debug/protocore')
+const protocore = require('../../../lib/debug/protocore')
 
-const obj = new protocore.MyObject(10)
+const obj = new protocore.Object('helloworld', 2)
 
-console.log(obj.plusOne())
-console.log(obj.plusOne())
-console.log(obj.plusOne())
-console.log(obj.plusOne())
+obj.setDomain("what");
+
+console.log(obj.domain());
 

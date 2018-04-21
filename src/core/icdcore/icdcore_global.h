@@ -24,6 +24,10 @@
 #define ICDCORE_EXPORT
 #endif
 
+#ifdef ICDCORE_JSON_LIB
+#include "3rdpart/jsoncpp/json_tool.h"
+#endif
+
 ////////////////////////////////
 
 // for shared_ptr, unique_ptr

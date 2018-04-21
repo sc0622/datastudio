@@ -122,6 +122,12 @@ static void j_delete_qobject(QObject *object)
     delete object;
 }
 
+// nodejs
+#ifdef BUILDING_NODE_EXTENSION
+#include <node/node.h>
+#include <node/node_object_wrap.h>
+#endif
+
 #endif
 
 #endif // PRECOMP_H
