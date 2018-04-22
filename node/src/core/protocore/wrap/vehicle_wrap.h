@@ -1,24 +1,25 @@
 #pragma once
 
 #include "node_global.h"
+#include "object_wrap.h"
 
-namespace Icd { class Vehicle; }
+namespace Icd {
+class Vehicle;
+typedef std::shared_ptr<Icd::Vehicle> VehiclePtr;
+}
 
 PROTOCORE_BEGIN
 
-class VehicleWrap : public node::ObjectWrap
+class VehicleWrap : public Napi::ObjectWrap<VehicleWrap>
 {
 public:
-    VehicleWrap(Icd::Vehicle *data);
+    VehicleWrap(const Napi::CallbackInfo &info);
 
-    static node::Object New(v8::Isolate *isolate, Icd::Vehicle *data);
-
-    static node::Object NewInstance(Icd::Vehicle *data);
+    static void Initialize(Napi::Env env, Napi::Object exports);
 
 private:
-
-private:
-    NODE_DECL2(Vehicle)
+    Icd::VehiclePtr data;
+    Napi::FunctionReference Constructor;
 };
 
 PROTOCORE_END

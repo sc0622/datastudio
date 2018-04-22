@@ -8,6 +8,7 @@
   },
   "private": true,
   "dependencies": {
+    "node-addon-api": "^1.2.0",
     "node-gyp": "^3.6.2"
   },
   "devDependencies": {

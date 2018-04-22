@@ -1,10 +1,53 @@
 #pragma once
 
-#include <node/node.h>
-#include <node/node_object_wrap.h>
-#include <node/node_api.h>
+#include <node/napi.h>
+#include <memory>
 
+#ifndef PROTOCORE_BEGIN
+#define PROTOCORE_BEGIN namespace protocore {
+#endif
+
+#ifndef PROTOCORE_END
+#define PROTOCORE_END }
+#endif
+
+#ifndef PROTOCORE_PREFIX
+#define PROTOCORE_PREFIX Icd
+#endif
+
+namespace Icd {
+class Object;
+typedef std::shared_ptr<Icd::Object> ObjectPtr;
+}
+
+//
+typedef struct __SharedData { Icd::ObjectPtr ptr; } SharedData;
+typedef SharedData *SharedDataPtr;
+
+//
+template<typename T>
+inline std::shared_ptr<T> parse_object_data(void *data, bool create = false)
+{
+    if (!data) {
+        return std::shared_ptr<T>();
+    }
+
+    auto d = reinterpret_cast<SharedDataPtr>(data);
+    if (!d) {
+        return std::shared_ptr<T>();
+    }
+
+    auto ptr = std::dynamic_pointer_cast<T>(d->ptr);
+    if (!ptr && create) {
+        ptr = std::shared_ptr<T>(new T());
+    }
+
+    return ptr;
+}
+
+/*
 namespace node {
+
 //
 typedef v8::FunctionCallbackInfo<v8::Value> Args;
 typedef const Args &CArgsRef;
@@ -23,18 +66,6 @@ inline Value fromStdString(v8::Isolate* isolate, const std::string &str)
 }
 
 }
-
-#ifndef PROTOCORE_BEGIN
-#define PROTOCORE_BEGIN namespace protocore {
-#endif
-
-#ifndef PROTOCORE_END
-#define PROTOCORE_END }
-#endif
-
-#ifndef PROTOCORE_PREFIX
-#define PROTOCORE_PREFIX Icd
-#endif
 
 #ifndef NODE_DECL
 #define NODE_DECL(Class) \
@@ -134,3 +165,275 @@ inline Value fromStdString(v8::Isolate* isolate, const std::string &str)
 #endif
 
 // [node-method-map] <--
+*/
+// [napi-defines] -->
+
+#ifndef NAPI_DECL_METHOD
+#define NAPI_DECL_METHOD(method) \
+    static napi_value method(napi_env env, napi_callback_info info)
+#endif
+
+#ifndef NAPI_DECL_OBJECT
+#define NAPI_DECL_OBJECT(Class) \
+    public: \
+    static napi_value Init(napi_env env, napi_value exports); \
+    static void Destructor(napi_env env, void* nativeObject, void* finalize_hint); \
+    static napi_value NewInstance(napi_env env, const PROTOCORE_PREFIX::Class##Ptr data); \
+    napi_env getEnv() { return env_; } \
+    void setEnv(napi_env env) { env_ = env; }; \
+    napi_ref &getWrapper() { return wrapper_; } \
+    private: \
+    ~Class##Wrap(); \
+    static napi_value New(napi_env env, napi_callback_info info); \
+    private: \
+    static napi_ref ctor; \
+    napi_env env_; \
+    napi_ref wrapper_; \
+    PROTOCORE_PREFIX::Class##Ptr data_;
+#endif
+
+#ifndef NAPI_IMPL_OBJECT
+#define NAPI_IMPL_OBJECT(Class) \
+    napi_ref Class##Wrap::ctor; \
+    \
+    Class##Wrap::~Class##Wrap() { napi_delete_reference(env_, wrapper_); } \
+    \
+    void Class##Wrap::Destructor(napi_env env, void* nativeObject, void*) { \
+    reinterpret_cast<Class##Wrap*>(nativeObject)->~Class##Wrap(); } \
+    \
+    napi_value Class##Wrap::NewInstance(napi_env env, const PROTOCORE_PREFIX::Class##Ptr data) { \
+    return napi_new_object<Class##Wrap, PROTOCORE_PREFIX::Class##Ptr>(env, ctor, data); \
+    } \
+    \
+    napi_value Class##Wrap::New(napi_env env, napi_callback_info info) { \
+    return napi_new_object<Class##Wrap, PROTOCORE_PREFIX::Class, PROTOCORE_PREFIX::Class##Ptr>(env, info, ctor); \
+    }
+#endif
+namespace protocore {
+template<typename T, typename HPTR>
+inline napi_value napi_new_object(napi_env env, napi_ref ctor, const HPTR &data)
+{
+    napi_status status;
+    struct Data { HPTR handle; } data_;
+    data_.handle = data;
+    const int argc = 1;
+    napi_value argv[argc];
+    napi_value cons;
+
+    //FIXEDME [ finalize_cb ?= nullptr, to resolve ]
+    if (napi_create_external(env, &data_, nullptr, nullptr, &argv[0]) != napi_ok) {
+        return nullptr;
+    }
+
+    status = napi_get_reference_value(env, ctor, &cons);
+    if (status != napi_ok)
+        return nullptr;
+
+    napi_value instance = nullptr;
+    status = napi_new_instance(env, cons, argc, argv, &instance);
+    if (status != napi_ok)
+        return nullptr;
+
+    return instance;
+}
+
+template<typename T, typename H, typename HPTR>
+inline napi_value napi_new_object(napi_env env, napi_callback_info info, napi_ref ctor)
+{
+    napi_status status;
+    napi_value target;
+    status = napi_get_new_target(env, info, &target);
+    assert(status == napi_ok);
+    bool is_constructor = target != nullptr;
+
+    if (is_constructor) {
+        size_t argc = 1;
+        napi_value args[1];
+        napi_value jsthis;
+        status = napi_get_cb_info(env, info, &argc, args, &jsthis, nullptr);
+        assert(status == napi_ok);
+
+        napi_valuetype valuetype;
+        status = napi_typeof(env, args[0], &valuetype);
+        assert(status == napi_ok);
+
+        struct Data { HPTR handle; } *data_ = nullptr;
+        if (valuetype != napi_undefined) {
+            status = napi_get_value_external(env, args[0], reinterpret_cast<void**>(&data_));
+            assert(status == napi_ok);
+            if (!data_) {
+                return nullptr;
+            }
+        }
+
+        T *newObject = nullptr;
+        if (!data_ || !data_->handle) {
+            newObject = new T(HPTR(new H()));
+        } else {
+            newObject = new T(data_->handle);
+        }
+
+        newObject->setEnv(env);
+        status = napi_wrap(env, jsthis, reinterpret_cast<void*>(newObject),
+                           T::Destructor, nullptr, &newObject->getWrapper());
+        assert(status == napi_ok);
+        return jsthis;
+    } else {
+        size_t argc_ = 1;
+        napi_value args[1];
+        status = napi_get_cb_info(env, info, &argc_, args, nullptr, nullptr);
+        assert(status == napi_ok);
+
+        const size_t argc = 1;
+        napi_value argv[argc] = { args[0] };
+
+        napi_value cons;
+        status = napi_get_reference_value(env, ctor, &cons);
+        assert(status == napi_ok);
+
+        napi_value instance;
+        status = napi_new_instance(env, cons, argc, argv, &instance);
+        assert(status == napi_ok);
+        return instance;
+    }
+}
+
+}
+
+// [napi-method-map] -->
+
+#ifndef NAPI_MAP_BEGIN
+#define NAPI_MAP_BEGIN(Class) \
+    napi_value Class##Wrap::Init(napi_env env, napi_value exports) { \
+    const char *name = NODE_STRINGIFY(Class); \
+    napi_status status; \
+    napi_property_descriptor properties[] = {
+#endif
+
+#ifndef NAPI_MAP_END
+#define NAPI_MAP_END() \
+    }; \
+    napi_value cons; \
+    status = napi_define_class(env, name, NAPI_AUTO_LENGTH, New, nullptr, \
+    _countof(properties), properties, &cons); \
+    if (status != napi_ok) return exports; \
+    \
+    status = napi_create_reference(env, cons, 1, &ctor); \
+    if (status != napi_ok) return exports; \
+    \
+    status = napi_set_named_property(env, exports, name, cons); \
+    if (status != napi_ok) return exports; \
+    return exports; \
+    }
+#endif
+
+#ifndef NAPI_DESCR_PROPERTY
+#define NAPI_DESCR_PROPERTY(name, get, set) \
+{ NODE_STRINGIFY(name), nullptr, nullptr, get, set, nullptr, napi_default, nullptr },
+#endif
+
+#ifndef NAPI_DESCR_METHOD
+#define NAPI_DESCR_METHOD(name, func) \
+{ NODE_STRINGIFY(name), nullptr, func, nullptr, nullptr, nullptr, napi_default, nullptr }
+#endif
+
+#ifndef NAPI_METHO
+#define NAPI_MEMBER_METHO(Class, Name) \
+    napi_value Class::Name(napi_env env, napi_callback_info info)
+#endif
+
+#ifndef NAPI_D
+#define NAPI_D(Class) \
+    napi_value value = nullptr; \
+    Class *wrap = nullptr; \
+    do { \
+    napi_status status; \
+    size_t argc = 1; \
+    napi_value jsthis; \
+    status = napi_get_cb_info(env, info, &argc, &value, &jsthis, nullptr); \
+    assert(status == napi_ok); \
+    if (status != napi_ok) return nullptr; \
+    \
+    status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&wrap)); \
+    assert(status == napi_ok); \
+    if (status != napi_ok) return nullptr; \
+    } while (false)
+#endif
+
+template <typename T>
+inline T *napi_unwrap_object(napi_env env, napi_callback_info info)
+{
+    napi_status status;
+    size_t argc = 1;
+    napi_value value;
+    napi_value jsthis;
+    status = napi_get_cb_info(env, info, &argc, &value, &jsthis, nullptr);
+    assert(status == napi_ok);
+    if (status != napi_ok) return nullptr;
+
+    T *object;
+    status = napi_unwrap(env, jsthis, reinterpret_cast<void**>(&object));
+    assert(status == napi_ok);
+    if (status != napi_ok) return nullptr;
+
+    return object;
+}
+
+// - get value -
+
+inline napi_value napi_create_int32(napi_env env, int32_t value)
+{
+    napi_value _value;
+    if (napi_create_int32(env, value, &_value) != napi_ok) {
+        return nullptr;
+    }
+
+    return _value;
+}
+
+inline napi_value napi_create_string(napi_env env, const std::string &value)
+{
+    napi_value _value;
+    if (napi_create_string_utf8(env, value.c_str(), value.size(), &_value) != napi_ok) {
+        return nullptr;
+    }
+
+    return _value;
+}
+
+// - set value -
+
+inline int32_t napi_get_int32(napi_env env, napi_value value)
+{
+    int32_t _value;
+    if (napi_get_value_int32(env, value, &_value) != napi_ok) {
+        return 0;
+    }
+
+    return _value;
+}
+
+inline std::string napi_get_string(napi_env env, napi_value value)
+{
+    size_t strlen = 0;
+    if (napi_get_value_string_utf8(env, value, nullptr, 0, &strlen) != napi_ok
+            || strlen == 0) {
+        return std::string();
+    }
+
+    char *buffer = new char[strlen + 1];
+    size_t res;
+    napi_status status = napi_get_value_string_utf8(env, value, buffer, strlen + 1, &res);
+    if (status != napi_ok) {
+        delete[] buffer;
+        return std::string();
+    }
+
+    const std::string _value(buffer, strlen);
+    delete[] buffer;
+    return _value;
+}
+
+// [napi-method-map] <--
+
+// [napi-defines] <--

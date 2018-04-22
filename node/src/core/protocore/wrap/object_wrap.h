@@ -2,42 +2,52 @@
 
 #include "node_global.h"
 
-namespace Icd { class Object; }
+namespace Icd {
+class Object;
+typedef std::shared_ptr<Icd::Object> ObjectPtr;
+}
 
 PROTOCORE_BEGIN
 
-class ObjectWrap : public node::ObjectWrap
+class BaseObject : public Napi::ObjectWrap<BaseObject>
 {
 public:
-    ObjectWrap(Icd::Object *data);
+    BaseObject(const Napi::CallbackInfo& info);
+
+    Napi::Value objectType(const Napi::CallbackInfo &info);
+
+    //NAPI_DECL_METHOD(ObjectType);
+    //NAPI_DECL_METHOD(GetId);
+    //NAPI_DECL_METHOD(SetId);
+
+    /*NAPI_METHOD_DECL(Parent);
+    NAPI_METHOD_DECL(SetParent);
+
+    NAPI_METHOD_DECL(Domain);
+    NAPI_METHOD_DECL(Name);
+    NAPI_METHOD_DECL(Mark);
+    NAPI_METHOD_DECL(Desc);
+
+    NAPI_METHOD_DECL(SetId);
+    NAPI_METHOD_DECL(SetDomain);
+    NAPI_METHOD_DECL(SetName);
+    NAPI_METHOD_DECL(SetMark);
+    NAPI_METHOD_DECL(SetDesc);
+
+    NAPI_METHOD_DECL(IsPrivateMark);
+    NAPI_METHOD_DECL(ChildCount);
+    NAPI_METHOD_DECL(ObjectTypeString);
+    NAPI_METHOD_DECL(ResetData);
+    NAPI_METHOD_DECL(ClearData);
+    NAPI_METHOD_DECL(Clone);
+    NAPI_METHOD_DECL(DomainOfType);*/
+
+    static void Initialize(Napi::Env env, Napi::Object exports);
+    static Napi::Object New(Napi::Env env, const Icd::ObjectPtr &data);
 
 private:
-    NODE_METHOD_DECL(Parent)
-    NODE_METHOD_DECL(SetParent)
-
-    NODE_METHOD_DECL(ObjectType)
-    NODE_METHOD_DECL(Id)
-    NODE_METHOD_DECL(Domain)
-    NODE_METHOD_DECL(Name)
-    NODE_METHOD_DECL(Mark)
-    NODE_METHOD_DECL(Desc)
-
-    NODE_METHOD_DECL(SetId)
-    NODE_METHOD_DECL(SetDomain)
-    NODE_METHOD_DECL(SetName)
-    NODE_METHOD_DECL(SetMark)
-    NODE_METHOD_DECL(SetDesc)
-
-    NODE_METHOD_DECL(IsPrivateMark)
-    NODE_METHOD_DECL(ChildCount)
-    NODE_METHOD_DECL(ObjectTypeString)
-    NODE_METHOD_DECL(ResetData)
-    NODE_METHOD_DECL(ClearData)
-    NODE_METHOD_DECL(Clone)
-    NODE_METHOD_DECL(DomainOfType)
-
-private:
-    NODE_DECL2(Object)
+    Icd::ObjectPtr data;
+    Napi::FunctionReference Constructor;
 };
 
 PROTOCORE_END

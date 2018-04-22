@@ -1,21 +1,27 @@
 #pragma once
 
 #include "node_global.h"
+#include "object_wrap.h"
 
-namespace Icd { class Root; }
+namespace Icd {
+class Root;
+typedef std::shared_ptr<Icd::Root> RootPtr;
+}
 
 PROTOCORE_BEGIN
 
-class RootWrap : public node::ObjectWrap
+class RootWrap : public Napi::ObjectWrap<RootWrap>
 {
 public:
-    RootWrap(Icd::Root *data);
+    RootWrap(const Napi::CallbackInfo &info);
+
+    Napi::Value vehicles(const Napi::CallbackInfo &info);
+
+    static void Initialize(Napi::Env env, Napi::Object exports);
 
 private:
-    NODE_METHOD_DECL(AllVehicle)
-
-private:
-    NODE_DECL2(Root)
+    Icd::RootPtr data;
+    Napi::FunctionReference Constructor;
 };
 
 PROTOCORE_END
