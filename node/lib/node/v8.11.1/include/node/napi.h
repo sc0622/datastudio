@@ -342,7 +342,7 @@ namespace Napi {
   };
 
   /// A JavaScript object value.
-  class Object : public Value {
+  class Object : public  Value {
   public:
     /// Enables property and element assignments using indexing syntax.
     ///

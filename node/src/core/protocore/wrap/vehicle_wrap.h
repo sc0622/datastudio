@@ -13,13 +13,12 @@ PROTOCORE_BEGIN
 class VehicleWrap : public Napi::ObjectWrap<VehicleWrap>
 {
 public:
-    VehicleWrap(const Napi::CallbackInfo &info);
-
+    static Napi::FunctionReference ctor;
     static void Initialize(Napi::Env env, Napi::Object exports);
+    VehicleWrap(const Napi::CallbackInfo &info);
 
 private:
     Icd::VehiclePtr data;
-    Napi::FunctionReference Constructor;
 };
 
 PROTOCORE_END

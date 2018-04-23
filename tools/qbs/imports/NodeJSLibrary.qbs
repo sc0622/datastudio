@@ -14,6 +14,7 @@ CppDyLibrary {
     cpp.libraryPaths: base.concat([ FileInfo.joinPaths(nodePath, 'lib', qbs.architecture) ])
     cpp.dynamicLibraries: base.concat([ FileInfo.joinPaths(nodePath, 'lib', qbs.architecture, 'node') ])
     cpp.defines: base.concat([ 'BUILDING_NODE_EXTENSION' ])
+    cpp.cxxLanguageVersion: 'c++11'
 
     Rule {
         inputs: [ 'dynamiclibrary' ]

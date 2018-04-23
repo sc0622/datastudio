@@ -13,15 +13,14 @@ PROTOCORE_BEGIN
 class RootWrap : public Napi::ObjectWrap<RootWrap>
 {
 public:
+    static Napi::FunctionReference ctor;
+    static void Initialize(Napi::Env env, Napi::Object exports);
     RootWrap(const Napi::CallbackInfo &info);
 
     Napi::Value vehicles(const Napi::CallbackInfo &info);
 
-    static void Initialize(Napi::Env env, Napi::Object exports);
-
 private:
     Icd::RootPtr data;
-    Napi::FunctionReference Constructor;
 };
 
 PROTOCORE_END
