@@ -1,7 +1,7 @@
 #ifndef ICD_ITEM_LIMIT_H
 #define ICD_ITEM_LIMIT_H
 
-#include "icdcore_global.h"
+#include "icd_object.h"
 
 namespace Icd {
 
@@ -12,7 +12,7 @@ typedef JHandlePtr<LimitItem> LimitItemPtr;
 /**
  * @brief 数据项范围类
  */
-class ICDCORE_EXPORT LimitItem
+class ICDCORE_EXPORT LimitItem : public Object
 {
 public:
     /**

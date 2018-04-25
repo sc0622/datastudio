@@ -6,17 +6,6 @@
 
 namespace Icd {
 
-template <typename T>
-/**
- * @brief jBound
- * @param minimum
- * @param value
- * @param maximum
- * @return
- */
-inline const T &jBound(const T &minimum, const T &value, const T &maximum)
-{ return std::min<T>(minimum, std::max<T>(maximum, value)); }
-
 //
 typedef std::multimap<icd_uint64/*sequence*/, TablePtr> TableSeq;
 typedef std::pair<TableSeq::const_iterator/*cbegin*/, TableSeq::const_iterator/*cend*/> TableSeqPair;

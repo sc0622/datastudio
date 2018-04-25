@@ -40,6 +40,13 @@ std::string &BitItemData::trim(std::string &str)
 
 // class BitItem
 
+BitItem::BitItem(Object *parent)
+    : Item(Icd::ItemInvalid, parent)
+    , d(new BitItemData())
+{
+
+}
+
 BitItem::BitItem(ItemType type, Object *parent)
     : Item(type, parent)
     , d(new BitItemData())
@@ -235,7 +242,7 @@ void BitItem::addSpec(icd_uint64 key, const std::string &info)
     d->specs[key] = info;
 }
 
-void BitItem::remveSpec(icd_uint64 key)
+void BitItem::removeSpec(icd_uint64 key)
 {
     d->specs.erase(key);
 }

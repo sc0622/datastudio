@@ -19,6 +19,12 @@ class ICDCORE_EXPORT BitItem : public Item
 public:
     /**
      * @brief BitItem
+     * @param parent
+     */
+    explicit BitItem(Object *parent = 0);
+
+    /**
+     * @brief BitItem
      * @param type
      * @param parent
      */
@@ -124,7 +130,7 @@ public:
      * @brief 删除特诊信息
      * @param [in] key :特征值
      */
-    void remveSpec(icd_uint64 key);
+    void removeSpec(icd_uint64 key);
 
     /**
      * @brief clearSpec

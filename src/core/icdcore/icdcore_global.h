@@ -85,6 +85,17 @@ typedef double icd_float64;
 
 #endif // DEF_ICD_TYPE
 
+#ifndef ICD_LIMIT_METHODS
+#define ICD_LIMIT_METHODS
+template <typename T>
+inline const T &jMin(const T &a, const T &b) { return (a < b) ? a : b; }
+template <typename T>
+inline const T &jMax(const T &a, const T &b) { return (a < b) ? b : a; }
+template <typename T>
+inline const T &jBound(const T &min, const T &val, const T &max)
+{ return jMax(min, jMin(max, val)); }
+#endif
+
 //
 bool ICDCORE_EXPORT startsWith(const std::string &str, const std::string &header);
 bool ICDCORE_EXPORT endsWith(const std::string &str, const std::string &tail);

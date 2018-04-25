@@ -61,11 +61,7 @@ void Root::appendVehicle(const VehiclePtr &vehicle)
 
 void Root::insertVehicle(int index, const VehiclePtr &vehicle)
 {
-    if (index < 0 || index >= (int)d->vehicles.size()) {
-        assert(false);
-        return;
-    }
-
+    index = jBound(0, index, int(d->vehicles.size()));
     vehicle->setParent(this);
     d->vehicles.insert(d->vehicles.cbegin() + index, vehicle);
 }
@@ -104,8 +100,7 @@ int Root::vehicleCount() const
 
 VehiclePtr Root::vehicleAt(int index) const
 {
-    if (index < 0 || index >= (int)d->vehicles.size()) {
-        assert(false);
+    if (index < 0 || index >= int(d->vehicles.size())) {
         return 0;
     }
 

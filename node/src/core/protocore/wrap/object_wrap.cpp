@@ -4,100 +4,88 @@
 
 PROTOCORE_BEGIN
 
-Napi::FunctionReference BaseObject::ctor;
+Napi::FunctionReference ObjectWrap::ctor;
 
-void BaseObject::Initialize(Napi::Env env, Napi::Object exports)
+void ObjectWrap::Initialize(Napi::Env env, Napi::Object exports)
 {
     std::vector<PropertyDescriptor> properties = {
-        InstanceAccessor("objectType", &BaseObject::GetObjectType, nullptr),
-        InstanceAccessor("id", &BaseObject::GetId, &BaseObject::SetId),
-        InstanceAccessor("domain", &BaseObject::GetDomain, &BaseObject::SetDomain),
-        InstanceAccessor("name", &BaseObject::GetName, &BaseObject::SetName),
-        InstanceAccessor("mark", &BaseObject::GetMark, &BaseObject::SetMark),
-        InstanceAccessor("desc", &BaseObject::GetDesc, &BaseObject::SetDesc),
-        InstanceMethod("isPrivateMark", &BaseObject::IsPrivateMark),
-        InstanceMethod("childCount", &BaseObject::ChildCount),
-        InstanceMethod("objectTypeString", &BaseObject::ObjectTypeString),
-        InstanceMethod("resetData", &BaseObject::ResetData),
-        InstanceMethod("clearData", &BaseObject::ClearData),
-        InstanceMethod("domainOfType", &BaseObject::DomainOfType)
+        InstanceAccessor("objectType", &ObjectWrap::GetObjectType, nullptr, napi_enumerable),
+        InstanceAccessor("id", &ObjectWrap::GetId, &ObjectWrap::SetId, napi_enumerable),
+        InstanceAccessor("domain", &ObjectWrap::GetDomain, &ObjectWrap::SetDomain, napi_enumerable),
+        InstanceAccessor("name", &ObjectWrap::GetName, &ObjectWrap::SetName, napi_enumerable),
+        InstanceAccessor("mark", &ObjectWrap::GetMark, &ObjectWrap::SetMark, napi_enumerable),
+        InstanceAccessor("desc", &ObjectWrap::GetDesc, &ObjectWrap::SetDesc, napi_enumerable),
+        InstanceAccessor("isPrivateMark", &ObjectWrap::GetIsPrivateMark, nullptr, napi_enumerable),
+        InstanceAccessor("childCount", &ObjectWrap::GetChildCount, nullptr, napi_enumerable),
+        InstanceAccessor("objectTypeString", &ObjectWrap::GetObjectTypeString, nullptr, napi_enumerable),
+        OBJECTWRAP_METHODS_PROPS(ObjectWrap)
     };
-    ctor = napi_init<BaseObject>(env, exports, "Object", properties);
+    ctor = napi_init<ObjectWrap>(env, exports, "Object", properties);
 }
 
-BaseObject::BaseObject(const Napi::CallbackInfo &info)
-    : Napi::ObjectWrap<BaseObject>(info)
-    , data(napi_unwrap_data<Icd::Object>(info, true))
+ObjectWrap::ObjectWrap(const Napi::CallbackInfo &info)
+    : Napi::ObjectWrap<ObjectWrap>(info)
+    , d(napi_unwrap_data<Icd::Object>(info, true))
 {
 
 }
 
-NAPI_GETTER(BaseObject, ObjectType) {
-    return Napi::Number::New(info.Env(), data->objectType());
+NAPI_GETTER(ObjectWrap, ObjectType) {
+    return Napi::Number::New(info.Env(), d->objectType());
 }
 
-NAPI_GETTER(BaseObject, Id) {
-    return Napi::String::New(info.Env(), data->id());
+NAPI_GETTER(ObjectWrap, Id) {
+    return Napi::String::New(info.Env(), d->id());
 }
 
-NAPI_SETTER(BaseObject, Id) {
-    data->setId(value.As<Napi::String>());
+NAPI_SETTER(ObjectWrap, Id) {
+    d->setId(value.As<Napi::String>());
 }
 
-NAPI_GETTER(BaseObject, Domain) {
-    return Napi::String::New(info.Env(), data->domain());
+NAPI_GETTER(ObjectWrap, Domain) {
+    return Napi::String::New(info.Env(), d->domain());
 }
 
-NAPI_SETTER(BaseObject, Domain) {
-    data->setId(value.As<Napi::String>());
+NAPI_SETTER(ObjectWrap, Domain) {
+    d->setId(value.As<Napi::String>());
 }
 
-NAPI_GETTER(BaseObject, Name) {
-    return Napi::String::New(info.Env(), data->name());
+NAPI_GETTER(ObjectWrap, Name) {
+    return Napi::String::New(info.Env(), d->name());
 }
 
-NAPI_SETTER(BaseObject, Name) {
-    data->setName(value.As<Napi::String>());
+NAPI_SETTER(ObjectWrap, Name) {
+    d->setName(value.As<Napi::String>());
 }
 
-NAPI_GETTER(BaseObject, Mark) {
-    return Napi::String::New(info.Env(), data->mark());
+NAPI_GETTER(ObjectWrap, Mark) {
+    return Napi::String::New(info.Env(), d->mark());
 }
 
-NAPI_SETTER(BaseObject, Mark) {
-    data->setMark(value.As<Napi::String>());
+NAPI_SETTER(ObjectWrap, Mark) {
+    d->setMark(value.As<Napi::String>());
 }
 
-NAPI_GETTER(BaseObject, Desc) {
-    return Napi::String::New(info.Env(), data->desc());
+NAPI_GETTER(ObjectWrap, Desc) {
+    return Napi::String::New(info.Env(), d->desc());
 }
 
-NAPI_SETTER(BaseObject, Desc) {
-    data->setDesc(value.As<Napi::String>());
+NAPI_SETTER(ObjectWrap, Desc) {
+    d->setDesc(value.As<Napi::String>());
 }
 
-NAPI_METHOD(BaseObject, IsPrivateMark) {
-    return Napi::Boolean::New(info.Env(), data->isPrivateMark());
+NAPI_GETTER(ObjectWrap, IsPrivateMark) {
+    return Napi::Boolean::New(info.Env(), d->isPrivateMark());
 }
 
-NAPI_METHOD(BaseObject, ChildCount) {
-    return Napi::Number::New(info.Env(), data->childCount());
+NAPI_GETTER(ObjectWrap, ChildCount) {
+    return Napi::Number::New(info.Env(), d->childCount());
 }
 
-NAPI_METHOD(BaseObject, ObjectTypeString) {
-    return Napi::String::New(info.Env(), data->objectTypeString());
+NAPI_GETTER(ObjectWrap, ObjectTypeString) {
+    return Napi::String::New(info.Env(), d->objectTypeString());
 }
 
-NAPI_VOID_METHOD(BaseObject, ResetData) {
-    data->resetData();
-}
-
-NAPI_VOID_METHOD(BaseObject, ClearData) {
-    data->clearData();
-}
-
-NAPI_METHOD(BaseObject, DomainOfType) {
-    return Napi::String::New(info.Env(), data->domainOfType(info[0].As<Napi::Number>()));
-}
+OBJECTWRAP_METHODS_IMPL(ObjectWrap)
 
 PROTOCORE_END

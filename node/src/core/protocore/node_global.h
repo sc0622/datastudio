@@ -4,8 +4,12 @@
 #include <memory>
 #include <iostream>
 
+#ifndef PROTOCORE_DOMAIN
+#define PROTOCORE_DOMAIN protocore
+#endif
+
 #ifndef PROTOCORE_BEGIN
-#define PROTOCORE_BEGIN namespace protocore {
+#define PROTOCORE_BEGIN namespace PROTOCORE_DOMAIN {
 #endif
 
 #ifndef PROTOCORE_END
@@ -53,15 +57,55 @@
     NAPI_GETTER_DECL(_name_); \
     NAPI_SETTER_DECL(_name_)
 #endif
+// Throw an error with a specified message if the N-API call fails.
+#define NAPI_CALL_BASE(env, call, message, return_value)                       \
+{                                                                            \
+    napi_status status = call;                                                 \
+    if (status != napi_ok) {                                                   \
+    napi_throw_error((env), nullptr, (message));                                \
+    return return_value;                                                     \
+    }                                                                          \
+    }
+
+#ifndef NAPI_THROW
+#define NAPI_THROW(e) (e).ThrowAsJavaScriptException()
+#endif
+
+#define NAPI_CALL(env, call, message) \
+    NAPI_CALL_BASE((env), (call), (message), nullptr)
+
+// The last parameter is intentionally empty.
+#define NAPI_CALL_VOID(env, call, message) \
+    NAPI_CALL_BASE((env), (call), (message),)
+
+// Add a property whose name is stored in prefix to the value stored either in
+// this, or in the first argument. The value of the property will be `true`.
+#define SET_TARGET_PROPERTY(env, use_this, info, prefix)                       \
+{                                                                            \
+    napi_value target, js_true;                                                \
+    if (use_this) {                                                            \
+    NAPI_CALL((env),                                                         \
+    napi_get_cb_info((env), (info), nullptr, nullptr, &target, nullptr),    \
+    prefix ": Failed to retrieve target via callback info");       \
+    } else {                                                                   \
+    size_t argc = 1;                                                         \
+    NAPI_CALL((env),                                                         \
+    napi_get_cb_info((env), (info), &argc, &target, nullptr, nullptr),   \
+    prefix ": Failed to retrieve target via callback info");       \
+    }                                                                          \
+    NAPI_CALL(env, napi_get_boolean((env), true, &js_true),                    \
+    prefix ": Failed to create boolean value");                      \
+    NAPI_CALL(env, napi_set_named_property((env), target, (prefix), js_true),  \
+    prefix ": Failed to set property");                              \
+    }
 
 namespace Icd {
 class Object;
 typedef std::shared_ptr<Icd::Object> ObjectPtr;
-}
 
-//
-typedef struct __napi_shared_data { Icd::ObjectPtr ptr; } napi_shared_data;
-typedef napi_shared_data *napi_shared_data_ptr;
+typedef struct _JHandleScope { Icd::ObjectPtr ptr; } JHandleScope;
+typedef JHandleScope *JHandleScopePtr;
+}
 
 //
 template<typename T>
@@ -69,7 +113,7 @@ inline std::shared_ptr<T> napi_unwrap_data(const Napi::CallbackInfo &info, bool 
 {
     std::shared_ptr<T> ptr;
     if (info.Length() > 0) {
-        auto d = info[0].As<Napi::External<napi_shared_data> >().Data();
+        auto d = info[0].As<Napi::External<Icd::JHandleScope> >().Data();
         if (d) {
             ptr = std::dynamic_pointer_cast<T>(d->ptr);
         }
@@ -84,22 +128,35 @@ inline std::shared_ptr<T> napi_unwrap_data(const Napi::CallbackInfo &info, bool 
 
 inline void napi_inherits(napi_env env, napi_value ctor, napi_value super_ctor)
 {
-    napi_value global, global_object, set_proto, ctor_proto_prop, super_ctor_proto_prop;
-    napi_value argv[2];
+    napi_value global, global_object, set_proto, ctor_proto_prop,
+            super_ctor_proto_prop;
+    napi_value args[2];
 
-    napi_get_global(env, &global);
-    napi_get_named_property(env, global, "Object", &global_object);
-    napi_get_named_property(env, global_object, "setPrototypeOf", &set_proto);
-    napi_get_named_property(env, ctor, "prototype", &ctor_proto_prop);
-    napi_get_named_property(env, super_ctor, "prototype", &super_ctor_proto_prop);
+    NAPI_CALL_VOID(env, napi_get_global(env, &global),
+                   "napi_inherits: Failed to retrieve global object");
+    NAPI_CALL_VOID(env, napi_get_named_property(env, global, "Object",
+                                                &global_object),
+                   "napi_inherits: Failed to retrieve 'Object' from global");
+    NAPI_CALL_VOID(env, napi_get_named_property(env, global_object,
+                                                "setPrototypeOf", &set_proto),
+                   "napi_inherits: Failed to retrieve 'setPrototypeOf' from 'Object'");
+    NAPI_CALL_VOID(env,
+                   napi_get_named_property(env, ctor, "prototype",
+                                           &ctor_proto_prop),
+                   "napi_inherits: Failed to retrieve 'prototype' from subclass");
+    NAPI_CALL_VOID(env, napi_get_named_property(env, super_ctor, "prototype",
+                                                &super_ctor_proto_prop),
+                   "napi_inherits: Failed to retrieve 'prototype' from superclass");
 
-    argv[0] = ctor_proto_prop;
-    argv[1] = super_ctor_proto_prop;
-    napi_call_function(env, global, set_proto, 2, argv, nullptr);
+    args[0] = ctor_proto_prop;
+    args[1] = super_ctor_proto_prop;
+    NAPI_CALL_VOID(env, napi_call_function(env, global, set_proto, 2, args, nullptr),
+                   "napi_inherits: Failed to call 'setPrototypeOf' for prototypes");
 
-    argv[0] = ctor;
-    argv[1] = super_ctor;
-    napi_call_function(env, global, set_proto, 2, argv, nullptr);
+    args[0] = ctor;
+    args[1] = super_ctor;
+    NAPI_CALL_VOID(env, napi_call_function(env, global, set_proto, 2, args, nullptr),
+                   "napi_inherits: Failed to call 'setPrototypeOf' for constructors");
 }
 
 inline void napi_inherits(Napi::Env env, Napi::Function subCtor, const Napi::FunctionReference &superCtor)
@@ -109,8 +166,8 @@ inline void napi_inherits(Napi::Env env, Napi::Function subCtor, const Napi::Fun
 
 inline Napi::Object napi_instance(Napi::Env env, const Napi::FunctionReference &ctor, const Icd::ObjectPtr &data)
 {
-    napi_shared_data shared{ data };
-    auto inst = ctor.New({ Napi::External<napi_shared_data>::New(env, &shared) });
+    Icd::JHandleScope shared{ data };
+    auto inst = ctor.New({ Napi::External<Icd::JHandleScope>::New(env, &shared) });
     return inst;
 }
 
@@ -132,10 +189,9 @@ inline Napi::FunctionReference napi_init(Napi::Env env, Napi::Object exports, co
 {
     Napi::HandleScope scope(env);
     Napi::Function object = Sub::DefineClass(env, name, properties);
-    napi_inherits(env, object, Super::ctor.Value());
+    napi_inherits(env, object, Super::ctor);
     exports.Set(name, object);
     Napi::FunctionReference ctor = Napi::Persistent(object);
     ctor.SuppressDestruct();
     return ctor;
 }
-

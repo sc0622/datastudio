@@ -25,13 +25,15 @@ private:
 };
 
 LimitItem::LimitItem()
-    : d(new LimitItemData())
+    : Object(ObjectLimit)
+    , d(new LimitItemData())
 {
 
 }
 
 LimitItem::LimitItem(const LimitItem &other)
-    : d(new LimitItemData())
+    : Object(ObjectLimit)
+    , d(new LimitItemData())
 {
     operator =(other);
 }

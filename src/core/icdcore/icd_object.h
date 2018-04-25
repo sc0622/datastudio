@@ -15,7 +15,8 @@ enum ObjectType {
     ObjectVehicle,
     ObjectSystem,
     ObjectTable,
-    ObjectItem
+    ObjectItem,
+    ObjectLimit
 };
 
 /**
