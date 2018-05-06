@@ -1,0 +1,30 @@
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.app-icon {
+    padding: 0 14px;
+}
+
+.app-spacer {
+  flex: 1 1 auto;
+}
+
+@mixin mat-toolbar-height($height) {
+  .mat-toolbar-multiple-rows {
+    min-height: $height;
+  }
+  .mat-toolbar-row, .mat-toolbar-single-row {
+    height: $height;
+  }
+}
+
+@include mat-toolbar-height(40px);
+
+.mat-toolbar button a {
+  font-size: 1.05em;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}

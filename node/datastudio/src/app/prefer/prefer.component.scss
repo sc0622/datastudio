@@ -1,0 +1,18 @@
+.prefer-tree-invisible {
+  display: none;
+}
+
+.prefer-tree-node {
+  display: flow-root;
+  padding-left: 20px;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  min-height: 5px;
+}
+ 
+.prefer-nested-tree-ndoe {
+  border-top-width: 0;
+  border-bottom-width: 0;
+}

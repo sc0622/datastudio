@@ -1,0 +1,14 @@
+{
+    "app": {
+        "toolbar": {
+            "prefer": "Prefer",
+            "editor": "Editor",
+            "monitor": "Monitor",
+            "simulator": "Simulator",
+            "analyse": "Analyse",
+            "about": "About",
+            "services": "Services",
+            "concat": "Concat"
+        }
+    }
+}
