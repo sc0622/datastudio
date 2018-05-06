@@ -1,4 +1,4 @@
-var proto = require('../lib/debug/protocore')
+var proto = require('../datastudio/lib/protocore/protocore.node')
 
 var object = new proto.Object();
 

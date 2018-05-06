@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
 import {ElectronService} from 'ngx-electron';
-import { jcore } from "../../modules/protocore"
+import { jcore } from "../../lib/protocore"
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  templateUrl: './app.component.html', 
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {

@@ -90,5 +90,5 @@ datastudio-setup.qbs
 !/lib/3rdpart/moxa/*.*
 
 # nodejs
-/node/lib
 /node/datastudio/node_modules
+/node/DataStudioApp

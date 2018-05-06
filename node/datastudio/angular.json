@@ -43,7 +43,7 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true 
+              "buildOptimizer": true
             }
           }
         },
@@ -72,7 +72,7 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [
-              "styles.css" 
+              "styles.css"
             ],
             "scripts": [],
             "assets": [
