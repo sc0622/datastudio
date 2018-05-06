@@ -21,6 +21,25 @@ public:
 
     ITEMWRAP_METHODS_DECL();
 
+    NAPI_PROPERTY_DECL(NumericType);
+    NAPI_GETTER_DECL(NumericTypeString);
+    static NAPI_METHOD_DECL(NumericTypeString);
+    static NAPI_METHOD_DECL(StringNumericType);
+    NAPI_GETTER_DECL(OriginalData);
+    NAPI_PROPERTY_DECL(Scale);
+    NAPI_PROPERTY_DECL(Decimals);
+    NAPI_PROPERTY_DECL(Offset);
+    NAPI_PROPERTY_DECL(Limit);
+    NAPI_PROPERTY_DECL(Unit);
+    NAPI_GETTER_DECL(Specs);
+    NAPI_VOID_METHOD_DECL(AddSpec);
+    NAPI_METHOD_DECL(SpecAt);
+    NAPI_VOID_METHOD_DECL(RemoveSpec);
+    NAPI_VOID_METHOD_DECL(ClearSpec);
+    NAPI_GETTER_DECL(DataRange);
+    NAPI_GETTER_DECL(ValueRange);
+    NAPI_GETTER_DECL(OutOfLimit);
+
 private:
     Icd::NumericItemPtr d;
 };

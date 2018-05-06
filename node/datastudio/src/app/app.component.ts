@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { ElectronService } from 'ngx-electron'
+import {Component} from '@angular/core';
+import {ElectronService} from 'ngx-electron';
+import { jcore } from "../../modules/protocore"
 
 @Component({
   selector: 'app-root',
@@ -7,24 +8,24 @@ import { ElectronService } from 'ngx-electron'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-/*
-  constructor(private _electronService: ElectronService) {}
-
-  launchWindow() {
-    this._electronService.shell.openExternal('https:/www.baidu.com');
-  }
-*/
-
+  constructor(private electronService_: ElectronService) {
+    var numeric = new jcore.Numeric();
+    console.log(numeric.mark);
+  }   
+ 
   answer: String = '';
-  answerDisplay: String = '';
-  showSpinner: Boolean = false;
+  answerDisplay: String = ''; 
+  showSpinner: Boolean = false;  
 
-  showAnswer() {
+  numeric: jcore.Numeric = new jcore.Numeric();
+
+  showAnswer() { 
     this.showSpinner = true;
-    this.answerDisplay = '';
+    this.answerDisplay = ''; 
+    this.numeric.mark = 'helloworld';
 
     setTimeout(() => {
-      this.answerDisplay = this.answer;
+      this.answerDisplay = this.numeric.mark + this.answer;
       this.showSpinner = false;
     }, 2000);
   }

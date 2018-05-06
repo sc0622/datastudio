@@ -35,14 +35,14 @@ OBJECTWRAP_METHODS_IMPL(VehicleWrap)
 
 NAPI_GETTER(VehicleWrap, Systems) {
     const auto &systems = d->allSystem();
-    Napi::Array items = Napi::Array::New(info.Env(), systems.size());
+    Napi::Array array = Napi::Array::New(info.Env(), systems.size());
     for (int i = 0; i < systems.size(); ++i) {
         const Icd::SystemPtr &system = systems[i];
         if (system) {
-            items.Set(i, napi_instance(info.Env(), SystemWrap::ctor, system));
+            array.Set(i, napi_instance(info.Env(), SystemWrap::ctor, system));
         }
     }
-    return items;
+    return array;
 }
 
 NAPI_VOID_METHOD(VehicleWrap, AppendSystem) {

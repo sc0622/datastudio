@@ -92,10 +92,10 @@ public:
     static NumericType stringNumericType(const std::string &str);
 
     /**
-     * @brief orignalData
+     * @brief originalData
      * @return
      */
-    double orignalData() const;
+    double originalData() const;
 
     /**
      * @brief 获取数据项数值

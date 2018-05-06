@@ -77,7 +77,7 @@ NAPI_METHOD(ItemWrap, Create) {
         return Napi::Value();
     }
     auto item = Icd::Item::create(info[0].As<Napi::String>(),
-            Icd::ItemType(info[0].As<Napi::Number>().Int32Value()));
+            Icd::ItemType(info[1].As<Napi::Number>().Int32Value()));
     if (item) {
         return napi_instance(info.Env(), ItemWrap::ctor, item);
     }

@@ -21,6 +21,12 @@ public:
 
     ITEMWRAP_METHODS_DECL();
 
+    NAPI_PROPERTY_DECL(CounterType);
+    NAPI_GETTER_DECL(CounterTypeString);
+    static NAPI_METHOD_DECL(CounterTypeString);
+    static NAPI_METHOD_DECL(StringCounterType);
+    NAPI_PROPERTY_DECL(Value);
+
 private:
     Icd::CounterItemPtr d;
 };

@@ -37,6 +37,6 @@ Napi::Object Initialize(Napi::Env env, Napi::Object exports)
     return exports;
 }
 
-NODE_API_MODULE(NODE_GYP_MODULE_NAME, Initialize)
+NODE_API_MODULE(protocore, Initialize)
 
 PROTOCORE_END

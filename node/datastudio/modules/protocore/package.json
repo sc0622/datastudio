@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "main": "index.js",
+  "name": "protocore",
+  "engines": {
+    "node": ">=4"
+  },
+  "deprecated": false,
+  "_location": "/protocore",
+  "_inBundle": false
+}

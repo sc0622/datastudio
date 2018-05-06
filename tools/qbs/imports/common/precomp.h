@@ -124,8 +124,7 @@ static void j_delete_qobject(QObject *object)
 
 // nodejs
 #ifdef BUILDING_NODE_EXTENSION
-#include <node/node.h>
-#include <node/node_object_wrap.h>
+#include <napi.h>
 #endif
 
 #endif

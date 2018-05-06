@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "Check_wrap.h"
-#include "icdcore/icd_item_Check.h"
+#include "icdcore/icd_item_check.h"
 
 PROTOCORE_BEGIN
 

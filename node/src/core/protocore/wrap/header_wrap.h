@@ -21,6 +21,8 @@ public:
 
     ITEMWRAP_METHODS_DECL();
 
+    NAPI_PROPERTY_DECL(Value);
+
 private:
     Icd::HeaderItemPtr d;
 };

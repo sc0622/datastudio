@@ -1,7 +1,11 @@
 
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, ipcMain, ipcRenderer } = require('electron');
 const path = require('path')
 const url = require('url')
+
+//TEST
+const protocore = require('../lib/release/protocore.node');
+var vehicle = new protocore.Vehicle();
 
 let win = null;
 
@@ -13,7 +17,7 @@ function createWindow() {
         backgroundColor: '#ffffff',
         icon: `file://${__dirname}/dist/favicon.ico`
     })
-
+ 
     //
     /*
     win.loadURL(url.format({

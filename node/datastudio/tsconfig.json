@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -9,11 +10,16 @@
     "experimentalDecorators": true,
     "target": "es5",
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "modules"
     ],
     "lib": [
       "es2017",
       "dom"
+    ],
+    "types": [
+      "node",
+      "protocore"
     ]
   }
-}
+} 

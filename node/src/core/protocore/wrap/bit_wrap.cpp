@@ -74,11 +74,11 @@ NAPI_GETTER(BitWrap, Mask) {
 
 NAPI_GETTER(BitWrap, Specs) {
     const auto &specs = d->specs();
-    Napi::Array array = Napi::Array::New(info.Env());
+    Napi::Object object = Napi::Object::New(info.Env());
     for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
-        array.Set(citer->first, Napi::String::New(info.Env(), citer->second));
+        object.Set(citer->first, Napi::String::New(info.Env(), citer->second));
     }
-    return array;
+    return object;
 }
 
 NAPI_VOID_METHOD(BitWrap, AddSpec) {

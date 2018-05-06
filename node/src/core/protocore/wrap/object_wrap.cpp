@@ -47,7 +47,7 @@ NAPI_GETTER(ObjectWrap, Domain) {
 }
 
 NAPI_SETTER(ObjectWrap, Domain) {
-    d->setId(value.As<Napi::String>());
+    d->setDomain(value.As<Napi::String>());
 }
 
 NAPI_GETTER(ObjectWrap, Name) {

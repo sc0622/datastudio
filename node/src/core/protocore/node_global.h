@@ -1,6 +1,6 @@
 #pragma once
 
-#include <node/napi.h>
+#include <napi.h>
 #include <memory>
 #include <iostream>
 

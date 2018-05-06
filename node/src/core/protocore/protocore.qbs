@@ -2,7 +2,7 @@ import qbs
 import qbs.File
 import qbs.FileInfo
 
-NodeJSLibrary {
+ElectronLibrary {
     readonly property path sourceDir: FileInfo.joinPaths(project.sourceDirectory, 'src/core/icdcore/')
 
     destinationDir: FileInfo.joinPaths(project.sourceDirectory, '/node/lib/', qbs.buildVariant)

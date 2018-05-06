@@ -1,9 +1,10 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule,  } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { NgxElectronModule } from 'ngx-electron';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgxElectronModule } from 'ngx-electron';
 import { MaterialModule } from "./material.module";
 import { FormsModule } from "@angular/forms";
 
@@ -12,7 +13,7 @@ import { FormsModule } from "@angular/forms";
     AppComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule, 
     NgxElectronModule,
     BrowserAnimationsModule,
     MaterialModule,

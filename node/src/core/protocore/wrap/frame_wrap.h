@@ -21,6 +21,17 @@ public:
 
     ITEMWRAP_METHODS_DECL();
 
+    NAPI_VOID_METHOD_DECL(AddTable);
+    NAPI_VOID_METHOD_DECL(RemoveTable);
+    NAPI_VOID_METHOD_DECL(ClearTable);
+    NAPI_VOID_METHOD_DECL(ReplaceCode);
+    NAPI_GETTER_DECL(Tables);
+    NAPI_GETTER_DECL(TableCount);
+    NAPI_METHOD_DECL(TableAt);
+    //NAPI_VOID_METHOD_DECL(SetBuffer);
+    NAPI_VOID_METHOD_DECL(SetBufferSize);
+    NAPI_PROPERTY_DECL(SequenceCount);
+
 private:
     Icd::FrameItemPtr d;
 };

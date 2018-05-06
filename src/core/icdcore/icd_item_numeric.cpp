@@ -134,7 +134,7 @@ NumericType NumericItem::stringNumericType(const std::string &str)
     }
 }
 
-double NumericItem::orignalData() const
+double NumericItem::originalData() const
 {
     const char *buffer = this->buffer();
     if (!buffer) {
@@ -161,7 +161,7 @@ double NumericItem::orignalData() const
 
 double NumericItem::data() const
 {
-    double value = orignalData() * d->scale + d->offset;
+    double value = originalData() * d->scale + d->offset;
 #if 0
     if (!d->limit->leftInf()) {
         if (value < d->limit->minimum()) {
