@@ -4,9 +4,9 @@ const path = require('path')
 const url = require('url')
 
 //TEST
-const protocore = require('./lib/protocore/protocore.node');
-var vehicle = new protocore.Vehicle();
-console.log(vehicle.mark);
+// const protocore = require('./lib/protocore/protocore.node');
+// var vehicle = new protocore.Vehicle();
+// console.log(vehicle.mark);
 
 let win = null;
 
@@ -34,9 +34,9 @@ function createWindow() {
     })
  
     //
-    load(win, false);
+    load(win, true);
     //
-    //win.webContents.openDevTools()
+    win.webContents.openDevTools()
 
     win.webContents.on('crashed', function () {
       //   const options = {

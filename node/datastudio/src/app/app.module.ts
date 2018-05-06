@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgxElectronModule } from 'ngx-electron';
 import { MaterialModule } from "./material.module";
+import { CdkModule } from "./cdk.module";
 import { FormsModule } from "@angular/forms";
 
 @NgModule({
@@ -17,6 +18,7 @@ import { FormsModule } from "@angular/forms";
     NgxElectronModule,
     BrowserAnimationsModule,
     MaterialModule,
+    CdkModule,
     FormsModule
   ],
   providers: [],

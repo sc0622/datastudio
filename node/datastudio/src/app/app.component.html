@@ -1,14 +1,33 @@
-<div style="width: 100%; height: 100%;">
+<div>
 
   <mat-toolbar color="primary">
     <mat-toolbar-row>
-      <span>MyMaterial</span>
+      <span>Data Studio</span>
       <span class="example-spacer"></span>
       <button mat-button>About</button>
       <button mat-button>Services</button>
       <button mat-button>Concat</button>
     </mat-toolbar-row>
   </mat-toolbar>
+
+  <<cdk-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl">
+      <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
+        <button mat-icon-button disabled></button>
+        {{node.filename}}:  {{node.type}}
+      </cdk-nested-tree-node>
+      <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasNestedChild" class="example-tree-node">
+        <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" cdkTreeNodeToggle>
+          <!-- <mat-icon class="mat-icon-rtl-mirror">
+            {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon> -->
+        </button>
+        {{node.filename}}:  {{node.type}}
+        <div [class.example-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+          <ng-container cdkTreeNodeOutlet></ng-container>
+        </div>
+      </cdk-nested-tree-node>
+    </cdk-tree>
+
   <mat-card>
     <mat-form-field>
       <input matInput [(ngModel)]="answer" placeholder="Who has the best dev tutorials?">
@@ -22,6 +41,17 @@
   <mat-card *ngIf="answerDisplay">
     <h1>{{ answerDisplay }}, you are dam right.</h1>
   </mat-card>
+
+  <mat-tab-group>
+      <mat-tab label="One">
+        <h1>Some tab content</h1>
+        <p>...</p> 
+      </mat-tab>
+      <mat-tab label="Two">
+        <h1>Some more tab content</h1>
+        <p>...</p>
+      </mat-tab>
+  </mat-tab-group>
   
   </div>
   

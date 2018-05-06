@@ -3,5 +3,5 @@
 var protocore = require('node-loader!./protocore.node');
 
 module.exports = {
-  'jcore': protocore
+  'protocore': protocore
 }
