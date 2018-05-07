@@ -3,7 +3,7 @@ import {Component, Injectable, OnInit} from '@angular/core';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {BehaviorSubject, of as observableOf} from 'rxjs';
 
-import {protocore} from '../../../lib/protocore'
+import {protocore} from '../../../lib/protocore';
 
 /**
  * Json node data with nested structure. Each node has a filename and a value or

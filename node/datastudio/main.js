@@ -3,11 +3,6 @@ const {app, BrowserWindow, ipcMain, ipcRenderer, Menu } = require('electron');
 const path = require('path')
 const url = require('url')
 
-//TEST
-// const protocore = require('./lib/protocore/protocore.node');
-// var vehicle = new protocore.Vehicle();
-// console.log(vehicle.mark);
-
 let win = null;
 
 function load(win, local) {
@@ -39,16 +34,16 @@ function createWindow() {
     win.webContents.openDevTools()
 
     win.webContents.on('crashed', function () {
-      //   const options = {
-      //     type: 'info',
-      //     title: '渲染器进程崩溃',
-      //     message: '这个进程已经崩溃.',
-      //     buttons: ['重载', '关闭']
-      //   }
-      //   dialog.showMessageBox(options, function (index) {
-      //     if (index === 0) win.reload()
-      //     else win.close()
-      //   })
+      const options = {
+        type: 'info',
+        title: '渲染器进程崩溃',
+        message: '这个进程已经崩溃.',
+        buttons: ['重载', '关闭']
+      }
+      dialog.showMessageBox(options, function (index) {
+        if (index === 0) win.reload()
+        else win.close()
+      })
       app.quit();
     })
 
@@ -61,6 +56,18 @@ function createWindow() {
     // create menu
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
+
+    //
+    
+    //TEST
+    let protocore;
+    if (process.env.ELECTRON_ENV === 'dev') {
+        protocore = require('./lib/protocore/protocore.node');
+    } else {
+        protocore = require(`${__dirname}/dist/datastudio/protocore.node`);
+    }
+    var vehicle = new protocore.Vehicle();
+    console.log(vehicle.mark);
 }
 
 //
