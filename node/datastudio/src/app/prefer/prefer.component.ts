@@ -137,7 +137,7 @@ export class PreferComponent implements OnInit {
   showAnswer() {
     this.showSpinner = true;
     this.answerDisplay = '';
-    this.numeric.mark = 'helloworld';
+    //this.numeric.mark = 'helloworld';
 
     setTimeout(() => {
       this.answerDisplay = this.numeric.mark + this.answer;

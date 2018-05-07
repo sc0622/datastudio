@@ -31,6 +31,7 @@ VehicleWrap::VehicleWrap(const Napi::CallbackInfo &info)
 {
 
 }
+
 OBJECTWRAP_METHODS_IMPL(VehicleWrap)
 
 NAPI_GETTER(VehicleWrap, Systems) {

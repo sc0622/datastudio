@@ -11,7 +11,7 @@
     "e2e": "ng e2e",
     "electron": "ng build && electron .",
     "electron-aot": "ng build --prod && electron .",
-    "package": "electron-packager ./ DataStudio --asar --win --out ../DataStudioApp --arch=x64 --version 5.0.0 --icon=./src/favicon.ico --overwrite --prune=true --ignore=\"(.vscode|e2e|node_modules|src|docs|.gitignore|LICENSE|README.md|package-lock.json|angular.js|tslint.json|.editorconfig|tools|lib)\""
+    "package": "electron-packager ./ DataStudio --asar --win --out ../DataStudioApp --arch=x64 --version 5.0.0 --icon=./src/favicon.ico --overwrite --ignore=\"(.vscode|e2e|node_modules|src|docs|.gitignore|LICENSE|README.md|package-lock.json|angular.js|tslint.json|.editorconfig|tools|lib)\""
   },
   "private": true,
   "dependencies": {

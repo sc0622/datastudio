@@ -2,7 +2,7 @@
 
 function isDev() {
   // return process.mainModule.filename.indexOf('app.asar') === -1;
-  return (process.env.ELECTRON_ENV === 'dev');
+  return (process.env.NODE_ENV === 'development');
 }
 
 var protocore;

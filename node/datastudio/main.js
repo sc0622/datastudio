@@ -3,6 +3,12 @@ const {app, BrowserWindow, ipcMain, ipcRenderer, Menu } = require('electron');
 const path = require('path')
 const url = require('url')
 
+if (process.env.NODE_ENV) {
+    process.env.Path += ';' + process.env.QTDIR_64 + '\\bin';
+} else {
+    process.env.Path += ';' + `${__dirname}`;
+}
+
 let win = null;
 
 function load(win, local) {
@@ -29,7 +35,7 @@ function createWindow() {
     })
  
     //
-    load(win, true);
+    load(win, false);
     //
     win.webContents.openDevTools()
 
@@ -61,7 +67,7 @@ function createWindow() {
     
     //TEST
     let protocore;
-    if (process.env.ELECTRON_ENV === 'dev') {
+    if (process.env.NODE_ENV) {
         protocore = require('./lib/protocore/protocore.node');
     } else {
         protocore = require(`${__dirname}/dist/datastudio/protocore.node`);

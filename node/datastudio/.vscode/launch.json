@@ -9,7 +9,7 @@
             "program": "${workspaceFolder}/main.js",
             "protocol": "auto",
             "env": {
-                "ELECTRON_ENV": "dev"
+                "NODE_ENV": "development"
             }
         }
     ]

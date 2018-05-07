@@ -38,7 +38,8 @@ NumericWrap::NumericWrap(const Napi::CallbackInfo &info)
     : Napi::ObjectWrap<NumericWrap>(info)
     , d(napi_unwrap_data<Icd::NumericItem>(info, true))
 {
-
+    QString s("what the...");
+    d->setMark(s.toStdString());
 }
 
 ITEMWRAP_METHODS_IMPL(NumericWrap)

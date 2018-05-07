@@ -9,6 +9,9 @@ ElectronLibrary {
     cpp.includePaths: base.concat([ '.', sourceDir + '/..', sourceDir + '/3rdpart/jsoncpp' ])
     cpp.defines: base.concat([ 'ICDCORE_JSON_LIB' ])
 
+    Depends { name: 'Qt.core' }
+    Depends { name: 'Qt.gui' }
+
     Group {
         name: 'source'
         prefix: sourceDir
