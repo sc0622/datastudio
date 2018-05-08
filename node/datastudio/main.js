@@ -35,7 +35,7 @@ function createWindow() {
     })
  
     //
-    load(win, false);
+    load(win, true);
     //
     win.webContents.openDevTools()
 

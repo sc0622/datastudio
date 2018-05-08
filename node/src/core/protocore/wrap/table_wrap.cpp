@@ -1,8 +1,14 @@
 #include "precomp.h"
 #include "table_wrap.h"
 #include "item_wrap.h"
+#include "check_wrap.h"
+#include "counter_wrap.h"
+#include "framecode_wrap.h"
 #include "icdcore/icd_table.h"
 #include "icdcore/icd_item.h"
+#include "icdcore/icd_item_counter.h"
+#include "icdcore/icd_item_check.h"
+#include "icdcore/icd_item_framecode.h"
 
 PROTOCORE_BEGIN
 
@@ -31,10 +37,10 @@ void TableWrap::Initialize(Napi::Env env, Napi::Object exports)
         InstanceMethod("itemByDomain", &TableWrap::ItemByDomain, napi_enumerable),
         InstanceMethod("tableByDomain", &TableWrap::TableByDomain, napi_enumerable),
         //InstanceAccessor("headers", &TableWrap::GetHeaders, nullptr, napi_enumerable),
-//        InstanceAccessor("counterItem", &TableWrap::GetCounterItem, nullptr, napi_enumerable),
+        InstanceAccessor("counter", &TableWrap::GetCounterItem, nullptr, napi_enumerable),
         InstanceAccessor("isCheckValid", &TableWrap::GetIsCheckValid, nullptr, napi_enumerable),
-//        InstanceAccessor("checkItem", &TableWrap::GetCheckItem, nullptr, napi_enumerable),
-//        InstanceAccessor("frameCodes", &TableWrap::GetFrameCodes, nullptr, napi_enumerable),
+        InstanceAccessor("check", &TableWrap::GetCheckItem, nullptr, napi_enumerable),
+        InstanceAccessor("frameCodes", &TableWrap::GetFrameCodes, nullptr, napi_enumerable),
         InstanceMethod("updateSend", &TableWrap::UpdateSend, napi_enumerable),
         InstanceMethod("updateRecv", &TableWrap::UpdateRecv, napi_enumerable),
         InstanceMethod("resetSend", &TableWrap::ResetSend, napi_enumerable),
@@ -236,8 +242,28 @@ NAPI_METHOD(TableWrap, TableByDomain) {
     return Napi::Value();
 }
 
+NAPI_GETTER(TableWrap, CounterItem) {
+    return napi_instance(info.Env(), CounterWrap::ctor, d->counterItem());
+}
+
 NAPI_GETTER(TableWrap, IsCheckValid) {
     return Napi::Boolean::New(info.Env(), d->isCheckValid());
+}
+
+NAPI_GETTER(TableWrap, CheckItem) {
+    return napi_instance(info.Env(), CheckWrap::ctor, d->checkItem());
+}
+
+NAPI_GETTER(TableWrap, FrameCodes) {
+    const auto &frameCodes = d->allFrameCode();
+    Napi::Array array = Napi::Array::New(info.Env(), frameCodes.size());
+    for (int i = 0; i < frameCodes.size(); ++i) {
+        const Icd::FrameCodeItemPtr &frameCode = frameCodes[i];
+        if (frameCode) {
+            array.Set(i, napi_instance(info.Env(), FrameCodeWrap::ctor, frameCode));
+        }
+    }
+    return array;
 }
 
 NAPI_VOID_METHOD(TableWrap, UpdateSend) {

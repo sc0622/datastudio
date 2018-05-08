@@ -3,11 +3,11 @@ import {Component, Injectable, OnInit} from '@angular/core';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {BehaviorSubject, of as observableOf} from 'rxjs';
 
-import {protocore} from '../../../lib/protocore';
+import * as jx from '../../../lib/protocore';
 
 /**
  * Json node data with nested structure. Each node has a filename and a value or
- * a list of children
+ * a list of children 
  */
 export class FileNode {
   children: FileNode[];
@@ -110,13 +110,13 @@ export class FileDatabase {
   providers: [FileDatabase]
 })
 export class PreferComponent implements OnInit {
-  answer: String = '';
-  answerDisplay: String = '';
-  showSpinner: Boolean = false;
+  answer: string = '';
+  answerDisplay: string = '';
+  showSpinner: boolean = false;
 
-  numeric: protocore.Numeric = new protocore.Numeric();
+  numeric: jx.Numeric = new jx.Numeric();
 
-  nestedTreeControl: NestedTreeControl<FileNode>;
+  nestedTreeControl: NestedTreeControl<FileNode>; 
   nestedDataSource: MatTreeNestedDataSource<FileNode>;
   private _getChildren = (node: FileNode) => {
     return observableOf(node.children);

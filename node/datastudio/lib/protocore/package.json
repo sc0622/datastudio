@@ -1,10 +1,14 @@
 {
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "name": "protocore",
   "engines": {
     "node": ">=4"
   },
+  "files": [
+    "./**/*.d.ts"
+  ],
   "deprecated": false,
   "_location": "/protocore",
   "_inBundle": false
