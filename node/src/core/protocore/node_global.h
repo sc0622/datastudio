@@ -67,9 +67,10 @@
     }                                                                          \
     }
 
-#ifndef NAPI_THROW
-#define NAPI_THROW(e) (e).ThrowAsJavaScriptException()
-#endif
+inline Napi::Value napi_throwjs(Napi::Error &error) throw (Napi::Error) {
+    error.ThrowAsJavaScriptException();
+    return Napi::Boolean::New(error.Env(), false);
+}
 
 #define NAPI_CALL(env, call, message) \
     NAPI_CALL_BASE((env), (call), (message), nullptr)
@@ -102,18 +103,32 @@
 namespace Icd {
 class Object;
 typedef std::shared_ptr<Icd::Object> ObjectPtr;
-
-typedef struct _JHandleScope { Icd::ObjectPtr ptr; } JHandleScope;
-typedef JHandleScope *JHandleScopePtr;
 }
 
 //
 template<typename T>
-inline std::shared_ptr<T> napi_unwrap_data(const Napi::CallbackInfo &info, bool create = false)
+inline std::shared_ptr<T> napi_unwrap_data(const Napi::CallbackInfo &info)
 {
     std::shared_ptr<T> ptr;
     if (info.Length() > 0) {
-        auto d = info[0].As<Napi::External<Icd::JHandleScope> >().Data();
+        struct _Shared { std::shared_ptr<T> ptr; };
+        auto d = info[0].As<Napi::External<struct _Shared> >().Data();
+        if (d) {
+            ptr = std::dynamic_pointer_cast<T>(d->ptr);
+        }
+    }
+
+    return ptr;
+}
+
+//
+template<typename T>
+inline std::shared_ptr<T> napi_unwrap_data(const Napi::CallbackInfo &info, bool create)
+{
+    std::shared_ptr<T> ptr;
+    if (info.Length() > 0) {
+        struct _Shared { std::shared_ptr<T> ptr; };
+        auto d = info[0].As<Napi::External<struct _Shared> >().Data();
         if (d) {
             ptr = std::dynamic_pointer_cast<T>(d->ptr);
         }
@@ -164,10 +179,20 @@ inline void napi_inherits(Napi::Env env, Napi::Function subCtor, const Napi::Fun
     napi_inherits(napi_env(env), napi_value(subCtor), napi_value(superCtor.Value()));
 }
 
-inline Napi::Object napi_instance(Napi::Env env, const Napi::FunctionReference &ctor, const Icd::ObjectPtr &data)
+inline Napi::Object napi_instance(Napi::Env env, const Napi::FunctionReference &ctor,
+                                  const Icd::ObjectPtr &data)
 {
-    Icd::JHandleScope shared{ data };
-    auto inst = ctor.New({ Napi::External<Icd::JHandleScope>::New(env, &shared) });
+    struct _Shared { std::shared_ptr<Icd::Object> ptr; } shared { data };
+    auto inst = ctor.New({ Napi::External<struct _Shared>::New(env, &shared) });
+    return inst;
+}
+
+template<typename T>
+inline Napi::Object napi_instance(Napi::Env env, const Napi::FunctionReference &ctor,
+                                  const std::shared_ptr<T> &data)
+{
+    struct _Shared { std::shared_ptr<T> ptr; } shared { data };
+    auto inst = ctor.New({ Napi::External<struct _Shared>::New(env, &shared) });
     return inst;
 }
 
@@ -194,4 +219,25 @@ inline Napi::FunctionReference napi_init(Napi::Env env, Napi::Object exports, co
     Napi::FunctionReference ctor = Napi::Persistent(object);
     ctor.SuppressDestruct();
     return ctor;
+}
+
+//
+
+namespace Napi {
+
+// argument error exception
+class ArgumentError : public Error
+{
+public:
+    static ArgumentError New(napi_env env, const char* message) {
+        return Error::New<ArgumentError>(env, message, std::strlen(message), napi_create_error);
+    }
+    static ArgumentError New(napi_env env, const std::string& message) {
+        return Error::New<ArgumentError>(env, message.c_str(), message.size(), napi_create_error);
+    }
+
+    ArgumentError() : Error() {}
+    ArgumentError(napi_env env, napi_value value) : Error(env, value) {}
+};
+
 }

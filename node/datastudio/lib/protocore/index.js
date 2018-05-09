@@ -8,11 +8,9 @@ function isDev() {
 var protocore;
 
 if (isDev()) {
-  protocore = require('node-loader!./protocore.node'); 
+  protocore = require('node-loader!./protocore.node');
 } else {
-  protocore = require('native-ext-loader!./protocore.node'); 
+  protocore = require('native-ext-loader!./protocore.node');
 }
 
-module.exports = {
-  'protocore': protocore
-}
+module.exports = protocore;

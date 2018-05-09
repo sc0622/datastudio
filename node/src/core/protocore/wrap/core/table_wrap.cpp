@@ -89,7 +89,7 @@ NAPI_GETTER(TableWrap, Items) {
 
 NAPI_VOID_METHOD(TableWrap, AppendItem) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     const ItemWrap *item = ItemWrap::Unwrap(info[0].As<Napi::Object>());
@@ -101,7 +101,7 @@ NAPI_VOID_METHOD(TableWrap, AppendItem) {
 
 NAPI_VOID_METHOD(TableWrap, InsertItem) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments!"));
         return;
     }
     const int index = info[0].As<Napi::Number>();
@@ -114,7 +114,7 @@ NAPI_VOID_METHOD(TableWrap, InsertItem) {
 
 NAPI_VOID_METHOD(TableWrap, RemoveItem) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeItem(info[0].As<Napi::Number>());
@@ -122,7 +122,7 @@ NAPI_VOID_METHOD(TableWrap, RemoveItem) {
 
 NAPI_VOID_METHOD(TableWrap, RemoveItemById) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeItemById(info[0].As<Napi::String>());
@@ -130,7 +130,7 @@ NAPI_VOID_METHOD(TableWrap, RemoveItemById) {
 
 NAPI_VOID_METHOD(TableWrap, RemoveItemByMark) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeItemByMark(info[0].As<Napi::String>());
@@ -146,7 +146,7 @@ NAPI_GETTER(TableWrap, ItemCount) {
 
 NAPI_METHOD(TableWrap, ItemAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     auto item = d->itemAt(info[0].As<Napi::Number>());
@@ -159,7 +159,7 @@ NAPI_METHOD(TableWrap, ItemAt) {
 
 NAPI_METHOD(TableWrap, ItemById) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     auto item = d->itemById(info[0].As<Napi::String>());
@@ -173,7 +173,7 @@ NAPI_METHOD(TableWrap, ItemById) {
 NAPI_METHOD(TableWrap, ItemByMark) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     bool deep = true;
@@ -191,7 +191,7 @@ NAPI_METHOD(TableWrap, ItemByMark) {
 NAPI_METHOD(TableWrap, TableByMark) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     bool deep = true;
@@ -209,7 +209,7 @@ NAPI_METHOD(TableWrap, TableByMark) {
 NAPI_METHOD(TableWrap, ItemByDomain) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     Icd::DomainType domainType = Icd::DomainId;
@@ -227,7 +227,7 @@ NAPI_METHOD(TableWrap, ItemByDomain) {
 NAPI_METHOD(TableWrap, TableByDomain) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     Icd::DomainType domainType = Icd::DomainId;
@@ -268,7 +268,7 @@ NAPI_GETTER(TableWrap, FrameCodes) {
 
 NAPI_VOID_METHOD(TableWrap, UpdateSend) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->updateSend(info[0].As<Napi::Boolean>());
@@ -288,7 +288,7 @@ NAPI_GETTER(TableWrap, Sequence) {
 
 NAPI_SETTER(TableWrap, Sequence) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->setSequence(info[0].As<Napi::Number>());

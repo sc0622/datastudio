@@ -1,6 +1,6 @@
 // core.d.ts
 
-export as namespace jx;
+export as namespace protocore;
 
 export enum DomainType {
     DomainInvalid = -1,

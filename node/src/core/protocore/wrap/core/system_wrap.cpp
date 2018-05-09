@@ -48,7 +48,7 @@ NAPI_GETTER(SystemWrap, Tables) {
 
 NAPI_VOID_METHOD(SystemWrap, AppendTable) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     const TableWrap *table = TableWrap::Unwrap(info[0].As<Napi::Object>());
@@ -60,7 +60,7 @@ NAPI_VOID_METHOD(SystemWrap, AppendTable) {
 
 NAPI_VOID_METHOD(SystemWrap, InsertTable) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments!"));
         return;
     }
     const int index = info[0].As<Napi::Number>();
@@ -73,7 +73,7 @@ NAPI_VOID_METHOD(SystemWrap, InsertTable) {
 
 NAPI_VOID_METHOD(SystemWrap, RemoveTable) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeTable(info[0].As<Napi::Number>());
@@ -81,7 +81,7 @@ NAPI_VOID_METHOD(SystemWrap, RemoveTable) {
 
 NAPI_VOID_METHOD(SystemWrap, RemoveTableByMark) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeTableByMark(info[0].As<Napi::String>());
@@ -97,7 +97,7 @@ NAPI_GETTER(SystemWrap, TableCount) {
 
 NAPI_METHOD(SystemWrap, TableAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     auto table = d->tableAt(info[0].As<Napi::Number>());
@@ -110,7 +110,7 @@ NAPI_METHOD(SystemWrap, TableAt) {
 
 NAPI_METHOD(SystemWrap, TableByMark) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     auto table = d->tableByMark(info[0].As<Napi::String>());

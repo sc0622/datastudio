@@ -1,31 +1,25 @@
-var proto = require('../datastudio/lib/protocore/protocore.node')
+const path = require('path');
 
-var object = new proto.Object();
+const projectDir = path.resolve(`${__dirname}`, '../..');
+// setenv
+var env = process.env;
+env.Path += ';' + path.resolve(env.QTDIR_64, 'bin')
+        + ';' + path.resolve(projectDir, 'lib/3rdpart/moxa');
 
-object.objectType = 12;
-object.id = 'helloworld';
+const filePath = path.resolve(projectDir, 'node/datastudio/lib/protocore/debug/protocore.node');
+var proto = require(filePath);
 
-console.log('objectType:', object.objectType);
-console.log('id:', object.id);
+//
 
-var root = new proto.Root();
-root.id = 'root';
-
-console.log('root.id:', root.id);
-console.log('root.objectType:', root.objectType);
-
-for (var i in root.vehicles) {
-    console.log(vehicles[i].id);
+var config = {
+    sourceType: 'file',
+    filePath: path.resolve(projectDir, 'config/protocol.json')
 }
+var parser = proto.Parser.create(JSON.stringify(config));
+if (parser) {
+    var object = parser.parse("1001/2001/ICDTable_0ceb8821fc5d4990bd35faa5a29f6f79", 3, 1);
+    console.log(object.name);
 
-var vehicle = new proto.Vehicle();
-vehicle.mark = "vehicle #1";
-root.insertVehicle(2, vehicle);
-
-for (var i in root.vehicles) {
-    console.log(root.vehicles[i].mark);
 }
-
-console.log('query:', root.vehicleByMark("vehicle #1").mark);
 
 

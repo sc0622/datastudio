@@ -38,6 +38,8 @@ public:
 
     ITEMWRAP_METHODS_DECL();
 
+    static Napi::Value toObject(Napi::Env env, const Icd::ItemPtr &data);
+
 private:
     Icd::ItemPtr d;
 };
@@ -53,7 +55,7 @@ private:
     OBJECTWRAP_METHODS_IMPL(Class) \
     NAPI_METHOD(Class, StringType) { \
     if (info.Length() != 1) { \
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!")); \
+        return napi_throwjs(Napi::Error::New(info.Env(), "Need one argument!")); \
         return Napi::Value(); \
     } \
     return Napi::Number::New(info.Env(), d->stringType(info[0].As<Napi::String>())); }

@@ -548,7 +548,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             }
             // data
             if (d_showAttris & CoreTreeWidget::ShowData) {
-                qulonglong data = (qulonglong)(itemNumeric->orignalData());
+                qulonglong data = (qulonglong)(itemNumeric->originalData());
                 data &= (1ui64 << ((int)itemNumeric->bufferSize() << 3)) - 1;
                 values.append(QString("%1")
                               .arg(data, asciiCount, d_dataFormat, QChar('0'))

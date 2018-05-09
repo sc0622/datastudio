@@ -1,6 +1,14 @@
 #include "precomp.h"
 #include "item_wrap.h"
 #include "icdcore/icd_item.h"
+#include "bit_wrap.h"
+#include "check_wrap.h"
+#include "complex_wrap.h"
+#include "counter_wrap.h"
+#include "frame_wrap.h"
+#include "framecode_wrap.h"
+#include "header_wrap.h"
+#include "numeric_wrap.h"
 
 PROTOCORE_BEGIN
 
@@ -73,7 +81,7 @@ NAPI_GETTER(ItemWrap, CodeName) {
 
 NAPI_METHOD(ItemWrap, Create) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments as least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments as least!"));
         return Napi::Value();
     }
     auto item = Icd::Item::create(info[0].As<Napi::String>(),
@@ -83,6 +91,27 @@ NAPI_METHOD(ItemWrap, Create) {
     }
 
     return Napi::Value();
+}
+
+Napi::Value ItemWrap::toObject(Napi::Env env, const Icd::ItemPtr &data)
+{
+    if (data) {
+        switch (data->type()) {
+        case Icd::ItemHead: return napi_instance(env, HeaderWrap::ctor, data);
+        case Icd::ItemCounter: return napi_instance(env, CounterWrap::ctor, data);
+        case Icd::ItemCheck: return napi_instance(env, CheckWrap::ctor, data);
+        case Icd::ItemFrameCode: return napi_instance(env, FrameCodeWrap::ctor, data);
+        case Icd::ItemNumeric: return napi_instance(env, NumericWrap::ctor, data);
+        case Icd::ItemBitMap:
+        case Icd::ItemBitValue: return napi_instance(env, BitWrap::ctor, data);
+        case Icd::ItemComplex: return napi_instance(env, ComplexWrap::ctor, data);
+        case Icd::ItemFrame: return napi_instance(env, FrameWrap::ctor, data);
+        default:
+            break;
+        }
+    }
+
+    return Napi::Boolean::New(env, false);
 }
 
 ITEMWRAP_METHODS_IMPL(ItemWrap)

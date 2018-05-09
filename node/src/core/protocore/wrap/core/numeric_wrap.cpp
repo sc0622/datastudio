@@ -57,7 +57,7 @@ NAPI_GETTER(NumericWrap, NumericTypeString) {
 
 NAPI_METHOD(NumericWrap, NumericTypeString) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), Icd::NumericItem::numericTypeString
@@ -66,7 +66,7 @@ NAPI_METHOD(NumericWrap, NumericTypeString) {
 
 NAPI_METHOD(NumericWrap, StringNumericType) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::Number::New(info.Env(), Icd::NumericItem::stringNumericType(info[0].As<Napi::String>()));
@@ -107,7 +107,7 @@ NAPI_GETTER(NumericWrap, Limit) {
 NAPI_SETTER(NumericWrap, Limit) {
     auto limitWrap = LimitWrap::Unwrap(info[0].As<Napi::Object>());
     if (!limitWrap) {
-        NAPI_THROW(Napi::TypeError::New(info.Env(), "Need a LimitWrap argument!"));
+        napi_throwjs(Napi::TypeError::New(info.Env(), "Need a LimitWrap argument!"));
         return;
     }
     d->setLimit(limitWrap->data());
@@ -132,7 +132,7 @@ NAPI_GETTER(NumericWrap, Specs) {
 
 NAPI_VOID_METHOD(NumericWrap, AddSpec) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments!"));
         return;
     }
     d->addSpec(info[0].As<Napi::Number>(), info[1].As<Napi::String>());
@@ -140,7 +140,7 @@ NAPI_VOID_METHOD(NumericWrap, AddSpec) {
 
 NAPI_METHOD(NumericWrap, SpecAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), d->specAt(info[0].As<Napi::Number>()));
@@ -148,7 +148,7 @@ NAPI_METHOD(NumericWrap, SpecAt) {
 
 NAPI_VOID_METHOD(NumericWrap, RemoveSpec) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeSpec(info[0].As<Napi::Number>());

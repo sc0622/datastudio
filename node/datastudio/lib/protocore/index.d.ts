@@ -1,8 +1,6 @@
 // index.d.ts
 
-//import jx = require('./');
+export as namespace protocore;
 
-export * from "./core"
-export * from "./parser"
-
-export as namespace jx;
+export * from "./core";
+export * from "./parser";

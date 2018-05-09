@@ -38,7 +38,7 @@ NAPI_SETTER(FrameCodeWrap, FrameCodeType) {
 
 NAPI_METHOD(FrameCodeWrap, FrameCodeTypeString) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), Icd::FrameCodeItem::frameCodeTypeString
@@ -47,7 +47,7 @@ NAPI_METHOD(FrameCodeWrap, FrameCodeTypeString) {
 
 NAPI_METHOD(FrameCodeWrap, StringFrameCodeType) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::Number::New(info.Env(), Icd::FrameCodeItem::stringFrameCodeType(info[0].As<Napi::String>()));
@@ -79,7 +79,7 @@ NAPI_SETTER(FrameCodeWrap, Frame) {
 
 NAPI_VOID_METHOD(FrameCodeWrap, UpdateSend) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->updateSend(info[0].As<Napi::Boolean>());

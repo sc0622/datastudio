@@ -37,7 +37,7 @@ NAPI_SETTER(CounterWrap, CounterType) {
 
 NAPI_METHOD(CounterWrap, CounterTypeString) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), Icd::CounterItem::counterTypeString
@@ -46,7 +46,7 @@ NAPI_METHOD(CounterWrap, CounterTypeString) {
 
 NAPI_METHOD(CounterWrap, StringCounterType) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::Number::New(info.Env(), Icd::CounterItem::stringCounterType(info[0].As<Napi::String>()));

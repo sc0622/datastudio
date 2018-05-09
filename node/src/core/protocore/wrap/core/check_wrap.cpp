@@ -44,7 +44,7 @@ NAPI_SETTER(CheckWrap, CheckType) {
 
 NAPI_METHOD(CheckWrap, CheckTypeString) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), Icd::CheckItem::checkTypeString
@@ -53,7 +53,7 @@ NAPI_METHOD(CheckWrap, CheckTypeString) {
 
 NAPI_METHOD(CheckWrap, StringCheckType) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::Number::New(info.Env(), Icd::CheckItem::stringCheckType(info[0].As<Napi::String>()));

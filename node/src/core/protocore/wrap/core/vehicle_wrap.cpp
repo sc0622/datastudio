@@ -48,7 +48,7 @@ NAPI_GETTER(VehicleWrap, Systems) {
 
 NAPI_VOID_METHOD(VehicleWrap, AppendSystem) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     const SystemWrap *system = SystemWrap::Unwrap(info[0].As<Napi::Object>());
@@ -60,7 +60,7 @@ NAPI_VOID_METHOD(VehicleWrap, AppendSystem) {
 
 NAPI_VOID_METHOD(VehicleWrap, InsertSystem) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments!"));
         return;
     }
     const int index = info[0].As<Napi::Number>();
@@ -73,7 +73,7 @@ NAPI_VOID_METHOD(VehicleWrap, InsertSystem) {
 
 NAPI_VOID_METHOD(VehicleWrap, RemoveSystem) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeSystem(info[0].As<Napi::Number>());
@@ -81,7 +81,7 @@ NAPI_VOID_METHOD(VehicleWrap, RemoveSystem) {
 
 NAPI_VOID_METHOD(VehicleWrap, RemoveSystemByMark) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeSystemByMark(info[0].As<Napi::String>());
@@ -97,8 +97,7 @@ NAPI_GETTER(VehicleWrap, SystemCount) {
 
 NAPI_METHOD(VehicleWrap, SystemAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
-        return Napi::Value();
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
     }
     auto system = d->systemAt(info[0].As<Napi::Number>());
     if (system) {
@@ -110,8 +109,7 @@ NAPI_METHOD(VehicleWrap, SystemAt) {
 
 NAPI_METHOD(VehicleWrap, SystemByMark) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
-        return Napi::Value();
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
     }
     auto system = d->systemByMark(info[0].As<Napi::String>());
     if (system) {

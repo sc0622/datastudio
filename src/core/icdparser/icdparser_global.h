@@ -20,8 +20,12 @@
 #define ICDPARSER_EXPORT
 #endif
 
-#ifdef ICDCORE_LIB
+#if defined(ICDCORE_LIB) || defined(BUILDING_NODE_EXTENSION)
 #include "icdcore/icdcore_global.h"
+#endif
+
+#if defined(ICDWORKER_LIB) || defined(BUILDING_NODE_EXTENSION)
+#include "icdworker/icdworker_global.h"
 #endif
 
 ////////////////////////////////

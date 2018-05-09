@@ -1,6 +1,12 @@
 #include "precomp.h"
 #include "object_wrap.h"
 #include "icdcore/icd_object.h"
+#include "icdcore/icd_item.h"
+#include "root_wrap.h"
+#include "vehicle_wrap.h"
+#include "system_wrap.h"
+#include "table_wrap.h"
+#include "item_wrap.h"
 
 PROTOCORE_BEGIN
 
@@ -84,6 +90,24 @@ NAPI_GETTER(ObjectWrap, ChildCount) {
 
 NAPI_GETTER(ObjectWrap, ObjectTypeString) {
     return Napi::String::New(info.Env(), d->objectTypeString());
+}
+
+Napi::Value ObjectWrap::toObject(Napi::Env env, const Icd::ObjectPtr &data)
+{
+    if (data) {
+        switch (data->objectType()) {
+        case Icd::ObjectRoot: return napi_instance(env, RootWrap::ctor, data);
+        case Icd::ObjectVehicle: return napi_instance(env, VehicleWrap::ctor, data);
+        case Icd::ObjectSystem: return napi_instance(env, SystemWrap::ctor, data);
+        case Icd::ObjectTable: return napi_instance(env, TableWrap::ctor, data);
+        case Icd::ObjectItem: return ItemWrap::toObject(
+                        env, JHandlePtrCast<Icd::Item, Icd::Object>(data));
+        default:
+            break;
+        }
+    }
+
+    return Napi::Boolean::New(env, false);
 }
 
 OBJECTWRAP_METHODS_IMPL(ObjectWrap)

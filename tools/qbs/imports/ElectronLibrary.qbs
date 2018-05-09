@@ -7,7 +7,7 @@ CppDyLibrary {
     type: base.concat([ 'node.out' ])
     //readonly property path nodePath: FileInfo.fromNativeSeparators(Environment.getEnv('NODE_PATH'))
     readonly property path userPath: '~'
-    //readonly property path nodePath: '~/.node-gyp/8.11.1'
+    readonly property path nodePath: '~/.node-gyp/8.11.1'
     readonly property path npmPath: '~/AppData/Roaming/npm'
     readonly property path npmModulesPath: FileInfo.joinPaths(npmPath, 'node_modules')
     readonly property path nodeAddonPath: FileInfo.joinPaths(npmModulesPath, 'node-addon-api')
@@ -21,9 +21,17 @@ CppDyLibrary {
                                    iojsPath + '/deps/uv/include',
                                    iojsPath + '/deps/v8/include'
                                   ])
-    cpp.dynamicLibraries: base.concat([ FileInfo.joinPaths(userPath, '.electron-gyp/.node-gyp',
-                                                           'iojs-2.0.0/x64/iojs'),
-                                      'DelayImp'])
+    cpp.dynamicLibraries: {
+        var items = base;
+        items.push('DelayImp');
+        if (qbs.buildVariant == 'debug') {
+            items.push(FileInfo.joinPaths(nodePath, 'x64', 'node'));
+        } else {
+            items.push(FileInfo.joinPaths(userPath, '.electron-gyp/.node-gyp',
+                                          'iojs-2.0.0/x64/iojs'));
+        }
+        return items;
+    }
     cpp.defines: base.concat(['BUILDING_NODE_EXTENSION',
                               'NODE_GYP_MODULE_NAME=' + name,
                               'USING_UV_SHARED=1',

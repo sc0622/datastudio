@@ -48,7 +48,7 @@ NAPI_GETTER(RootWrap, Vehicles) {
 
 NAPI_VOID_METHOD(RootWrap, AppendVehicle) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     const VehicleWrap *vehicle = VehicleWrap::Unwrap(info[0].As<Napi::Object>());
@@ -60,7 +60,7 @@ NAPI_VOID_METHOD(RootWrap, AppendVehicle) {
 
 NAPI_VOID_METHOD(RootWrap, InsertVehicle) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments!"));
         return;
     }
     const int index = info[0].As<Napi::Number>();
@@ -73,7 +73,7 @@ NAPI_VOID_METHOD(RootWrap, InsertVehicle) {
 
 NAPI_VOID_METHOD(RootWrap, RemoveVehicle) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeVehicle(info[0].As<Napi::Number>());
@@ -81,7 +81,7 @@ NAPI_VOID_METHOD(RootWrap, RemoveVehicle) {
 
 NAPI_VOID_METHOD(RootWrap, RemoveVehicleByMark) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeVehicleByMark(info[0].As<Napi::String>());
@@ -97,8 +97,7 @@ NAPI_GETTER(RootWrap, VehicleCount) {
 
 NAPI_METHOD(RootWrap, VehicleAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
-        return Napi::Value();
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
     }
     auto vehicle = d->vehicleAt(info[0].As<Napi::Number>());
     if (vehicle) {
@@ -110,8 +109,7 @@ NAPI_METHOD(RootWrap, VehicleAt) {
 
 NAPI_METHOD(RootWrap, VehicleByMark) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
-        return Napi::Value();
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
     }
     auto vehicle = d->vehicleByMark(info[0].As<Napi::String>());
     if (vehicle) {

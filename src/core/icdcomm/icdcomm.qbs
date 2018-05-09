@@ -24,6 +24,6 @@ CoreDyLibrary {
 
     cpp.cxxStandardLibrary: 'c++98'
     cpp.libraryPaths: base.concat([ sourceDirectory + '/private/moxa' ])
-    cpp.dynamicLibraries: base.concat([ 'pcomm' ])
+    cpp.dynamicLibraries: base.concat([ 'pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') ])
     cpp.defines: base.concat([ 'SERIAL_USE_PCOMM' ])
 }

@@ -36,6 +36,8 @@ public:
 
     OBJECTWRAP_METHODS_DECL();
 
+    static Napi::Value toObject(Napi::Env env, const Icd::ObjectPtr &data);
+
 private:
     Icd::ObjectPtr d;
 };

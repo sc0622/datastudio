@@ -38,7 +38,7 @@ ITEMWRAP_METHODS_IMPL(BitWrap)
 
 NAPI_METHOD(BitWrap, TestBit) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::Boolean::New(info.Env(), d->testBit(info[0].As<Napi::Number>().Int32Value()));
@@ -83,7 +83,7 @@ NAPI_GETTER(BitWrap, Specs) {
 
 NAPI_VOID_METHOD(BitWrap, AddSpec) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments!"));
         return;
     }
     d->addSpec(info[0].As<Napi::Number>().Int64Value(), info[1].As<Napi::String>());
@@ -91,7 +91,7 @@ NAPI_VOID_METHOD(BitWrap, AddSpec) {
 
 NAPI_VOID_METHOD(BitWrap, RemoveSpec) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeSpec(info[0].As<Napi::Number>().Int64Value());
@@ -103,7 +103,7 @@ NAPI_VOID_METHOD(BitWrap, ClearSpec) {
 
 NAPI_METHOD(BitWrap, SpecAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), d->specAt(info[0].As<Napi::Number>().Int64Value()));
@@ -111,7 +111,7 @@ NAPI_METHOD(BitWrap, SpecAt) {
 
 NAPI_METHOD(BitWrap, NameAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), d->nameAt(info[0].As<Napi::Number>()));
@@ -119,7 +119,7 @@ NAPI_METHOD(BitWrap, NameAt) {
 
 NAPI_METHOD(BitWrap, NameOf) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), d->nameOf(info[0].As<Napi::String>()));
@@ -127,7 +127,7 @@ NAPI_METHOD(BitWrap, NameOf) {
 
 NAPI_METHOD(BitWrap, DescAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     return Napi::String::New(info.Env(), d->descAt(info[0].As<Napi::Number>()));

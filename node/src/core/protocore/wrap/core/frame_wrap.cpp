@@ -36,7 +36,7 @@ ITEMWRAP_METHODS_IMPL(FrameWrap)
 
 NAPI_VOID_METHOD(FrameWrap, AddTable) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     const TableWrap *table = TableWrap::Unwrap(info[0].As<Napi::Object>());
@@ -48,7 +48,7 @@ NAPI_VOID_METHOD(FrameWrap, AddTable) {
 
 NAPI_VOID_METHOD(FrameWrap, RemoveTable) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->removeTable(info[0].As<Napi::Number>().Int64Value());
@@ -60,7 +60,7 @@ NAPI_VOID_METHOD(FrameWrap, ClearTable) {
 
 NAPI_VOID_METHOD(FrameWrap, ReplaceCode) {
     if (info.Length() != 2) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need two arguments at least!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need two arguments at least!"));
         return;
     }
     d->replaceCode(info[0].As<Napi::Number>().Int64Value(),
@@ -86,7 +86,7 @@ NAPI_GETTER(FrameWrap, TableCount) {
 
 NAPI_METHOD(FrameWrap, TableAt) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return Napi::Value();
     }
     auto table = d->tableAt(info[0].As<Napi::Number>().Int64Value());
@@ -99,7 +99,7 @@ NAPI_METHOD(FrameWrap, TableAt) {
 
 NAPI_VOID_METHOD(FrameWrap, SetBufferSize) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->setBufferSize(info[0].As<Napi::Number>());

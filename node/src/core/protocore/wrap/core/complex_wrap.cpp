@@ -44,7 +44,7 @@ NAPI_GETTER(ComplexWrap, Table) {
 
 NAPI_VOID_METHOD(ComplexWrap, UpdateSend) {
     if (info.Length() != 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument!"));
+        napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument!"));
         return;
     }
     d->updateSend(info[0].As<Napi::Boolean>());
@@ -61,7 +61,7 @@ NAPI_VOID_METHOD(ComplexWrap, ResetSend) {
 NAPI_METHOD(ComplexWrap, ItemByMark) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     bool deep = true;
@@ -79,7 +79,7 @@ NAPI_METHOD(ComplexWrap, ItemByMark) {
 NAPI_METHOD(ComplexWrap, TableByMark) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     bool deep = true;
@@ -97,7 +97,7 @@ NAPI_METHOD(ComplexWrap, TableByMark) {
 NAPI_METHOD(ComplexWrap, ItemByDomain) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     Icd::DomainType domainType = Icd::DomainId;
@@ -115,7 +115,7 @@ NAPI_METHOD(ComplexWrap, ItemByDomain) {
 NAPI_METHOD(ComplexWrap, TableByDomain) {
     const int length = info.Length();
     if (length < 1) {
-        NAPI_THROW(Napi::Error::New(info.Env(), "Need one argument at least!"));
+        return napi_throwjs(Napi::ArgumentError::New(info.Env(), "Need one argument at least!"));
         return Napi::Value();
     }
     Icd::DomainType domainType = Icd::DomainId;

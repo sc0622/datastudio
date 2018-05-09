@@ -886,7 +886,8 @@ bool JsonParser::generateTable(const QStandardItem *itemTable, bool exportAll,
     }
 
     //
-    Icd::TablePtr table = Icd::TablePtr(0);
+    Icd::TablePtr table;
+#if defined(ICDWORKER_LIB)
     const QVariant varChannelId = itemTable->data(Icd::TreeChannelIdRole);
     if (varChannelId.isValid()) {
         Icd::WorkerPtr worker = Icd::WorkerPool::getInstance()
@@ -899,7 +900,7 @@ bool JsonParser::generateTable(const QStandardItem *itemTable, bool exportAll,
             }
         }
     }
-
+#endif
     if (!table) {
         //
         parser()->setMessage(QStringLiteral("获取表数据\n表：%1")
@@ -1054,7 +1055,8 @@ bool JsonParser::generateTable(const QStandardItem *itemTable, Json::Value &tabl
     }
 
     //
-    Icd::TablePtr table = Icd::TablePtr(0);
+    Icd::TablePtr table;
+#if defined(ICDWORKER_LIB)
     const QVariant varChannelId = itemTable->data(Icd::TreeChannelIdRole);
     if (varChannelId.isValid()) {
         Icd::WorkerPtr worker = Icd::WorkerPool::getInstance()
@@ -1067,7 +1069,7 @@ bool JsonParser::generateTable(const QStandardItem *itemTable, Json::Value &tabl
             }
         }
     }
-
+#endif
     if (!table) {
         //
         parser()->setMessage(QStringLiteral("获取表数据\n表：%1")

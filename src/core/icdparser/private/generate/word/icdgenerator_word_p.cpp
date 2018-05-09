@@ -3,7 +3,9 @@
 #include <QAxObject>
 #include <QStandardItem>
 #include "icdcore/icdcore_inc.h"
+#if defined(ICDWORKER_LIB)
 #include "icdworker/icdworker_inc.h"
+#endif
 #include "../../../../icdwidget/icdwidget_global.h"
 #include "../../../icdparser.h"
 
@@ -445,7 +447,8 @@ bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool expor
     }
 
     //
-    Icd::TablePtr table = Icd::TablePtr(0);
+    Icd::TablePtr table;
+#if defined(ICDWORKER_LIB)
     const QVariant varChannelId = itemTable->data(Icd::TreeChannelIdRole);
     if (varChannelId.isValid()) {
         Icd::WorkerPtr worker = Icd::WorkerPool::getInstance()
@@ -458,7 +461,7 @@ bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool expor
             }
         }
     }
-
+#endif
     if (!table) {
         //
         q_ptr->parser()->setMessage(QStringLiteral("获取表数据\n表：%1")

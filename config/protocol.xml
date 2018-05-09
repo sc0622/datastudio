@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<icd>
+  <vehicle id="1001" name="机型1" mark="plane1" desc="">
+    <system id="2001" name="系统1" mark="system1" desc="">
+      <table id="ICDTable_0ceb8821fc5d4990bd35faa5a29f6f79" name="遥控帧" mark="remoteCtrl" desc="" sequence="1">
+        <item id="1" name="同步字1" mark="header1" desc="" type="head" defaultValue="0xeb" />
+        <item id="2" name="同步字2" mark="header2" desc="" type="head" defaultValue="0x90" />
+        <item id="3" name="帧识别码" mark="frameCode" desc="" type="framecode" defaultValue="0" frameCodeType="u8" frameId="5" />
+        <item id="4" name="帧计数" mark="counter" desc="" type="counter" defaultValue="0" counterType="u8" />
+        <item id="5" name="帧数据" mark="frame1" desc="" type="frame" defaultValue="0" size="27" sequenceCount="1">
+          <table id="ICDTable_ca7496476e064b638e901982390f5901" name="常规遥控帧" mark="51" desc="" sequence="1">
+            <item id="1" name="方向盘操纵量" mark="steeringWhlV" desc="" type="numeric" defaultValue="0" numericType="i8" scale="0.01" offset="0" decimals="0" min="-1" max="1" unit="" />
+            <item id="2" name="油门（刹车）指令" mark="throttleCmd" desc="" type="numeric" defaultValue="0" numericType="i8" scale="0.01" offset="0" decimals="0" min="-1" max="1" unit="" />
+            <item id="3" name="模式开关" mark="modeSw" desc="" type="bitvalue" defaultValue="0" start="0" count="8" typeSize="1">
+              <spec key="0x1" info="遥控模式" />
+              <spec key="0x2" info="学习模式" />
+              <spec key="0x3" info="自主模式" />
+            </item>
+            <item id="4" name="控制开关" mark="ctrlSw" desc="" type="bitvalue" defaultValue="0" start="0" count="8" typeSize="1">
+              <spec key="0x1" info="开始" />
+              <spec key="0x2" info="停止" />
+            </item>
+            <item id="5" name="巡航速度" mark="cruiseSpd" desc="" type="numeric" defaultValue="0" numericType="u16" scale="0.1" offset="0" decimals="0" min="0" max="60" unit="公里/小时" />
+            <item id="6" name="保留1" mark="" desc="" type="complex" defaultValue="0" size="21">
+              <table id="ICDTable_6d035e92abb4431d9acff4fd711a747f" name="保留1" mark="" desc="" sequence="1" />
+            </item>
+          </table>
+          <table id="ICDTable_c4bf663425f5445c96ac4504c5adadd1" name="航点上行帧" mark="52" desc="" sequence="1">
+            <item id="1" name="航点操作模式" mark="wpOptMode" desc="" type="bitvalue" defaultValue="0" start="0" count="8" typeSize="1">
+              <spec key="0x1" info="上传航点" />
+              <spec key="0x3" info="下传航点请求" />
+              <spec key="0x6" info="清除所有航点" />
+            </item>
+            <item id="2" name="保留1" mark="_reserved1" desc="" type="numeric" defaultValue="0" numericType="u8" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+            <item id="3" name="航点序号" mark="wpIndex" desc="如果模式为请求下传航点，则序号为请求下传的航点序号" type="numeric" defaultValue="0" numericType="u16" scale="1" offset="0" decimals="0" min="0" max="255" unit="" />
+            <item id="4" name="航点纬度" mark="wpLatitude" desc="如果模式为请求下传航点，则序号为请求下传的航点序号" type="numeric" defaultValue="0" numericType="i32" scale="1e-7" offset="0" decimals="0" min="-360" max="360" unit="°" />
+            <item id="5" name="航点经度" mark="wpLontitude" desc="" type="numeric" defaultValue="0" numericType="i32" scale="1e-7" offset="0" decimals="0" min="-180" max="180" unit="°" />
+            <item id="6" name="航点高度" mark="wpHeight" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="-1000" max="1e+06" unit="m" />
+            <item id="7" name="保留2" mark="" desc="" type="complex" defaultValue="0" size="13">
+              <table id="ICDTable_0a7034f1f6d34128a322406b84d3ad50" name="保留2" mark="" desc="" sequence="1" />
+            </item>
+          </table>
+          <table id="ICDTable_f1a34d0a5e9f4090bb3af26ada67ad37" name="差分上行帧" mark="53" desc="" sequence="1">
+            <item id="1" name="备用" mark="" desc="" type="complex" defaultValue="0" size="27">
+              <table id="ICDTable_e36ab4b3ec2a4bf38a672706e4e409c1" name="备用" mark="" desc="" sequence="1" />
+            </item>
+          </table>
+        </item>
+        <item id="6" name="校验和" mark="parity" desc="" type="check" defaultValue="0" checkType="sum8" startPos="0" endPos="30" />
+      </table>
+      <table id="ICDTable_13e60a8c352143079308d7ed623c9223" name="遥测帧" mark="remoteMeas" desc="" sequence="1">
+        <item id="1" name="同步字1" mark="header1" desc="" type="head" defaultValue="0xeb" />
+        <item id="2" name="同步字2" mark="header2" desc="" type="head" defaultValue="0x90" />
+        <item id="3" name="帧识别码" mark="frameCode" desc="" type="framecode" defaultValue="0" frameCodeType="u8" frameId="5" />
+        <item id="4" name="帧计数" mark="counter" desc="" type="counter" defaultValue="0" counterType="u8" />
+        <item id="5" name="帧数据" mark="frame1" desc="" type="frame" defaultValue="0" size="27" sequenceCount="1">
+          <table id="ICDTable_12759cf5daeb402ea1149a580fdc70e4" name="常规遥测帧" mark="61" desc="" sequence="1">
+            <item id="1" name="传感器状态" mark="sensorStatus" desc="" type="bitmap" defaultValue="0" start="0" count="8" typeSize="1">
+              <spec key="0x0" info="3D gyro:正常;故障" />
+              <spec key="0x1" info="3D accelerometer:正常;故障" />
+              <spec key="0x2" info="3D magnetometer:正常;故障" />
+              <spec key="0x3" info="absolute pressure:正常;故障" />
+              <spec key="0x4" info="Logging:正常;故障" />
+              <spec key="0x5" info="GPS:正常;故障" />
+              <spec key="0x6" info="Receiver:正常;故障" />
+              <spec key="0x7" info="AHRS:正常;故障" />
+            </item>
+            <item id="2" name="GPS定位状态" mark="gpsStatus" desc="" type="bitvalue" defaultValue="0" start="0" count="8" typeSize="1">
+              <spec key="0x0" info="无GPS" />
+              <spec key="0x1" info="未定位" />
+              <spec key="0x2" info="2D定位" />
+              <spec key="0x3" info="3D定位" />
+              <spec key="0x4" info="差分定位" />
+              <spec key="0x5" info="RTK float差分定位" />
+              <spec key="0x6" info="RTK Fixed差分定位" />
+            </item>
+            <item id="3" name="系统负载" mark="sysLoading" desc="" type="numeric" defaultValue="0" numericType="u16" scale="0.1" offset="0" decimals="0" min="0" max="1000" unit="%" />
+            <item id="4" name="工作电压" mark="workVolt" desc="" type="numeric" defaultValue="0" numericType="u16" scale="1" offset="0" decimals="0" min="" max="" unit="mV" />
+            <item id="5" name="工作电流" mark="workCurrent" desc="" type="numeric" defaultValue="0" numericType="u16" scale="10" offset="0" decimals="0" min="" max="" unit="mA" />
+            <item id="6" name="纬度" mark="latitude" desc="" type="numeric" defaultValue="0" numericType="i32" scale="1e-7" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="7" name="经度" mark="lontitude" desc="" type="numeric" defaultValue="0" numericType="i32" scale="1e-7" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="8" name="高度" mark="height" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="" max="" unit="m" />
+            <item id="9" name="俯仰角" mark="pitch" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="10" name="滚转角" mark="roll" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="11" name="航向角" mark="pathAngle" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="12" name="地速" mark="gV" desc="" type="numeric" defaultValue="0" numericType="u16" scale="0.01" offset="0" decimals="0" min="" max="" unit="m/s" />
+            <item id="13" name="备用" mark="_reserved1" desc="" type="numeric" defaultValue="0" numericType="u8" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+          </table>
+          <table id="ICDTable_b558eeb6bf524b9b95a0dabbd1d2e0fa" name="导航下行帧" mark="62" desc="" sequence="1">
+            <item id="1" name="航段距离" mark="wpTotalDistance" desc="" type="numeric" defaultValue="0" numericType="u16" scale="0.1" offset="0" decimals="0" min="" max="" unit="m" />
+            <item id="2" name="目标点距离" mark="wpDistance" desc="当前点到下一个航点距离" type="numeric" defaultValue="0" numericType="u16" scale="0.1" offset="0" decimals="0" min="" max="" unit="m" />
+            <item id="3" name="航段方向" mark="wpBearing" desc="" type="numeric" defaultValue="0" numericType="u16" scale="0.01" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="4" name="目标点方向" mark="curBearing" desc="当前点到下一个航点方向" type="numeric" defaultValue="0" numericType="u16" scale="0.01" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="5" name="侧偏距" mark="dy" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.1" offset="0" decimals="0" min="" max="" unit="m" />
+            <item id="6" name="待飞距离" mark="dX_ac" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.1" offset="0" decimals="0" min="" max="" unit="m" />
+            <item id="7" name="速度指令" mark="mvcmd" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.1" offset="0" decimals="0" min="" max="" unit="公里/小时" />
+            <item id="8" name="前轮转弯指令" mark="dnwscmd" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.1" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="9" name="油门（刹车）指令" mark="throt" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="" max="" unit="" />
+            <item id="10" name="方向盘指令" mark="steer" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="" max="" unit="" />
+            <item id="11" name="油门外回路输出" mark="apthrotc" desc="" type="numeric" defaultValue="0" numericType="u16" scale="0.1" offset="0" decimals="0" min="" max="" unit="" />
+            <item id="12" name="目标航点号" mark="targetWp" desc="" type="numeric" defaultValue="0" numericType="u16" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+            <item id="13" name="控制模式" mark="controlMode" desc="" type="bitvalue" defaultValue="0" start="0" count="8" typeSize="1">
+              <spec key="0x0" info="人工模式" />
+              <spec key="0x2" info="学习模式" />
+              <spec key="0xA" info="自主模式" />
+              <spec key="0x10" info="初始化" />
+            </item>
+            <item id="14" name="备用1" mark="" desc="" type="complex" defaultValue="0" size="2">
+              <table id="ICDTable_5903a19bd3fa4d62a817c9b8bc788781" name="备用1" mark="" desc="" sequence="1" />
+            </item>
+          </table>
+          <table id="ICDTable_a144c707c71a4fc496fa869070dd3714" name="航点下行帧" mark="71" desc="" sequence="1">
+            <item id="1" name="航路模式开关" mark="wayModeSw" desc="" type="bitvalue" defaultValue="0" start="0" count="8" typeSize="1">
+              <spec key="0x2" info="上传航点确认" />
+              <spec key="0x4" info="下传航点确认" />
+              <spec key="0x5" info="下传航点结束" />
+              <spec key="0x7" info="清除航点确认" />
+              <spec key="0x8" info="航点操作错误" />
+            </item>
+            <item id="2" name="保留1" mark="_reserved1" desc="" type="numeric" defaultValue="0" numericType="u8" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+            <item id="3" name="航点序号" mark="wpIndex" desc="如果模式为请求下传航点，则序号为请求下传的航点序号" type="numeric" defaultValue="0" numericType="u16" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+            <item id="4" name="航点纬度" mark="wpLatitude" desc="如果模式为请求下传航点，则序号为请求下传的航点序号" type="numeric" defaultValue="0" numericType="i32" scale="1e-7" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="5" name="航点经度" mark="wpLontitude" desc="" type="numeric" defaultValue="0" numericType="i32" scale="1e-7" offset="0" decimals="0" min="" max="" unit="°" />
+            <item id="6" name="航点高度" mark="wpHeight" desc="" type="numeric" defaultValue="0" numericType="i16" scale="0.01" offset="0" decimals="0" min="" max="" unit="m" />
+            <item id="7" name="保留2" mark="" desc="" type="complex" defaultValue="0" size="13">
+              <table id="ICDTable_06d898e9daa34da2a061a335ed960acc" name="保留2" mark="" desc="" sequence="1" />
+            </item>
+          </table>
+        </item>
+        <item id="6" name="校验和" mark="parity" desc="" type="check" defaultValue="0" checkType="sum8" startPos="0" endPos="30" />
+      </table>
+      <table id="ICDTable_e8b698dc708b4ba3a0676a2390c89eeb" name="差分数据帧" mark="diffData" desc="" sequence="1">
+        <item id="1" name="同步字1" mark="header1" desc="" type="head" defaultValue="0xeb" />
+        <item id="2" name="同步字2" mark="header2" desc="" type="head" defaultValue="0x90" />
+        <item id="3" name="帧识别码" mark="framecode1" desc="" type="framecode" defaultValue="0" frameCodeType="u8" frameId="-1" />
+        <item id="4" name="帧计数" mark="counter" desc="" type="counter" defaultValue="0" counterType="u8" />
+        <item id="5" name="数据标识" mark="dataMark" desc="" type="numeric" defaultValue="0" numericType="u8" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+        <item id="6" name="数据长度" mark="dataLength" desc="" type="numeric" defaultValue="0" numericType="u8" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+        <item id="7" name="动态数据区" mark="" desc="" type="complex" defaultValue="0" size="103">
+          <table id="ICDTable_c6264a1d48c14968bcaf7fa6c154603e" name="动态数据区" mark="" desc="" sequence="1" />
+        </item>
+        <item id="8" name="校验和" mark="checksum" desc="" type="check" defaultValue="0" checkType="sum8" startPos="0" endPos="108" />
+      </table>
+      <table id="ICDTable_d99b9f5910fa44d0a2e6b6027d8c25d5" name="表4" mark="table_4" desc="" sequence="1">
+        <item id="1" name="帧头1" mark="header1" desc="" type="head" defaultValue="0xaa" />
+        <item id="2" name="帧头2" mark="header2" desc="" type="head" defaultValue="0x55" />
+        <item id="3" name="帧计数" mark="counter" desc="" type="counter" defaultValue="0" counterType="u8" />
+        <item id="4" name="item_2" mark="code_2" desc="" type="numeric" defaultValue="0" numericType="u8" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+        <item id="5" name="item_3" mark="code_3" desc="" type="numeric" defaultValue="0" numericType="u8" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+        <item id="6" name="测试BITMAP" mark="code_0" desc="" type="bitmap" defaultValue="0" start="0" count="8" typeSize="1">
+          <spec key="0x0" info="111:;" />
+          <spec key="0x1" info="2:;" />
+          <spec key="0x2" info="3:;" />
+          <spec key="0x5" info="4:;" />
+          <spec key="0x6" info="4:;" />
+        </item>
+        <item id="7" name="item_6" mark="code_5" desc="" type="numeric" defaultValue="0" numericType="u16" scale="1" offset="0" decimals="0" min="" max="" unit="" />
+        <item id="8" name="校验和" mark="checksum" desc="" type="check" defaultValue="0" checkType="sum8" startPos="0" endPos="5" />
+      </table>
+    </system>
+  </vehicle>
+</icd>
