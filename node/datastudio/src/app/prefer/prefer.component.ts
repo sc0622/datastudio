@@ -3,7 +3,8 @@ import {Component, Injectable, OnInit} from '@angular/core';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {BehaviorSubject, of as observableOf} from 'rxjs';
  
-import * as jx from "lib/protocore";
+import * as px from "lib/protocore";
+import { Table } from 'lib/protocore';
  
 /**
  * Json node data with nested structure. Each node has a filename and a value or
@@ -114,7 +115,7 @@ export class PreferComponent implements OnInit {
   answerDisplay: string = '';
   showSpinner: boolean = false;
 
-  numeric: jx.Numeric = new jx.Numeric();
+  numeric: px.Numeric = new px.Numeric();
 
   nestedTreeControl: NestedTreeControl<FileNode>; 
   nestedDataSource: MatTreeNestedDataSource<FileNode>;

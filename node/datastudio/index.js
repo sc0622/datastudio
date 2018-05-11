@@ -1,15 +1,20 @@
-
-const {app, BrowserWindow, ipcMain, ipcRenderer, Menu} = require('electron');
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  ipcRenderer,
+  Menu
+} = require('electron');
 const path = require('path')
 const url = require('url')
 
 let projectDir = path.resolve('../..');
 if (process.env.NODE_ENV) {
   process.env.Path += ';' + path.resolve(process.env.QTDIR_64, 'bin') + ';' +
-      path.resolve(projectDir, 'lib/3rdpart/moxa');
+    path.resolve(projectDir, 'lib/3rdpart/moxa');
 } else {
   process.env.Path += ';' +
-      `${__dirname}`;
+    `${__dirname}`;
 }
 
 let win = null;
@@ -36,11 +41,10 @@ function createWindow() {
     slashes: true
   })
 
-  if (process.env.NODE_ENV) {
+  if (process.env.NODE_ENV == 'development') {
     win.setIcon('./src/favicon.ico');
-  }
-  else {
-    win.setIcon(`file://${__dirname}/dist/favicon.ico`);
+  } else {
+    win.setIcon(path.join(__dirname, 'dist', 'datastudio', 'favicon.ico'));
   }
 
   //
@@ -48,17 +52,17 @@ function createWindow() {
   //
   win.webContents.openDevTools()
 
-  win.webContents.on('crashed', function() {
+  win.webContents.on('crashed', function () {
     const options = {
       type: 'info',
       title: '渲染器进程崩溃',
       message: '这个进程已经崩溃.',
       buttons: ['重载', '关闭']
     };
-    dialog.showMessageBox(options, function(index) {
+    dialog.showMessageBox(options, function (index) {
       if (index === 0)
         win.reload()
-        else win.close()
+      else win.close()
     })
     app.quit();
   })
@@ -74,7 +78,7 @@ function createWindow() {
   Menu.setApplicationMenu(menu)
 
   //
-
+  /*
   // TEST
   let jx;
   if (process.env.NODE_ENV) {
@@ -92,10 +96,11 @@ function createWindow() {
   var parser = jx.Parser.create(JSON.stringify(config));
   if (parser) {
     var object = parser.parse(
-        '1001/2001/ICDTable_0ceb8821fc5d4990bd35faa5a29f6f79', 3, 1);
+      '1001/2001/ICDTable_0ceb8821fc5d4990bd35faa5a29f6f79', 3, 1);
     var a = object.name;
     console.log(object.name);
   }
+  */
 }
 
 //
@@ -115,13 +120,38 @@ app.on('active', () => {
 
 let template = [{
   label: '编辑',
-  submenu: [
-    {label: '撤销', accelerator: 'CmdOrCtrl+Z', role: 'undo'},
-    {label: '重做', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo'},
-    {type: 'separator'},
-    {label: '剪切', accelerator: 'CmdOrCtrl+X', role: 'cut'},
-    {label: '复制', accelerator: 'CmdOrCtrl+C', role: 'copy'},
-    {label: '粘贴', accelerator: 'CmdOrCtrl+V', role: 'paste'},
-    {label: '全选', accelerator: 'CmdOrCtrl+A', role: 'selectall'}
+  submenu: [{
+      label: '撤销',
+      accelerator: 'CmdOrCtrl+Z',
+      role: 'undo'
+    },
+    {
+      label: '重做',
+      accelerator: 'Shift+CmdOrCtrl+Z',
+      role: 'redo'
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: '剪切',
+      accelerator: 'CmdOrCtrl+X',
+      role: 'cut'
+    },
+    {
+      label: '复制',
+      accelerator: 'CmdOrCtrl+C',
+      role: 'copy'
+    },
+    {
+      label: '粘贴',
+      accelerator: 'CmdOrCtrl+V',
+      role: 'paste'
+    },
+    {
+      label: '全选',
+      accelerator: 'CmdOrCtrl+A',
+      role: 'selectall'
+    }
   ]
 }];
