@@ -33,15 +33,12 @@ export class Parser {
   save(vehicle: Vehicle, vehicleId: string): boolean;
   save(systems: System[], vehicleId: string): boolean;
   save(system: System, vehicleId: string, systemId: string): boolean;
-  save(system: System, domain: string): boolean;
   save(tables: Table[], vehicleId: string, systemId: string): boolean;
   save(tables: Table[], domain: string): boolean;
   save(table: Table, vehicleId: string, systemId: string, tableId: string): boolean;
-  save(table: Table, domain: string): boolean;
   save(items: Item[], vehicleId: string, systemId: string, tableId: string): boolean;
   save(items: Item[], domain: string): boolean;
-  save(item: Item, vehicleId: string, systemId: string, tableId: string, itemId): boolean;
-  save(item: Item, domain: string): boolean;
+  save(item: Item, vehicleId: string, systemId: string, tableId: string, itemId: string): boolean;
   save(tables: Table[]): boolean;
   save(table: Table, tableId: string): boolean;
   save(table: Table): boolean;

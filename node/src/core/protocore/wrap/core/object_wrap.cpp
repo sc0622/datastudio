@@ -2,6 +2,10 @@
 #include "object_wrap.h"
 #include "icdcore/icd_object.h"
 #include "icdcore/icd_item.h"
+#include "icdcore/icd_table.h"
+#include "icdcore/icd_system.h"
+#include "icdcore/icd_vehicle.h"
+#include "icdcore/icd_root.h"
 #include "root_wrap.h"
 #include "vehicle_wrap.h"
 #include "system_wrap.h"
@@ -34,6 +38,28 @@ ObjectWrap::ObjectWrap(const Napi::CallbackInfo &info)
     , d(napi_unwrap_data<Icd::Object>(info, true))
 {
 
+}
+
+Icd::ObjectPtr ObjectWrap::fromObject(Napi::Env env, const Napi::Value &value)
+{
+    if (!value.IsObject()) {
+        napi_throwjs(Napi::TypeError::New(env, "argument is not a object."));
+        return Icd::ObjectPtr();
+    }
+    const Napi::Object object = value.ToObject();
+    if (object.InstanceOf(ItemWrap::ctor.Value())) {
+        return ItemWrap::fromObject(env, value);
+    } else if (object.InstanceOf(TableWrap::ctor.Value())) {
+        return TableWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(SystemWrap::ctor.Value())) {
+        return SystemWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(VehicleWrap::ctor.Value())) {
+        return VehicleWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(RootWrap::ctor.Value())) {
+        return RootWrap::Unwrap(object)->data();
+    }
+
+    return Icd::ObjectPtr();
 }
 
 NAPI_GETTER(ObjectWrap, ObjectType) {

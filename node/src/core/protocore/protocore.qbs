@@ -16,9 +16,15 @@ ElectronLibrary {
                                    sourceDir,
                                    sourceDir + '/..',
                                    sourceDir + '/icdcore/3rdpart/jsoncpp',
-                                   tinyxml.prefix + '/..'
+                                   tinyxml.prefix + '/..',
+                                   comm.prefix + '/private/moxa'
                                   ])
-    cpp.defines: base.concat([ 'ICDCORE_JSON_LIB' ])
+    cpp.libraryPaths: base.concat([ comm.prefix + '/private/moxa' ])
+    cpp.dynamicLibraries: base.concat(['pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '')
+                                      ])
+    cpp.defines: base.concat(['ICDCORE_JSON_LIB',
+                              'SERIAL_USE_PCOMM'
+                             ])
 
     Depends { name: 'Qt.core' }
     Depends { name: 'Qt.printsupport' }
@@ -26,6 +32,10 @@ ElectronLibrary {
         condition: qbs.targetOS.contains('windows')
         name: 'Qt.axcontainer'
     }
+    Depends { name: 'Qt.network' }
+    Depends { name: 'Qt.concurrent' }
+    //Depends { name: 'Qt.widgets' }
+    Depends { name: 'Qt.serialport' }
 
     Group {
         name: 'wrap'
@@ -40,6 +50,17 @@ ElectronLibrary {
     }
 
     Group {
+        id: comm
+        name: 'comm'
+        prefix: product.sourceDir + '/icdcomm/'
+        files: [
+            '**/*.h',
+            '**/*.cpp',
+        ]
+    }
+
+    Group {
+        id: core
         name: 'core'
         prefix: product.sourceDir + '/icdcore/'
         files: [
@@ -49,6 +70,7 @@ ElectronLibrary {
     }
 
     Group {
+        id: parser
         name: 'parser'
         prefix: product.sourceDir + '/icdparser/'
         files: [
@@ -58,6 +80,16 @@ ElectronLibrary {
         ]
         excludeFiles: [
             '**/jexcel.*'
+        ]
+    }
+
+    Group {
+        id: worker
+        name: 'worker'
+        prefix: product.sourceDir + '/icdworker/'
+        files: [
+            '**/*.h',
+            '**/*.cpp',
         ]
     }
 }

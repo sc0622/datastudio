@@ -1,6 +1,14 @@
 #include "precomp.h"
 #include "item_wrap.h"
 #include "icdcore/icd_item.h"
+#include "icdcore/icd_item_bit.h"
+#include "icdcore/icd_item_check.h"
+#include "icdcore/icd_item_complex.h"
+#include "icdcore/icd_item_counter.h"
+#include "icdcore/icd_item_frame.h"
+#include "icdcore/icd_item_framecode.h"
+#include "icdcore/icd_item_header.h"
+#include "icdcore/icd_item_numeric.h"
 #include "bit_wrap.h"
 #include "check_wrap.h"
 #include "complex_wrap.h"
@@ -91,6 +99,34 @@ NAPI_METHOD(ItemWrap, Create) {
     }
 
     return Napi::Value();
+}
+
+Icd::ItemPtr ItemWrap::fromObject(Napi::Env env, const Napi::Value &value)
+{
+    if (!value.IsObject()) {
+        napi_throwjs(Napi::TypeError::New(env, "argument is not a object."));
+        return Icd::ItemPtr();
+    }
+    const Napi::Object object = value.ToObject();
+    if (object.InstanceOf(NumericWrap::ctor.Value())) {
+        return NumericWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(BitWrap::ctor.Value())) {
+        return BitWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(HeaderWrap::ctor.Value())) {
+        return HeaderWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(CounterWrap::ctor.Value())) {
+        return CounterWrap::Unwrap(object)->data();
+    }  else if (object.InstanceOf(CheckWrap::ctor.Value())) {
+        return CheckWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(ComplexWrap::ctor.Value())) {
+        return ComplexWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(FrameCodeWrap::ctor.Value())) {
+        return FrameCodeWrap::Unwrap(object)->data();
+    } else if (object.InstanceOf(FrameWrap::ctor.Value())) {
+        return FrameWrap::Unwrap(object)->data();
+    }
+
+    return Icd::ItemPtr();
 }
 
 Napi::Value ItemWrap::toObject(Napi::Env env, const Icd::ItemPtr &data)

@@ -239,17 +239,185 @@ NAPI_METHOD(ParserWrap, Save) {
     switch (info.Length()) {
     case 1:
     {
-        Napi::Object o = info[0].As<Napi::Object>();
-        if (o.InstanceOf(RootWrap::ctor.Value())) {
-            //result = d->save();
-        } else {
-            //
+        const Napi::Value value = info[0];
+        if (value.IsArray()) {
+            const Napi::Array array = value.As<Napi::Array>();
+            const uint32_t length = array.Length();
+            if (length == 0) {
+                result = true;
+                break;
+            }
+            const Napi::Value first = array.Get(uint32_t(0));
+            if (!first.IsObject()) {
+                break;
+            }
+            const Napi::Object object = first.ToObject();
+            if (object.InstanceOf(VehicleWrap::ctor.Value())) {
+                Icd::VehiclePtrArray vehicles;
+                for (uint32_t i = 0; i < length; ++i) {
+                    vehicles.push_back(VehicleWrap::Unwrap(array.Get(i).ToObject())->data());
+                }
+                result = d->save(vehicles);
+            } else if (object.InstanceOf(TableWrap::ctor.Value())) {
+                Icd::TablePtrArray tables;
+                for (uint32_t i = 0; i < length; ++i) {
+                    tables.push_back(TableWrap::Unwrap(array.Get(i).ToObject())->data());
+                }
+                result = d->save(tables);
+            }
+        } else if (value.IsObject()) {
+            const Napi::Object object = value.ToObject();
+            if (object.InstanceOf(RootWrap::ctor.Value())) {
+                result = d->save(RootWrap::Unwrap(object)->data());
+            } else if (object.InstanceOf(TableWrap::ctor.Value())) {
+                result = d->save(TableWrap::Unwrap(object)->data());
+            }
+        }
+        break;
+    }
+    case 2:
+    {
+        const Napi::Value value = info[0];
+        if (value.IsArray()) {
+            const Napi::Array array = value.As<Napi::Array>();
+            const uint32_t length = array.Length();
+            if (length == 0) {
+                result = true;
+                break;
+            }
+            const Napi::Value first = array.Get(uint32_t(0));
+            if (!first.IsObject()) {
+                break;
+            }
+            const Napi::Object object = first.ToObject();
+            if (object.InstanceOf(SystemWrap::ctor.Value())) {
+                Icd::SystemPtrArray systems;
+                for (uint32_t i = 0; i < length; ++i) {
+                    systems.push_back(SystemWrap::Unwrap(array.Get(i).ToObject())->data());
+                }
+                result = d->save(info[1].As<Napi::String>(), systems);
+            } else if (object.InstanceOf(TableWrap::ctor.Value())) {
+                Icd::TablePtrArray tables;
+                for (uint32_t i = 0; i < length; ++i) {
+                    tables.push_back(TableWrap::Unwrap(array.Get(i).ToObject())->data());
+                }
+                const std::string domain = info[1].As<Napi::String>();
+                result = d->save(Icd::stringSection(domain, '/', 0, 0),
+                                 Icd::stringSection(domain, '/', 1, 1),
+                                 tables);
+            } else if (object.InstanceOf(ItemWrap::ctor.Value())) {
+                Icd::ItemPtrArray items;
+                for (uint32_t i = 0; i < length; ++i) {
+                    items.push_back(ItemWrap::fromObject(info.Env(), array.Get(i)));
+                }
+                const std::string domain = info[1].As<Napi::String>();
+                result = d->save(Icd::stringSection(domain, '/', 0, 0),
+                                 Icd::stringSection(domain, '/', 1, 1),
+                                 Icd::stringSection(domain, '/', 2, 2),
+                                 items);
+            }
+        } else if (value.IsObject()) {
+            const Napi::Object object = value.ToObject();
+            if (object.InstanceOf(VehicleWrap::ctor.Value())) {
+                result = d->save(info[1].As<Napi::String>(), VehicleWrap::Unwrap(object)->data());
+            } else if (object.InstanceOf(TableWrap::ctor.Value())) {
+                result = d->save(info[1].As<Napi::String>(), TableWrap::Unwrap(object)->data());
+            }
+        }
+        break;
+    }
+    case 3:
+    {
+        const Napi::Value value = info[0];
+        if (value.IsArray()) {
+            const Napi::Array array = value.As<Napi::Array>();
+            const uint32_t length = array.Length();
+            if (length == 0) {
+                result = true;
+                break;
+            }
+            const Napi::Value first = array.Get(uint32_t(0));
+            if (!first.IsObject()) {
+                break;
+            }
+            const Napi::Object object = first.ToObject();
+            if (object.InstanceOf(TableWrap::ctor.Value())) {
+                Icd::TablePtrArray tables;
+                for (uint32_t i = 0; i < length; ++i) {
+                    tables.push_back(TableWrap::Unwrap(array.Get(i).ToObject())->data());
+                }
+                result = d->save(info[1].As<Napi::String>(), info[2].As<Napi::String>(), tables);
+            }
+        } else if (value.IsObject()) {
+            const Napi::Object object = value.ToObject();
+            if (object.InstanceOf(SystemWrap::ctor.Value())) {
+                result = d->save(info[1].As<Napi::String>(), info[2].As<Napi::String>(),
+                        SystemWrap::Unwrap(object)->data());
+            }
+        }
+        break;
+    }
+    case 4:
+    {
+        const Napi::Value value = info[0];
+        switch (value.Type()) {
+        case napi_string:
+        {
+            const Icd::ObjectPtr object = PROTOCORE_DOMAIN::ObjectWrap::fromObject(info.Env(), value);
+            if (!object) {
+                break;
+            }
+            result = d->save(value.ToString(), object, info[2].ToBoolean(), info[3].ToBoolean());
+        }
+        case napi_object:
+        {
+            const Napi::Object object = value.ToObject();
+            if (object.InstanceOf(TableWrap::ctor.Value())) {
+                result = d->save(info[1].As<Napi::String>(), info[2].ToString(),
+                        info[3].ToString(), TableWrap::Unwrap(object)->data());
+            }
+            break;
+        }
+        default:
+            if (value.IsArray()) {
+                const Napi::Array array = value.As<Napi::Array>();
+                const uint32_t length = array.Length();
+                if (length == 0) {
+                    result = true;
+                    break;
+                }
+                const Napi::Value first = array.Get(uint32_t(0));
+                if (!first.IsObject()) {
+                    break;
+                }
+                const Napi::Object object = first.ToObject();
+                if (object.InstanceOf(ItemWrap::ctor.Value())) {
+                    Icd::ItemPtrArray items;
+                    for (uint32_t i = 0; i < length; ++i) {
+                        items.push_back(ItemWrap::fromObject(info.Env(), array.Get(i)));
+                    }
+                    result = d->save(info[1].ToString(), info[2].ToString(), info[3].ToString(), items);
+                }
+            }
+            break;
+        }
+    }
+    case 5:
+    {
+        const Napi::Value value = info[0];
+        if (value.IsObject()) {
+            const Napi::Object object = value.ToObject();
+            if (object.InstanceOf(ItemWrap::ctor.Value())) {
+                result = d->save(info[1].As<Napi::String>(), info[2].ToString(),
+                        info[3].ToString(), info[4].ToString(), ItemWrap::fromObject(info.Env(), object));
+            }
         }
         break;
     }
     default:
         break;
     }
+
     return Napi::Boolean::New(info.Env(), result);
 }
 

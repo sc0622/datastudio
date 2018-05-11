@@ -38,6 +38,7 @@ public:
 
     ITEMWRAP_METHODS_DECL();
 
+    static Icd::ItemPtr fromObject(Napi::Env env, const Napi::Value &value);
     static Napi::Value toObject(Napi::Env env, const Icd::ItemPtr &data);
 
 private:

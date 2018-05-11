@@ -7,8 +7,7 @@ let projectDir = path.resolve('../..');
 if (process.env.NODE_ENV) {
   process.env.Path += ';' + path.resolve(process.env.QTDIR_64, 'bin') + ';' +
       path.resolve(projectDir, 'lib/3rdpart/moxa');
-}
-else {
+} else {
   process.env.Path += ';' +
       `${__dirname}`;
 }
@@ -34,12 +33,18 @@ function createWindow() {
     width: 1000,
     height: 600,
     backgroundColor: '#ffffff',
-    slashes: true,
-    icon: `file://${__dirname}/dist/favicon.ico`
+    slashes: true
   })
 
+  if (process.env.NODE_ENV) {
+    win.setIcon('./src/favicon.ico');
+  }
+  else {
+    win.setIcon(`file://${__dirname}/dist/favicon.ico`);
+  }
+
   //
-  load(win, false);
+  load(win, true);
   //
   win.webContents.openDevTools()
 

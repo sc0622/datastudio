@@ -20,7 +20,7 @@
 #define ICDWORKER_EXPORT
 #endif
 
-#ifdef ICDCOMM_LIB
+#if defined(ICDCOMM_LIB) || defined(BUILDING_NODE_EXTENSION)
 #include "icdcomm/icdcomm_global.h"
 #endif
 
