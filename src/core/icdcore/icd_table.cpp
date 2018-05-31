@@ -26,10 +26,10 @@ public:
         , bufferSize(0.0)
         , bufferOffset(0.0)
         , buffer(0)
-        , itemCounter(0)
-        , itemCheck(0)
         , isFrameTable(false)
         , period(0)
+        , itemCounter(0)
+        , itemCheck(0)
     {
 
     }

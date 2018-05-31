@@ -14,7 +14,9 @@ namespace Icd {
 WorkerSendPrivate::WorkerSendPrivate(Icd::WorkerSend *q)
     : q_ptr(q)
     , mutex(QMutex::Recursive)
-    , timer(new JRTTimer(JRTTimer::TimePeriodic, 20/*default: 10ms*/))
+    //, timer(new JRTTimer(JRTTimer::TimePeriodic, 20/*default: 10ms*/))
+    //TEST
+    , timer(new JRTTimer(JRTTimer::TimePeriodic, 500/*default: 10ms*/))
     , channel(0)
     , table(0)
     , tableSize(0)

@@ -14,8 +14,8 @@ class ParserData
     friend class Parser;
 public:
     ParserData()
-        : canceledSaveAs(true)
-        , progressValue(0)
+        : progressValue(0)
+        , canceledSaveAs(true)
         , mutex(QMutex::Recursive)
         , isBeginModify(false)
     {

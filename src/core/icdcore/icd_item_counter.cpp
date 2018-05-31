@@ -120,7 +120,7 @@ void CounterItem::setData(double data)
     memcpy(buffer, &value, std::min<int>(sizeof(value), int(bufferSize())));
 }
 
-std::string CounterItem::dataString()
+std::string CounterItem::dataString() const
 {
     std::stringstream str;
     str << data();

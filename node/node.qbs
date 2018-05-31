@@ -3,7 +3,7 @@ import qbs
 Project {
 
     references: [
-        "src/src.qbs"
+        //"src/src.qbs"
     ]
 
     Product {

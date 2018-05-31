@@ -92,7 +92,7 @@ public:
      * @brief 获取包头字符串
      * @return
      */
-    virtual std::string dataString();
+    std::string dataString() const;
 
     /**
      * @brief 获取包头常值

@@ -161,7 +161,7 @@ qreal JIcdNumericItem::valueMaximum() const
 double JIcdNumericItem::orignalData() const
 {
     Q_D(const JIcdNumericItem);
-    return d->data->orignalData();
+    return d->data->originalData();
 }
 
 bool JIcdNumericItem::outOfLimit() const

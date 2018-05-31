@@ -21,9 +21,9 @@ Project {
     readonly property path workDirectory: FileInfo.joinPaths(installRoot, projectName)
 
     references: [
-        //'tools/setenv/setenv.qbs',
-        //'config/config.qbs',
-        //'src/src.qbs',
+        'tools/setenv/setenv.qbs',
+        'config/config.qbs',
+        'src/src.qbs',
         'tools/tools.qbs',
         'node/node.qbs'
     ]

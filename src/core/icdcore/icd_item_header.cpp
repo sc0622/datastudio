@@ -62,7 +62,7 @@ void HeaderItem::setData(double data)
     *(unsigned char *)buffer = (unsigned char)data;
 }
 
-std::string HeaderItem::dataString()
+std::string HeaderItem::dataString() const
 {
     std::stringstream str;
     str<< std::hex << (unsigned char)data();
