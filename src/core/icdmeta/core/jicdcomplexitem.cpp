@@ -10,7 +10,7 @@ class JIcdComplexItemPrivate
 {
 public:
     JIcdComplexItemPrivate(JIcdComplexItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
         , table(Q_NULLPTR)
     {
@@ -35,7 +35,7 @@ void JIcdComplexItemPrivate::init()
 
 JIcdComplexItem::JIcdComplexItem(const Icd::ComplexItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdComplexItemPrivate(this))
+    , J_DPTR(new JIcdComplexItemPrivate(this))
 {
     Q_D(JIcdComplexItem);
     d->data = data;

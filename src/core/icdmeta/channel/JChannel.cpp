@@ -13,7 +13,8 @@ class JChannelPrivate
 {
 public:
     JChannelPrivate(JChannel *q)
-        : q_ptr(q)
+        : J_QPTR(q)
+        , checked(false)
         , channel(nullptr)
     {
 
@@ -26,6 +27,7 @@ private:
     J_DECLARE_PUBLIC(JChannel)
     QString identity;
     QString domain;
+    bool checked;
     JSuperChannel *channel;
 };
 
@@ -55,7 +57,7 @@ using namespace icdmeta;
 
 JChannel::JChannel(const QString &identity, QObject *parent)
     : QObject(parent)
-    , d_ptr(new JChannelPrivate(this))
+    , J_DPTR(new JChannelPrivate(this))
 {
     Q_D(JChannel);
     d->identity = identity;
@@ -99,23 +101,19 @@ Icd::ChannelPtr JChannel::nativeChannel() const
     if (!d->channel) {
         return nullptr;
     }
-    return d->channel->channel();
+    return d->channel->nativeChannel();
 }
 
-bool JChannel::isActive() const
+bool JChannel::isChecked() const
 {
     Q_D(const JChannel);
-    if (d->channel) {
-        return d->channel->active();
-    } else {
-        return false;
-    }
+    return d->checked;
 }
 
 bool JChannel::isValid() const
 {
     Q_D(const JChannel);
-    if (d->channel && d->channel->channel()) {
+    if (d->channel && d->channel->nativeChannel()) {
         return true;
     } else {
         return false;
@@ -128,7 +126,7 @@ bool JChannel::isOpen() const
     if (!isValid()) {
         return false;
     }
-    Icd::ChannelPtr channel = d->channel->channel();
+    Icd::ChannelPtr channel = d->channel->nativeChannel();
     return channel->isOpen();
 }
 
@@ -145,22 +143,16 @@ void JChannel::setChannel(JSuperChannel *channel)
         if (d->channel) {
             connect(d->channel, &JSuperChannel::isOpenChanged,
                     this, &JChannel::isOpenChanged);
-            //connect(this, &JChannel::isOpenChanged,
-            //        d->channel, &JSuperChannel::isOpenChanged);
-            //
-            connect(d->channel, &JSuperChannel::activeChanged,
-                    this, &JChannel::activeChanged);
-            //connect(this, &JChannel::activeChanged,
-            //        d->channel, &JSuperChannel::activeChanged);
         }
     }
 }
 
-void JChannel::setActive(bool active)
+void JChannel::setChecked(bool checked)
 {
     Q_D(JChannel);
-    if (d->channel) {
-        d->channel->setActive(active);
+    if (checked != d->checked) {
+        d->checked = checked;
+        emit checkedChanged(checked);
     }
 }
 
@@ -202,6 +194,24 @@ void JChannel::close()
     }
 }
 
+bool JChannel::saveConfig(const QString &filePath, const QString &pathPrefix)
+{
+    Q_D(JChannel);
+    if (d->channel) {
+        if (filePath.toLower().endsWith(".json")) {
+            QString path = "[id=" + d->identity + ']';
+            if (!pathPrefix.isEmpty()) {
+                path.prepend(pathPrefix + '.');
+            }
+            return Json::make(filePath.toLocal8Bit(), path.toStdString(), save(), true, false);
+        } else {
+            return false;   // not supported
+        }
+    } else {
+        return false;
+    }
+}
+
 Json::Value JChannel::save() const
 {
     Q_D(const JChannel);
@@ -211,6 +221,9 @@ Json::Value JChannel::save() const
     }
 
     Json::Value json = d->channel->save();
+    json["id"] = d->identity.toStdString();
+    json["domain"] = d->domain.toStdString();
+    json["checked"] = d->checked;
 
     return json;
 }
@@ -226,13 +239,15 @@ bool JChannel::restore(const Json::Value &json, int)
         return false;
     }
 
+    d->identity = QString::fromStdString(json["id"].asString());
+    emit identityChanged();
+    d->domain = QString::fromStdString(json["domain"].asString());
+    emit domainChanged();
+    setChecked(json["checked"].asBool());
+
     JSuperChannel *newChannel = nullptr;
     if (!d->channel || d->channel->channelType() != channelType) {
-        const std::string identity = json["id"].asString();
-        if (identity.empty()) {
-            return false;
-        }
-        newChannel = d->channel->create(QString::fromStdString(identity), channelType);
+        newChannel = d->channel->create(channelType);
         if (!newChannel) {
             Q_ASSERT(false);
             setChannel(nullptr);

@@ -7,7 +7,7 @@
 
 ComMgrWidget::ComMgrWidget(QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new ComMgrWidgetPrivate(this))
+    , J_DPTR(new ComMgrWidgetPrivate(this))
 {
     Q_D(ComMgrWidget);
     d->init();

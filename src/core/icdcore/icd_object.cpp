@@ -39,11 +39,11 @@ public:
 private:
     Object *parent;         //
     ObjectType objectType;  //
-    std::string id;         // 对象编号
-    std::string domain;     // 域
-    std::string name;       // 对象名称
-    std::string mark;       // 对象标识，需满足C语言命名规范,同一ICD表中唯一
-    std::string desc;       // 对象描述
+    std::string id;         //
+    std::string domain;     //
+    std::string name;       //
+    std::string mark;       //
+    std::string desc;       //
 };
 
 bool ObjectData::startsWith(const std::string &str, const std::string &prefix, bool caseSensitivity)
@@ -178,6 +178,28 @@ bool Object::isPrivateMark() const
     return false;
 }
 
+std::string Object::objectTypeString() const
+{
+    switch (d->objectType) {
+    case ObjectRoot: return "Root";
+    case ObjectVehicle: return "Vehicle";
+    case ObjectSystem: return "System";
+    case ObjectTable: return "Table";
+    case ObjectItem: return "Item";
+    default: return "Invalid";
+    }
+}
+
+std::string Object::domainOfType(int domainType) const
+{
+    switch (domainType) {
+    case Icd::DomainId: return id();
+    case Icd::DomainName: return name();
+    case Icd::DomainMark: return mark();
+    default: return "";
+    }
+}
+
 Object *Object::parent() const
 {
     return d->parent;
@@ -191,18 +213,6 @@ void Object::setParent(Object *parent)
 int Object::childCount() const
 {
     return 0;
-}
-
-std::string Object::objectTypeString() const
-{
-    switch (d->objectType) {
-    case ObjectRoot: return "Root";
-    case ObjectVehicle: return "Vehicle";
-    case ObjectSystem: return "System";
-    case ObjectTable: return "Table";
-    case ObjectItem: return "Item";
-    default: return "Invalid";
-    }
 }
 
 void Object::resetData()
@@ -235,20 +245,12 @@ Object &Object::operator =(const Object &other)
     return *this;
 }
 
-std::string Object::domainOfType(int domainType) const
-{
-    switch (domainType) {
-    case Icd::DomainId: return id();
-    case Icd::DomainName: return name();
-    case Icd::DomainMark: return mark();
-    default: return "";
-    }
-}
-
 Json::Value Object::save() const
 {
     Json::Value json;
-    json["id"] = id();
+    if (!d->mark.empty()) {
+        json["id"] = id();
+    }
     json["name"] = name();
     if (!d->mark.empty()) {
         json["mark"] = mark();

@@ -1709,7 +1709,7 @@ Value Path::resolve(const Value& root, const Value& defaultValue) const {
   return *node;
 }
 
-Value& Path::make(Value& root) const {
+Value &Path::make(Value &root) const {
   Value* node = &root;
   for (Args::const_iterator it = args_.begin(); it != args_.end(); ++it) {
     const PathArgument& arg = *it;
@@ -1717,10 +1717,16 @@ Value& Path::make(Value& root) const {
       if (!node->isArray()) {
         // Error: node is not an array at position ...d
       }
+      if (arg.index_ >= node->size()) {
+        node->append(Value(objectValue));
+      }
       node = &((*node)[arg.index_]);
     } else if (arg.kind_ == PathArgument::kindKey) {
       if (!node->isObject()) {
         // Error: node is not an object at position...
+      }
+      if (!node->isMember(arg.key_)) {
+          (*node)[arg.key_] = Json::Value(objectValue);
       }
       node = &((*node)[arg.key_]);
     } else if (arg.kind_ == PathArgument::kindIndexKey) {
@@ -1743,7 +1749,9 @@ Value& Path::make(Value& root) const {
             }
         }
         if (itValue == oldNode->end()) {
-            break;
+            Value newNode(objectValue);
+            newNode[arg.key_] = arg.value_;
+            node = &oldNode->append(newNode);
         }
     }
   }

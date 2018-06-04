@@ -4,9 +4,6 @@
 
 namespace Icd {
 
-/**
- * @brief The VehicleData struct
- */
 class VehicleData
 {
     friend class Vehicle;
@@ -181,7 +178,7 @@ Json::Value Vehicle::save() const
     Json::Value json = Object::save();
 
     if (!d->systems.empty()) {
-        Json::Value systemsJson;
+        Json::Value systemsJson(Json::arrayValue);
         for (SystemPtrArray::const_iterator citer = d->systems.cbegin();
              citer != d->systems.cend(); ++citer) {
             const SystemPtr &system = *citer;

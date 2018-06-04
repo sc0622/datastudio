@@ -243,7 +243,7 @@ private:
 
 private:
     friend class WordGenerator;
-    WordGenerator *q_ptr;
+    WordGenerator *J_QPTR;
     QAxObject *word;
     QAxObject *document;
     QAxObject *tableCaption;
@@ -255,18 +255,3 @@ private:
 } // end of namespace Icd
 
 #endif // ICDGENERATOR_WORD_P_H
-
-
-/**
- *
-    QString s = captionLabels->generateDocumentation();
-    QFile file(QApplication::applicationDirPath().append("/CaptionLabels.htm"));
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        return false;
-    }
-    QTextStream ts(&file);
-    ts << s;
-    file.close();
-
-
-    */

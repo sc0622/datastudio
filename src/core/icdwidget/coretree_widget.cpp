@@ -8,7 +8,7 @@ namespace Icd {
 
 CoreTreeWidget::CoreTreeWidget(QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new CoreTreeWidgetPrivate(this))
+    , J_DPTR(new CoreTreeWidgetPrivate(this))
 {
     Q_D(CoreTreeWidget);
     d->init();

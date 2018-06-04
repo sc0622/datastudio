@@ -124,8 +124,56 @@ bool Parser::save(const std::string &domain, const ObjectPtr &object,
                   bool merge, bool fast) const
 {
     Q_UNUSED(domain);
-    Q_UNUSED(object);
-    Q_UNUSED(merge);
+    Q_UNUSED(fast);
+    if (!object) {
+        return false;
+    }
+
+    return false;//TODO
+}
+
+bool Icd::Parser::saveJsonObject(const std::string &path, const Json::Value &value,
+                                 bool fast) const
+{
+    Q_UNUSED(path);
+    Q_UNUSED(value);
+    Q_UNUSED(fast);
+    return false;
+}
+
+bool Icd::Parser::saveJsonArray(const std::string &path, const Json::Value &value,
+                                bool unique, bool fast) const
+{
+    Q_UNUSED(path);
+    Q_UNUSED(value);
+    Q_UNUSED(fast);
+    return false;
+}
+
+bool Icd::Parser::replaceJson(const std::string &path, const Json::Value &oldValue,
+                              const Json::Value &newValue, bool fast) const
+{
+    Q_UNUSED(path);
+    Q_UNUSED(oldValue);
+    Q_UNUSED(newValue);
+    Q_UNUSED(fast);
+    return false;
+}
+
+bool Icd::Parser::removeJson(const std::string &path, const std::string &key,
+                             const Json::Value &value, bool fast) const
+{
+    Q_UNUSED(path);
+    Q_UNUSED(key);
+    Q_UNUSED(value);
+    Q_UNUSED(fast);
+    return false;
+}
+
+bool Icd::Parser::mergeJson(const std::string &path, const Json::Value &value, bool fast) const
+{
+    Q_UNUSED(path);
+    Q_UNUSED(value);
     Q_UNUSED(fast);
     return false;
 }

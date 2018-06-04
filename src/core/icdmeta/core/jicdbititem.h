@@ -5,7 +5,7 @@
 
 namespace Icd {
 class BitItem;
-typedef JHandlePtr<BitItem> BitItemPtr;
+typedef std::shared_ptr<BitItem> BitItemPtr;
 }
 
 namespace icdmeta {

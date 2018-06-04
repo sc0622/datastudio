@@ -7,7 +7,7 @@ namespace Icd {
 
 class CppGenerator;
 class CppGeneratorData;
-typedef JHandlePtr<CppGenerator> CppGeneratorPtr;
+typedef std::shared_ptr<CppGenerator> CppGeneratorPtr;
 
 class CppGenerator : public Generator
 {
@@ -46,7 +46,7 @@ public:
     void shutdown();
 
 private:
-    JHandlePtr<CppGeneratorData> d;
+    std::shared_ptr<CppGeneratorData> d;
 };
 
 } // end of namespace Icd

@@ -184,15 +184,15 @@ void TableItemWidget::updateButtonIcon(bool checked)
 
 CoreTreeWidgetPrivate::CoreTreeWidgetPrivate(CoreTreeWidget *q)
     : JTreeView(q)
-    , d_searchEdit(0)
-    , q_ptr(q)
-    , d_parser(0)
+    , J_QPTR(q)
+    , d_searchEdit(nullptr)
+    , d_parser(nullptr)
     , d_loadingDeep(Icd::ObjectTable)
     , d_intervalUpdate(200)     // 200ms
     , d_bindTableTypes(CoreTreeWidget::BindAllTable)
     , d_showAttris(CoreTreeWidget::ShowType | CoreTreeWidget::ShowValue)
     , d_dataFormat(16)
-    , d_treeModes(0)
+    , d_treeModes(nullptr)
 {
 
 }

@@ -6,7 +6,7 @@
 namespace Icd {
 
 class Runnable;
-typedef JHandlePtr<Runnable> RunnablePtr;
+typedef std::shared_ptr<Runnable> RunnablePtr;
 
 /**
  * @brief The Runnable class
@@ -14,12 +14,13 @@ typedef JHandlePtr<Runnable> RunnablePtr;
 class Runnable
 {
 public:
+    virtual ~Runnable() {}
     virtual void run() = 0;
 };
 
 class JRTTimer;
 class JRTTimerData;
-typedef JHandlePtr<JRTTimer> JRTTimerPtr;
+typedef std::shared_ptr<JRTTimer> JRTTimerPtr;
 
 /**
  * @brief The JRTTimer class
@@ -45,7 +46,7 @@ public:
      * @param timeEvent
      * @param interval
      */
-    explicit JRTTimer(TimeEvent timeEvent, unsigned int interval = -1);
+    explicit JRTTimer(TimeEvent timeEvent, int interval = -1);
 
     ~JRTTimer();
 
@@ -115,7 +116,9 @@ public:
     void setTask(Runnable *task);
 
 private:
-    JHandlePtr<JRTTimerData> d;
+    JRTTimer(const JRTTimer &);
+    JRTTimer &operator=(const JRTTimer &);
+    std::shared_ptr<JRTTimerData> d;
 };
 
 } // end of namespace Icd

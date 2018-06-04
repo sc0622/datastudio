@@ -416,6 +416,35 @@ bool JsonParser::save(const TablePtr &table) const
     return Json::make(filePath(), tablesJson, true, true);
 }
 
+bool JsonParser::saveJsonObject(const std::string &path, const Json::Value &value,
+                                bool fast) const
+{
+    return Json::make(filePath(), path, value, false, fast);
+}
+
+bool JsonParser::saveJsonArray(const std::string &path, const Json::Value &value,
+                               bool unique, bool fast) const
+{
+    return Json::makeArray(filePath(), path, value, unique, false, fast);
+}
+
+bool JsonParser::replaceJson(const std::string &path, const Json::Value &oldValue,
+                             const Json::Value &newValue, bool fast) const
+{
+    return Json::replaceItem(filePath(), path, oldValue, newValue, false, fast);
+}
+
+bool JsonParser::removeJson(const std::string &path, const std::string &key,
+                            const Json::Value &value, bool fast) const
+{
+    return Json::removeItem(filePath(), path, key, value, false, fast);
+}
+
+bool JsonParser::mergeJson(const std::string &path, const Json::Value &value, bool fast) const
+{
+    return Json::merge(filePath(), path, value, false, fast);
+}
+
 bool JsonParser::beginModify()
 {
     if (Parser::isBeginModify()) {

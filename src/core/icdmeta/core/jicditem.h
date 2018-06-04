@@ -4,9 +4,9 @@
 #include "jicdobject.h"
 
 namespace Icd {
-template<typename T> class JHandlePtr;
+template<typename T> class std::shared_ptr;
 class Item;
-typedef JHandlePtr<Item> ItemPtr;
+typedef std::shared_ptr<Item> ItemPtr;
 }
 
 namespace icdmeta {

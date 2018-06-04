@@ -7,7 +7,7 @@
 namespace Icd {
 template<typename T> class HandlePtr;
 class LimitItem;
-typedef JHandlePtr<LimitItem> LimitItemPtr;
+typedef std::shared_ptr<LimitItem> LimitItemPtr;
 }
 
 namespace icdmeta {

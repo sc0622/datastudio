@@ -18,7 +18,7 @@ class JIcdItemPrivate
 {
 public:
     JIcdItemPrivate(JIcdItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -40,7 +40,7 @@ void JIcdItemPrivate::init()
 
 JIcdItem::JIcdItem(const Icd::ItemPtr &data, QObject *parent)
     : JIcdObject(data, parent)
-    , d_ptr(new JIcdItemPrivate(this))
+    , J_DPTR(new JIcdItemPrivate(this))
 {
     Q_D(JIcdItem);
     d->data = data;

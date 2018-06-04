@@ -10,7 +10,7 @@ class JIcdFrameItemPrivate
 {
 public:
     JIcdFrameItemPrivate(JIcdFrameItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(nullptr)
     {
 
@@ -39,20 +39,20 @@ void JIcdFrameItemPrivate::init()
 int JIcdFrameItemPrivate::tableCount(QQmlListProperty<JIcdTable> *property)
 {
     JIcdFrameItem *q = qobject_cast<JIcdFrameItem *>(property->object);
-    return q->d_ptr->tables.count();
+    return q->J_DPTR->tables.count();
 }
 
 JIcdTable *JIcdFrameItemPrivate::tableAt(QQmlListProperty<JIcdTable> *property, int index)
 {
     JIcdFrameItem *q = qobject_cast<JIcdFrameItem *>(property->object);
-    return q->d_ptr->tables[index].data();
+    return q->J_DPTR->tables[index].data();
 }
 
 // class JIcdFrameItem
 
 JIcdFrameItem::JIcdFrameItem(const Icd::FrameItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdFrameItemPrivate(this))
+    , J_DPTR(new JIcdFrameItemPrivate(this))
 {
     Q_D(JIcdFrameItem);
     d->data = data;

@@ -1,14 +1,23 @@
 import qbs
+import qbs.File
 import qbs.FileInfo
 import qbs.Environment
 
 Project {
-
     readonly property path packagesPath: path
 
-    references: [
-        'com.smartsoft.datastudio.3rdpart/module.qbs',
-        'com.smartsoft.datastudio.core/module.qbs',
-        'com.smartsoft.datastudio.app/module.qbs'
-    ]
+    references: probeDepends.references
+
+    Probe {
+        id: probeDepends
+        property stringList references: []
+        configure: {
+            var dirs = File.directoryEntries(path, File.Dirs | File.NoDotAndDotDot);
+            if (dirs) {
+                references = [];
+                dirs.forEach(function(item){ references.push(item + '/module.qbs'); });
+                found = true;
+            }
+        }
+    }
 }

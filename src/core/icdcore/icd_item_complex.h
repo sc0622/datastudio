@@ -7,153 +7,53 @@
 namespace Icd {
 
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 class ComplexItem;
 class ComplexItemData;
-typedef JHandlePtr<ComplexItem> ComplexItemPtr;
+typedef std::shared_ptr<ComplexItem> ComplexItemPtr;
 
-/**
- * @brief 复合数据项类
- */
 class ICDCORE_EXPORT ComplexItem : public Item
 {
 public:
-    /**
-     * @brief ComplexItem
-     * @param parent
-     */
-    explicit ComplexItem(Object *parent = 0);
+    explicit ComplexItem(Object *parent = nullptr);
+    explicit ComplexItem(const std::string &id, Object *parent = nullptr);
+     ~ComplexItem();
 
-    /**
-     * @brief ComplexItem
-     * @param id
-     * @param parent
-     */
-    explicit ComplexItem(const std::string &id, Object *parent = 0);
-
-    virtual ~ComplexItem();
-
-    /**
-     * @brief 获取复合ICD数据表
-     * @return
-     */
     TablePtr table() const;
 
-    /**
-     * @brief setPData
-     * @param pData
-     */
-    void setBuffer(char *buffer);
+    void setBuffer(char *buffer) final;
+    void setBufferSize(double size) final;
 
-    /**
-     * @brief 设置数据缓冲大小
-     * @param size : 数据缓冲大小（单位：字节）
-     */
-    void setBufferSize(double size);
+    std::string typeName() const final;
 
-    /**
-     * @brief typeName
-     * @return
-     */
-    std::string typeName() const;
+    int childCount() const final;
 
-    /**
-     * @brief childCount
-     * @return
-     */
-    int childCount() const;
-
-    /**
-     * @brief updateSend
-     * @param period
-     */
     void updateSend(bool period);
-
-    /**
-     * @brief updateRecv
-     */
     void updateRecv();
-
-    /**
-     * @brief resetSend
-     */
     void resetSend();
+    void resetData() final;
+    void clearData() final;
 
-    /**
-     * @brief resetData
-     */
-    void resetData();
-
-    /**
-     * @brief clearData
-     */
-    void clearData();
-
-    /**
-     * @brief clone
-     * @return
-     */
-    Object *clone() const;
-
-    /**
-     * @brief operator =
-     * @param other
-     * @return
-     */
+    Object *clone() const final;
     ComplexItem &operator =(const ComplexItem &other);
 
-    /**
-     * @brief itemByMark
-     * @param mark
-     * @param deep
-     * @return
-     */
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
-
-    /**
-     * @brief tableByMark
-     * @param mark
-     * @param deep
-     * @return
-     */
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
-
-    /**
-     * @brief itemByDomain
-     * @param domain
-     * @param domainType
-     * @return
-     */
     ObjectPtr itemByDomain(const std::string &domain,
                            Icd::DomainType domainType = Icd::DomainId) const;
-
-    /**
-     * @brief tableByDomain
-     * @param domain
-     * @param domainType
-     * @return
-     */
     TablePtr tableByDomain(const std::string &domain,
                            Icd::DomainType domainType = Icd::DomainId) const;
 
     // Serializable interface
 public:
-    Json::Value save() const;
-    bool restore(const Json::Value &json, int deep = -1);
+    Json::Value save() const final;
+    bool restore(const Json::Value &json, int deep = -1) final;
 
 protected:
-    /**
-     * @brief ComplexItem
-     * @param other
-     */
     ComplexItem(const ComplexItem &other);
 
-    /**
-     * @brief setBufferOffset
-     * @param offset
-     */
-    void setBufferOffset(double offset);
+    void setBufferOffset(double offset) final;
 
 private:
     ComplexItemData *d;

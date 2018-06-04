@@ -848,6 +848,7 @@ void ConvertToDataAnalyse::init()
     formLayoutExt->setLabelAlignment(Qt::AlignRight);
 
     d_spinPkgCntScale = new QDoubleSpinBox(groupOther);
+    d_spinPkgCntScale->setDecimals(3);
     d_spinPkgCntScale->setRange(0, 100000000000);
     d_spinPkgCntScale->setValue(0.02);
     formLayoutExt->addRow(QStringLiteral("包计数比例尺："), d_spinPkgCntScale);

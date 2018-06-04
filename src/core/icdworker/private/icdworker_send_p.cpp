@@ -12,15 +12,13 @@
 namespace Icd {
 
 WorkerSendPrivate::WorkerSendPrivate(Icd::WorkerSend *q)
-    : q_ptr(q)
+    : J_QPTR(q)
     , mutex(QMutex::Recursive)
-    //, timer(new JRTTimer(JRTTimer::TimePeriodic, 20/*default: 10ms*/))
-    //TEST
-    , timer(new JRTTimer(JRTTimer::TimePeriodic, 500/*default: 10ms*/))
-    , channel(0)
-    , table(0)
+    , timer(new JRTTimer(JRTTimer::TimePeriodic, 20/*default: 10ms*/))
+    , channel(nullptr)
+    , table(nullptr)
     , tableSize(0)
-    , tableBuffer(0)
+    , tableBuffer(nullptr)
     , counterLoop(true)
     , frameLoop(false)
 {
@@ -41,20 +39,20 @@ void WorkerSendPrivate::updateBind(bool valid)
 {
     if (tableBuffer) {
         delete[] tableBuffer;
-        tableBuffer = 0;
+        tableBuffer = nullptr;
     }
 
     tableSize = 0;
 
     if (table && table->bufferSize() > 0) {
         if (valid) {
-            tableSize = (int)std::ceil(table->bufferSize());
-            tableBuffer = new char[tableSize];
-            memset(tableBuffer, 0, tableSize);
+            tableSize = int(std::ceil(table->bufferSize()));
+            tableBuffer = new char[size_t(tableSize)];
+            memset(tableBuffer, 0, size_t(tableSize));
             table->setBuffer(tableBuffer);
             table->resetData();
         } else {
-            table->setBuffer(0);
+            table->setBuffer(nullptr);
         }
     }
 }
@@ -73,7 +71,7 @@ bool WorkerSendPrivate::sendData(bool counterLoop, bool frameLoop)
     doCheck();
 
     //
-    int size = channel->write((const char *)table->buffer(), table->bufferSize());
+    int size = channel->write(table->buffer(), int(table->bufferSize()));
     if (size <= 0) {
         return false;
     }
@@ -99,20 +97,16 @@ void WorkerSendPrivate::doCounter()
     //
     switch (counterItem->counterType()) {
     case Icd::CounterU8:
-        counterItem->setData(
-                    (icd_uint8)((icd_uint8)counterItem->data() + 1));
+        counterItem->setData(icd_uint8(icd_uint8(counterItem->data()) + 1));
         break;
     case Icd::CounterU16:
-        counterItem->setData(
-                    (icd_uint16)((icd_uint16)counterItem->data() + 1));
+        counterItem->setData(icd_uint16(icd_uint16(counterItem->data()) + 1));
         break;
     case Icd::CounterU32:
-        counterItem->setData(
-                    (icd_uint32)((icd_uint32)counterItem->data() + 1));
+        counterItem->setData(icd_uint32(icd_uint32(counterItem->data()) + 1));
         break;
     case Icd::CounterU64:
-        counterItem->setData(
-                    (icd_uint64)((icd_uint64)counterItem->data() + 1));
+        counterItem->setData(icd_uint64(icd_uint64(counterItem->data()) + 1));
         break;
     default:
         break;
@@ -136,7 +130,7 @@ bool WorkerSendPrivate::doCheck()
         //
         icd_uint8 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum += *((icd_uint8*)tableBuffer + i);
+            sum += *(reinterpret_cast<icd_uint8*>(tableBuffer) + i);
         }
 
         //
@@ -149,7 +143,7 @@ bool WorkerSendPrivate::doCheck()
         //
         icd_uint16 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum += *((icd_uint16*)tableBuffer + i);
+            sum += *(reinterpret_cast<icd_uint16*>(tableBuffer) + i);
         }
 
         //
@@ -160,18 +154,16 @@ bool WorkerSendPrivate::doCheck()
     case Icd::CheckCrc8:
     {/*
         icd_uint8 crcResult =
-                gCalcCrc8((unsigned char *)tableBuffer + checkItem->startPos(),
-                          checkItem->checkLength());
-        //
-        checkItem->setData(crcResult);
-        break;*/
+                gCalcCrc8(reinterpret_cast<unsigned char*>(tableBuffer) + checkItem->startPos(),
+                          static_cast<unsigned int>(checkItem->checkLength()));
+        checkItem->setData(crcResult);*/
+        break;
     }
     case Icd::CheckCrc16:
     {
         icd_uint16 crcResult =
-                gCalcCrc16((unsigned char *)tableBuffer + checkItem->startPos(),
-                           checkItem->checkLength());
-        //
+                gCalcCrc16(reinterpret_cast<unsigned char*>(tableBuffer) + checkItem->startPos(),
+                           static_cast<unsigned int>(checkItem->checkLength()));
         checkItem->setData(crcResult);
         break;
     }
@@ -180,7 +172,7 @@ bool WorkerSendPrivate::doCheck()
         //
         icd_uint8 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum ^= *((icd_uint8*)tableBuffer + i);
+            sum ^= *(reinterpret_cast<icd_uint8*>(tableBuffer) + i);
         }
 
         //
@@ -191,7 +183,7 @@ bool WorkerSendPrivate::doCheck()
         //
         icd_uint16 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum ^= *((icd_uint16*)tableBuffer + i);
+            sum ^= *(reinterpret_cast<icd_uint16*>(tableBuffer) + i);
         }
 
         //
@@ -221,22 +213,22 @@ void WorkerSendPrivate::stop()
 
 int WorkerSendPrivate::interval() const
 {
-    return (int)timer->interval();
+    return int(timer->interval());
 }
 
 void WorkerSendPrivate::setInterval(int value)
 {
-    timer->setInterval(value);
+    timer->setInterval(static_cast<unsigned int>(value));
 }
 
 WorkerTrans::TimeEvent WorkerSendPrivate::timeEvent() const
 {
-    return (WorkerTrans::TimeEvent)timer->timeEvent();
+    return WorkerTrans::TimeEvent(timer->timeEvent());
 }
 
 void WorkerSendPrivate::setTimeEvent(WorkerTrans::TimeEvent event)
 {
-    timer->setTimeEvent((JRTTimer::TimeEvent)event);
+    timer->setTimeEvent(JRTTimer::TimeEvent(event));
 }
 
 void WorkerSendPrivate::run()

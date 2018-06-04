@@ -8,7 +8,7 @@ namespace Icd {
 
 template<typename T> class HandlePtr;
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 // class ChartFileView
 

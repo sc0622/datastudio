@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package>
+  <Name>com.smartsoft.datastudio.qt</Name>
+  <DisplayName>Qt</DisplayName>
+  <Description>Qt runtime libraries</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2018-01-13</ReleaseDate>
+  <Script>installscript.js</Script>
+  <SortingPriority>1</SortingPriority>
+  <Virtual>true</Virtual>
+  <ForcedInstallation>true</ForcedInstallation>
+</Package>

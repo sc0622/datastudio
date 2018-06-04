@@ -6,7 +6,7 @@ namespace Icd {
 
 WorkerLabelPrivate::WorkerLabelPrivate(const Icd::WorkerPtr &worker,
                                        WorkerLabel *q)
-    : q_ptr(q)
+    : J_QPTR(q)
     , worker(worker)
     , attributes(ChannelWidget::NoOperate)
     , buttonOpen(0)

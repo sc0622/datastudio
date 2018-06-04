@@ -6,7 +6,7 @@ namespace Icd {
 
 ChartFileView::ChartFileView(QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new ChartFileViewPrivate(this))
+    , J_DPTR(new ChartFileViewPrivate(this))
 {
     Q_D(ChartFileView);
     d->init(true);
@@ -14,7 +14,7 @@ ChartFileView::ChartFileView(QWidget *parent)
 
 ChartFileView::ChartFileView(bool styled, QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new ChartFileViewPrivate(this))
+    , J_DPTR(new ChartFileViewPrivate(this))
 {
     Q_D(ChartFileView);
     d->init(styled);
@@ -423,7 +423,7 @@ void ChartFileView::dropEvent(QDropEvent *event)
     const QString itemDomain = event->mimeData()->property("domain").toString();
 
     //
-    Icd::ObjectPtr dataObject = Icd::ObjectPtr(0);
+    Icd::ObjectPtr dataObject = Icd::ObjectPtr();
     switch (item->type()) {
     case Icd::TreeItemTypeTable:
     {
@@ -467,7 +467,7 @@ void ChartFileView::dropEvent(QDropEvent *event)
     QApplication::processEvents(QEventLoop::EventLoopExec);
 
     //
-    if (!d->addDataItem({ table, filePath, hasTimeFormat, headerSize },
+    if (!d->addDataItem(FileBaseInfo(table, filePath, hasTimeFormat, headerSize),
                         dataObject, item, chart)) {
         return;
     }

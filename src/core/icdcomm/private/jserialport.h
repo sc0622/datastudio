@@ -13,6 +13,8 @@
 namespace Icd {
 
 class JSerialPortData;
+class JSerialPort;
+typedef std::shared_ptr<JSerialPort> JSerialPortPtr;
 
 /**
  * @brief The JSerialPort class
@@ -197,7 +199,7 @@ public:
     std::string lastError() const;
 
 private:
-    JHandlePtr<JSerialPortData> d;
+    std::shared_ptr<JSerialPortData> d;
 };
 
 } // end of namespace Icd

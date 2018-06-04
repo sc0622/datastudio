@@ -9,7 +9,7 @@ class ProgressDialogPrivate
 {
 public:
     ProgressDialogPrivate(ProgressDialog *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -82,7 +82,7 @@ void ProgressDialogPrivate::init()
 
 ProgressDialog::ProgressDialog(QWidget *parent)
     : QDialog(parent)
-    , d_ptr(new ProgressDialogPrivate(this))
+    , J_DPTR(new ProgressDialogPrivate(this))
 {
     Q_D(ProgressDialog);
     d->init();

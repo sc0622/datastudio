@@ -19,25 +19,25 @@ class IcdListWidget;
 
 namespace Icd {
 
-template<typename T> class JHandlePtr;
+template<typename T> class std::shared_ptr;
 
 class Object;
-typedef JHandlePtr<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 
 class Item;
-typedef JHandlePtr<Item> ItemPtr;
+typedef std::shared_ptr<Item> ItemPtr;
 
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 class BitItem;
-typedef JHandlePtr<BitItem> BitItemPtr;
+typedef std::shared_ptr<BitItem> BitItemPtr;
 
 class ComplexItem;
-typedef JHandlePtr<ComplexItem> ComplexItemPtr;
+typedef std::shared_ptr<ComplexItem> ComplexItemPtr;
 
 class FrameItem;
-typedef JHandlePtr<FrameItem> FrameItemPtr;
+typedef std::shared_ptr<FrameItem> FrameItemPtr;
 
 class ProgressDialog;
 

@@ -36,8 +36,8 @@ public:
     };
     Q_ENUM(SaveFormat)
 
-    explicit JFileChannel(const QString &identity, QObject *parent = nullptr);
-    JFileChannel(const QString &identity, const QString &filePath, QObject *parent = nullptr);
+    explicit JFileChannel(QObject *parent = nullptr);
+    JFileChannel(const QString &filePath, QObject *parent = nullptr);
     ~JFileChannel();
 
     static void registerQmlType();

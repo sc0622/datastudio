@@ -15,7 +15,7 @@ class JProtocol;
 class ICDMETA_EXPORT JFilterChannel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(JProtocol* protocol READ protocol WRITE setProtocol NOTIFY protocolChanged)
+    Q_PROPERTY(icdmeta::JProtocol* protocol READ protocol WRITE setProtocol NOTIFY protocolChanged)
     Q_PROPERTY(QQmlListProperty<icdmeta::JChannel> channels READ channels NOTIFY channelsChanged)
     Q_PROPERTY(icdmeta::JChannel* currentChannel READ currentChannel NOTIFY currentChannelChanged)
     Q_PROPERTY(bool running READ isRunning NOTIFY runningChanged)

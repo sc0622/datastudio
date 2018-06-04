@@ -54,7 +54,7 @@ static char getDecimalPoint() {
 }
 
 /// Converts a unicode code-point to UTF-8.
-static inline JSONCPP_STRING codePointToUTF8(unsigned int cp) {
+inline JSONCPP_STRING codePointToUTF8(unsigned int cp) {
     JSONCPP_STRING result;
 
     // based on description from http://en.wikipedia.org/wiki/UTF-8
@@ -96,7 +96,7 @@ typedef char UIntToStringBuffer[uintToStringBufferSize];
  * @param current Input/Output string buffer.
  *        Must have at least uintToStringBufferSize chars free.
  */
-static inline void uintToString(LargestUInt value, char*& current) {
+inline void uintToString(LargestUInt value, char*& current) {
     *--current = 0;
     do {
         *--current = static_cast<char>(value % 10U + static_cast<unsigned>('0'));
@@ -109,7 +109,7 @@ static inline void uintToString(LargestUInt value, char*& current) {
  * We had a sophisticated way, but it did not work in WinCE.
  * @see https://github.com/open-source-parsers/jsoncpp/pull/9
  */
-static inline void fixNumericLocale(char* begin, char* end) {
+inline void fixNumericLocale(char* begin, char* end) {
     while (begin < end) {
         if (*begin == ',') {
             *begin = '.';
@@ -118,7 +118,7 @@ static inline void fixNumericLocale(char* begin, char* end) {
     }
 }
 
-static inline void fixNumericLocaleInput(char* begin, char* end) {
+inline void fixNumericLocaleInput(char* begin, char* end) {
     char decimalPoint = getDecimalPoint();
     if (decimalPoint != '\0' && decimalPoint != '.') {
         while (begin < end) {
@@ -132,241 +132,66 @@ static inline void fixNumericLocaleInput(char* begin, char* end) {
 
 // custom
 
-#ifndef JSON_MAX_PATH_LEN
-#define JSON_MAX_PATH_LEN 256
-#endif
-
-#ifdef _MSC_VER
-#define JSON_ACCESS(fileName, accessMode) \
-    _access(fileName, accessMode)
-#define JSON_MKDIR(path) _mkdir(path)
-#else
-#define JSON_ACCESS(fileName, accessMode) \
-    access(fileName, accessMode)
-#define JSON_MKDIR(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-#endif
-
 // add by iclosue
-static inline int createPath(const std::string &path)
-{
-    uint32_t pathLength = path.length();
-    if (pathLength > JSON_MAX_PATH_LEN) {
-        return -1;
-    }
 
-    char tPath[JSON_MAX_PATH_LEN] = {0};
-    for (uint32_t i = 0;i < pathLength; ++i) {
-        tPath[i] = path[i];
-        if (tPath[i] == '\\' || tPath[i] == '/') {
-            if (JSON_ACCESS(tPath, 0) != 0) {
-                int ret = JSON_MKDIR(tPath);
-                if (ret != 0) {
-                    return ret;
-                }
-            }
-        }
-    }
+int JSON_API createPath(const std::string &path);
+std::string JSON_API pathOfFile(const std::string &filePath);
 
-    return 0;
-}
+bool JSON_API resolve(const char *filePath, Value &root);
+bool JSON_API resolve(const std::string &filePath, Value &root);
 
-static inline std::string pathOfFile(const std::string &filePath)
-{
-    std::string path = filePath;
-    int index = path.find_last_of('/');
-    if (index == -1) {
-        index = path.find_last_of('\\');
-    }
+Value JSON_API resolve(const char *filePath, const std::string &path);
+Value JSON_API resolve(const std::string &filePath, const std::string &path);
 
-    if (index == -1) {
-        path = std::string();
-    } else {
-        path = path.substr(0, index + 1);
-    }
+bool JSON_API resolve(const char *filePath, const std::string &path, Value &value);
+bool JSON_API resolve(const std::string &filePath, const std::string &path, Value &value);
 
-    return path;
-}
+Value JSON_API resolve(const Value &root, const std::string &path);
+bool JSON_API parse(const std::string &document, Value &root);
+Value JSON_API parse(const std::string &document, const std::string &path);
 
-static inline bool resolve(const std::string &filePath, Value &root)
-{
-    if (filePath.empty()) {
-        printf("filePath is empty!");
-        return false;
-    }
+bool JSON_API make(const char *filePath, bool fast);
+bool JSON_API make(const std::string &filePath, bool fast);
 
-    const std::string path = pathOfFile(filePath);
-    if (!path.empty()) {
-        //return false;
-    }
+bool JSON_API make(const char *filePath, const Value &root,
+                   bool create, bool fast = false);
+bool JSON_API make(const std::string &filePath, const Value &root,
+                   bool create, bool fast = false);
 
-    std::ifstream ifs(filePath);
-    if (!ifs) {
-        printf("File \"%s\" open failure!\n", filePath.c_str());
-        return false;
-    }
+bool JSON_API make(const char *filePath, const std::string &path,
+                   const Value &value, bool create, bool fast);
+bool JSON_API make(const std::string &filePath, const std::string &path,
+                   const Value &value, bool create, bool fast);
 
-    try {
-        root.clear();
-        ifs >> root;
-    } catch (RuntimeError msg) {
-        printf("Parse json file \"%s\":\n%s\n", filePath.c_str(), msg.what());
-        return false;
-    }
+bool JSON_API makeArray(const char *filePath, const std::string &path,
+                        const Value &value, bool unique, bool create, bool fast);
+bool JSON_API makeArray(const std::string &filePath, const std::string &path,
+                        const Value &value, bool unique, bool create, bool fast);
 
-    ifs.close();
+bool JSON_API replaceItem(const char *filePath, const std::string &path,
+                          const Value &oldValue, const Value &newValue, bool create, bool fast);
+bool JSON_API replaceItem(const std::string &filePath, const std::string &path,
+                          const Value &oldValue, const Value &newValue, bool create, bool fast);
 
-    return true;
-}
+bool JSON_API removeItem(const char *filePath, const std::string &path,
+                         const std::string &key, const Json::Value &value,
+                         bool create, bool fast);
+bool JSON_API removeItem(const std::string &filePath, const std::string &path,
+                         const std::string &key, const Json::Value &value,
+                         bool create, bool fast);
 
-static inline Value resolve(const std::string &filePath, const std::string &path)
-{
-    Value root;
-    if (!resolve(filePath, root)) {
-        return Value::nullSingleton();
-    }
+bool JSON_API make(Json::Value &root, const std::string &path, const Json::Value &value);
 
-    try {
-        return Path(path).resolve(root);
-    } catch (RuntimeError msg) {
-        printf("Parse json file \"%s\":\n%s\n", filePath.c_str(), msg.what());
-        return Value::null;
-    }
-}
+bool JSON_API merge(const char *filePath, const std::string &path,
+                    const Json::Value &value, bool create, bool fast);
+bool JSON_API merge(const std::string &filePath, const std::string &path,
+                    const Json::Value &value, bool create, bool fast);
 
-static inline Value resolve(const Value &root, const std::string &path)
-{
-    try {
-        return Path(path).resolve(root);
-    } catch (RuntimeError msg) {
-        printf("Parse json value with path \"%s\":\n%s\n", path.c_str(), msg.what());
-        return Value::null;
-    }
-}
-
-static inline bool parse(const std::string &document, Value &root)
-{
-    return Reader().parse(document, root);
-}
-
-static inline Value parse(const std::string &document, const std::string &path)
-{
-    Value root;
-    if (!parse(document, root)) {
-        return Value::nullSingleton();
-    }
-
-    try {
-        return Path(path).resolve(root);
-    } catch (RuntimeError msg) {
-        printf("Parse json document with path \"%s\":\n%s\n", path.c_str(), msg.what());
-        return Value::null;
-    }
-}
-
-static inline bool make(const std::string &filePath, const Value &root,
-                        bool create, bool fast = false)
-{
-    if (filePath.empty()) {
-        printf("filePath is empty!");
-        return false;
-    }
-
-    const std::string path = pathOfFile(filePath);
-    if (!path.empty() && create) {
-        createPath(path);
-    }
-
-    std::string contents;
-    if (fast) {
-        contents = FastWriter().write(root);
-    } else {
-        contents = StyledWriter().write(root);
-    }
-
-    std::ofstream ofs;
-    ofs.open(filePath);
-    if (!ofs.is_open()) {
-        return false;
-    }
-
-    try {
-        ofs << contents;
-    } catch (RuntimeError msg) {
-        printf("Save json file \"%s\":\n%s\n", filePath.c_str(), msg.what());
-        return false;
-    }
-
-    ofs.close();
-
-    return true;
-}
-
-static inline bool make(const std::string &filePath, const std::string &path,
-                        const Value &value, bool create, bool fast = false)
-{
-    Value root;
-    if (!resolve(filePath, root) && !create) {
-        return false;
-    }
-
-    try {
-        Path(path).make(root) = value;
-    } catch (RuntimeError msg) {
-        printf("Save json file \"%s\":\n%s\n", filePath.c_str(), msg.what());
-        return false;
-    }
-
-    return make(filePath, root, create, fast);
-}
-
-static inline bool make(Json::Value &root, const std::string &path,
-                        const Json::Value &value)
-{
-    try {
-        Path(path).make(root) = value;
-    } catch (RuntimeError msg) {
-        printf("Save json value with path \"%s\":\n%s\n", path.c_str(), msg.what());
-        printf("%s\n", msg.what());
-        return false;
-    }
-
-    return true;
-}
-
-static inline bool merge(const Value &source, Value &target)
-{
-    if (source.isNull()) {
-        return true;
-    }
-
-    switch (source.type()) {
-    case arrayValue:
-    {
-        for (ValueConstIterator citer = source.begin();
-             citer != source.end(); ++citer) {
-            target.append(*citer);
-        }
-        break;
-    }
-    case objectValue:
-    {
-        for (ValueConstIterator citer = source.begin();
-             citer != source.end(); ++citer) {
-            target[citer.name()] = *citer;
-        }
-        break;
-    }
-    default:
-        target = source;
-        break;
-    }
-
-    return true;
-}
+bool JSON_API merge(const Value &source, Value &target);
 
 // class Serializable
 
-class JSON_API Serializable
+class Serializable
 {
 public:
     virtual ~Serializable() {}
@@ -374,6 +199,8 @@ public:
     virtual Value save() const = 0;
     virtual inline bool restore(const std::string &json);
     virtual bool restore(const Value &/*json*/, int /*deep*/ = -1) = 0;
+    virtual void beginSerial() const {}
+    virtual void endSerial() const {}
 };
 
 std::string Serializable::saveJson() const

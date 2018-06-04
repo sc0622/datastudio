@@ -172,7 +172,7 @@ private:
 
 private:
     friend class CppGenerator;
-    CppGenerator *q_ptr;
+    CppGenerator *J_QPTR;
     QList<QString> d_variables;
 };
 

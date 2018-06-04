@@ -7,7 +7,7 @@ namespace Icd {
 
 class SerialChannel;
 class SerialChannelData;
-typedef JHandlePtr<SerialChannel> SerialChannelPtr;
+typedef std::shared_ptr<SerialChannel> SerialChannelPtr;
 
 /**
  * @brief The SerialChannel class
@@ -227,7 +227,7 @@ public:
     std::string lastError() const;
 
 private:
-    JHandlePtr<SerialChannelData> d;
+    std::shared_ptr<SerialChannelData> d;
 };
 
 } // end of namespace Icd

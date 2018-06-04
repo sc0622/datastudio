@@ -59,7 +59,7 @@ public:
     };
     Q_ENUM(Parity)
 
-    explicit JSerialChannel(const QString &identity, QObject *parent = nullptr);
+    explicit JSerialChannel(QObject *parent = nullptr);
     ~JSerialChannel();
 
     /**

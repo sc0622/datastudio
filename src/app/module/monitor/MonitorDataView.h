@@ -9,7 +9,7 @@ namespace Icd {
 class CoreTreeWidget;
 
 class Worker;
-typedef JHandlePtr<Worker> WorkerPtr;
+typedef std::shared_ptr<Worker> WorkerPtr;
 
 }
 

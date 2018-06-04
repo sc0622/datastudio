@@ -13,7 +13,10 @@ CoreDyLibrary {
     Depends { name: 'Qt.quickcontrols2' }
     Depends { name: 'Qt.serialport' }
     Depends { name: 'Qt.concurrent' }
+    Depends { name: '3rdpart.jencrypt' }
     Depends { name: '3rdpart.jchart' }
+    Depends { name: '3rdpart.log4cpp' }
+    Depends { name: '3rdpart.qtftp' }
     Depends { name: 'icdcomm' }
     Depends { name: 'icdcore' }
     Depends { name: 'icdparser' }

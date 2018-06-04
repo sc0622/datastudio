@@ -12,7 +12,7 @@ namespace Icd {
 
 class Worker;
 class WorkerData;
-typedef JHandlePtr<Worker> WorkerPtr;
+typedef std::shared_ptr<Worker> WorkerPtr;
 typedef std::vector<WorkerPtr> WorkerPtrArray;
 
 class WorkerPrivate;
@@ -36,14 +36,14 @@ public:
      * @brief Worker
      * @param parent
      */
-    explicit Worker(QObject *parent = 0);
+    explicit Worker(QObject *parent = nullptr);
 
     /**
      * @brief Worker
      * @param channel
      * @param parent
      */
-    explicit Worker(const Icd::ChannelPtr &channel, QObject *parent = 0);
+    explicit Worker(const Icd::ChannelPtr &channel, QObject *parent = nullptr);
 
     /**
      * @brief Worker
@@ -53,7 +53,7 @@ public:
      * @param parent
      */
     explicit Worker(const Icd::ChannelPtr &channel, const Icd::TablePtr &tableSend,
-                    const Icd::TablePtr &tableRecv, QObject *parent = 0);
+                    const Icd::TablePtr &tableRecv, QObject *parent = nullptr);
 
     virtual ~Worker();
 

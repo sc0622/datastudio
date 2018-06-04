@@ -31,14 +31,14 @@ Product {
                 if (filePath.endsWith('.exe.in')) {
                     filePath = FileInfo.path(filePath) + '/' + input.completeBaseName;
                 }
-                return project.projectInstallRoot + '/tools/' + FileInfo.relativePath(
+                var filePath = project.workDirectory + '/tools/' + FileInfo.relativePath(
                             product.sourceDirectory, filePath);
+                return filePath;
             }
         }
         prepare: {
             var cmd = new JavaScriptCommand;
             cmd.description = 'coping ' + output.fileName;
-            //cmd.silent = true;
             cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
             return [ cmd ];
         }

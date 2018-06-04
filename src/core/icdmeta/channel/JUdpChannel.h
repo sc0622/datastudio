@@ -26,7 +26,7 @@ public:
     };
     Q_ENUM(OpenMode)
 
-    explicit JUdpChannel(const QString &identity, QObject *parent = nullptr);
+    explicit JUdpChannel(QObject *parent = nullptr);
     ~JUdpChannel();
 
     static void registerQmlType();

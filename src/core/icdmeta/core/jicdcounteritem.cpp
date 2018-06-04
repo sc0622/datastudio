@@ -9,7 +9,7 @@ class JIcdCounterItemPrivate
 {
 public:
     JIcdCounterItemPrivate(JIcdCounterItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -31,7 +31,7 @@ void JIcdCounterItemPrivate::init()
 
 JIcdCounterItem::JIcdCounterItem(const Icd::CounterItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdCounterItemPrivate(this))
+    , J_DPTR(new JIcdCounterItemPrivate(this))
 {
     Q_D(JIcdCounterItem);
     d->data = data;

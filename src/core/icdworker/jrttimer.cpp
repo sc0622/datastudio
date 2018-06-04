@@ -14,7 +14,7 @@ class JRTTimerData
     friend class JRTTimer;
 public:
     JRTTimerData()
-        : runnable(0)
+        : runnable(nullptr)
         , timerId(0)
         , isRunning(false)
         , wAccuracy(1)
@@ -71,8 +71,8 @@ bool JRTTimerData::start()
         //::timeBeginPeriod(wAccuracy);
         // 设置定时器
         timerId = ::timeSetEvent(wInterval/*1ms和2s时钟间隔，单位为ms*/,
-                                 wAccuracy, (LPTIMECALLBACK)onTimeCallback,
-                                 (DWORD_PTR)this, TIME_PERIODIC);
+                                 wAccuracy, LPTIMECALLBACK(onTimeCallback),
+                                 DWORD_PTR(this), TIME_PERIODIC);
         if (timerId == 0) {
             Q_ASSERT(false);
             return false;
@@ -114,7 +114,7 @@ void WINAPI JRTTimerData::onTimeCallback(UINT uTimerID, UINT uMsg, DWORD_PTR dwU
 
     //
     JRTTimerData *_this = reinterpret_cast<JRTTimerData *>(dwUser);
-    if (_this == NULL) {
+    if (_this == nullptr) {
         Q_ASSERT(false);        //
         return;
     }
@@ -133,12 +133,12 @@ JRTTimer::JRTTimer()
     d->init();
 }
 
-JRTTimer::JRTTimer(JRTTimer::TimeEvent timeEvent, unsigned int interval)
+JRTTimer::JRTTimer(JRTTimer::TimeEvent timeEvent, int interval)
     : d(new JRTTimerData())
 {
     d->init();
     d->timeEvent = timeEvent;
-    d->wInterval = interval;
+    d->wInterval = UINT(interval);
 }
 
 JRTTimer::~JRTTimer()
@@ -163,7 +163,7 @@ void JRTTimer::stop()
 
 unsigned int JRTTimer::accuracy() const
 {
-    return (unsigned int)d->wAccuracy;
+    return static_cast<unsigned int>(d->wAccuracy);
 }
 
 void JRTTimer::setAccuracy(unsigned int value)

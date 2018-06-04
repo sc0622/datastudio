@@ -7,97 +7,35 @@ namespace Icd {
 
 class LimitItem;
 class LimitItemData;
-typedef JHandlePtr<LimitItem> LimitItemPtr;
+typedef std::shared_ptr<LimitItem> LimitItemPtr;
 
-/**
- * @brief 数据项范围类
- */
 class ICDCORE_EXPORT LimitItem : public Object
 {
 public:
-    /**
-     * @brief LimitItem
-     */
     explicit LimitItem();
-
     ~LimitItem();
 
-    /**
-     * @brief minimum
-     * @return
-     */
     double minimum() const;
-
-    /**
-     * @brief setMinimum
-     * @param minimum
-     */
     void setMinimum(double minimum);
 
-    /**
-     * @brief maximum
-     * @return
-     */
     double maximum() const;
-
-    /**
-     * @brief setMaximum
-     * @param maximum
-     */
     void setMaximum(double maximum);
 
-    /**
-     * @brief leftInf
-     * @return
-     */
     bool leftInf() const;
-
-    /**
-     * @brief setLeftInf
-     * @param leftInf
-     */
     void setLeftInf(bool leftInf);
 
-    /**
-     * @brief rightInf
-     * @return
-     */
     bool rightInf() const;
-
-    /**
-     * @brief setRightInf
-     * @param rightInf
-     */
     void setRightInf(bool rightInf);
 
-    /**
-     * @brief toString
-     * @return
-     */
     std::string toString() const;
-
-    /**
-     * @brief clone
-     * @return
-     */
-    virtual LimitItem *clone() const;
-
-    /**
-     * @brief operator =
-     * @param other
-     * @return
-     */
+    virtual LimitItem *clone() const final;
     LimitItem &operator =(const LimitItem &other);
 
 public:
-    Json::Value save() const;
-    bool restore(const Json::Value &json, int /*deep*/ = -1);
+    Json::Value save() const final;
+    bool restore(const Json::Value &json, int /*deep*/ = -1) final;
 
 protected:
-    /**
-     * @brief LimitItem
-     * @param other
-     */
     LimitItem(const LimitItem &other);
 
 private:

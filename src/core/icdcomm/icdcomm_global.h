@@ -24,15 +24,8 @@
 
 // for shared_ptr, unique_ptr
 #include <memory>
-
-#ifndef JHandlePtr
-#define JHandlePtr ::std::shared_ptr
-#endif
-
-#ifndef JUniquePtr
-#define JUniquePtr ::std::unique_ptr
-#endif
-
+//template<class T> using JHandlePtr = std::shared_ptr<T>;
+//template<class T> using JUniquePtr = std::unique_ptr<T>;
 #ifndef JHandlePtrCast
 #define JHandlePtrCast ::std::dynamic_pointer_cast
 #endif
@@ -46,7 +39,7 @@
 #ifndef J_TYPEDEF_SHAREDPTR
 #define J_TYPEDEF_SHAREDPTR(_class_) \
     class _class_; \
-    typedef JHandlePtr<_class_> _class_ ## Ptr; \
+    typedef std::shared_ptr<_class_> _class_ ## Ptr; \
     typedef std::vector<_class_ ## Ptr> _class_ ## PtrArray;
 #endif
 

@@ -14,7 +14,7 @@ class JProtocolPoolPrivate
 {
 public:
     JProtocolPoolPrivate(JProtocolPool *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -36,13 +36,13 @@ void JProtocolPoolPrivate::init()
 int JProtocolPoolPrivate::protocolCount(QQmlListProperty<JProtocol> *property)
 {
     JProtocolPool *q = qobject_cast<JProtocolPool *>(property->object);
-    return q->d_ptr->protocols.count();
+    return q->J_DPTR->protocols.count();
 }
 
 JProtocol *JProtocolPoolPrivate::protocolAt(QQmlListProperty<JProtocol> *property, int index)
 {
     JProtocolPool *q = qobject_cast<JProtocolPool *>(property->object);
-    return q->d_ptr->protocols[index].data();
+    return q->J_DPTR->protocols[index].data();
 }
 
 }
@@ -55,7 +55,7 @@ J_QML_IMPLEMENT_SINGLE_INSTANCE(JProtocolPool, QQmlEngine::CppOwnership, IcdCore
 
 JProtocolPool::JProtocolPool(QObject *parent)
     : QObject(parent)
-    , d_ptr(new JProtocolPoolPrivate(this))
+    , J_DPTR(new JProtocolPoolPrivate(this))
 {
     Q_D(JProtocolPool);
     d->init();
@@ -104,7 +104,7 @@ bool JProtocolPool::loadConfig(const QString &filePath, const QString &nodePath)
         }
         QSharedPointer<JProtocol> newObject =
                 QSharedPointer<JProtocol>(new JProtocol(QString::fromStdString(id), this),
-                                          j_delete_qobject);
+                                          jdelete_qobject);
         newObject->restore(itemJson);
         d->protocols.append(newObject);
     }

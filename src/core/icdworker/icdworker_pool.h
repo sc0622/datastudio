@@ -9,10 +9,10 @@ namespace Icd {
 
 class WorkerPool;
 class WorkerPoolData;
-typedef JHandlePtr<WorkerPool> WorkerPoolPtr;
+typedef std::shared_ptr<WorkerPool> WorkerPoolPtr;
 
 class ::Icd::Channel;
-typedef JHandlePtr<::Icd::Channel> ChannelPtr;
+typedef std::shared_ptr<::Icd::Channel> ChannelPtr;
 
 /**
  * @brief The WorkerGroup class
@@ -189,7 +189,7 @@ public:
     ~WorkerPool();
 
 private:
-    JHandlePtr<WorkerPoolData> d;
+    std::shared_ptr<WorkerPoolData> d;
 };
 
 } // end of namespace Icd

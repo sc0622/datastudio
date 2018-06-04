@@ -9,7 +9,9 @@
 #   ifdef ICDCORE_BUILD
 #       define ICDCORE_EXPORT __declspec(dllexport)
 #   else
+#ifndef JSON_DLL
 #       define JSON_DLL
+#endif
 #       define ICDCORE_EXPORT __declspec(dllimport)
 #       if defined(DEBUG) || defined(_DEBUG)
 #           pragma comment(lib, "icdcored.lib")
@@ -24,23 +26,12 @@
 #define ICDCORE_EXPORT
 #endif
 
-#ifdef ICDCORE_JSON_LIB
-#include "3rdpart/jsoncpp/json_tool.h"
-#endif
-
 ////////////////////////////////
 
 // for shared_ptr, unique_ptr
 #include <memory>
-
-#ifndef JHandlePtr
-#define JHandlePtr ::std::shared_ptr
-#endif
-
-#ifndef JUniquePtr
-#define JUniquePtr ::std::unique_ptr
-#endif
-
+//template<class T> using JHandlePtr = std::shared_ptr<T>;
+//template<class T> using JUniquePtr = std::unique_ptr<T>;
 #ifndef JHandlePtrCast
 #define JHandlePtrCast ::std::dynamic_pointer_cast
 #endif
@@ -60,6 +51,14 @@
 
 ////////////////////////////////
 
+//
+#ifdef ICDCORE_JSON_LIB
+#include "./3rdpart/jsoncpp/json_tool.h"
+#else
+namespace Json { class Value; }
+#endif
+
+//
 namespace Icd {
 
 #ifndef DEF_ICD_TYPE
@@ -72,8 +71,8 @@ typedef unsigned short icd_uint16;
 typedef int icd_int32;
 typedef unsigned int icd_uint32;
 #ifdef _MSC_VER
-typedef __int64 icd_int64;
-typedef unsigned __int64 icd_uint64;
+typedef /*__int64*/long long icd_int64;
+typedef unsigned /*__int64*/long long icd_uint64;
 #else
 typedef long long icd_int64;
 typedef unsigned long long icd_uint64;
@@ -85,6 +84,13 @@ typedef double icd_float64;
 
 #endif // DEF_ICD_TYPE
 
+//
+#ifndef J_HANDLE_SCOPE
+#define J_HANDLE_SCOPE
+template<typename T> struct JHandleScope { std::shared_ptr<T> ptr; };
+#endif
+
+//
 #ifndef ICD_LIMIT_METHODS
 #define ICD_LIMIT_METHODS
 template <typename T>

@@ -9,13 +9,13 @@ namespace Icd {
 
 class CoreTreeWidget;
 
-template<typename T> class JHandlePtr;
+template<typename T> class std::shared_ptr;
 
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 class Item;
-typedef JHandlePtr<Item> ItemPtr;
+typedef std::shared_ptr<Item> ItemPtr;
 
 }
 

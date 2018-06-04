@@ -9,7 +9,7 @@ class JTableView;
 
 namespace Icd {
 class Object;
-typedef JHandlePtr<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 }
 
 namespace Edit {

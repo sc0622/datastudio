@@ -11,7 +11,7 @@ class JChannelPoolPrivate
 {
 public:
     JChannelPoolPrivate(JChannelPool *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -46,13 +46,13 @@ void JChannelPoolPrivate::clearChannel()
 int JChannelPoolPrivate::channelCount(QQmlListProperty<JChannel> *property)
 {
     JChannelPool *q = qobject_cast<JChannelPool *>(property->object);
-    return q->d_ptr->channels.count();
+    return q->J_DPTR->channels.count();
 }
 
 JChannel *JChannelPoolPrivate::channelAt(QQmlListProperty<JChannel> *property, int index)
 {
     JChannelPool *q = qobject_cast<JChannelPool *>(property->object);
-    return q->d_ptr->channels[index].data();
+    return q->J_DPTR->channels[index].data();
 }
 
 }
@@ -65,7 +65,7 @@ J_QML_IMPLEMENT_SINGLE_INSTANCE(JChannelPool, QQmlEngine::CppOwnership, IcdCore)
 
 JChannelPool::JChannelPool(QObject *parent)
     : QObject(parent)
-    , d_ptr(new JChannelPoolPrivate(this))
+    , J_DPTR(new JChannelPoolPrivate(this))
 {
     Q_D(JChannelPool);
     d->init();
@@ -114,7 +114,7 @@ bool JChannelPool::loadConfig(const QString &filePath, const QString &nodePath)
             continue;
         }
         JChannelPtr newChannel = JChannelPtr(
-                    new JChannel(QString::fromStdString(id), this), j_delete_qobject);
+                    new JChannel(QString::fromStdString(id), this), jdelete_qobject);
         newChannel->restore(itemJson);
         d->channels.append(newChannel);
         // relayer

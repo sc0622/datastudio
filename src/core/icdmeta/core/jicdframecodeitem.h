@@ -5,7 +5,7 @@
 
 namespace Icd {
 class FrameCodeItem;
-typedef JHandlePtr<FrameCodeItem> FrameCodeItemPtr;
+typedef std::shared_ptr<FrameCodeItem> FrameCodeItemPtr;
 }
 
 namespace icdmeta {

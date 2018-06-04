@@ -15,9 +15,8 @@ class JSuperChannelPrivate
 {
 public:
     JSuperChannelPrivate(JSuperChannel *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , channel(nullptr)
-        , active(false)
     {
 
     }
@@ -27,11 +26,8 @@ public:
 private:
     J_DECLARE_PUBLIC(JSuperChannel)
     Icd::ChannelPtr channel;
-    QString identity;
-    QString domain;
     QString mark;
     QString desc;
-    bool active;
 };
 
 void JSuperChannelPrivate::init()
@@ -47,18 +43,9 @@ using namespace icdmeta;
 
 JSuperChannel::JSuperChannel( QObject *parent)
     : QObject(parent)
-    , d_ptr(new JSuperChannelPrivate(this))
+    , J_DPTR(new JSuperChannelPrivate(this))
 {
     Q_D(JSuperChannel);
-    d->init();
-}
-
-JSuperChannel::JSuperChannel(const QString &identity, QObject *parent)
-    : QObject(parent)
-    , d_ptr(new JSuperChannelPrivate(this))
-{
-    Q_D(JSuperChannel);
-    d->identity = identity;
     d->init();
 }
 
@@ -78,19 +65,7 @@ void JSuperChannel::registerQmlType()
     JUdpChannel::registerQmlType();
 }
 
-QString JSuperChannel::identity() const
-{
-    Q_D(const JSuperChannel);
-    return d->identity;
-}
-
-QString JSuperChannel::domain() const
-{
-    Q_D(const JSuperChannel);
-    return d->domain;
-}
-
-Icd::ChannelPtr JSuperChannel::channel() const
+Icd::ChannelPtr JSuperChannel::nativeChannel() const
 {
     Q_D(const JSuperChannel);
     return d->channel;
@@ -118,24 +93,6 @@ void JSuperChannel::setChannel(const Icd::ChannelPtr &channel)
     d->channel = channel;
 }
 
-void JSuperChannel::setIdentity(const QString &value)
-{
-    Q_D(JSuperChannel);
-    if (value != d->identity) {
-        d->identity = value;
-        emit identityChanged(value);
-    }
-}
-
-void JSuperChannel::setDomain(const QString &value)
-{
-    Q_D(JSuperChannel);
-    if (value != d->domain) {
-        d->domain = value;
-        emit domainChanged(value);
-    }
-}
-
 JSuperChannel::ChannelType JSuperChannel::channelType() const
 {
     return JSuperChannel::ChannelInvalid;
@@ -161,12 +118,6 @@ QString JSuperChannel::desc() const
 {
     Q_D(const JSuperChannel);
     return d->desc;
-}
-
-bool JSuperChannel::active() const
-{
-    Q_D(const JSuperChannel);
-    return d->active;
 }
 
 bool JSuperChannel::isValid() const
@@ -215,13 +166,12 @@ void JSuperChannel::close()
     emit isOpenChanged(false);
 }
 
-JSuperChannel *JSuperChannel::create(const QString &identity,
-                                     JSuperChannel::ChannelType channelType)
+JSuperChannel *JSuperChannel::create(JSuperChannel::ChannelType channelType)
 {
     switch (channelType) {
-    case ChannelSerial: return new JSerialChannel(identity);
-    case ChannelUdp: return new JUdpChannel(identity);
-    case ChannelFile: return new JFileChannel(identity);
+    case ChannelSerial: return new JSerialChannel();
+    case ChannelUdp: return new JUdpChannel();
+    case ChannelFile: return new JFileChannel();
     default: return nullptr;
     }
 }
@@ -262,15 +212,6 @@ void JSuperChannel::setDesc(const QString &desc)
     if (desc != d->desc) {
         d->desc = desc;
         emit descChanged(desc);
-    }
-}
-
-void JSuperChannel::setActive(bool active)
-{
-    Q_D(JSuperChannel);
-    if (active != d->active) {
-        d->active = active;
-        emit activeChanged(active);
     }
 }
 
@@ -323,22 +264,17 @@ Json::Value JSuperChannel::save() const
         break;
     }
 
-    json["id"] = d->identity.toStdString();
-    json["domain"] = d->domain.toStdString();
     json["name"] = d->channel->name();
     json["mark"] = d->mark.toStdString();
     json["desc"] = d->desc.toStdString();
-    json["active"] = d->active;
 
     return json;
 }
 
 bool JSuperChannel::restore(const Json::Value &json, int)
 {
-    setDomain(QString::fromStdString(json["domain"].asString()));
     setMark(QString::fromStdString(json["mark"].asString()));
     setName(QString::fromStdString(json["name"].asString()));
     setDesc(QString::fromStdString(json["desc"].asString()));
-    setActive(json["active"].asBool());
     return true;
 }

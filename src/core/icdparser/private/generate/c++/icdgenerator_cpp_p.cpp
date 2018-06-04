@@ -5,7 +5,7 @@
 namespace Icd {
 
 CppGeneratorData::CppGeneratorData(CppGenerator *q)
-    : q_ptr(q)
+    : J_QPTR(q)
 {
 
 }
@@ -100,12 +100,12 @@ bool CppGeneratorData::generateNamespaceSuffix(QTextStream &stream)
 bool CppGeneratorData::generateTable(const TablePtr &table,
                                      QTextStream &tableStream)
 {
-    if (q_ptr->parser()->canceledSaveAs()) {
+    if (J_QPTR->parser()->canceledSaveAs()) {
         return false;
     }
 
     //
-    q_ptr->parser()->setMessage(QStringLiteral("生成表文档\n表：%1")
+    J_QPTR->parser()->setMessage(QStringLiteral("生成表文档\n表：%1")
                                 .arg(QString::fromStdString(table->name()))
                                 .toStdString());
 
@@ -165,7 +165,7 @@ bool CppGeneratorData::generateDataItem(const ItemPtr &item,
                                         QTextStream &tableStream,
                                         QTextStream &itemsStream)
 {
-    if (q_ptr->parser()->canceledSaveAs()) {
+    if (J_QPTR->parser()->canceledSaveAs()) {
         return false;
     }
 
@@ -199,7 +199,7 @@ bool CppGeneratorData::generateDataItem(const ItemPtr &item,
         return false;
     }
 
-    if (q_ptr->parser()->canceledSaveAs()) {
+    if (J_QPTR->parser()->canceledSaveAs()) {
         return false;
     }
 

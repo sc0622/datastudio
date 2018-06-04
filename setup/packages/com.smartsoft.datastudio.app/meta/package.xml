@@ -9,5 +9,5 @@
   <SortingPriority>1</SortingPriority>
   <Virtual>true</Virtual>
   <ForcedInstallation>true</ForcedInstallation>
-  <Dependencies>com.smartsoft.datastudio.3rdpart,com.smartsoft.datastudio.core</Dependencies>
+  <Dependencies>com.smartsoft.datastudio.3rdpart,com.smartsoft.datastudio.qt,com.smartsoft.datastudio.core</Dependencies>
 </Package>

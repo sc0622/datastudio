@@ -7,7 +7,7 @@ namespace Icd {
 
 BindChannelWidgetPrivate::BindChannelWidgetPrivate(BindChannelWidget *q)
     : QObject(q)
-    , q_ptr(q)
+    , J_QPTR(q)
 {
 
 }

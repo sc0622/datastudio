@@ -47,10 +47,10 @@ class WorkerPrivate
     friend class Worker;
 public:
     WorkerPrivate(Worker *q)
-        : q_ptr(q)
-        , channel(0)
-        , workerSend(0)
-        , workerRecv(0)
+        : J_QPTR(q)
+        , channel(nullptr)
+        , workerSend(nullptr)
+        , workerRecv(nullptr)
     {
 
     }
@@ -81,7 +81,7 @@ void WorkerPrivate::init()
 
 Worker::Worker(QObject *parent)
     : QObject(parent)
-    , d_ptr(new WorkerPrivate(this))
+    , J_DPTR(new WorkerPrivate(this))
 {
     Q_D(Worker);
     d->init();
@@ -89,7 +89,7 @@ Worker::Worker(QObject *parent)
 
 Worker::Worker(const Icd::ChannelPtr &channel, QObject *parent)
     : QObject(parent)
-    , d_ptr(new WorkerPrivate(this))
+    , J_DPTR(new WorkerPrivate(this))
 {
     Q_D(Worker);
     d->init();
@@ -103,7 +103,7 @@ Worker::Worker(const Icd::ChannelPtr &channel, QObject *parent)
 Worker::Worker(const Icd::ChannelPtr &channel, const Icd::TablePtr &tableSend,
                const Icd::TablePtr &tableRecv, QObject *parent)
     : QObject(parent)
-    , d_ptr(new WorkerPrivate(this))
+    , J_DPTR(new WorkerPrivate(this))
 {
     Q_D(Worker);
     d->init();

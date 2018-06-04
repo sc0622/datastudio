@@ -7,10 +7,8 @@ class QFileDevice;
 
 namespace Icd {
 
-template<typename T> class JHandlePtr;
-
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 /**
  * @brief 使用查表法进行CRC校验值计算

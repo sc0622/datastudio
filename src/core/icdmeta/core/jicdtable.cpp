@@ -15,7 +15,7 @@ class JIcdTablePrivate
 {
 public:
     JIcdTablePrivate(JIcdTable *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -74,13 +74,13 @@ void JIcdTablePrivate::init()
 int JIcdTablePrivate::frameCodeCount(QQmlListProperty<JIcdFrameCodeItem> *property)
 {
     JIcdTable *q = qobject_cast<JIcdTable *>(property->object);
-    return q->d_ptr->frameCodes.count();
+    return q->J_DPTR->frameCodes.count();
 }
 
 JIcdFrameCodeItem *JIcdTablePrivate::frameCodeAt(QQmlListProperty<JIcdFrameCodeItem> *property, int index)
 {
     JIcdTable *q = qobject_cast<JIcdTable *>(property->object);
-    return q->d_ptr->frameCodes[index].data();
+    return q->J_DPTR->frameCodes[index].data();
 }
 
 void JIcdTablePrivate::saveItem(const QSharedPointer<JIcdItem> &item)
@@ -150,7 +150,7 @@ void JIcdTablePrivate::clearItem()
 
 JIcdTable::JIcdTable(const Icd::TablePtr &data, QObject *parent)
     : JIcdObject(data, parent)
-    , d_ptr(new JIcdTablePrivate(this))
+    , J_DPTR(new JIcdTablePrivate(this))
 {
     Q_D(JIcdTable);
     d->data = data;

@@ -9,7 +9,7 @@ class JIcdLimitItemPrivate
 {
 public:
     JIcdLimitItemPrivate(JIcdLimitItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -31,7 +31,7 @@ void JIcdLimitItemPrivate::init()
 
 JIcdLimitItem::JIcdLimitItem(const Icd::LimitItemPtr &data, QObject *parent)
     : QObject(parent)
-    , d_ptr(new JIcdLimitItemPrivate(this))
+    , J_DPTR(new JIcdLimitItemPrivate(this))
 {
     Q_D(JIcdLimitItem);
     d->data = data;

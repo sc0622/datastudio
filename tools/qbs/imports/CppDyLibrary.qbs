@@ -1,6 +1,7 @@
 import qbs
 import qbs.File
 import qbs.FileInfo
+import tools.EnvUtils
 
 DynamicLibrary {
     version: '1.0.0'
@@ -14,7 +15,7 @@ DynamicLibrary {
     readonly property path precompPath: path + '/common'
 
     // translation
-    property path langPath: FileInfo.joinPaths(sourceDirectory, 'resource', 'lang')
+    property path langPath: sourceDirectory + '/resource/lang'
     property pathList noRecursivePaths: []
     property pathList recursivePaths: []
     property stringList translationFileTags: [ 'hpp', 'cpp' ]
@@ -40,21 +41,21 @@ DynamicLibrary {
     Depends { name: 'Qt.core'; cpp.link: false }
     Depends { name: 'setenv'; required: false; cpp.link: false }
 
-    targetName: name
+    targetName: name + (qbs.buildVariant == 'debug' ? 'd' : '')
     desc.condition: true
     desc.fileDesc: 'Smartsoft® Runtime Library'
     desc.version: version
-    desc.productName: targetName
+    desc.productName: name
 
     cpp.includePaths: base.concat([ precompPath ])
     cpp.defines: {
+        var defines = base.concat([ 'PROJECT_DIR="' + project.sourceDirectory + '"' ])
         var upperName = product.name.toUpperCase();
-        var defines = base;
         defines.push(upperName + '_LIB');
         defines.push(upperName + '_BUILD');
         return defines;
     }
-    cpp.variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
+    //cpp.variantSuffix: project.variantSuffix
 
     Group {
         fileTagsFilter: installFileTags
@@ -101,10 +102,10 @@ DynamicLibrary {
                 args.push('-no-recursive');
                 product.noRecursivePaths.forEach(function(item){
                     args.push(item);
-                });
+                })
             }
-            // recursive
             args.push('-recursive');
+            // recursive
             if (product.recursivePaths.length > 0) {
                 product.recursivePaths.forEach(function(item){
                     args.push(item);
@@ -112,11 +113,16 @@ DynamicLibrary {
             } else {
                 args.push(product.sourceDirectory);
             }
-            // ts - files
+            // ts
             if (product.translations.length > 0) {
                 args.push('-ts');
                 product.translations.forEach(function(item){
-                    args.push(FileInfo.joinPaths(product.langPath, item));
+                    var filePath = FileInfo.joinPaths(product.langPath, item);
+                    var path = FileInfo.path(filePath);
+                    if (!File.exists(path)) {
+                        File.makePath(path);
+                    }
+                    args.push(filePath);
                 });
             }
             // create command
@@ -132,8 +138,7 @@ DynamicLibrary {
         cpp.defines: [ product.name.toUpperCase() + '_LIB' ]
         cpp.includePaths: [ FileInfo.joinPaths(project.sourceDirectory, 'include', product.module) ]
         cpp.dynamicLibraries: [
-            FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module,
-                               product.targetName) + product.cpp.variantSuffix
+            FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
         ]
     }
 
@@ -146,7 +151,7 @@ DynamicLibrary {
         //  RC_VERSION_STRING='1.0.0-xxx' (free text)
         // Also, we need to replace space with \x20 to be able to work with both rc and windres
         cpp.defines: {
-            var defines = outer.concat(['RC_ICON1=' + desc.iconName,
+            var defines = outer.concat(['RC_ICON1="' + desc.iconName + '"',
                                         'RC_FILEDESC=' + desc.fileDesc.replace(/ /g, '\\x20'),
                                         'RC_PRODUCTNAME=' + desc.productName.replace(/ /g, '\\x20'),
                                         'RC_COMPANYNAME=' + desc.companyName.replace(/ /g, '\\x20'),

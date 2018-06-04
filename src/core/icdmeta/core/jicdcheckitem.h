@@ -5,7 +5,7 @@
 
 namespace Icd {
 class CheckItem;
-typedef JHandlePtr<CheckItem> CheckItemPtr;
+typedef std::shared_ptr<CheckItem> CheckItemPtr;
 }
 
 namespace icdmeta {

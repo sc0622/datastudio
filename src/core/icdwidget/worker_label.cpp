@@ -9,7 +9,7 @@ WorkerLabel::WorkerLabel(const Icd::WorkerPtr &worker,
                          ChannelWidget::OperateAttributes attrs,
                          QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new WorkerLabelPrivate(worker, this))
+    , J_DPTR(new WorkerLabelPrivate(worker, this))
 {
     Q_D(WorkerLabel);
     d->init(attrs);

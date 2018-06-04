@@ -9,43 +9,43 @@ class QVBoxLayout;
 
 namespace Icd {
 class Object;
-typedef JHandlePtr<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 
 class Vehicle;
-typedef JHandlePtr<Vehicle> VehiclePtr;
+typedef std::shared_ptr<Vehicle> VehiclePtr;
 
 class System;
-typedef JHandlePtr<System> SystemPtr;
+typedef std::shared_ptr<System> SystemPtr;
 
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 class Item;
-typedef JHandlePtr<Item> ItemPtr;
+typedef std::shared_ptr<Item> ItemPtr;
 
 class HeaderItem;
-typedef JHandlePtr<HeaderItem> HeaderItemPtr;
+typedef std::shared_ptr<HeaderItem> HeaderItemPtr;
 
 class CounterItem;
-typedef JHandlePtr<CounterItem> CounterItemPtr;
+typedef std::shared_ptr<CounterItem> CounterItemPtr;
 
 class CheckItem;
-typedef JHandlePtr<CheckItem> CheckItemPtr;
+typedef std::shared_ptr<CheckItem> CheckItemPtr;
 
 class FrameCodeItem;
-typedef JHandlePtr<FrameCodeItem> FrameCodeItemPtr;
+typedef std::shared_ptr<FrameCodeItem> FrameCodeItemPtr;
 
 class NumericItem;
-typedef JHandlePtr<NumericItem> NumericItemPtr;
+typedef std::shared_ptr<NumericItem> NumericItemPtr;
 
 class BitItem;
-typedef JHandlePtr<BitItem> BitItemPtr;
+typedef std::shared_ptr<BitItem> BitItemPtr;
 
 class ComplexItem;
-typedef JHandlePtr<ComplexItem> ComplexItemPtr;
+typedef std::shared_ptr<ComplexItem> ComplexItemPtr;
 
 class FrameItem;
-typedef JHandlePtr<FrameItem> FrameItemPtr;
+typedef std::shared_ptr<FrameItem> FrameItemPtr;
 }
 
 namespace Edit {

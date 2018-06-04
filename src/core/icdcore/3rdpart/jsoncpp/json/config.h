@@ -73,7 +73,7 @@
 
 #  if _MSC_VER >= 1500 // MSVC 2008
     /// Indicates that the following function is deprecated.
-#    define JSONCPP_DEPRECATED(message) __declspec(deprecated(message))
+#    define JSONCPP_DEPRECATED(message) //__declspec(deprecated(message))
 #  endif
 
 #endif // defined(_MSC_VER)
@@ -135,8 +135,10 @@
 #define JSONCPP_DEPRECATED(message)
 #endif // if !defined(JSONCPP_DEPRECATED)
 
+#ifdef __GNUC__
 #if __GNUC__ >= 6
 #  define JSON_USE_INT64_DOUBLE_CONVERSION 1
+#endif
 #endif
 
 #if !defined(JSON_IS_AMALGAMATION)
@@ -159,8 +161,8 @@ typedef unsigned int LargestUInt;
 #else                 // if defined(JSON_NO_INT64)
 // For Microsoft Visual use specific types as long long is not supported
 #if defined(_MSC_VER) // Microsoft Visual Studio
-typedef __int64 Int64;
-typedef unsigned __int64 UInt64;
+typedef /*__int64*/long long Int64;
+typedef unsigned /*__int64*/long long UInt64;
 #else                 // if defined(_MSC_VER) // Other platforms, use long long
 typedef int64_t Int64;
 typedef uint64_t UInt64;

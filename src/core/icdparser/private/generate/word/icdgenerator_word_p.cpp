@@ -12,7 +12,7 @@
 namespace Icd {
 
 WordGeneratorData::WordGeneratorData(WordGenerator *q)
-    : q_ptr(q)
+    : J_QPTR(q)
     , word(nullptr)
     , document(nullptr)
     , tableCaption(nullptr)
@@ -34,7 +34,7 @@ bool WordGeneratorData::startup()
     }
 
     //
-    q_ptr->parser()->setMessage(QStringLiteral("初始化文档基本属性").toStdString());
+    J_QPTR->parser()->setMessage(QStringLiteral("初始化文档基本属性").toStdString());
 
     //
 #ifdef _MSC_VER
@@ -109,7 +109,7 @@ void WordGeneratorData::shutdown(const QString &filePath, int saveAsType)
     }
 
     //
-    q_ptr->parser()->setMessage(QStringLiteral("释放文档临时资源").toStdString());
+    J_QPTR->parser()->setMessage(QStringLiteral("释放文档临时资源").toStdString());
 
     //
     if (!filePath.isEmpty()) {
@@ -207,12 +207,12 @@ bool WordGeneratorData::generateRoot(const QStandardItem *itemRoot, bool exportA
 
     if (exportAll) {
         //
-        q_ptr->parser()->setMessage(QStringLiteral("获取所有机型数据\n%1")
+        J_QPTR->parser()->setMessage(QStringLiteral("获取所有机型数据\n%1")
                                     .arg(itemRoot->text().remove(QRegExp("<([^>]*)>")))
                                     .toStdString());
 
         Icd::VehiclePtrArray vehicles;
-        if (!q_ptr->parser()->parse(vehicles, Icd::ObjectVehicle)) {
+        if (!J_QPTR->parser()->parse(vehicles, Icd::ObjectVehicle)) {
             return false;
         }
         Icd::VehiclePtrArray::const_iterator citer = vehicles.cbegin();
@@ -246,14 +246,14 @@ bool WordGeneratorData::generateVehicle(const QStandardItem *itemVehicle, bool e
     }
 
     //
-    q_ptr->parser()->setMessage(QStringLiteral("获取机型数据\n机型：%1")
+    J_QPTR->parser()->setMessage(QStringLiteral("获取机型数据\n机型：%1")
                                 .arg(itemVehicle->text().remove(QRegExp("<([^>]*)>")))
                                 .toStdString());
 
     //
     const QString vehicleId = itemVehicle->data(TreeItemDomainRole).toString();
     Icd::VehiclePtr vehicle;
-    if (!q_ptr->parser()->parse(vehicleId.toStdString(), vehicle, Icd::ObjectVehicle)) {
+    if (!J_QPTR->parser()->parse(vehicleId.toStdString(), vehicle, Icd::ObjectVehicle)) {
         return false;
     }
 
@@ -288,7 +288,7 @@ bool WordGeneratorData::generateVehicle(const QStandardItem *itemVehicle, bool e
 bool WordGeneratorData::generateVehicle(const VehiclePtr &vehicle, bool exportAll, int level)
 {
     //
-    q_ptr->parser()->setMessage(QStringLiteral("生成机型文档\n机型：%1")
+    J_QPTR->parser()->setMessage(QStringLiteral("生成机型文档\n机型：%1")
                                 .arg(QString::fromStdString(vehicle->name()))
                                 .toStdString());
 
@@ -318,7 +318,7 @@ bool WordGeneratorData::generateVehicle(const VehiclePtr &vehicle, bool exportAl
         ++level;
         //
         Icd::SystemPtrArray systems;
-        if (!q_ptr->parser()->parse(vehicle->id(), systems, Icd::ObjectSystem)) {
+        if (!J_QPTR->parser()->parse(vehicle->id(), systems, Icd::ObjectSystem)) {
             return false;
         }
         Icd::SystemPtrArray::const_iterator citer = systems.cbegin();
@@ -341,7 +341,7 @@ bool WordGeneratorData::generateSystem(const QStandardItem *itemSystem, bool exp
     }
 
     //
-    q_ptr->parser()->setMessage(QStringLiteral("获取系统数据\n系统：%1")
+    J_QPTR->parser()->setMessage(QStringLiteral("获取系统数据\n系统：%1")
                                 .arg(itemSystem->text().remove(QRegExp("<([^>]*)>")))
                                 .toStdString());
 
@@ -349,7 +349,7 @@ bool WordGeneratorData::generateSystem(const QStandardItem *itemSystem, bool exp
     const QString domain = itemSystem->data(TreeItemDomainRole).toString();
     const std::string vehicleId = domain.section('/', 0, 0).toStdString();
     Icd::SystemPtr system;
-    if (!q_ptr->parser()->parse(vehicleId, domain.section('/', 1).toStdString(), system,
+    if (!J_QPTR->parser()->parse(vehicleId, domain.section('/', 1).toStdString(), system,
                                 Icd::ObjectSystem)) {
         return false;
     }
@@ -386,7 +386,7 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
                                        bool exportAll, int level)
 {
     //
-    q_ptr->parser()->setMessage(QStringLiteral("生成系统文档\n系统：%1")
+    J_QPTR->parser()->setMessage(QStringLiteral("生成系统文档\n系统：%1")
                                 .arg(QString::fromStdString(system->name()))
                                 .toStdString());
 
@@ -415,12 +415,12 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
         //
         ++level;
         //
-        q_ptr->parser()->setMessage(QStringLiteral("获取所有表数据\n系统：%1")
+        J_QPTR->parser()->setMessage(QStringLiteral("获取所有表数据\n系统：%1")
                                     .arg(QString::fromStdString(system->name()))
                                     .toStdString());
         //
         Icd::TablePtrArray tables;
-        if (!q_ptr->parser()->parse(vehicleId, system->id(), tables, Icd::ObjectItem)) {
+        if (!J_QPTR->parser()->parse(vehicleId, system->id(), tables, Icd::ObjectItem)) {
             return false;
         }
         Icd::TablePtrArray::const_iterator citer = tables.cbegin();
@@ -464,12 +464,12 @@ bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool expor
 #endif
     if (!table) {
         //
-        q_ptr->parser()->setMessage(QStringLiteral("获取表数据\n表：%1")
+        J_QPTR->parser()->setMessage(QStringLiteral("获取表数据\n表：%1")
                                     .arg(itemTable->text().remove(QRegExp("<([^>]*)>")))
                                     .toStdString());
         //
         const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
-        if (!q_ptr->parser()->parse(domain.section('/', 0, 0).toStdString(),
+        if (!J_QPTR->parser()->parse(domain.section('/', 0, 0).toStdString(),
                                     domain.section('/', 1, 1).toStdString(),
                                     domain.section('/', 2).toStdString(),
                                     table, Icd::ObjectItem)) {
@@ -487,13 +487,13 @@ bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool expor
 
 bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
 {
-    if (q_ptr->parser()->canceledSaveAs()) {
+    if (J_QPTR->parser()->canceledSaveAs()) {
         return false;
     }
 
     //
     QString domain = QString::fromStdString(table->name());
-    q_ptr->parser()->setMessage(QStringLiteral("生成表文档\n表：%1")
+    J_QPTR->parser()->setMessage(QStringLiteral("生成表文档\n表：%1")
                                 .arg(domain).toStdString());
 
     //
@@ -622,7 +622,7 @@ bool WordGeneratorData::generateTableCaption(const QString &title, QAxObject *ta
 bool WordGeneratorData::generateItem(const Icd::ItemPtr &item, QAxObject *axTable,
                                      int row, int level)
 {
-    if (q_ptr->parser()->canceledSaveAs()) {
+    if (J_QPTR->parser()->canceledSaveAs()) {
         return false;
     }
 
@@ -648,7 +648,7 @@ bool WordGeneratorData::generateItem(const Icd::ItemPtr &item, QAxObject *axTabl
         return false;
     }
 
-    if (q_ptr->parser()->canceledSaveAs()) {
+    if (J_QPTR->parser()->canceledSaveAs()) {
         return false;
     }
 

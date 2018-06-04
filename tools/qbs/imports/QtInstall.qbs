@@ -3,129 +3,126 @@ import qbs.File
 import qbs.FileInfo
 import qbs.TextFile
 import qbs.Environment
-//import common.Install
-import '../../setenv/setenv.js' as Env
+import tools.EnvUtils
 
 Product {
+    id: root
     name: 'QtInstall'
-    type: [ 'qt.conf.out' ]
+    type: ['qt.conf.out']
 
+    property string installDir: 'bin'
     property bool generateQtConf: true
-    property stringList modules3rdpart: [
-        'd3dcompiler*.dll',
-        'opengl*.dll',
-        'lib*GL*' + project.variantSuffix + '.dll'
+    property stringList module3rdpart: [
+        'd3dcompiler*.dll', 'opengl32*.dll', EnvUtils.incDylibFuzzy(qbs, false, 'lib*')
     ]
-    property stringList modulesBase: [
+    property stringList moduleGeneral: [
         'Concurrent', 'Core', 'Gui', 'Network', 'PrintSupport', 'OpenGL',
         'Svg', 'Widgets', 'Xml'
     ]
-    property stringList modulesPlugins: [
+    property stringList modulePlugins: [
         'bearer', 'iconengines', 'imageformats', 'platforms', 'translations', 'styles'
     ]
-    property stringList modulesQml: []
-    property stringList modulesResources: []
-    property stringList modulesTranslations: []
+    property stringList moduleQml: []
+    property stringList moduleResources: []
+    property stringList moduleTranslations: []
 
     Depends { name: 'cpp' }
-    Depends { name: 'Qt.core' ; cpp.link: false }
-    Depends { name: 'Qt.qml' ; cpp.link: false }
+    Depends { name: 'Qt.core'; cpp.link: false }
+    Depends { name: 'Qt.qml'; cpp.link: false }
 
-    // Qt - 3rdpart
+    // 3rdpart
 
     Group {
         name: '3rdpart'
         prefix: Qt.core.binPath + '/'
-        files: modules3rdpart
+        files: module3rdpart
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin'
+        qbs.installDir: installDir
+        qbs.installSourceBase: prefix
     }
 
-    // Qt
+    // general
 
     Group {
         name: 'general'
         prefix: Qt.core.binPath + '/'
         files: {
             var files = [];
-            modulesBase.forEach(function(item){
-                files.push('Qt' + Qt.core.versionMajor + item + Env.dylibSuffix(product));
-            });
+            moduleGeneral.forEach(function(item){
+                files.push('Qt' + Qt.core.versionMajor + item + EnvUtils.dylibSuffix(qbs));
+            })
             return files;
         }
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin'
+        qbs.installDir: installDir
+        qbs.installSourceBase: prefix
     }
 
-    // Qt - plugins
+    // plugins
 
     Group {
         name: 'plugins'
         prefix: Qt.core.pluginPath + '/'
         files: {
             var files = [];
-            modulesPlugins.forEach(function(item){
+            modulePlugins.forEach(function(item){
                 files.push(item + '/**/*.dll');
             });
             return files;
         }
-        excludeFiles: [ Env.excDylibSuffixFuzzy(product) ]
+        excludeFiles: [ EnvUtils.excDylibFuzzy(qbs, true) ]
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin/plugins'
+        qbs.installDir: installDir + '/plugins'
         qbs.installSourceBase: prefix
     }
 
-    // Qt - qml
+    // qml
 
     Group {
         name: 'qml'
         prefix: Qt.qml.qmlPath + '/'
         files: {
             var files = [];
-            modulesQml.forEach(function(item){
+            moduleQml.forEach(function(item){
                 files.push(item + '/**/*');
             });
             return files;
         }
-        excludeFiles: [
-            Env.excDylibSuffixFuzzy(product),
-            '**/*.qmlc', '**/*.jsc', '**/*.qmltypes'
-        ]
+        excludeFiles: [ '**/*.qmlc', '**/*.jsc', '**/*.qmltypes', EnvUtils.excDylibFuzzy(qbs, true) ]
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin/qml'
+        qbs.installDir: installDir + '/qml'
         qbs.installSourceBase: prefix
     }
 
-    // Qt - resources
+    // resources
 
     Group {
         name: 'resources'
-        prefix: Qt.core.binPath + '/../resources/'
-        files: modulesResources
+        prefix: Qt.core.binPath + '/../resources'
+        files: moduleResources
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin/resources'
+        qbs.installDir: installDir + '/resources'
         qbs.installSourceBase: prefix
     }
 
-    // Qt - translations
+    // translations
 
     Group {
         name: 'translations'
-        prefix: Qt.core.binPath + '/../translations/'
-        files: modulesTranslations
+        prefix: Qt.core.binPath + '/../translations'
+        files: moduleTranslations
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin/translations'
+        qbs.installDir: installDir + '/translations'
         qbs.installSourceBase: prefix
     }
 
-    // Qt - qt.conf [generate]
-
+    // qt.conf
     Rule {
         condition: generateQtConf
         multiplex: true
@@ -145,7 +142,7 @@ Product {
                            'Libraries=.\n' +
                            'Plugins=plugins\n' +
                            'Imports=imports\n' +
-                           'Qml2Imports=qml\n');
+                           'Qml2Imports=qml');
                 file.close();
             }
             return [ cmd ];

@@ -10,7 +10,7 @@ class JWordPrivate
 {
 public:
     JWordPrivate(JWord *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -23,7 +23,7 @@ private:
 
 JWord::JWord(QObject *parent) :
     JOffice(OfficeWord, parent),
-    d_ptr(new JWordPrivate(this))
+    J_DPTR(new JWordPrivate(this))
 {
 
 }

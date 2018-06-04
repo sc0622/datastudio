@@ -90,7 +90,7 @@ private:
 // class JNEvent
 
 class JNEvent;
-typedef JHandlePtr<JNEvent> JNEventPtr;
+typedef std::shared_ptr<JNEvent> JNEventPtr;
 
 JNEvent::JNEvent()
 {
@@ -157,7 +157,7 @@ private:
 // class JNotifyData
 
 class JNotifyData;
-typedef JHandlePtr<JNotifyData> JNotifyDataPtr;
+typedef std::shared_ptr<JNotifyData> JNotifyDataPtr;
 typedef std::list<JNotifyDataPtr> JNotifyDataPtrArray;
 
 class JNotifyData
@@ -213,7 +213,7 @@ class JNotifyPrivate
 {
 public:
     JNotifyPrivate(JNotify *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , mutex(QMutex::Recursive)
     {
 
@@ -547,7 +547,7 @@ void JNotify::customEvent(QEvent *event)
 
 JNotify::JNotify(QObject *parent)
     : QObject(parent)
-    , d_ptr(new JNotifyPrivate(this))
+    , J_DPTR(new JNotifyPrivate(this))
 {
     Q_D(JNotify);
     d->init();

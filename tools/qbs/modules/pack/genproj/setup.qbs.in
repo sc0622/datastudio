@@ -1,0 +1,13 @@
+import qbs
+import qbs.FileInfo
+import qbs.Environment
+import './tools/qbs/imports' as I
+
+I.JSetup {
+    minimumQbsVersion: '@QBS_MIN_VER@'
+    projectName: '@PROJECT_NAME@'
+    projectDisplayName: '@PROJECT_DISPLAY_NAME@'
+    version: '@VERSION@'
+    variantSuffix: '@VARIANT_SUFFIX@'
+    installRoot: '@PROJECT_INSTALL_ROOT@'
+}

@@ -13,14 +13,14 @@ class JOfficePrivate
 {
 public:
     JOfficePrivate(JOffice::OfficeType officeType, JOffice *q) :
-        q_ptr(q),
-        application(0),
-        workbooks(0),
-        workbook(0),
+        J_QPTR(q),
+        application(nullptr),
+        workbooks(nullptr),
+        workbook(nullptr),
         officeType(officeType)
     {
         //
-        HRESULT r = OleInitialize(0);
+        HRESULT r = OleInitialize(nullptr);
         if (r != S_OK && r != S_FALSE) {
             //qWarning(QStringLiteral("Qt:初始化Ole失败（error %x）"), (unsigned int)r);
         }
@@ -61,7 +61,7 @@ public:
         q->close();
 
         delete application;
-        application = 0;
+        application = nullptr;
 
         //
         ::OleUninitialize();
@@ -126,7 +126,7 @@ bool JOfficePrivate::generateDocumentation(QAxBase *axBase, const QString &fileP
 
 JOffice::JOffice(OfficeType officeType, QObject *parent) :
     QObject(parent),
-    d_ptr(new JOfficePrivate(officeType, this))
+    J_DPTR(new JOfficePrivate(officeType, this))
 {
 
 }
@@ -164,8 +164,8 @@ QAxObject *JOffice::workbooks()
 QAxObject *JOffice::workbook(int index)
 {
     QAxObject *workbooks = this->workbooks();
-    if (workbooks == 0) {
-        return 0;
+    if (workbooks == nullptr) {
+        return nullptr;
     }
 
     return workbooks->querySubObject("Item(QVariant)", index);
@@ -185,12 +185,12 @@ QAxObject *JOffice::sheets()
 {
     Q_D(JOffice);
     QAxObject *workbook = d->workbook;
-    if (workbook == 0) {
+    if (workbook == nullptr) {
         workbook = activeWorkbook();
     }
 
-    if (workbook == 0) {
-        return 0;
+    if (workbook == nullptr) {
+        return nullptr;
     }
 
     return workbook->querySubObject("Sheets");
@@ -199,8 +199,8 @@ QAxObject *JOffice::sheets()
 QAxObject *JOffice::sheet(int index)
 {
     QAxObject *sheets = this->sheets();
-    if (sheets == 0) {
-        return 0;
+    if (sheets == nullptr) {
+        return nullptr;
     }
 #if J_AXBASE_GENERATE_DOCUMENT
     generateDocumentFile(sheets);
@@ -217,19 +217,19 @@ QAxObject *JOffice::prependSheet(const QString &sheetName)
 QAxObject *JOffice::appendSheet(const QString &sheetName)
 {
     QAxObject *sheets = this->sheets();
-    if (sheets == 0) {
-        return 0;
+    if (sheets == nullptr) {
+        return nullptr;
     }
 
     int sheetCount = sheets->property("Count").toInt();
     QAxObject *lastSheet = sheets->querySubObject("Item(QVariant)", sheetCount);
-    if (lastSheet == 0) {
-        return 0;
+    if (lastSheet == nullptr) {
+        return nullptr;
     }
 
     QAxObject *newSheet = sheets->querySubObject("Add(QVariant)", lastSheet->asVariant());
-    if (newSheet == 0) {
-        return 0;
+    if (newSheet == nullptr) {
+        return nullptr;
     }
 
     lastSheet->dynamicCall("Move(QVariant)", newSheet->asVariant());
@@ -243,8 +243,8 @@ QAxObject *JOffice::appendSheet(const QString &sheetName)
 QAxObject *JOffice::insertSheet(int index, const QString &sheetName)
 {
     QAxObject *sheets = this->sheets();
-    if (sheets == 0) {
-        return 0;
+    if (sheets == nullptr) {
+        return nullptr;
     }
 
     int sheetCount = sheets->property("Count").toInt();
@@ -253,13 +253,13 @@ QAxObject *JOffice::insertSheet(int index, const QString &sheetName)
     }
 
     QAxObject *beforeSheet = sheets->querySubObject("Item(QVariant)", index);
-    if (beforeSheet == 0) {
-        return 0;
+    if (beforeSheet == nullptr) {
+        return nullptr;
     }
 
     QAxObject *newSheet = sheets->querySubObject("Add(QVariant)", beforeSheet->asVariant());
-    if (newSheet == 0) {
-        return 0;
+    if (newSheet == nullptr) {
+        return nullptr;
     }
 
     if (!sheetName.isEmpty()) {
@@ -272,7 +272,7 @@ QAxObject *JOffice::insertSheet(int index, const QString &sheetName)
 bool JOffice::setSheetCount(int count)
 {
     QAxObject *sheets = this->sheets();
-    if (sheets == 0) {
+    if (sheets == nullptr) {
         return false;
     }
 
@@ -293,7 +293,7 @@ bool JOffice::setSheetCount(int count)
 bool JOffice::clearSheet()
 {
     QAxObject *sheets = this->sheets();
-    if (sheets == 0) {
+    if (sheets == nullptr) {
         return false;
     }
 
@@ -365,7 +365,7 @@ bool JOffice::open(const QString &filePath, QIODevice::OpenMode mode)
         return false;
     }
 
-    if (d->workbook == 0) {
+    if (d->workbook == nullptr) {
         return false;
     }
 
@@ -375,7 +375,7 @@ bool JOffice::open(const QString &filePath, QIODevice::OpenMode mode)
 bool JOffice::saveAs(const QString &filePath)
 {
     Q_D(JOffice);
-    if (d->workbook == 0) {
+    if (d->workbook == nullptr) {
         return false;
     }
 

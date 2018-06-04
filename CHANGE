@@ -1,6 +1,34 @@
 
+-- V4.2.0
+    tools: VS2015，Qt5.11.0，Qbs>=1.9.1
+    depends:
+        1) jframework: v2.5.0;
+
+    fixed:
+        1) 升级qbs库：增加node、electron架构编译模板；增加打包编译模板；修复一系列版本兼容性问题
+        2) 升级jframework库
+        3) icdmeta：增加command、protocol模块集成
+        4) icdplugins：集成qml库
+
+-- V4.1.0
+    tools: VS2015、Qt5.10.1、Qbs>=1.9.1
+    depends:
+        1) jframework: v2.4.1;
+
+    fixed:
+        1) 修改icdmeta: 集成FTP模型，修改通道属性和接口；集成指令系统和仿真模型
+
+-- V4.0.1
+    tools: VS2015、Qt5.10.1、Qbs>=1.9.1
+    depends:
+        1) jframework: v2.4.1;
+
+    fixed:
+        1) 升级jframework
+        2) 修改core部分接口：修复icdwidget挂载树问题
+
 -- V4.0.0
-    tools: Qt5.10.1、VS2015、Qbs1.10.1
+    tools: VS2015、Qt5.10.1、Qbs1.10.1
     depends:
         1) jframework: v2.4.0;
 
@@ -9,7 +37,7 @@
         2) 支持Qbs编译，去掉qmake编译相关文件及设置
 
 -- V3.0.3
-    tools: Qt5.10.1、VS2015
+    tools: VS2015、Qt5.10.1
     depends:
         1) jframework: v2.3.2;
 

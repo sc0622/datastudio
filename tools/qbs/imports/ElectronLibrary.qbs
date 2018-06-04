@@ -5,14 +5,14 @@ import qbs.Environment
 
 CppDyLibrary {
     type: base.concat([ 'node.out' ])
-    //readonly property path nodePath: FileInfo.fromNativeSeparators(Environment.getEnv('NODE_PATH'))
-    readonly property path userPath: '~'
-    readonly property path nodePath: '~/.node-gyp/8.11.1'
-    readonly property path npmPath: '~/AppData/Roaming/npm'
+
+    property path userPath: '~'
+    property path nodePath: '~/.node-gyp/8.11.1'
+    property path npmPath: '~/AppData/Roaming/npm'
+    property path iojsPath: FileInfo.joinPaths(userPath, '.electron-gyp/.node-gyp/iojs-2.0.0')
     readonly property path npmModulesPath: FileInfo.joinPaths(npmPath, 'node_modules')
     readonly property path nodeAddonPath: FileInfo.joinPaths(npmModulesPath, 'node-addon-api')
-    readonly property path iojsPath: FileInfo.joinPaths(userPath, '.electron-gyp/.node-gyp/iojs-2.0.0')
-    property path destinationDir: destinationDirectory
+    readonly property path destinationDir: destinationDirectory
 
     cpp.variantSuffix: ''
     cpp.includePaths: base.concat([nodeAddonPath,
@@ -27,8 +27,7 @@ CppDyLibrary {
         if (qbs.buildVariant == 'debug') {
             items.push(FileInfo.joinPaths(nodePath, 'x64', 'node'));
         } else {
-            items.push(FileInfo.joinPaths(userPath, '.electron-gyp/.node-gyp',
-                                          'iojs-2.0.0/x64/iojs'));
+            items.push(FileInfo.joinPaths(iojsPath, 'x64', 'iojs'));
         }
         return items;
     }

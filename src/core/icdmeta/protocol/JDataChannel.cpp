@@ -14,7 +14,7 @@ class JDataChannelPrivate
 {
 public:
     JDataChannelPrivate(JDataChannel *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , channel(nullptr)
         , protocolSend(nullptr)
         , protocolRecv(nullptr)
@@ -94,7 +94,7 @@ using namespace icdmeta;
 
 JDataChannel::JDataChannel(const QString &identity, QObject *parent)
     : QObject(parent)
-    , d_ptr(new JDataChannelPrivate(this))
+    , J_DPTR(new JDataChannelPrivate(this))
 {
     Q_D(JDataChannel);
     d->identity = identity;
@@ -168,7 +168,7 @@ bool JDataChannel::binding(JChannel *channel, JProtocol *protocolSend, JProtocol
 
     // worker
     if (!d->worker) {
-        Icd::WorkerPtr worker(new Icd::Worker(channel->channel()->channel(), this));
+        Icd::WorkerPtr worker(new Icd::Worker(channel->channel()->nativeChannel(), this));
         connect(worker.get(), &Icd::Worker::toggled,
                 channel->channel(), &JSuperChannel::isOpenChanged);
         d->setWorker(worker);

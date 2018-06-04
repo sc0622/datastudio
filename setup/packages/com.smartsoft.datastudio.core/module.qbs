@@ -3,7 +3,7 @@ import qbs.File
 import qbs.FileInfo
 
 PackageProduct {
-    productPath: path
+    name: 'com.smartsoft.datastudio.core'
 
     // 3rdpart
     Group {

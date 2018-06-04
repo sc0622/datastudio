@@ -5,9 +5,9 @@
 #include "icdcore/icdcore_global.h"
 
 namespace Icd {
-template<typename T> class JHandlePtr;
+template<typename T> class std::shared_ptr;
 class Channel;
-typedef JHandlePtr<Channel> ChannelPtr;
+typedef std::shared_ptr<Channel> ChannelPtr;
 }
 
 namespace icdmeta {
@@ -23,7 +23,7 @@ class ICDMETA_EXPORT JChannel : public QObject, public Json::Serializable
     Q_PROPERTY(QString identity READ identity NOTIFY identityChanged)
     Q_PROPERTY(QString domain READ domain NOTIFY domainChanged)
     Q_PROPERTY(icdmeta::JSuperChannel* channel READ channel WRITE setChannel NOTIFY channelChanged)
-    Q_PROPERTY(bool active READ isActive WRITE setActive NOTIFY activeChanged)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY checkedChanged)
     Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
     Q_PROPERTY(bool isOpen READ isOpen NOTIFY isOpenChanged)
 public:
@@ -36,7 +36,7 @@ public:
     QString domain() const;
     icdmeta::JSuperChannel *channel() const;
     Icd::ChannelPtr nativeChannel() const;
-    bool isActive() const;
+    bool isChecked() const;
     bool isValid() const;
     bool isOpen() const;
 
@@ -44,17 +44,19 @@ signals:
     void identityChanged();
     void domainChanged();
     void channelChanged(icdmeta::JSuperChannel *channel);
-    void activeChanged(bool active);
+    void checkedChanged(bool active);
     void validChanged(bool valid);
     void isOpenChanged(bool open);
 
 public slots:
     void setChannel(icdmeta::JSuperChannel *channel);
-    void setActive(bool active);
+    void setChecked(bool checked);
     QByteArray readData(int size) const;
     int writeData(const QByteArray &data);
     bool open();
     void close();
+
+    bool saveConfig(const QString &filePath, const QString &pathPrefix = QString());
 
     // Serializable interface
 public:

@@ -5,19 +5,19 @@
 
 namespace Icd {
 
-template<typename T> class JHandlePtr;
+template<typename T> class std::shared_ptr;
 
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 class Parser;
-typedef JHandlePtr<Parser> ParserPtr;
+typedef std::shared_ptr<Parser> ParserPtr;
 
 class Worker;
-typedef JHandlePtr<Worker> WorkerPtr;
+typedef std::shared_ptr<Worker> WorkerPtr;
 
 class Object;
-typedef JHandlePtr<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 
 }   // end of namespace Icd
 

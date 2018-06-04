@@ -9,7 +9,7 @@ namespace Icd {
 
 class WorkerSendPrivate;
 class WorkerSend;
-typedef JHandlePtr<WorkerSend> WorkerSendPtr;
+typedef std::shared_ptr<WorkerSend> WorkerSendPtr;
 
 /**
  * @brief The WorkerSend class
@@ -22,7 +22,7 @@ public:
      * @brief WorkerSend
      * @param parent
      */
-    explicit WorkerSend(QObject *parent = 0);
+    explicit WorkerSend(QObject *parent = nullptr);
 
     ~WorkerSend();
 
@@ -138,7 +138,7 @@ signals:
     void started();
     void stopped();
     void toggled(int isRunning);
-    void intervalChanged(unsigned int value);
+    void intervalChanged(int value);
     void timeEventChanged(TimeEvent event);
     void counterLoopChanged(bool loop);
     void frameLoopChanged(bool loop);

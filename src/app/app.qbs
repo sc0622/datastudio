@@ -7,14 +7,12 @@ import qbs.ModUtils
 Project {
 
     WidgetApp {
-        id: app
-
-        consoleApplication: false
-        targetName: project.projectName
+        targetName: project.projectName + (qbs.buildVariant == 'debug' ? 'd' : '')
         version: project.version
 
         translations: [ 'app_zh_CN.ts' ]
         defaultTranslation: true
+        desc.iconName: sourceDirectory + '/resource/image/app.ico'
 
         Depends { name: 'Qt.concurrent' }
         Depends { name: 'Qt.network' }
@@ -32,6 +30,7 @@ Project {
         Group {
             name: 'Headers'
             files: [ '**/*.h' ]
+            excludeFiles: [ '**/precomp.h' ]
         }
 
         Group {
@@ -46,23 +45,5 @@ Project {
 
         cpp.defines: base.concat([ 'PROJECT_APP' ])
         cpp.includePaths: base.concat([ '.' ])
-
-        desc.iconName: 'resource/image/app.ico'
-
-        Group {
-            fileTagsFilter: [ 'application' ]
-            qbs.install: true
-            qbs.installPrefix: project.projectName
-            qbs.installDir: 'bin'
-        }
-    }
-
-    Product {
-        name: 'lrelease'
-        condition: false
-        type: [ 'ts' ]
-        Depends { name: 'Qt.core' }
-        files: [ 'resource/lang/*.ts' ]
-        destinationDirectory: app.langPath
     }
 }

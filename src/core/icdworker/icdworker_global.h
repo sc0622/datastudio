@@ -30,15 +30,27 @@
 
 // - private pointer
 #ifndef J_DECLARE_PRIVATE
-#define J_DECLARE_PRIVATE(name) \
-    Q_DECLARE_PRIVATE(name) \
-    name ## Private *d_ptr;
+#define J_DECLARE_PRIVATE(Class) \
+    Class##Private *J_DPTR_; \
+    inline Class##Private* d_func() { return J_DPTR_; } \
+    inline const Class##Private* d_func() const { return J_DPTR_; } \
+    friend class Class##Private;
 #endif
 
 #ifndef J_DECLARE_PUBLIC
-#define J_DECLARE_PUBLIC(name) \
-    Q_DECLARE_PUBLIC(name) \
-    name *q_ptr;
+#define J_DECLARE_PUBLIC(Class) \
+    Class *J_QPTR_; \
+    inline Class* q_func() { return J_QPTR_; } \
+    inline const Class* q_func() const { return J_QPTR_; } \
+    friend class Class;
+#endif
+
+#ifndef J_DPTR
+#define J_DPTR J_DPTR_
+#endif
+
+#ifndef J_QPTR
+#define J_QPTR J_QPTR_
 #endif
 
 #endif

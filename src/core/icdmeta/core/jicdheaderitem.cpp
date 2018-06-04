@@ -9,7 +9,7 @@ class JIcdHeaderItemPrivate
 {
 public:
     JIcdHeaderItemPrivate(JIcdHeaderItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -31,7 +31,7 @@ void JIcdHeaderItemPrivate::init()
 
 JIcdHeaderItem::JIcdHeaderItem(const Icd::HeaderItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdHeaderItemPrivate(this))
+    , J_DPTR(new JIcdHeaderItemPrivate(this))
 {
     Q_D(JIcdHeaderItem);
     d->data = data;

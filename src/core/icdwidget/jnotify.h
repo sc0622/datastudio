@@ -56,7 +56,7 @@ private:
 // class JNotify
 
 class JNotify;
-typedef JHandlePtr<JNotify> JNotifyPtr;
+typedef std::shared_ptr<JNotify> JNotifyPtr;
 class JNotifyPrivate;
 
 class ICDWIDGET_EXPORT JNotify : public QObject

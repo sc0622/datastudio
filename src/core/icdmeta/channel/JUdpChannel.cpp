@@ -12,7 +12,7 @@ class JUdpChannelPrivate
 {
 public:
     JUdpChannelPrivate(JUdpChannel *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -33,7 +33,7 @@ void JUdpChannelPrivate::init()
 Icd::UdpChannelPtr JUdpChannelPrivate::channel() const
 {
     Q_Q(const JUdpChannel);
-    return JHandlePtrCast<Icd::UdpChannel, Icd::Channel>(q->channel());
+    return JHandlePtrCast<Icd::UdpChannel, Icd::Channel>(q->nativeChannel());
 }
 
 }
@@ -42,9 +42,9 @@ using namespace icdmeta;
 
 // class JUdpChannel
 
-JUdpChannel::JUdpChannel(const QString &identity, QObject *parent)
-    : JSuperChannel(identity, parent)
-    , d_ptr(new JUdpChannelPrivate(this))
+JUdpChannel::JUdpChannel(QObject *parent)
+    : JSuperChannel(parent)
+    , J_DPTR(new JUdpChannelPrivate(this))
 {
     Q_D(JUdpChannel);
     d->init();

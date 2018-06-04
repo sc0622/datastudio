@@ -10,7 +10,7 @@ namespace Icd {
 
 ChannelWidget::ChannelWidget(QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new ChannelWidgetPrivate(this))
+    , J_DPTR(new ChannelWidgetPrivate(this))
 {
     Q_D(ChannelWidget);
     d->init();

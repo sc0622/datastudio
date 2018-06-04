@@ -12,7 +12,7 @@ class JFilterChannelPrivate
 {
 public:
     JFilterChannelPrivate(JFilterChannel *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , currentChannel(nullptr)
         , protocol(nullptr)
         , worker(nullptr)
@@ -115,13 +115,13 @@ void JFilterChannelPrivate::init()
 int JFilterChannelPrivate::channelCount(QQmlListProperty<JChannel> *property)
 {
     JFilterChannel *q = qobject_cast<JFilterChannel *>(property->object);
-    return q->d_ptr->channels.count();
+    return q->J_DPTR->channels.count();
 }
 
 JChannel *JFilterChannelPrivate::channelAt(QQmlListProperty<JChannel> *property, int index)
 {
     JFilterChannel *q = qobject_cast<JFilterChannel *>(property->object);
-    return q->d_ptr->channels[index];
+    return q->J_DPTR->channels[index];
 }
 
 }
@@ -134,7 +134,7 @@ J_QML_IMPLEMENT_SINGLE_INSTANCE(JFilterChannel, QQmlEngine::CppOwnership, IcdCor
 
 JFilterChannel::JFilterChannel(QObject *parent)
     : QObject(parent)
-    , d_ptr(new JFilterChannelPrivate(this))
+    , J_DPTR(new JFilterChannelPrivate(this))
 {
     Q_D(JFilterChannel);
     d->init();
@@ -236,7 +236,7 @@ bool JFilterChannel::setCurrentChannel(JChannel *value)
             d->worker->setChannel(nullptr);
         } else {
             if (value->open()) {
-                d->worker->setChannel(value->channel()->channel());
+                d->worker->setChannel(value->channel()->nativeChannel());
                 success = true;
             } else {
                 success = false;

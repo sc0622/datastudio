@@ -12,7 +12,7 @@ namespace Icd {
 
 ChartViewPrivate::ChartViewPrivate(ChartView *q)
     : QObject(q)
-    , q_ptr(q)
+    , J_QPTR(q)
     , running(false)
     , timerInterval(50)     // unit: ms
     , xAxisSync(false)

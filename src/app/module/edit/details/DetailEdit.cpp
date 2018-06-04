@@ -148,8 +148,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
 
     d_layoutEdit->addWidget(d_objectEdit);
 
-    connect(d_objectEdit, &ObjectEdit::contentChanged,
-            this, &DetailEdit::contentChanged);
+    connect(d_objectEdit, &ObjectEdit::contentChanged, this, &DetailEdit::contentChanged);
 
     show();
 }

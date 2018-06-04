@@ -52,7 +52,7 @@ class JProtocolPrivate
 {
 public:
     JProtocolPrivate(JProtocol *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , table(nullptr)
     {
 
@@ -96,14 +96,14 @@ bool JProtocolPrivate::load(QJSValue callback)
 
     QSharedPointer<JWatcher<Icd::TablePtr> > newWatcher =
             QSharedPointer<JWatcher<Icd::TablePtr> >(new JWatcher<Icd::TablePtr>(callback, q),
-                                                     j_delete_qobject);
+                                                     jdelete_qobject);
     watchers.push_back(newWatcher);
 
     QFuture<Icd::TablePtr> future = QtConcurrent::run([=]() -> Icd::TablePtr {
         Icd::TablePtr table;
         Json::Value config;
         config["sourceType"] = "file";
-        config["filePath"] = filePath.toStdString();
+        config["filePath"] = filePath.toLocal8Bit().data();
         Icd::ParserPtr parser = Icd::Parser::create(config);
         if (!parser->parse(queryPath.section('/', 0, 0).toStdString(),
                            queryPath.section('/', 1, 1).toStdString(),
@@ -124,7 +124,7 @@ bool JProtocolPrivate::load(QJSValue callback)
         const Icd::TablePtr _table = newWatcher->future().result();
         if (_table) {
             table = QSharedPointer<icdmeta::JIcdTable>(
-                        new icdmeta::JIcdTable(_table, q), j_delete_qobject);
+                        new icdmeta::JIcdTable(_table, q), jdelete_qobject);
         }
         emit q->validChanged(table != nullptr);
         emit q->tableChanged(table.data());
@@ -170,7 +170,7 @@ using namespace icdmeta;
 
 JProtocol::JProtocol(const QString &identity, QObject *parent)
     : QObject(parent)
-    , d_ptr(new JProtocolPrivate(this))
+    , J_DPTR(new JProtocolPrivate(this))
 {
     Q_D(JProtocol);
     d->identity = identity;

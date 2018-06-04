@@ -7,7 +7,7 @@ class LanguageMgrPrivate
 {
 public:
     LanguageMgrPrivate(LanguageMgr *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , langType(LanguageMgr::LangInvalid)
         , trSystem(Q_NULLPTR)
         , trApp(Q_NULLPTR)
@@ -101,7 +101,7 @@ J_IMPLEMENT_SINGLE_INSTANCE(LanguageMgr, JMain)
 
 LanguageMgr::LanguageMgr(QObject *parent)
     : QObject(parent)
-    , d_ptr(new LanguageMgrPrivate(this))
+    , J_DPTR(new LanguageMgrPrivate(this))
 {
     Q_D(LanguageMgr);
     d->init();

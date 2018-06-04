@@ -47,6 +47,5 @@ CoreDyLibrary {
     }
 
     cpp.cxxStandardLibrary: 'c++98'
-    cpp.includePaths: base.concat([FileInfo.joinPaths('..'),
-                                   tinyxml.prefix + '/..'])
+        cpp.includePaths: base.concat([FileInfo.joinPaths('..'), tinyxml.prefix + '/..'])
 }

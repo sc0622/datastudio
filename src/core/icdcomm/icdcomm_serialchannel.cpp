@@ -18,7 +18,7 @@ public:
     }
 
 private:
-    JHandlePtr<JSerialPort> serialPort;
+    std::shared_ptr<JSerialPort> serialPort;
 };
 
 // class SerialChannel
@@ -27,7 +27,7 @@ SerialChannel::SerialChannel()
     : Channel(ChannelSerial)
     , d(new SerialChannelData())
 {
-    d->serialPort = JHandlePtr<JSerialPort>(new JSerialPort("COM1"));
+    d->serialPort = JSerialPortPtr(new JSerialPort("COM1"));
     d->serialPort->setBaudRate(115200);
     d->serialPort->setDataBits(JSerialPort::Data8);
     d->serialPort->setStopBits(JSerialPort::OneStop);
@@ -39,7 +39,7 @@ SerialChannel::SerialChannel(const std::string &portName, int baudRate, DataBits
     : Channel(ChannelSerial)
     , d(new SerialChannelData())
 {
-    d->serialPort = JHandlePtr<JSerialPort>(new JSerialPort(portName));
+    d->serialPort = JSerialPortPtr(new JSerialPort(portName));
     d->serialPort->setBaudRate(baudRate);
     d->serialPort->setDataBits((JSerialPort::DataBits)dataBits);
     d->serialPort->setStopBits((JSerialPort::StopBits)stopBits);

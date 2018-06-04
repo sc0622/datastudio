@@ -12,11 +12,11 @@ namespace Icd {
 template<typename T> class HandlePtr;
 
 class Parser;
-typedef JHandlePtr<Parser> ParserPtr;
+typedef std::shared_ptr<Parser> ParserPtr;
 
 //
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 // class CoreTreeWidget
 

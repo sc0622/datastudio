@@ -1,3 +1,4 @@
 module Icd.Core
 plugin icdplugins
+classname IcdPluginsPlugin
 typeinfo icdplugins.qmltypes

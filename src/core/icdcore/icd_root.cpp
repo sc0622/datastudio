@@ -173,7 +173,7 @@ Json::Value Root::save() const
     Json::Value json = Object::save();
 
     if (!d->vehicles.empty()) {
-        Json::Value vehiclesJson;
+        Json::Value vehiclesJson(Json::arrayValue);
         for (VehiclePtrArray::const_iterator citer = d->vehicles.cbegin();
              citer != d->vehicles.cend(); ++citer) {
             const VehiclePtr &vehicle = *citer;

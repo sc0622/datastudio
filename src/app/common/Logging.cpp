@@ -10,7 +10,7 @@ class LoggingPrivate
 {
 public:
     LoggingPrivate(Logging *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , categorySystem(log4cpp::Category::getInstance("datastudio.system"))
     {
 
@@ -53,7 +53,7 @@ J_IMPLEMENT_SINGLE_INSTANCE(Logging, JMain)
 
 Logging::Logging(QObject *parent)
     : QObject(parent)
-    , d_ptr(new LoggingPrivate(this))
+    , J_DPTR(new LoggingPrivate(this))
 {
     Q_D(Logging);
     d->init();

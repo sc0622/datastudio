@@ -3,6 +3,13 @@
 #include "core/jicdtable.h"
 #include "channel/JChannelPool.h"
 #include "protocol/JProtocolPool.h"
+#include "common/JLangModel.h"
+#include "common/JLogModel.h"
+#include "common/JEncryptModel.h"
+#include "common/JLoginModel.h"
+#include "command/JCmdModel.h"
+#include "command/simulate/JCmdSysModelSim.h"
+#include "common/ftp/JFtpModel.h"
 #include <QQuickStyle>
 #include <QFontDatabase>
 #include <QQmlEngine>
@@ -25,10 +32,13 @@ JCallbackEvent::JCallbackEvent(QJSValue callback, const QJSValueList &arguments)
 {
     data->callback = callback;
     data->arguments = arguments;
+
+    Q_INIT_RESOURCE(resource);
 }
 
 JCallbackEvent::~JCallbackEvent()
 {
+    Q_CLEANUP_RESOURCE(resource);
     delete data;
 }
 
@@ -59,7 +69,8 @@ class IcdCorePrivate
 {
 public:
     IcdCorePrivate(IcdCore *q)
-        : q_ptr(q)
+        : J_QPTR(q)
+        , fontSize(10)
         , translator(nullptr)
     {
         const QString dir = QDir(QCoreApplication::applicationDirPath().append("/../config"))
@@ -77,6 +88,7 @@ private:
     bool simulate;
     QList<SingletonReleaseCallback> callbacks;
     QString configDir;
+    int fontSize;
     QTimer *timerDelay;
     QTranslator *translator;
 };
@@ -116,9 +128,15 @@ void IcdCore::registerQmlType()
 {
     IcdMetaRegisterSingletonType3(IcdCore);
 
+    icdmeta::JLangModel::registerQmlType();
+    icdmeta::JLogModel::registerQmlType();
+    icdmeta::JEncryptModel::registerQmlType();
+    icdmeta::JLoginModel::registerQmlType();
+    icdmeta::JFtpModel::registerQmlType();
     icdmeta::JIcdTable::registerQmlType();
     icdmeta::JChannelPool::registerQmlType();
     icdmeta::JProtocolPool::registerQmlType();
+    icdmeta::JCmdModel::registerQmlType();
 }
 
 QString IcdCore::stringSection(const QString &source, QChar sep,
@@ -267,7 +285,7 @@ void IcdCore::registerSingletonRelease(SingletonReleaseCallback callback)
     return d->callbacks.append(callback);
 }
 
-void IcdCore::initQuickEnv()
+void IcdCore::initQuickEnv(const QString &configPath)
 {
     // quick controls 1 style
     if (qgetenv("QT_QUICK_CONTROLS_1_STYLE").isEmpty()) {
@@ -276,8 +294,11 @@ void IcdCore::initQuickEnv()
 
     // quick controls configurations
     if (qgetenv("QT_QUICK_CONTROLS_CONF").isEmpty()) {
-        qputenv("QT_QUICK_CONTROLS_CONF", QCoreApplication::applicationDirPath()
-                .append("/uis/config/qtquickcontrols2.conf").toLocal8Bit());
+        const QString _configPath = QFileInfo(((configPath.isEmpty()
+                                                ? QCoreApplication::applicationDirPath()
+                                                  + "/../config" : configPath))).canonicalFilePath()
+                + "/qtquickcontrols2.conf";
+        qputenv("QT_QUICK_CONTROLS_CONF", _configPath.toLocal8Bit());
     }
 
     // application settings
@@ -294,10 +315,13 @@ void IcdCore::initQuickEnv()
     QQuickStyle::setStyle(style);
 }
 
-bool IcdCore::initFontDatabase()
+bool IcdCore::initFontDatabase(const QString &fontPath)
 {
     // fonts
-    QDir fontDir(QCoreApplication::applicationDirPath().append("/uis/fonts"));
+    const QString _fontPath = QFileInfo((fontPath.isEmpty()
+                                         ? QCoreApplication::applicationDirPath()
+                                           + "/../config/fonts" : fontPath)).canonicalFilePath();
+    QDir fontDir(_fontPath);
     if (fontDir.exists()) {
         QStringList fontFiles = fontDir.entryList(QStringList() << "*.ttf" << "*.otf",
                                                   QDir::NoDotAndDotDot | QDir::Files
@@ -341,6 +365,12 @@ QString IcdCore::configDir() const
     return d->configDir;
 }
 
+int IcdCore::fontSize() const
+{
+    Q_D(const IcdCore);
+    return d->fontSize;
+}
+
 QString IcdCore::parsePath(const QString &path, bool canonical) const
 {
     QString _path = path;
@@ -373,8 +403,18 @@ void IcdCore::setConfigDir(const QString &dir)
     }
 }
 
+void IcdCore::setFontSize(int size)
+{
+    Q_D(IcdCore);
+    if (size != d->fontSize) {
+        d->fontSize = size;
+        emit fontSizeChanged(size);
+    }
+}
+
 void IcdCore::reset()
 {
+    icdmeta::JCmdModel::instance()->reset();
     icdmeta::JProtocolPool::instance()->reset();
     icdmeta::JChannelPool::instance()->reset();
 }
@@ -399,7 +439,7 @@ void IcdCore::customEvent(QEvent *event)
 
 IcdCore::IcdCore(QObject *parent)
     : QObject(parent)
-    , d_ptr(new IcdCorePrivate(this))
+    , J_DPTR(new IcdCorePrivate(this))
 {
     Q_INIT_RESOURCE(resource);
     Q_D(IcdCore);

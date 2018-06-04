@@ -23,7 +23,7 @@ public:
     std::string openMode(const std::string &prefix) const;
 
 private:
-    JHandlePtr<UdpChannelPrivate> d;
+    std::shared_ptr<UdpChannelPrivate> d;
 };
 
 bool UdpChannelData::parseHost(const std::string &host, const std::string &type,

@@ -33,7 +33,7 @@
 namespace Icd {
 
 class Parser;
-typedef JHandlePtr<Parser> ParserPtr;
+typedef std::shared_ptr<Parser> ParserPtr;
 
 struct JParserPtrHandle
 {

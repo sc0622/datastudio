@@ -8,7 +8,7 @@ namespace Json { class Value; }
 namespace Icd {
 
 class SqlObject;
-typedef JHandlePtr<SqlObject> SqlObjectPtr;
+typedef std::shared_ptr<SqlObject> SqlObjectPtr;
 
 class SqlObject
 {

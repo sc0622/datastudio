@@ -24,7 +24,7 @@ class JWindowFramePrivate
 {
 public:
     JWindowFramePrivate(JWindowFrame *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , shadowSize(8)
         , resizable(true)
         , window(0)
@@ -127,7 +127,7 @@ void JWindowFramePrivate::doNCPaint(const MSG *msg)
 
 JWindowFrame::JWindowFrame(QQuickWindow *window, QObject *parent)
     : QObject(parent)
-    , d_ptr(new JWindowFramePrivate(this))
+    , J_DPTR(new JWindowFramePrivate(this))
 {
     Q_D(JWindowFrame);
     d->init();

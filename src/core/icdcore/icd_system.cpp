@@ -179,7 +179,7 @@ Json::Value System::save() const
     Json::Value json = Object::save();
 
     if (!d->tables.empty()) {
-        Json::Value tablesJson;
+        Json::Value tablesJson(Json::arrayValue);
         for (TablePtrArray::const_iterator citer = d->tables.cbegin();
              citer != d->tables.cend(); ++citer) {
             const TablePtr &table = *citer;

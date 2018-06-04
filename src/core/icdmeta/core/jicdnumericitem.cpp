@@ -10,7 +10,7 @@ class JIcdNumericItemPrivate
 {
 public:
     JIcdNumericItemPrivate(JIcdNumericItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -34,7 +34,7 @@ void JIcdNumericItemPrivate::init()
 
 JIcdNumericItem::JIcdNumericItem(const Icd::NumericItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdNumericItemPrivate(this))
+    , J_DPTR(new JIcdNumericItemPrivate(this))
 {
     Q_D(JIcdNumericItem);
     d->data = data;
@@ -158,7 +158,7 @@ qreal JIcdNumericItem::valueMaximum() const
     return d->data->valueRange().second;
 }
 
-double JIcdNumericItem::orignalData() const
+double JIcdNumericItem::originalData() const
 {
     Q_D(const JIcdNumericItem);
     return d->data->originalData();

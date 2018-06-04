@@ -5,7 +5,7 @@
 
 ComMgrWidgetPrivate::ComMgrWidgetPrivate(ComMgrWidget *q)
     : QObject(q)
-    , q_ptr(q)
+    , J_QPTR(q)
 {
 
 }

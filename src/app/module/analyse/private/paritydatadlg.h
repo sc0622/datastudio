@@ -10,10 +10,10 @@ class QCheckBox;
 
 namespace Icd {
 
-template<typename T> class JHandlePtr;
+template<typename T> class std::shared_ptr;
 
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 } // end of namespace Icd
 

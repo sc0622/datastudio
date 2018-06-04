@@ -12,7 +12,7 @@ class JFileChannelPrivate
 {
 public:
     JFileChannelPrivate(JFileChannel *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -33,7 +33,7 @@ void JFileChannelPrivate::init()
 Icd::FileChannelPtr JFileChannelPrivate::channel() const
 {
     Q_Q(const JFileChannel);
-    return JHandlePtrCast<Icd::FileChannel, Icd::Channel>(q->channel());
+    return JHandlePtrCast<Icd::FileChannel, Icd::Channel>(q->nativeChannel());
 }
 
 }
@@ -42,17 +42,17 @@ using namespace icdmeta;
 
 // class JFileChannel
 
-JFileChannel::JFileChannel(const QString &identity, QObject *parent)
-    : JSuperChannel(identity, parent)
-    , d_ptr(new JFileChannelPrivate(this))
+JFileChannel::JFileChannel(QObject *parent)
+    : JSuperChannel(parent)
+    , J_DPTR(new JFileChannelPrivate(this))
 {
     Q_D(JFileChannel);
     d->init();
 }
 
-JFileChannel::JFileChannel(const QString &identity, const QString &filePath, QObject *parent)
-    : JSuperChannel(identity, parent)
-    , d_ptr(new JFileChannelPrivate(this))
+JFileChannel::JFileChannel(const QString &filePath, QObject *parent)
+    : JSuperChannel(parent)
+    , J_DPTR(new JFileChannelPrivate(this))
 {
     Q_D(JFileChannel);
     d->init();

@@ -3,6 +3,6 @@ import qbs
 Project {
 
     references: [
-        'tinyxml/tinyxml.qbs'
+        //'tinyxml/tinyxml.qbs'
     ]
 }

@@ -8,6 +8,7 @@
 #include "icdcore/icd_table.h"
 #include "../icdworker.h"
 #include <QFile>
+#include <QQueue>
 
 namespace Icd {
 
@@ -37,9 +38,10 @@ public:
 
     // Icd::Runnable interface
 protected:
-    void run();
+    void run() override;
 
 private:
+    Q_DISABLE_COPY(WorkerRecvPrivate)
     J_DECLARE_PUBLIC(WorkerRecv)
     QMutex mutex;
     JRTTimerPtr timer;

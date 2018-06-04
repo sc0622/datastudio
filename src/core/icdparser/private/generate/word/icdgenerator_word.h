@@ -7,7 +7,7 @@ namespace Icd {
 
 class WordGenerator;
 class WordGeneratorData;
-typedef JHandlePtr<WordGenerator> WordGeneratorPtr;
+typedef std::shared_ptr<WordGenerator> WordGeneratorPtr;
 
 class WordGenerator : public Generator
 {
@@ -68,7 +68,7 @@ public:
     void shutdown();
 
 private:
-    JHandlePtr<WordGeneratorData> d;
+    std::shared_ptr<WordGeneratorData> d;
 };
 
 } // end of namespace Icd

@@ -5,9 +5,9 @@
 #include "../icdmeta_global.h"
 
 namespace Icd {
-template<typename T> class JHandlePtr;
+template<typename T> class std::shared_ptr;
 class Object;
-typedef JHandlePtr<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 }
 
 namespace icdmeta {

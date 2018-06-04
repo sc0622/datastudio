@@ -13,6 +13,7 @@ View::View(QWidget *parent)
 
     d_splitter = new JSplitter(this);
     d_splitter->setObjectName("main.preference.view.splitter");
+    d_splitter->setOpaqueResize(true);
     d_splitter->setHandleWidth(5);
     d_splitter->setScales(QList<double>() << 1 << 5);
     vertLayoutMain->addWidget(d_splitter);

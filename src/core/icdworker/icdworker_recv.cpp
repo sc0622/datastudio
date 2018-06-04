@@ -7,7 +7,7 @@ namespace Icd {
 
 WorkerRecv::WorkerRecv(QObject *parent)
     : QObject(parent)
-    , d_ptr(new WorkerRecvPrivate(this))
+    , J_DPTR(new WorkerRecvPrivate(this))
 {
     Q_D(WorkerRecv);
     d->init();

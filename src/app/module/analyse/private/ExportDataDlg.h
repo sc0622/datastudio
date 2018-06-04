@@ -7,13 +7,13 @@
 namespace Icd {
 
 class Object;
-typedef JHandlePtr<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 
 class Item;
-typedef JHandlePtr<Item> ItemPtr;
+typedef std::shared_ptr<Item> ItemPtr;
 }
 
 class QTabWidget;

@@ -5,7 +5,7 @@
 
 namespace Icd {
 class NumericItem;
-typedef JHandlePtr<NumericItem> NumericItemPtr;
+typedef std::shared_ptr<NumericItem> NumericItemPtr;
 }
 
 namespace icdmeta {
@@ -48,7 +48,7 @@ public:
     Q_INVOKABLE qreal valueMinimum() const;
     Q_INVOKABLE qreal valueMaximum() const;
 
-    Q_INVOKABLE double orignalData() const;
+    Q_INVOKABLE double originalData() const;
     Q_INVOKABLE bool outOfLimit() const;
 
     QString text() const;

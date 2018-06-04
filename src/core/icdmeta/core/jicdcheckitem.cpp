@@ -9,7 +9,7 @@ class JIcdCheckItemPrivate
 {
 public:
     JIcdCheckItemPrivate(JIcdCheckItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -31,7 +31,7 @@ void JIcdCheckItemPrivate::init()
 
 JIcdCheckItem::JIcdCheckItem(const Icd::CheckItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdCheckItemPrivate(this))
+    , J_DPTR(new JIcdCheckItemPrivate(this))
 {
     Q_D(JIcdCheckItem);
     d->data = data;

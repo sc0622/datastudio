@@ -3,27 +3,26 @@ import qbs.File
 import qbs.FileInfo
 
 CppApp {
-
     type: base.concat([ 'translation' ])
+    consoleApplication: false
 
     Depends { name: "Qt.gui" }
     Depends { name: 'Qt.widgets' }
+    Depends {
+        name: "Qt"
+        submodules: Qt.gui.defaultQpaPlugin
+        condition: linkDefaultQpaPlugin && Qt.gui.defaultQpaPlugin
+    }
 
     property bool linkDefaultQpaPlugin: Qt.gui.isStaticLibrary
 
     // translation
-    property path langPath: FileInfo.joinPaths(sourceDirectory, 'resource', 'lang')
+    property path langPath: sourceDirectory + '/resource/lang'
     property pathList noRecursivePaths: []
     property pathList recursivePaths: []
     property stringList translationFileTags: [ 'hpp', 'cpp' ]
     property stringList translations: []
     property bool defaultTranslation: false
-
-    targetName: name
-    desc.condition: true
-    desc.fileDesc: 'Smartsoft® Application'
-    desc.version: version
-    desc.productName: targetName
 
     Rule {
         condition: defaultTranslation && translations.length > 0
@@ -37,23 +36,23 @@ CppApp {
                 args.push('-no-recursive');
                 product.noRecursivePaths.forEach(function(item){
                     args.push(item);
-                });
+                })
             }
-            // recursive
             args.push('-recursive');
+            // recursive
             if (product.recursivePaths.length > 0) {
                 product.recursivePaths.forEach(function(item){
                     args.push(item);
-                });
+                })
             } else {
                 args.push(product.sourceDirectory);
             }
-            // ts - files
+            // ts
             if (product.translations.length > 0) {
                 args.push('-ts');
                 product.translations.forEach(function(item){
-                    args.push(FileInfo.joinPaths(product.langPath, item));
-                });
+                    args.push(product.langPath + '/' + item);
+                })
             }
             // create command
             var cmd = new Command(product.Qt.core.binPath + '/lupdate', args);

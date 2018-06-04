@@ -20,10 +20,12 @@ View::View(QWidget *parent)
 
     d_splitterMain = new JSplitter(QList<double>() << 1 << 3, this);
     d_splitterMain->setObjectName("Monitor::splitterMain");
+    d_splitterMain->setOpaqueResize(true);
     vertLayoutMain->addWidget(d_splitterMain);
 
     d_splitterLeft = new JSplitter(QList<double>() << 1.5 << 1, Qt::Vertical, this);
     d_splitterLeft->setObjectName("Monitor::splitterLeft");
+    d_splitterLeft->setOpaqueResize(true);
     d_splitterMain->addWidget(d_splitterLeft);
 
     d_treeView = new TreeView(this);

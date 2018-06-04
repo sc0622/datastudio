@@ -12,7 +12,7 @@ namespace Icd {
 
 ChartView::ChartView(QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new ChartViewPrivate(this))
+    , J_DPTR(new ChartViewPrivate(this))
 {
     Q_D(ChartView);
     d->init(true);
@@ -20,7 +20,7 @@ ChartView::ChartView(QWidget *parent)
 
 ChartView::ChartView(bool styled, QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new ChartViewPrivate(this))
+    , J_DPTR(new ChartViewPrivate(this))
 {
     Q_D(ChartView);
     d->init(styled);

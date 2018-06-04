@@ -10,7 +10,7 @@ class JIcdFrameCodeItemPrivate
 {
 public:
     JIcdFrameCodeItemPrivate(JIcdFrameCodeItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
         , frame(Q_NULLPTR)
     {
@@ -34,7 +34,7 @@ void JIcdFrameCodeItemPrivate::init()
 
 JIcdFrameCodeItem::JIcdFrameCodeItem(const Icd::FrameCodeItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdFrameCodeItemPrivate(this))
+    , J_DPTR(new JIcdFrameCodeItemPrivate(this))
 {
     Q_D(JIcdFrameCodeItem);
     d->data = data;

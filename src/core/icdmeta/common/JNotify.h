@@ -53,7 +53,7 @@ typedef std::function<void(JNEvent &event)> JNotifyCallback;
 // class JNotify
 
 class JNotify;
-typedef JHandlePtr<JNotify> JNotifyPtr;
+typedef std::shared_ptr<JNotify> JNotifyPtr;
 class JNotifyPrivate;
 
 class ICDMETA_EXPORT JNotify : public QObject

@@ -3,6 +3,9 @@
 
 #ifdef ICDCORE_LIB
 #include "icdcore/icdcore_global.h"
+#ifdef ICDCORE_JSON_LIB
+#include "icdcore/3rdpart/jsoncpp/json_tool.h"
+#endif
 #endif
 
 #ifdef ICDMETA_LIB
@@ -32,15 +35,27 @@
 
 // - private pointer
 #ifndef J_DECLARE_PRIVATE
-#define J_DECLARE_PRIVATE(name) \
-    Q_DECLARE_PRIVATE(name) \
-    name ## Private *d_ptr;
+#define J_DECLARE_PRIVATE(Class) \
+    Class##Private *J_DPTR_; \
+    inline Class##Private* d_func() { return J_DPTR_; } \
+    inline const Class##Private* d_func() const { return J_DPTR_; } \
+    friend class Class##Private;
 #endif
 
 #ifndef J_DECLARE_PUBLIC
-#define J_DECLARE_PUBLIC(name) \
-    Q_DECLARE_PUBLIC(name) \
-    name *q_ptr;
+#define J_DECLARE_PUBLIC(Class) \
+    Class *J_QPTR_; \
+    inline Class* q_func() { return J_QPTR_; } \
+    inline const Class* q_func() const { return J_QPTR_; } \
+    friend class Class;
+#endif
+
+#ifndef J_DPTR
+#define J_DPTR J_DPTR_
+#endif
+
+#ifndef J_QPTR
+#define J_QPTR J_QPTR_
 #endif
 
 #ifndef J_DECLARE_SINGLE_INSTANCE
@@ -58,10 +73,10 @@
     static void __ ## Class ## _releaseInstance() { \
     Class::releaseInstance(); \
     } \
-    Class *Class::_instance = 0; \
+    Class *Class::_instance = nullptr; \
     \
     Class *Class::instance() { \
-    if (Class::_instance == 0) { \
+    if (Class::_instance == nullptr) { \
     Class::_instance = new Class; \
     } \
     if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
@@ -71,9 +86,9 @@
     } \
     \
     void Class::releaseInstance() { \
-    if (Class::_instance != 0) { \
+    if (Class::_instance != nullptr) { \
     delete Class::_instance; \
-    Class::_instance = 0; \
+    Class::_instance = nullptr; \
     } \
     }
 #endif
@@ -122,51 +137,26 @@ class QJSValueList;
 
 // global
 
-#define ICDMETA_QML_VER_MAJOR 1
-#define ICDMETA_QML_VER_MINOR 0
+#define ICDMETA_VER_MAJOR 1
+#define ICDMETA_VER_MINOR 0
 #define ICDMETA_DOMAIN "Icd.Core"
-
-#ifndef jRegisterType
-#define jRegisterType(T) \
-    registerType<T>(QT_STRINGIFY(T))
-#endif
-
-#ifndef jRegisterUncreatableType
-#define jRegisterUncreatableType(T) \
-    registerUncreatableType<T>(QT_STRINGIFY(T), "created by "ICDMETA_DOMAIN)
-#endif
-
-#ifndef jRegisterSingletonType
-#define jRegisterSingletonType(T, typeName, callback) \
-    registerSingletonType<T>(typeName, callback)
-#endif
-
-#ifndef jRegisterSingletonType2
-#define jRegisterSingletonType2(T, typeName) \
-    jRegisterSingletonType(T, typeName, __ ## T ## _Singleton_Callback)
-#endif
-
-#ifndef jRegisterSingletonType3
-#define jRegisterSingletonType3(T) \
-    jRegisterSingletonType2(T, QT_STRINGIFY(T))
-#endif
 
 /// for icdmeta
 
 #ifndef IcdMetaRegisterUncreatableType
 #define IcdMetaRegisterUncreatableType(T, reason) \
-    qmlRegisterUncreatableType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR, \
-        ICDMETA_QML_VER_MINOR, QT_STRINGIFY(T), reason)
+    qmlRegisterUncreatableType<T>(ICDMETA_DOMAIN, ICDMETA_VER_MAJOR, \
+        ICDMETA_VER_MINOR, QT_STRINGIFY(T), reason)
 #endif
 
 #ifndef IcdMetaRegisterUncreatableType2
 #define IcdMetaRegisterUncreatableType2(T) \
-    IcdMetaRegisterUncreatableType(T, "created by "ICDMETA_DOMAIN)
+    IcdMetaRegisterUncreatableType(T, "created by " ICDMETA_DOMAIN)
 #endif
 
 #ifndef IcdMetaRegisterSingletonType
 #define IcdMetaRegisterSingletonType(T, typeName, callback) \
-    qmlRegisterSingletonType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR, ICDMETA_QML_VER_MINOR, \
+    qmlRegisterSingletonType<T>(ICDMETA_DOMAIN, ICDMETA_VER_MAJOR, ICDMETA_VER_MINOR, \
         typeName, callback)
 #endif
 
@@ -181,31 +171,7 @@ class QJSValueList;
 #endif
 
 namespace icdmeta {
-#if 0
-//
-template<typename T>
-inline int registerType(const char *typeName)
-{
-    return qmlRegisterType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR,
-                              ICDMETA_QML_VER_MINOR, typeName);
-}
-//
-template<typename T>
-inline int registerUncreatableType(const char *typeName, const QString& reason = QString())
-{
-    return qmlRegisterUncreatableType<T>(ICDMETA_DOMAIN, ICDMETA_QML_VER_MAJOR,
-                                         ICDMETA_QML_VER_MINOR, typeName,
-                                         reason);
-}
-//
-template <typename T>
-inline int registerSingletonType(const char *typeName, QObject *(*callback)(QQmlEngine *, QJSEngine *))
-{
-    return qmlRegisterSingletonType<T>(ICDMETA_DOMAIN,
-                                       ICDMETA_QML_VER_MAJOR, ICDMETA_QML_VER_MINOR,
-                                       typeName, callback);
-}
-#endif
+
 /**
  * @brief The CustomEvent enum
  */
@@ -244,6 +210,7 @@ class ICDMETA_EXPORT IcdCore : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString configDir READ configDir WRITE setConfigDir NOTIFY configDirChanged)
+    Q_PROPERTY(int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
 public:
     /**
      * @brief registerQmlType
@@ -273,10 +240,10 @@ public:
      * @brief The ItemType enum
      */
     enum ItemType {
-        ItemInvalid = -1,   /**< §¹ */
+        ItemInvalid = -1,   /**<  */
         ItemHead,           /**<  */
         ItemCounter,        /**<  */
-        ItemCheck,          /**< §µ */
+        ItemCheck,          /**<  */
         ItemFrameCode,      /**<  */
         ItemNumeric,        /**<  */
         ItemBitMap,         /**< BITMAP */
@@ -291,13 +258,13 @@ public:
      * @brief The CheckType enum
      */
     enum CheckType {
-        CheckNone,      /**< §µ */
-        CheckSum8,      /**< 8¦Ë§µ */
-        CheckSum16,     /**< 16¦Ë§µ */
-        CheckCrc8,      /**< Crc8§µ */
-        CheckCrc16,     /**< Crc16§µ */
-        CheckXor8,      /**< Xor8§µ */
-        CheckXor16,     /**< Xor16§µ */
+        CheckNone,      /**<  */
+        CheckSum8,      /**< 8 */
+        CheckSum16,     /**< 16 */
+        CheckCrc8,      /**< Crc8 */
+        CheckCrc16,     /**< Crc16 */
+        CheckXor8,      /**< Xor8 */
+        CheckXor16,     /**< Xor16 */
         CheckTotal      /**<  */
     };
     Q_ENUM(CheckType)
@@ -387,21 +354,24 @@ public:
 
     void registerSingletonRelease(SingletonReleaseCallback callback);
 
-    static void initQuickEnv();
-    static bool initFontDatabase();
+    static void initQuickEnv(const QString &configPath = QString());
+    static bool initFontDatabase(const QString &fontPath = QString());
 
     bool initTranslators(const QString &language);
 
     QString configDir() const;
+    int fontSize() const;
 
     Q_INVOKABLE QString parsePath(const QString &path, bool canonical = false) const;
     Q_INVOKABLE QString restorePath(const QString &path) const;
 
 signals:
     void configDirChanged(const QString &dir);
+    void fontSizeChanged(int size);
 
 public slots:
     void setConfigDir(const QString &dir);
+    void setFontSize(int size);
     void reset();
 
 protected:

@@ -5,7 +5,7 @@
 
 namespace Icd {
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 }
 
 namespace icdmeta {

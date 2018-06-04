@@ -6,9 +6,7 @@
 
 namespace Icd {
 
-/**
- * @brief The ObjectType enum
- */
+//
 enum ObjectType {
     ObjectInvalid = -1,
     ObjectRoot,
@@ -19,9 +17,7 @@ enum ObjectType {
     ObjectLimit
 };
 
-/**
- * @brief The DomainType enum
- */
+//
 enum DomainType {
     DomainValid = -1,
     DomainId,
@@ -31,168 +27,48 @@ enum DomainType {
 
 class Object;
 class ObjectData;
-typedef JHandlePtr<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 
-/**
- * @brief The Object class
- */
 class ICDCORE_EXPORT Object : public Json::Serializable
 {
 public:
-    /**
-     * @brief Object
-     * @param type
-     * @param parent
-     */
-    explicit Object(ObjectType type = ObjectInvalid, Object *parent = 0);
-
-    /**
-     * @brief Object
-     * @param id
-     * @param type
-     * @param parent
-     */
+    explicit Object(ObjectType type = ObjectInvalid, Object *parent = nullptr);
     explicit Object(const std::string &id, ObjectType type = ObjectInvalid,
-                    Object *parent = 0);
-
+                    Object *parent = nullptr);
     virtual ~Object();
 
-    /**
-     * @brief objectType
-     * @return
-     */
     ObjectType objectType() const;
-
-    /**
-     * @brief 获取ID号
-     * @return ID
-     */
     std::string id() const;
-
-    /**
-     * @brief domain
-     * @return
-     */
     std::string domain() const;
-
-    /**
-     * @brief setDomain
-     * @param domain
-     */
     void setDomain(const std::string &domain);
-
-    /**
-     * @brief 设置ID号
-     * @param [in] id :数据项编号
-     */
     void setId(const std::string &id);
-
-    /**
-     * @brief 获取数据项名称
-     * @return 数据项名称
-     */
     std::string name() const;
-
-    /**
-     * @brief 设置数据项名称
-     * @param name : 数据项名称
-     */
     void setName(const std::string &name);
-
-    /**
-     * @brief 获取数据项标识
-     * @return 数据项标识
-     */
     std::string mark() const;
-
-    /**
-     * @brief 设置项目标识
-     * @param [in] mark : 标识
-     */
     void setMark(const std::string &mark);
-
-    /**
-     * @brief 获取数据项描述信息
-     * @return
-     */
     std::string desc() const;
-
-    /**
-     * @brief 设置数据项描述信息
-     * @param [in] desc : 描述信息
-     */
     void setDesc(const std::string &desc);
 
-    /**
-     * @brief isPrivateMark
-     * @return
-     */
     virtual bool isPrivateMark() const;
 
-    /**
-     * @brief parent
-     * @return
-     */
-    Object *parent() const;
-
-    /**
-     * @brief setParent
-     * @param parent
-     */
-    virtual void setParent(Object *parent);
-
-    /**
-     * @brief childCount
-     * @return
-     */
-    virtual int childCount() const;
-
-    /**
-     * @brief objectTypeString
-     * @return
-     */
     std::string objectTypeString() const;
+    std::string domainOfType(int domainType) const;
 
-    /**
-     * @brief resetData
-     */
+    Object *parent() const;
+    virtual void setParent(Object *parent);
+    virtual int childCount() const;
     virtual void resetData();
-
-    /**
-     * @brief clearData
-     */
     virtual void clearData();
 
-    /**
-     * @brief clone
-     * @return
-     */
     virtual Object *clone() const;
-
-    /**
-     * @brief operator =
-     * @param other
-     * @return
-     */
     Object &operator =(const Object &other);
-
-    /**
-     * @brief domainOfType
-     * @param domainType
-     * @return
-     */
-    std::string domainOfType(int domainType) const;
 
     // Serializable interface
 public:
-    virtual Json::Value save() const;
-    virtual bool restore(const Json::Value &json, int /*deep*/ = -1);
+    virtual Json::Value save() const override;
+    virtual bool restore(const Json::Value &json, int /*deep*/ = -1) override;
 
 protected:
-    /**
-     * @brief Object
-     * @param other
-     */
     Object(const Object &other);
 
 private:

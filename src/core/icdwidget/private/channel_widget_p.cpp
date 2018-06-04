@@ -6,7 +6,7 @@
 namespace Icd {
 
 ChannelWidgetPrivate::ChannelWidgetPrivate(ChannelWidget *q)
-    : q_ptr(q)
+    : J_QPTR(q)
 {
 
 }

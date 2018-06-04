@@ -5,7 +5,7 @@
 
 namespace Icd {
 class CounterItem;
-typedef JHandlePtr<CounterItem> CounterItemPtr;
+typedef std::shared_ptr<CounterItem> CounterItemPtr;
 }
 
 namespace icdmeta {

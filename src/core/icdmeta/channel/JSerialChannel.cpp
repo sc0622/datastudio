@@ -13,7 +13,7 @@ class JSerialChannelPrivate
 {
 public:
     JSerialChannelPrivate(JSerialChannel *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -34,7 +34,7 @@ void JSerialChannelPrivate::init()
 Icd::SerialChannelPtr JSerialChannelPrivate::channel() const
 {
     Q_Q(const JSerialChannel);
-    return JHandlePtrCast<Icd::SerialChannel, Icd::Channel>(q->channel());
+    return JHandlePtrCast<Icd::SerialChannel, Icd::Channel>(q->nativeChannel());
 }
 
 }
@@ -43,9 +43,9 @@ using namespace icdmeta;
 
 // class JSerialChannel
 
-JSerialChannel::JSerialChannel(const QString &identity, QObject *parent)
-    : JSuperChannel(identity, parent)
-    , d_ptr(new JSerialChannelPrivate(this))
+JSerialChannel::JSerialChannel(QObject *parent)
+    : JSuperChannel(parent)
+    , J_DPTR(new JSerialChannelPrivate(this))
 {
     Q_D(JSerialChannel);
     d->init();

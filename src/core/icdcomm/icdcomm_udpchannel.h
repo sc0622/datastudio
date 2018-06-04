@@ -8,7 +8,7 @@ namespace Icd {
 
 class UdpChannel;
 class UdpChannelData;
-typedef JHandlePtr<UdpChannel> UdpChannelPtr;
+typedef std::shared_ptr<UdpChannel> UdpChannelPtr;
 
 /**
  * @brief The UdpChannel class
@@ -206,7 +206,7 @@ public:
     std::string lastError() const;
 
 private:
-    JHandlePtr<UdpChannelData> d;
+    std::shared_ptr<UdpChannelData> d;
 };
 
 } // end of namespace Icd

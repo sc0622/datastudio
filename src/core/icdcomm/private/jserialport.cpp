@@ -28,7 +28,7 @@ public:
         , isOpen(false)
         , errorCode(SIO_OK)
     #else
-        : serialPort(JHandlePtr<QSerialPort>(new QSerialPort()))
+        : serialPort(std::shared_ptr<QSerialPort>(new QSerialPort()))
     #endif
     {
 
@@ -49,7 +49,7 @@ private:
     bool isOpen;
     int errorCode;
 #else
-    JHandlePtr<QSerialPort> serialPort;
+    std::shared_ptr<QSerialPort> serialPort;
 #endif
 };
 

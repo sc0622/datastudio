@@ -10,7 +10,7 @@ namespace Icd {
 
 ChartFileViewPrivate::ChartFileViewPrivate(ChartFileView *q)
     : QObject(q)
-    , q_ptr(q)
+    , J_QPTR(q)
     , xAxisSync(false)
     , showYLabel(true)
     , showYAlign(false)

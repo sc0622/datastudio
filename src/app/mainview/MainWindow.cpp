@@ -44,7 +44,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
     case Qt::Key_Escape:
-        showMaximized();
         break;
     default:
         break;

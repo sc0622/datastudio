@@ -5,6 +5,13 @@
 #include <qglobal.h>
 #include <QString>
 #include <QtCore>
+#include <QDebug>
+#endif
+
+#ifdef _AFXDLL
+#include <afxwin.h>
+#elif (defined(WIN32) && defined(DEBUG))
+#include <Windows.h>
 #endif
 
 #ifdef QT_GUI_LIB
@@ -35,8 +42,26 @@
 #include <QtWinExtras>
 #endif
 
+#ifdef QT_CONCURRENT_LIB
+#include <QtConcurrent>
+#endif
+
+#ifdef QT_SERIALPORT_LIB
+#include <QtSerialPort>
+#endif
+
+#if (QT_VERSION < 0x050000)
+
+#ifdef QT_DECLARATIVE_LIB
+#include <QtDeclarative/QtDeclarative>
+#endif
+
+#else
+
 #ifdef QT_QUICK_LIB
 #include <QtQuick>
+#endif
+
 #endif
 
 #ifdef QT_SERIALPORT_LIB
@@ -77,6 +102,31 @@
 #include "jencrypt/jencrypt_inc.h"
 #endif
 
+#if defined(QT_FTP_LIB) && !defined(QT_FTP_BUILD)
+#include "qtftp/qftp.h"
+#include "qtftp/qurlinfo.h"
+#endif
+
+#if defined(QT_QTTELNET_LIB) && !defined(QT_QTTELNET_BUILD)
+#include "QtTelnet/qttelnet.h"
+#endif
+
+#if defined(JFRAME_FACADE_LIB) && !defined(JFRAME_FACADE_BUILD)
+#include "jframe_facade/jframe_facade.h"
+#endif
+
+#if defined(JFRAME_FACTORY_LIB) && !defined(JFRAME_FACTORY_BUILD)
+#include "jframe_factory/jframe_factory.h"
+#include "jframe_factory/jnotifier.h"
+#endif
+
+#if defined(JFRAME_KERNEL_LIB) && !defined(JFRAME_KERNEL_BUILD)
+#include "jframe_kernel/jframe_kernel.h"
+#include "jframe_kernel/jframe_core.h"
+#include "jframe_kernel/jframe_layout.h"
+#include "jframe_kernel/jframe_login.h"
+#endif
+
 // from datastudio - core
 
 #if defined(ICDCORE_LIB) && !defined(ICDCORE_BUILD)
@@ -111,13 +161,23 @@
 #include "icdwidget/icdwidget_inc.h"
 #endif
 
+#if defined(ICDMETA_LIB) && !defined(ICDMETA_BUILD)
+#include "icdmeta/icdmeta_inc.h"
+#endif
+
+// from nodestudio - core
+
+#if defined(NODECORE_LIB) && !defined(NODECORE_BUILD)
+#include "nodecore/nodecore_inc.h"
+#endif
+
 #ifdef PROJECT_APP
 #include "main_global.h"
 #endif
 
 #ifdef QT_CORE_LIB
-
-static void j_delete_qobject(QObject *object)
+//
+static void jdelete_qobject(QObject *object)
 {
     delete object;
 }

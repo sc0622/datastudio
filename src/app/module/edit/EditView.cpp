@@ -19,6 +19,7 @@ View::View(QWidget *parent)
 
     d_splitterMain = new JSplitter(QList<double>() << 1 << 3, this);
     d_splitterMain->setObjectName("Edit::splitterMain");
+    d_splitterMain->setOpaqueResize(true);
     vertLayoutMain->addWidget(d_splitterMain);
 
     d_treeView = new TreeView(this);

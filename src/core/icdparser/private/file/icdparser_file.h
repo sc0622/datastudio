@@ -8,7 +8,7 @@ namespace Icd {
 
 class FileParser;
 class FileParserData;
-typedef JHandlePtr<FileParser> FileParserPtr;
+typedef std::shared_ptr<FileParser> FileParserPtr;
 
 class FileParser : public Parser
 {

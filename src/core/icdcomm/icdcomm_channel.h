@@ -20,7 +20,7 @@ enum ChannelType {
 
 class Channel;
 class ChannelData;
-typedef JHandlePtr<Channel> ChannelPtr;
+typedef std::shared_ptr<Channel> ChannelPtr;
 typedef std::vector<ChannelPtr> ChannelPtrArray;
 
 /**
@@ -200,7 +200,7 @@ public:
     static std::map<std::string, std::string> parseConfig(const std::string &config);
 
 private:
-    JHandlePtr<ChannelData> d;
+    std::shared_ptr<ChannelData> d;
 };
 
 } // end of namespace Icd

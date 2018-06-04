@@ -53,16 +53,25 @@ bool XmlParser::saveObject(TiXmlElement *emObject,
     }
 
     // id
-    emObject->SetAttribute("id", object->id());
+    const std::string id = object->id();
+    if (!id.empty()) {
+        emObject->SetAttribute("id", id);
+    }
 
     // name
     emObject->SetAttribute("name", object->name());
 
     // mark
-    emObject->SetAttribute("mark", object->mark());
+    const std::string mark = object->mark();
+    if (!mark.empty()) {
+        emObject->SetAttribute("mark", mark);
+    }
 
     // desc
-    emObject->SetAttribute("desc", object->desc());
+    const std::string desc = object->desc();
+    if (!desc.empty()) {
+        emObject->SetAttribute("desc", desc);
+    }
 
     return true;
 }

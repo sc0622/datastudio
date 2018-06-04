@@ -16,7 +16,7 @@ class JDataChannelMgrPrivate
 {
 public:
     JDataChannelMgrPrivate(JDataChannelMgr *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -40,13 +40,13 @@ void JDataChannelMgrPrivate::init()
 int JDataChannelMgrPrivate::channelCount(QQmlListProperty<JDataChannel> *property)
 {
     JDataChannelMgr *q = qobject_cast<JDataChannelMgr *>(property->object);
-    return q->d_ptr->channels.count();
+    return q->J_DPTR->channels.count();
 }
 
 JDataChannel *JDataChannelMgrPrivate::channelAt(QQmlListProperty<JDataChannel> *property, int index)
 {
     JDataChannelMgr *q = qobject_cast<JDataChannelMgr *>(property->object);
-    return q->d_ptr->channels[index].data();
+    return q->J_DPTR->channels[index].data();
 }
 
 bool JDataChannelMgrPrivate::searchItem(icdmeta::JIcdTable *table, QObject *target,
@@ -73,7 +73,7 @@ bool JDataChannelMgrPrivate::searchItem(icdmeta::JIcdTable *table, QObject *targ
     }
 
     QSharedPointer<JSearchWatcher> newWatcher = QSharedPointer<JSearchWatcher>
-            (new JSearchWatcher(callback, target, q), j_delete_qobject);
+            (new JSearchWatcher(callback, target, q), jdelete_qobject);
     watchers.push_back(newWatcher);
 
     QFuture<QString> future = QtConcurrent::filtered(
@@ -134,7 +134,7 @@ J_QML_IMPLEMENT_SINGLE_INSTANCE(JDataChannelMgr, QQmlEngine::CppOwnership, IcdCo
 
 JDataChannelMgr::JDataChannelMgr(QObject *parent)
     : QObject(parent)
-    , d_ptr(new JDataChannelMgrPrivate(this))
+    , J_DPTR(new JDataChannelMgrPrivate(this))
 {
     Q_D(JDataChannelMgr);
     d->init();
@@ -171,7 +171,7 @@ JDataChannel *JDataChannelMgr::binding(JChannel *channel, JProtocol *protocolSen
     Q_D(JDataChannelMgr);
     QSharedPointer<JDataChannel> newChannel =
             QSharedPointer<JDataChannel>(new JDataChannel(channel->identity(), this),
-                                         j_delete_qobject);
+                                         jdelete_qobject);
     bool result = newChannel->binding(channel, protocolSend, protocolRecv);
     if (!result) {
         return nullptr;

@@ -7,7 +7,7 @@ namespace Icd {
 
 class PdfGenerator;
 class PdfGeneratorData;
-typedef JHandlePtr<PdfGenerator> PdfGeneratorPtr;
+typedef std::shared_ptr<PdfGenerator> PdfGeneratorPtr;
 
 class PdfGenerator : public Generator
 {
@@ -36,7 +36,7 @@ public:
     bool generate(const TablePtr &table, const std::string &filePath);
 
 private:
-    JHandlePtr<PdfGeneratorData> d;
+    std::shared_ptr<PdfGeneratorData> d;
 };
 
 } // end of namespace Icd

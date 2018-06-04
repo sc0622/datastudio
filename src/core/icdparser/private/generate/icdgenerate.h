@@ -10,25 +10,25 @@ namespace Icd {
 
 class Generator;
 class GeneratorData;
-typedef JHandlePtr<Generator> GeneratorPtr;
+typedef std::shared_ptr<Generator> GeneratorPtr;
 
 //
 class DataObject;
-typedef JHandlePtr<DataObject> DataObjectPtr;
+typedef std::shared_ptr<DataObject> DataObjectPtr;
 
 //
 class Vehicle;
-typedef JHandlePtr<Vehicle> VehiclePtr;
+typedef std::shared_ptr<Vehicle> VehiclePtr;
 typedef std::vector<VehiclePtr> VehiclePtrArray;
 
 //
 class System;
-typedef JHandlePtr<System> SystemPtr;
+typedef std::shared_ptr<System> SystemPtr;
 typedef std::vector<SystemPtr> SystemPtrArray;
 
 //
 class Table;
-typedef JHandlePtr<Table> TablePtr;
+typedef std::shared_ptr<Table> TablePtr;
 typedef std::vector<TablePtr> TablePtrArray;
 
 class Parser;
@@ -65,7 +65,7 @@ public:
     virtual const Icd::Parser *parser() const;
 
 private:
-    JHandlePtr<GeneratorData> d;
+    std::shared_ptr<GeneratorData> d;
 };
 
 } // end of namespace Icd

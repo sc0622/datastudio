@@ -10,7 +10,7 @@
 namespace Icd {
 
 class XmlParser;
-typedef JHandlePtr<XmlParser> XmlParserPtr;
+typedef std::shared_ptr<XmlParser> XmlParserPtr;
 
 class XmlParser : public FileParser, public Generator
 {

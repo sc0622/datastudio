@@ -125,10 +125,10 @@ void TreeView::loadRecordData()
     QString selectedFilter = tr("Any file (*.*)");
     const QString filePath = QFileDialog::getOpenFileName(
                 this, tr("Load data"), QString(),
-                "Any file (*.*);;"
+                tr("Any file (*.*);;"
                 "ICD file (*.icd);;"
                 "Data file (*.dat);;"
-                "Text file (*.txt)", &selectedFilter);
+                "Text file (*.txt)"), &selectedFilter);
     if (filePath.isEmpty()) {
         return;
     }

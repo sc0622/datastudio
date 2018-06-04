@@ -33,13 +33,12 @@ CoreDyLibrary {
             var defines = [];
             defines.push(upperName + '_LIB');
             defines.push(upperName + '_JSON_LIB');
+            defines.push('JSON_DLL');
             return defines;
         }
-        cpp.includePaths: [ FileInfo.joinPaths(project.sourceDirectory,
-                                               'include', product.module) ]
+        cpp.includePaths: [ FileInfo.joinPaths(project.sourceDirectory, 'include', product.module) ]
         cpp.dynamicLibraries: [
-            FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module,
-                               product.targetName) + product.cpp.variantSuffix
+            FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
         ]
     }
 }

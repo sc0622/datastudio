@@ -10,13 +10,13 @@ namespace Icd {
 
 class Root;
 class RootData;
-typedef JHandlePtr<Root> RootPtr;
+typedef std::shared_ptr<Root> RootPtr;
 
 class ICDCORE_EXPORT Root : public Object
 {
 public:
-    explicit Root(Object *parent = 0);
-    explicit Root(const std::string &id, Object *parent = 0);
+    explicit Root(Object *parent = nullptr);
+    explicit Root(const std::string &id, Object *parent = nullptr);
     ~Root();
 
     VehiclePtrArray allVehicle();
@@ -31,16 +31,16 @@ public:
     int vehicleCount() const;
     VehiclePtr vehicleAt(int index) const;
     VehiclePtr vehicleByMark(const std::string &mark) const;
-    int childCount() const;
-    void resetData();
-    void clearData();
-    Object *clone() const;
+    int childCount() const final;
+    void resetData() final;
+    void clearData() final;
+    Object *clone() const final;
     Root &operator =(const Root &other);
 
     // Serializable interface
 public:
-    Json::Value save() const;
-    bool restore(const Json::Value &json, int deep = -1);
+    Json::Value save() const final;
+    bool restore(const Json::Value &json, int deep = -1) final;
 
 protected:
     Root(const Root &other);

@@ -5,7 +5,6 @@ function Component() {
 Component.prototype.createOperations = function() {
     // call default implementation to actually install application!
     component.createOperations()
-
     //
     if (systemInfo.productType === "windows") {
         // Start Menu
@@ -28,6 +27,5 @@ Component.prototype.createOperations = function() {
 }
 
 Component.prototype.createOperationsForArchive = function(archive) {
-    //
     component.addOperation("Extract", archive, "@TargetDir@/datastudio")
 }

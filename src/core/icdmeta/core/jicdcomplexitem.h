@@ -5,7 +5,7 @@
 
 namespace Icd {
 class ComplexItem;
-typedef JHandlePtr<ComplexItem> ComplexItemPtr;
+typedef std::shared_ptr<ComplexItem> ComplexItemPtr;
 }
 
 namespace icdmeta {

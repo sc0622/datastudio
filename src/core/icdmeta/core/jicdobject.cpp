@@ -10,7 +10,7 @@ class JIcdObjectPrivate
 {
 public:
     JIcdObjectPrivate(JIcdObject *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , checked(false)
     {
 
@@ -33,7 +33,7 @@ void JIcdObjectPrivate::init()
 
 JIcdObject::JIcdObject(const Icd::ObjectPtr &data, QObject *parent)
     : QObject(parent)
-    , d_ptr(new JIcdObjectPrivate(this))
+    , J_DPTR(new JIcdObjectPrivate(this))
 {
     Q_D(JIcdObject);
     d->data = data;

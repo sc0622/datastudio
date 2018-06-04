@@ -1,5 +1,4 @@
 ﻿#include "precomp.h"
-#include "main_global.h"
 #include "common/LanguageMgr.h"
 #include "SplashWidget.h"
 #include "mainview/MainWindow.h"
@@ -7,7 +6,6 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QTabWidget>
-#include "icdcore/3rdpart/jsoncpp/json/json.h"
 
 // class JMainPrivate
 
@@ -15,7 +13,7 @@ class JMainPrivate
 {
 public:
     JMainPrivate(JMain *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , notify(nullptr)
         , neeedToRestart(false)
     {
@@ -80,6 +78,8 @@ void JMainPrivate::init()
     Q_Q(JMain);
     notify = Icd::JNotifyPtr(Icd::JNotify::inst(QCoreApplication::applicationName(), q));
     Q_ASSERT(notify != nullptr);
+
+
 }
 
 QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
@@ -135,7 +135,7 @@ J_IMPLEMENT_SINGLE_INSTANCE(JMain, JMain)
 
 JMain::JMain(QObject *parent)
     : QObject(parent)
-    , d_ptr(new JMainPrivate(this))
+    , J_DPTR(new JMainPrivate(this))
 {
     Q_D(JMain);
     d->init();
@@ -221,7 +221,7 @@ int JMain::execApp(QApplication *app)
         return -1;
     }
 
-    auto splashWidget = QSharedPointer<SplashWidget>(new SplashWidget, j_delete_qobject);
+    auto splashWidget = QSharedPointer<SplashWidget>(new SplashWidget, jdelete_qobject);
     splashWidget->show();
 
     initFontDatabase();
@@ -384,7 +384,7 @@ Icd::JNotifyPtr JMain::notify()
     return d->notify;
 }
 
-const Icd::JNotifyPtr JMain::notify() const
+const Icd::JNotifyPtr &JMain::notify() const
 {
     Q_D(const JMain);
     return d->notify;

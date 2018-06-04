@@ -7,7 +7,7 @@ namespace Icd {
 
 BindChannelWidget::BindChannelWidget(QWidget *parent)
     : QDialog(parent)
-    , d_ptr(new BindChannelWidgetPrivate(this))
+    , J_DPTR(new BindChannelWidgetPrivate(this))
 {
     Q_D(BindChannelWidget);
     d->init();

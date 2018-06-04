@@ -9,7 +9,7 @@ class JIcdBitItemPrivate
 {
 public:
     JIcdBitItemPrivate(JIcdBitItem *q)
-        : q_ptr(q)
+        : J_QPTR(q)
         , data(Q_NULLPTR)
     {
 
@@ -34,7 +34,7 @@ void JIcdBitItemPrivate::init()
 
 JIcdBitItem::JIcdBitItem(const Icd::BitItemPtr &data, QObject *parent)
     : JIcdItem(data, parent)
-    , d_ptr(new JIcdBitItemPrivate(this))
+    , J_DPTR(new JIcdBitItemPrivate(this))
 {
     Q_D(JIcdBitItem);
     d->data = data;

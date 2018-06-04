@@ -18,15 +18,15 @@ namespace Icd {
 extern void _updateRelayer(Icd::ChannelPtr &channel, const Icd::TablePtr &table);
 
 WorkerRecvPrivate::WorkerRecvPrivate(Icd::WorkerRecv *q)
-    : q_ptr(q)
+    : J_QPTR(q)
     , mutex(QMutex::Recursive)
     , timer(new JRTTimer(JRTTimer::TimePeriodic, 5/*default: 5ms*/))
-    , channel(0)
-    , table(0)
-    , relayer(0)
+    , channel(nullptr)
+    , table(nullptr)
+    , relayer(nullptr)
     , tableSize(0)
-    , tableBuffer(0)
-    , parseBuffer(0)
+    , tableBuffer(nullptr)
+    , parseBuffer(nullptr)
     , currentIndex(0)
     , queueCount(0)
 {
@@ -49,12 +49,12 @@ void WorkerRecvPrivate::updateBind(bool valid)
 
     if (tableBuffer) {
         delete[] tableBuffer;
-        tableBuffer = 0;
+        tableBuffer = nullptr;
     }
 
     if (parseBuffer) {
         delete[] parseBuffer;
-        parseBuffer = 0;
+        parseBuffer = nullptr;
     }
 
     tableSize = 0;
@@ -62,15 +62,15 @@ void WorkerRecvPrivate::updateBind(bool valid)
 
     if (table && table->bufferSize() > 0) {
         if (valid) {
-            tableSize = (int)std::ceil(table->bufferSize());
-            tableBuffer = new char[tableSize];
-            parseBuffer = new char[tableSize];
-            memset(tableBuffer, 0, tableSize);
-            memset(parseBuffer, 0, tableSize);
+            tableSize = static_cast<int>(std::ceil(table->bufferSize()));
+            tableBuffer = new char[size_t(tableSize)];
+            parseBuffer = new char[size_t(tableSize)];
+            memset(tableBuffer, 0, size_t(tableSize));
+            memset(parseBuffer, 0, size_t(tableSize));
             table->setBuffer(tableBuffer);
             _updateRelayer(channel, table);
         } else {
-            table->setBuffer(0);
+            table->setBuffer(nullptr);
         }
     }
 }
@@ -89,11 +89,11 @@ void WorkerRecvPrivate::recvData()
 
     Icd::ChannelPtr relayer = channel->relayer();
     const std::vector<char> &headers = table->headers();
-    const int headerSize = headers.size();
+    const int headerSize = int(headers.size());
 
     for (int i = 0, section = 0; i < size; ++i) {
         if (currentIndex < headerSize) {
-            if (buffer[i] == headers[currentIndex]) {
+            if (buffer[i] == headers[size_t(currentIndex)]) {
                 parseBuffer[currentIndex++] = buffer[i];
             } else {
                 currentIndex = 0;
@@ -101,7 +101,7 @@ void WorkerRecvPrivate::recvData()
             }
         } else if (currentIndex < tableSize) {
             section = qMin(tableSize - currentIndex, size - i);
-            memcpy(parseBuffer + currentIndex, buffer + i, section);
+            memcpy(parseBuffer + currentIndex, buffer + i, size_t(section));
             currentIndex += section;
             i += section - 1;
         }
@@ -109,7 +109,7 @@ void WorkerRecvPrivate::recvData()
         if (currentIndex == tableSize) {
             if (doCheck(table, parseBuffer)) {
                 //
-                memcpy(tableBuffer, parseBuffer, tableSize);
+                memcpy(tableBuffer, parseBuffer, size_t(tableSize));
                 table->updateRecv();
                 //
                 if (relayer && relayer->isOpen()) {
@@ -117,8 +117,8 @@ void WorkerRecvPrivate::recvData()
                 }
                 // queue
                 if (queueCount > 0) {
-                    char *newBuffer = new char[tableSize];
-                    memcpy(newBuffer, tableBuffer, tableSize);
+                    char *newBuffer = new char[size_t(tableSize)];
+                    memcpy(newBuffer, tableBuffer, size_t(tableSize));
                     bufferQueue.enqueue(newBuffer);
                     if (bufferQueue.count() > queueCount) {
                         char *buffer = bufferQueue.dequeue();
@@ -148,22 +148,22 @@ void WorkerRecvPrivate::stop()
 
 int WorkerRecvPrivate::interval() const
 {
-    return (int)timer->interval();
+    return int(timer->interval());
 }
 
 void WorkerRecvPrivate::setInterval(int value)
 {
-    timer->setInterval(value);
+    timer->setInterval(static_cast<unsigned int>(value));
 }
 
 WorkerTrans::TimeEvent WorkerRecvPrivate::timeEvent() const
 {
-    return (WorkerTrans::TimeEvent)timer->timeEvent();
+    return WorkerTrans::TimeEvent(timer->timeEvent());
 }
 
 void WorkerRecvPrivate::setTimeEvent(WorkerTrans::TimeEvent event)
 {
-    timer->setTimeEvent((JRTTimer::TimeEvent)event);
+    timer->setTimeEvent(JRTTimer::TimeEvent(event));
 }
 
 void WorkerRecvPrivate::clearQueue()
@@ -209,7 +209,7 @@ void WorkerRecvPrivate::stopRecord()
     mutex.lock();
 
     if (recordFile.isOpen()) {
-        const int size = recordFile.size();
+        const qint64 size = recordFile.size();
         recordFile.close();
         if (size == 0) {
             recordFile.remove();

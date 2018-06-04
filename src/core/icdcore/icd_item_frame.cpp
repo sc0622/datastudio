@@ -476,7 +476,7 @@ Json::Value FrameItem::save() const
     json["sequenceCount"] = sequenceCount();
 
     if (!d->tables.empty()) {
-        Json::Value tablesJson;
+        Json::Value tablesJson(Json::arrayValue);
         for (TablePtrMap::const_iterator citer = d->tables.cbegin();
              citer != d->tables.cend(); ++citer) {
             const TablePtr &table = citer->second;

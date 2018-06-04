@@ -7,7 +7,7 @@
 namespace Icd {
 
 class WorkerTrans;
-typedef JHandlePtr<WorkerTrans> WorkerTransPtr;
+typedef std::shared_ptr<WorkerTrans> WorkerTransPtr;
 
 class WorkerTrans
 {

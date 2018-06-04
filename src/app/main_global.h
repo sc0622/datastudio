@@ -11,13 +11,13 @@
 namespace Icd {
 
 class Item;
-typedef JHandlePtr<Item> ItemPtr;
+typedef std::shared_ptr<Item> ItemPtr;
 
 class Parser;
-typedef JHandlePtr<Parser> ParserPtr;
+typedef std::shared_ptr<Parser> ParserPtr;
 
 class JNotify;
-typedef JHandlePtr<JNotify> JNotifyPtr;
+typedef std::shared_ptr<JNotify> JNotifyPtr;
 
 }
 
@@ -70,7 +70,7 @@ public:
     QWidget *mainWindow() const;
 
     Icd::JNotifyPtr notify();
-    const Icd::JNotifyPtr notify() const;
+    const Icd::JNotifyPtr &notify() const;
 
     static void saveWidgetState(QWidget *widget, const QString prefix = QString());
     static void restoreWidgetState(QWidget *widget, const QString prefix = QString());
@@ -100,7 +100,7 @@ public slots:
     void setTheme(const QString &value);
 
 private:
-    explicit JMain(QObject *parent = 0);
+    explicit JMain(QObject *parent = nullptr);
     ~JMain();
 
 private:

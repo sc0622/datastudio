@@ -6,7 +6,7 @@ namespace Icd {
 
 WorkerSend::WorkerSend(QObject *parent)
     : QObject(parent)
-    , d_ptr(new WorkerSendPrivate(this))
+    , J_DPTR(new WorkerSendPrivate(this))
 {
     Q_D(WorkerSend);
     d->init();

@@ -8,7 +8,7 @@ namespace Icd {
 
 class FileChannel;
 class FileChannelData;
-typedef JHandlePtr<FileChannel> FileChannelPtr;
+typedef std::shared_ptr<FileChannel> FileChannelPtr;
 
 /**
  * @brief 数据文件通道，用于数据记录或回放
@@ -196,7 +196,7 @@ public:
     std::string lastError() const;
 
 private:
-    JHandlePtr<FileChannelData> d;
+    std::shared_ptr<FileChannelData> d;
 };
 
 } // end of namespace Icd

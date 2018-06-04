@@ -9,7 +9,7 @@ class SearchEditPrivate
 {
 public:
     SearchEditPrivate(SearchEdit *q)
-        : q_ptr(q)
+        : J_QPTR(q)
     {
 
     }
@@ -50,7 +50,7 @@ void SearchEditPrivate::init()
 
 SearchEdit::SearchEdit(QWidget *parent)
     : QWidget(parent)
-    , d_ptr(new SearchEditPrivate(this))
+    , J_DPTR(new SearchEditPrivate(this))
 {
     Q_D(SearchEdit);
     d->init();

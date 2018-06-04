@@ -8,7 +8,7 @@ namespace Icd {
 
 class SqlParser;
 class SqlParserData;
-typedef JHandlePtr<SqlParser> SqlParserPtr;
+typedef std::shared_ptr<SqlParser> SqlParserPtr;
 
 class SqlParser : public Parser
 {

@@ -5,7 +5,7 @@
 
 namespace Icd {
 class HeaderItem;
-typedef JHandlePtr<HeaderItem> HeaderItemPtr;
+typedef std::shared_ptr<HeaderItem> HeaderItemPtr;
 }
 
 namespace icdmeta {

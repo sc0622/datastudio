@@ -63,7 +63,7 @@ struct FileBaseInfo
 // struct SeriesInfo
 
 struct SeriesInfo;
-typedef JHandlePtr<SeriesInfo> SeriesInfoPtr;
+typedef std::shared_ptr<SeriesInfo> SeriesInfoPtr;
 
 struct SeriesInfo
 {
@@ -136,7 +136,7 @@ struct SeriesInfo
 };
 
 class GroupSeries;
-typedef JHandlePtr<GroupSeries> GroupSeriesPtr;
+typedef std::shared_ptr<GroupSeries> GroupSeriesPtr;
 
 /**
  * @brief The GroupSeries struct

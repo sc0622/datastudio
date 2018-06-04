@@ -8,11 +8,11 @@
 namespace Icd {
 
 class Worker;
-typedef JHandlePtr<Worker> WorkerPtr;
+typedef std::shared_ptr<Worker> WorkerPtr;
 
 class WorkerRecvPrivate;
 class WorkerRecv;
-typedef JHandlePtr<WorkerRecv> WorkerRecvPtr;
+typedef std::shared_ptr<WorkerRecv> WorkerRecvPtr;
 
 /**
  * @brief The WorkerRecv class
@@ -25,7 +25,7 @@ public:
      * @brief WorkerRecv
      * @param parent
      */
-    explicit WorkerRecv(QObject *parent = 0);
+    explicit WorkerRecv(QObject *parent = nullptr);
 
     ~WorkerRecv();
 
@@ -137,7 +137,7 @@ signals:
     void started();
     void stopped();
     void toggled(int isOpen);
-    void intervalChanged(unsigned int value);
+    void intervalChanged(int value);
     void timeEventChanged(TimeEvent event);
     void queueCountChanged(int count);
 
