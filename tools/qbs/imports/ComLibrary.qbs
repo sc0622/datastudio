@@ -12,10 +12,10 @@ CppDyLibrary {
     type: base.concat([ 'config' ])
 
     Depends { name: 'cpp' }
-    Depends { name: 'qtribbon' }
-    Depends { name: 'jframe_facade' }
-    Depends { name: 'jframe_factory' }
-    Depends { name: 'jframe_kernel' }
+    Depends { name: '3rdpart.qtribbon' }
+    Depends { name: 'core.jframe_facade' }
+    Depends { name: 'core.jframe_factory' }
+    Depends { name: 'core.jframe_kernel' }
 
     Group {
         name: 'Config'
@@ -29,6 +29,7 @@ CppDyLibrary {
 
     Group {
         name: 'Resources'
+        prefix: product.sourceDirectory + '/'
         files: [ 'resource/**/*.qrc' ]
     }
 }

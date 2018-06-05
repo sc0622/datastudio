@@ -15,7 +15,7 @@ PackageThird {
     Group {
         name: 'data-3rdpart-moxa'
         prefix: FileInfo.joinPaths(project.sourceDirectory, 'lib', '3rdpart', 'moxa') + '/'
-        files: [ 'pcomm.dll' ]
+        files: [ 'pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') + '.dll' ]
         qbs.install: true
         qbs.installPrefix: dataInstallPrefix
     }

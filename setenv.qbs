@@ -41,7 +41,7 @@ Project {
         Group {
             name: 'dynamic_3rdpart_self'
             prefix: project.sourceDirectory + '/lib/3rdpart/'
-            files: [ 'moxa/pcomm.dll' ]
+            files: [ 'moxa/pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') + '.dll' ]
             qbs.install: true
             qbs.installPrefix: project.projectName
             qbs.installDir: 'bin'

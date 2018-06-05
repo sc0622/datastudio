@@ -6,13 +6,13 @@ import qbs.Environment
 CppDyLibrary {
     type: base.concat([ 'node.out' ])
 
+    property path destinationDir: destinationDirectory
     property path userPath: '~'
     property path nodePath: '~/.node-gyp/8.11.1'
     property path npmPath: '~/AppData/Roaming/npm'
     property path iojsPath: FileInfo.joinPaths(userPath, '.electron-gyp/.node-gyp/iojs-2.0.0')
     readonly property path npmModulesPath: FileInfo.joinPaths(npmPath, 'node_modules')
     readonly property path nodeAddonPath: FileInfo.joinPaths(npmModulesPath, 'node-addon-api')
-    readonly property path destinationDir: destinationDirectory
 
     cpp.variantSuffix: ''
     cpp.includePaths: base.concat([nodeAddonPath,

@@ -15,7 +15,12 @@ Product {
     readonly property bool thisProject: jframeDir == project.sourceDirectory
     property stringList module3rdpart: []
     property stringList moduleCore: []
+    property stringList moduleCoreExt: []
+    property stringList moduleComponent: []
     property bool installCore: false
+    property bool installJFrameworkdir: false
+    property string thirdInstallDir: 'bin'
+    property string coreInstallDir: 'bin'
 
     // 3rdpart - headers
 
@@ -70,7 +75,7 @@ Product {
         fileTags: [ name + '.in' ]
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin'
+        qbs.installDir: thirdInstallDir
     }
 
     Group {
@@ -149,7 +154,7 @@ Product {
     Group {
         id: core_dynamic
         name: 'core_dynamic'
-        condition: jframeExists && installCore
+        condition: jframeExists && installCore && !thisProject
         prefix: jframeDir + '/lib/core/'
         files: {
             var files = [];
@@ -161,7 +166,7 @@ Product {
         fileTags: [ name + '.in' ]
         qbs.install: true
         qbs.installPrefix: project.projectName
-        qbs.installDir: 'bin'
+        qbs.installDir: coreInstallDir
     }
 
     Group {
@@ -194,6 +199,127 @@ Product {
             cmd.description = 'coping ' + input.fileName;
             cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
             return [ cmd ];
+        }
+    }
+
+    // core - dynamic - jframeworkenv、jframeworkdir
+
+    Group {
+        id: core_dynamic_ext
+        name: 'core_dynamic_ext'
+        condition: jframeExists && installCore && !thisProject
+        prefix: jframeDir + '/lib/core/'
+        files: {
+            var files = [];
+            moduleCoreExt.forEach(function(item){
+                files.push(item + '.dll*');
+            });
+            return files;
+        }
+        fileTags: [ name + '.in' ]
+        qbs.install: true
+        qbs.installPrefix: project.projectName
+        qbs.installDir: 'bin/core'
+    }
+
+    Rule {
+        condition: jframeExists && installCore && !thisProject
+        inputs: core_dynamic_ext.fileTags
+        Artifact {
+            fileTags: [ 'library.out' ]
+            filePath: FileInfo.joinPaths(project.sourceDirectory,
+                                         FileInfo.relativePath(product.jframeDir, input.filePath))
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.description = "coping " + input.fileName;
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
+            return [cmd];
+        }
+    }
+
+    Group {
+        id: core_dynamic_jframeworkdir
+        name: 'core_dynamic_jframeworkdir'
+        condition: jframeExists && installJFrameworkdir && !thisProject
+        prefix: jframeDir + '/lib/core/'
+        files: [ 'jframeworkdir.dll*' ]
+        fileTags: [ name + '.in' ]
+        qbs.install: true
+        qbs.installPrefix: project.projectName
+        qbs.installDir: 'bin'
+    }
+
+    Rule {
+        condition: jframeExists && installJFrameworkdir && !thisProject
+        inputs: core_dynamic_jframeworkdir.fileTags
+        Artifact {
+            fileTags: [ 'library.out' ]
+            filePath: FileInfo.joinPaths(project.sourceDirectory,
+                                         FileInfo.relativePath(product.jframeDir, input.filePath))
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.description = "coping " + input.fileName;
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
+            return [cmd];
+        }
+    }
+
+    // component - jframe - dynamic
+
+    Group {
+        id: component_jframe_dynamic
+        condition: jframeExists
+        name: 'component_jframe_dynamic'
+        prefix: jframeDir + '/component/jframe/'
+        files: {
+            var files = [];
+            moduleComponent.forEach(function(item){
+                var prefix = item + '/' + item;
+                files.push(prefix + '*.xml');
+                files.push(prefix + EnvUtils.dylibSuffix(qbs) + '*');
+            });
+            return files;
+        }
+        fileTags: [ name + '.in' ]
+        qbs.install: true
+        qbs.installPrefix: project.projectName
+        qbs.installDir: 'component/jframe'
+        qbs.installSourceBase: prefix
+    }
+
+    // component - jframe - library
+
+    Group {
+        id: component_jframe_library
+        condition: jframeExists
+        name: 'component_jframe_library'
+        prefix: jframeDir + '/component/jframe/'
+        files: {
+            var files = [];
+            moduleComponent.forEach(function(item){
+                files.push(item + '/' + EnvUtils.dylibSuffix(qbs) + '*');
+            });
+            return files;
+        }
+        excludeFiles: [ EnvUtils.incDylibFuzzy(qbs) ]
+        fileTags: [ name + '.in' ]
+    }
+
+    Rule {
+        condition: jframeExists
+        inputs: component_jframe_dynamic.fileTags.concat(component_jframe_library.fileTags)
+        Artifact {
+            fileTags: [ 'library.out' ]
+            filePath: FileInfo.joinPaths(project.sourceDirectory,
+                                         FileInfo.relativePath(product.jframeDir, input.filePath))
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.description = "coping " + input.fileName;
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
+            return [cmd];
         }
     }
 }
