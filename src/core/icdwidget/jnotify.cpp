@@ -189,6 +189,7 @@ void JNotify::on(const QString &channel, QObject *receiver, JNotifyCallback call
     Q_D(JNotify);
     // auto-removing
     if (receiver) {
+        receiver->disconnect(this);
         connect(receiver, &QObject::destroyed, this, [=](QObject *object){
             un(object);
         });

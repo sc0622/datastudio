@@ -199,6 +199,33 @@ QStandardItem *CoreTreeWidget::findItemTable(QStandardItem *item) const
     return d->findItemTable(item);
 }
 
+void CoreTreeWidget::selectItem(const QString &domain, int domainType)
+{
+    Q_D(CoreTreeWidget);
+    return d->selectItem(domain, domainType);
+}
+
+QString CoreTreeWidget::itemDomain(QStandardItem *item, int domainType) const
+{
+    Q_D(const CoreTreeWidget);
+    return d->itemDomain(item, domainType);
+}
+
+QString CoreTreeWidget::idDomain(QStandardItem *item)
+{
+    return CoreTreeWidgetPrivate::idDomain(item);
+}
+
+QString CoreTreeWidget::markDomain(QStandardItem *item)
+{
+    return CoreTreeWidgetPrivate::markDomain(item);
+}
+
+bool CoreTreeWidget::loadTable(JTreeView *treeView, QStandardItem *itemParent, const TablePtr &table)
+{
+    return CoreTreeWidgetPrivate::loadTable(treeView, itemParent, table, Icd::ObjectItem);
+}
+
 void CoreTreeWidget::setRunning(bool value)
 {
     Q_D(CoreTreeWidget);

@@ -19,7 +19,7 @@ public:
      * @brief BindChannelWidget
      * @param parent
      */
-    explicit BindChannelWidget(QWidget *parent = 0);
+    explicit BindChannelWidget(QWidget *parent = nullptr);
 
     virtual ~BindChannelWidget();
 

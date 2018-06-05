@@ -35,22 +35,22 @@ public:
     static CounterType stringCounterType(const std::string &str);
 
 
-    double data() const final;
-    void setData(double data) final;
-    std::string dataString() const final;
+    double data() const override;
+    void setData(double data) override;
+    std::string dataString() const override;
     unsigned char value() const;
     void setValue(unsigned char value);
 
-    std::string typeName() const final;
-    virtual std::string typeString() const final;
+    std::string typeName() const override;
+    virtual std::string typeString() const override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     CounterItem &operator =(const CounterItem &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     CounterItem(const CounterItem &other);

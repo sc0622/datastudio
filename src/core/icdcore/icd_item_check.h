@@ -39,9 +39,9 @@ public:
     static std::string checkTypeString(CheckType type);
     static CheckType stringCheckType(const std::string &str);
 
-    double data() const final;
-    void setData(double data) final;
-    std::string dataString() const final;
+    double data() const override;
+    void setData(double data) override;
+    std::string dataString() const override;
 
     int startPos() const;
     void setStartPos(int startPos);
@@ -51,16 +51,16 @@ public:
 
     int checkLength() const;
 
-    std::string typeName() const final;
-    std::string typeString() const final;
+    std::string typeName() const override;
+    std::string typeString() const override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     CheckItem &operator =(const CheckItem &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     CheckItem(const CheckItem &other);

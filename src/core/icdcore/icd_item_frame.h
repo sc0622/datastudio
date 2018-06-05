@@ -32,23 +32,23 @@ public:
     int tableCount() const;
     TablePtr tableAt(icd_uint64 code);
 
-    double data() const final { return 0.0; }
-    void setData(double) final { }
-    std::string dataString() const final;
+    double data() const override { return 0.0; }
+    void setData(double) override { }
+    std::string dataString() const override;
 
-    void setBuffer(char *buffer) final;
-    void setBufferSize(double size) final;
+    void setBuffer(char *buffer) override;
+    void setBufferSize(double size) override;
 
     int sequenceCount() const;
     void setSequenceCount(int count);
 
-    std::string typeName() const final;
+    std::string typeName() const override;
 
-    int childCount() const final;
-    void resetData() final;
-    void clearData() final;
+    int childCount() const override;
+    void resetData() override;
+    void clearData() override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     FrameItem &operator =(const FrameItem &other);
 
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
@@ -64,13 +64,13 @@ public:
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     FrameItem(const FrameItem &other);
 
-    void setBufferOffset(double offset) final;
+    void setBufferOffset(double offset) override;
 
 private:
     FrameItemData *d;

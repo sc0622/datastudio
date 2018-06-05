@@ -14,7 +14,7 @@ class ICDWIDGET_EXPORT SearchEdit : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SearchEdit(QWidget *parent = 0);
+    explicit SearchEdit(QWidget *parent = nullptr);
 
     ~SearchEdit();
 

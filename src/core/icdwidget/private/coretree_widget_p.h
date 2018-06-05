@@ -7,8 +7,7 @@
 #include "icdparser/icdparser.h"
 #include "icdworker/icdworker.h"
 #include <functional>
-
-template <> class QFutureWatcher<void>;
+#include <QFutureWatcher>
 
 class QLabel;
 class QPushButton;
@@ -67,9 +66,14 @@ struct BindingData;
 class CoreTreeWidgetPrivate : public JTreeView
 {
     Q_OBJECT
+    Q_PROPERTY(quint32 bindTableTypes READ bindTableTypes NOTIFY bindTableTypesChanged)
+    Q_PROPERTY(quint32 showAttris READ showAttris NOTIFY showAttrisChanged)
 public:
     explicit CoreTreeWidgetPrivate(CoreTreeWidget *q);
     ~CoreTreeWidgetPrivate();
+
+    quint32 bindTableTypes() const { return quint32(d_bindTableTypes); }
+    quint32 showAttris() { return quint32(d_showAttris); }
 
     void init();
     void setParser(const Icd::ParserPtr &parser);
@@ -118,6 +122,8 @@ public:
     Q_INVOKABLE bool isBoundChannel(QStandardItem *itemTable) const;
 
 signals:
+    void bindTableTypesChanged();
+    void showAttrisChanged();
     void itemUnloaded(QStandardItem *item, QStandardItem *itemTable);
     void channelBound(QStandardItem *item, const QString &channelId);
     void channelUnbound(QStandardItem *item, const QString &channelId);
@@ -177,19 +183,18 @@ private:
     bool loadTable(QStandardItem *itemSystem, int deep);
     bool loadTable(QStandardItem *itemSystem, const Icd::TablePtrArray &tables, int deep);
     bool loadItem(QStandardItem *itemTable, int deep);
-    bool loadItem(QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
 
-    QStandardItem *loadTable(QStandardItem *itemDataItem, const Icd::TablePtr &table);
-    bool loadItem(QStandardItem *itemTable, const Icd::ItemPtr &item);
-    bool loadFrameCodeItem(QStandardItem *itemTable, const Icd::FrameCodeItemPtr &frameCodeItem);
-    bool loadComplexItem(QStandardItem *itemDataItem, const Icd::ComplexItemPtr &complexItem);
-    bool loadFrameItem(QStandardItem *itemDataItem, const Icd::FrameItemPtr &frameItem);
-    bool loadBitItem(QStandardItem *itemDataItem, const Icd::BitItemPtr &bitItem);
+    static bool loadItem(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
+
+    static QStandardItem *loadTable(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table);
+    static bool loadItem(QObject *target, QStandardItem *itemTable, const Icd::ItemPtr &item);
+    static bool loadFrameCodeItem(QObject *target, QStandardItem *itemTable, const Icd::FrameCodeItemPtr &frameCodeItem);
+    static bool loadComplexItem(QObject *target, QStandardItem *itemDataItem, const Icd::ComplexItemPtr &complexItem);
+    static bool loadFrameItem(QObject *target, QStandardItem *itemDataItem, const Icd::FrameItemPtr &frameItem);
+    static bool loadBitItem(QObject *target, QStandardItem *itemDataItem, const Icd::BitItemPtr &bitItem);
 
     //
     void removeTableItem(QStandardItem *item);
-    void clearChildren(QStandardItem *item);
-    void expandItem(QStandardItem *item, bool expanded, int deep);
 
     Icd::WorkerPtr queryWorker(const QStandardItem *itemTable) const;
 
@@ -228,6 +233,16 @@ private:
     //
     QStandardItem *itemFromAction(QObject *action) const;
     QVariant varFromAction(QObject *action, const char *name) const;
+
+    QStandardItem *findItemByDomain(QStandardItem *parentItem, const QString &domain, int domainType);
+    void selectItem(const QString &domain, int domainType);
+    QString itemDomain(QStandardItem *item, int domainType) const;
+
+    ///
+
+    static QString idDomain(QStandardItem *item);
+    static QString markDomain(QStandardItem *item);
+    static bool loadTable(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
 
 private:
     J_DECLARE_PUBLIC(CoreTreeWidget)

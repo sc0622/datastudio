@@ -28,12 +28,12 @@ public:
     void setRightInf(bool rightInf);
 
     std::string toString() const;
-    virtual LimitItem *clone() const final;
+    virtual LimitItem *clone() const override;
     LimitItem &operator =(const LimitItem &other);
 
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int /*deep*/ = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int /*deep*/ = -1) override;
 
 protected:
     LimitItem(const LimitItem &other);

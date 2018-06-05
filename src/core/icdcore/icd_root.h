@@ -31,16 +31,16 @@ public:
     int vehicleCount() const;
     VehiclePtr vehicleAt(int index) const;
     VehiclePtr vehicleByMark(const std::string &mark) const;
-    int childCount() const final;
-    void resetData() final;
-    void clearData() final;
-    Object *clone() const final;
+    int childCount() const override;
+    void resetData() override;
+    void clearData() override;
+    Object *clone() const override;
     Root &operator =(const Root &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     Root(const Root &other);

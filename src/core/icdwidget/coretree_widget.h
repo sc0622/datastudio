@@ -5,8 +5,18 @@
 #include "icdwidget_global.h"
 
 class QStandardItem;
+class JTreeView;
 
 namespace Icd {
+
+//
+enum OptionType {
+    // base
+    OptionName,
+    OptionMark,
+    OptionDesc,
+    //
+};
 
 //
 template<typename T> class HandlePtr;
@@ -68,7 +78,7 @@ public:
      * @brief CoreTreeWidget
      * @param parent
      */
-    explicit CoreTreeWidget(QWidget *parent = 0);
+    explicit CoreTreeWidget(QWidget *parent = nullptr);
 
     virtual ~CoreTreeWidget();
 
@@ -255,6 +265,46 @@ public:
      * @return
      */
     QStandardItem *findItemTable(QStandardItem *item) const;
+
+    /**
+     * @brief selectItem
+     * @param domain
+     * @param domainType
+     */
+    void selectItem(const QString &domain, int domainType);
+
+    /**
+     * @brief itemDomain
+     * @param item
+     * @param domainType
+     * @return
+     */
+    QString itemDomain(QStandardItem *item, int domainType) const;
+
+    ///
+
+    /**
+     * @brief idDomain
+     * @param item
+     * @return
+     */
+    static QString idDomain(QStandardItem *item);
+
+    /**
+     * @brief markDomain
+     * @param item
+     * @return
+     */
+    static QString markDomain(QStandardItem *item);
+
+    /**
+     * @brief loadTable
+     * @param treeView
+     * @param itemParent
+     * @param table
+     * @return
+     */
+    static bool loadTable(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table);
 
 signals:
     void itemPressed(QStandardItem *item);

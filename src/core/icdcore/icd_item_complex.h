@@ -22,20 +22,20 @@ public:
 
     TablePtr table() const;
 
-    void setBuffer(char *buffer) final;
-    void setBufferSize(double size) final;
+    void setBuffer(char *buffer) override;
+    void setBufferSize(double size) override;
 
-    std::string typeName() const final;
+    std::string typeName() const override;
 
-    int childCount() const final;
+    int childCount() const override;
 
     void updateSend(bool period);
     void updateRecv();
     void resetSend();
-    void resetData() final;
-    void clearData() final;
+    void resetData() override;
+    void clearData() override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     ComplexItem &operator =(const ComplexItem &other);
 
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
@@ -47,13 +47,13 @@ public:
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     ComplexItem(const ComplexItem &other);
 
-    void setBufferOffset(double offset) final;
+    void setBufferOffset(double offset) override;
 
 private:
     ComplexItemData *d;

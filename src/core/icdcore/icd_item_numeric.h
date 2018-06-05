@@ -44,9 +44,9 @@ public:
     static NumericType stringNumericType(const std::string &str);
 
     double originalData() const;
-    double data() const final;
-    void setData(double data) final;
-    std::string dataString() const final;
+    double data() const override;
+    void setData(double data) override;
+    std::string dataString() const override;
 
     double scale() const;
     void setScale(double scale);
@@ -73,18 +73,18 @@ public:
     std::pair<double, double> dataRange() const;
     std::pair<double, double> valueRange() const;
 
-    std::string typeName() const final;
-    std::string typeString() const final;
+    std::string typeName() const override;
+    std::string typeString() const override;
 
     bool outOfLimit() const;
 
-    Object *clone() const final;
+    Object *clone() const override;
     NumericItem &operator =(const NumericItem &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     NumericItem(const NumericItem &other);

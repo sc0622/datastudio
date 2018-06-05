@@ -19,10 +19,10 @@ public:
     explicit BitItem(const std::string &id, ItemType type, Object *parent = nullptr);
     ~BitItem();
 
-    double data() const final;
-    void setData(double d) final;
+    double data() const override;
+    void setData(double d) override;
     bool testBit(int offset) const;
-    std::string dataString() const final;
+    std::string dataString() const override;
 
     int bitStart() const;
     void setBitStart(int bitStart);
@@ -45,15 +45,15 @@ public:
     static std::string nameOf(const std::string &spec);
     std::string descAt(int offset) const;
 
-    std::string typeName() const final;
+    std::string typeName() const override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     BitItem &operator =(const BitItem &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     BitItem(const BitItem &other);

@@ -75,17 +75,17 @@ public:
     std::string codeName() const;
 
     void setParent(Object *parent);
-    int childCount() const final;
-    void resetData() final;
-    void clearData() final;
+    int childCount() const override;
+    void resetData() override;
+    void clearData() override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     Table &operator =(const Table &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     Table(const Table &other);

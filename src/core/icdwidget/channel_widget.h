@@ -39,7 +39,7 @@ public:
      * @brief ChannelWidget
      * @param parent
      */
-    explicit ChannelWidget(QWidget *parent = 0);
+    explicit ChannelWidget(QWidget *parent = nullptr);
 
     ~ChannelWidget();
 

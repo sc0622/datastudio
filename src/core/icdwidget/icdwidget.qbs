@@ -6,7 +6,8 @@ CoreDyLibrary {
     Depends { name: 'Qt.widgets' }
     Depends { name: 'Qt.concurrent' }
     Depends { name: 'Qt.xml' }
-    Depends { name: '3rdpart.jwt' }
+    Depends { name: 'jwt'; required: false }
+    Depends { name: '3rdpart.jwt'; required: false }
     Depends { name: 'icdcomm' }
     Depends { name: 'icdcore' }
     Depends { name: 'icdworker' }
@@ -33,7 +34,6 @@ CoreDyLibrary {
         name: 'Resources'
         files: [ 'resource/*.qrc' ]
     }
-
     cpp.cxxStandardLibrary: 'c++98'
 
 }

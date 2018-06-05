@@ -35,9 +35,9 @@ public:
     static std::string frameCodeTypeString(FrameCodeType type);
     static FrameCodeType stringFrameCodeType(const std::string &str);
 
-    double data() const final;
-    void setData(double data) final;
-    std::string dataString() const final;
+    double data() const override;
+    void setData(double data) override;
+    std::string dataString() const override;
 
     std::string frameId() const;
     void setFrameId(const std::string &id);
@@ -47,19 +47,19 @@ public:
     void updateSend(bool period);
     void updateRecv();
     void resetSend();
-    void resetData() final;
-    void clearData() final;
+    void resetData() override;
+    void clearData() override;
 
-    std::string typeName() const final;
-    std::string typeString() const final;
+    std::string typeName() const override;
+    std::string typeString() const override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     FrameCodeItem &operator =(const FrameCodeItem &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     FrameCodeItem(const FrameCodeItem &other);

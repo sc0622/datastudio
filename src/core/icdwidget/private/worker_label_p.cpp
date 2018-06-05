@@ -9,10 +9,10 @@ WorkerLabelPrivate::WorkerLabelPrivate(const Icd::WorkerPtr &worker,
     : J_QPTR(q)
     , worker(worker)
     , attributes(ChannelWidget::NoOperate)
-    , buttonOpen(0)
-    , buttonSwitchRecv(0)
-    , buttonRemove(0)
-    , labelIndicator(0)
+    , buttonOpen(nullptr)
+    , buttonSwitchRecv(nullptr)
+    , buttonRemove(nullptr)
+    , labelIndicator(nullptr)
 {
 
 }

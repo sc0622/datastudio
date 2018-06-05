@@ -79,6 +79,7 @@ typedef void(*SingletonReleaseCallback)();
 
 #ifndef J_VARIANT_FROM_VOID
 #define J_VARIANT_FROM_VOID
+#include <QVariant>
 template<typename T> inline
 T *jVariantFromVoid(const QVariant &value)
 { return reinterpret_cast<T *>(value.value<void *>()); }
@@ -110,8 +111,10 @@ enum TreeItemType {
  */
 enum TreeItemDataRole {
     TreeItemUserRole = Qt::UserRole + 1, /**< ICD用户项标识 */
+    TreeItemIdRole,                      /**< ICD数据项标识 */
     TreeItemDomainRole,                  /**< ICD数据项域名标识 */
     TreeItemPathRole,                    /**<  */
+    TreeItemMarkRole,                    /**< ICD数据项mark */
     TreeChannelIdRole,                   /**< ICD通道标识（绑定到数据表） */
     TreeDataTypeRole,                    /**< ICD数据项类型 */
     TreeBoundRole,                       /**< ICD绑定其他对象 */

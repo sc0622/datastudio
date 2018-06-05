@@ -31,17 +31,17 @@ public:
     SystemPtr systemAt(int index) const;
     SystemPtr systemByMark(const std::string &mark) const;
 
-    int childCount() const final;
-    void resetData() final;
-    void clearData() final;
+    int childCount() const override;
+    void resetData() override;
+    void clearData() override;
 
-    Object *clone() const final;
+    Object *clone() const override;
     Vehicle &operator =(const Vehicle &other);
 
     // Serializable interface
 public:
-    Json::Value save() const final;
-    bool restore(const Json::Value &json, int deep = -1) final;
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
     Vehicle(const Vehicle &other);

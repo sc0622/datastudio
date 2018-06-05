@@ -3,13 +3,17 @@
 
 #include "icdwidget_global.h"
 #include <functional>
+#include <QEvent>
+#include <QVariant>
+
+class QString;
 
 namespace Icd {
 
 //
 class JNEvent;
-typedef std::function<void()> JNotifyCallbackEmpty;
-typedef std::function<void(JNEvent &event)> JNotifyCallback;
+typedef ::std::function<void()> JNotifyCallbackEmpty;
+typedef ::std::function<void(JNEvent &event)> JNotifyCallback;
 
 // class JNEvent
 
@@ -56,7 +60,7 @@ private:
 // class JNotify
 
 class JNotify;
-typedef std::shared_ptr<JNotify> JNotifyPtr;
+typedef ::std::shared_ptr<JNotify> JNotifyPtr;
 class JNotifyPrivate;
 
 class ICDWIDGET_EXPORT JNotify : public QObject
@@ -87,16 +91,16 @@ signals:
 public slots:
 
 protected:
-    void customEvent(QEvent *event);
+    void customEvent(QEvent *event) override;
 
-private:
+public:
     explicit JNotify(QObject *parent = nullptr);
     ~JNotify();
 
 private:
     Q_DISABLE_COPY(JNotify)
     J_DECLARE_PRIVATE(JNotify)
-    J_FRIEND_HANDLEPTR()
+    //J_FRIEND_HANDLEPTR()
 };
 
 }
