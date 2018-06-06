@@ -9,6 +9,7 @@ Project {
     QtInstall {
         name: 'setenv-qt'
         moduleGeneral: base.concat([ 'Qml', 'SerialPort', 'Sql' ])
+        modulePlugins: base.concat([ 'sqldrivers' ])
     }
 
     JFrameworkInstall {

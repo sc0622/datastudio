@@ -498,7 +498,6 @@ QToolButton::menu-arrow:hover {
 
 QToolBar {
     background: #383838;
-    min-height: 30px;
     border: none;
 }
 

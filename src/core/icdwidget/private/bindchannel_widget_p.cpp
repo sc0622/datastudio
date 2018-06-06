@@ -48,19 +48,19 @@ void BindChannelWidgetPrivate::init()
     QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
     vertLayoutMain->addLayout(horiLayoutBottom);
 
-    //
-    buttonOk = new QPushButton(QStringLiteral("确定"), q);
-    buttonOk->setMinimumWidth(100);
-    buttonOk->setDefault(true);
     horiLayoutBottom->addStretch();
+
+    buttonOk = new QPushButton(QStringLiteral("确定"), q);
+    buttonOk->setMinimumWidth(120);
+    buttonOk->setDefault(true);
     horiLayoutBottom->addWidget(buttonOk);
 
     buttonCancel = new QPushButton(QStringLiteral("取消"), q);
-    buttonCancel->setMinimumWidth(100);
+    buttonCancel->setMinimumWidth(120);
     horiLayoutBottom->addSpacing(10);
     horiLayoutBottom->addWidget(buttonCancel);
 
-    horiLayoutBottom->addSpacing(10);
+    horiLayoutBottom->addStretch();
 
     //
     connect(tabWidget, &QTabWidget::currentChanged, this, [=](int index){
@@ -84,27 +84,18 @@ void BindChannelWidgetPrivate::init()
 
 Icd::WorkerPtr BindChannelWidgetPrivate::selectedWorker() const
 {
-    ChannelWidget *widget = 0;
+    ChannelWidget *widget = nullptr;
     switch (tabWidget->currentIndex()) {
-    case 0:
-        widget = widgetFile;
-        break;
-    case 1:
-        widget = widgetSerial;
-        break;
-    case 2:
-        widget = widgetUdp;
-        break;
-    default:
-        return Icd::WorkerPtr(0);
+    case 0: widget = widgetFile; break;
+    case 1: widget = widgetSerial; break;
+    case 2: widget = widgetUdp; break;
+    default: return Icd::WorkerPtr();
     }
 
-    //
     if (!widget) {
-        return Icd::WorkerPtr(0);
+        return Icd::WorkerPtr();
     }
 
-    //
     return widget->selectedWorker();
 }
 
@@ -123,15 +114,14 @@ void BindChannelWidgetPrivate::updateCurrentList(int index)
     //
     if (index == -1) {
         index = tabWidget->currentIndex();
-    }
-
-    if (index == -1) {
-        return;
+        if (index == -1) {
+            return;
+        }
     }
 
     //
     Icd::ChannelType channelType = Icd::ChannelInvalid;
-    ChannelWidget *widget = 0;
+    ChannelWidget *widget = nullptr;
     switch (index) {
     case 0:
         channelType = Icd::ChannelFile;

@@ -27,7 +27,7 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     d_labelTitle->setObjectName("labelTitle");
     d_labelTitle->setContentsMargins(8, 0, 8, 0);
     d_labelTitle->setFixedHeight(25);
-    QFont font("microsoft yahei", 11);
+    QFont font = d_labelTitle->font();
     font.setBold(true);
     d_labelTitle->setFont(font);
     vertLayoutMain->addWidget(d_labelTitle, 0, Qt::AlignTop);
@@ -299,7 +299,7 @@ bool DataItemWidget::updateUi(const Icd::ItemPtr &data)
     if (d_item) {
         const QString path = d_item->data(Icd::TreeItemPathRole).toString();
         const QString name = path.section('@', 0, 0);
-        d_labelTitle->setText("<font color=#ccc>" + name + "</font><font color=#aaa size=2>@"
+        d_labelTitle->setText("<font color=#7777bb>" + name + "</font><font color=#807777aa size=2>@"
                               + path.section('@', 1) + "</font>");
     } else {
         d_labelTitle->setText(QString::fromStdString(data->name()));

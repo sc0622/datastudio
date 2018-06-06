@@ -15,7 +15,7 @@ Window::Window(QWidget *parent)
     splitter_->setObjectName("prefer.window.splitter.main");
     splitter_->setOpaqueResize(true);
     splitter_->setHandleWidth(5);
-    splitter_->setScales(QList<double>() << 1 << 5);
+    splitter_->setScales(QList<double>() << 1 << 6);
     vertLayoutMain->addWidget(splitter_);
 
     listWidget_ = new QListWidget(this);

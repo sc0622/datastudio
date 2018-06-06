@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
     setMenuWidget(tabWidget_);
 
     toolBar_ = new Main::ToolBar(this);
-    toolBar_->setProperty("__main__", true);
     toolBar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     addToolBar(toolBar_);
 

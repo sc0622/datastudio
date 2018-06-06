@@ -21,6 +21,7 @@ TabWidget::TabWidget(QWidget *parent)
 
     connect(this, &TabWidget::currentChanged, this, [=](int index){
         jnotify->send("main.tab.changed", index);
+
     });
     connect(this, &TabWidget::tabBarDoubleClicked, this, [=](){
         jnotify->send("main.toolbar.show.toggle", menuBar_);
@@ -43,6 +44,9 @@ bool TabWidget::init()
     bool result = true;
 
     JMain::restoreWidgetState(this);
+    if (currentIndex() == 0) {
+        jnotify->send("main.tab.changed", 0);
+    }
 
     menuBar_->init();
 

@@ -130,5 +130,13 @@
         <file alias="channel.png">image/global/channel.png</file>
         <file alias="buffer-view.png">image/global/buffer-view.png</file>
         <file alias="chart.png">image/global/chart.png</file>
+        <file alias="add.png">image/global/add.png</file>
+        <file alias="down.png">image/global/down.png</file>
+        <file alias="export-db.png">image/global/export-db.png</file>
+        <file alias="export-file.png">image/global/export-file.png</file>
+        <file alias="id.png">image/global/id.png</file>
+        <file alias="insert.png">image/global/insert.png</file>
+        <file alias="remove.png">image/global/remove.png</file>
+        <file alias="up.png">image/global/up.png</file>
     </qresource>
 </RCC>

@@ -86,10 +86,20 @@ void ToolBar::updateEdit()
     connect(actionDatabase, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.database.config");
     });
+#ifdef EDIT_OLD
+    // data [edit]
     addSeparator();
+    addEditItemAction(option["item"]);
+    // export
+    addSeparator();
+    addEditExportAction(option["export"]);
+    // tool
+    addSeparator();
+    addEditToolAction(option["tool"]);
+#else
     // view
-    addEditViewAction(option);
     addSeparator();
+    addEditViewAction(option);
     // copy
     QAction *actionCopy = addAction(QIcon(":/datastudio/image/toolbar/copy.png"),
                                     tr("Copy"));
@@ -109,8 +119,9 @@ void ToolBar::updateEdit()
     connect(actionSaveAs, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tree.saveas");
     });
-    addSeparator();
+#endif
     // window
+    addSeparator();
     addEditWindowAction(option["window"]);
     addSeparator();
     addEditSettingsAction();
@@ -214,7 +225,76 @@ QAction *ToolBar::addEditOrigValueRadixAction(QAction *action)
 
     return actionNoOrigValue;
 }
+#ifdef EDIT_OLD
+void ToolBar::addEditItemAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    // add item
+    QAction *actionAddItem = addAction(QIcon(":/datastudio/image/global/add.png"),
+                                   tr("Add item"));
+    connect(actionAddItem, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.item.add");
+    });
+    // insert item
+    QAction *actionInsertItem = addAction(QIcon(":/datastudio/image/global/insert.png"),
+                                   tr("Insert item"));
+    connect(actionInsertItem, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.item.insert");
+    });
+    // up item
+    QAction *actionUpItem = addAction(QIcon(":/datastudio/image/global/up.png"),
+                                   tr("Up item"));
+    connect(actionUpItem, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.item.up");
+    });
+    // down item
+    QAction *actionDownItem = addAction(QIcon(":/datastudio/image/global/down.png"),
+                                   tr("Down item"));
+    connect(actionDownItem, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.item.down");
+    });
+    // remove item
+    QAction *actionRemoveItem = addAction(QIcon(":/datastudio/image/global/remove.png"),
+                                   tr("Remove item"));
+    connect(actionRemoveItem, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.item.remove");
+    });
+    // clean item
+    QAction *actionCleanItem = addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
+                                   tr("Clean item"));
+    connect(actionCleanItem, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.item.clean");
+    });
+}
 
+void ToolBar::addEditExportAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    // export to database
+    QAction *actionExportToDB = addAction(QIcon(":/datastudio/image/global/export-db.png"),
+                                   tr("Export to DB"));
+    connect(actionExportToDB, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.export.db");
+    });
+    // export to file
+    QAction *actionExportToFile = addAction(QIcon(":/datastudio/image/global/export-file.png"),
+                                   tr("Export to file"));
+    connect(actionExportToFile, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.export.file");
+    });
+}
+
+void ToolBar::addEditToolAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    // generate GUID
+    QAction *actionGenGuid = addAction(QIcon(":/datastudio/image/global/id.png"),
+                                   tr("Generate GUID"));
+    connect(actionGenGuid, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.tool.genguid");
+    });
+}
+#endif
 void ToolBar::addEditWindowAction(const Json::Value &option)
 {
     Q_UNUSED(option);
@@ -662,7 +742,7 @@ void ToolBar::addMonitorWindowAction(const Json::Value &option)
     notifyTree(actionTreeWin->isChecked());
     // Buffer window
     QAction *actionBufferWin = addAction(QIcon(":/datastudio/image/global/buffer-view.png"),
-                                       tr("Buffer window"));
+                                         tr("Buffer window"));
     actionBufferWin->setCheckable(true);
     if (option.isMember("buffer")) {
         actionBufferWin->setChecked(option["buffer"].asBool());
@@ -679,7 +759,7 @@ void ToolBar::addMonitorWindowAction(const Json::Value &option)
     notifyBuffer(actionBufferWin->isChecked());
     // Chart window
     QAction *actionChartWin = addAction(QIcon(":/datastudio/image/global/chart.png"),
-                                           tr("Chart window"));
+                                        tr("Chart window"));
     actionChartWin->setCheckable(true);
     if (option.isMember("chart")) {
         actionChartWin->setChecked(option["chart"].asBool());
@@ -1025,7 +1105,7 @@ void ToolBar::addSimulateWindowAction(const Json::Value &option)
     notifyTree(actionTreeWin->isChecked());
     // Modify window
     QAction *actionModifyWin = addAction(QIcon(":/datastudio/image/global/edit.png"),
-                                           tr("Modify window"));
+                                         tr("Modify window"));
     actionModifyWin->setCheckable(true);
     if (option.isMember("modify")) {
         actionModifyWin->setChecked(option["modify"].asBool());
@@ -1280,7 +1360,7 @@ void ToolBar::addAnalyseWindowAction(const Json::Value &option)
     notifyTree(actionTreeWin->isChecked());
     // Chart window
     QAction *actionChartWin = addAction(QIcon(":/datastudio/image/global/chart.png"),
-                                           tr("Chart window"));
+                                        tr("Chart window"));
     actionChartWin->setCheckable(true);
     if (option.isMember("chart")) {
         actionChartWin->setChecked(option["chart"].asBool());

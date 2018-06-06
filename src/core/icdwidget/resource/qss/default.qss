@@ -11,8 +11,6 @@ QPushButton {
     padding-bottom: 0.2em;
     outline: none;
     font-family: "Microsoft Yahei";
-    min-width: 60px;
-    min-height: 22px;
 }
 
 QPushButton:hover {

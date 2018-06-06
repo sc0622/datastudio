@@ -979,7 +979,6 @@ QwtLegendLabel {
 QWidget#JChartView QToolBar {
     background: #323232;
     spacing: 2px;
-    min-height: 20px;
     padding: 0;
 } 
 
