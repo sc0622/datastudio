@@ -10,6 +10,8 @@ ToolBar::ToolBar(QWidget *parent)
     setObjectName(metaObject()->className());
 
     bindingNotify();
+
+    hide();
 }
 
 bool ToolBar::init()
@@ -37,6 +39,13 @@ void ToolBar::bindingNotify()
 {
     jnotify->un(this);
 
+    jnotify->on("main.toolbar.show", this, [=](JNEvent &event){
+        const int currentTab = jnotify->send("main.tab.currentIndex").toInt();
+        if (currentTab == 0) {
+            return;
+        }
+        setVisible(event.argument().toBool());
+    });
     jnotify->on("main.tab.changed", this, [=](JNEvent &event){
         update(event.argument().toInt());
     });
@@ -54,7 +63,6 @@ void ToolBar::bindingNotify()
         if (dialog.exec() != QDialog::Accepted) {
             return;
         }
-        //
     });
 }
 
@@ -69,7 +77,7 @@ void ToolBar::updatePrefer()
 
 void ToolBar::updateEdit()
 {
-    setVisible(true);
+    setVisible(JMain::instance()->config("global.menubar.toolBarVisible").asBool());
 
     const Json::Value option = JMain::instance()->option("edit", "option");
     // database
@@ -101,6 +109,9 @@ void ToolBar::updateEdit()
     connect(actionSaveAs, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tree.saveas");
     });
+    addSeparator();
+    // window
+    addEditWindowAction(option["window"]);
     addSeparator();
     addEditSettingsAction();
 }
@@ -207,9 +218,40 @@ QAction *ToolBar::addEditOrigValueRadixAction(QAction *action)
 void ToolBar::addEditWindowAction(const Json::Value &option)
 {
     Q_UNUSED(option);
-#if 0
-    //
-#endif
+    // tree window
+    QAction *actionTreeWin = addAction(QIcon(":/datastudio/image/global/tree-node.png"),
+                                       tr("Tree window"));
+    actionTreeWin->setCheckable(true);
+    if (option.isMember("tree")) {
+        actionTreeWin->setChecked(option["tree"].asBool());
+    } else {
+        actionTreeWin->setChecked(true);
+    }
+    auto notifyTree = [=](bool checked){
+        JMain::instance()->setOption("edit", "option.window.tree", checked);
+        jnotify->send("edit.toolbar.window.tree", checked);
+    };
+    connect(actionTreeWin, &QAction::toggled, this, [=](bool checked){
+        notifyTree(checked);
+    });
+    notifyTree(actionTreeWin->isChecked());
+    // Settings window
+    QAction *actionSettingsWin = addAction(QIcon(":/datastudio/image/global/settings.png"),
+                                           tr("Settings window"));
+    actionSettingsWin->setCheckable(true);
+    if (option.isMember("settings")) {
+        actionSettingsWin->setChecked(option["settings"].asBool());
+    } else {
+        actionSettingsWin->setChecked(true);
+    }
+    auto notifySettings = [=](bool checked){
+        JMain::instance()->setOption("edit", "option.window.settings", checked);
+        jnotify->send("edit.toolbar.window.settings", checked);
+    };
+    connect(actionSettingsWin, &QAction::toggled, this, [=](bool checked){
+        notifySettings(checked);
+    });
+    notifySettings(actionSettingsWin->isChecked());
 }
 
 void ToolBar::addEditSettingsAction()
@@ -225,7 +267,7 @@ void ToolBar::addEditSettingsAction()
 
 void ToolBar::updateMonitor()
 {
-    setVisible(true);
+    setVisible(JMain::instance()->config("global.menubar.toolBarVisible").asBool());
 
     const Json::Value option = JMain::instance()->option("monitor", "option");
     // database
@@ -245,6 +287,9 @@ void ToolBar::updateMonitor()
     addSeparator();
     // chart
     addMonitorChartAction(option["chart"]);
+    addSeparator();
+    // window
+    addMonitorWindowAction(option["window"]);
     addSeparator();
     addMonitorSettingsAction();
 }
@@ -598,9 +643,57 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
 void ToolBar::addMonitorWindowAction(const Json::Value &option)
 {
     Q_UNUSED(option);
-#if 0
-    //
-#endif
+    // tree window
+    QAction *actionTreeWin = addAction(QIcon(":/datastudio/image/global/tree-node.png"),
+                                       tr("Tree window"));
+    actionTreeWin->setCheckable(true);
+    if (option.isMember("tree")) {
+        actionTreeWin->setChecked(option["tree"].asBool());
+    } else {
+        actionTreeWin->setChecked(true);
+    }
+    auto notifyTree = [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.window.tree", checked);
+        jnotify->send("monitor.toolbar.window.tree", checked);
+    };
+    connect(actionTreeWin, &QAction::toggled, this, [=](bool checked){
+        notifyTree(checked);
+    });
+    notifyTree(actionTreeWin->isChecked());
+    // Buffer window
+    QAction *actionBufferWin = addAction(QIcon(":/datastudio/image/global/buffer-view.png"),
+                                       tr("Buffer window"));
+    actionBufferWin->setCheckable(true);
+    if (option.isMember("buffer")) {
+        actionBufferWin->setChecked(option["buffer"].asBool());
+    } else {
+        actionBufferWin->setChecked(true);
+    }
+    auto notifyBuffer = [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.window.buffer", checked);
+        jnotify->send("monitor.toolbar.window.buffer", checked);
+    };
+    connect(actionBufferWin, &QAction::toggled, this, [=](bool checked){
+        notifyBuffer(checked);
+    });
+    notifyBuffer(actionBufferWin->isChecked());
+    // Chart window
+    QAction *actionChartWin = addAction(QIcon(":/datastudio/image/global/chart.png"),
+                                           tr("Chart window"));
+    actionChartWin->setCheckable(true);
+    if (option.isMember("chart")) {
+        actionChartWin->setChecked(option["chart"].asBool());
+    } else {
+        actionChartWin->setChecked(true);
+    }
+    auto notifySettings = [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.window.chart", checked);
+        jnotify->send("monitor.toolbar.window.chart", checked);
+    };
+    connect(actionChartWin, &QAction::toggled, this, [=](bool checked){
+        notifySettings(checked);
+    });
+    notifySettings(actionChartWin->isChecked());
 }
 
 void ToolBar::addMonitorSettingsAction()
@@ -616,7 +709,7 @@ void ToolBar::addMonitorSettingsAction()
 
 void ToolBar::updateSimulate()
 {
-    setVisible(true);
+    setVisible(JMain::instance()->config("global.menubar.toolBarVisible").asBool());
 
     const Json::Value option = JMain::instance()->option("monitor", "option");
     // database
@@ -636,6 +729,9 @@ void ToolBar::updateSimulate()
     addSeparator();
     // set
     addSimulateSetAction(option["set"]);
+    addSeparator();
+    // window
+    addSimulateWindowAction(option["window"]);
     addSeparator();
     addSimulateSettingsAction();
 }
@@ -907,6 +1003,45 @@ void ToolBar::addSimulateSetAction(const Json::Value &option)
     });
 }
 
+void ToolBar::addSimulateWindowAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    // tree window
+    QAction *actionTreeWin = addAction(QIcon(":/datastudio/image/global/tree-node.png"),
+                                       tr("Tree window"));
+    actionTreeWin->setCheckable(true);
+    if (option.isMember("tree")) {
+        actionTreeWin->setChecked(option["tree"].asBool());
+    } else {
+        actionTreeWin->setChecked(true);
+    }
+    auto notifyTree = [=](bool checked){
+        JMain::instance()->setOption("simulate", "option.window.tree", checked);
+        jnotify->send("simulate.toolbar.window.tree", checked);
+    };
+    connect(actionTreeWin, &QAction::toggled, this, [=](bool checked){
+        notifyTree(checked);
+    });
+    notifyTree(actionTreeWin->isChecked());
+    // Modify window
+    QAction *actionModifyWin = addAction(QIcon(":/datastudio/image/global/edit.png"),
+                                           tr("Modify window"));
+    actionModifyWin->setCheckable(true);
+    if (option.isMember("modify")) {
+        actionModifyWin->setChecked(option["modify"].asBool());
+    } else {
+        actionModifyWin->setChecked(true);
+    }
+    auto notifyModifyWin = [=](bool checked){
+        JMain::instance()->setOption("simulate", "option.window.set", checked);
+        jnotify->send("simulate.toolbar.window.set", checked);
+    };
+    connect(actionModifyWin, &QAction::toggled, this, [=](bool checked){
+        notifyModifyWin(checked);
+    });
+    notifyModifyWin(actionModifyWin->isChecked());
+}
+
 void ToolBar::addSimulateSettingsAction()
 {
     QAction *actionSettings = addAction(QIcon(":/datastudio/image/toolbar/settings.png"),
@@ -920,7 +1055,7 @@ void ToolBar::addSimulateSettingsAction()
 
 void ToolBar::updateAnalyse()
 {
-    setVisible(true);
+    setVisible(JMain::instance()->config("global.menubar.toolBarVisible").asBool());
 
     const Json::Value option = JMain::instance()->option("analyse", "option");
 
@@ -939,6 +1074,9 @@ void ToolBar::updateAnalyse()
     addSeparator();
     // chart
     addAnalyseChartAction(option["chart"]);
+    addSeparator();
+    // window
+    addAnalyseWindowAction(option["window"]);
     addSeparator();
     addAnalyseSettingsAction();
 }
@@ -1118,6 +1256,45 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
     } else {
         actionSyncTrack->setChecked(true);
     }
+}
+
+void ToolBar::addAnalyseWindowAction(const Json::Value &option)
+{
+    Q_UNUSED(option);
+    // tree window
+    QAction *actionTreeWin = addAction(QIcon(":/datastudio/image/global/tree-node.png"),
+                                       tr("Tree window"));
+    actionTreeWin->setCheckable(true);
+    if (option.isMember("tree")) {
+        actionTreeWin->setChecked(option["tree"].asBool());
+    } else {
+        actionTreeWin->setChecked(true);
+    }
+    auto notifyTree = [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.window.tree", checked);
+        jnotify->send("analyse.toolbar.window.tree", checked);
+    };
+    connect(actionTreeWin, &QAction::toggled, this, [=](bool checked){
+        notifyTree(checked);
+    });
+    notifyTree(actionTreeWin->isChecked());
+    // Chart window
+    QAction *actionChartWin = addAction(QIcon(":/datastudio/image/global/chart.png"),
+                                           tr("Chart window"));
+    actionChartWin->setCheckable(true);
+    if (option.isMember("chart")) {
+        actionChartWin->setChecked(option["chart"].asBool());
+    } else {
+        actionChartWin->setChecked(true);
+    }
+    auto notifySettings = [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.window.chart", checked);
+        jnotify->send("analyse.toolbar.window.chart", checked);
+    };
+    connect(actionChartWin, &QAction::toggled, this, [=](bool checked){
+        notifySettings(checked);
+    });
+    notifySettings(actionChartWin->isChecked());
 }
 
 void ToolBar::addAnalyseSettingsAction()

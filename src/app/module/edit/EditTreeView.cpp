@@ -91,6 +91,9 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("edit.toolbar.tree.saveas", this, [=](JNEvent &){
     });
+    jnotify->on("edit.toolbar.window.tree", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
 }
 
 TreeView::~TreeView()

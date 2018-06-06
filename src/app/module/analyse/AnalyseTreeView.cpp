@@ -96,6 +96,9 @@ TreeView::TreeView(QWidget *parent)
     jnotify->on("analyse.toolbar.tree.unloadData", this, [=](JNEvent &){
         unloadRecordData();
     });
+    jnotify->on("analyse.toolbar.window.tree", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
 }
 
 TreeView::~TreeView()

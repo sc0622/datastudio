@@ -11,31 +11,34 @@ Window::Window(QWidget *parent)
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    d_splitter = new JSplitter(this);
-    d_splitter->setObjectName("main.preference.view.splitter");
-    d_splitter->setOpaqueResize(true);
-    d_splitter->setHandleWidth(5);
-    d_splitter->setScales(QList<double>() << 1 << 5);
-    vertLayoutMain->addWidget(d_splitter);
+    splitter_ = new JSplitter(this);
+    splitter_->setObjectName("prefer.window.splitter.main");
+    splitter_->setOpaqueResize(true);
+    splitter_->setHandleWidth(5);
+    splitter_->setScales(QList<double>() << 1 << 5);
+    vertLayoutMain->addWidget(splitter_);
 
-    d_listWidget = new QListWidget(this);
-    d_listWidget->setFrameShape(QFrame::NoFrame);
-    d_listWidget->setViewMode(QListView::IconMode);
-    d_listWidget->setResizeMode(QListView::Adjust);
-    d_listWidget->setUniformItemSizes(true);
-    d_splitter->addWidget(d_listWidget);
+    listWidget_ = new QListWidget(this);
+    listWidget_->setFrameShape(QFrame::NoFrame);
+    listWidget_->setViewMode(QListView::ListMode);
+    QFont font = listWidget_->font();
+    font.setPointSize(font.pointSize() + 2);
+    listWidget_->setFont(font);
+    listWidget_->setIconSize(QSize(30, 30));
+    splitter_->addWidget(listWidget_);
 
-    d_scrollArea = new QScrollArea(this);
-    d_scrollArea->setFrameShape(QFrame::NoFrame);
-    d_scrollArea->setWidgetResizable(true);
-    d_splitter->addWidget(d_scrollArea);
+    scrollArea_ = new QScrollArea(this);
+    scrollArea_->setFrameShape(QFrame::NoFrame);
+    scrollArea_->setWidgetResizable(true);
+    splitter_->addWidget(scrollArea_);
 
-    connect(d_listWidget, &QListWidget::currentRowChanged, this, &Window::onCurrentRowChanged);
+    connect(listWidget_, &QListWidget::currentRowChanged,
+            this, &Window::onCurrentRowChanged);
 }
 
 Window::~Window()
 {
-    JMain::saveWidgetState(d_splitter);
+    JMain::saveWidgetState(splitter_);
 }
 
 bool Window::init()
@@ -43,38 +46,27 @@ bool Window::init()
     bool result = true;
 
     if (result) {
-        JMain::restoreWidgetState(d_splitter);
+        JMain::restoreWidgetState(splitter_);
     }
 
-    d_listWidget->clear();
+    listWidget_->clear();
 
     // channel item
     QListWidgetItem *itemChannel = new QListWidgetItem(
                 QIcon(":/datastudio/image/global/channel.png"),
                 tr("Channel management"));
-    d_listWidget->addItem(itemChannel);
-
-    // datasource item
-    QListWidgetItem *itemDataSource = new QListWidgetItem(
-                QIcon(":/datastudio/image/toolbar/database.png"),
-                tr("Data source management"));
-    d_listWidget->addItem(itemDataSource);
-
-    // test
-    QListWidgetItem *itemDataSource2 = new QListWidgetItem(
-                QIcon(":/datastudio/image/toolbar/database.png"),
-                tr("item #1"));
-    d_listWidget->addItem(itemDataSource2);
+    itemChannel->setSizeHint(QSize(itemChannel->sizeHint().width(), 40));
+    listWidget_->addItem(itemChannel);
 
     // set current type
-    d_listWidget->setCurrentRow(ItemTypeChannel);
+    listWidget_->setCurrentRow(ItemTypeChannel);
 
     return result;
 }
 
 void Window::onCurrentRowChanged(int currentRow)
 {
-    QWidget *widget = d_scrollArea->takeWidget();
+    QWidget *widget = scrollArea_->takeWidget();
     if (widget) {
         widget->deleteLater();
     }
@@ -86,14 +78,14 @@ void Window::onCurrentRowChanged(int currentRow)
     switch (currentRow) {
     case ItemTypeChannel:
     {
-        ChannelView *channelView = new ChannelView(d_scrollArea);
-        d_scrollArea->setWidget(channelView);
+        ChannelView *channelView = new ChannelView(scrollArea_);
+        scrollArea_->setWidget(channelView);
         break;
     }
     case ItemTypeDataSource:
     {
-        DataSourceView *dataSourceView = new DataSourceView(d_scrollArea);
-        d_scrollArea->setWidget(dataSourceView);
+        DataSourceView *dataSourceView = new DataSourceView(scrollArea_);
+        scrollArea_->setWidget(dataSourceView);
         break;
     }
     default:

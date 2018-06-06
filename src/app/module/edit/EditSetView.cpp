@@ -17,6 +17,9 @@ SetView::SetView(QWidget *parent)
     d_detailView = new DetailView(this);
     d_stackedWidget->addWidget(d_detailView);
 
+    jnotify->on("edit.toolbar.window.settings", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
     jnotify->on("edit.tree.item.currentchanged", this, [=](JNEvent &event){
         QVariantList args = event.argument().toList();
         if (args.count() != 2) {

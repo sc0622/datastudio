@@ -56,6 +56,9 @@ ChartView::ChartView(QWidget *parent)
         const bool running = event.argument().toBool();
         d_chartView->toggleReplay(running);
     });
+    jnotify->on("analyse.toolbar.window.chart", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
     jnotify->on("analyse.tree.item.clicked", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
         if (args.count() != 2) {

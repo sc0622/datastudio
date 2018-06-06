@@ -255,9 +255,8 @@ int JMain::execApp(QApplication *app)
 
     mainWindow->show();
     const QString theme = JMain::instance()->theme();
-#if 1//defined(TEST_STYLESHEET)
-    const QString prefix(QApplication::applicationDirPath()
-                         .append("/../src/app/resource/qss/stylesheet-"));
+#if defined(TEST_STYLESHEET)
+    const QString prefix(PROJECT_DIR + QLatin1String("/src/app/resource/qss/stylesheet-"));
     const QString filePath(prefix + theme + ".qss");
     if (QFile(filePath).exists()) {
         JMainPrivate::setStyleSheet(filePath);

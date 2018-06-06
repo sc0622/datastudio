@@ -50,6 +50,7 @@ private:
     void addSimulateFlushSwitchAction(const Json::Value &option);
     void addSimulateTreeAction(const Json::Value &option);
     void addSimulateSetAction(const Json::Value &option);
+    void addSimulateWindowAction(const Json::Value &option);
     void addSimulateSettingsAction();
 
     // analyse
@@ -57,6 +58,7 @@ private:
     void addAnalyseViewAction(const Json::Value &option);
     void addAnalyseTreeAction(const Json::Value &option);
     void addAnalyseChartAction(const Json::Value &option);
+    void addAnalyseWindowAction(const Json::Value &option);
     void addAnalyseSettingsAction();
 
 private:

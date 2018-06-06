@@ -29,6 +29,10 @@
                "loadDeep" : 2,
                "showOffset" : true,
                "showType" : true
+            },
+            "window" : {
+               "chart" : true,
+               "tree" : true
             }
          },
          "parser" : {
@@ -43,6 +47,10 @@
                "loadDeep" : 2,
                "showOffset" : true,
                "showType" : true
+            },
+            "window" : {
+               "settings" : true,
+               "tree" : true
             }
          },
          "parser" : {
@@ -69,6 +77,11 @@
                "showOrignal" : 0,
                "showType" : true,
                "showValue" : true
+            },
+            "window" : {
+               "buffer" : false,
+               "chart" : true,
+               "tree" : true
             }
          },
          "parser" : {
@@ -86,6 +99,10 @@
                "showOrignal" : 0,
                "showType" : true,
                "showValue" : true
+            },
+            "window" : {
+               "set" : true,
+               "tree" : true
             }
          },
          "parser" : {

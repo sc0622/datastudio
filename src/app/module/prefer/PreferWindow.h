@@ -30,9 +30,9 @@ public slots:
     void onCurrentRowChanged(int currentRow);
 
 private:
-    JSplitter *d_splitter;
-    QListWidget *d_listWidget;
-    QScrollArea *d_scrollArea;
+    JSplitter *splitter_;
+    QListWidget *listWidget_;
+    QScrollArea *scrollArea_;
 };
 
 }

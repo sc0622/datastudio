@@ -42,8 +42,13 @@ Project {
             name: 'Resources'
             files: [ 'resource/*.qrc' ]
         }
-
-        cpp.defines: base.concat([ 'PROJECT_APP' ])
+        cpp.defines: {
+            var defines = base.concat(['PROJECT_APP']);
+            if (qbs.buildVariant == 'debug') {
+                defines.push('TEST_STYLESHEET');
+            }
+            return defines;
+        }
         cpp.includePaths: base.concat([ '.' ])
     }
 }

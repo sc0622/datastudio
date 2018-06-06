@@ -9,7 +9,7 @@ QScrollArea[frameShape="6"], QFrame[frameShape="6"], QWidget[__pane__="true"] {
     background: #252526;
 }
 
-QWidget[__node__=true] {
+QWidget[__node__="true"] {
     background: rgba(80, 80, 100, 100);
     border-radius: 3px;
 }
@@ -66,7 +66,7 @@ QTabWidget::tab-bar {
 }
 
 QTabBar::tab {
-    background: #282828;
+    background: #2c2c2c;
     min-width: 8ex;
     padding: 6px;
     padding-left: 12px;
@@ -98,12 +98,12 @@ QTabBar {
 }
 
 QTabBar::tab:selected {
-    background: #334;
+    background: #246;
     color: lightgreen;
 }
 
 QTabBar::tab:hover {
-    background: #202020;
+    background: #347;
 }
 
 /** QDockWidget **/
@@ -626,8 +626,6 @@ QPlainTextEdit, QTextEdit {
     selection-color: white;
     selection-background-color: #345;
     font-family: "Consolas";
-    font-size: 14px;
-    font-weight: bold;
     outline: none;
 }
 
@@ -649,6 +647,17 @@ QPlainTextEdit:focus:!read-only, QTextEdit:focus:!read-only {
     border-radius: 2px;
     background: #383838;
     color: #eee;
+}
+
+/* custom */
+
+QTextEdit[frameShape="2"] {
+    border: none;
+    outline: none;
+}
+
+QTextEdit[frameShape="2"]:hover {
+    border: none;
 }
 
 /** QComboBox, QSpinBox, QDoubleSpinBox **/
@@ -793,30 +802,42 @@ QDateTimeEdit::down-arrow:disabled {
 
 QListView {
     background: #262626;
-    show-decoration-selected: 1;
+    alternate-background-color: #28283f;
+    selection-background-color: #282828;
+    gridline-color: #202020;
+    outline: none;
+}
+
+QListView::item {
+    background: #2a2a2a;
+    padding: 0px;
+    outline: none;
 }
 
 QListView::item:alternate {
     background: #eee;
 }
 
-QListView::item:selected {
-    border: 1px solid #6a6ea9;
+QListView::item:hover {
+    background: #a0444455;
+}
+
+QListView::item:focus {
+    border: 0px solid #444;
+}
+
+QListView::item:selected,
+QListView::item:selected:!focus {
+    background: #3f3f46;
+    color: lightgreen;
 }
 
 QListView::item:selected:!active {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #ABAFE5, stop: 1 #8588B2);
+    background: #3f3f56;
 }
 
 QListView::item:selected:active {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #6a6ea9, stop: 1 #888dd9);
-}
-
-QListView::item:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #FAFBFE, stop: 1 #DCDEF1);
+    background: #3f3f66;
 }
 
 /** QCheckBox **/

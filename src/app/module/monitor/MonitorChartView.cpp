@@ -147,6 +147,9 @@ ChartView::ChartView(QWidget *parent)
         d_chartView->removeItem(domain);
         item->setData(QVariant(), Icd::TreeBoundRole);
     });
+    jnotify->on("monitor.toolbar.window.chart", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
     //
     auto setChartTheme = [=](const QString &theme){
         if (theme == "none") {

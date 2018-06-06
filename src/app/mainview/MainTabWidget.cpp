@@ -26,6 +26,10 @@ TabWidget::TabWidget(QWidget *parent)
         jnotify->send("main.toolbar.show.toggle", menuBar_);
     });
 
+    jnotify->on("main.tab.currentIndex", this, [=](JNEvent &event){
+        event.setReturnValue(currentIndex());
+    });
+
     setFixedHeight(tabBar()->contentsRect().height());
 }
 

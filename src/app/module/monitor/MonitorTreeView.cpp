@@ -182,6 +182,9 @@ TreeView::TreeView(QWidget *parent)
     jnotify->on("monitor.toolbar.tree.channel.stopAll", this, [=](JNEvent &){
         treeView_->stopAllChannels();
     });
+    jnotify->on("monitor.toolbar.window.tree", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
 }
 
 TreeView::~TreeView()

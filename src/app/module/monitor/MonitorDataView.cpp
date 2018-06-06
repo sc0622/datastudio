@@ -63,6 +63,9 @@ DataView::DataView(QWidget *parent)
 
         this->reset();
     });
+    jnotify->on("monitor.toolbar.window.buffer", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
 }
 
 DataView::~DataView()

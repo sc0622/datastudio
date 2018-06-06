@@ -28,6 +28,8 @@ void BindChannelWidgetPrivate::init()
     vertLayoutMain->setContentsMargins(0, 0, 0, 10);
 
     tabWidget = new QTabWidget(q);
+    tabWidget->setIconSize(QSize(20, 20));
+    tabWidget->setStyleSheet("QTabWidget:tab-bar{alignment:center;}");
     vertLayoutMain->addWidget(tabWidget);
 
     widgetFile = new ChannelWidget(tabWidget);

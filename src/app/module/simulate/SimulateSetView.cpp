@@ -124,6 +124,9 @@ SetView::SetView(QWidget *parent)
     jnotify->on("simulate.toolbar.set.clean", this, [=](JNEvent &){
         d_tabVehicles->clear();
     });
+    jnotify->on("simulate.toolbar.window.set", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
 }
 
 SetView::~SetView()

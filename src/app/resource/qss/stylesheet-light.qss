@@ -9,7 +9,7 @@ QScrollArea[frameShape="6"], QFrame[frameShape="6"], QWidget[__pane__="true"] {
     background: white;
 }
 
-QWidget[__node__=true] {
+QWidget[__node__="true"] {
     background: rgba(200, 200, 240, 100);
     border-radius: 3px;
 }
@@ -705,31 +705,43 @@ QDateTimeEdit::down-arrow:disabled {
 /** QListView **/
 
 QListView {
-    background: #262626;
-    show-decoration-selected: 1;
+    background: #fff;
+    alternate-background-color: #aab;
+    selection-background-color: #aaa;
+    gridline-color: #aaa;
+    outline: none;
+}
+
+QListView::item {
+    background: #eee;
+    padding: 0;
+    outline: none;
 }
 
 QListView::item:alternate {
     background: #eee;
 }
 
-QListView::item:selected {
-    border: 1px solid #6a6ea9;
+QListView::item:hover {
+    background: #a0fff29d;
+}
+
+QListView::item:focus {
+    border: 0px solid #444;
+}
+
+QListView::item:selected,
+QListView::item:selected:!focus {
+    background: #aac;
+    color: #fff;
 }
 
 QListView::item:selected:!active {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #ABAFE5, stop: 1 #8588B2);
+    background: #ccc;
 }
 
 QListView::item:selected:active {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #6a6ea9, stop: 1 #888dd9);
-}
-
-QListView::item:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #FAFBFE, stop: 1 #DCDEF1);
+    background: #fff;
 }
 
 /** QCheckBox **/
