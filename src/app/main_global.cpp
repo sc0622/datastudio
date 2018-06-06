@@ -18,9 +18,12 @@ public:
         , neeedToRestart(false)
     {
         const QString fileName = "main.json";
-        configDir = QDir(QCoreApplication::applicationDirPath().append("/../config"))
-                .canonicalPath();
+        QSettings settings;
+        settings.beginGroup(QCoreApplication::applicationVersion().append("/Temp/Paths"));
+        configDir = settings.value("CONFIG_DIR").toString();
         configFile = configDir + "/~" + fileName;
+        settings.setValue("CONFIG_FILE", configFile);
+        settings.endGroup();
         QFile::remove(configFile);
         QFile::copy(configDir + "/" + fileName, configFile);
         // replace config
@@ -34,7 +37,7 @@ public:
             }
             file.close();
         } else {
-            qDebug() << QString("File \"%1\" open failure!").arg(configFile);
+            qDebug().noquote() << QString("File \"%1\" open failure!").arg(configFile);
         }
     }
 
@@ -84,8 +87,11 @@ void JMainPrivate::init()
 
 QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
 {
-    const QByteArray appDir = QCoreApplication::applicationDirPath().toLocal8Bit();
-    const QByteArray thisDir = QDir(appDir + "/../").canonicalPath().toLocal8Bit();
+    QSettings settings;
+    settings.beginGroup(QCoreApplication::applicationVersion().append("/Temp/Paths"));
+    const QByteArray appDir = settings.value("APP_DIR").toString().toLocal8Bit();
+    const QByteArray thisDir = settings.value("THIS_DIR").toString().toLocal8Bit();
+    settings.endGroup();
     if (reverse) {
         return content.replace(appDir, QByteArray("@AppDir@"))
                 .replace(configDir.toLocal8Bit(), QByteArray("@ConfigDir@"))
@@ -99,8 +105,11 @@ QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
 
 QString &JMainPrivate::replaceConfig(QString &content, bool reverse) const
 {
-    const QString appDir = QCoreApplication::applicationDirPath();
-    const QString thisDir = QDir(appDir + "/../").canonicalPath();
+    QSettings settings;
+    settings.beginGroup(QCoreApplication::applicationVersion().append("/Temp/Paths"));
+    const QByteArray appDir = settings.value("APP_DIR").toString().toLocal8Bit();
+    const QByteArray thisDir = settings.value("THIS_DIR").toString().toLocal8Bit();
+    settings.endGroup();
     if (reverse) {
         return content.replace(appDir, "@AppDir@")
                 .replace(configDir, "@ConfigDir@")

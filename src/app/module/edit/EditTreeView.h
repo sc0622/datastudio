@@ -26,7 +26,7 @@ private:
     bool updateParser();
 
 private:
-    Icd::CoreTreeWidget *d_treeView;
+    Icd::CoreTreeWidget *treeView_;
 };
 
 }

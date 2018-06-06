@@ -16,19 +16,37 @@ int main(int argc, char **argv)
     //QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
 
     QApplication app(argc, argv);
+    QApplication::setFont(QFont("Microsoft Yahei", 9));
+    QApplication::setWindowIcon(QIcon(":/datastudio/image/app.png"));
+    QCoreApplication::setOrganizationName("Smartsoft");
+    QCoreApplication::setApplicationName("Data Studio");
+    QCoreApplication::setApplicationVersion(QString("%1.%2.%3")
+                                            .arg(JMain::appVerMajor())
+                                            .arg(JMain::appVerMinor())
+                                            .arg(JMain::appVerPatch()));
+
+    // settings
+    QSettings settings;
+    settings.beginGroup(QCoreApplication::applicationVersion().append("/Temp/Paths"));
+    const QString appDir = QCoreApplication::applicationDirPath();
+#ifdef DEBUG
+    QString projectDir = QString(PROJECT_DIR);
+    if (!QDir(projectDir).exists()) {
+        projectDir = appDir + "/..";
+    }
+#else
+    const QString projectDir = appDir + "/..";
+#endif
+    settings.setValue("APP_DIR", appDir);
+    settings.setValue("THIS_DIR", QDir(appDir + "/..").canonicalPath());
+    settings.setValue("CONFIG_DIR", QDir(projectDir + "/config").canonicalPath());
+    settings.setValue("WORKSPACE_DIR", QDir(projectDir + "/example").canonicalPath());
+    settings.endGroup();
 
     Logging::instance()->init();
     JMain::initTranslators();
 
-    QApplication::setFont(QFont("Microsoft Yahei", 9));
-    QApplication::setOrganizationName("Smartsoft");
-    QApplication::setApplicationName("Data Studio");
     QApplication::setApplicationDisplayName(QObject::tr("Data Studio"));
-    QApplication::setApplicationVersion(QString("%1.%2.%3")
-                                        .arg(JMain::appVerMajor())
-                                        .arg(JMain::appVerMinor())
-                                        .arg(JMain::appVerPatch()));
-    QApplication::setWindowIcon(QIcon(":/datastudio/image/app.png"));
 
     int ret = JMain::execApp(&app);
 

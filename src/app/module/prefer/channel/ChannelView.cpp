@@ -2,7 +2,7 @@
 #include "ChannelView.h"
 #include "module/commgr_widget.h"
 
-namespace Preference {
+namespace Prefer {
 
 ChannelView::ChannelView(QWidget *parent)
     : QWidget(parent)

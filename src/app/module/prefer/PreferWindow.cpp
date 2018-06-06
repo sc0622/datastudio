@@ -1,11 +1,11 @@
 ﻿#include "precomp.h"
-#include "PreferenceView.h"
+#include "PreferWindow.h"
 #include "channel/ChannelView.h"
 #include "datasource/DataSourceView.h"
 
-namespace Preference {
+namespace Prefer {
 
-View::View(QWidget *parent)
+Window::Window(QWidget *parent)
     : QWidget(parent)
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
@@ -30,15 +30,15 @@ View::View(QWidget *parent)
     d_scrollArea->setWidgetResizable(true);
     d_splitter->addWidget(d_scrollArea);
 
-    connect(d_listWidget, &QListWidget::currentRowChanged, this, &View::onCurrentRowChanged);
+    connect(d_listWidget, &QListWidget::currentRowChanged, this, &Window::onCurrentRowChanged);
 }
 
-View::~View()
+Window::~Window()
 {
     JMain::saveWidgetState(d_splitter);
 }
 
-bool View::init()
+bool Window::init()
 {
     bool result = true;
 
@@ -72,7 +72,7 @@ bool View::init()
     return result;
 }
 
-void View::onCurrentRowChanged(int currentRow)
+void Window::onCurrentRowChanged(int currentRow)
 {
     QWidget *widget = d_scrollArea->takeWidget();
     if (widget) {

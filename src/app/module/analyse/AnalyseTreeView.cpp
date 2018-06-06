@@ -16,6 +16,11 @@ TreeView::TreeView(QWidget *parent)
     d_treeView->setTreeMode(Icd::CoreTreeWidget::TreeModeAnalyse);
     vertLyoutMain->addWidget(d_treeView);
 
+    jnotify->on("analyse.toolbar.database.config", this, [=](JNEvent &){
+        QVariantList args;
+        args << "analyse" << qVariantFromValue((void*)this);
+        jnotify->send("database.config", args);
+    });
     connect(d_treeView, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
         jnotify->send("analyse.tree.item.pressed", qVariantFromValue((void*)item));
     });

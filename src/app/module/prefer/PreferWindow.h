@@ -1,5 +1,5 @@
-﻿#ifndef PREFERENCEVIEW_H
-#define PREFERENCEVIEW_H
+﻿#ifndef PREFERWINDOW_H
+#define PREFERWINDOW_H
 
 #include <QWidget>
 
@@ -7,9 +7,9 @@ class JSplitter;
 class QListWidget;
 class QScrollArea;
 
-namespace Preference {
+namespace Prefer {
 
-class View : public QWidget
+class Window : public QWidget
 {
     Q_OBJECT
 public:
@@ -19,8 +19,8 @@ public:
         ItemTypeDataSource
     };
 
-    explicit View(QWidget *parent = nullptr);
-    ~View();
+    explicit Window(QWidget *parent = nullptr);
+    ~Window();
 
     bool init();
 
@@ -37,4 +37,4 @@ private:
 
 }
 
-#endif // PREFERENCEVIEW_H
+#endif // PREFERWINDOW_H

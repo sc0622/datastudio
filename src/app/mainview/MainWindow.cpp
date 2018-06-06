@@ -1,7 +1,9 @@
 ﻿#include "precomp.h"
 #include "MainWindow.h"
-#include "MainStatusBar.h"
+#include "MainTabWidget.h"
+#include "MainToolBar.h"
 #include "CentralWidget.h"
+#include "MainStatusBar.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -11,11 +13,19 @@ MainWindow::MainWindow(QWidget *parent)
                    | QMainWindow::AllowNestedDocks
                    | QMainWindow::AllowTabbedDocks);
 
-    d_statusBar = new Main::StatusBar(this);
-    setStatusBar(d_statusBar);
+    tabWidget_ = new Main::TabWidget(this);
+    setMenuWidget(tabWidget_);
 
-    d_centralWidget = new CentralWidget(this);
-    setCentralWidget(d_centralWidget);
+    toolBar_ = new Main::ToolBar(this);
+    toolBar_->setProperty("__main__", true);
+    toolBar_->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    addToolBar(toolBar_);
+
+    centralWidget_ = new CentralWidget(this);
+    setCentralWidget(centralWidget_);
+
+    statusBar_ = new Main::StatusBar(this);
+    setStatusBar(statusBar_);
 }
 
 MainWindow::~MainWindow()
@@ -28,8 +38,9 @@ bool MainWindow::init()
     bool result = true;
 
     JMain::restoreWidgetState(this);
-    d_centralWidget->init();
-    d_statusBar->hide();
+    tabWidget_->init();
+    centralWidget_->init();
+    statusBar_->hide();
 
     return result;
 }

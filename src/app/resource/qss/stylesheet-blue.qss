@@ -1,6 +1,15 @@
 ﻿
 /** QWidget **/
 
+QScrollArea[frameShape="6"], QFrame[frameShape="6"], QWidget[__pane__="true"] {
+    background: white;
+}
+
+QWidget[__node__=true] {
+    background: rgba(200, 200, 240, 100);
+    border-radius: 3px;
+}
+
 QDialog {
     /*background: #293956;*/
 }
@@ -278,8 +287,8 @@ QHeaderView::section {
 }
 
 QHeaderView::section:horizontal {
-    border-left: 0;
-    border-right: 1px solid #bbb;
+    border-left: 1px solid #bbb;
+    border-right: 0;
     border-top: 0;
     border-bottom: 0;
     padding-left: 5px;
@@ -485,11 +494,16 @@ QToolButton::menu-arrow:hover {
 QToolBar {
     background: #cfd6e5;
     min-height: 30px;
+    border: none;
 }
 
 QToolBar::separator {
     width: 1px;
     background: #8591a2;
+}
+
+QToolBar::handle {
+    image: none;
 }
 
 QToolBar QToolButton {
@@ -967,16 +981,16 @@ QTreeView QPushButton:disabled, QTableView QPushButton:disabled {
 /****************************************************************/
 
 QwtPlot {
-    background: white;
-    padding: 2px;
+    background: #d6fbf9;
+    padding: 2px; 
 }
 
 QwtPlot:hover {
-    background: #eee;
+    background: #f6fbf9;
 }
-
+   
 QwtPlotCanvas {
-    background: white;
+    background: #fff;
 }
 
 QwtPlotZoomer {
@@ -985,17 +999,24 @@ QwtPlotZoomer {
 
 QwtTextLabel#QwtPlotTitle {
     font-family: 'microsoft yahei';
-    font-size: 12px;
     font-weight: bold;
-}
+    font-size: 12px;
+    color: black;
+} 
 
 QwtScaleWidget {
+    color: black;
     font-family: 'Consolas';
 }
 
 QwtLegend {
     background: transparent;
-    font-size: 8px;
+}
+
+QwtLegendLabel { 
+    color: black;
+    background: transparent;
+    font-size: 13px;
 }
 
 QwtPlot QScrollArea {
@@ -1098,4 +1119,15 @@ QToolButton#buttonClose:pressed {
 QScrollArea, GeneralWidget {
     background: white; 
     outline: none;
+}
+
+QLabel {
+    background: transparent;
+    color: black;
+}
+
+/** QToolBar **/
+
+QToolBar[__main__=true] {
+    min-height: 55px;
 }

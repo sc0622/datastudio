@@ -5,7 +5,16 @@ QWidget {
     color: #fff;
 }
 
-QDialog, QStackedWidget, QSplitter, QScrollArea {
+QScrollArea[frameShape="6"], QFrame[frameShape="6"], QWidget[__pane__="true"] {
+    background: #252526;
+}
+
+QWidget[__node__=true] {
+    background: rgba(80, 80, 100, 100);
+    border-radius: 3px;
+}
+
+QDialog, QStackedWidget, QSplitter {
     background: #353535;
 }
 
@@ -38,7 +47,7 @@ QMainWindow::separator {
 QMainWindow::separator:hover {
     background: #666;
 }
-  
+
 /** QTabWidget **/
 
 QTabWidget {
@@ -57,7 +66,7 @@ QTabWidget::tab-bar {
 }
 
 QTabBar::tab {
-    background: #2a2a2f;
+    background: #282828;
     min-width: 8ex;
     padding: 6px;
     padding-left: 12px;
@@ -89,9 +98,9 @@ QTabBar {
 }
 
 QTabBar::tab:selected {
-    background: #262626;
+    background: #334;
     color: lightgreen;
-} 
+}
 
 QTabBar::tab:hover {
     background: #202020;
@@ -293,7 +302,7 @@ QHeaderView::section:horizontal {
 QHeaderView::section:vertical {
     border-left: 0;
     border-right: 1px solid #262626;
-    border-top: 0; 
+    border-top: 0;
     border-bottom: 1px solid #282828;
     padding-left: 4px;
     padding-right: 4px;
@@ -379,7 +388,7 @@ QTableView {
     outline: none;
 }
 
-QTableView::item { 
+QTableView::item {
     background: #2a2a2a;
     padding: 0px;
     outline: none;
@@ -401,7 +410,7 @@ QTableView::item:selected:!focus {
 
 QTableView QTableCornerButton::section {
     color: white;
-    background: #2a2a2a;
+    background: transparent;
 }
 
 /** QStatusBar **/
@@ -413,9 +422,9 @@ QStatusBar {
 
 /** QPushButton **/
 
-QPushButton { 
-    border-radius: 2px; 
-    background: #456; 
+QPushButton {
+    border-radius: 2px;
+    background: #456;
     color: #dbdbdb;
     padding-left: 0.6em;
     padding-right: 0.6em;
@@ -428,7 +437,7 @@ QPushButton {
 QPushButton:hover {
     background: #667;
 }
- 
+
 QPushButton:pressed {
     background: #5d5c91;
 }
@@ -474,14 +483,14 @@ QToolButton[popupMode="1"] {
 
 QToolButton::menu-button {
     padding-right: 3px;
-} 
+}
 
 QToolButton::menu-button:!hover {
     background: transparent;
 }
 
 QToolButton::menu-arrow:hover {
-      top: 2px; 
+      top: 2px;
       left: 3px;
 }
 
@@ -490,11 +499,16 @@ QToolButton::menu-arrow:hover {
 QToolBar {
     background: #383838;
     min-height: 30px;
+    border: none;
 }
 
 QToolBar::separator {
     width: 1px;
     background: #a0555555;
+}
+
+QToolBar::handle {
+    image: none;
 }
 
 QToolBar QToolButton {
@@ -553,7 +567,7 @@ QGroupBox {
     padding-top: 0.5em;
     color: #ddd;
     font-weight: bold;
-} 
+}
 
 QGroupBox::title {
     background: #262626;
@@ -593,7 +607,7 @@ QLineEdit:read-only {
 QLineEdit:hover {
     border: 1px solid #205375;
     color: #ccc;
-} 
+}
 
 QLineEdit:focus:!read-only {
     border: 1px solid #205375;
@@ -606,22 +620,29 @@ QLineEdit:focus:!read-only {
 
 QPlainTextEdit, QTextEdit {
     background: #303030;
-    border-radius: 2px;
-    padding: 2px;
-    border: 1px solid #333;
+    border: 1px solid #204335;
+    border-radius: 3px;
     color: #ccc;
+    selection-color: white;
+    selection-background-color: #345;
+    font-family: "Consolas";
+    font-size: 14px;
+    font-weight: bold;
     outline: none;
 }
 
 QPlainTextEdit:read-only, QTextEdit:read-only {
-    background: #262626;
+    background: #555;
+    border: 0px;
+    padding: 0;
     color: #ccc;
+    outline: none;
 }
 
 QPlainTextEdit:hover, QTextEdit:hover {
     border: 1px solid #205375;
     color: #ccc;
-} 
+}
 
 QPlainTextEdit:focus:!read-only, QTextEdit:focus:!read-only {
     border: 1px solid #205375;
@@ -892,22 +913,6 @@ QRadioButton::indicator:checked:disabled {
     image: url(:/datastudio/image/system/radiobtn-chkd-disabled.png);
 }
 
-/** QTextEdit **/
-
-QTextEdit {
-    background: #262626;
-    border: 1px solid #334;
-    color: #ccc;
-    selection-color: white;
-    selection-background-color: #344;
-    font-family: "Consolas";
-    font-weight: bold;
-}
-
-QTextEdit:focus {
-    border: 1px solid #446;
-}
-
 /** QScrollBar **/
 
 QScrollBar {
@@ -1005,11 +1010,17 @@ QScrollBar::sub-page:vertical {
     background: none;
 }
 
+/** QWizards **/
+
+QWizard QPushButton {
+    min-width: 70px;
+}
+
 /** custom **/
 
 /** QTreeView QTableView QPushButton **/
 
-QTreeView QPushButton#buttonRun, QTableView QPushButton { 
+QTreeView QPushButton#buttonRun, QTableView QPushButton {
     background: #803a3a3a;
     min-width: 12px;
 }
@@ -1017,7 +1028,7 @@ QTreeView QPushButton#buttonRun, QTableView QPushButton {
 QTreeView QPushButton#buttonRun:hover, QTableView QPushButton:hover {
     background: #305060;
 }
- 
+
 QTreeView QPushButton#buttonRun:pressed, QTableView QPushButton:pressed {
     background: #306070;
 }
@@ -1037,7 +1048,7 @@ QwtPlot {
 QwtPlot:hover {
     background: #303030;
 }
-   
+
 QwtPlotCanvas {
     background: #262626;
 }
@@ -1051,7 +1062,7 @@ QwtTextLabel#QwtPlotTitle {
     font-size: 12px;
     font-weight: bold;
     color: #ddd;
-} 
+}
 
 QwtScaleWidget {
     color: #aaa;
@@ -1072,7 +1083,7 @@ QwtPlot QScrollArea {
 }
 
 /**********************************************************/
- 
+
 /** QToolBar **/
 
 QWidget#JChartView QToolBar {
@@ -1080,13 +1091,13 @@ QWidget#JChartView QToolBar {
     spacing: 2px;
     min-height: 20px;
     padding: 0;
-} 
+}
 
 QWidget#JChartView QToolBar::separator {
     width: 1px;
     background: #555;
 }
- 
+
 QWidget#JChartView QToolBar QToolButton {
     background: transparent;
     border: 0;
@@ -1112,7 +1123,7 @@ QTreeView QLineEdit {
 
 QTreeView  QLineEdit:hover {
     border: 0;
-} 
+}
 
 QTreeView QLineEdit:focus:!read-only {
     border-radius: 0;
@@ -1145,7 +1156,7 @@ QToolButton#buttonClose:pressed {
 }
 
 GeneralWidget {
-    background: #353535; 
+    background: #353535;
 }
 
 /****************************************************************/
@@ -1229,10 +1240,16 @@ DataTableWidget#scrollArea {
     background: #353535;
 }
 
-/** QTabWidget **/
+/** DataItemWidget **/
 
 DataItemWidget::tab-bar {
     alignment: center;
 }
 
 /****************************************************************/
+
+/** QToolBar **/
+
+QToolBar[__main__=true] {
+    min-height: 55px;
+}

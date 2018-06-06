@@ -1,12 +1,21 @@
 
 /** QWidget **/
 
-QDialog {
-    background: #353535;
-}
-
 QWidget {
     color: black;
+}
+
+QScrollArea[frameShape="6"], QFrame[frameShape="6"], QWidget[__pane__="true"] {
+    background: white;
+}
+
+QWidget[__node__=true] {
+    background: rgba(200, 200, 240, 100);
+    border-radius: 3px;
+}
+
+QDialog {
+    background: #353535;
 }
 
 /** * **/
@@ -469,13 +478,17 @@ QToolButton:pressed {
 
 QToolBar {
     background: #383838;
-    spacing: 3px;
     min-height: 30px;
+    border: none;
 }
 
 QToolBar::separator {
     width: 1px;
     background: #555;
+}
+
+QToolBar::handle {
+    image: none;
 }
 
 QToolBar QToolButton {
@@ -1022,4 +1035,15 @@ QToolButton#buttonClose:pressed {
 
 QScrollArea, GeneralWidget {
     background: #d6dbe9; 
+}
+
+QLabel {
+    background: transparent;
+    color: black;
+}
+
+/** QToolBar **/
+
+QToolBar[__main__=true] {
+    min-height: 55px;
 }

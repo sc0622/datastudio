@@ -5,7 +5,7 @@
 
 class ComMgrWidget;
 
-namespace Preference {
+namespace Prefer {
 
 class ChannelView : public QWidget
 {

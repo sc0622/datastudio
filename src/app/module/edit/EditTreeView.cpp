@@ -10,24 +10,29 @@ TreeView::TreeView(QWidget *parent)
     vertLyoutMain->setContentsMargins(0, 0, 0, 0);
     vertLyoutMain->setSpacing(0);
 
-    d_treeView = new Icd::CoreTreeWidget(this);
-    d_treeView->setTreeMode(Icd::CoreTreeWidget::TreeModeEdit);
-    vertLyoutMain->addWidget(d_treeView);
+    treeView_ = new Icd::CoreTreeWidget(this);
+    treeView_->setTreeMode(Icd::CoreTreeWidget::TreeModeEdit);
+    vertLyoutMain->addWidget(treeView_);
 
-    connect(d_treeView, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
+    jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
+        QVariantList args;
+        args << "edit" << qVariantFromValue((void*)this);
+        jnotify->send("database.config", args);
+    });
+    connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
         jnotify->send("edit.tree.item.pressed", qVariantFromValue((void*)item));
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
         jnotify->send("edit.tree.item.clicked", qVariantFromValue((void*)item));
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::currentItemChanged, this,
+    connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
         args.append(qVariantFromValue((void*)current));
         args.append(qVariantFromValue((void*)previous));
         jnotify->send("edit.tree.item.currentchanged", args);
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::itemUnloaded, this,
+    connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue((void*)item));
@@ -46,7 +51,7 @@ TreeView::TreeView(QWidget *parent)
         if (!handle) {
             return;
         }
-        handle->parser = d_treeView->parser();
+        handle->parser = treeView_->parser();
         event.setReturnValue(true);
     });
     jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
@@ -63,18 +68,23 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("edit.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
+        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
         JMain::instance()->setOption("edit", "option.tree.showOffset", checked);
     });
     jnotify->on("edit.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
+        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
         JMain::instance()->setOption("edit", "option.tree.showType", checked);
+    });
+    jnotify->on("edit.toolbar.tree.showData", this, [=](JNEvent &event){
+        const bool checked = event.argument().toBool();
+        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, checked);
+        JMain::instance()->setOption("edit", "option.tree.showData", checked);
     });
     jnotify->on("edit.toolbar.tree.copy", this, [=](JNEvent &){
     });
     jnotify->on("edit.toolbar.tree.save", this, [=](JNEvent &){
-        Icd::ParserPtr parser = d_treeView->parser();
+        Icd::ParserPtr parser = treeView_->parser();
         if (parser) {
             parser->commitModify();
         }
@@ -85,7 +95,7 @@ TreeView::TreeView(QWidget *parent)
 
 TreeView::~TreeView()
 {
-    Icd::ParserPtr parser = d_treeView->parser();
+    Icd::ParserPtr parser = treeView_->parser();
     if (parser) {
         parser->endModify();
     }
@@ -101,7 +111,7 @@ bool TreeView::init()
     }
     // deep
     if (option.isMember("loadDeep")) {
-        d_treeView->setLoadingDeep(option["loadDeep"].asInt());
+        treeView_->setLoadingDeep(option["loadDeep"].asInt());
     }
 
     if (!updateParser()) {
@@ -114,12 +124,12 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    d_treeView->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
+    treeView_->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
 }
 
 bool TreeView::updateParser()
 {
-    d_treeView->clearContents();
+    treeView_->clearContents();
 
     const Json::Value config = JMain::instance()->option("edit", "parser");
     if (config.isNull()) {
@@ -134,9 +144,9 @@ bool TreeView::updateParser()
     //
     parser->beginModify();
 
-    d_treeView->setParser(parser);
+    treeView_->setParser(parser);
 
-    return d_treeView->loadData();
+    return treeView_->loadData();
 }
 
 }

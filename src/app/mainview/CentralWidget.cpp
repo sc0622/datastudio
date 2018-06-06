@@ -1,57 +1,34 @@
 ﻿#include "precomp.h"
 #include "CentralWidget.h"
-#include "MainMenuBar.h"
-#include "../module/preference/PreferenceView.h"
-#include "../module/edit/EditView.h"
-#include "../module/monitor/MonitorView.h"
-#include "../module/simulate/SimulateView.h"
-#include "../module/analyse/AnalyseView.h"
-#include "../module/common/DataSourceConfigDlg.h"
+#include "../module/prefer/PreferWindow.h"
+#include "../module/edit/EditWindow.h"
+#include "../module/monitor/MonitorWindow.h"
+#include "../module/simulate/SimulateWindow.h"
+#include "../module/analyse/AnalyseWindow.h"
 
 CentralWidget::CentralWidget(QWidget *parent)
-    : QTabWidget(parent)
+    : QWidget(parent)
 {
-    setIconSize(QSize(20, 20));
+    QVBoxLayout *layoutMain = new QVBoxLayout(this);
+    layoutMain->setContentsMargins(0, 0, 0, 0);
 
-    d_menuBar = new Main::MenuBar(this);
-    setCornerWidget(d_menuBar, Qt::TopRightCorner);
+    stackedWidget_ = new QStackedWidget;
+    layoutMain->addWidget(stackedWidget_);
 
-    d_preferenceView = new Preference::View(this);
-    d_editView = new Edit::View(this);
-    d_monitorView = new Monitor::View(this);
-    d_simulateView = new Simulate::View(this);
-    d_analyseView = new Analyse::View(this);
+    preferWindow_ = new Prefer::Window(this);
+    editWindow_ = new Edit::Window(this);
+    monitorWindow_ = new Monitor::Window(this);
+    simulateWindow_ = new Simulate::Window(this);
+    analyseWindow_ = new Analyse::Window(this);
+    stackedWidget_->addWidget(preferWindow_);
+    stackedWidget_->addWidget(editWindow_);
+    stackedWidget_->addWidget(monitorWindow_);
+    stackedWidget_->addWidget(simulateWindow_);
+    stackedWidget_->addWidget(analyseWindow_);
 
-    connect(this, &CentralWidget::currentChanged, this, [=](int index){
-        jnotify->send("main.tab.changed", index);
-    });
-
-    addTab(d_preferenceView, QIcon(":/datastudio/image/global/setting.png"), tr("Preference"));
-    addTab(d_editView, QIcon(":/datastudio/image/global/dataedit.png"), tr("Edit"));
-    addTab(d_monitorView, QIcon(":/datastudio/image/global/monitor.png"), tr("Monitor"));
-    addTab(d_simulateView, QIcon(":/datastudio/image/global/simulate.png"), tr("Simulate"));
-    addTab(d_analyseView, QIcon(":/datastudio/image/global/analyse.png"), tr("Analyse"));
-
-    connect(this, &CentralWidget::tabBarDoubleClicked, this, [=](){
-        jnotify->send("main.toolbar.show.toggle", d_menuBar);
-    });
-
-    //
-    jnotify->on("database.config", this, [=](JNEvent &event){
-        const QVariantList args = event.argument().toList();
-        if (args.count() < 2) {
-            return;
-        }
-        const QString module = args.at(0).toString();
-        QObject *receiver = jVariantFromVoid<QObject>(args.at(1));
-        if (!receiver) {
-            return;
-        }
-        DataSourceConfigDlg dialog(module, receiver, this);
-        if (dialog.exec() != QDialog::Accepted) {
-            return;
-        }
-        //
+    jnotify->on("main.tab.changed", this, [=](JNEvent &event){
+        const int index = event.argument().toInt();
+        stackedWidget_->setCurrentIndex(index);
     });
 }
 
@@ -66,12 +43,11 @@ bool CentralWidget::init()
 
     JMain::restoreWidgetState(this);
 
-    d_menuBar->init();
-    d_preferenceView->init();
-    d_editView->init();
-    d_monitorView->init();
-    d_simulateView->init();
-    d_analyseView->init();
+    preferWindow_->init();
+    editWindow_->init();
+    monitorWindow_->init();
+    simulateWindow_->init();
+    analyseWindow_->init();
 
     return result;
 }
