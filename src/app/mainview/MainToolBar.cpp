@@ -10,8 +10,6 @@ ToolBar::ToolBar(QWidget *parent)
     setObjectName(metaObject()->className());
 
     bindingNotify();
-
-    hide();
 }
 
 bool ToolBar::init()

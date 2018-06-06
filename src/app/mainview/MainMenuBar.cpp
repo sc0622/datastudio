@@ -109,7 +109,7 @@ void MenuBar::addShowToolbarAction(const Json::Value &config)
     QAction *actionShowToolBar = addAction(tr("Show toolbar"));
     actionShowToolBar->setCheckable(true);
     actionShowToolBar->setChecked(true);
-    actionShowToolBar->setVisible(false);
+    //actionShowToolBar->setVisible(false);
     auto setIcon = [=](bool checked){
         actionShowToolBar->setIcon(QIcon(QString(":/datastudio/image/toolbar/arrow-%1.png")
                                          .arg(checked ? "up" : "down")));

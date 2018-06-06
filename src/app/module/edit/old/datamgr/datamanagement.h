@@ -41,16 +41,12 @@ typedef unsigned long long julonglong;
 /**
  * @brief 内存数据管理类，负责与数据库和界面数据的交互
  */
-class DataManegement : public QWidget
+class DataManegement : public QObject
 {
     Q_OBJECT
 public:
     explicit DataManegement(QWidget *parent = nullptr);
     ~DataManegement();
-
-signals:
-
-public slots:
 
 protected:
     // 消息响应回调
@@ -383,6 +379,7 @@ protected:
     std::string readXmlFile();
 
 private:
+    QWidget *parentWidget_;
     DBAccess*        q_dbaccess;     // 数据库访问实例
     // ICD内存数据<具体机型数据>
     PlaneNode::planeVector  q_planes;

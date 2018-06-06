@@ -13,26 +13,25 @@ ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     verMainLayout->setContentsMargins(0, 0, 0, 0);
     verMainLayout->setSpacing(0);
 
-    //q_searchEdit = new Icd::SearchEdit(this);
-    //verMainLayout->addWidget(q_searchEdit);
+    searchEdit_ = new Icd::SearchEdit(this);
+    verMainLayout->addWidget(searchEdit_);
 
     q_treeView = new JTreeView(this);
     q_treeView->setAnimated(true);
     q_treeView->header()->hide();
     q_treeView->header()->setDefaultAlignment(Qt::AlignCenter);
-    q_treeView->setHeaderLabel(QStringLiteral("ICD数据定义"));
+    q_treeView->setHeaderLabel(QStringLiteral("协议"));
     q_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     q_treeView->setAcceptDrops(true);
     //q_treeView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     QStandardItem *root = new QStandardItem();
-    root->setText(QStringLiteral("ICD系统"));
+    root->setText(QStringLiteral("协议"));
     root->setData(GlobalDefine::ntUnknown, LevelIndex);
     root->setData(GlobalDefine::dsNone, UserKey);
     root->setData(GlobalDefine::noneState, DataChanged);
     root->setData(GlobalDefine::dsNone, DataSource);
     q_treeView->addTopLevelItem(root);
-    q_treeView->setItemDelegateForColumn(0,
-                                         new JTreeItemDelegate(q_treeView));
+    q_treeView->setItemDelegateForColumn(0, new JTreeItemDelegate(q_treeView));
     //q_treeView->setFilterModel(new JTreeSortFilterModel(q_treeView));
 
     verMainLayout->addWidget(q_treeView);
@@ -42,7 +41,7 @@ ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     //q_treeView->setFilterModel(filterModel);
 
     //
-    //connect(q_searchEdit, &Icd::SearchEdit::textChanged, this, [=](const QString &text){
+    //connect(searchEdit_, &Icd::SearchEdit::textChanged, this, [=](const QString &text){
     //    filterModel->setFilterPattern(text);
     //});
     connect(q_treeView, SIGNAL(itemPressed(QStandardItem *)),
@@ -2410,7 +2409,7 @@ void ICDNavigationUi::updateMainView(QStandardItem *current)
 
     // 更新主视图显示
     args.clear();
-    args.append(qVariantFromValue((void*)&data));
+    args.append(qVariantFromValue((void*)data));
     args.append(level);
     jnotify->send("edit.showInfrastructure", args);
 }
@@ -2909,16 +2908,16 @@ QString ICDNavigationUi::offsetString(const ICDMetaData::smtMeta &meta, int offs
     ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, meta);
     if (bit) {
         if (offset >= 0) {
-            result = QString("[<font color=darkgreen>%1-%2:%3[%4]</font>]"
-                             "%5[<font color=darkgreen>%6</font>]")
+            result = QString("<font color=darkgreen size=2>[%1:%2:%3(%4)]</font>"
+                             "%5<font color=darkgreen size=2>[%6]</font>")
                     .arg(meta->serial(), 4, 10, QChar('0'))
                     .arg(offset, 4, 10, QChar('0'))
                     .arg(meta->index(), 4, 10, QChar('0'))
                     .arg(bit->start(), 2, 10, QChar('0'))
                     .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         } else {
-            result = QString("[<font color=darkgreen>%1:%2[%3]</font>]"
-                             "%4[<font color=darkgreen>%5</font>]")
+            result = QString("<font color=darkgreen size=2>[%1:%2(%3)]</font>"
+                             "%4<font color=darkgreen size=2>[%5</font>")
                     .arg(meta->serial(), 4, 10, QChar('0'))
                     .arg(meta->index(), 4, 10, QChar('0'))
                     .arg(bit->start(), 2, 10, QChar('0'))
@@ -2926,15 +2925,15 @@ QString ICDNavigationUi::offsetString(const ICDMetaData::smtMeta &meta, int offs
         }
     } else {
         if (offset >= 0) {
-            result = QString("[<font color=darkgreen>%1-%2:%3</font>]"
-                             "%4[<font color=darkgreen>%5</font>]")
+            result = QString("<font color=darkgreen size=2>[%1:%2:%3]</font>"
+                             "%4<font color=darkgreen size=2>[%5]</font>")
                     .arg(meta->serial(), 4, 10, QChar('0'))
                     .arg(offset, 4, 10, QChar('0'))
                     .arg(meta->index(), 4, 10, QChar('0'))
                     .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         } else {
-            result = QString("[<font color=darkgreen>%1:%2</font>]"
-                             "%3[<font color=darkgreen>%4</font>]")
+            result = QString("<font color=darkgreen size=2>[%1:%2]</font>"
+                             "%3<font color=darkgreen size=2>[%4]</font>")
                     .arg(meta->serial(), 4, 10, QChar('0'))
                     .arg(meta->index(), 4, 10, QChar('0'))
                     .arg(meta->name().c_str()).arg(stringDataType(meta->type()));

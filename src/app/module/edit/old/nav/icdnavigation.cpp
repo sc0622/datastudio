@@ -4,12 +4,36 @@
 
 ICDNavigation::ICDNavigation(QWidget *parent)
     : QWidget(parent)
+    , dataMgr_(nullptr)
 {
+    dataMgr_ = new DataManegement(this);
+
     QHBoxLayout *layoutMain = new QHBoxLayout(this);
     layoutMain->setContentsMargins(0, 0, 0, 0);
 
     q_ui = new ICDNavigationUi(this);
     layoutMain->addWidget(q_ui);
+
+    jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
+        QVariantList args;
+        args << "edit" << qVariantFromValue((void*)this);
+        jnotify->send("database.config", args);
+    });
+    jnotify->on("edit.toolbar.window.tree", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
+    jnotify->on("edit.parser.changed", this, [=](JNEvent &){
+        //TODO
+    });
+    jnotify->on("edit.parser.inst", this, [=](JNEvent &event){
+        Icd::JParserPtrHandle *handle =
+                jVariantFromVoid<Icd::JParserPtrHandle>(event.argument());
+        if (!handle) {
+            return;
+        }
+        //handle->parser = treeView_->parser(); //TODO
+        event.setReturnValue(true);
+    });
 
     jnotify->on("edit.tryQuit", this, [=](Icd::JNEvent &event){
         onSystemQuit(event);
@@ -54,7 +78,10 @@ ICDNavigation::ICDNavigation(QWidget *parent)
 
 ICDNavigation::~ICDNavigation()
 {
-
+    if (dataMgr_) {
+        delete dataMgr_;
+        dataMgr_ = nullptr;
+    }
 }
 
 // 查询节点数据

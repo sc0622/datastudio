@@ -135,8 +135,7 @@ void DataEngineWidget::initUI(int type, void *data)
     // 初始化数据过程中断开表信号槽
     enableConnection(false);
     if (GlobalDefine::ntUnknown == type) {
-        q_vData
-            = *reinterpret_cast<std::vector<ICDElement::smtElement> *>(data);
+        q_vData = *reinterpret_cast<std::vector<ICDElement::smtElement> *>(data);
         const int count = q_vData.size();
         std::vector<PlaneNode::smtPlane> planes;
         for (int i = 0; i < count; ++i) {
@@ -208,7 +207,7 @@ void DataEngineWidget::initUI(int type, void *data)
         int loaded = 0;
         args.clear();
         args.append(qVariantFromValue((void*)&loaded));
-        QString ommand("loadedState");
+        command = "loadedState";
         args.append(qVariantFromValue((void*)&command));
         jnotify->send("edit.queryNodeFlag", args);
 

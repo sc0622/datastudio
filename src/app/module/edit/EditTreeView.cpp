@@ -54,14 +54,6 @@ TreeView::TreeView(QWidget *parent)
         handle->parser = treeView_->parser();
         event.setReturnValue(true);
     });
-    jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
-        QVariantList args;
-        // module
-        args.append("edit");
-        // receiver
-        args.append(qVariantFromValue((void*)this));
-        jnotify->send("database.config", args);
-    });
     jnotify->on("edit.toolbar.tree.loadDeep", this, [=](JNEvent &event){
         const int deep = event.argument().toInt();
         JMain::instance()->setOption("edit", "option.tree.loadDeep", deep);

@@ -48,6 +48,7 @@ protected:
     JLRESULT onSystemQuit(const Icd::JNEvent &event);
 
 private:
+    DataManegement *dataMgr_;
     ICDNavigationUi *q_ui;
 };
 

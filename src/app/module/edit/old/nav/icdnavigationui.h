@@ -258,6 +258,7 @@ private:
     void updateRuleTip(const TableNode::smtTable& table, QStandardItem *parent);
 
 private:
+    Icd::SearchEdit *searchEdit_;
     JTreeView   *q_treeView;
     QMenu       *q_ruleMenu;
 };

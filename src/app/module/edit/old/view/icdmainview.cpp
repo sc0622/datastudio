@@ -12,6 +12,9 @@ ICDMainView::ICDMainView(QWidget *parent)
     q_ui = new ICDMainViewUi(this);
     layoutMain->addWidget(q_ui);
 
+    jnotify->on("edit.toolbar.window.settings", this, [=](JNEvent &event){
+        setVisible(event.argument().toBool());
+    });
     jnotify->on("edit.showInfrastructure", this, [=](Icd::JNEvent &event){
         showInfrastructure(event);
     });

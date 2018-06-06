@@ -13,7 +13,8 @@
 #endif
 
 DataManegement::DataManegement(QWidget *parent)
-    : QWidget(parent)
+    : QObject(parent)
+    , parentWidget_(parent)
     , q_dbaccess(nullptr)
     , q_dataSource(GlobalDefine::dsNone)
 {
@@ -23,10 +24,10 @@ DataManegement::DataManegement(QWidget *parent)
     q_dbaccess = new DBAccess();
     if (GlobalDefine::dsDatabase == q_dataSource) {
         // 初始化数据库
-        const Json::Value option = JMain::instance()->option("edit", "option.parser");
+        const Json::Value option = JMain::instance()->option("edit", "parser");
         if (!option.isNull()) {
             if (!q_dbaccess->init(option)) {
-                QMessageBox::warning(this, QStringLiteral("数据库错误"),
+                QMessageBox::warning(parentWidget_, QStringLiteral("数据库错误"),
                                      q_dbaccess->lastError().c_str());
             }
         }
@@ -1578,7 +1579,8 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
 
         vehicles.push_back(vehicle);
         // 转换数据
-        Icd::SqlParser sqlParser(std::string(""));
+        Json::Value config2(Json::objectValue);
+        Icd::SqlParser sqlParser(config2);
         DMSpace::_vectorPS infrastructure;
         DMSpace::_vectorIcdTR tableRules;
         std::vector<int> params;
@@ -2130,7 +2132,7 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
     if (!element) {
         return -1;
     }
-    const QString *condition = jVariantFromVoid<QString>(args[0]);
+    const QString *condition = jVariantFromVoid<QString>(args[1]);
     if (!condition) {
         return -1;
     }
@@ -2425,7 +2427,7 @@ JLRESULT DataManegement::saveDatabase(const Icd::JNEvent &event)
     }
 
     if (!q_dbaccess->isOpen()) {
-        const Json::Value option = JMain::instance()->option("edit", "option.parser");
+        const Json::Value option = JMain::instance()->option("edit", "parser");
         if (!option.isNull()) {
             q_dbaccess->init(option);
         }
@@ -2514,7 +2516,7 @@ JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
     if ("sql" == *type) {
         q_dataSource = GlobalDefine::dsDatabase;
         // 重新初始化数据库
-        const Json::Value option = JMain::instance()->option("edit", "option.parser");
+        const Json::Value option = JMain::instance()->option("edit", "parser");
         if (!option.isNull()) {
             return -1;
         }
@@ -2522,7 +2524,7 @@ JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
             q_dbaccess = new DBAccess();
         }
         if (!q_dbaccess->init(option)) {
-            QMessageBox::warning(this,
+            QMessageBox::warning(parentWidget_,
                                  QStringLiteral("数据库错误"),
                                  q_dbaccess->lastError().c_str());
             return -1;;
@@ -3115,8 +3117,8 @@ bool DataManegement::copyRuleData(ICDMetaData::smtMeta &meta,
 // 加载xml文件信息
 std::string DataManegement::readXmlFile()
 {
-    const Json::Value option = JMain::instance()->option("edit", "option.parser");
-    if (!option.isNull()) {
+    const Json::Value option = JMain::instance()->option("edit", "parser");
+    if (option.isNull()) {
         return std::string();
     }
 
