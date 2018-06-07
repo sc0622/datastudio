@@ -789,7 +789,7 @@ void ToolBar::updateSimulate()
 {
     setVisible(JMain::instance()->config("global.menubar.toolBarVisible").asBool());
 
-    const Json::Value option = JMain::instance()->option("monitor", "option");
+    const Json::Value option = JMain::instance()->option("simulate", "option");
     // database
     QAction *actionDatabase = addAction(QIcon(":/datastudio/image/toolbar/database.png"),
                                         tr("Database"));
@@ -1111,8 +1111,8 @@ void ToolBar::addSimulateWindowAction(const Json::Value &option)
         actionModifyWin->setChecked(true);
     }
     auto notifyModifyWin = [=](bool checked){
-        JMain::instance()->setOption("simulate", "option.window.set", checked);
-        jnotify->send("simulate.toolbar.window.set", checked);
+        JMain::instance()->setOption("simulate", "option.window.modify", checked);
+        jnotify->send("simulate.toolbar.window.modify", checked);
     };
     connect(actionModifyWin, &QAction::toggled, this, [=](bool checked){
         notifyModifyWin(checked);

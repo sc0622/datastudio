@@ -101,7 +101,7 @@
                "showValue" : true
             },
             "window" : {
-               "set" : true,
+               "modify" : true,
                "tree" : true
             }
          },

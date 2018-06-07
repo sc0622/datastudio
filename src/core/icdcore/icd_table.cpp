@@ -1021,7 +1021,6 @@ bool Table::restore(const Json::Value &json, int deep)
     setItemOffset(1);
     setBufferOffset(0);
     setBuffer(nullptr);
-    d->isFrameTable = false;
     d->period = 0;
 
     assert(deep <= Icd::ObjectItem);

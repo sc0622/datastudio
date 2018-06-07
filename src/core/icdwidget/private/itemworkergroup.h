@@ -14,6 +14,8 @@ class JTreeViewItem;
 
 namespace Icd {
 
+class CoreTreeWidgetPrivate;
+
 class ItemWorkerGroup : public QObject
 {
     Q_OBJECT
@@ -61,14 +63,14 @@ private:
     void updateFrameTable(QStandardItem *item, const Icd::TablePtr &table, bool show);
 
 private:
-    JTreeView *d_treeView;
-    QStandardItem *d_itemTable;
-    Icd::WorkerPtr d_worker;
-    CoreTreeWidget::ShowAttributes d_showAttris;
-    CoreTreeWidget::BindTableTypes d_bindTableTypes;
-    int d_timerId;
-    int d_timerInterval;
-    int d_dataFormat;     // e.g.: 2 binary format
+    CoreTreeWidgetPrivate *treeView_;
+    QStandardItem *itemTable_;
+    Icd::WorkerPtr worker_;
+    CoreTreeWidget::ShowAttributes showAttris_;
+    CoreTreeWidget::BindTableTypes bindTableTypes_;
+    int timerId_;
+    int timerInterval_;
+    int dataFormat_;     // e.g.: 2 binary format
 };
 
 } // end of namespace Icd

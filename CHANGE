@@ -9,6 +9,7 @@
         2) 升级jframework库
         3) icdmeta：增加command、protocol模块集成
         4) icdplugins：集成qml库
+        5) 修复一系列BUG：修复icdwidget协议显示异常问题；修复主界面工具栏状态同步问题
 
 -- V4.1.0
     tools: VS2015、Qt5.10.1、Qbs>=1.9.1

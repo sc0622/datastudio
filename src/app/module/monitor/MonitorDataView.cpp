@@ -115,7 +115,7 @@ void Monitor::DataView::reset()
 
     d_item = nullptr;
     d_worker = Icd::WorkerPtr();
-    d_dataView->setTitle(QStringLiteral("内存数据"));
+    d_dataView->setTitle("<font color=steelblue>&lt;SELECT TABLE ITEM&gt;</font>");
 
     updateView();
 }
@@ -147,8 +147,8 @@ void DataView::updateData(QStandardItem *item)
 
     d_item = item;
     d_worker = worker;
-    d_dataView->setTitle(QStringLiteral("内存数据——") + QString::fromStdString(
-                             d_worker->workerRecv()->table()->name()));
+    d_dataView->setTitle(QString::fromStdString(d_worker->workerRecv()->table()->name())
+                         .append("<font color=steelblue>&lt;TABLE&gt;</font>"));
 
     updateView();
 

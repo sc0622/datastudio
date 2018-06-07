@@ -32,17 +32,11 @@ typedef std::shared_ptr<Table> TablePtr;
 
 class CoreTreeWidgetPrivate;
 
-/**
- * @brief The CoreTreeWidget class
- */
 class ICDWIDGET_EXPORT CoreTreeWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
 public:
-    /**
-     * @brief The BindTableType enum
-     */
     enum BindTableType {
         BindOnlySend = 0x01,
         BindOnlyRecv = 0x02,
@@ -50,9 +44,6 @@ public:
     };
     Q_DECLARE_FLAGS(BindTableTypes, BindTableType)
 
-    /**
-     * @brief The TreeMode enum
-     */
     enum TreeMode {
         TreeModeEdit = 0x0001,          /**< . */
         TreeModeMonitor = 0x0002,       /**< . */
@@ -62,9 +53,6 @@ public:
     };
     Q_DECLARE_FLAGS(TreeModes, TreeMode)
 
-    /**
-     * @brief The ShowAttribute enum
-     */
     enum ShowAttribute {
         ShowOffset = 0x0001,    /**< . */
         ShowType = 0x0002,      /**< . */
@@ -74,236 +62,60 @@ public:
     };
     Q_DECLARE_FLAGS(ShowAttributes, ShowAttribute)
 
-    /**
-     * @brief CoreTreeWidget
-     * @param parent
-     */
     explicit CoreTreeWidget(QWidget *parent = nullptr);
-
     virtual ~CoreTreeWidget();
 
-    /**
-     * @brief bindTableType
-     * @return
-     */
     BindTableTypes bindTableType() const;
-
-    /**
-     * @brief setBindTableType
-     * @param value
-     */
     void setBindTableType(BindTableTypes value);
 
-    /**
-     * @brief showAttributes
-     * @return
-     */
     ShowAttributes showAttributes() const;
-
-    /**
-     * @brief setShowAttributes
-     * @param attrs
-     */
     void setShowAttributes(ShowAttributes attrs);
-
-    /**
-     * @brief setShowAttribute
-     * @param attr
-     * @param on
-     */
     void setShowAttribute(ShowAttribute attr, bool on = true);
-
-    /**
-     * @brief testShowAttribute
-     * @param attr
-     * @return
-     */
     bool testShowAttribute(ShowAttribute attr) const;
 
-    /**
-     * @brief dataFormat
-     * @return
-     */
     int dataFormat() const;
 
-    /**
-     * @brief treeModes
-     * @return
-     */
     TreeModes treeModes() const;
-
-    /**
-     * @brief setTreeMode
-     * @param modes
-     */
     void setTreeMode(TreeModes modes);
-
-    /**
-     * @brief setTreeMode
-     * @param mode
-     * @param on
-     */
     void setTreeMode(TreeMode mode, bool on = true);
-
-    /**
-     * @brief testTreeMode
-     * @param mode
-     * @return
-     */
     bool testTreeMode(TreeMode mode) const;
 
-    /**
-     * @brief parser
-     * @return
-     */
     Icd::ParserPtr parser() const;
-
-    /**
-     * @brief setParser
-     * @param parser
-     */
     void setParser(const Icd::ParserPtr &parser);
 
-    /**
-     * @brief loadingDeep
-     * @return
-     */
     int loadingDeep() const;
-
-    /**
-     * @brief setLoadingDeep
-     * @param deep
-     */
     void setLoadingDeep(int deep);
 
-    /**
-     * @brief intervalUpdate
-     * @return
-     */
     int intervalUpdate() const;
-
-    /**
-     * @brief setIntervalUpdate
-     * @param interval
-     */
     void setIntervalUpdate(int interval);
 
-    /**
-     * @brief clearContents
-     */
     void clearContents();
-
-    /**
-     * @brief loadData
-     * @return
-     */
     bool loadData();
-
-    /**
-     * @brief loadData
-     * @param table
-     * @param domain
-     * @return
-     */
     bool loadData(const Icd::TablePtr &table, const QString &domain = QString());
-
-    /**
-     * @brief loadData
-     * @param table
-     * @param filePath
-     * @param hasTimeFormat
-     * @param headerSize
-     * @param domain
-     * @return
-     */
     bool loadData(const Icd::TablePtr &table,
                   const QString &filePath,
                   bool hasTimeFormat, int headerSize,
                   const QString &domain = QString());
 
-    /**
-     * @brief currentItem
-     * @return
-     */
     QStandardItem *currentItem() const;
 
-    /**
-     * @brief isRunning
-     * @return
-     */
     bool isRunning() const;
 
-    /**
-     * @brief bindingChannels
-     */
     void bindingChannels(const QString &filePath);
-
-    /**
-     * @brief unbindingChannels
-     */
     void unbindingChannels();
 
-    /**
-     * @brief exportBindingStatus
-     * @param filePath
-     */
     void exportBindingStatus(const QString &filePath);
 
-    /**
-     * @brief runAllChannels
-     */
     void runAllChannels();
-
-    /**
-     * @brief stopAllChannels
-     */
     void stopAllChannels();
 
-    /**
-     * @brief findItemTable
-     * @param item
-     * @return
-     */
     QStandardItem *findItemTable(QStandardItem *item) const;
-
-    /**
-     * @brief selectItem
-     * @param domain
-     * @param domainType
-     */
     void selectItem(const QString &domain, int domainType);
 
-    /**
-     * @brief itemDomain
-     * @param item
-     * @param domainType
-     * @return
-     */
     QString itemDomain(QStandardItem *item, int domainType) const;
-
-    ///
-
-    /**
-     * @brief idDomain
-     * @param item
-     * @return
-     */
     static QString idDomain(QStandardItem *item);
-
-    /**
-     * @brief markDomain
-     * @param item
-     * @return
-     */
     static QString markDomain(QStandardItem *item);
 
-    /**
-     * @brief loadTable
-     * @param treeView
-     * @param itemParent
-     * @param table
-     * @return
-     */
     static bool loadTable(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table);
 
 signals:
@@ -322,16 +134,7 @@ signals:
                            bool hasTimeFormat, int headerSize);
 
 public slots:
-    /**
-     * @brief setRunning
-     * @param value
-     */
     void setRunning(bool value);
-
-    /**
-     * @brief setDataFormat
-     * @param format
-     */
     void setDataFormat(int format);
 
 private:

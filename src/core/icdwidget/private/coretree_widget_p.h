@@ -11,19 +11,34 @@
 
 class QLabel;
 class QPushButton;
+class QStandardItemModel;
 
 namespace Icd {
 
 // class TreeItemDelegate
 
+class TreeItemDelegateData;
+
 class TreeItemDelegate : public JTreeItemDelegate
 {
     Q_OBJECT
 public:
-    explicit TreeItemDelegate(QObject *parent = Q_NULLPTR);
+    explicit TreeItemDelegate(JTreeView *treeView, QObject *parent = Q_NULLPTR);
+    ~TreeItemDelegate();
 
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const Q_DECL_OVERRIDE;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const Q_DECL_OVERRIDE;
+
+private:
+    static QStandardItemModel *sourceModel(QAbstractItemModel *model);
+    static QStandardItemModel *sourceModel(const QModelIndex &index);
+    static QModelIndex mapToSource(const QModelIndex &index);
+    static QStandardItem *tableItem(const QModelIndex &index);
+
+private:
+    TreeItemDelegateData *d;
 };
 
 // class TableItemWidget
@@ -43,6 +58,8 @@ public:
     void stop();
     bool toggle(bool checked);
     bool isRunning() const;
+
+    int buttonWidth() const;
 
 signals:
     void clicked();
@@ -68,12 +85,14 @@ class CoreTreeWidgetPrivate : public JTreeView
     Q_OBJECT
     Q_PROPERTY(quint32 bindTableTypes READ bindTableTypes NOTIFY bindTableTypesChanged)
     Q_PROPERTY(quint32 showAttris READ showAttris NOTIFY showAttrisChanged)
+    Q_PROPERTY(QColor valueColor READ valueColor WRITE setValueColor NOTIFY valueColorChanged)
 public:
     explicit CoreTreeWidgetPrivate(CoreTreeWidget *q);
     ~CoreTreeWidgetPrivate();
 
     quint32 bindTableTypes() const { return quint32(d_bindTableTypes); }
     quint32 showAttris() { return quint32(d_showAttris); }
+    QColor valueColor() const;
 
     void init();
     void setParser(const Icd::ParserPtr &parser);
@@ -107,6 +126,7 @@ public:
     void bindingChannels(const QString &filePath);
     void unbindingChannels();
     void exportBindingStatus(const QString &filePath);
+    void exportTableData(QStandardItem *item);
     void runAllChannels();
     void stopAllChannels();
 
@@ -124,6 +144,8 @@ public:
 signals:
     void bindTableTypesChanged();
     void showAttrisChanged();
+    void valueColorChanged(const QColor &color);
+
     void itemUnloaded(QStandardItem *item, QStandardItem *itemTable);
     void channelBound(QStandardItem *item, const QString &channelId);
     void channelUnbound(QStandardItem *item, const QString &channelId);
@@ -131,37 +153,11 @@ signals:
     void unbindItem(QStandardItem *item, QStandardItem *itemTable);
 
 public slots:
-    void onTreeItemPressed(QStandardItem *item);
+    void setValueColor(const QColor &color);
 
+    void onTreeItemPressed(QStandardItem *item);
     void onWorkerRemoved(const Icd::WorkerPtr &worker);
     void onWorkerCleared();
-
-    // menu
-    void onActionExpandItemAll();
-    void onActionCollapseItemAll();
-    void onActionLoadVehicle();
-    void onActionUpdateVehicle();
-    void onActionUnloadVehicle();
-    void onActionExportAllData();
-    void onActionExportExistData();
-    void onActionLoadSystem();
-    void onActionUpdateSystem();
-    void onActionUnloadSystem();
-    void onActionLoadTable();
-    void onActionUpdateTable();
-    void onActionUnloadTable();
-    void onActionDeleteDataItem();
-    void onActionDeleteAllView();
-    void onActionLoadDataItem();
-    void onActionUpdateDataItem();
-    void onActionUnloadDataItem();
-    void onActionChangeChannelBound();
-    void onActionBindChannel();
-    void onActionUnboundChannel();
-    void onActionStartRecordData();
-    void onActionStopRecordData();
-    void onActionDeleteTableView();
-    void onActionExportTableData();
 
 protected:
     QStringList mimeTypes() const;
@@ -230,6 +226,7 @@ private:
     static BindingData bindingMapTask(BindingData data);
     static void bindingMapReduce(int &count, const BindingData &data);
 
+    void restoreChannelItem(QStandardItem *itemTable, const TablePtr &table);
     //
     QStandardItem *itemFromAction(QObject *action) const;
     QVariant varFromAction(QObject *action, const char *name) const;
@@ -256,6 +253,9 @@ private:
     CoreTreeWidget::TreeModes d_treeModes;
     QHash<QStandardItem * /*itemTable*/, ItemWorkerGroup*> d_workerGroups;
     QFutureWatcher<BindingData> d_watcher;
+
+    // qss
+    QColor valueColor_;
 };
 
 //

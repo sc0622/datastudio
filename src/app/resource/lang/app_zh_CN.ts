@@ -465,161 +465,161 @@
 <context>
     <name>JMain</name>
     <message>
-        <location filename="../../main_global.cpp" line="578"/>
+        <location filename="../../main_global.cpp" line="580"/>
         <source>Head</source>
         <translation>帧头</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="629"/>
+        <location filename="../../main_global.cpp" line="631"/>
         <source>Int8</source>
         <translation>有符号8位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="630"/>
+        <location filename="../../main_global.cpp" line="632"/>
         <source>UInt8</source>
         <translation>无符号8位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="631"/>
+        <location filename="../../main_global.cpp" line="633"/>
         <source>Int16</source>
         <translation>有符号16位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="632"/>
+        <location filename="../../main_global.cpp" line="634"/>
         <source>UInt16</source>
         <translation>无符号16位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="633"/>
+        <location filename="../../main_global.cpp" line="635"/>
         <source>Int32</source>
         <translation>有符号32位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="634"/>
+        <location filename="../../main_global.cpp" line="636"/>
         <source>UInt32</source>
         <translation>无符号32位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="635"/>
+        <location filename="../../main_global.cpp" line="637"/>
         <source>Int64</source>
         <translation>有符号64位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="636"/>
+        <location filename="../../main_global.cpp" line="638"/>
         <source>UInt64</source>
         <translation>无符号64位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="637"/>
+        <location filename="../../main_global.cpp" line="639"/>
         <source>Float32</source>
         <translation>32位浮点数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="638"/>
+        <location filename="../../main_global.cpp" line="640"/>
         <source>Float64</source>
         <translation>64位浮点数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="649"/>
+        <location filename="../../main_global.cpp" line="651"/>
         <source>Counter U8</source>
         <translation>8位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="650"/>
+        <location filename="../../main_global.cpp" line="652"/>
         <source>Counter U16</source>
         <translation>16位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="651"/>
+        <location filename="../../main_global.cpp" line="653"/>
         <source>Counter U32</source>
         <translation>32位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="652"/>
+        <location filename="../../main_global.cpp" line="654"/>
         <source>Counter U64</source>
         <translation>64位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="663"/>
+        <location filename="../../main_global.cpp" line="665"/>
         <source>No check</source>
         <translation>无校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="664"/>
+        <location filename="../../main_global.cpp" line="666"/>
         <source>Check sum8</source>
         <translation>8位和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="665"/>
+        <location filename="../../main_global.cpp" line="667"/>
         <source>Check sum16</source>
         <translation>16位和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="666"/>
+        <location filename="../../main_global.cpp" line="668"/>
         <source>Check crc8</source>
         <translation>8位CRC和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="667"/>
+        <location filename="../../main_global.cpp" line="669"/>
         <source>Check crc16</source>
         <translation>16位CRC和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="668"/>
+        <location filename="../../main_global.cpp" line="670"/>
         <source>Check xor8</source>
         <translation>8位XOR校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="669"/>
+        <location filename="../../main_global.cpp" line="671"/>
         <source>Check xor16</source>
         <translation>16位XOR校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="680"/>
+        <location filename="../../main_global.cpp" line="682"/>
         <source>FrameCode U8</source>
         <translation>8位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="681"/>
+        <location filename="../../main_global.cpp" line="683"/>
         <source>FrameCode U16</source>
         <translation>16位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="682"/>
+        <location filename="../../main_global.cpp" line="684"/>
         <source>FrameCode U32</source>
         <translation>32位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="683"/>
+        <location filename="../../main_global.cpp" line="685"/>
         <source>FrameCode U64</source>
         <translation>64位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="615"/>
+        <location filename="../../main_global.cpp" line="617"/>
         <source>BitMap</source>
         <translation>比特映射</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="616"/>
+        <location filename="../../main_global.cpp" line="618"/>
         <source>BitValue</source>
         <translation>比特值</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="617"/>
+        <location filename="../../main_global.cpp" line="619"/>
         <source>Complex</source>
         <translation>复合数据</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="618"/>
+        <location filename="../../main_global.cpp" line="620"/>
         <source>Frame</source>
         <translation>帧数据</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="623"/>
-        <location filename="../../main_global.cpp" line="643"/>
-        <location filename="../../main_global.cpp" line="657"/>
-        <location filename="../../main_global.cpp" line="674"/>
-        <location filename="../../main_global.cpp" line="688"/>
+        <location filename="../../main_global.cpp" line="625"/>
+        <location filename="../../main_global.cpp" line="645"/>
+        <location filename="../../main_global.cpp" line="659"/>
+        <location filename="../../main_global.cpp" line="676"/>
+        <location filename="../../main_global.cpp" line="690"/>
         <source>Unknown</source>
         <translation>未知类型</translation>
     </message>

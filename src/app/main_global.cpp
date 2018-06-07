@@ -243,24 +243,14 @@ int JMain::execApp(QApplication *app)
         releaseInstance();
         return -1;
     }
-
-    // mainWindow
-    auto mainWindow = createMainWindow();
-    if (!mainWindow) {
-        delete mainWindow;
-        mainWindow = nullptr;
-        releaseInstance();
-        return -1;
-    }
-
-    mainWindow->show();
+    //
     const QString theme = JMain::instance()->theme();
 #if defined(TEST_STYLESHEET)
     const QString prefix(PROJECT_DIR + QLatin1String("/src/app/resource/qss/stylesheet-"));
     const QString filePath(prefix + theme + ".qss");
     if (QFile(filePath).exists()) {
         JMainPrivate::setStyleSheet(filePath);
-        QFileSystemWatcher *fileSysWatcher = new QFileSystemWatcher(mainWindow);
+        QFileSystemWatcher *fileSysWatcher = new QFileSystemWatcher(JMain::instance());
         fileSysWatcher->addPath(filePath);
         QObject::connect(fileSysWatcher, &QFileSystemWatcher::fileChanged,
                          [=](const QString &filePath){
@@ -280,6 +270,18 @@ int JMain::execApp(QApplication *app)
 #else
     JMain::instance()->setTheme(theme);
 #endif
+
+    // mainWindow
+    auto mainWindow = createMainWindow();
+    if (!mainWindow) {
+        delete mainWindow;
+        mainWindow = nullptr;
+        releaseInstance();
+        return -1;
+    }
+
+    mainWindow->show();
+
     splashWidget.clear();
 
     jnotify->on("main.mainwindow.inst", JMain::instance(), [=](JNEvent &event){

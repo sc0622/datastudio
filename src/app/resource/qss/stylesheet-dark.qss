@@ -1273,3 +1273,9 @@ DataItemWidget::tab-bar {
 QToolBar[__main__=true] {
     min-height: 55px;
 }
+
+/** custom **/
+
+Icd--CoreTreeWidgetPrivate {
+    qproperty-valueColor: steelblue;
+}
