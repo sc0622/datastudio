@@ -28,16 +28,16 @@ ComplexUI::ComplexUI(QWidget *parent)
     int row = 0;
     QGridLayout* gridLayout = new QGridLayout(basicGroup);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名称:")), row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名称：")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标识:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标识：")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("长度:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("长度：")), ++row, 0);
     gridLayout->addWidget(q_spinLength, row, 1);
     //gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描述:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描述：")), ++row, 0);
     gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
@@ -48,9 +48,9 @@ ComplexUI::ComplexUI(QWidget *parent)
     q_color = q_edtName->palette().color(QPalette::Base);
 }
 
-ComplexUI::~ComplexUI()
+int ComplexUI::uiType() const
 {
-
+    return wdComplex;
 }
 
 void ComplexUI::setUIData(const _UIData &data)

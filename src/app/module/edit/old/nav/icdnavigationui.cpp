@@ -839,23 +839,19 @@ bool ICDNavigationUi::updateNodeData(int dataAddr)
     } else if (GlobalDefine::ntSystem == level.toInt()) {
         result = updateICDData(*reinterpret_cast<stICDBase *>(dataAddr));
     } else if (GlobalDefine::ntTable == level.toInt()) {
-        result = updateRuleData(
-                    *reinterpret_cast<ICDMetaData::smtMeta *>(dataAddr));
+        result = updateRuleData(*reinterpret_cast<ICDMetaData::smtMeta *>(dataAddr));
     } else if (GlobalDefine::ntRule == level.toInt()) {
         QVariant variant = current->data(SubTable);
         if (variant.isValid()) {    // 复合数据
-            result = updateRuleData(
-                        *reinterpret_cast<ICDMetaData::smtMeta *>(dataAddr), false);
+            result = updateRuleData(*reinterpret_cast<ICDMetaData::smtMeta *>(dataAddr), false);
             // 更新规则提示
             updateTopTableTip();
         } else {
             variant = current->data(RuleDefine);
             if (GlobalDefine::dtDiscern == variant.toInt()) {
-                result = updateSubTableData(
-                            *reinterpret_cast<stICDBase *>(dataAddr));
+                result = updateSubTableData(*reinterpret_cast<stICDBase *>(dataAddr));
             } else {    // 编辑具体规则数据
-                result = updateDetailRuleData(
-                            *reinterpret_cast<ICDMetaData::smtMeta *>(dataAddr));
+                result = updateDetailRuleData(*reinterpret_cast<ICDMetaData::smtMeta *>(dataAddr));
             }
         }
     }
@@ -1878,7 +1874,7 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
         bool newFlag = false;
 
         QVariantList args;
-        QString command("new");
+        QString command("add");
         args.append(qVariantFromValue((void*)&command));
         args.append(qVariantFromValue((void*)&newFlag));
         jnotify->send("edit.queryMainViewState", args);
@@ -1888,7 +1884,7 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
         bool newFlag = false;
 
         QVariantList args;
-        QString command("new");
+        QString command("add");
         args.append(qVariantFromValue((void*)&command));
         args.append(qVariantFromValue((void*)&newFlag));
         jnotify->send("edit.queryMainViewState", args);
@@ -1899,7 +1895,7 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
         bool clearFlag = false;
 
         QVariantList args;
-        QString command("clear");
+        QString command("clean");
         args.append(qVariantFromValue((void*)&command));
         args.append(qVariantFromValue((void*)&clearFlag));
         jnotify->send("edit.queryMainViewState", args);

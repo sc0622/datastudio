@@ -1,7 +1,19 @@
 #include "precomp.h"
 #include "metaui.h"
-
-#include <QtWidgets>
+#include "headerui.h"
+#include "counterui.h"
+#include "checkui.h"
+#include "framecodeui.h"
+#include "commonui.h"
+#include "bitmapui.h"
+#include "bitvalueui.h"
+#include "discernui.h"
+#include "complexui.h"
+#include "bufferui.h"
+#include "subtableui.h"
+#include "tableui.h"
+#include "systemui.h"
+#include "planeui.h"
 
 MetaUI::MetaUI(QWidget *parent)
     : QWidget(parent)
@@ -42,6 +54,11 @@ MetaUI::MetaUI(QWidget *parent)
     });
 }
 
+int MetaUI::uiType() const
+{
+    return wdUnknown;
+}
+
 void MetaUI::setUIData(const _UIData &data)
 {
     Q_UNUSED(data);
@@ -61,11 +78,6 @@ void MetaUI::changeDataType(int type)
 int MetaUI::originalType() const
 {
     return GlobalDefine::dtInvalid;
-}
-
-void MetaUI::enableConnection(bool enable)
-{
-    Q_UNUSED(enable);
 }
 
 void MetaUI::enableOptionButton(bool enable)
@@ -92,6 +104,27 @@ QPushButton *MetaUI::buttonCancel() const
 QLineEdit *MetaUI::editStatus() const
 {
     return editStatus_;
+}
+
+MetaUI *MetaUI::create(int metaUiType)
+{
+    switch (metaUiType) {
+    case wdHeader: return new HeaderUI();
+    case wdCounter: return new CounterUI();
+    case wdCheck: return new CheckUI();
+    case wdFrameCode: return new FrameCodeUI();
+    case wdCommon: return new CommonUI();
+    case wdBitMap: return new BitMapUI();
+    case wdBitValue: return new BitValueUI();
+    case wdDiscern: return new DiscernUI();
+    case wdComplex: return new ComplexUI();
+    case wdBuffer: return new BufferUI();
+    case wdSubTable: return new SubTableUI();
+    case wdTable: return new TableUI();
+    case wdSystem: return new SystemUI();
+    case wdPlane: return new PlaneUI();
+    default: return new MetaUI();
+    }
 }
 
 void MetaUI::confirm()

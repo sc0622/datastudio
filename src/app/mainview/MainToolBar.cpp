@@ -185,37 +185,37 @@ void ToolBar::addEditItemAction(const Json::Value &option)
     Q_UNUSED(option);
     // add item
     QAction *actionAddItem = addAction(QIcon(":/datastudio/image/global/add.png"),
-                                   tr("Add item"));
+                                       tr("Add item"));
     connect(actionAddItem, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.item.add");
     });
     // insert item
     QAction *actionInsertItem = addAction(QIcon(":/datastudio/image/global/insert.png"),
-                                   tr("Insert item"));
+                                          tr("Insert item"));
     connect(actionInsertItem, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.item.insert");
     });
     // up item
     QAction *actionUpItem = addAction(QIcon(":/datastudio/image/global/up.png"),
-                                   tr("Up item"));
+                                      tr("Up item"));
     connect(actionUpItem, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.item.up");
     });
     // down item
     QAction *actionDownItem = addAction(QIcon(":/datastudio/image/global/down.png"),
-                                   tr("Down item"));
+                                        tr("Down item"));
     connect(actionDownItem, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.item.down");
     });
     // remove item
     QAction *actionRemoveItem = addAction(QIcon(":/datastudio/image/global/remove.png"),
-                                   tr("Remove item"));
+                                          tr("Remove item"));
     connect(actionRemoveItem, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.item.remove");
     });
     // clean item
     QAction *actionCleanItem = addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
-                                   tr("Clean item"));
+                                         tr("Clean item"));
     connect(actionCleanItem, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.item.clean");
     });
@@ -241,6 +241,22 @@ void ToolBar::addEditItemAction(const Json::Value &option)
             actionCleanItem->setEnabled(enabled);
         }
     });
+    jnotify->on("edit.toolbar.action.querystate", this, [=](JNEvent &event){
+        const QString name = event.argument().toString();
+        if (name == "add") {
+            event.setReturnValue(actionAddItem->isEnabled());
+        } else if (name == "insert") {
+            event.setReturnValue(actionInsertItem->isEnabled());
+        } else if (name == "up") {
+            event.setReturnValue(actionUpItem->isEnabled());
+        } else if (name == "down") {
+            event.setReturnValue(actionDownItem->isEnabled());
+        } else if (name == "remove") {
+            event.setReturnValue(actionRemoveItem->isEnabled());
+        } else if (name == "clean") {
+            event.setReturnValue(actionCleanItem->isEnabled());
+        }
+    });
 }
 
 void ToolBar::addEditExportAction(const Json::Value &option)
@@ -248,13 +264,13 @@ void ToolBar::addEditExportAction(const Json::Value &option)
     Q_UNUSED(option);
     // export to database
     QAction *actionExportToDB = addAction(QIcon(":/datastudio/image/global/export-db.png"),
-                                   tr("Export to DB"));
+                                          tr("Export to DB"));
     connect(actionExportToDB, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.export.db");
     });
     // export to file
     QAction *actionExportToFile = addAction(QIcon(":/datastudio/image/global/export-file.png"),
-                                   tr("Export to file"));
+                                            tr("Export to file"));
     connect(actionExportToFile, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.export.file");
     }); //
@@ -271,6 +287,16 @@ void ToolBar::addEditExportAction(const Json::Value &option)
             actionExportToFile->setEnabled(enabled);
         }
     });
+#if 1
+    jnotify->on("edit.toolbar.action.querystate", this, [=](JNEvent &event){
+        const QString name = event.argument().toString();
+        if (name == "db") {
+            event.setReturnValue(actionExportToDB->isEnabled());
+        } else if (name == "file") {
+            event.setReturnValue(actionExportToFile->isEnabled());
+        }
+    });
+#endif
 }
 
 void ToolBar::addEditToolAction(const Json::Value &option)
@@ -278,7 +304,7 @@ void ToolBar::addEditToolAction(const Json::Value &option)
     Q_UNUSED(option);
     // generate GUID
     QAction *actionGenGuid = addAction(QIcon(":/datastudio/image/global/id.png"),
-                                   tr("Generate GUID"));
+                                       tr("Generate GUID"));
     connect(actionGenGuid, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tool.genguid");
     });

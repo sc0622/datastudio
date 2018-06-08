@@ -13,6 +13,7 @@ Project {
         translations: [ 'app_zh_CN.ts' ]
         defaultTranslation: true
         desc.iconName: sourceDirectory + '/resource/image/app.ico'
+        desc.fileDesc: project.projectDisplayName
 
         readonly property bool useOldEdit: true
 

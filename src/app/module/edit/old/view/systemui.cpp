@@ -7,7 +7,6 @@ SystemUI::SystemUI(QWidget *parent)
     : MetaUI(parent)
 {
     QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
-
     q_edtName = new LimitLineEdit(this);
     q_edtName->setObjectName("edtName");
     q_edtName->setMaxLength(30);
@@ -26,13 +25,13 @@ SystemUI::SystemUI(QWidget *parent)
     int row = 0;
     q_gridLayout = new QGridLayout(group);
     q_gridLayout->setContentsMargins(6, 3, 0, 3);
-    q_gridLayout->addWidget(new QLabel(QStringLiteral("名称:")), row, 0);
+    q_gridLayout->addWidget(new QLabel(QStringLiteral("名称：")), row, 0);
     q_gridLayout->addWidget(q_edtName, row, 1);
     q_gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    q_gridLayout->addWidget(new QLabel(QStringLiteral("标识:")), ++row, 0);
+    q_gridLayout->addWidget(new QLabel(QStringLiteral("标识：")), ++row, 0);
     q_gridLayout->addWidget(q_edtCode, row, 1);
     q_gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    q_gridLayout->addWidget(new QLabel(QStringLiteral("描述:")), ++row, 0);
+    q_gridLayout->addWidget(new QLabel(QStringLiteral("描述：")), ++row, 0);
     q_gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
     q_gridLayout->setRowStretch(++row, 1);
 
@@ -45,8 +44,9 @@ SystemUI::SystemUI(QWidget *parent)
     q_color = q_edtName->palette().color(QPalette::Base);
 }
 
-SystemUI::~SystemUI()
+int SystemUI::uiType() const
 {
+    return wdSystem;
 }
 
 void SystemUI::setUIData(const _UIData &data)

@@ -19,340 +19,209 @@
 
 LoggingWidget::LoggingWidget(QWidget *parent)
     : QWidget(parent)
+    , currentMetaUi_(nullptr)
 {
-    q_groupType = new QGroupBox(QStringLiteral("类型信息"), this);
-    q_boxType = new QComboBox(this);
-    QFormLayout *formLayout = new QFormLayout(q_groupType);
+    QVBoxLayout *layoutMain = new QVBoxLayout(this);
+    layoutMain->setContentsMargins(0, 0, 0, 0);
+    layoutMain->setSpacing(1);
+
+    groupType_ = new QGroupBox(QStringLiteral("类型信息"), this);
+    groupType_->setVisible(false);
+    layoutMain->addWidget(groupType_);
+
+    QFormLayout *formLayout = new QFormLayout(groupType_);
     formLayout->setContentsMargins(6, 3, 0, 3);
-    formLayout->addRow(QStringLiteral("类   型:"), q_boxType);
+    boxType_ = new QComboBox(this);
+    formLayout->addRow(QStringLiteral("类   型："), boxType_);
 
-    MetaUI *metaUI = new MetaUI(this);
-    metaUI->setObjectName("meta");
-    HeaderUI *headerUI = new HeaderUI(this);
-    headerUI->setObjectName("header");
-    CounterUI *counterUI = new CounterUI(this);
-    counterUI->setObjectName("counter");
-    CheckUI *checkUI = new CheckUI(this);
-    checkUI->setObjectName("check");
-    FrameCodeUI *frameCodeUI = new FrameCodeUI(this);
-    frameCodeUI->setObjectName("frameCode");
-    CommonUI *commonUI = new CommonUI(this);
-    commonUI->setObjectName("common");
-    BitMapUI *bitMapUI = new BitMapUI(this);
-    bitMapUI->setObjectName("bitMap");
-    BitValueUI *bitValueUI = new BitValueUI(this);
-    bitValueUI->setObjectName("bitValue");
-    DiscernUI *discernUI = new DiscernUI(this);
-    discernUI->setObjectName("discern");
-    ComplexUI *complexUI = new ComplexUI(this);
-    complexUI->setObjectName("complex");
-    BufferUI *bufferUI = new BufferUI(this);
-    bufferUI->setObjectName("buffer");
-    SubTableUI *subTableUI = new SubTableUI(this);
-    subTableUI->setObjectName("subTable");
-    TableUI *tableUI = new TableUI(this);
-    tableUI->setObjectName("table");
-    SystemUI *systemUI = new SystemUI(this);
-    systemUI->setObjectName("system");
-    PlaneUI *planeUI = new PlaneUI(this);
-    planeUI->setObjectName("plane");
+    stackedWidget_ = new QStackedWidget(this);
+    layoutMain->addWidget(stackedWidget_);
 
-    q_stack = new QStackedWidget(this);
-    q_relation[q_stack->addWidget(metaUI)] = wdUnknown;
-    q_relation[q_stack->addWidget(headerUI)] = wdHeader;
-    q_relation[q_stack->addWidget(counterUI)] = wdCounter;
-    q_relation[q_stack->addWidget(checkUI)] = wdCheck;
-    q_relation[q_stack->addWidget(frameCodeUI)] = wdFrameCode;
-    q_relation[q_stack->addWidget(commonUI)] = wdCommon;
-    q_relation[q_stack->addWidget(bitMapUI)] = wdBitMap;
-    q_relation[q_stack->addWidget(bitValueUI)] = wdBitValue;
-    q_relation[q_stack->addWidget(discernUI)] = wdDiscern;
-    q_relation[q_stack->addWidget(complexUI)] = wdComplex;
-    q_relation[q_stack->addWidget(bufferUI)] = wdBuffer;
-    q_relation[q_stack->addWidget(subTableUI)] = wdSubTable;
-    q_relation[q_stack->addWidget(tableUI)] = wdTable;
-    q_relation[q_stack->addWidget(systemUI)] = wdSystem;
-    q_relation[q_stack->addWidget(planeUI)] = wdPlane;
-    q_stack->setContentsMargins(0, 0, 0, 0);
-
-    QVBoxLayout* veriLayouMain = new QVBoxLayout(this);
-    veriLayouMain->setContentsMargins(0, 0, 0, 0);
-    veriLayouMain->setSpacing(1);
-    veriLayouMain->addWidget(q_groupType);
-    veriLayouMain->addWidget(q_stack);
-
-    //
-    //connect(metaUI, SIGNAL(confirmed(bool &)),
-    //        this, SLOT(slotConfirm(bool &)));
-    connect(headerUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(counterUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(checkUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(frameCodeUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(commonUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(bitMapUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(bitValueUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(discernUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(complexUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(bufferUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(subTableUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(tableUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(systemUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-    connect(planeUI, SIGNAL(confirmed(bool &)),
-            this, SLOT(slotConfirm(bool &)));
-
-    //connect(metaUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(headerUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(counterUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(checkUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(frameCodeUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(commonUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(bitMapUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(bitValueUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(discernUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(complexUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(bufferUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(subTableUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(tableUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(systemUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
-    connect(planeUI, SIGNAL(canceled()), this, SLOT(slotCancel()));
     enableConnection(true);
-
-    // 记录
-    q_widget[wdUnknown] = metaUI;
-    q_widget[wdHeader] = headerUI;
-    q_widget[wdCounter] = counterUI;
-    q_widget[wdCheck] = checkUI;
-    q_widget[wdFrameCode] = frameCodeUI;
-    q_widget[wdCommon] = commonUI;
-    q_widget[wdBitMap] = bitMapUI;
-    q_widget[wdBitValue] = bitValueUI;
-    q_widget[wdDiscern] = discernUI;
-    q_widget[wdComplex] = complexUI;
-    q_widget[wdBuffer] = bufferUI;
-    q_widget[wdSubTable] = subTableUI;
-    q_widget[wdTable] = tableUI;
-    q_widget[wdSystem] = systemUI;
-    q_widget[wdPlane] = planeUI;
-    // 
-    q_groupType->setVisible(false);
 }
 
-// 设置当前显示窗口
-void LoggingWidget::setCurrentWidget(LoggingWidget::WIDGEGTYPE type)
+void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
 {
-    if (!q_stack) {
+    if (currentMetaUi_) {
+        stackedWidget_->removeWidget(stackedWidget_);
+        currentMetaUi_->disconnect();
+        delete currentMetaUi_;
+        currentMetaUi_ = nullptr;
+    }
+
+    currentMetaUi_ = MetaUI::create(metaUiType);
+    if (!currentMetaUi_) {
         return;
     }
-    QHash<WIDGEGTYPE, MetaUI*>::iterator it = q_widget.find(type);
-    if (it != q_widget.end()) {
-        q_stack->setCurrentWidget(it.value());
-    } else {
-        q_stack->setCurrentWidget(q_widget[wdUnknown]);
-    }
-}
+    stackedWidget_->addWidget(currentMetaUi_);
 
-// 初始化界面数据
-void LoggingWidget::initUIData(LoggingWidget::WIDGEGTYPE type, 
-                               const _UIData &data)
-{
-    if (!q_stack) {
-        return;
-    }
-    // 初始化之前，先断开上一界面信号槽连接
-    MetaUI *preWidget = q_widget[q_relation[q_stack->currentIndex()]];
-    if (preWidget) {
-        preWidget->enableConnection(false);
-    }
-    setCurrentWidget(type);
+    currentMetaUi_->setUIData(data);
+    connect(currentMetaUi_, &MetaUI::confirmed, this, &LoggingWidget::slotConfirm);
+    connect(currentMetaUi_, &MetaUI::canceled, this, &LoggingWidget::slotCancel);
 
-    QHash<WIDGEGTYPE, MetaUI*>::iterator it = q_widget.find(type);
-    if (it != q_widget.end()) {
-        it.value()->setUIData(data);
-    }
-    switch (type)
-    {
-    case wdHeader:
-    case wdCounter:
-    case wdCheck:
-    case wdFrameCode:
-    case wdCommon:
-    case wdBitMap:
-    case wdBitValue:
-    case wdDiscern:
-    case wdComplex:
-    case wdBuffer:
-        q_groupType->setVisible(true);
+    switch (metaUiType) {
+    case MetaUI::wdHeader:
+    case MetaUI::wdCounter:
+    case MetaUI::wdCheck:
+    case MetaUI::wdFrameCode:
+    case MetaUI::wdCommon:
+    case MetaUI::wdBitMap:
+    case MetaUI::wdBitValue:
+    case MetaUI::wdDiscern:
+    case MetaUI::wdComplex:
+    case MetaUI::wdBuffer:
+        groupType_->setVisible(true);
         initTypeInfo(data);
         break;
     default:
-        q_groupType->setVisible(false);
+        groupType_->setVisible(false);
         break;
     }
 }
 
-// 获取界面数据
 void *LoggingWidget::uiData()
 {
-    MetaUI *widget = qobject_cast<MetaUI*>(q_stack->currentWidget());
-    if (widget) {
-        return widget->uiData();
+    if (currentMetaUi_) {
+        return currentMetaUi_->uiData();
+    } else {
+        return nullptr;
     }
-    return widget;
 }
 
 void LoggingWidget::enableOptionButton(bool enable)
 {
-    MetaUI *widget = qobject_cast<MetaUI*>(q_stack->currentWidget());
-    if (widget) {
-        widget->enableOptionButton(enable);
+    if (currentMetaUi_) {
+        currentMetaUi_->enableOptionButton(enable);
     }
 }
 
-// 保存数据
 void LoggingWidget::slotConfirm(bool &result)
 {
-    void *data = NULL;
-    WIDGEGTYPE type = q_relation[q_stack->currentIndex()];
-    MetaUI *widget = q_widget[type];
+    if (!currentMetaUi_) {
+        return;
+    }
 
-    if (widget) {
-        data = widget->uiData();
-        if (data) {
-            emit dataSaved(data, result);
-            if (result) {   // 如果是规则数据，则重新初始化数据类型下拉框
-                if (type >= wdHeader && type <= wdComplex) {
-                    _UIData _data;
+    void *data = currentMetaUi_->uiData();
+    if (!data) {
+        return;
+    }
 
-                    _data.data = data;
-                    _data.type = GlobalDefine::optEdit;
-                    initTypeInfo(_data);
-                }
-            }
+    emit dataSaved(data, result);
+    // 如果是规则数据，则重新初始化数据类型下拉框
+    if (result) {
+        const int uiType = currentMetaUi_->uiType();
+        if (uiType >= MetaUI::wdHeader && uiType <= MetaUI::wdComplex) {
+            _UIData _data;
+            _data.data = data;
+            _data.type = GlobalDefine::optEdit;
+            initTypeInfo(_data);
         }
     }
 }
 
-// 取消
 void LoggingWidget::slotCancel()
 {
-    MetaUI *widget = q_widget[q_relation[q_stack->currentIndex()]];
-    if (widget) {
-        if (q_boxType->isVisible()) {
+    if (currentMetaUi_) {
+        if (boxType_->isVisible()) {
             enableConnection(false);
-
-            q_boxType->setCurrentIndex(
-                q_boxType->findData(widget->originalType()));
-
+            boxType_->setCurrentIndex(boxType_->findData(currentMetaUi_->originalType()));
             enableConnection(true);
         }
     }
+
     emit canceled();
 }
 
-// 数据类型变更
 void LoggingWidget::slotTypeChanged(int index)
 {
     Q_UNUSED(index);
     // 原始数据
-    MetaUI *widget = q_widget[q_relation[q_stack->currentIndex()]];
-    if (!widget) {
+    if (!currentMetaUi_) {
         return;
     }
-    ICDCommonData::smtCommon &smtData
-        = *reinterpret_cast<ICDCommonData::smtCommon*>(widget->uiData());
+
+    ICDCommonData::smtCommon &smtData =
+            *reinterpret_cast<ICDCommonData::smtCommon*>(currentMetaUi_->uiData());
     if (!smtData) {
         return;
     }
-    bool newData = ((GlobalDefine::dtTotal - GlobalDefine::dtHead)
-                    == q_boxType->count());
+
+    bool newData = ((GlobalDefine::dtTotal - GlobalDefine::dtHead) == boxType_->count());
     stTableRules rule = ICDFactory::instance().convert2Rule(smtData);
-    WIDGEGTYPE type = wdCommon;
+    int metaUiType = MetaUI::wdCommon;
     // 获取原始数据
-    switch (rule.uType = q_boxType->currentData().toInt()) {
+    switch (rule.uType = boxType_->currentData().toInt()) {
     case GlobalDefine::dtHead:
-        type = wdHeader;
+        metaUiType = MetaUI::wdHeader;
         break;
     case GlobalDefine::dtCounter:
         rule.sDefault = QString::number(GlobalDefine::counterU8).toStdString();
-        type = wdCounter;
+        metaUiType = MetaUI::wdCounter;
         break;
     case GlobalDefine::dtCheck:
         rule.sDefault = QString::number(GlobalDefine::ctInvalid).toStdString();
-        type = wdCheck;
+        metaUiType = MetaUI::wdCheck;
         break;
     case GlobalDefine::dtFrameCode:
         rule.sDefault = QString::number(GlobalDefine::frame8).toStdString();
-        type = wdFrameCode;
+        metaUiType = MetaUI::wdFrameCode;
         break;
     case GlobalDefine::dtU8:
     case GlobalDefine::dt8:
-        type = wdCommon;
+        metaUiType = MetaUI::wdCommon;
         break;
     case GlobalDefine::dtU16:
     case GlobalDefine::dt16:
-        type = wdCommon;
+        metaUiType = MetaUI::wdCommon;
         break;
     case GlobalDefine::dtU32:
     case GlobalDefine::dt32:
     case GlobalDefine::dtF32:
-        type = wdCommon;
+        metaUiType = MetaUI::wdCommon;
         break;
     case GlobalDefine::dtF64:
-        type = wdCommon;
+        metaUiType = MetaUI::wdCommon;
         break;
     case GlobalDefine::dtBitMap:
-        type = wdBitMap;
+        metaUiType = MetaUI::wdBitMap;
         break;
     case GlobalDefine::dtBitValue:
-        type = wdBitValue;
+        metaUiType = MetaUI::wdBitValue;
         break;
     case GlobalDefine::dtComplex:
-        type = wdComplex;
+        metaUiType = MetaUI::wdComplex;
         break;
     case GlobalDefine::dtDiscern:
-        type = wdDiscern;
+        metaUiType = MetaUI::wdDiscern;
         rule.dOffset = 1.0;
         break;
     case GlobalDefine::dtBuffer:
-        type = wdBuffer;
+        metaUiType = MetaUI::wdBuffer;
 		break;
     default:
         break;
     }
+
     _UIData data;
     ICDMetaData::smtMeta meta = ICDFactory::instance().CreatObject(rule);
     data.data = &meta;
     if (newData) {
         data.type = GlobalDefine::optNew;
     }
+
     // 重新刷新界面
-    initUIData(type, data);
-    if (!newData) {
-        if (widget = q_widget[q_relation[q_stack->currentIndex()]]) {
-            widget->changeDataType(rule.uType);
-        }
+    initUIData(metaUiType, data);
+    if (!newData && currentMetaUi_) {
+        currentMetaUi_->changeDataType(rule.uType);
     }
 }
 
-// 初始化数据类型信息
 void LoggingWidget::initTypeInfo(const _UIData &data)
 {
-    if (!q_boxType || !data.data) {
+    if (!boxType_ || !data.data) {
         return;
     }
+
     std::vector<stDictionary> dics;
     QVariantList args;
     args.append(qVariantFromValue((void*)&dics));
@@ -362,8 +231,11 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
     const int count = dics.size();
     int lowerBound = GlobalDefine::dtHead;
     int upperBound = GlobalDefine::dtBuffer;
-    const ICDMetaData::smtMeta &meta
-        = *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
+    const ICDMetaData::smtMeta &meta = *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
+    if (!meta) {
+        Q_ASSERT(false);
+        return;
+    }
     if (GlobalDefine::optNew != data.type) {
         switch (meta->type()) {
         case GlobalDefine::dtHead:
@@ -399,7 +271,7 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
     enableConnection(false);
 
     // 初始化下拉框
-    q_boxType->clear();
+    boxType_->clear();
     for (int i = 0; i < count; ++i) {
         const stDictionary &dic = dics.at(i);
         if (dic.nCode < lowerBound) {
@@ -407,20 +279,18 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
         } else if (dic.nCode > upperBound) {
             break;
         } else {
-            q_boxType->addItem(dic.sDec.c_str(), dic.nCode);
+            boxType_->addItem(dic.sDec.c_str(), dic.nCode);
         }
     }
-    q_boxType->setCurrentIndex(q_boxType->findData(meta->type()));
+    boxType_->setCurrentIndex(boxType_->findData(meta->type()));
 
     enableConnection(true);
 }
 
 void LoggingWidget::enableConnection(bool enable)
 {
-    disconnect(q_boxType, SIGNAL(currentIndexChanged(int)),
-               this, SLOT(slotTypeChanged(int)));
+    disconnect(boxType_, SIGNAL(currentIndexChanged(int)), this, SLOT(slotTypeChanged(int)));
     if (enable) {
-        connect(q_boxType, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(slotTypeChanged(int)));
+        connect(boxType_, SIGNAL(currentIndexChanged(int)), this, SLOT(slotTypeChanged(int)));
     }
 }

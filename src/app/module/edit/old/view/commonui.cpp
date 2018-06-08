@@ -49,27 +49,27 @@ CommonUI::CommonUI(QWidget *parent)
     int row = 0;
     QGridLayout* gridLayout = new QGridLayout(basicGroup);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称:")), row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(labelNameFlag, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标   识:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("下   限:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("下   限：")), ++row, 0);
     gridLayout->addWidget(q_spinMin, row, 1);
     gridLayout->addWidget(q_checkLower, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("上   限:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("上   限：")), ++row, 0);
     gridLayout->addWidget(q_spinMax, row, 1);
     gridLayout->addWidget(q_checkUpper, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("偏   置:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("偏   置：")), ++row, 0);
     gridLayout->addWidget(q_spinOffset, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("单   位:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("单   位：")), ++row, 0);
     gridLayout->addWidget(q_edtUnit, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("比例尺:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("比例尺：")), ++row, 0);
     gridLayout->addWidget(q_spinLSB, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("默认值:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("默认值：")), ++row, 0);
     gridLayout->addWidget(q_spinDefault, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
     gridLayout->addWidget(q_edtRemak, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
@@ -121,6 +121,11 @@ CommonUI::CommonUI(QWidget *parent)
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
+}
+
+int CommonUI::uiType() const
+{
+    return wdCommon;
 }
 
 void CommonUI::setUIData(const _UIData &data)

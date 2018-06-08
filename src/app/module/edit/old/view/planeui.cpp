@@ -7,7 +7,6 @@ PlaneUI::PlaneUI(QWidget *parent)
     : MetaUI(parent)
 {
     QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
-
     q_edtName = new LimitLineEdit(this);
     q_edtName->setObjectName("edtName");
     q_edtName->setMaxLength(30);
@@ -26,13 +25,13 @@ PlaneUI::PlaneUI(QWidget *parent)
     int row = 0;
     QGridLayout *gridLayout = new QGridLayout(group);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名称:")), row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名称：")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标识:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标识：")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描述:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描述：")), ++row, 0);
     gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
@@ -45,8 +44,9 @@ PlaneUI::PlaneUI(QWidget *parent)
     q_color = q_edtName->palette().color(QPalette::Base);
 }
 
-PlaneUI::~PlaneUI()
+int PlaneUI::uiType() const
 {
+    return wdPlane;
 }
 
 void PlaneUI::setUIData(const _UIData &data)

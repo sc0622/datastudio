@@ -180,14 +180,6 @@ private:
     JXmlTable       *q_table;       // 基本信息表
     QLabel          *q_edtStatus;   // 状态提示
 
-    QAction         *q_actNew;      // 新增按钮
-    QAction         *q_actInsert;   // 插入按钮
-    QAction         *q_actUp;       // 上移按钮
-    QAction         *q_actDown;     // 下移按钮
-    QAction         *q_actDelete;   // 删除按钮
-    QAction         *q_actClear;    // 清空按钮
-    QAction         *q_actSaveDB;   // 保存到数据库
-    QAction         *q_actSaveFile; // 保存到文件
     QAction         *q_paste;       // 右键菜单粘贴
 
     const QString   q_planeName;    // 机型表

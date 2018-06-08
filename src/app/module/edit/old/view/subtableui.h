@@ -13,13 +13,16 @@ class SubTableUI : public MetaUI
     Q_OBJECT
 public:
     explicit SubTableUI(QWidget* parent = nullptr);
+
+    int uiType() const override;
+
     // MetaUI interface
     void setUIData(const _UIData &data) override;
     void* uiData() const override;
 
 signals:
 
-protected slots:
+private slots:
     // 编辑框文本变更
     void slotTextChanged(const QString& text);
     // 帧码数据变更
@@ -27,7 +30,7 @@ protected slots:
     // 数据录入完成
     void slotEditFinished();
 
-protected:
+private:
     // 确认
     void confirm() override;
     // 取消
@@ -38,7 +41,7 @@ protected:
     // 初始化帧码长度下拉框
     void initBoxLenght();
     // 启/停用信号槽
-    void enableConnection(bool enable) override;
+    void enableConnection(bool enable);
     // 校验界面数据
     bool dataValid();
 

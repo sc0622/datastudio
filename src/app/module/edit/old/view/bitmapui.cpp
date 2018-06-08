@@ -36,21 +36,21 @@ BitMapUI::BitMapUI(QWidget *parent)
     int row = 0;
     QGridLayout* gridLayout = new QGridLayout(basicGroup);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称:")), row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标   识:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("起始位:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("起始位：")), ++row, 0);
     gridLayout->addWidget(q_spinStart, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
     gridLayout->addWidget(new QLabel(QStringLiteral("长   度")), ++row, 0);
     gridLayout->addWidget(q_spinLength, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("默认值:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("默认值：")), ++row, 0);
     gridLayout->addWidget(q_edtDefault, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
     gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
@@ -82,6 +82,11 @@ BitMapUI::BitMapUI(QWidget *parent)
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
+}
+
+int BitMapUI::uiType() const
+{
+    return wdBitMap;
 }
 
 void BitMapUI::setUIData(const _UIData &data)
@@ -228,8 +233,8 @@ void BitMapUI::cancel()
 void BitMapUI::init()
 {
     enableConnection(false);
-
     enableOptionButton(false);  // 操作按钮
+
     QPalette palette;
     if (q_edtName) {    // 名称
         palette = q_edtName->palette();
@@ -523,7 +528,7 @@ void BitMapUI::updateMapOne(int index, const _Eigenvalue &data, int option)
             return;
         }
     }
-    QStringList lst = data.describe.split(":");
+    QStringList lst = data.describe.split("：");
     QStringList desc = lst.size() > 1 ? lst.last().split(";") : QStringList();
     q_table->setItemValue(index, column, q_spinStart->value() + index);
     q_table->setItemValue(index, ++column, lst.first());
@@ -547,7 +552,7 @@ std::map<double, std::string> BitMapUI::tableValues() const
     for (int i = 0; i < count; ++i) {
         value = q_table->itemValue(i, column).toInt();
         des = q_table->itemValue(i, ++column).toString().trimmed();
-        des.append(":").append(q_table->itemValue(i, ++column).toString().trimmed());
+        des.append("：").append(q_table->itemValue(i, ++column).toString().trimmed());
         des.append(";").append(q_table->itemValue(i, ++column).toString().trimmed());
         if (des != QString(":;")) {
             result[value] = des.toStdString();

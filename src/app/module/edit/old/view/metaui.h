@@ -43,8 +43,30 @@ class MetaUI : public QWidget
 {
     Q_OBJECT
 public:
+    enum MetaUiType {
+        wdUnknown = -1,
+        wdHeader,   // 表头界面
+        wdCounter,  // 帧计数界面
+        wdCheck,    // 校验界面
+        wdFrameCode,// 帧识别码
+        wdCommon,   // 通用界面
+        wdBitMap,   // bitMap界面
+        wdBitValue, // bitValue界面
+        wdDiscern,  // 帧数据界面
+        wdComplex,  // 复合数据界面
+        wdBuffer,   // 数据预留区界面
+        wdSubTable, // 子表界面
+        wdTable,    // 表界面
+        wdSystem,   // 系统界面
+        wdPlane,    // 机型界面
+    };
+    Q_ENUM(MetaUiType)
+
     // 创建界面
     explicit MetaUI(QWidget *parent = nullptr);
+
+    virtual int uiType() const;
+
     // 设置界面数据
     virtual void setUIData(const _UIData &data);
     // 获取界面编辑数据
@@ -53,8 +75,6 @@ public:
     virtual void changeDataType(int type);
     // 原始数据类型
     virtual int originalType() const;
-    // 启/停用信号槽
-    virtual void enableConnection(bool enable);
     // 启/停用界面控制按钮
     void enableOptionButton(bool enable);
 
@@ -62,6 +82,8 @@ public:
     QPushButton *buttonConfirm() const;
     QPushButton *buttonCancel() const;
     QLineEdit *editStatus() const;
+
+    static MetaUI *create(int metaUiType);
 
 signals:
     void confirmed(bool &);

@@ -57,11 +57,10 @@ DataEngineWidget::DataEngineWidget(QWidget *parent)
     q_edtStatus->hide();
     veriLayoutMain->addWidget(q_edtStatus);
 
-    connect(q_loggingWidget, SIGNAL(dataSaved(void *, bool &)),
-            this, SLOT(slotSave2Memory(void *, bool &)));
-    connect(q_loggingWidget, SIGNAL(canceled()), this, SLOT(slotCanceled()));
+    connect(q_loggingWidget, &LoggingWidget::dataSaved, this, &DataEngineWidget::slotSave2Memory);
+    connect(q_loggingWidget, &LoggingWidget::canceled, this, &DataEngineWidget::slotCanceled);
+    connect(q_paste, &QAction::triggered, this, &DataEngineWidget::slotPaste);
 
-    connect(q_paste, SIGNAL(triggered()), this, SLOT(slotPaste()));
     enableConnection(true);
 
     // 默认隐藏
@@ -165,35 +164,27 @@ void DataEngineWidget::initUI(int type, void *data)
         showData(planes);
         setActionEnabled("file", !planes.empty());
     } else if (type == GlobalDefine::ntPlane) {
-        ICDElement::smtElement element
-            = *reinterpret_cast<ICDElement::smtElement *>(data);
-        PlaneNode::smtPlane plane
-            = std::dynamic_pointer_cast<PlaneNode>(element);
+        ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
+        PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(element);
         q_data = plane->clone();
         showData(plane->allSystem());
     } else if (type == GlobalDefine::ntSystem) {
-        ICDElement::smtElement element
-            = *reinterpret_cast<ICDElement::smtElement *>(data);
-        SystemNode::smtSystem system
-            = std::dynamic_pointer_cast<SystemNode>(element);
+        ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
+        SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(element);
         q_data = system->clone();
         showData(system->allTable());
     } else if (type == GlobalDefine::ntTable) {
-        ICDElement::smtElement element
-            = *reinterpret_cast<ICDElement::smtElement *>(data);
-        TableNode::smtTable table
-            = std::dynamic_pointer_cast<TableNode>(element);
+        ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
+        TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(element);
         q_data = table->clone();
         if (table) {
             showData(table->allRule());
         }
     } else if (type == GlobalDefine::ntRule) {
-        std::vector<int> &rule
-            = *reinterpret_cast<std::vector<int> *>(data);
+        std::vector<int> &rule = *reinterpret_cast<std::vector<int> *>(data);
         if (2 == rule.size()) {
             q_subType = rule.at(0);
-            ICDElement::smtElement element
-                = *reinterpret_cast<ICDElement::smtElement *>(rule.at(1));
+            ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(rule.at(1));
             //element = *reinterpret_cast<ICDElement::smtElement *>(rule.at(1));
             if (GlobalDefine::dtComplex == q_subType) {
                 TableNode::smtTable table = SMT_CONVERT(TableNode, element);
@@ -534,14 +525,10 @@ int DataEngineWidget::queryOffset(const ICDMetaData::smtMeta &meta) const
 bool DataEngineWidget::queryWidgetState(const QString &name) const
 {
     bool result = false;
-    if (name == "new") {
-        if (q_actNew) {
-            result = q_actNew->isEnabled();
-        }
-    } else if (name == "clear") {
-        if (q_actClear) {
-            result = q_actClear->isEnabled();
-        }
+    if (name == "add") {
+        result = jnotify->send("edit.toolbar.action.querystate", name).toBool();
+    } else if (name == "clean") {
+        result = jnotify->send("edit.toolbar.action.querystate", name).toBool();
     }
 
     return result;
@@ -1064,7 +1051,7 @@ void DataEngineWidget::updateOne(int index,
     QString indentify = QString::number(common->serial());
     if (GlobalDefine::dtComplex == common->type()) {
         // 复合数据记录子表ID
-        q_table->setItemData(index, column, 
+        q_table->setItemData(index, column,
                              common->rule().c_str(), ComplexTable);
     }
     // 插入数据
@@ -1263,7 +1250,7 @@ void DataEngineWidget::updatePlaneUI(GlobalDefine::OptionType option)
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(LoggingWidget::wdPlane, data);
+    q_loggingWidget->initUIData(MetaUI::wdPlane, data);
     q_loggingWidget->setVisible(true);
 }
 
@@ -1322,7 +1309,7 @@ void DataEngineWidget::updateSystemUI(GlobalDefine::OptionType option)
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(LoggingWidget::wdSystem, data);
+    q_loggingWidget->initUIData(MetaUI::wdSystem, data);
     q_loggingWidget->setVisible(true);
 }
 
@@ -1394,7 +1381,7 @@ void DataEngineWidget::updateICDTableUI(GlobalDefine::OptionType option)
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(LoggingWidget::wdTable, data);
+    q_loggingWidget->initUIData(MetaUI::wdTable, data);
     q_loggingWidget->setVisible(true);
 }
 
@@ -1491,31 +1478,31 @@ void DataEngineWidget::updateDetailUI(const _UIData &data)
     }
     if (IcdDefine::icdCommon == meta->metaType()) {
         if (GlobalDefine::dtHead == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdHeader, data);
+            q_loggingWidget->initUIData(MetaUI::wdHeader, data);
         } else if (GlobalDefine::dtCounter == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdCounter, data);
+            q_loggingWidget->initUIData(MetaUI::wdCounter, data);
         } else if (GlobalDefine::dtCheck == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdCheck, data);
+            q_loggingWidget->initUIData(MetaUI::wdCheck, data);
         } else if (GlobalDefine::dtFrameCode == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdFrameCode, data);
+            q_loggingWidget->initUIData(MetaUI::wdFrameCode, data);
         } else {
-            q_loggingWidget->initUIData(LoggingWidget::wdCommon, data);
+            q_loggingWidget->initUIData(MetaUI::wdCommon, data);
         }
     } else if (IcdDefine::icdCustom == meta->metaType()) {
         if (GlobalDefine::dtBuffer == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdBuffer, data);
+            q_loggingWidget->initUIData(MetaUI::wdBuffer, data);
         }
     } else if (IcdDefine::icdBit == meta->metaType()) {
         if (GlobalDefine::dtBitMap == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdBitMap, data);
+            q_loggingWidget->initUIData(MetaUI::wdBitMap, data);
         } else if (GlobalDefine::dtBitValue == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdBitValue, data);
+            q_loggingWidget->initUIData(MetaUI::wdBitValue, data);
         }
     } else if (IcdDefine::icdComplex == meta->metaType()) {
         if (GlobalDefine::dtComplex == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdComplex, data);
+            q_loggingWidget->initUIData(MetaUI::wdComplex, data);
         } else if (GlobalDefine::dtDiscern == meta->type()) {
-            q_loggingWidget->initUIData(LoggingWidget::wdDiscern, data);
+            q_loggingWidget->initUIData(MetaUI::wdDiscern, data);
         }
     }
     q_loggingWidget->setVisible(true);
@@ -1592,15 +1579,14 @@ void DataEngineWidget::updateSubTableUI(GlobalDefine::OptionType option)
             .toString().toStdString();
         base.sRemark = q_table->itemValue(row, ++column)
             .toString().toStdString();
-        base.sRemark.insert(0, q_table->itemValue(row, ++column)
-                            .toString().toStdString() + "##");
+        base.sRemark.insert(0, q_table->itemValue(row, ++column).toString().toStdString() + "##");
     } else {
         base = table->icdBase();
     }
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(LoggingWidget::wdSubTable, data);
+    q_loggingWidget->initUIData(MetaUI::wdSubTable, data);
     q_loggingWidget->setVisible(true);
 }
 
@@ -1656,7 +1642,7 @@ int DataEngineWidget::queryFirstBitSerial(int bitIndex)
         if (bitIndex == value) {
             result = q_table->itemData(i, 0, Qt::UserRole).toInt();
         } else if (value < bitIndex) {
-            break;  // 
+            break;  //
         }
     }
 
@@ -1745,7 +1731,7 @@ bool DataEngineWidget::canPasted() const
     if (keys.isEmpty() || -1 != q_newIndex) {
         // 没有源数据或者表中有未保存数据
         result = false;
-    } else {    // 
+    } else {    //
         QStringList typeList = keys.mid(0, keys.indexOf("##")).split("_");
         const int level = typeList.first().toInt();
         if (level == q_dataType) {  // 源数据和目标数据层级相同
@@ -2379,8 +2365,10 @@ void DataEngineWidget::slotSave2Memory(void *data, bool &result)
     if (!data) {
         return;
     }
+
     // 保存数据到内存，分拷贝、插入、新增和编辑，拷贝、插入、新增直接保存到内存
     // 编辑由于涉及到数据的位置更换，所有先保存到副本数据，再一次性更新内存数据
+    bool reInitNeed = true;
     if (q_table->property("copyData").toInt() == q_newIndex
         && -1 != q_newIndex) {  // 保存拷贝数据
         QVector<int> params;
@@ -2427,15 +2415,18 @@ void DataEngineWidget::slotSave2Memory(void *data, bool &result)
             // 保存到内存
         } else { // 新增或者仅编辑了数据
             QVariantList args;
-            args.append(qVariantFromValue((void*)&data));
+            args.append(qVariantFromValue((void*)data));
             args.append(qVariantFromValue((void*)&result));
             jnotify->send("edit.updateNodeData", args);
+            reInitNeed = false;
         }
     }
     if (result) {
         // 重新初始化界面
         int row = q_table->currentRow();
-        reInit();
+        if (reInitNeed) {
+            reInit();
+        }
         q_table->selectRow(row);
     } else {
         setActionEnabled("add", result);
@@ -2448,7 +2439,7 @@ void DataEngineWidget::slotCanceled()
     if (-1 != q_changePos) {
         return;  // 只有拖动数据位置时才重新初始化
     }
-    
+
     // 重新初始化界面
     int row = q_table->currentRow();
     reInit();
@@ -2498,7 +2489,7 @@ void DataEngineWidget::slotInsert()
             q_newIndex = index;
             rule.nSerial = q_table->itemData(index, 0, Qt::UserRole).toInt();
             rule.nCode = q_table->itemValue(index - 1, 2).toInt();
-            rule.nCode += q_table->itemData(index - 1, 
+            rule.nCode += q_table->itemData(index - 1,
                                             q_table->columnCount() - 1,
                                             Qt::UserRole).toInt();
 //             if (index > 0
@@ -2678,7 +2669,7 @@ void DataEngineWidget::slotClear()
     } else if (GlobalDefine::ntSystem == q_dataType) {
         if (QMessageBox::No == QMessageBox::question(this,
             QStringLiteral("确认提示"),
-            QStringLiteral("即将删除当前系统的所有ICD表，包括所有下属数据")
+            QStringLiteral("即将删除当前系统的所有协议表，包括所有下属数据")
             + QStringLiteral("\r\n确认删除？"))) {
             return;
         }
@@ -2755,9 +2746,9 @@ void DataEngineWidget::slotSave2Source(GlobalDefine::DataSource type)
     } else if (GlobalDefine::dsFile == type) {  // 保存文件
         actionName = "file";
         setActionEnabled(actionName, false);
-        QString file = QFileDialog::getSaveFileName(this, QStringLiteral("保存ICD数据"), q_defaultPath,
-                                                    "XML files (*.xml);;"
-                                                    "JSON files (*.json)");
+        QString file = QFileDialog::getSaveFileName(this, QStringLiteral("保存协议数据"), q_defaultPath,
+                                                    "JSON files (*.json);;"
+                                                    "XML files (*.xml)");
         if (file.isEmpty()) {
             setActionEnabled(actionName, true);
             return;
@@ -2769,11 +2760,11 @@ void DataEngineWidget::slotSave2Source(GlobalDefine::DataSource type)
         args.append(int(GlobalDefine::dsFile));
         jnotify->send("edit.saveMemoryData", args);
 
-        tip = QStringLiteral("保存数据到文件\r\n<%1>\r\n").arg(q_defaultPath);
+        tip = QStringLiteral("保存数据到文件[%1]").arg(q_defaultPath);
     }
 
     if (!err.isEmpty()) {
-        tip.append(QStringLiteral("失败！\r\n[%1]").arg(err));
+        tip.append(QStringLiteral("失败！\n[%1]").arg(err));
         setActionEnabled(actionName, true);
     } else {
         tip.append(QStringLiteral("成功！"));

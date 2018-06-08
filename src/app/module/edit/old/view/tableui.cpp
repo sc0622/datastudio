@@ -31,7 +31,6 @@ TableUI::TableUI(QWidget* parent)
     : MetaUI(parent)
 {
     QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
-
     q_edtName = new LimitLineEdit(this);
     q_edtName->setObjectName("edtName");
     q_edtName->setMaxLength(120);
@@ -53,16 +52,16 @@ TableUI::TableUI(QWidget* parent)
 
     QGridLayout *gridLayout = new QGridLayout(group);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名称:")), 0, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名称：")), 0, 0);
     gridLayout->addWidget(q_edtName, 0, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), 0, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标识:")), 1, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标识：")), 1, 0);
     gridLayout->addWidget(q_edtCode, 1, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), 1, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("长度:")), 2, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("长度：")), 2, 0);
     gridLayout->addWidget(q_spinLength, 2, 1);
     gridLayout->addWidget(q_check = new QCheckBox(this), 2, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描述:")), 3, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描述：")), 3, 0);
     gridLayout->addWidget(q_edtDescribe, 3, 1, 2, 1);
     gridLayout->setRowStretch(4, 1);
 
@@ -73,6 +72,11 @@ TableUI::TableUI(QWidget* parent)
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
+}
+
+int TableUI::uiType() const
+{
+    return wdTable;
 }
 
 void TableUI::slotTextChanged(const QString &text)

@@ -9,7 +9,6 @@ HeaderUI::HeaderUI(QWidget *parent)
     : MetaUI(parent)
 {
     QGroupBox* group = new QGroupBox(QStringLiteral("基本信息"), this);
-
     q_edtName = new LimitLineEdit(this);
     q_edtName->setMaxLength(40);
     q_edtName->setToolTip(QStringLiteral("最多40个字符！"));
@@ -26,15 +25,15 @@ HeaderUI::HeaderUI(QWidget *parent)
 
     QGridLayout* gridLayout = new QGridLayout(group);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称:")), 0, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), 0, 0);
     gridLayout->addWidget(q_edtName, 0, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), 0, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标   识:")), 1, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), 1, 0);
     gridLayout->addWidget(q_edtCode, 1, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), 1, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("默认值:")), 2, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("默认值：")), 2, 0);
     gridLayout->addWidget(q_spinDefault, 2, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述:")), 3, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), 3, 0);
     gridLayout->addWidget(q_edtRemak, 3, 1, 2, 1);
     gridLayout->setRowStretch(4, 1);
 
@@ -45,6 +44,11 @@ HeaderUI::HeaderUI(QWidget *parent)
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
+}
+
+int HeaderUI::uiType() const
+{
+    return wdHeader;
 }
 
 void HeaderUI::setUIData(const _UIData &data)

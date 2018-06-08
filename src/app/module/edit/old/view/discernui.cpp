@@ -7,7 +7,6 @@ DiscernUI::DiscernUI(QWidget *parent)
     : MetaUI(parent)
 {
     QGroupBox* group = new QGroupBox(QStringLiteral("基本信息"), this);
-
     q_edtName = new LimitLineEdit(this);
     q_edtName->setMaxLength(40);
     q_edtName->setToolTip(QStringLiteral("最多40个字符！"));
@@ -28,17 +27,17 @@ DiscernUI::DiscernUI(QWidget *parent)
     int row = 0;
     QGridLayout* gridLayout = new QGridLayout(group);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称:")), row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标   识:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-//    gridLayout->addWidget(new QLabel(QStringLiteral("帧长度:")), ++row, 0);
+//    gridLayout->addWidget(new QLabel(QStringLiteral("帧长度：")), ++row, 0);
 //    gridLayout->addWidget(q_spinLength, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("时序数:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("时序数：")), ++row, 0);
     gridLayout->addWidget(q_spinSequence, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
     gridLayout->addWidget(q_edtRemak, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
@@ -49,6 +48,11 @@ DiscernUI::DiscernUI(QWidget *parent)
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
+}
+
+int DiscernUI::uiType() const
+{
+    return wdDiscern;
 }
 
 DiscernUI::~DiscernUI()

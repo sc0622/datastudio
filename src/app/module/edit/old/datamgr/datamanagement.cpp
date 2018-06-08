@@ -2154,11 +2154,11 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
     if (!element) {
         return -1;
     }
-    const QString *condition = jVariantFromVoid<QString>(args[1]);
-    if (!condition) {
+    const QString *keys = jVariantFromVoid<QString>(args[1]);
+    if (!keys) {
         return -1;
     }
-    QStringList keyList = condition->split("/", QString::SkipEmptyParts);
+    QStringList keyList = keys->split("/", QString::SkipEmptyParts);
     if (keyList.empty()) {
         return -1;
     } else if (1 == keyList.size()) {   // 机型
@@ -2174,8 +2174,7 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
         if (!plane) {
             return -1;
         }
-        SystemNode::smtSystem system
-                = plane->system(keyList.takeFirst().toInt());
+        SystemNode::smtSystem system = plane->system(keyList.takeFirst().toInt());
         if (!system) {
             return -1;;
         }
@@ -2185,13 +2184,11 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
         if (!plane) {
             return -1;;
         }
-        SystemNode::smtSystem system
-                = plane->system(keyList.takeFirst().toInt());
+        SystemNode::smtSystem system = plane->system(keyList.takeFirst().toInt());
         if (!system) {
             return -1;;
         }
-        TableNode::smtTable table
-                = system->table(keyList.takeFirst().toStdString());
+        TableNode::smtTable table = system->table(keyList.takeFirst().toStdString());
         if (!table) {
             return -1;;
         }
@@ -2498,7 +2495,8 @@ JLRESULT DataManegement::saveFile(const Icd::JNEvent &event)
 
     std::vector<int> datas;
     Icd::VehiclePtrArray vehicles;
-    Icd::SqlParser sqlParser(std::string(""));
+    Json::Value configSql(Json::objectValue);
+    Icd::SqlParser sqlParser(configSql);
     // 转换数据
     datas.push_back((int)&plane_system);
     datas.push_back((int)&tableRules);

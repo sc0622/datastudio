@@ -33,7 +33,6 @@ SubTableUI::SubTableUI(QWidget* parent)
     : MetaUI(parent)
 {
     QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
-
     q_edtName = new LimitLineEdit(this);
     q_edtName->setObjectName("edtName");
     q_edtName->setMaxLength(120);
@@ -55,17 +54,17 @@ SubTableUI::SubTableUI(QWidget* parent)
     int row = 0;
     QGridLayout *gridLayout = new QGridLayout(group);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称:")), row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("帧类型:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("帧类型：")), ++row, 0);
     gridLayout->addWidget(q_boxType, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("帧   码:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("帧   码：")), ++row, 0);
     gridLayout->addWidget(q_spinCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("时   序:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("时   序：")), ++row, 0);
     gridLayout->addWidget(q_spinSequence, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
     gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
@@ -79,6 +78,11 @@ SubTableUI::SubTableUI(QWidget* parent)
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
+}
+
+int SubTableUI::uiType() const
+{
+    return wdSubTable;
 }
 
 void SubTableUI::slotTextChanged(const QString &text)

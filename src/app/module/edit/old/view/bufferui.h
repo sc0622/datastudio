@@ -17,6 +17,8 @@ public:
     BufferUI(QWidget *parent = nullptr);
     ~BufferUI();
 
+    int uiType() const override;
+
     // MetaUI interface
     void setUIData(const _UIData &data) override;
     void*uiData() const override;
@@ -27,13 +29,13 @@ public:
 
 signals:
 
-protected slots :
+private slots :
     // 数据录入完成
     void slotEditFinished();
     // 编辑文本变更
     void slotTextChanged(const QString& text);
 
-protected:
+private:
     // 确认
     void confirm() override;
     // 取消

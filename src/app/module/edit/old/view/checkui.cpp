@@ -29,20 +29,20 @@ CheckUI::CheckUI(QWidget *parent)
     int row = 0;
     QGridLayout* gridLayout = new QGridLayout(group);
     gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名      称:")), row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名      称：")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标      识:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标      识：")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("校验类型:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("校验类型：")), ++row, 0);
     gridLayout->addWidget(q_boxCheckType, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("起 始 位 :")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("起 始 位 ：")), ++row, 0);
     gridLayout->addWidget(q_spinStart, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("终 止 位 :")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("终 止 位 ：")), ++row, 0);
     gridLayout->addWidget(q_spinEnd, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描      述:")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描      述：")), ++row, 0);
     gridLayout->addWidget(q_edtRemak, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
@@ -51,6 +51,11 @@ CheckUI::CheckUI(QWidget *parent)
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
+}
+
+int CheckUI::uiType() const
+{
+    return wdCheck;
 }
 
 void CheckUI::setUIData(const _UIData &data)

@@ -203,7 +203,11 @@ JLRESULT ICDNavigation::updateNodeData(const Icd::JNEvent &event)
         return -1;
     }
 
-    *result = q_ui->updateNodeData(args[0].toInt());
+    void *data = jVariantFromVoid<void>(args[0]);
+    if (!data) {
+        return -1;
+    }
+    *result = q_ui->updateNodeData(int(data));
 
     return 0;
 }
