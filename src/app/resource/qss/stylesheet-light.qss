@@ -47,7 +47,21 @@ QMainWindow::separator {
 QMainWindow::separator:hover {
     background: #666;
 }
-  
+
+/** QProgressBar **/
+
+QProgressBar {
+    background: #cce;
+    border: 1px solid lightgreen;
+    border-radius: 2px;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background: green;
+    width: 20px;
+}
+
 /** QTabWidget **/
 
 QTabWidget {
@@ -1057,6 +1071,21 @@ QLabel {
 
 QToolBar[__main__=true] {
     min-height: 55px;
+}
+
+/** QLabel **/
+
+QLabel#__status__ {
+    background: #1600ff00;
+}
+
+/** QLineEdit **/
+
+QLineEdit#__status__ {
+    background: #1600ff00;
+    outline: none;
+    border: none;
+    color: #222;
 }
 
 /** custom **/

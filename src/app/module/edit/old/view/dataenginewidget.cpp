@@ -13,17 +13,9 @@
 
 DataEngineWidget::DataEngineWidget(QWidget *parent)
     : QWidget(parent)
-    , q_actNew(0)
-    , q_actInsert(0)
-    , q_actUp(0)
-    , q_actDown(0)
-    , q_actDelete(0)
-    , q_actClear(0)
-    , q_actSaveDB(0)
-    , q_actSaveFile(0)
     , q_planeName("PlaneTable")
     , q_systemName("SystemTable")
-    , q_tableName("ICDTable")
+    , q_tableName("IcdTable")
     , q_ruleName("RuleTable")
     , q_discertName("DiscertTable")
     , q_metaName("CommonTable")
@@ -33,50 +25,38 @@ DataEngineWidget::DataEngineWidget(QWidget *parent)
     , q_changePos(-1)
     , q_data(0)
 {
-    q_defaultPath = QStandardPaths::writableLocation(
-        QStandardPaths::DesktopLocation);
+    q_defaultPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
-    q_edtStatus = new QLabel(this);
-    //q_edtStatus->setMaximumHeight(45);
-    q_edtStatus->setEnabled(false);
-    QPalette palette = q_edtStatus->palette();
-    palette.setColor(QPalette::WindowText, Qt::red);
-    palette.setColor(QPalette::Base, Qt::transparent);
-    q_edtStatus->setPalette(palette);
+    QVBoxLayout* veriLayoutMain = new QVBoxLayout(this);
+    veriLayoutMain->setContentsMargins(0, 0, 0, 0);
+    veriLayoutMain->setSpacing(1);
+
+    splitterMain_ = new JSplitter(this);
+    splitterMain_->setObjectName("edit.view.splitter.main");
+    splitterMain_->setScales(QList<double>() << 2 << 1);
+    splitterMain_->setHandleWidth(3);
+    veriLayoutMain->addWidget(splitterMain_);
 
     q_table = new JXmlTable(this);
-    q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"), q_planeName);
+    q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
+                        q_planeName);
     q_table->setSortingEnabled(false);
     q_table->setContextMenuPolicy(Qt::CustomContextMenu);
     q_paste = new QAction(QStringLiteral("粘贴"), q_table);
     q_table->addAction(q_paste);
-    q_tableBox = new QGroupBox(QStringLiteral("机型："), this);
-    QVBoxLayout* veriLayoutTable = new QVBoxLayout(q_tableBox);
-    veriLayoutTable->setContentsMargins(2, 2, 2, 2);
-    veriLayoutTable->addWidget(q_table);
-
-    q_tipWidget = new QWidget(this);
-    q_tipWidget->setMaximumHeight(20);
-    QHBoxLayout *horiLayoutTop = new QHBoxLayout(q_tipWidget);
-    horiLayoutTop->setContentsMargins(0, 0, 4, 0);
-    horiLayoutTop->addStretch();
-    horiLayoutTop->addWidget(q_edtStatus, 0, Qt::AlignCenter);
+    splitterMain_->addWidget(q_table);
 
     q_loggingWidget = new LoggingWidget(this);
-    JSplitter* splitter = new JSplitter(this);
-    splitter->setOrientation(Qt::Horizontal);
-    splitter->setScales(QList<double>() << 2.5 << 1.0);
-    splitter->setHandleColor(QColor(32, 32, 32, 10));
-    splitter->setHandleWidth(4);
-    splitter->addWidget(q_tableBox);
-    splitter->addWidget(q_loggingWidget);
+    splitterMain_->addWidget(q_loggingWidget);
 
-    QVBoxLayout* veriLayoutMain = new QVBoxLayout(this);
-    veriLayoutMain->setContentsMargins(0, 2, 0, 0);
-    veriLayoutMain->addWidget(q_tipWidget);
-    veriLayoutMain->addWidget(splitter);
+    q_edtStatus = new QLabel(this);
+    q_edtStatus->setObjectName("__status__");
+    q_edtStatus->setFixedHeight(22);
+    q_edtStatus->setTextFormat(Qt::RichText);
+    q_edtStatus->setAlignment(Qt::AlignCenter);
+    q_edtStatus->hide();
+    veriLayoutMain->addWidget(q_edtStatus);
 
-    //
     connect(q_loggingWidget, SIGNAL(dataSaved(void *, bool &)),
             this, SLOT(slotSave2Memory(void *, bool &)));
     connect(q_loggingWidget, SIGNAL(canceled()), this, SLOT(slotCanceled()));
@@ -86,10 +66,51 @@ DataEngineWidget::DataEngineWidget(QWidget *parent)
 
     // 默认隐藏
     q_loggingWidget->setVisible(false);
+
+    //
+    jnotify->on("edit.toolbar.item.add", this, [=](JNEvent &){
+        slotNew(GlobalDefine::dtU8);
+    });
+    jnotify->on("edit.toolbar.item.insert", this, [=](JNEvent &){
+        slotInsert();
+    });
+    jnotify->on("edit.toolbar.item.up", this, [=](JNEvent &){
+        slotMoveUp();
+    });
+    jnotify->on("edit.toolbar.item.down", this, [=](JNEvent &){
+        slotMoveDown();
+    });
+    jnotify->on("edit.toolbar.item.remove", this, [=](JNEvent &){
+        slotDelete();
+    });
+    jnotify->on("edit.toolbar.item.clean", this, [=](JNEvent &){
+        slotClear();
+    });
+    jnotify->on("edit.toolbar.export.db", this, [=](JNEvent &){
+        slotSave2Source(GlobalDefine::dsDatabase);
+    });
+    jnotify->on("edit.toolbar.export.file", this, [=](JNEvent &){
+        slotSave2Source(GlobalDefine::dsFile);
+    });
+    jnotify->on("edit.toolbar.tool.genguid", this, [=](JNEvent &){
+        const QString guid = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
+        QClipboard *clipboard = QApplication::clipboard();
+        if (clipboard) {
+            clipboard->setText("ICDTable_" + guid);
+        }
+    });
 }
 
 DataEngineWidget::~DataEngineWidget()
 {
+    JMain::saveWidgetState(splitterMain_);
+}
+
+bool DataEngineWidget::init()
+{
+    JMain::restoreWidgetState(splitterMain_);
+
+    return true;
 }
 
 // 初始化界面
@@ -112,12 +133,12 @@ void DataEngineWidget::initUI(int type, void *data)
     q_subType = -1;
     q_newIndex = -1;
     q_loggingWidget->setVisible(false);
-    setActionState(q_actNew, true);
-    setActionState(q_actInsert, false);
-    setActionState(q_actDelete, false);
-    setActionState(q_actUp, false);
-    setActionState(q_actDown, false);
-    setActionState(q_actSaveFile, true);
+    setActionEnabled("add", true);
+    setActionEnabled("insert", false);
+    setActionEnabled("remove", false);
+    setActionEnabled("up", false);
+    setActionEnabled("down", false);
+    setActionEnabled("file", true);
     // 查询数据是否有变更
     int dataState = 0;
     QVariantList args;
@@ -126,7 +147,7 @@ void DataEngineWidget::initUI(int type, void *data)
     args.append(qVariantFromValue((void*)&command));
     jnotify->send("edit.queryNodeFlag", args);
 
-    setActionState(q_actSaveDB, dataState);
+    setActionEnabled("db", dataState);
 
     q_table->verticalHeader()->setSectionsMovable(true);    // 默认可以交换数据项位置
     //q_table->setSortingEnabled(true);   // 默认启用排序功能
@@ -142,7 +163,7 @@ void DataEngineWidget::initUI(int type, void *data)
             planes.push_back(std::dynamic_pointer_cast<PlaneNode>(q_vData[i])->clone());
         }
         showData(planes);
-        setActionState(q_actSaveFile, !planes.empty());
+        setActionEnabled("file", !planes.empty());
     } else if (type == GlobalDefine::ntPlane) {
         ICDElement::smtElement element
             = *reinterpret_cast<ICDElement::smtElement *>(data);
@@ -197,8 +218,8 @@ void DataEngineWidget::initUI(int type, void *data)
             }
         }
         // 单独的规则界面，禁用保存
-        setActionState(q_actSaveDB, false);
-        setActionState(q_actSaveFile, false);
+        setActionEnabled("db", false);
+        setActionEnabled("file", false);
     }
     // 初始完成重新启用表信号槽
     enableConnection(true);
@@ -213,10 +234,10 @@ void DataEngineWidget::initUI(int type, void *data)
 
         if (Qt::Unchecked == loaded) {
             q_edtStatus->setText(QStringLiteral("尚未加载数据，不能进行操作"));
-            q_tipWidget->setHidden(loaded);
+            q_edtStatus->setHidden(loaded);
             // 更新按钮状态
-            setActionState(q_actNew, loaded);
-            setActionState(q_actInsert, loaded);
+            setActionEnabled("add", loaded);
+            setActionEnabled("insert", loaded);
         } else {
             setTipsVisible(q_ruleName == q_table->tableName());
         }
@@ -541,65 +562,6 @@ void DataEngineWidget::dealCommand(int command, const QVariant &param)
     }
 }
 
-void DataEngineWidget::setMenuPtr(const std::string &name, QAction *action)
-{
-    if (!action) {
-        return;
-    }
-    action->setEnabled(false);
-    if ("action_add" == name) {
-        q_actNew = action;
-    } else if ("action_insert" == name) {
-        q_actInsert = action;
-    } else if ("action_up" == name) {
-        q_actUp = action;
-    } else if ("action_down" == name) {
-        q_actDown = action;
-    } else if ("action_delete" == name) {
-        q_actDelete = action;
-    } else if ("action_clear" == name) {
-        q_actClear = action;
-    } else if ("action_database" == name) {
-        q_actSaveDB = action;
-    } else if ("action_file" == name) {
-        q_actSaveFile = action;
-    } else if ("action_table_guid" == name) {
-        q_genTableGuid = action;
-    }
-}
-
-bool DataEngineWidget::dealMenuCmd(const std::string &name)
-{
-    if ("action_add" == name) {
-        slotNew(GlobalDefine::dtU8);
-    } else if ("action_insert" == name) {
-        slotInsert();
-    } else if ("action_up" == name) {
-        slotMoveUp();
-    } else if ("action_down" == name) {
-        slotMoveDown();
-    } else if ("action_delete" == name) {
-        slotDelete();
-    } else if ("action_clear" == name) {
-        slotClear();
-    } else if ("action_database" == name) {
-        slotSave2Source(GlobalDefine::dsDatabase);
-    } else if ("action_file" == name) {
-        slotSave2Source(GlobalDefine::dsFile);
-    } else if ("action_table_guid" == name) {
-        const QString guid = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
-        QClipboard *clipboard = QApplication::clipboard();
-        if (clipboard) {
-            clipboard->setText("ICDTable_" + guid);
-            return true;
-        }
-    } else {
-        return true;
-    }
-
-    return false;
-}
-
 // 加载显示机型
 void DataEngineWidget::showData(const PlaneNode::planeVector &planes)
 {
@@ -608,14 +570,13 @@ void DataEngineWidget::showData(const PlaneNode::planeVector &planes)
     }
     if (q_table->tableName() != q_planeName) {
         q_table->setTableName(q_planeName);
-        q_tableBox->setTitle(QStringLiteral("机型："));
     }
     q_table->clearContents();
     const int count = planes.size();
     for (int row = 0; row < count; ++row) {
         updateOne(row, planes[row], optNew);
     }
-    setActionState(q_actClear, count > 0);
+    setActionEnabled("clean", count > 0);
 }
 
 // 加载显示系统
@@ -626,14 +587,13 @@ void DataEngineWidget::showData(const SystemNode::systemVector &systems)
     }
     if (q_table->tableName() != q_systemName) {
         q_table->setTableName(q_systemName);
-        q_tableBox->setTitle(QStringLiteral("系统："));
     }
     q_table->clearContents();
     const int count = systems.size();
     for (int i = 0; i < count; ++i) {
         updateOne(i, systems[i], optNew);
     }
-    setActionState(q_actClear, count > 0);
+    setActionEnabled("clean", count > 0);
 }
 
 // 加载显示ICD表
@@ -644,7 +604,6 @@ void DataEngineWidget::showData(const TableNode::tableVector &tables)
     }
     if (q_table->tableName() != q_tableName) {
         q_table->setTableName(q_tableName);
-        q_tableBox->setTitle(QStringLiteral("ICD表："));
     }
     q_table->clearContents();
     const int count = tables.size();
@@ -655,7 +614,7 @@ void DataEngineWidget::showData(const TableNode::tableVector &tables)
         }
         updateOne(row++, item, optNew);
     }
-    setActionState(q_actClear, tables.size() > 0);
+    setActionEnabled("clean", tables.size() > 0);
 }
 
 // 加载显示规则
@@ -666,7 +625,6 @@ void DataEngineWidget::showData(const ICDMetaData::ruleMap &rules)
     }
     if (q_table->tableName() != q_ruleName) {
         q_table->setTableName(q_ruleName);
-        q_tableBox->setTitle(QStringLiteral("ICD数据定义："));
     }
     q_table->clearContents();
     // JXmlTable内部尚未实现mapToSource功能，暂时禁用排序
@@ -681,7 +639,7 @@ void DataEngineWidget::showData(const ICDMetaData::ruleMap &rules)
         }
         updateOne(row++, item, optNew);
     }
-    setActionState(q_actClear, rules.size() > 0);
+    setActionEnabled("clean", rules.size() > 0);
     // 显示提示信息
     if (rules.empty()) {
         setTipsVisible(true);
@@ -695,7 +653,6 @@ void DataEngineWidget::showData(const ICDMetaData::smtMeta &data)
     if (GlobalDefine::dtDiscern == data->type()) {  // 帧数据
         if (q_table->tableName() != q_discertName) {
             q_table->setTableName(q_discertName);
-            q_tableBox->setTitle(QStringLiteral("帧数据定义："));
         }
         q_table->clearContents();
         ICDComplexData::smtComplex complex
@@ -711,24 +668,23 @@ void DataEngineWidget::showData(const ICDMetaData::smtMeta &data)
             stICDBase base = subData->icdBase();
             updateSubOne(i, base, optNew);
         }
-        setActionState(q_actClear, subTable.size() > 0);
+        setActionEnabled("clean", subTable.size() > 0);
     } else {
         // 具体规则项不允许拖拽
         q_table->verticalHeader()->setSectionsMovable(false);
         if (q_table->tableName() != q_metaName) {
             q_table->setTableName(q_metaName);
-            q_tableBox->setTitle(QStringLiteral("ICD数据定义："));
         }
         updateMetaOne(data);
         // 隐藏操作按钮
-        setActionState(q_actNew, false);
-        setActionState(q_actInsert, false);
-        setActionState(q_actUp, false);
-        setActionState(q_actDown, false);
-        setActionState(q_actDelete, false);
-        setActionState(q_actClear, false);
-        setActionState(q_actSaveDB, false);
-        setActionState(q_actSaveFile, false);
+        setActionEnabled("add", false);
+        setActionEnabled("insert", false);
+        setActionEnabled("up", false);
+        setActionEnabled("down", false);
+        setActionEnabled("remove", false);
+        setActionEnabled("clean", false);
+        setActionEnabled("db", false);
+        setActionEnabled("file", false);
     }
 }
 
@@ -1654,7 +1610,7 @@ void DataEngineWidget::setTipsVisible(bool visible)
     if (!q_edtStatus) {
         return;
     }
-    q_tipWidget->setVisible(visible);
+    q_edtStatus->setVisible(visible);
     if (visible) {
         TableNode::smtTable table = SMT_CONVERT(TableNode, q_data);
         if (!table) {
@@ -1668,14 +1624,14 @@ void DataEngineWidget::setTipsVisible(bool visible)
                 .arg(table->realLength());
         q_edtStatus->setText(tips);
         if (-1 == q_newIndex) {
-            setActionState(q_actNew, true);
-            setActionState(q_actInsert, true);
+            setActionEnabled("add", true);
+            setActionEnabled("insert", true);
         }
         if (table->lengthCheck()) {
             // 需要进行长度检查时才变更操作按钮状态
             if (use > total) {
-                setActionState(q_actNew, false);
-                setActionState(q_actInsert, false);
+                setActionEnabled("add", false);
+                setActionEnabled("insert", false);
             }
         }
     }
@@ -2257,13 +2213,6 @@ TableNode::smtTable DataEngineWidget::parentTable() const
     return table;
 }
 
-void DataEngineWidget::setActionState(QAction *act, bool enabled)
-{
-    if (act) {
-        act->setEnabled(enabled);
-    }
-}
-
 // 更新编辑数据界面
 void DataEngineWidget::updateLoggingUI(GlobalDefine::OptionType option)
 {
@@ -2315,9 +2264,9 @@ void DataEngineWidget::slotCurrentItemChanged(QStandardItem *current,
     if (!current) {
         // 隐藏数据录入窗口
         q_loggingWidget->setVisible(false);
-        setActionState(q_actUp, false);
-        setActionState(q_actDown, false);
-        setActionState(q_actDelete, false);
+        setActionEnabled("up", false);
+        setActionEnabled("down", false);
+        setActionEnabled("remove", false);
     } else {
         if (previous && current->row() == previous->row()) {
             // 未变更选中行
@@ -2334,25 +2283,25 @@ void DataEngineWidget::slotCurrentItemChanged(QStandardItem *current,
         if (count > 1 && GlobalDefine::ntRule != q_dataType
             || GlobalDefine::dtDiscern == q_subType
             || GlobalDefine::dtComplex == q_subType) {
-            setActionState(q_actUp, 0 != current->row());
-            setActionState(q_actDown, count - 1 != current->row());
+            setActionEnabled("up", 0 != current->row());
+            setActionEnabled("down", count - 1 != current->row());
             // 变更数据顺序后未保存，不允许删除
-            setActionState(q_actDelete, q_changePos < 0 ? true :false);
+            setActionEnabled("remove", q_changePos < 0 ? true :false);
         } else if (1 == count) {
-            setActionState(q_actDelete, true);
+            setActionEnabled("remove", true);
         }
     }
     // 切换节点后，根据列表中是否有新增数据，决定新增按钮是否可用
     if (-1 != q_newIndex) {
-        setActionState(q_actNew, false);
-        setActionState(q_actInsert, false);
-        setActionState(q_actUp, false);
-        setActionState(q_actDown, false);
+        setActionEnabled("add", false);
+        setActionEnabled("insert", false);
+        setActionEnabled("up", false);
+        setActionEnabled("down", false);
     } else {
         // 变更数据位置后，未保存数据，不允许新增、插入
         if (q_changePos >= 0) {
-            setActionState(q_actNew, false);
-            setActionState(q_actInsert, false);
+            setActionEnabled("add", false);
+            setActionEnabled("insert", false);
         }
     }
 }
@@ -2489,8 +2438,8 @@ void DataEngineWidget::slotSave2Memory(void *data, bool &result)
         reInit();
         q_table->selectRow(row);
     } else {
-        setActionState(q_actNew, result);
-        setActionState(q_actInsert, result);
+        setActionEnabled("add", result);
+        setActionEnabled("insert", result);
     }
 }
 
@@ -2678,8 +2627,8 @@ void DataEngineWidget::slotDelete()
     if (current == q_newIndex && -1 != q_newIndex) {    // 删除尚未保存的数据
         q_newIndex = -1;
         q_table->removeRow(current);
-        setActionState(q_actNew, true);
-        setActionState(q_actInsert, q_dataType > GlobalDefine::ntSystem);
+        setActionEnabled("add", true);
+        setActionEnabled("insert", q_dataType > GlobalDefine::ntSystem);
         q_table->verticalHeader()->setSectionsMovable(true);
     } else {    // 删除内存数据
         QVariant data = q_table->itemData(current, 0, Qt::UserRole);
@@ -2791,10 +2740,11 @@ void DataEngineWidget::slotSave2Source(GlobalDefine::DataSource type)
     }
     QString tip;
     QString err;
-    QAction *act = 0;
+    QString actionName;
     QVector<int> params;
     if (GlobalDefine::dsDatabase == type) {   // 保存数据库
-        setActionState(act = q_actSaveDB, false);
+        actionName = "db";
+        setActionEnabled(actionName, false);
         params << (int)&err << (int)&q_defaultPath;
         args.clear();
         args.append(qVariantFromValue((void*)&params));
@@ -2803,12 +2753,13 @@ void DataEngineWidget::slotSave2Source(GlobalDefine::DataSource type)
 
         tip = QStringLiteral("保存数据到数据库");
     } else if (GlobalDefine::dsFile == type) {  // 保存文件
-        setActionState(act = q_actSaveFile, false);
+        actionName = "file";
+        setActionEnabled(actionName, false);
         QString file = QFileDialog::getSaveFileName(this, QStringLiteral("保存ICD数据"), q_defaultPath,
                                                     "XML files (*.xml);;"
                                                     "JSON files (*.json)");
         if (file.isEmpty()) {
-            act->setEnabled(true);
+            setActionEnabled(actionName, true);
             return;
         }
         q_defaultPath = file;
@@ -2823,11 +2774,11 @@ void DataEngineWidget::slotSave2Source(GlobalDefine::DataSource type)
 
     if (!err.isEmpty()) {
         tip.append(QStringLiteral("失败！\r\n[%1]").arg(err));
-        setActionState(act, true);
+        setActionEnabled(actionName, true);
     } else {
         tip.append(QStringLiteral("成功！"));
-        if (q_actSaveFile == act) {
-            setActionState(act, true);
+        if ("file" == actionName) {
+            setActionEnabled(actionName, true);
         }
     }
 
@@ -2937,4 +2888,12 @@ void DataEngineWidget::slotPaste()
     if (-1 != q_newIndex) {
         q_table->verticalHeader()->setSectionsMovable(false);
     }
+}
+
+void DataEngineWidget::setActionEnabled(const QString &name, bool enabled)
+{
+    QVariantList args;
+    args.append(name);
+    args.append(enabled);
+    jnotify->send("edit.toolbar.action.enabled", args);
 }

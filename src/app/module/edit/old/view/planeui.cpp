@@ -23,55 +23,22 @@ PlaneUI::PlaneUI(QWidget *parent)
     q_edtDescribe->setMaxLength(120);
     q_edtDescribe->setToolTip(QStringLiteral("最多120个字符！"));
 
-    QGridLayout *gridLayout = new QGridLayout(group);
     int row = 0;
-    gridLayout->addWidget(new QLabel(QStringLiteral("名称：")), row, 0);
+    QGridLayout *gridLayout = new QGridLayout(group);
+    gridLayout->setContentsMargins(6, 3, 0, 3);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名称:")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标识：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标识:")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描述：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描述:")), ++row, 0);
     gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
-    q_edtStatus = new QLineEdit(this);
-    q_edtStatus->setObjectName("edtStatus");
-    q_edtStatus->setMaximumHeight(30);
-    q_edtStatus->setEnabled(false);
-    q_edtStatus->setFrame(false);
-    QPalette palette = q_edtStatus->palette();
-    palette.setColor(QPalette::Text, Qt::red);
-    palette.setColor(QPalette::Base, Qt::transparent);
-    q_edtStatus->setPalette(palette);
-
-    q_btnConfirm = new QPushButton(QIcon(":/icd/editor/images/apply-32.png"),
-                                   QStringLiteral("确认"), this);
-    q_btnConfirm->setObjectName("btnConfirm");
-    q_btnConfirm->setMaximumSize(65, 35);
-    q_btnConfirm->setIconSize(QSize(24, 24));
-    q_btnConfirm->setFlat(true);
-    q_btnCancel = new QPushButton(QIcon(":/icd/editor/images/cancel-32.png"),
-                                  QStringLiteral("取消"), this);
-    q_btnCancel->setObjectName("btnCancel");
-    q_btnCancel->setMaximumSize(65, 35);
-    q_btnCancel->setIconSize(QSize(24, 24));
-    q_btnCancel->setFlat(true);
-    QHBoxLayout* btnLayout = new QHBoxLayout();
-    btnLayout->addStretch();
-    btnLayout->addWidget(q_btnConfirm);
-    btnLayout->addWidget(q_btnCancel);
-
-    QVBoxLayout* veriLayoutMain = new QVBoxLayout(this);
-    veriLayoutMain->setContentsMargins(0, 0, 0, 0);
-    veriLayoutMain->addWidget(group);
-    veriLayoutMain->addStretch();
-    veriLayoutMain->addWidget(q_edtStatus);
-    veriLayoutMain->addLayout(btnLayout);
+    layoutMain()->insertWidget(0, group);
 
     //
-    connect(q_btnConfirm, SIGNAL(clicked()), this, SLOT(slotConfirm()));
-    connect(q_btnCancel, SIGNAL(clicked()), this, SLOT(slotCanceled()));
     enableConnection(true);
 
     // 记录原始颜色
@@ -94,9 +61,7 @@ void PlaneUI::setUIData(const _UIData &data)
     init();
     // 如果是新增，则默认保存可用
     if (GlobalDefine::optNew == data.type) {
-        if (q_btnConfirm) {
-            q_btnConfirm->setEnabled(true);
-        }
+        buttonConfirm()->setEnabled(true);
     }
 
     show();
@@ -116,10 +81,8 @@ void PlaneUI::slotTextChanged(const QString &text)
     if (!edt) {
         return;
     }
-    if (edt == q_edtStatus) { // 如果出现错误提示，则灰化确认按钮
-        if (q_btnConfirm) {
-            q_btnConfirm->setEnabled(text.isEmpty());
-        }
+    if (edt == editStatus()) { // 如果出现错误提示，则灰化确认按钮
+        buttonConfirm()->setEnabled(text.isEmpty());
     } else {
         if (edt == q_edtName) {
             q_data.sName = content.toStdString();
@@ -144,27 +107,27 @@ void PlaneUI::slotEditFinished()
 }
 
 // 确认
-void PlaneUI::slotConfirm()
+void PlaneUI::confirm()
 {
     if (!dataValid()) {
         return;
     }
     bool result = false;
 
-    emit confirm(result);
+    emit confirmed(result);
     if (result) {
-//         _UIData data;
-// 
-//         data.data = &q_data;
-//         setUIData(data);
+        //         _UIData data;
+        //
+        //         data.data = &q_data;
+        //         setUIData(data);
     } else {
-        q_edtStatus->setText(QStringLiteral("保存数据失败！"));
-        q_btnConfirm->setEnabled(true);
+        editStatus()->setText(QStringLiteral("保存数据失败！"));
+        buttonConfirm()->setEnabled(true);
     }
 }
 
 // 取消
-void PlaneUI::slotCanceled()
+void PlaneUI::cancel()
 {
     _UIData data;
 
@@ -199,10 +162,8 @@ void PlaneUI::init()
         q_edtDescribe->setText(q_data.sDescribe.c_str());
         q_edtDescribe->clearFocus();
     }
-    if (q_edtStatus) {
-        q_edtStatus->clear();
-        q_edtStatus->clearFocus();
-    }
+    editStatus()->clear();
+    editStatus()->clearFocus();
 
     enableConnection(true);
 }
@@ -216,7 +177,7 @@ void PlaneUI::enableConnection(bool enable)
                this, SLOT(slotTextChanged(const QString &)));
     disconnect(q_edtDescribe, SIGNAL(textChanged()),
                this, SLOT(slotEditFinished()));
-    disconnect(q_edtStatus, SIGNAL(textChanged(const QString &)),
+    disconnect(editStatus(), SIGNAL(textChanged(const QString &)),
                this, SLOT(slotTextChanged(const QString &)));
 
     if (enable) {
@@ -226,19 +187,8 @@ void PlaneUI::enableConnection(bool enable)
                 this, SLOT(slotTextChanged(const QString &)));
         connect(q_edtDescribe, SIGNAL(textChanged()),
                 this, SLOT(slotEditFinished()));
-        connect(q_edtStatus, SIGNAL(textChanged(const QString &)),
+        connect(editStatus(), SIGNAL(textChanged(const QString &)),
                 this, SLOT(slotTextChanged(const QString &)));
-    }
-}
-
-// 启/停用界面控制按钮
-void PlaneUI::enableOptionButton(bool enable)
-{
-    if (q_btnConfirm) {
-        q_btnConfirm->setEnabled(enable);
-    }
-    if (q_btnCancel) {
-        q_btnCancel->setEnabled(enable);
     }
 }
 
@@ -256,14 +206,14 @@ bool PlaneUI::dataValid()
     // 名称
     QPalette palette = q_edtName->palette();
     if (q_data.sName.empty()) {
-        q_edtStatus->setText(QStringLiteral("名称不能为空！"));
+        editStatus()->setText(QStringLiteral("名称不能为空！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
 
         return false;
     } else if (existed.contains(q_data.sName.c_str())) {
-        q_edtStatus->setText(QStringLiteral("已存在同名机型！"));
+        editStatus()->setText(QStringLiteral("已存在同名机型！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
@@ -282,14 +232,14 @@ bool PlaneUI::dataValid()
 
     palette = q_edtCode->palette();
     if (q_data.sSign.empty()) {
-        q_edtStatus->setText(QStringLiteral("标识不能为空！"));
+        editStatus()->setText(QStringLiteral("标识不能为空！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
 
         return false;
     } else if (existed.contains(q_data.sSign.c_str())) {
-        q_edtStatus->setText(QStringLiteral("已存在同名标识！"));
+        editStatus()->setText(QStringLiteral("已存在同名标识！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();

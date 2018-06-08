@@ -22,38 +22,38 @@ copyright (c) 2015 smartsoft inc. all right reserved.
     <item name="描述" type="string" editable="false" />
   </table>
 
-  <table name="ICDTable" orientation="horizontal" headerWidth="200" sync="false">
+  <table name="IcdTable" orientation="horizontal" headerWidth="200" sync="false">
     <!--表信息表-->
-    <item name="ICD名称" type="string" editable="false" />
-    <item name="编码" type="string" editable="false" />
-    <item name="长度" type="string" editable="false" />
-    <item name="描述" type="string" editable="false" />
-  </table>
-
-  <table name="RuleTable" orientations="horizontal" headerWidth="200" sync="false">
-    <!--规则概要信息表-->
     <item name="名称" type="string" editable="false" />
     <item name="编码" type="string" editable="false" />
-    <item name="字节号" type="string" editable="false" />
     <item name="长度" type="string" editable="false" />
-    <item name="数据类型" type="string" editable="false" />
     <item name="描述" type="string" editable="false" />
   </table>
 
-  <table name="EigenvalueComTable" orientations="horizontal" headerWidth="200" sync="false">
+  <table name="RuleTable" orientations="horizontal" headerWidth="180" sync="false">
+    <!--规则概要信息表-->
+    <item name="名称" type="string" editable="false" headerSize="180"/>
+    <item name="编码" type="string" editable="false" headerSize="180"/>
+    <item name="字节号" type="string" editable="false" headerSize="80"/>
+    <item name="长度" type="string" editable="false" headerSize="80"/>
+    <item name="数据类型" type="string" editable="false" headerSize="80"/>
+    <item name="描述" type="string" editable="false" headerSize="200"/>
+  </table>
+
+  <table name="EigenvalueComTable" orientations="horizontal" headerWidth="180" sync="false">
     <!--特征值表-->
-    <item name="数值" type="numeric" decimals="2" range="[-100000000,100000000]" editable="true" headerSize="70" />
+    <item name="数值" type="numeric" decimals="0" range="[-100000000,100000000]" editable="true" headerSize="70" />
     <item name="描述" type="string" editable="true" maxLength="40" />
   </table>
   
-  <table name="EigenvalueBitTable" orientations="horizontal" headerWidth="200" sync="false">
+  <table name="EigenvalueBitTable" orientations="horizontal" headerWidth="180" sync="false">
     <!--bitValue表-->
     <item name="数值" type="string" editable="false" headerSize="50" />
     <item name="描述" type="string" editable="true" maxLength="60" />
     <item name="二进制" type="string" editable="false" headerSize="70" />
   </table>
   
-  <table name="EigenvalueMapTable" orientations="horizontal" headerWidth="200" sync="false">
+  <table name="EigenvalueMapTable" orientations="horizontal" headerWidth="180" sync="false">
     <!--bitMap表-->
     <item name="比特位" type="string" editable="false" headerSize="50" />
     <item name="描述" type="string" editable="true" maxLength="60" headerSize="170"/>
@@ -61,7 +61,7 @@ copyright (c) 2015 smartsoft inc. all right reserved.
     <item name="1值含义" type="string" editable="true" headerSize="75" />
   </table>
 
-  <table name="DiscertTable" orientations="horizontal" headerWidth="200" sync="false">
+  <table name="DiscertTable" orientations="horizontal" headerWidth="180" sync="false">
     <!--帧定义表-->
     <item name="名称" type="string" editable="false" />
     <item name="帧码" type="string" editable="false" />
@@ -69,9 +69,9 @@ copyright (c) 2015 smartsoft inc. all right reserved.
     <item name="描述" type="string" editable="false" maxLength="60" />
   </table>
   
-  <table name="CommonTable" orientations="horizontal" headerWidth="200" sync="false">
+  <table name="CommonTable" orientations="horizontal" headerWidth="180" sync="false">
     <!--通用属性表-->
-    <item name="属性" type="string" editable="false" />
+    <item name="属性" type="string" editable="false" headerSize="120" />
     <item name="数值" type="string" editable="false" />
   </table>
 </jxmltable>

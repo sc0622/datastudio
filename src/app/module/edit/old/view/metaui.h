@@ -35,7 +35,11 @@ struct _Eigenvalue
     {}
 };
 
-class MetaUI : public QDialog
+class QVBoxLayout;
+class QPushButton;
+class QLineEdit;
+
+class MetaUI : public QWidget
 {
     Q_OBJECT
 public:
@@ -52,13 +56,28 @@ public:
     // 启/停用信号槽
     virtual void enableConnection(bool enable);
     // 启/停用界面控制按钮
-    virtual void enableOptionButton(bool enable);
+    void enableOptionButton(bool enable);
 
-protected:
+    QVBoxLayout *layoutMain() const;
+    QPushButton *buttonConfirm() const;
+    QPushButton *buttonCancel() const;
+    QLineEdit *editStatus() const;
 
 signals:
+    void confirmed(bool &);
+    void canceled();
 
 public slots:
+
+protected:
+    virtual void confirm();
+    virtual void cancel();
+
+private:
+    QVBoxLayout *layoutMain_;
+    QPushButton *buttonConfirm_;
+    QPushButton *buttonCancel_;
+    QLineEdit   *editStatus_;
 };
 
 #endif // METAUI_H

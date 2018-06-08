@@ -13,7 +13,7 @@ class SplitFileDlg;
 class ConvertDataDlg : public QDialog
 {
 public:
-    explicit ConvertDataDlg(QWidget *parent = 0);
+    explicit ConvertDataDlg(QWidget *parent = nullptr);
     ~ConvertDataDlg();
 
 signals:
@@ -21,12 +21,12 @@ signals:
 public slots:
 
 private:
-    QTabWidget *d_tabWidget;
-    ConvertFromIcdWidget *d_convFromIcdWidget;
-    ParityDataDlg *d_parityDataDlg;
-    ConvertToDataAnalyse *d_convtToDA;
-    //ConvertToIcdWidget *d_convToIcdWidget;
-    SplitFileDlg *d_splitFileDlg;
+    QTabWidget *tabWidget_;
+    ConvertFromIcdWidget *convFromIcdWidget_;
+    ParityDataDlg *parityDataDlg_;
+    ConvertToDataAnalyse *convtToDA_;
+    //ConvertToIcdWidget *convToIcdWidget_;
+    SplitFileDlg *splitFileDlg_;
 };
 
 #endif // CONVERTDATADLG_H

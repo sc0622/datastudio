@@ -46,6 +46,7 @@ bool TreeViewSettings::tryAccept()
             return false;
         }
 
+        JMain::instance()->setOption("edit", "option.tree.loadDeep", deep);
         jnotify->send("edit.toolbar.tree.loadDeep", deep);
     }
 

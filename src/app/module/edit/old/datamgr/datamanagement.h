@@ -48,6 +48,8 @@ public:
     explicit DataManegement(QWidget *parent = nullptr);
     ~DataManegement();
 
+    bool init();
+
 protected:
     // 消息响应回调
     JLRESULT notifyRespond(const Icd::JNEvent &event);
@@ -58,9 +60,10 @@ private:
     /**
      * @brief 加载基础数据
      * @param [out] error : 错误信息
+     * @param [in] deep
      * @return 执行结果，true：成功；false：失败
      */
-    bool loadBaseData(std::string &error = std::string());
+    bool loadBaseData(std::string &error = std::string(), int deep = Icd::ObjectTable);
 
     /**
     * @brief 加载基础数据
@@ -86,9 +89,10 @@ private:
 
     /**
      * @brief 加载基础架构数据（机型和系统）
+     * @param [in] deep
      * @return 执行结果，true：成功；false：失败
      */
-    bool loadInfrastructure();
+    bool loadInfrastructure(int deep);
 
     /**
      * @brief 加载指定机型的所有ICD表

@@ -138,5 +138,12 @@
         <file alias="insert.png">image/global/insert.png</file>
         <file alias="remove.png">image/global/remove.png</file>
         <file alias="up.png">image/global/up.png</file>
+        <file alias="circle-blue.png">image/global/circle-blue.png</file>
+        <file alias="circle-gray.png">image/global/circle-gray.png</file>
+        <file alias="circle-green.png">image/global/circle-green.png</file>
+        <file alias="load-db.png">image/global/load-db.png</file>
+        <file alias="load-file.png">image/global/load-file.png</file>
+        <file alias="apply.png">image/global/apply.png</file>
+        <file alias="cancel.png">image/global/cancel.png</file>
     </qresource>
 </RCC>

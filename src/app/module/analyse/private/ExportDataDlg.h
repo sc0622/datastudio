@@ -36,15 +36,15 @@ signals:
 public slots:
 
 private:
-    QString d_filePath;
-    Icd::TablePtr d_table;
-    Icd::ObjectPtr d_objectItem;
-    bool d_hasTimeFormat;
-    int d_headerSize;
-    int d_bitOffset;
-    QTabWidget *d_tabWidget;
-    ExportOrgDataWidget *d_exportOrgDataWidget;
-    ConvertToDataAnalyse *d_convertToDataAnalyse;
+    QString filePath_;
+    Icd::TablePtr table_;
+    Icd::ObjectPtr objectItem_;
+    bool hasTimeFormat_;
+    int headerSize_;
+    int bitOffset_;
+    QTabWidget *tabWidget_;
+    ExportOrgDataWidget *exportOrgDataWidget_;
+    ConvertToDataAnalyse *convertToDataAnalyse_;
 };
 
 #endif // EXPORTDATADLG_H

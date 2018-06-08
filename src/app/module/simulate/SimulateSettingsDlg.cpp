@@ -46,6 +46,7 @@ bool TreeViewSettings::tryAccept()
             return false;
         }
 
+        JMain::instance()->setOption("simulate", "option.tree.loadDeep", deep);
         jnotify->send("simulate.toolbar.tree.loadDeep", deep);
     }
 

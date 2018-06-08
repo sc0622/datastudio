@@ -6,8 +6,7 @@
 struct _UIData;
 class MetaUI;
 
-class LoggingWidget
-        : public QWidget
+class LoggingWidget : public QWidget
 {
     Q_OBJECT
 public:

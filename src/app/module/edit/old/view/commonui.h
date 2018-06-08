@@ -16,18 +16,14 @@ class CommonUI : public MetaUI
 public:
     explicit CommonUI(QWidget* parent = nullptr);
     // MetaUI interface
-    void setUIData(const _UIData &data);
-    void* uiData() const;
+    void setUIData(const _UIData &data) override;
+    void* uiData() const override;
     // 切换数据类型
-    void changeDataType(int type);
+    void changeDataType(int type) override;
     // 原始数据类型
-    int originalType() const;
-    // 启/停用界面控制按钮
-    void enableOptionButton(bool enable);
+    int originalType() const override;
 
 signals:
-    void confirm(bool &);
-    void canceled();
 
 protected slots:
     // 数据录入完成
@@ -38,10 +34,6 @@ protected slots:
     void slotRangeStateChanged(bool enable);
     // 表点击
     void slotTableItemPressed(QStandardItem *item);
-    // 确认
-    void slotConfirm();
-    // 取消
-    void slotCanceled();
     // 新增
     void slotNew();
     // 删除
@@ -50,6 +42,11 @@ protected slots:
     void slotClear();
 
 protected:
+    // 确认
+    void confirm() override;
+    // 取消
+    void cancel() override;
+
     // 初始化界面数据
     void init();
     // 启/停用信号槽
@@ -86,10 +83,6 @@ private:
     LimitLineEdit   *q_edtUnit;
     // 比例尺
     CustomDoubleSpinbox *q_spinLSB;
-    // 提示信息
-    QLineEdit   *q_edtStatus;
-    QPushButton *q_btnConfirm;
-    QPushButton *q_btnCancel;
 
     JXmlTable   *q_table;   // 特征值表
     QAction     *q_actionNew;   // 右键菜单新增

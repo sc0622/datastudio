@@ -12,7 +12,7 @@ TableSelWidget::TableSelWidget(QWidget *parent)
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
     d_treeView = new Icd::CoreTreeWidget(this);
-    d_treeView->setLoadingDeep(Icd::TreeItemTypeTable);
+    d_treeView->setLoadingDeep(Icd::ObjectTable);
     d_treeView->setTreeMode(Icd::CoreTreeWidget::TreeModeTableSel);
     vertLayoutMain->addWidget(d_treeView);
 

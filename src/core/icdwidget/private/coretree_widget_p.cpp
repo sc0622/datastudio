@@ -88,80 +88,21 @@ void TreeItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         return;
     }
 
+    if (!d->treeView) {
+        return;
+    }
+
     QStyleOptionViewItem viewOption = option;
     initStyleOption(&viewOption, index);
 
     const QString simplifiedText = simplified(viewOption.text.trimmed());
     const int textWidth = viewOption.fontMetrics.width(simplifiedText);
 
-#if 0
-    // button
-    QStyleOptionButton button;
-    button.rect = viewOption.rect;
-    button.rect.setWidth(40);
-    QPoint center = button.rect.center();
-    button.rect.setHeight(19);
-    button.rect.moveCenter(center);
-    button.rect.translate(textWidth + 30, 0);
-    button.state |= QStyle::State_Enabled | QStyle::State_Raised | option.state;
-    button.iconSize = QSize(19, 19);
-    if (option.state & QStyle::State_On) {
-        button.icon = QIcon(":/icdwidget/image/tree/stop.png");
-    } else {
-        button.icon = QIcon(":/icdwidget/image/tree/run.png");
-    }
-
-    const QWidget *widget = viewOption.widget;
-    QStyle *style = widget ? widget->style() : QApplication::style();
-    style->drawControl(QStyle::CE_PushButton, &button, painter, d->buttonRun.data());
-#else
-    if (!d->treeView) {
-        return;
-    }
-    TableItemWidget *itemWidget =
-            qobject_cast<TableItemWidget*>(d->treeView->itemWidget(tableItem));
+    TableItemWidget *itemWidget = qobject_cast<TableItemWidget*>(d->treeView->itemWidget(tableItem));
     if (!itemWidget) {
         return;
     }
     itemWidget->setFixedWidth(textWidth + itemWidget->buttonWidth());
-#endif
-}
-
-QStandardItemModel *TreeItemDelegate::sourceModel(QAbstractItemModel *model)
-{
-    if (model->inherits("JTreeSortFilterModel")) {
-        const JTreeSortFilterModel *filterModel =
-                dynamic_cast<const JTreeSortFilterModel*>(model);
-        if (!filterModel) {
-            return nullptr;
-        }
-        return dynamic_cast<QStandardItemModel*>(filterModel->sourceModel());
-    } else {
-        return dynamic_cast<QStandardItemModel*>(model);
-    }
-}
-
-QStandardItemModel *TreeItemDelegate::sourceModel(const QModelIndex &index)
-{
-    return sourceModel(const_cast<QAbstractItemModel*>(index.model()));
-}
-
-QModelIndex TreeItemDelegate::mapToSource(const QModelIndex &index)
-{
-    QAbstractItemModel *model = const_cast<QAbstractItemModel*>(index.model());
-    if (!model) {
-        return index;
-    }
-
-    if (model->inherits("JTreeSortFilterModel")) {
-        JTreeSortFilterModel *filterModel = dynamic_cast<JTreeSortFilterModel*>(model);
-        if (!filterModel) {
-            return index;
-        }
-        return filterModel->mapToSource(index);
-    } else {
-        return index;
-    }
 }
 
 QStandardItem *TreeItemDelegate::tableItem(const QModelIndex &index)
@@ -186,8 +127,8 @@ QStandardItem *TreeItemDelegate::tableItem(const QModelIndex &index)
 TableItemWidget::TableItemWidget(CoreTreeWidget::BindTableTypes bindingTypes,
                                  QWidget *parent)
     : QWidget(parent)
-    , d_worker(nullptr)
-    , d_bindTableTypes(bindingTypes)
+    , worker_(nullptr)
+    , bindTableTypes_(bindingTypes)
 {
     setObjectName("TableItemWidget");
     setFixedHeight(22);
@@ -198,22 +139,22 @@ TableItemWidget::TableItemWidget(CoreTreeWidget::BindTableTypes bindingTypes,
 
     layoutMain->addStretch();
 
-    d_buttonRun = new QPushButton(this);
-    d_buttonRun->setObjectName("buttonRun");
-    d_buttonRun->setFixedSize(40, 20);
-    d_buttonRun->setCheckable(true);
-    layoutMain->addWidget(d_buttonRun);
+    buttonRun_ = new QPushButton(this);
+    buttonRun_->setObjectName("buttonRun");
+    buttonRun_->setFixedSize(40, 20);
+    buttonRun_->setCheckable(true);
+    layoutMain->addWidget(buttonRun_);
 
-    connect(d_buttonRun, &QPushButton::toggled, this, [=](bool checked){
+    connect(buttonRun_, &QPushButton::toggled, this, [=](bool checked){
         if (toggle(checked)) {
             emit this->toggled(checked);
         }
     });
 
     //
-    d_buttonRun->setChecked(false);
-    d_buttonRun->hide();
-    updateButtonIcon(d_buttonRun->isChecked());
+    buttonRun_->setChecked(false);
+    buttonRun_->hide();
+    updateButtonIcon(buttonRun_->isChecked());
 }
 
 TableItemWidget::~TableItemWidget()
@@ -223,41 +164,41 @@ TableItemWidget::~TableItemWidget()
 
 WorkerPtr TableItemWidget::worker() const
 {
-    return d_worker;
+    return worker_;
 }
 
 void TableItemWidget::setWorker(const WorkerPtr &worker)
 {
-    if (d_worker) {
-        if (d_worker != worker) {
+    if (worker_) {
+        if (worker_ != worker) {
             stop();
         }
-        d_worker->disconnect(this);
-        d_worker->workerSend()->disconnect(this);
-        d_worker->workerRecv()->disconnect(this);
+        worker_->disconnect(this);
+        worker_->workerSend()->disconnect(this);
+        worker_->workerRecv()->disconnect(this);
     }
 
-    d_worker = worker;
+    worker_ = worker;
 
-    if (d_worker) {
-        d_worker->disconnect(this);
-        d_buttonRun->show();
-        if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
-            d_buttonRun->setChecked(d_worker->workerSend()->isRunning());
-            connect(d_worker->workerSend().get(), &Icd::WorkerSend::toggled,
+    if (worker_) {
+        worker_->disconnect(this);
+        buttonRun_->show();
+        if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
+            buttonRun_->setChecked(worker_->workerSend()->isRunning());
+            connect(worker_->workerSend().get(), &Icd::WorkerSend::toggled,
                     this, [=](bool checked){
-                d_buttonRun->setChecked(checked);
+                buttonRun_->setChecked(checked);
             });
-        } else  if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
-            d_buttonRun->setChecked(d_worker->workerRecv()->isRunning());
-            connect(d_worker->workerRecv().get(), &Icd::WorkerRecv::toggled,
+        } else  if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
+            buttonRun_->setChecked(worker_->workerRecv()->isRunning());
+            connect(worker_->workerRecv().get(), &Icd::WorkerRecv::toggled,
                     this, [=](bool checked){
-                d_buttonRun->setChecked(checked);
+                buttonRun_->setChecked(checked);
             });
         }
     } else {
-        d_buttonRun->hide();
-        d_buttonRun->setChecked(false);
+        buttonRun_->hide();
+        buttonRun_->setChecked(false);
     }
 }
 
@@ -273,21 +214,21 @@ void TableItemWidget::stop()
 
 bool TableItemWidget::toggle(bool checked)
 {
-    if (d_worker) {
+    if (worker_) {
         Icd::WorkerTransPtr workerTrans = Q_NULLPTR;
-        if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
-            workerTrans = d_worker->workerSend();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
-            workerTrans = d_worker->workerRecv();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
+        if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
+            workerTrans = worker_->workerSend();
+        } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
+            workerTrans = worker_->workerRecv();
+        } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
             Q_ASSERT(false);
             return false;
         }
         if (workerTrans) {
             if (checked) {
                 if (!workerTrans->isRunning()) {
-                    if (!d_worker->isOpen()) {
-                        if (!d_worker->open()) {
+                    if (!worker_->isOpen()) {
+                        if (!worker_->open()) {
                             return false;
                         }
                     }
@@ -298,7 +239,7 @@ bool TableItemWidget::toggle(bool checked)
             } else {
                 if (workerTrans->isRunning()) {
                     workerTrans->stop();
-                    d_worker->close();
+                    worker_->close();
                 }
             }
         }
@@ -311,20 +252,20 @@ bool TableItemWidget::toggle(bool checked)
 
 bool TableItemWidget::isRunning() const
 {
-    return d_buttonRun->isChecked();
+    return buttonRun_->isChecked();
 }
 
 int TableItemWidget::buttonWidth() const
 {
-    return d_buttonRun->width();
+    return buttonRun_->width();
 }
 
 void TableItemWidget::updateButtonIcon(bool checked)
 {
     if (checked) {
-        d_buttonRun->setIcon(QIcon(":/icdwidget/image/tree/stop.png"));
+        buttonRun_->setIcon(QIcon(":/icdwidget/image/tree/stop.png"));
     } else {
-        d_buttonRun->setIcon(QIcon(":/icdwidget/image/tree/run.png"));
+        buttonRun_->setIcon(QIcon(":/icdwidget/image/tree/run.png"));
     }
 }
 
@@ -333,23 +274,23 @@ void TableItemWidget::updateButtonIcon(bool checked)
 CoreTreeWidgetPrivate::CoreTreeWidgetPrivate(CoreTreeWidget *q)
     : JTreeView(q)
     , J_QPTR(q)
-    , d_searchEdit(nullptr)
-    , d_parser(nullptr)
-    , d_loadingDeep(Icd::ObjectTable)
-    , d_intervalUpdate(200)     // 200ms
-    , d_bindTableTypes(CoreTreeWidget::BindAllTable)
-    , d_showAttris(CoreTreeWidget::ShowType | CoreTreeWidget::ShowValue)
-    , d_dataFormat(16)
-    , d_treeModes(nullptr)
+    , searchEdit_(nullptr)
+    , parser_(nullptr)
+    , loadingDeep_(Icd::ObjectTable)
+    , intervalUpdate_(200)     // 200ms
+    , bindTableTypes_(CoreTreeWidget::BindAllTable)
+    , showAttris_(CoreTreeWidget::ShowType | CoreTreeWidget::ShowValue)
+    , dataFormat_(16)
+    , treeModes_(nullptr)
 {
 
 }
 
 CoreTreeWidgetPrivate::~CoreTreeWidgetPrivate()
 {
-    if (d_watcher.isRunning()) {
-        d_watcher.cancel();
-        d_watcher.waitForFinished();
+    if (watcher_.isRunning()) {
+        watcher_.cancel();
+        watcher_.waitForFinished();
     }
 
     //
@@ -372,8 +313,8 @@ void CoreTreeWidgetPrivate::init()
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(1);
 
-    d_searchEdit = new SearchEdit(q);
-    vertLayoutMain->addWidget(d_searchEdit);
+    searchEdit_ = new SearchEdit(q);
+    vertLayoutMain->addWidget(searchEdit_);
 
     vertLayoutMain->addWidget(this);
 
@@ -391,7 +332,7 @@ void CoreTreeWidgetPrivate::init()
     setHeaderLabel(QStringLiteral("数据协议信息"));
 
     //
-    connect(d_searchEdit, &SearchEdit::textChanged, this, [=](const QString &text){
+    connect(searchEdit_, &SearchEdit::textChanged, this, [=](const QString &text){
         filterModel->setFilterPattern(text);
     });
     connect(this, SIGNAL(itemPressed(QStandardItem*)),
@@ -422,29 +363,29 @@ void CoreTreeWidgetPrivate::init()
 
 void CoreTreeWidgetPrivate::setParser(const Icd::ParserPtr &parser)
 {
-    d_parser = parser;
+    parser_ = parser;
 }
 
 int CoreTreeWidgetPrivate::loadingDeep() const
 {
-    return d_loadingDeep;
+    return loadingDeep_;
 }
 
 void CoreTreeWidgetPrivate::setLoadingDeep(int deep)
 {
-    d_loadingDeep = deep;
+    loadingDeep_ = deep;
 }
 
 int CoreTreeWidgetPrivate::intervalUpdate() const
 {
-    return d_intervalUpdate;
+    return intervalUpdate_;
 }
 
 void CoreTreeWidgetPrivate::setIntervalUpdate(int interval)
 {
-    if (interval != d_intervalUpdate) {
-        d_intervalUpdate = interval;
-        QHashIterator<QStandardItem*, ItemWorkerGroup*> citer(d_workerGroups);
+    if (interval != intervalUpdate_) {
+        intervalUpdate_ = interval;
+        QHashIterator<QStandardItem*, ItemWorkerGroup*> citer(workerGroups_);
         while (citer.hasNext()) {
             citer.next();
             citer.value()->setTimerInterval(interval);
@@ -466,15 +407,15 @@ bool CoreTreeWidgetPrivate::loadData()
     JTreeViewItem *itemRoot = invisibleRootItem();
 #endif
     //
-    result = result && loadVehicle(itemRoot, d_loadingDeep);
+    result = result && loadVehicle(itemRoot, loadingDeep_);
 
     //
     if (result) {
-        if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
             expandItem(itemRoot, true, 3);
-        } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
             expandItem(itemRoot, true, 3);
-        } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
             expandItem(itemRoot, true, 3);
         }
     }
@@ -564,13 +505,13 @@ void CoreTreeWidgetPrivate::clearData()
 
 CoreTreeWidget::ShowAttributes CoreTreeWidgetPrivate::showAttributes() const
 {
-    return d_showAttris;
+    return showAttris_;
 }
 
 void CoreTreeWidgetPrivate::setShowAttributes(CoreTreeWidget::ShowAttributes attrs)
 {
-    if (attrs != d_showAttris) {
-        d_showAttris = attrs;
+    if (attrs != showAttris_) {
+        showAttris_ = attrs;
         updateItemData(invisibleRootItem()->child(0));
     }
 }
@@ -579,13 +520,13 @@ void CoreTreeWidgetPrivate::setShowAttribute(CoreTreeWidget::ShowAttribute attr,
 {
     bool needUpdate = false;
     if (on) {
-        if (!(d_showAttris & attr)) {
-            d_showAttris |= attr;
+        if (!(showAttris_ & attr)) {
+            showAttris_ |= attr;
             needUpdate = true;
         }
     } else {
-        if (d_showAttris & attr) {
-            d_showAttris &= ~attr;
+        if (showAttris_ & attr) {
+            showAttris_ &= ~attr;
             needUpdate = true;
         }
     }
@@ -600,10 +541,10 @@ void CoreTreeWidgetPrivate::setShowAttribute(CoreTreeWidget::ShowAttribute attr,
         case CoreTreeWidget::ShowValue:
         case CoreTreeWidget::ShowSpec:
         {
-            QHashIterator<QStandardItem *, ItemWorkerGroup*> citer(d_workerGroups);
+            QHashIterator<QStandardItem *, ItemWorkerGroup*> citer(workerGroups_);
             while (citer.hasNext()) {
                 citer.next();
-                citer.value()->updateItemData(d_showAttris, d_dataFormat);
+                citer.value()->updateItemData(showAttris_, dataFormat_);
             }
         }
         default:
@@ -614,54 +555,54 @@ void CoreTreeWidgetPrivate::setShowAttribute(CoreTreeWidget::ShowAttribute attr,
 
 bool CoreTreeWidgetPrivate::testShowAttribute(CoreTreeWidget::ShowAttribute attr) const
 {
-    return d_showAttris & attr;
+    return showAttris_ & attr;
 }
 
 int CoreTreeWidgetPrivate::dataFormat() const
 {
-    return d_dataFormat;
+    return dataFormat_;
 }
 
 void CoreTreeWidgetPrivate::setDataFormat(int format)
 {
-    if (format != d_dataFormat) {
-        d_dataFormat = format;
+    if (format != dataFormat_) {
+        dataFormat_ = format;
         updateItemData(invisibleRootItem()->child(0));
     }
 }
 
 CoreTreeWidget::TreeModes CoreTreeWidgetPrivate::treeModes() const
 {
-    return d_treeModes;
+    return treeModes_;
 }
 
 void CoreTreeWidgetPrivate::setTreeMode(CoreTreeWidget::TreeModes modes)
 {
-    d_treeModes = modes;
+    treeModes_ = modes;
 }
 
 void CoreTreeWidgetPrivate::setTreeMode(CoreTreeWidget::TreeMode mode, bool on)
 {
     if (on) {
-        if (!(d_treeModes & mode)) {
-            d_treeModes |= mode;
+        if (!(treeModes_ & mode)) {
+            treeModes_ |= mode;
         }
     } else {
-        if (d_treeModes & mode) {
-            d_treeModes &= ~mode;
+        if (treeModes_ & mode) {
+            treeModes_ &= ~mode;
         }
     }
 }
 
 bool CoreTreeWidgetPrivate::testTreeMode(CoreTreeWidget::TreeMode mode) const
 {
-    return d_treeModes & mode;
+    return treeModes_ & mode;
 }
 
 bool CoreTreeWidgetPrivate::isRunning() const
 {
     for (QHash<QStandardItem *, ItemWorkerGroup*>::const_iterator
-         citer = d_workerGroups.cbegin(); citer != d_workerGroups.cend(); ++citer) {
+         citer = workerGroups_.cbegin(); citer != workerGroups_.cend(); ++citer) {
         ItemWorkerGroup *workerGroup = citer.value();
         if (workerGroup && workerGroup->isRunning()) {
             return true;
@@ -674,7 +615,7 @@ bool CoreTreeWidgetPrivate::isRunning() const
 void CoreTreeWidgetPrivate::setRunning(bool value)
 {
     for (QHash<QStandardItem *, ItemWorkerGroup*>::const_iterator
-         citer = d_workerGroups.cbegin(); citer != d_workerGroups.cend(); ++citer) {
+         citer = workerGroups_.cbegin(); citer != workerGroups_.cend(); ++citer) {
         ItemWorkerGroup *workerGroup = citer.value();
         if (workerGroup) {
             workerGroup->setRunning(value);
@@ -744,16 +685,16 @@ void CoreTreeWidgetPrivate::bindingChannels(const QString &filePath)
         return;
     }
     //
-    if (d_watcher.isRunning()) {
-        d_watcher.cancel();
-        d_watcher.waitForFinished();
+    if (watcher_.isRunning()) {
+        watcher_.cancel();
+        watcher_.waitForFinished();
     }
-    d_watcher.disconnect(this);
+    watcher_.disconnect(this);
     //
     QFuture<BindingData> future = QtConcurrent::mapped(bindings, bindingMapTask);
-    connect(&d_watcher, &QFutureWatcher<BindingData>::resultReadyAt,
+    connect(&watcher_, &QFutureWatcher<BindingData>::resultReadyAt,
             this, [=](int resultIndex){
-        const BindingData data = d_watcher.resultAt(resultIndex);
+        const BindingData data = watcher_.resultAt(resultIndex);
         if (!data.item || !data.worker) {
             return;
         }
@@ -766,13 +707,13 @@ void CoreTreeWidgetPrivate::bindingChannels(const QString &filePath)
             //
         }
     });
-    connect(&d_watcher, &QFutureWatcher<BindingData>::finished, this, [=](){
+    connect(&watcher_, &QFutureWatcher<BindingData>::finished, this, [=](){
         enabledFunc(true, true);
     });
-    connect(&d_watcher, &QFutureWatcher<BindingData>::canceled, this, [=](){
+    connect(&watcher_, &QFutureWatcher<BindingData>::canceled, this, [=](){
         enabledFunc(true, false);
     });
-    d_watcher.setFuture(future);
+    watcher_.setFuture(future);
 }
 
 void CoreTreeWidgetPrivate::unbindingChannels()
@@ -855,11 +796,11 @@ void CoreTreeWidgetPrivate::runAllChannels()
             return true;
         }
         Icd::WorkerTransPtr workerTrans = Q_NULLPTR;
-        if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
             workerTrans = worker->workerSend();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
             workerTrans = worker->workerRecv();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
             return true;
         }
         if (workerTrans) {
@@ -892,11 +833,11 @@ void CoreTreeWidgetPrivate::stopAllChannels()
             return true;
         }
         Icd::WorkerTransPtr workerTrans = Q_NULLPTR;
-        if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
             workerTrans = worker->workerSend();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
             workerTrans = worker->workerRecv();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
             return true;
         }
         if (workerTrans) {
@@ -926,30 +867,38 @@ void CoreTreeWidgetPrivate::onTreeItemPressed(QStandardItem *item)
         if (item->hasChildren()) {
             break;
         }
-        switch (item->type()) {
-        case Icd::TreeItemTypeRoot:
-            if (loadVehicle(item, d_loadingDeep)) {
-                expandItem(item, true, 1);
-            }
-            break;
-        case Icd::TreeItemTypeVehicle:
-            if (loadSystem(item, d_loadingDeep)) {
-                expandItem(item, true, 1);
-            }
-            break;
-        case Icd::TreeItemTypeSystem:
-            if (loadTable(item, d_loadingDeep)) {
-                expandItem(item, true, 1);
-            }
-            break;
-        case Icd::TreeItemTypeTable:
-            if (loadItem(item, d_loadingDeep)) {
-                expandItem(item, true, 1);
-            }
+
+        switch (treeModes_) {
+        case CoreTreeWidget::TreeModeTableSel:
             break;
         default:
-            break;
-        }
+        {
+            switch (item->type()) {
+            case Icd::TreeItemTypeRoot:
+                if (loadVehicle(item, loadingDeep_)) {
+                    expandItem(item, true, 2);
+                }
+                break;
+            case Icd::TreeItemTypeVehicle:
+                if (loadSystem(item, loadingDeep_)) {
+                    expandItem(item, true, 2);
+                }
+                break;
+            case Icd::TreeItemTypeSystem:
+                if (loadTable(item, loadingDeep_)) {
+                    expandItem(item, true, 2);
+                }
+                break;
+            case Icd::TreeItemTypeTable:
+                if (loadItem(item, loadingDeep_)) {
+                    expandItem(item, true, 1);
+                }
+                break;
+            default:
+                break;
+            }
+        }}
+
         break;
     }
     case Qt::RightButton:
@@ -1007,11 +956,11 @@ void CoreTreeWidgetPrivate::onWorkerRemoved(const WorkerPtr &worker)
             return true;
         }
         Icd::WorkerTransPtr workerTrans = Q_NULLPTR;
-        if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
             workerTrans = _worker->workerSend();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
             workerTrans = _worker->workerRecv();
-        } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
+        } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
             return true;
         }
         if (workerTrans) {
@@ -1038,16 +987,16 @@ void CoreTreeWidgetPrivate::onWorkerCleared()
 QStringList CoreTreeWidgetPrivate::mimeTypes() const
 {
     QStringList types;
-    if (d_treeModes & CoreTreeWidget::TreeModeMonitor) {
+    if (treeModes_ & CoreTreeWidget::TreeModeMonitor) {
         types << "icd/table-drag/monitor";
     }
-    if (d_treeModes & CoreTreeWidget::TreeModeSimulator) {
+    if (treeModes_ & CoreTreeWidget::TreeModeSimulator) {
         types << "icd/table-drag/simulator";
     }
-    if (d_treeModes & CoreTreeWidget::TreeModeAnalyse) {
+    if (treeModes_ & CoreTreeWidget::TreeModeAnalyse) {
         types << "icd/table-drag/analyse";
     }
-    if (d_treeModes & CoreTreeWidget::TreeModeTableSel) {
+    if (treeModes_ & CoreTreeWidget::TreeModeTableSel) {
         types << "icd/table-drag/tablesel";
     }
     return types;
@@ -1066,16 +1015,16 @@ QMimeData *CoreTreeWidgetPrivate::mimeData(const QList<QStandardItem *> &items) 
     }
 
     QMimeData *mData = new QMimeData();
-    if (d_treeModes & CoreTreeWidget::TreeModeMonitor) {
+    if (treeModes_ & CoreTreeWidget::TreeModeMonitor) {
         mData->setData("icd/table-drag/monitor", QByteArray("1"));
     }
-    if (d_treeModes & CoreTreeWidget::TreeModeSimulator) {
+    if (treeModes_ & CoreTreeWidget::TreeModeSimulator) {
         mData->setData("icd/table-drag/simulator", QByteArray("1"));
     }
-    if (d_treeModes & CoreTreeWidget::TreeModeAnalyse) {
+    if (treeModes_ & CoreTreeWidget::TreeModeAnalyse) {
         mData->setData("icd/table-drag/analyse", QByteArray("1"));
     }
-    if (d_treeModes & CoreTreeWidget::TreeModeTableSel) {
+    if (treeModes_ & CoreTreeWidget::TreeModeTableSel) {
         if (item->type() != Icd::TreeItemTypeTable) {
             return 0;
         }
@@ -1118,7 +1067,7 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
     }
 
     QMenu menu(this);
-    switch (d_treeModes) {
+    switch (treeModes_) {
     case CoreTreeWidget::TreeModeTableSel:
     {
         if (isItemSelected(item)) {
@@ -1210,7 +1159,7 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
     }
 
     QMenu menu(this);
-    switch (d_treeModes) {
+    switch (treeModes_) {
     case CoreTreeWidget::TreeModeTableSel:
     {
         if (isItemSelected(item)) {
@@ -1302,7 +1251,7 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
     }
 
     QMenu menu(this);
-    switch (d_treeModes) {
+    switch (treeModes_) {
     case CoreTreeWidget::TreeModeTableSel:
     {
         if (isItemSelected(item)) {
@@ -1393,7 +1342,7 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
     }
 
     QMenu menu(this);
-    switch (d_treeModes) {
+    switch (treeModes_) {
     case CoreTreeWidget::TreeModeAnalyse:
     {
         if (item->hasChildren()) {
@@ -1472,7 +1421,7 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
                 connect(actionUnbinding, &QAction::triggered, this, [=](){
                     unbindChannel(item);
                 });
-                if (d_treeModes & CoreTreeWidget::TreeModeMonitor) {
+                if (treeModes_ & CoreTreeWidget::TreeModeMonitor) {
                     // get oldWorker
                     const Icd::WorkerPtr worker = queryWorker(item);
                     if (worker) {
@@ -1590,7 +1539,7 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
     case Icd::ItemComplex:
     case Icd::ItemFrame:
     {
-        switch (d_treeModes) {
+        switch (treeModes_) {
         case CoreTreeWidget::TreeModeAnalyse:
         default:
             if (bound) {
@@ -1603,7 +1552,7 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
                     emit unbindItem(item, itemTable);
                 });
             }
-            if (d_treeModes == CoreTreeWidget::TreeModeAnalyse) {
+            if (treeModes_ == CoreTreeWidget::TreeModeAnalyse) {
                 // export
                 QAction *actionExport = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
                                                        QStringLiteral("导出数据"));
@@ -1675,7 +1624,7 @@ void CoreTreeWidgetPrivate::itemItemTableRightClicked(QStandardItem *item, int d
 
     QMenu menu(this);
 
-    switch (d_treeModes) {
+    switch (treeModes_) {
     case CoreTreeWidget::TreeModeAnalyse:
     default:
         if (bound || item->hasChildren()) {
@@ -1688,7 +1637,7 @@ void CoreTreeWidgetPrivate::itemItemTableRightClicked(QStandardItem *item, int d
                 emit unbindItem(item, itemTable);
             });
         }
-        if (d_treeModes == CoreTreeWidget::TreeModeAnalyse) {
+        if (treeModes_ == CoreTreeWidget::TreeModeAnalyse) {
             QAction *actionExport = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
                                                    QStringLiteral("导出数据"));
             connect(actionExport, &QAction::triggered, this, [=](){
@@ -1740,10 +1689,10 @@ void CoreTreeWidgetPrivate::itemItemBitMapRightClicked(QStandardItem *item, int 
     menu.setProperty("deep", deep);
 
     //
-    switch (d_treeModes) {
+    switch (treeModes_) {
     case CoreTreeWidget::TreeModeAnalyse:
     default:
-        if (d_treeModes == CoreTreeWidget::TreeModeAnalyse) {
+        if (treeModes_ == CoreTreeWidget::TreeModeAnalyse) {
             QAction *actionExport = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
                                                    QStringLiteral("导出数据"), this, SLOT(onActionExportTableData()));
             connect(actionExport, &QAction::triggered, this, [=](){
@@ -1764,7 +1713,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     }
 
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -1792,9 +1741,9 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     bindChannelWidget = nullptr;
     //
     Icd::TablePtr oldTable;
-    if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
+    if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
         oldTable = oldWorker->workerSend()->table();
-    } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+    } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
         oldTable = oldWorker->workerRecv()->table();
     }
     // 先恢复状态
@@ -1816,7 +1765,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     // find table object
     Icd::TablePtr table = Icd::TablePtr(0);
     auto funcParseTable = [=,&table]() -> bool {
-        if (!d_parser->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
+        if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
                              sections.at(2).toStdString(), table, Icd::ObjectItem)) {
             return false; // parse failure
         }
@@ -1824,7 +1773,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     };
 
     // 设置表项
-    if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
+    if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
         table = oldWorker->workerSend()->table();
         if (!table) {
             if (!funcParseTable()) {
@@ -1833,7 +1782,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
         }
         oldWorker->workerSend()->setTable(Icd::TablePtr(0));
         selectedWorker->workerSend()->setTable(table);
-    } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+    } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
         table = oldWorker->workerRecv()->table();
         if (!table) {
             if (!funcParseTable()) {
@@ -1842,7 +1791,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
         }
         oldWorker->workerRecv()->setTable(Icd::TablePtr(0));
         selectedWorker->workerRecv()->setTable(table);
-    } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
+    } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
         table = oldWorker->workerSend()->table();
         if (!table) {
             table = oldWorker->workerRecv()->table();
@@ -1887,7 +1836,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable)
         return false;   // invalid parameter
     }
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -1914,7 +1863,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
         return false;   // invalid parameter
     }
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -1926,7 +1875,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     }
     // find table object
     Icd::TablePtr table;
-    if (!d_parser->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
+    if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
                          sections.at(2).toStdString(), table, Icd::ObjectItem)) {
         return bindChannel(itemTable, worker, nullptr);
     }
@@ -1941,7 +1890,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
         return false;   // invalid parameter
     }
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -1960,17 +1909,17 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
         return false;
     }
     // 设置表项
-    if (d_bindTableTypes == CoreTreeWidget::BindOnlySend) {
+    if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
         worker->workerSend()->setTable(table);
-        if (d_treeModes & CoreTreeWidget::TreeModeSimulator) {
+        if (treeModes_ & CoreTreeWidget::TreeModeSimulator) {
             worker->workerSend()->setFrameLoop(true);
         }
-    } else if (d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+    } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
         worker->workerRecv()->setTable(table);
-    } else if (d_bindTableTypes == CoreTreeWidget::BindAllTable) {
+    } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
         worker->workerSend()->setTable(table);
         worker->workerRecv()->setTable(Icd::TablePtr(reinterpret_cast<Table *>(table->clone())));
-        if (d_treeModes & CoreTreeWidget::TreeModeSimulator) {
+        if (treeModes_ & CoreTreeWidget::TreeModeSimulator) {
             worker->workerSend()->setFrameLoop(true);
         }
     }
@@ -1986,19 +1935,19 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
         itemWidget->setWorker(worker);
     }
     //
-    ItemWorkerGroup *workerGroup = new ItemWorkerGroup(itemTable, worker, d_showAttris, this);
-    workerGroup->setBindTableType(d_bindTableTypes);
-    d_workerGroups.insert(itemTable, workerGroup);
+    ItemWorkerGroup *workerGroup = new ItemWorkerGroup(itemTable, worker, showAttris_, this);
+    workerGroup->setBindTableType(bindTableTypes_);
+    workerGroups_.insert(itemTable, workerGroup);
     //
-    if (d_bindTableTypes & CoreTreeWidget::BindOnlySend) {
+    if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
         if (worker->workerSend()->isRunning()) {
-            workerGroup->setTimerInterval(d_intervalUpdate);
+            workerGroup->setTimerInterval(intervalUpdate_);
             workerGroup->updateTimer();
         }
     }
-    if (d_bindTableTypes & CoreTreeWidget::BindOnlyRecv) {
-        if (d_showAttris & (CoreTreeWidget::ShowData | CoreTreeWidget::ShowValue)) {
-            workerGroup->setTimerInterval(d_intervalUpdate);
+    if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+        if (showAttris_ & (CoreTreeWidget::ShowData | CoreTreeWidget::ShowValue)) {
+            workerGroup->setTimerInterval(intervalUpdate_);
             workerGroup->updateTimer();
         }
     }
@@ -2135,7 +2084,7 @@ bool CoreTreeWidgetPrivate::loadVehicle(QStandardItem *itemRoot, int deep)
     }
 
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -2144,7 +2093,7 @@ bool CoreTreeWidgetPrivate::loadVehicle(QStandardItem *itemRoot, int deep)
 
     // get vehicles informations
     Icd::VehiclePtrArray vehicles;
-    if (!d_parser || !d_parser->parse(vehicles, deep)) {
+    if (!parser_ || !parser_->parse(vehicles, deep)) {
         //Q_ASSERT(false);
         return false;
     }
@@ -2159,7 +2108,7 @@ bool CoreTreeWidgetPrivate::loadVehicle(QStandardItem *itemRoot, int deep)
         //
         QString text = name;
         // type
-        if (d_showAttris & CoreTreeWidget::ShowType) {
+        if (showAttris_ & CoreTreeWidget::ShowType) {
             text.append(" <font color=green size=2>" + QString("[VEHICLE]") + "</font>");
         }
         // create item
@@ -2198,7 +2147,7 @@ bool CoreTreeWidgetPrivate::loadSystem(QStandardItem *itemVehicle, int deep)
     clearChildren(itemVehicle);
 
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -2210,7 +2159,7 @@ bool CoreTreeWidgetPrivate::loadSystem(QStandardItem *itemVehicle, int deep)
 
     // get systems informations
     Icd::SystemPtrArray systems;
-    if (!d_parser->parse(domain.toStdString(), systems, deep)) {
+    if (!parser_->parse(domain.toStdString(), systems, deep)) {
         Q_ASSERT(false);
         return false;
     }
@@ -2244,7 +2193,7 @@ bool CoreTreeWidgetPrivate::loadSystem(QStandardItem *itemVehicle,
         //
         QString text = name;
         // type
-        if (d_showAttris & CoreTreeWidget::ShowType) {
+        if (showAttris_ & CoreTreeWidget::ShowType) {
             text.append(" <font color=green size=2>" + QString("[SYSTEM]") + "</font>");
         }
         // create item
@@ -2285,7 +2234,7 @@ bool CoreTreeWidgetPrivate::loadTable(QStandardItem *itemSystem, int deep)
     clearChildren(itemSystem);
 
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -2299,7 +2248,7 @@ bool CoreTreeWidgetPrivate::loadTable(QStandardItem *itemSystem, int deep)
 
     // get systems informations
     Icd::TablePtrArray tables;
-    if (!d_parser->parse(vehicleId.toStdString(),
+    if (!parser_->parse(vehicleId.toStdString(),
                          systemId.toStdString(), tables, deep)) {
         Q_ASSERT(false);
         return false;
@@ -2334,7 +2283,7 @@ bool CoreTreeWidgetPrivate::loadTable(QStandardItem *itemSystem,
         //
         QString text = name;
         // type
-        if (d_showAttris & CoreTreeWidget::ShowType) {
+        if (showAttris_ & CoreTreeWidget::ShowType) {
             text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
         }
         // create item
@@ -2343,10 +2292,10 @@ bool CoreTreeWidgetPrivate::loadTable(QStandardItem *itemSystem,
         // add item
         itemSystem->appendRow(itemTable);
         //
-        if (d_bindTableTypes == CoreTreeWidget::BindOnlySend
-                || d_bindTableTypes == CoreTreeWidget::BindOnlyRecv) {
+        if (bindTableTypes_ == CoreTreeWidget::BindOnlySend
+                || bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
             // itemWidget
-            TableItemWidget *itemWidget = new TableItemWidget(d_bindTableTypes, this);
+            TableItemWidget *itemWidget = new TableItemWidget(bindTableTypes_, this);
             setItemWidget(itemTable, itemWidget);
             connect(itemWidget, &TableItemWidget::clicked, this, [=](){
                 emit itemClicked(itemTable);
@@ -2383,7 +2332,7 @@ bool CoreTreeWidgetPrivate::loadItem(QStandardItem *itemTable, int deep)
     clearChildren(itemTable);
 
     //
-    if (!d_parser) {
+    if (!parser_) {
         Q_ASSERT(false);
         return false;   //
     }
@@ -2398,7 +2347,7 @@ bool CoreTreeWidgetPrivate::loadItem(QStandardItem *itemTable, int deep)
 
     // get systems informations
     Icd::ItemPtrArray dataItems;
-    if (!d_parser->parse(vehicleId.toStdString(), systemId.toStdString(),
+    if (!parser_->parse(vehicleId.toStdString(), systemId.toStdString(),
                          tableId.toStdString(), dataItems, Icd::ObjectItem)) {
         Q_ASSERT(false);
         return false;
@@ -2625,7 +2574,7 @@ void CoreTreeWidgetPrivate::removeTableItem(QStandardItem *item)
         return;
     }
 
-    switch (d_treeModes) {
+    switch (treeModes_) {
     case CoreTreeWidget::TreeModeAnalyse:
         //
         emit unbindItem(item, item);
@@ -2762,7 +2711,7 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *item)
     case Icd::TreeItemTypeVehicle:
     {
         QString text = item->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
-        if (d_showAttris & CoreTreeWidget::ShowType) {
+        if (showAttris_ & CoreTreeWidget::ShowType) {
             text.append(" <font color=green size=2>" + QString("[VEHICLE]") + "</font>");
         }
         item->setText(text);
@@ -2771,7 +2720,7 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *item)
     case Icd::TreeItemTypeSystem:
     {
         QString text = item->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
-        if (d_showAttris & CoreTreeWidget::ShowType) {
+        if (showAttris_ & CoreTreeWidget::ShowType) {
             text.append(" <font color=green size=2>" + QString("[SYSTEM]") + "</font>");
         }
         item->setText(text);
@@ -2781,12 +2730,12 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *item)
     {
         ItemWorkerGroup *workerGroup = findWorkerGroup(item);
         if (workerGroup) {
-            workerGroup->updateItemData(d_showAttris, d_dataFormat);
+            workerGroup->updateItemData(showAttris_, dataFormat_);
         } else {
             if (!item->hasChildren()) {
                 if (!isBoundChannel(item)) {
                     QString text = item->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
-                    if (d_showAttris & CoreTreeWidget::ShowType) {
+                    if (showAttris_ & CoreTreeWidget::ShowType) {
                         text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
                     }
                     item->setText(text);
@@ -2801,7 +2750,7 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *item)
             }
             // find table object
             Icd::TablePtr table;
-            if (!d_parser->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
+            if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
                                  sections.at(2).toStdString(), table, Icd::ObjectItem)) {
                 return;
             }
@@ -2844,7 +2793,7 @@ void CoreTreeWidgetPrivate::updateBitItemData(QStandardItem *itemDataItem,
         //
         QString text;
         // offset
-        if (d_showAttris & CoreTreeWidget::ShowOffset) {
+        if (showAttris_ & CoreTreeWidget::ShowOffset) {
             text.append(QString("<font color=green size=2>[%1]</font> ")
                         .arg(bitOffset, 2, 10, QChar('0')));
         }
@@ -2864,13 +2813,13 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *itemDataItem, const Ic
     //
     QString text;
     // offset
-    if (d_showAttris & CoreTreeWidget::ShowOffset) {
+    if (showAttris_ & CoreTreeWidget::ShowOffset) {
         text.append(ItemWorkerGroup::generateItemOffset(dataItem));
     }
     // name
     text.append(QString::fromStdString(dataItem->name().empty() ? "<?>" : dataItem->name()));
     // type
-    if (d_showAttris & CoreTreeWidget::ShowType) {
+    if (showAttris_ & CoreTreeWidget::ShowType) {
         text.append(" <font color=green size=2>[" + QString::fromStdString(
                         dataItem->typeString()).toUpper() + "]</font>");
     }
@@ -2945,13 +2894,13 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *itemDataItem, const Co
     //
     QString text;
     // offset
-    if (d_showAttris & CoreTreeWidget::ShowOffset) {
+    if (showAttris_ & CoreTreeWidget::ShowOffset) {
         text.append(ItemWorkerGroup::generateItemOffset(complex));
     }
     // name
     text.append(QString::fromStdString(complex->name().empty() ? "<?>" : complex->name()));
     // type
-    if (d_showAttris & CoreTreeWidget::ShowType) {
+    if (showAttris_ & CoreTreeWidget::ShowType) {
         text.append(" <font color=green size=2>" + QString("[COMPLEX]") + "</font>");
     }
 
@@ -2991,13 +2940,13 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *itemTable, const Table
     //
     QString text;
     // offset
-    if (d_showAttris & CoreTreeWidget::ShowOffset) {
+    if (showAttris_ & CoreTreeWidget::ShowOffset) {
         text.append(ItemWorkerGroup::generateItemOffset(table));
     }
     // name
     text.append(QString::fromStdString(table->name().empty() ? "<?>" : table->name()));
     // type
-    if (d_showAttris & CoreTreeWidget::ShowType) {
+    if (showAttris_ & CoreTreeWidget::ShowType) {
         text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
     }
     // fileName
@@ -3014,8 +2963,8 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *itemTable, const Table
 void CoreTreeWidgetPrivate::updateItemData(QStandardItem *itemTable, bool showValue)
 {
     QHash<QStandardItem*, ItemWorkerGroup*>::ConstIterator citer =
-            d_workerGroups.find(itemTable);
-    if (citer != d_workerGroups.cend()) {
+            workerGroups_.find(itemTable);
+    if (citer != workerGroups_.cend()) {
         citer.value()->updateItemData(showValue);
     }
 }
@@ -3023,26 +2972,26 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *itemTable, bool showVa
 void CoreTreeWidgetPrivate::removeWorkerGroup(QStandardItem *itemTable)
 {
     QHash<QStandardItem *, ItemWorkerGroup*>::Iterator iter =
-            d_workerGroups.find(itemTable);
-    if (iter != d_workerGroups.end()) {
+            workerGroups_.find(itemTable);
+    if (iter != workerGroups_.end()) {
         ItemWorkerGroup *workerGroup = iter.value();
         workerGroup->setDirty();
         workerGroup->deleteLater();
-        d_workerGroups.erase(iter);
+        workerGroups_.erase(iter);
     }
 }
 
 void CoreTreeWidgetPrivate::removeWorkerGroup(const WorkerPtr &worker)
 {
     QHash<QStandardItem *, ItemWorkerGroup*>::Iterator iter =
-            d_workerGroups.begin();
-    for (; iter != d_workerGroups.end(); ++iter) {
+            workerGroups_.begin();
+    for (; iter != workerGroups_.end(); ++iter) {
         ItemWorkerGroup *workerGroup = iter.value();
         if (workerGroup->worker() == worker) {
             unbindChannel(iter.key(), worker);
             workerGroup->setDirty();
             workerGroup->deleteLater();
-            d_workerGroups.erase(iter);
+            workerGroups_.erase(iter);
             break;
         }
     }
@@ -3050,7 +2999,7 @@ void CoreTreeWidgetPrivate::removeWorkerGroup(const WorkerPtr &worker)
 
 void CoreTreeWidgetPrivate::clearWorkerGroup()
 {
-    QHashIterator<QStandardItem *, ItemWorkerGroup*> citer(d_workerGroups);
+    QHashIterator<QStandardItem *, ItemWorkerGroup*> citer(workerGroups_);
     while (citer.hasNext()) {
         citer.next();
         ItemWorkerGroup *workerGroup = citer.value();
@@ -3058,14 +3007,14 @@ void CoreTreeWidgetPrivate::clearWorkerGroup()
         workerGroup->deleteLater();
         unbindChannel(citer.key(), workerGroup->worker());
     }
-    d_workerGroups.clear();
+    workerGroups_.clear();
 }
 
 ItemWorkerGroup *CoreTreeWidgetPrivate::findWorkerGroup(QStandardItem *itemTable) const
 {
     QHash<QStandardItem *, ItemWorkerGroup*>::ConstIterator citer =
-            d_workerGroups.find(itemTable);
-    if (citer != d_workerGroups.cend()) {
+            workerGroups_.find(itemTable);
+    if (citer != workerGroups_.cend()) {
         return citer.value();
     }
 
@@ -3168,7 +3117,7 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
         return false;
     }
 
-    if (!d_parser) {
+    if (!parser_) {
         return false;
     }
 
@@ -3227,8 +3176,8 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
 
     //
     QFuture<bool> future = QtConcurrent::run([=](){
-        return d_parser->saveAs(item, exportAll,
-                                (d_bindTableTypes & CoreTreeWidget::BindOnlyRecv),
+        return parser_->saveAs(item, exportAll,
+                                (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv),
                                 filePath.toStdString());
     });
 
@@ -3250,7 +3199,7 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
         deleteRes();
     });
     connect(progressDialog, &ProgressDialog::rejected, this, [=](){
-        d_parser->cancelSaveAs(true);
+        parser_->cancelSaveAs(true);
         progressDialog->waitForFinished();
         timerExport->stop();
         QApplication::removePostedEvents(this, QEvent::Timer);
@@ -3273,7 +3222,7 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
         }
     });
     connect(timerExport, &QTimer::timeout, this, [=](){
-        progressDialog->setMessage(QString::fromStdString(d_parser->message()));
+        progressDialog->setMessage(QString::fromStdString(parser_->message()));
         //progressDialog->setProgressValue(d_parser->progressValue());
     });
 
@@ -3415,7 +3364,7 @@ BindingData CoreTreeWidgetPrivate::bindingMapTask(BindingData data)
         return data;
     }
     // find table object
-    if (!data.d->d_parser->parse(sections.at(0).toStdString(),
+    if (!data.d->parser_->parse(sections.at(0).toStdString(),
                                  sections.at(1).toStdString(),
                                  sections.at(2).toStdString(),
                                  data.table, Icd::ObjectItem)) {
@@ -3444,7 +3393,7 @@ void CoreTreeWidgetPrivate::restoreChannelItem(QStandardItem *itemTable, const I
     const QString name = QString::fromStdString(table->name().empty() ? "<?>" : table->name());
     text.append(name);
     // type
-    if (d_showAttris & CoreTreeWidget::ShowType) {
+    if (showAttris_ & CoreTreeWidget::ShowType) {
         text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
     }
     itemTable->setText(text);

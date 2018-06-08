@@ -40,6 +40,8 @@ public:
     explicit ICDNavigationUi(QWidget *parent = nullptr);
     ~ICDNavigationUi();
 
+    bool init();
+
     // 加载显示机型系统结构数据
     void loadData(const PlaneNode::planeVector &data, int source);
 
@@ -113,6 +115,10 @@ protected Q_SLOTS:
 
     // 加载数据
     void slotLoadData();
+    void loadData(const QString &name);
+
+    //
+    bool loadVehicle();
 
 private:
     // 构造单个机型节点（包括下挂分系统）

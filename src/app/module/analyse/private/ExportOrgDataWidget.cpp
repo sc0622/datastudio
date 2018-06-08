@@ -25,7 +25,7 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
     buttonView->setFixedWidth(60);
     layoutPath->addWidget(editPath);
     layoutPath->addWidget(buttonView);
-    QCheckBox *checkBox = Q_NULLPTR;
+    QCheckBox *checkBox = nullptr;
     if (hasTimeFormat) {
         checkBox = new QCheckBox(this);
         formLayout->addRow(QStringLiteral("导出包时间："), checkBox);

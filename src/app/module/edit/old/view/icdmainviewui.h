@@ -14,6 +14,8 @@ public:
     explicit ICDMainViewUi(QWidget *parent = nullptr);
     ~ICDMainViewUi();
 
+    bool init();
+
     /**
      * @brief 初始化数据
      * @param [in] type : 数据类型(GLOBALDEF::NODETYPE)
@@ -41,12 +43,6 @@ public:
 
     // 处理来自其他模块的命令
     void dealCommand(int command, const QVariant &param);
-
-    //
-    void setMenuPtr(const std::string &name, QAction *acttion);
-
-    //
-    bool dealMenuCmd(const std::string &name);
 
 Q_SIGNALS:
 

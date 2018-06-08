@@ -15,34 +15,31 @@ class HeaderUI : public MetaUI
 public:
     explicit HeaderUI(QWidget *parent = nullptr);
     // MetaUI interface
-    void setUIData(const _UIData &data);
-    void *uiData() const;
+    void setUIData(const _UIData &data) override;
+    void *uiData() const override;
     // 切换数据类型
-    void changeDataType(int type);
+    void changeDataType(int type) override;
     // 原始数据类型
-    int originalType() const;
-    // 启/停用界面控制按钮
-    void enableOptionButton(bool enable);
+    int originalType() const override;
 
 signals:
-    void confirm(bool &);
-    void canceled();
 
 protected slots:
     // 编辑框数据录入完成
     void slotEditFinished();
     // 编辑框文本变更
     void slotTextChanged(const QString& text);
-    // 确认
-    void slotConfirm();
-    // 取消
-    void slotCanceled();
 
 protected:
+    // 确认
+    void confirm() override;
+    // 取消
+    void cancel() override;
+
     // 初始化界面数据
     void init();
     // 启/停用信号槽
-    void enableConnection(bool enable);
+    void enableConnection(bool enable) override;
     // 校验界面数据
     bool dataValid();
 
@@ -52,13 +49,10 @@ private:
 
     QColor          q_color;    // 默认背景色
 
-    QLineEdit       *q_edtStatus; // 状态提示
     LimitLineEdit   *q_edtName;
     QLineEdit       *q_edtCode;
     hexSpinBox      *q_spinDefault;
     LimitTextEdit   *q_edtRemak;
-    QPushButton     *q_btnConfirm;
-    QPushButton     *q_btnCancel;
 };
 
 #endif // HEADERUI_H

@@ -1,17 +1,19 @@
 #ifndef ICDMAINVIEW_H
 #define ICDMAINVIEW_H
 
-#include <QWidget>
+#include <QFrame>
 #include "../datamgr/datamanagement.h"
 
 class ICDMainViewUi;
 
-class ICDMainView : public QWidget
+class ICDMainView : public QFrame
 {
     Q_OBJECT
 public:
     explicit ICDMainView(QWidget *parent = nullptr);
     virtual ~ICDMainView();
+
+    bool init();
 
 signals:
 

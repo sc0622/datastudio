@@ -13,6 +13,8 @@ public:
     explicit ICDNavigation(QWidget *parent = nullptr);
     virtual ~ICDNavigation();
 
+    bool init();
+
 signals:
 
 public slots:

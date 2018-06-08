@@ -29,7 +29,6 @@ private:
     // edit
     void updateEdit();
     void addEditViewAction(const Json::Value &option);
-    QAction *addEditOrigValueRadixAction(QAction *action);
 #ifdef EDIT_OLD
     void addEditItemAction(const Json::Value &option);
     void addEditExportAction(const Json::Value &option);

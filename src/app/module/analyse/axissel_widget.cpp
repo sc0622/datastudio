@@ -165,10 +165,10 @@ AxisSelWidget::AxisSelWidget(QWidget *parent)
     connect(buttonCancel, &QPushButton::clicked, this, &AxisSelWidget::reject);
 
     //
-    QFile file(":/icd/qss/default.qss");
+    /*QFile file(":/icd/qss/default.qss");
     if (file.open(QFile::ReadOnly)) {
         setStyleSheet(file.readAll());
-    }
+    }*/
 }
 
 AxisSelWidget::~AxisSelWidget()

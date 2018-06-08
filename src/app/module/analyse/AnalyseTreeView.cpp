@@ -83,12 +83,10 @@ TreeView::TreeView(QWidget *parent)
     jnotify->on("analyse.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
-        JMain::instance()->setOption("analyse", "option.tree.showOffset", checked);
     });
     jnotify->on("analyse.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
-        JMain::instance()->setOption("analyse", "option.tree.showType", checked);
     });
     jnotify->on("analyse.toolbar.tree.loadData", this, [=](JNEvent &){
         loadRecordData();
@@ -216,7 +214,7 @@ bool TreeView::parseDataFile(const QString &filePath)
 
     if (domain.isEmpty()) {
         TableSelWidget tableSelWidget(this);
-        tableSelWidget.resize(600, 660);
+        tableSelWidget.resize(550, 600);
         if (!tableSelWidget.init()) {
             return false;
         }

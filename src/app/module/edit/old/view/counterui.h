@@ -17,33 +17,30 @@ public:
     void setUIData(const _UIData &data);
     void*uiData() const;
     // 切换数据类型
-    void changeDataType(int type);
+    void changeDataType(int type) override;
     // 原始数据类型
-    int originalType() const;
-    // 启/停用界面控制按钮
-    void enableOptionButton(bool enable);
+    int originalType() const override;
 
 signals:
-    void confirm(bool &);
-    void canceled();
 
 protected slots:
     // 编辑框数据录入完成
     void slotEditFinished();
     // 编辑框文本变更
     void slotTextChanged(const QString& text);
-    // 确认
-    void slotConfirm();
-    // 取消
-    void slotCanceled();
 
 protected:
+    // 确认
+    void confirm() override;
+    // 取消
+    void cancel() override;
+
     // 初始化界面数据
     void init();
     // 初始化校验类型下拉框
     void initBoxType();
     // 启/停用信号槽
-    void enableConnection(bool enable);
+    void enableConnection(bool enable) override;
     // 校验界面数据
     bool dataValid();
 
@@ -57,10 +54,6 @@ private:
     QLineEdit       *q_edtCode;
     QComboBox       *q_boxCounterType;  // 校验类型
     LimitTextEdit   *q_edtRemak;
-
-    QLineEdit   *q_edtStatus;       // 状态提示
-    QPushButton *q_btnConfirm;
-    QPushButton *q_btnCancel;
 };
 
 #endif // COUNTERUI_H

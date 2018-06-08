@@ -4,8 +4,11 @@
 #include "KernelClass/planenode.h"
 
 ICDMainView::ICDMainView(QWidget *parent)
-    : QWidget(parent)
+    : QFrame(parent)
 {
+    setFrameShadow(QFrame::Raised);
+    setFrameShape(QFrame::StyledPanel);
+
     QHBoxLayout *layoutMain = new QHBoxLayout(this);
     layoutMain->setContentsMargins(0, 0, 0, 0);
 
@@ -44,6 +47,11 @@ ICDMainView::ICDMainView(QWidget *parent)
 ICDMainView::~ICDMainView()
 {
 
+}
+
+bool ICDMainView::init()
+{
+    return q_ui->init();
 }
 
 // 加载显示架构信息

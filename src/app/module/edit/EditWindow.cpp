@@ -54,6 +54,8 @@ bool Window::init()
 
     JMain::restoreWidgetState(splitterMain_);
 #ifdef EDIT_OLD
+    nav_->init();
+    view_->init();
 #else
     treeView_->init();
     setView_->init();

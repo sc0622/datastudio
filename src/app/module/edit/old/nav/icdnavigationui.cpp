@@ -63,11 +63,73 @@ ICDNavigationUi::~ICDNavigationUi()
 
 }
 
+bool ICDNavigationUi::init()
+{
+    return loadVehicle();
+}
+
 // 点击树节点
 void ICDNavigationUi::slotItemPressed(QStandardItem *item)
 {
-    if (Qt::RightButton == QApplication::mouseButtons()) {
+    Qt::MouseButtons buttons = QApplication::mouseButtons();
+    switch (buttons) {
+    case Qt::LeftButton:
+    {
+        if (item->hasChildren()) {
+            break;
+        }
+
+        const QVariant level = item->data(LevelIndex);
+        if (!level.isValid()) {
+            break;
+        }
+
+        // 查询数据源
+        int dataSource = GlobalDefine::dsNone;
+        QVariantList args;
+        args.append(qVariantFromValue((void*)&dataSource));
+        jnotify->send("edit.queryDataSource", args);
+
+        switch (level.toInt()) {
+        case GlobalDefine::ntUnknown:   // 根节点
+            if (GlobalDefine::dsDatabase == dataSource) {
+                loadData("database");
+            } else if (GlobalDefine::dsFile == dataSource) {
+                loadData("file");
+            }
+            break;
+        case GlobalDefine::ntPlane:     // 机型
+        case GlobalDefine::ntSystem:    // 分系统
+        {
+            if (hasRuleTable(item)) {
+                int state = dataLoaded(item);
+                if (GlobalDefine::wholeState != state) {
+                    slotLoadRule();
+                }
+            }
+            break;
+        }
+        case GlobalDefine::ntTable:     // 规则表
+        {
+            int state = dataLoaded(item);
+            if (GlobalDefine::wholeState != state) {
+                slotLoadRule();
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
+        break;
+    }
+    case Qt::RightButton:
+    {
         showMenu(item);
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -326,8 +388,18 @@ void ICDNavigationUi::slotDelete()
     // 再更新界面
 }
 
-// 加载数据
 void ICDNavigationUi::slotLoadData()
+{
+    if (!sender()) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    loadData(sender()->objectName());
+}
+
+// 加载数据
+void ICDNavigationUi::loadData(const QString &name)
 {
     // 数据变更未保存，二次提示
     if (queryNodeFlag("nodeState") != GlobalDefine::noneState) {
@@ -340,7 +412,6 @@ void ICDNavigationUi::slotLoadData()
         }
     }
 
-    const QString name = sender()->objectName();
     int dataSource = GlobalDefine::dsNone;
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     // 加载数据
@@ -351,13 +422,15 @@ void ICDNavigationUi::slotLoadData()
         QVariantList args;
         args.append(int(dataSource));
         args.append(qVariantFromValue((void*)&error));
+        args.append(int(Icd::ObjectTable));
         jnotify->send("edit.loadInfrastructure", args);
-    } else if (name == QStringLiteral("文件")) {
+    } else if (name == "file") {
         dataSource = GlobalDefine::dsFile;
 
         QVariantList args;
         args.append(int(dataSource));
         args.append(qVariantFromValue((void*)&error));
+        args.append(int(Icd::ObjectTable));
         jnotify->send("edit.loadInfrastructure", args);
     }
     if (!error.isEmpty()) {
@@ -389,9 +462,24 @@ void ICDNavigationUi::slotLoadData()
     QApplication::restoreOverrideCursor();
 }
 
+bool ICDNavigationUi::loadVehicle()
+{
+    int dataSource = GlobalDefine::dsNone;
+    QVariantList args;
+    args.append(qVariantFromValue((void*)&dataSource));
+    jnotify->send("edit.queryDataSource", args);
+
+    switch (dataSource) {
+    case GlobalDefine::dsDatabase: loadData("database"); break;
+    case GlobalDefine::dsFile: loadData("file"); break;
+    default: break;
+    }
+
+    return true;
+}
+
 // 加载显示机型系统结构数据
-void ICDNavigationUi::loadData(const PlaneNode::planeVector &data,
-                               int source)
+void ICDNavigationUi::loadData(const PlaneNode::planeVector &data, int source)
 {
     if (NULL == q_treeView) {
         return;
@@ -490,7 +578,7 @@ void ICDNavigationUi::updateRuleItems(const PlaneNode::smtPlane& plane)
             data = system->table(tableID.toStdString());
             loadRuleNode(current, data);
             q_treeView->expandItem(current);
-            current->setIcon(QIcon(":/icd/editor/images/green-16.png"));
+            current->setIcon(QIcon(":/datastudio/image/global/circle-green.png"));
         }
         // 更新节点状态
         updateLoadedFlag(current, optLoad);
@@ -632,7 +720,7 @@ void ICDNavigationUi::createRuleMenu()
 {
     if (!q_ruleMenu) {
         q_ruleMenu = new QMenu(QStringLiteral("新增"), q_treeView);
-        q_ruleMenu->setIcon(QIcon(":/icd/editor/images/new-16.png"));
+        q_ruleMenu->setIcon(QIcon(":/datastudio/image/global/add.png"));
         std::vector<stDictionary> dics;
 
         QVariantList args;
@@ -1238,13 +1326,14 @@ bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err
 QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent,
                                               const PlaneNode::smtPlane &plane)
 {
-    if (NULL == parent || NULL == plane) {
-        return NULL;
+    if (!parent || !plane) {
+        return nullptr;
     }
     SystemNode::systemVector subSystem = plane->allSystem();
-    QStandardItem* result = new QStandardItem(plane->name().c_str());
+    QStandardItem* result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
+                                              QString::fromStdString(plane->name())
+                                              + "<font color=green size=2>[VEHICLE]</font>");
     result->setData(plane->id().c_str(), UserKey);
-    result->setIcon(QIcon(":/icdwidget/image/tree/icon-vehicle.png"));
     if (subSystem.empty()) {
         result->setData(GlobalDefine::wholeState, ItemLoaded);
     } else {
@@ -1258,10 +1347,10 @@ QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent,
     for (int i = 0; i < count; ++i) {
         if (!formSystemNode(result, subSystem[i])) {
             parent->removeRow(result->row());
-            return NULL;
+            return nullptr;
         }
     }
-    q_treeView->expandItem(parent);
+    q_treeView->expandItem(parent, true, 3);
 
     return result;
 }
@@ -1306,9 +1395,10 @@ QStandardItem* ICDNavigationUi::formSystemNode(QStandardItem *parent,
     }
     TableNode::tableVector icdTable = system->allTable();
     const int count = icdTable.size();
-    QStandardItem* result = new QStandardItem(system->name().c_str());
+    QStandardItem* result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-system.png"),
+                                              QString::fromStdString(system->name())
+                                              + "<font color=green size=2>[SYSTEM]</font>");
     result->setData(system->numeralId(), UserKey);
-    result->setIcon(QIcon(":/icdwidget/image/tree/icon-system.png"));
     if (0 == count) {
         result->setData(GlobalDefine::wholeState, ItemLoaded);
     } else {
@@ -1376,14 +1466,14 @@ QStandardItem* ICDNavigationUi::formTableNode(QStandardItem *parent,
     if (NULL == system) {
         return NULL;
     }
-    QStandardItem* result = new QStandardItem();
-    result->setText(QString(table->icdBase().sDescribe.c_str()));
+    QStandardItem* result = new QStandardItem(QIcon(":/datastudio/image/global/circle-gray.png"),
+                                              QString::fromStdString(table->icdBase().sDescribe)
+                                              + "<font color=green size=2>[TABLE]</font>");
     result->setToolTip(result->text());
     result->setData(table->key().c_str(), UserKey);
     result->setData(GlobalDefine::noneState, ItemLoaded);
     result->setData(GlobalDefine::noneState, DataChanged);
     result->setData(GlobalDefine::ntTable, LevelIndex);
-    result->setIcon(QIcon(":/icd/editor/images/gray-16.png"));
     parent->appendRow(result);
 
     if (!table->allRule().empty()) {
@@ -1437,8 +1527,9 @@ QStandardItem* ICDNavigationUi::formSubTableNode(QStandardItem *parent,
                                                  int offset)
 {
     stICDBase base = table->icdBase();
-    QStandardItem *result = new QStandardItem(base.sDescribe.c_str());
-
+    QStandardItem *result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
+                                              QString::fromStdString(base.sDescribe)
+                                              + "<font color=green size=2>[TABLE]</font>");
     result->setData(GlobalDefine::ntRule, LevelIndex);
     result->setData(GlobalDefine::dtComplex, RuleDefine);
     result->setData(base.sName.c_str(), SubTable);
@@ -1496,9 +1587,7 @@ QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent,
     if (NULL == meta) {
         return NULL;
     }
-    QString text = offsetString(meta, offset);
-    QStandardItem* result = new QStandardItem();
-    result->setText(text);
+    QStandardItem* result = new QStandardItem(offsetString(meta, offset));
     result->setData(meta->serial(), UserKey);
     result->setData(GlobalDefine::noneState, DataChanged);
     result->setData(GlobalDefine::ntRule, LevelIndex);
@@ -1575,7 +1664,7 @@ void ICDNavigationUi::loadRuleNode(QStandardItem *parent,
     }
     if (GlobalDefine::ntTable == parent->data(LevelIndex).toInt()
             && dataMap.size() > 0) {
-        parent->setIcon(QIcon(":/icd/editor/images/green-16.png"));
+        parent->setIcon(QIcon(":/datastudio/image/global/circle-green.png"));
     }
 }
 
@@ -1663,21 +1752,21 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
             jnotify->send("edit.queryDataSource", args);
 
             if (GlobalDefine::dsDatabase == dataSource) {
-                act = menu.addAction(QIcon(":/icd/editor/images/database-16.png"),
+                act = menu.addAction(QIcon(":/datastudio/image/global/load-db.png"),
                                      QStringLiteral("加载数据库"),
                                      this, SLOT(slotLoadData()));
                 act->setObjectName("database");
             } else if (GlobalDefine::dsFile == dataSource) {
-                act = menu.addAction(QIcon(":/icd/editor/images/file-16.png"),
+                act = menu.addAction(QIcon(":/datastudio/image/global/load-file.png"),
                                      QStringLiteral("加载文件"),
                                      this, SLOT(slotLoadData()));
-                act->setObjectName(QStringLiteral("文件"));
+                act->setObjectName(QStringLiteral("file"));
             }
         } else {
-            actNew = menu.addAction(QIcon(":/icd/editor/images/new-16.png"),
+            actNew = menu.addAction(QIcon(":/datastudio/image/global/add.png"),
                                     QStringLiteral("新增"),
                                     this, SLOT(slotNew()));
-            actClear = menu.addAction(QIcon(":/icd/editor/images/clear-16.png"),
+            actClear = menu.addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
                                       QStringLiteral("清空"),
                                       this, SLOT(slotClear()));
         }
@@ -1687,23 +1776,23 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
         if (hasRuleTable(item)) {
             state = dataLoaded(item);
             if (GlobalDefine::wholeState != state) {
-                menu.addAction(QIcon(":/icd/editor/images/load-16.png"),
+                menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
                                QStringLiteral("加载"),
                                this, SLOT(slotLoadRule()));
             }
             if (GlobalDefine::noneState != state) {
-                menu.addAction(QIcon(":/icd/editor/images/unload-16.png"),
+                menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
                                QStringLiteral("卸载"),
                                this, SLOT(slotUnloadRule()));
             }
         }
-        actNew = menu.addAction(QIcon(":/icd/editor/images/new-16.png"),
+        actNew = menu.addAction(QIcon(":/datastudio/image/global/add.png"),
                                 QStringLiteral("新增"),
                                 this, SLOT(slotNew()));
-        menu.addAction(QIcon(":/icd/editor/images/delete-16.png"),
+        menu.addAction(QIcon(":/datastudio/image/global/remove.png"),
                        QStringLiteral("删除"),
                        this, SLOT(slotDelete()));
-        actClear = menu.addAction(QIcon(":/icd/editor/images/clear-16.png"),
+        actClear = menu.addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
                                   QStringLiteral("清空"),
                                   this, SLOT(slotClear()));
         break;
@@ -1711,25 +1800,25 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
         createRuleMenu();
         state = dataLoaded(item);
         if (GlobalDefine::wholeState == state) {
-            menu.addAction(QIcon(":/icd/editor/images/unload-16.png"),
+            menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
                            QStringLiteral("卸载"),
                            this, SLOT(slotUnloadRule()));
-            menu.addAction(QIcon(":/icd/editor/images/refresh-32.png"),
+            menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
                            QStringLiteral("更新"),
                            this, SLOT(slotUpdate()));
             menu.addMenu(q_ruleMenu);
             rule = q_ruleMenu;
-            menu.addAction(QIcon(":/icd/editor/images/delete-16.png"),
+            menu.addAction(QIcon(":/datastudio/image/global/remove.png"),
                            QStringLiteral("删除"),
                            this, SLOT(slotDelete()));
-            actClear = menu.addAction(QIcon(":/icd/editor/images/clear-16.png"),
+            actClear = menu.addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
                                       QStringLiteral("清空"),
                                       this, SLOT(slotClear()));
         } else {
-            menu.addAction(QIcon(":/icd/editor/images/load-16.png"),
+            menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
                            QStringLiteral("加载"),
                            this, SLOT(slotLoadRule()));
-            menu.addAction(QIcon(":/icd/editor/images/delete-16.png"),
+            menu.addAction(QIcon(":/datastudio/image/global/remove.png"),
                            QStringLiteral("删除"),
                            this, SLOT(slotDelete()));
         }
@@ -1740,26 +1829,26 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
             createRuleMenu();
             menu.addMenu(q_ruleMenu);
             rule = q_ruleMenu;
-            menu.addAction(QIcon(":/icd/editor/images/delete-16.png"),
+            menu.addAction(QIcon(":/datastudio/image/global/remove.png"),
                            QStringLiteral("删除"),
                            this, SLOT(slotDelete()));
-            actClear = menu.addAction(QIcon(":/icd/editor/images/clear-16.png"),
+            actClear = menu.addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
                                       QStringLiteral("清空"),
                                       this, SLOT(slotClear()));
             break;
         case GlobalDefine::dtDiscern:   // 帧数据，增加新增菜单
-            actNew = menu.addAction(QIcon(":/icd/editor/images/new-16.png"),
+            actNew = menu.addAction(QIcon(":/datastudio/image/global/add.png"),
                                     QStringLiteral("新增"),
                                     this, SLOT(slotNew()));
-            menu.addAction(QIcon(":/icd/editor/images/delete-16.png"),
+            menu.addAction(QIcon(":/datastudio/image/global/remove.png"),
                            QStringLiteral("删除"),
                            this, SLOT(slotDelete()));
-            actClear = menu.addAction(QIcon(":/icd/editor/images/clear-16.png"),
+            actClear = menu.addAction(QIcon(":/datastudio/image/toolbar/clean.png"),
                                       QStringLiteral("清空"),
                                       this, SLOT(slotClear()));
             break;
         default:
-            menu.addAction(QIcon(":/icd/editor/images/delete-16.png"),
+            menu.addAction(QIcon(":/datastudio/image/global/remove.png"),
                            QStringLiteral("删除"),
                            this, SLOT(slotDelete()));
             break;
@@ -1771,13 +1860,13 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
     // 有子节点增加展开、收起菜单
     if (item->hasChildren()) {
         if (q_treeView->isItemExpanded(item)) {
-            menu.addAction(QIcon(":/icd/editor/images/right-16.png"),
+            menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
                            QStringLiteral("收起"),
                            q_treeView, [=]() {
                 collapseItem(item);
             });
         } else {
-            menu.addAction(QIcon(":/icd/editor/images/down-16.png"),
+            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
                            QStringLiteral("展开"),
                            q_treeView, [=]() {
                 q_treeView->expandItem(item);
@@ -2133,10 +2222,10 @@ void ICDNavigationUi::updateLoadedFlag(QStandardItem *item, int state)
     if (item->data(LevelIndex).toInt() == GlobalDefine::ntTable) {
         if (optUnload == state) {
             item->setData(GlobalDefine::noneState, ItemLoaded);
-            item->setIcon(QIcon(":/icd/editor/images/gray-16.png"));
+            item->setIcon(QIcon(":/datastudio/image/global/circle-gray.png"));
         } else if (optLoad == state) {
             item->setData(GlobalDefine::wholeState, ItemLoaded);
-            item->setIcon(QIcon(":/icd/editor/images/green-16.png"));
+            item->setIcon(QIcon(":/datastudio/image/global/circle-green.png"));
         }
         updateParentFlag(item->parent());
     } else {
@@ -2212,10 +2301,10 @@ void ICDNavigationUi::updateChildFlag(QStandardItem *item, int state)
             // 表节点单独处理
             if (optUnload == state) {
                 childItem->setData(GlobalDefine::noneState, ItemLoaded);
-                childItem->setIcon(QIcon(":/icd/editor/images/gray-16.png"));
+                childItem->setIcon(QIcon(":/datastudio/image/global/circle-gray.png"));
             } else if (optLoad == state) {
                 childItem->setData(GlobalDefine::wholeState, ItemLoaded);
-                childItem->setIcon(QIcon(":/icd/editor/images/green-16.png"));
+                childItem->setIcon(QIcon(":/datastudio/image/global/circle-green.png"));
             }
             else {
                 break;
@@ -2363,42 +2452,42 @@ void ICDNavigationUi::updateMainView(QStandardItem *current)
     int level = current->data(LevelIndex).toInt();
     switch (level) {
     case GlobalDefine::ntUnknown: { // 根节点
-            // 获取机型基本信息
-            PlaneNode::planeVector planes = planeNodeMap();
-            const int count = planes.size();
-            for (int i = 0; i < count; ++i) {
-                elements.push_back(planes[i]);
-            }
-            data = &elements;
+        // 获取机型基本信息
+        PlaneNode::planeVector planes = planeNodeMap();
+        const int count = planes.size();
+        for (int i = 0; i < count; ++i) {
+            elements.push_back(planes[i]);
         }
+        data = &elements;
+    }
         break;
     case GlobalDefine::ntPlane: {   // 机型节点
-            queryNodeData("", element);
-            data = &element;
-        }
+        queryNodeData("", element);
+        data = &element;
+    }
         break;
     case GlobalDefine::ntSystem: {  // 系统节点
-            // 查询节点数据
-            queryNodeData("", element);
-            data = &element;
-        }
+        // 查询节点数据
+        queryNodeData("", element);
+        data = &element;
+    }
         break;
     case GlobalDefine::ntTable: {   // ICD表节点
-            queryNodeData("", element);
-            data = &element;
-        }
+        queryNodeData("", element);
+        data = &element;
+    }
         break;
     case GlobalDefine::ntRule: {   // 规则节点
-            QVariant variant = current->data(SubTable);
-            queryNodeData("", element);
-            if (variant.isValid()) {    // 复合数据
-                rule.push_back(GlobalDefine::dtComplex);
-            } else {
-                rule.push_back(current->data(RuleDefine).toInt());
-            }
-            rule.push_back((int)&element);
-            data = &rule;
+        QVariant variant = current->data(SubTable);
+        queryNodeData("", element);
+        if (variant.isValid()) {    // 复合数据
+            rule.push_back(GlobalDefine::dtComplex);
+        } else {
+            rule.push_back(current->data(RuleDefine).toInt());
         }
+        rule.push_back((int)&element);
+        data = &rule;
+    }
         break;
     default:
         break;
@@ -2672,8 +2761,8 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
             identify.append("/").append(complex->rule().c_str());
         }
         QStandardItem *item = findItem(UserKey, identify, current);
-//        QString text = QString("%1[<font color=darkgreen>%2</font>]")
-//                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+        //        QString text = QString("%1[<font color=darkgreen>%2</font>]")
+        //                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         QString text = offsetString(meta, offset);
         if (item) { // 更新节点
             item->setText(text);
@@ -2728,8 +2817,8 @@ bool ICDNavigationUi::updateDetailRuleData(ICDMetaData::smtMeta &data)
 
     if (result) {
         // 更新树节点
-//        QString text = QString("%1[<font color=darkgreen>%2</font>]")
-//                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+        //        QString text = QString("%1[<font color=darkgreen>%2</font>]")
+        //                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         QString text;
         ICDElement::smtElement element;
         QString pID = keys.left(keys.lastIndexOf("/"));

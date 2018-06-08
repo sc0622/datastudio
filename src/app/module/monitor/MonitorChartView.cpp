@@ -22,37 +22,24 @@ ChartView::ChartView(QWidget *parent)
     jnotify->on("monitor.toolbar.chart.xAxisSync", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_chartView->setXAxisSync(checked);
-        JMain::instance()->setOption("monitor", "option.chart.xAxisSync", checked);
     });
     jnotify->on("monitor.toolbar.chart.showYLabel", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         d_chartView->showYLabel(checked);
-        JMain::instance()->setOption("monitor", "option.chart.showYLabel", checked);
     });
     jnotify->on("monitor.toolbar.chart.showYAlign", this, [=](JNEvent &event){
         const bool align = event.argument().toBool();
         d_chartView->showYAlign(align);
-        JMain::instance()->setOption("monitor", "option.chart.showYAlign", align);
     });
     jnotify->on("monitor.toolbar.chart.syncTrack", this, [=](JNEvent &event){
         const bool enabled = event.argument().toBool();
         d_chartView->setSyncTrack(enabled);
-        JMain::instance()->setOption("monitor", "option.chart.syncTrack", enabled);
     });
     jnotify->on("monitor.toolbar.chart.columnCount", this, [=](JNEvent &event){
-        const int count = event.argument().toInt();
-        d_chartView->setColumnCount(count);
-        JMain::instance()->setOption("monitor", "option.chart.columnCount", count);
+        d_chartView->setColumnCount(event.argument().toInt());
     });
     jnotify->on("monitor.toolbar.chart.yLabelWidth", this, [=](JNEvent &event){
-        const int length = event.argument().toInt();
-        d_chartView->setYLabelLength(length);
-        JMain::instance()->setOption("monitor", "option.chart.yLabelWidth", length);
-    });
-    jnotify->on("monitor.toolbar.tree.flushToggle", this, [=](JNEvent &event){
-        const bool checked = event.argument().toBool();
-        d_chartView->setRunning(checked);
-        JMain::instance()->setOption("monitor", "option.chart.flushEnabled", checked);
+        d_chartView->setYLabelLength(event.argument().toInt());
     });
     jnotify->on("monitor.tree.item.clicked", this, [=](JNEvent &event){
         QStandardItem *item = jVariantFromVoid<QStandardItem>(event.argument());

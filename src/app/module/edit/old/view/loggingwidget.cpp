@@ -23,7 +23,8 @@ LoggingWidget::LoggingWidget(QWidget *parent)
     q_groupType = new QGroupBox(QStringLiteral("类型信息"), this);
     q_boxType = new QComboBox(this);
     QFormLayout *formLayout = new QFormLayout(q_groupType);
-    formLayout->addRow(QStringLiteral("类型："), q_boxType);
+    formLayout->setContentsMargins(6, 3, 0, 3);
+    formLayout->addRow(QStringLiteral("类   型:"), q_boxType);
 
     MetaUI *metaUI = new MetaUI(this);
     metaUI->setObjectName("meta");
@@ -75,41 +76,41 @@ LoggingWidget::LoggingWidget(QWidget *parent)
     q_stack->setContentsMargins(0, 0, 0, 0);
 
     QVBoxLayout* veriLayouMain = new QVBoxLayout(this);
-    veriLayouMain->setContentsMargins(5, 0, 2, 10);
+    veriLayouMain->setContentsMargins(0, 0, 0, 0);
+    veriLayouMain->setSpacing(1);
     veriLayouMain->addWidget(q_groupType);
-    //veriLayouMain->addSpacing(10);
     veriLayouMain->addWidget(q_stack);
 
     //
-    //connect(metaUI, SIGNAL(confirm(bool &)),
+    //connect(metaUI, SIGNAL(confirmed(bool &)),
     //        this, SLOT(slotConfirm(bool &)));
-    connect(headerUI, SIGNAL(confirm(bool &)), 
+    connect(headerUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(counterUI, SIGNAL(confirm(bool &)),
+    connect(counterUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(checkUI, SIGNAL(confirm(bool &)), 
+    connect(checkUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(frameCodeUI, SIGNAL(confirm(bool &)),
+    connect(frameCodeUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(commonUI, SIGNAL(confirm(bool &)), 
+    connect(commonUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(bitMapUI, SIGNAL(confirm(bool &)),
+    connect(bitMapUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(bitValueUI, SIGNAL(confirm(bool &)),
+    connect(bitValueUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(discernUI, SIGNAL(confirm(bool &)),
+    connect(discernUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(complexUI, SIGNAL(confirm(bool &)),
+    connect(complexUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(bufferUI, SIGNAL(confirm(bool &)),
+    connect(bufferUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(subTableUI, SIGNAL(confirm(bool &)),
+    connect(subTableUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(tableUI, SIGNAL(confirm(bool &)), 
+    connect(tableUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(systemUI, SIGNAL(confirm(bool &)), 
+    connect(systemUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
-    connect(planeUI, SIGNAL(confirm(bool &)),
+    connect(planeUI, SIGNAL(confirmed(bool &)),
             this, SLOT(slotConfirm(bool &)));
 
     //connect(metaUI, SIGNAL(canceled()), this, SLOT(slotCancel()));

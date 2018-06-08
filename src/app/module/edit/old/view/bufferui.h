@@ -18,30 +18,27 @@ public:
     ~BufferUI();
 
     // MetaUI interface
-    void setUIData(const _UIData &data);
-    void*uiData() const;
+    void setUIData(const _UIData &data) override;
+    void*uiData() const override;
     // 切换数据类型
-    void changeDataType(int type);
+    void changeDataType(int type) override;
     // 原始数据类型
-    int originalType() const;
-    // 启/停用界面控制按钮
-    void enableOptionButton(bool enable);
+    int originalType() const override;
 
 signals:
-    void confirm(bool &);
-    void canceled();
 
 protected slots :
     // 数据录入完成
     void slotEditFinished();
     // 编辑文本变更
     void slotTextChanged(const QString& text);
-    // 确认
-    void slotConfirm();
-    // 取消
-    void slotCanceled();
 
 protected:
+    // 确认
+    void confirm() override;
+    // 取消
+    void cancel() override;
+
     // 初始化界面数据
     void init();
     // 启/停用信号槽
@@ -59,10 +56,6 @@ private:
     QLineEdit       *q_edtCode;     // 编码
     QSpinBox        *q_spinLength;  // 长度
     LimitTextEdit   *q_edtDescribe; // 描述
-
-    QLineEdit       *q_edtStatus;   // 状态提示
-    QPushButton     *q_btnConfirm;
-    QPushButton     *q_btnCancel;
 };
 
 #endif // BUFFERUI_H

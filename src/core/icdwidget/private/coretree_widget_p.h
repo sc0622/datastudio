@@ -32,9 +32,6 @@ public:
                const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 private:
-    static QStandardItemModel *sourceModel(QAbstractItemModel *model);
-    static QStandardItemModel *sourceModel(const QModelIndex &index);
-    static QModelIndex mapToSource(const QModelIndex &index);
     static QStandardItem *tableItem(const QModelIndex &index);
 
 private:
@@ -69,9 +66,9 @@ private:
     void updateButtonIcon(bool checked);
 
 private:
-    QPushButton *d_buttonRun;
-    Icd::WorkerPtr d_worker;
-    CoreTreeWidget::BindTableTypes d_bindTableTypes;
+    QPushButton *buttonRun_;
+    Icd::WorkerPtr worker_;
+    CoreTreeWidget::BindTableTypes bindTableTypes_;
 };
 
 // class CoreTreeWidgetPrivate
@@ -90,8 +87,8 @@ public:
     explicit CoreTreeWidgetPrivate(CoreTreeWidget *q);
     ~CoreTreeWidgetPrivate();
 
-    quint32 bindTableTypes() const { return quint32(d_bindTableTypes); }
-    quint32 showAttris() { return quint32(d_showAttris); }
+    quint32 bindTableTypes() const { return quint32(bindTableTypes_); }
+    quint32 showAttris() { return quint32(showAttris_); }
     QColor valueColor() const;
 
     void init();
@@ -243,16 +240,16 @@ private:
 
 private:
     J_DECLARE_PUBLIC(CoreTreeWidget)
-    SearchEdit *d_searchEdit;
-    Icd::ParserPtr d_parser;
-    int d_loadingDeep;
-    int d_intervalUpdate;
-    CoreTreeWidget::BindTableTypes d_bindTableTypes;
-    CoreTreeWidget::ShowAttributes d_showAttris;
-    int d_dataFormat;
-    CoreTreeWidget::TreeModes d_treeModes;
-    QHash<QStandardItem * /*itemTable*/, ItemWorkerGroup*> d_workerGroups;
-    QFutureWatcher<BindingData> d_watcher;
+    SearchEdit *searchEdit_;
+    Icd::ParserPtr parser_;
+    int loadingDeep_;
+    int intervalUpdate_;
+    CoreTreeWidget::BindTableTypes bindTableTypes_;
+    CoreTreeWidget::ShowAttributes showAttris_;
+    int dataFormat_;
+    CoreTreeWidget::TreeModes treeModes_;
+    QHash<QStandardItem * /*itemTable*/, ItemWorkerGroup*> workerGroups_;
+    QFutureWatcher<BindingData> watcher_;
 
     // qss
     QColor valueColor_;

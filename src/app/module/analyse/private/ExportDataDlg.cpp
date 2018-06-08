@@ -9,37 +9,36 @@ ExportDataDlg::ExportDataDlg(const QString &filePath,
                              bool hasTimeFormat, int headerSize,
                              int bitOffset, QWidget *parent)
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint)
-    , d_filePath(filePath)
-    , d_table(table)
-    , d_objectItem(objectItem)
-    , d_hasTimeFormat(hasTimeFormat)
-    , d_headerSize(headerSize)
-    , d_bitOffset(bitOffset)
-    , d_exportOrgDataWidget(nullptr)
-    , d_convertToDataAnalyse(nullptr)
+    , filePath_(filePath)
+    , table_(table)
+    , objectItem_(objectItem)
+    , hasTimeFormat_(hasTimeFormat)
+    , headerSize_(headerSize)
+    , bitOffset_(bitOffset)
+    , exportOrgDataWidget_(nullptr)
+    , convertToDataAnalyse_(nullptr)
 {
     setWindowTitle(QStringLiteral("导出数据"));
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
-    vertLayoutMain->setContentsMargins(3, 3, 3, 3);
+    vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    d_tabWidget = new QTabWidget(this);
-    vertLayoutMain->addWidget(d_tabWidget);
-
+    tabWidget_ = new QTabWidget(this);
+    tabWidget_->setStyleSheet("QTabWidget::tab-bar{alignment:center;}");
+    vertLayoutMain->addWidget(tabWidget_);
     //
-    d_convertToDataAnalyse = new ConvertToDataAnalyse(
+    convertToDataAnalyse_ = new ConvertToDataAnalyse(
                 filePath, table, objectItem, hasTimeFormat, headerSize, bitOffset, this);
-    d_tabWidget->addTab(d_convertToDataAnalyse, QStringLiteral("导出为分析软件数据"));
-    connect(d_convertToDataAnalyse, &ConvertToDataAnalyse::rejected, this, [=](){
+    tabWidget_->addTab(convertToDataAnalyse_, QStringLiteral("导出为分析软件数据"));
+    connect(convertToDataAnalyse_, &ConvertToDataAnalyse::rejected, this, [=](){
         reject();
     });
-
     //
     if (bitOffset == -1) {
-        d_exportOrgDataWidget = new ExportOrgDataWidget(
+        exportOrgDataWidget_ = new ExportOrgDataWidget(
                     filePath, table, objectItem, hasTimeFormat, headerSize, bitOffset, this);
-        d_tabWidget->addTab(d_exportOrgDataWidget, QStringLiteral("导出原始数据"));
-        connect(d_exportOrgDataWidget, &ExportOrgDataWidget::rejected, this, [=](){
+        tabWidget_->addTab(exportOrgDataWidget_, QStringLiteral("导出原始数据"));
+        connect(exportOrgDataWidget_, &ExportOrgDataWidget::rejected, this, [=](){
             reject();
         });
     }

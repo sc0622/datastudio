@@ -6,16 +6,23 @@
 ICDMainViewUi::ICDMainViewUi(QWidget *parent)
     : QWidget(parent)
 {
-    q_dataWidget = new DataEngineWidget(this);
-
     QHBoxLayout* horiLayoutMain = new QHBoxLayout(this);
     horiLayoutMain->setContentsMargins(0, 0, 0, 0);
+
+    q_dataWidget = new DataEngineWidget(this);
     horiLayoutMain->addWidget(q_dataWidget);
 }
 
 ICDMainViewUi::~ICDMainViewUi()
 {
 
+}
+
+bool ICDMainViewUi::init()
+{
+    q_dataWidget->init();
+
+    return true;
 }
 
 /**
@@ -61,14 +68,4 @@ bool ICDMainViewUi::queryWidgetState(const QString &name) const
 void ICDMainViewUi::dealCommand(int command, const QVariant &param)
 {
     q_dataWidget->dealCommand(command, param);
-}
-
-void ICDMainViewUi::setMenuPtr(const std::string &name, QAction *acttion)
-{
-    q_dataWidget->setMenuPtr(name, acttion);
-}
-
-bool ICDMainViewUi::dealMenuCmd(const std::string &name)
-{
-    return q_dataWidget->dealMenuCmd(name);
 }

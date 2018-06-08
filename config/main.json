@@ -58,6 +58,13 @@
             "sourceType" : "file"
          }
       },
+      "moitor" : {
+         "option" : {
+            "tree" : {
+               "showData" : false
+            }
+         }
+      },
       "monitor" : {
          "option" : {
             "chart" : {
@@ -74,7 +81,8 @@
                "loadDeep" : 2,
                "showDesc" : true,
                "showOffset" : true,
-               "showOrignal" : 0,
+               "showOrignal" : 16,
+               "showReal" : true,
                "showType" : true,
                "showValue" : true
             },
@@ -97,6 +105,7 @@
                "showDesc" : true,
                "showOffset" : true,
                "showOrignal" : 0,
+               "showReal" : true,
                "showType" : true,
                "showValue" : true
             },

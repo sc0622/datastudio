@@ -126,6 +126,11 @@ DataManegement::~DataManegement()
 {
 }
 
+bool DataManegement::init()
+{
+    return true;
+}
+
 // 消息响应回调
 JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
 {
@@ -141,9 +146,14 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
             switch (args[0].toInt()) {
             case GlobalDefine::dsDatabase:
             {
+                // deep
+                int deep = Icd::ObjectTable;
+                if (args.count() >= 3) {
+                    deep = args[2].toInt();
+                }
                 // 加载基本结构数据
                 std::string err;
-                if (!loadBaseData(err)) {
+                if (!loadBaseData(err, deep)) {
                     *error = err.c_str();
                 }
                 break;
@@ -157,10 +167,15 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
                 if (!parser) {
                     return -1;
                 }
+                // deep
+                int deep = Icd::ObjectTable;
+                if (args.count() >= 3) {
+                    deep = args[2].toInt();
+                }
                 // 加载文件数据
                 Icd::VehiclePtrArray vehicles;
                 // 解析数据
-                if (!parser->parse(vehicles, Icd::ObjectTable)) {
+                if (!parser->parse(vehicles, deep)) {
                     *error = QStringLiteral("解析文件失败！");
                     break;
                 }
@@ -220,7 +235,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
                 || type < GlobalDefine::dicDataType) {
             return 0;
         }
-        std::vector<stDictionary> *dics = jVariantFromVoid<std::vector<stDictionary>>(args[1]);
+        std::vector<stDictionary> *dics = jVariantFromVoid<std::vector<stDictionary>>(args[0]);
         if (!dics) {
             return -1;
         }
@@ -474,9 +489,10 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
 
 /**
  * @brief 加载基础数据
+     * @param [in] deep
  * @return 执行结果，true：成功；false：失败
  */
-bool DataManegement::loadBaseData(std::string &error)
+bool DataManegement::loadBaseData(std::string &error, int deep)
 {
     // 清空数据
     clearKC();
@@ -487,7 +503,7 @@ bool DataManegement::loadBaseData(std::string &error)
     }
 
     // 初始化系统信息
-    if (!loadInfrastructure()) {
+    if (!loadInfrastructure(deep)) {
         error = q_dbaccess->lastError().c_str();
         qDebug() << error.c_str();
         return false;
@@ -622,9 +638,10 @@ bool DataManegement::reloadDic(const std::vector<std::string> &dics)
 
 /**
  * @brief 加载基础架构数据（机型和系统）
+     * @param [in] deep
  * @return 执行结果，true：成功；false：失败
  */
-bool DataManegement::loadInfrastructure()
+bool DataManegement::loadInfrastructure(int deep)
 {
     if (!q_dbaccess) {
         return false;
@@ -637,16 +654,21 @@ bool DataManegement::loadInfrastructure()
     }
     // 读取系统
     std::map<int, std::vector<stSystem> > systemBase;
-    if (!q_dbaccess->readSystem(systemBase)) {
-        qDebug() <<"readSystem failed!";
-        return false;
+    if (deep >= Icd::ObjectSystem) {
+        if (!q_dbaccess->readSystem(systemBase)) {
+            qDebug() <<"readSystem failed!";
+            return false;
+        }
     }
     // 查询表基本信息
     std::map<std::string, std::vector<stICDBase>> icdBase;
-    if (!q_dbaccess->readICDBase(true, icdBase)) {
-        qDebug() <<"readICDBase failed!";
-        return false;
+    if (deep >= Icd::ObjectTable) {
+        if (!q_dbaccess->readICDBase(true, icdBase)) {
+            qDebug() <<"readICDBase failed!";
+            return false;
+        }
     }
+    //
     std::map<std::string, std::vector<stICDBase>>::iterator itBase
             = icdBase.end();
     std::map<int, std::vector<stSystem> >::iterator it
@@ -2548,6 +2570,7 @@ JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
         QVariantList newArgs;
         newArgs.append(GlobalDefine::dsFile);
         newArgs.append(qVariantFromValue((void*)&error));
+        newArgs.append(int(Icd::ObjectTable));
         Icd::JNEvent newEvent("edit.loadInfrastructure", newArgs);
         return notifyRespond(newEvent);
     } else {

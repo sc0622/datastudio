@@ -97,7 +97,7 @@ void ToolBar::updateEdit()
 #else
     // view
     addSeparator();
-    addEditViewAction(option);
+    addEditViewAction(option["tree"]);
     // copy
     QAction *actionCopy = addAction(QIcon(":/datastudio/image/toolbar/copy.png"),
                                     tr("Copy"));
@@ -142,6 +142,7 @@ void ToolBar::addEditViewAction(const Json::Value &option)
     QAction *actionOffset = menuView->addAction(tr("Show offset"));
     actionOffset->setCheckable(true);
     connect(actionOffset, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("edit", "option.tree.showOffset", checked);
         jnotify->send("edit.toolbar.tree.showOffset", checked);
     });
     if (option.isMember("showOffset")) {
@@ -158,6 +159,7 @@ void ToolBar::addEditViewAction(const Json::Value &option)
     QAction *actionType = menuView->addAction(tr("Show type"));
     actionType->setCheckable(true);
     connect(actionType, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("edit", "option.tree.showType", checked);
         jnotify->send("edit.toolbar.tree.showType", checked);
     });
     if (option.isMember("showType")) {
@@ -176,52 +178,6 @@ void ToolBar::addEditViewAction(const Json::Value &option)
         actionOffset->setChecked(checked);
         actionType->setChecked(checked);
     });
-}
-
-QAction *ToolBar::addEditOrigValueRadixAction(QAction *action)
-{
-    if (!action) {
-        Q_ASSERT(false);
-        return nullptr;
-    }
-
-    QMenu *menu = new QMenu();
-    action->setMenu(menu);
-
-    QActionGroup *actionGroupView = new QActionGroup(menu);
-
-    QAction *actionNoOrigValue = menu->addAction(tr("Hide"));
-    connect(actionNoOrigValue, &QAction::toggled, this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
-    actionNoOrigValue->setCheckable(true);
-    menu->addSeparator();
-    QAction *actionDecimal = menu->addAction(tr("Decimal integer"));
-    connect(actionDecimal, &QAction::toggled, this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
-    actionDecimal->setCheckable(true);
-    actionDecimal->setActionGroup(actionGroupView);
-    QAction *actionHexadecimal = menu->addAction(tr("Hexadecimal integer"));
-    connect(actionHexadecimal, &QAction::toggled, this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
-    actionHexadecimal->setCheckable(true);
-    actionHexadecimal->setActionGroup(actionGroupView);
-    QAction *actionBinary = menu->addAction(tr("Binary integer"));
-    connect(actionBinary, &QAction::toggled, this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
-    actionBinary->setCheckable(true);
-    actionBinary->setActionGroup(actionGroupView);
-    QAction *actionOctal = menu->addAction(tr("Octal integer"));
-    connect(actionOctal, &QAction::toggled, this, [=](bool checked){
-        Q_UNUSED(checked);
-    });
-    actionOctal->setCheckable(true);
-    actionOctal->setActionGroup(actionGroupView);
-
-    return actionNoOrigValue;
 }
 #ifdef EDIT_OLD
 void ToolBar::addEditItemAction(const Json::Value &option)
@@ -263,6 +219,28 @@ void ToolBar::addEditItemAction(const Json::Value &option)
     connect(actionCleanItem, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.item.clean");
     });
+    //
+    jnotify->on("edit.toolbar.action.enabled", this, [=](JNEvent &event){
+        const QVariantList args = event.argument().toList();
+        if (args.count() != 2) {
+            return;
+        }
+        const QString name = args[0].toString();
+        const bool enabled = args[1].toBool();
+        if (name == "add") {
+            actionAddItem->setEnabled(enabled);
+        } else if (name == "insert") {
+            actionInsertItem->setEnabled(enabled);
+        } else if (name == "up") {
+            actionUpItem->setEnabled(enabled);
+        } else if (name == "down") {
+            actionDownItem->setEnabled(enabled);
+        } else if (name == "remove") {
+            actionRemoveItem->setEnabled(enabled);
+        } else if (name == "clean") {
+            actionCleanItem->setEnabled(enabled);
+        }
+    });
 }
 
 void ToolBar::addEditExportAction(const Json::Value &option)
@@ -279,6 +257,19 @@ void ToolBar::addEditExportAction(const Json::Value &option)
                                    tr("Export to file"));
     connect(actionExportToFile, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.export.file");
+    }); //
+    jnotify->on("edit.toolbar.action.enabled", this, [=](JNEvent &event){
+        const QVariantList args = event.argument().toList();
+        if (args.count() != 2) {
+            return;
+        }
+        const QString name = args[0].toString();
+        const bool enabled = args[1].toBool();
+        if (name == "db") {
+            actionExportToDB->setEnabled(enabled);
+        } else if (name == "file") {
+            actionExportToFile->setEnabled(enabled);
+        }
     });
 }
 
@@ -356,9 +347,9 @@ void ToolBar::updateMonitor()
     });
     addSeparator();
     // view
-    addMonitorViewAction(option);
+    addMonitorViewAction(option["tree"]);
     // flush-switch
-    addMonitorFlushSwitchAction(option);
+    addMonitorFlushSwitchAction(option["tree"]);
     addSeparator();
     // tree
     addMonitorTreeAction(option["tree"]);
@@ -389,6 +380,7 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
     QAction *actionOffset = menuView->addAction(tr("Show offset"));
     actionOffset->setCheckable(true);
     connect(actionOffset, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.tree.showOffset", checked);
         jnotify->send("monitor.toolbar.tree.showOffset", checked);
     });
     if (option.isMember("showOffset")) {
@@ -405,6 +397,7 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
     QAction *actionType = menuView->addAction(tr("Show type"));
     actionType->setCheckable(true);
     connect(actionType, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.tree.showType", checked);
         jnotify->send("monitor.toolbar.tree.showType", checked);
     });
     if (option.isMember("showType")) {
@@ -425,12 +418,13 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
     QAction *actionReal = menuView->addAction(tr("Real value"));
     actionReal->setCheckable(true);
     connect(actionReal, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.tree.showReal", checked);
         jnotify->send("monitor.toolbar.tree.showReal", checked);
     });
-    if (option.isMember("showValue")) {
-        const bool showValue = option["showValue"].asBool();
-        if (showValue) {
-            actionReal->setChecked(showValue);
+    if (option.isMember("showReal")) {
+        const bool showReal = option["showReal"].asBool();
+        if (showReal) {
+            actionReal->setChecked(showReal);
         } else {
             jnotify->send("monitor.toolbar.tree.showReal", false);
         }
@@ -441,6 +435,7 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
     QAction *actionDesc = menuView->addAction(tr("Description"));
     actionDesc->setCheckable(true);
     connect(actionDesc, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.tree.showDesc", checked);
         jnotify->send("monitor.toolbar.tree.showDesc", checked);
     });
     if (option.isMember("showDesc")) {
@@ -479,12 +474,14 @@ QAction *ToolBar::addMonitorOrigValueRadixAction(QAction *action, const Json::Va
     actionNoOrigValue->setCheckable(true);
     connect(actionNoOrigValue, &QAction::toggled, this, [=](bool checked){
         if (checked) {
+            JMain::instance()->setOption("monitor", "option.tree.showOrignal", 0);
             jnotify->send("monitor.toolbar.tree.showOrignal", QVariantList() << false);
         } else {
             QAction *action = actionGroupView->checkedAction();
             if (action) {
-                jnotify->send("monitor.toolbar.tree.showOrignal",
-                              QVariantList() << true << action->data().toInt());
+                const int radix = action->data().toInt();
+                JMain::instance()->setOption("monitor", "option.tree.showOrignal", radix);
+                jnotify->send("monitor.toolbar.tree.showOrignal", QVariantList() << true << radix);
             }
         }
     });
@@ -497,6 +494,7 @@ QAction *ToolBar::addMonitorOrigValueRadixAction(QAction *action, const Json::Va
     connect(actionDecimal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("monitor", "option.tree.showOrignal", 10);
             jnotify->send("monitor.toolbar.tree.showOrignal", QVariantList() << true << 10);
         }
     });
@@ -508,6 +506,7 @@ QAction *ToolBar::addMonitorOrigValueRadixAction(QAction *action, const Json::Va
     connect(actionHexadecimal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("monitor", "option.tree.showOrignal", 16);
             jnotify->send("monitor.toolbar.tree.showOrignal", QVariantList() << true << 16);
         }
     });
@@ -519,6 +518,7 @@ QAction *ToolBar::addMonitorOrigValueRadixAction(QAction *action, const Json::Va
     connect(actionBinary, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("monitor", "option.tree.showOrignal", 2);
             jnotify->send("monitor.toolbar.tree.showOrignal", QVariantList() << true << 2);
         }
     });
@@ -530,6 +530,7 @@ QAction *ToolBar::addMonitorOrigValueRadixAction(QAction *action, const Json::Va
     connect(actionOctal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("monitor", "option.tree.showOrignal", 8);
             jnotify->send("monitor.toolbar.tree.showOrignal", QVariantList() << true << 8);
         }
     });
@@ -584,6 +585,7 @@ void ToolBar::addMonitorFlushSwitchAction(const Json::Value &option)
     };
     connect(buttonFlush, &QToolButton::toggled, this, [=](bool checked){
         setFlushStatus(checked);
+        JMain::instance()->setOption("monitor", "option.tree.flushEnabled", checked);
         jnotify->send("monitor.toolbar.tree.flushToggle", checked);
     });
 
@@ -650,6 +652,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
                 tr(" Synchronize x-label"));
     actionXAxisSync->setCheckable(true);
     connect(actionXAxisSync, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.chart.xAxisSync", checked);
         jnotify->send("monitor.toolbar.chart.xAxisSync", checked);
     });
     if (option.isMember("xAxisSync")) {
@@ -668,6 +671,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
                 tr(" Show y-label"));
     actionYLabel->setCheckable(true);
     connect(actionYLabel, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.chart.showYLabel", checked);
         jnotify->send("monitor.toolbar.chart.showYLabel", checked);
     });
     if (option.isMember("showYLabel")) {
@@ -686,6 +690,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
                 tr(" Show y-align"));
     actionYAlign->setCheckable(true);
     connect(actionYAlign, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.chart.showYAlign", checked);
         jnotify->send("monitor.toolbar.chart.showYAlign", checked);
     });
     if (option.isMember("showYAlign")) {
@@ -704,6 +709,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
                 tr(" Synchronize track"));
     actionSyncTrack->setCheckable(true);
     connect(actionSyncTrack, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("monitor", "option.chart.syncTrack", checked);
         jnotify->send("monitor.toolbar.chart.syncTrack", checked);
     });
     if (option.isMember("syncTrack")) {
@@ -798,9 +804,9 @@ void ToolBar::updateSimulate()
     });
     addSeparator();
     // view
-    addSimulateViewAction(option);
+    addSimulateViewAction(option["tree"]);
     // flush-switch
-    addSimulateFlushSwitchAction(option);
+    addSimulateFlushSwitchAction(option["tree"]);
     addSeparator();
     // tree
     addSimulateTreeAction(option["tree"]);
@@ -831,6 +837,7 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
     QAction *actionOffset = menuView->addAction(tr("Show offset"));
     actionOffset->setCheckable(true);
     connect(actionOffset, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("simulate", "option.tree.showOffset", checked);
         jnotify->send("simulate.toolbar.tree.showOffset", checked);
     });
     if (option.isMember("showOffset")) {
@@ -847,6 +854,7 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
     QAction *actionType = menuView->addAction(tr("Show type"));
     actionType->setCheckable(true);
     connect(actionType, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("simulate", "option.tree.showType", checked);
         jnotify->send("simulate.toolbar.tree.showType", checked);
     });
     if (option.isMember("showType")) {
@@ -867,12 +875,13 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
     QAction *actionReal = menuView->addAction(tr("Real value"));
     actionReal->setCheckable(true);
     connect(actionReal, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("simulate", "option.tree.showReal", checked);
         jnotify->send("simulate.toolbar.tree.showReal", checked);
     });
-    if (option.isMember("showValue")) {
-        const bool showValue = option["showValue"].asBool();
-        if (showValue) {
-            actionReal->setChecked(showValue);
+    if (option.isMember("showReal")) {
+        const bool showReal = option["showReal"].asBool();
+        if (showReal) {
+            actionReal->setChecked(showReal);
         } else {
             jnotify->send("simulate.toolbar.tree.showReal", false);
         }
@@ -883,6 +892,7 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
     QAction *actionDesc = menuView->addAction(tr("Description"));
     actionDesc->setCheckable(true);
     connect(actionDesc, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("simulate", "option.tree.showDesc", checked);
         jnotify->send("simulate.toolbar.tree.showDesc", checked);
     });
     if (option.isMember("showDesc")) {
@@ -921,12 +931,14 @@ QAction *ToolBar::addSimulateOrigValueRadixAction(QAction *action, const Json::V
     actionNoOrigValue->setCheckable(true);
     connect(actionNoOrigValue, &QAction::toggled, this, [=](bool checked){
         if (checked) {
+            JMain::instance()->setOption("simulate", "option.tree.showOrignal", 0);
             jnotify->send("simulate.toolbar.tree.showOrignal", QVariantList() << false);
         } else {
             QAction *action = actionGroupView->checkedAction();
             if (action) {
-                jnotify->send("simulate.toolbar.tree.showOrignal",
-                              QVariantList() << true << action->data().toInt());
+                const int radix = action->data().toInt();
+                JMain::instance()->setOption("simulate", "option.tree.showOrignal", radix);
+                jnotify->send("simulate.toolbar.tree.showOrignal", QVariantList() << true << radix);
             }
         }
     });
@@ -939,6 +951,7 @@ QAction *ToolBar::addSimulateOrigValueRadixAction(QAction *action, const Json::V
     connect(actionDecimal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("simulate", "option.tree.showOrignal", 10);
             jnotify->send("simulate.toolbar.tree.showOrignal", QVariantList() << true << 10);
         }
     });
@@ -950,6 +963,7 @@ QAction *ToolBar::addSimulateOrigValueRadixAction(QAction *action, const Json::V
     connect(actionHexadecimal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("simulate", "option.tree.showOrignal", 16);
             jnotify->send("simulate.toolbar.tree.showOrignal", QVariantList() << true << 16);
         }
     });
@@ -961,6 +975,7 @@ QAction *ToolBar::addSimulateOrigValueRadixAction(QAction *action, const Json::V
     connect(actionBinary, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("simulate", "option.tree.showOrignal", 2);
             jnotify->send("simulate.toolbar.tree.showOrignal", QVariantList() << true << 2);
         }
     });
@@ -972,6 +987,7 @@ QAction *ToolBar::addSimulateOrigValueRadixAction(QAction *action, const Json::V
     connect(actionOctal, &QAction::toggled, this, [=](bool checked){
         if (checked) {
             actionNoOrigValue->setChecked(false);
+            JMain::instance()->setOption("simulate", "option.tree.showOrignal", 8);
             jnotify->send("simulate.toolbar.tree.showOrignal", QVariantList() << true << 8);
         }
     });
@@ -991,6 +1007,7 @@ QAction *ToolBar::addSimulateOrigValueRadixAction(QAction *action, const Json::V
             default: actionDecimal->setChecked(true); break;
             }
             if (radix != 16) {
+                JMain::instance()->setOption("simulate", "option.tree.showOrignal", radix);
                 jnotify->send("simulate.toolbar.tree.showOrignal", QVariantList() << true << radix);
             }
         }
@@ -1026,6 +1043,7 @@ void ToolBar::addSimulateFlushSwitchAction(const Json::Value &option)
     };
     connect(buttonFlush, &QToolButton::toggled, this, [=](bool checked){
         setFlushStatus(checked);
+        JMain::instance()->setOption("simulate", "option.tree.flushEnabled", checked);
         jnotify->send("simulate.toolbar.tree.flushToggle", checked);
     });
 
@@ -1145,7 +1163,7 @@ void ToolBar::updateAnalyse()
     });
     addSeparator();
     // view
-    addAnalyseViewAction(option);
+    addAnalyseViewAction(option["tree"]);
     addSeparator();
     // tree
     addAnalyseTreeAction(option["tree"]);
@@ -1176,6 +1194,7 @@ void ToolBar::addAnalyseViewAction(const Json::Value &option)
     QAction *actionOffset = menuView->addAction(tr("Show offset"));
     actionOffset->setCheckable(true);
     connect(actionOffset, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.tree.showOffset", checked);
         jnotify->send("analyse.toolbar.tree.showOffset", checked);
     });
     if (option.isMember("showOffset")) {
@@ -1192,6 +1211,7 @@ void ToolBar::addAnalyseViewAction(const Json::Value &option)
     QAction *actionType = menuView->addAction(tr("Show type"));
     actionType->setCheckable(true);
     connect(actionType, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.tree.showType", checked);
         jnotify->send("analyse.toolbar.tree.showType", checked);
     });
     if (option.isMember("showType")) {
@@ -1268,6 +1288,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
                 tr(" Synchronize x-label"));
     actionXAxisSync->setCheckable(true);
     connect(actionXAxisSync, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.chart.xAxisSync", checked);
         jnotify->send("analyse.toolbar.chart.xAxisSync", checked);
     });
     if (option.isMember("xAxisSync")) {
@@ -1286,6 +1307,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
                 tr(" Show y-label"));
     actionYLabel->setCheckable(true);
     connect(actionYLabel, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.chart.showYLabel", checked);
         jnotify->send("analyse.toolbar.chart.showYLabel", checked);
     });
     if (option.isMember("showYLabel")) {
@@ -1304,6 +1326,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
                 tr(" Show y-align"));
     actionYAlign->setCheckable(true);
     connect(actionYAlign, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.chart.showYAlign", checked);
         jnotify->send("analyse.toolbar.chart.showYAlign", checked);
     });
     if (option.isMember("showYAlign")) {
@@ -1322,6 +1345,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
                 tr(" Synchronize track"));
     actionSyncTrack->setCheckable(true);
     connect(actionSyncTrack, &QAction::toggled, this, [=](bool checked){
+        JMain::instance()->setOption("analyse", "option.chart.syncTrack", checked);
         jnotify->send("analyse.toolbar.chart.syncTrack", checked);
     });
     if (option.isMember("syncTrack")) {

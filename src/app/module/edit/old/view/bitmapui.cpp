@@ -11,7 +11,6 @@ BitMapUI::BitMapUI(QWidget *parent)
     : MetaUI(parent)
 {
     QGroupBox* basicGroup = new QGroupBox(QStringLiteral("基本信息"), this);
-    QGridLayout* gridLayout = new QGridLayout(basicGroup);
     q_edtName = new LimitLineEdit(this);
     q_edtName->setMaxLength(40);
     q_edtName->setToolTip(QStringLiteral("最多40个字符！"));
@@ -35,99 +34,54 @@ BitMapUI::BitMapUI(QWidget *parent)
     q_edtDefault->setToolTip(QStringLiteral("二进制！"));
 
     int row = 0;
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
+    QGridLayout* gridLayout = new QGridLayout(basicGroup);
+    gridLayout->setContentsMargins(6, 3, 0, 3);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称:")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标   识:")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("起始位：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("起始位:")), ++row, 0);
     gridLayout->addWidget(q_spinStart, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
     gridLayout->addWidget(new QLabel(QStringLiteral("长   度")), ++row, 0);
     gridLayout->addWidget(q_spinLength, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("默认值：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("默认值:")), ++row, 0);
     gridLayout->addWidget(q_edtDefault, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述:")), ++row, 0);
     gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
     QGroupBox* valueGroup = new QGroupBox(QStringLiteral("特征点信息"), this);
     QVBoxLayout* veriLayout = new QVBoxLayout(valueGroup);
+    veriLayout->setContentsMargins(0, 0, 0, 0);
+    veriLayout->setSpacing(1);
+
     q_table = new JXmlTable(this);
     q_table->verticalHeader()->setFixedWidth(40);
     q_table->verticalHeader()->setDefaultAlignment(Qt::AlignCenter);
     q_table->horizontalHeader()->setSectionsMovable(false);
-    veriLayout->setContentsMargins(2, 2, 2, 2);
     veriLayout->addWidget(q_table);
 
     JSplitter* splitter = new JSplitter(this);
     splitter->setOrientation(Qt::Vertical);
-    splitter->setScales(QList<double>() << 2.5 << 1.5);
-    splitter->setHandleColor(QColor(32, 32, 32, 10));
-    splitter->setHandleWidth(4);
+    splitter->setScales(QList<double>() << 1 << 2);
+    splitter->setHandleWidth(3);
     splitter->addWidget(basicGroup);
     splitter->addWidget(valueGroup);
-
-    q_edtStatus = new QLineEdit(this);
-    q_edtStatus->setMaximumHeight(30);
-    q_edtStatus->setEnabled(false);
-    q_edtStatus->setFrame(false);
-    QPalette palette = q_edtStatus->palette();
-    palette.setColor(QPalette::Text, Qt::red);
-    palette.setColor(QPalette::Base, Qt::transparent);
-    q_edtStatus->setPalette(palette);
-
-    q_btnConfirm = new QPushButton(QIcon(":/icd/editor/images/apply-32.png"),
-                                   QStringLiteral("确认"), this);
-    q_btnConfirm->setObjectName("btnConfirm");
-    q_btnConfirm->setMaximumSize(65, 35);
-    q_btnConfirm->setIconSize(QSize(24, 24));
-    q_btnConfirm->setFlat(true);
-    q_btnCancel = new QPushButton(QIcon(":/icd/editor/images/cancel-32.png"),
-                                  QStringLiteral("取消"), this);
-    q_btnCancel->setObjectName("btnCancel");
-    q_btnCancel->setMaximumSize(65, 35);
-    q_btnCancel->setIconSize(QSize(24, 24));
-    q_btnCancel->setFlat(true);
-    QHBoxLayout* btnLayout = new QHBoxLayout();
-    btnLayout->addStretch();
-    btnLayout->addWidget(q_btnConfirm);
-    btnLayout->addWidget(q_btnCancel);
-
-    QVBoxLayout* veriLayoutMain = new QVBoxLayout(this);
-    veriLayoutMain->setContentsMargins(0, 0, 0, 0);
-    veriLayoutMain->addWidget(splitter);
-    veriLayoutMain->addWidget(q_edtStatus);
-    veriLayoutMain->addLayout(btnLayout);
+    layoutMain()->insertWidget(0, splitter);
 
     //
-     q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
-                         "EigenvalueMapTable");
+    q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
+                        "EigenvalueMapTable");
 
     // signal-slot
-    connect(q_btnConfirm, SIGNAL(clicked()), this, SLOT(slotConfirm()));
-    connect(q_btnCancel, SIGNAL(clicked()), this, SLOT(slotCanceled()));
     enableConnection(true);
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
-    //    QObject *obj = q_table->itemObject(0, 0);
-    //    if (obj) {
-    //        QObject *objRange = reinterpret_cast<QObject *>(obj->property("range").value<void*>());
-    //        if (objRange) {
-    //            objRange->setProperty("minimum", 0);
-    //            objRange->setProperty("maximum", 0);
-    //        }
-    //    }
-
-    //QString value;
-    //bool result = QMetaObject::invokeMethod(obj, "setValue", Q_ARG(QString, ""),
-    //                                        Q_ARG(int, 2), Q_RETURN_ARG(QString, value));
-    //if (result) {
-    //    //
-    //}
 }
 
 void BitMapUI::setUIData(const _UIData &data)
@@ -136,7 +90,7 @@ void BitMapUI::setUIData(const _UIData &data)
         return;
     }
     ICDMetaData::smtMeta &meta =
-        *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
+            *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
     q_old = SMT_CONVERT(ICDBitData, meta);
     q_data = SMT_CONVERT(ICDBitData, q_old->clone());
     setProperty("option", data.type);
@@ -144,9 +98,7 @@ void BitMapUI::setUIData(const _UIData &data)
     init();
     // 如果是新增，则默认保存可用
     if (GlobalDefine::optNew == data.type) {
-        if (q_btnConfirm) {
-            q_btnConfirm->setEnabled(true);
-        }
+        buttonConfirm()->setEnabled(true);
     }
 
     show();
@@ -210,10 +162,8 @@ void BitMapUI::slotTextChanged(const QString& text)
     QLineEdit *edt = qobject_cast<QLineEdit*>(sender());
     QSpinBox *spin = qobject_cast<QSpinBox*>(sender());
     if (edt) {
-        if (edt == q_edtStatus) { // 如果出现错误提示，则灰化确认按钮
-            if (q_btnConfirm) {
-                q_btnConfirm->setEnabled(content.isEmpty());
-            }
+        if (edt == editStatus()) { // 如果出现错误提示，则灰化确认按钮
+            buttonConfirm()->setEnabled(content.isEmpty());
         } else {
             if (edt == q_edtName) { // 名称
                 q_data->setName(content.toStdString());
@@ -236,7 +186,7 @@ void BitMapUI::slotTextChanged(const QString& text)
 }
 
 // 确认
-void BitMapUI::slotConfirm()
+void BitMapUI::confirm()
 {
     // 更新序号和字节号
     QVariantList args;
@@ -252,20 +202,19 @@ void BitMapUI::slotConfirm()
 
     bool result = false;
 
-    emit confirm(result);
+    emit confirmed(result);
     if (result) {
-//         _UIData data;
-// 
-//         data.data = &q_data;
-//         setUIData(data);
+        //         _UIData data;
+        //         data.data = &q_data;
+        //         setUIData(data);
     } else {
-        q_edtStatus->setText(QStringLiteral("保存数据失败！"));
-        q_btnConfirm->setEnabled(true);
+        editStatus()->setText(QStringLiteral("保存数据失败！"));
+        buttonConfirm()->setEnabled(true);
     }
 }
 
 // 取消
-void BitMapUI::slotCanceled()
+void BitMapUI::cancel()
 {
     _UIData data;
 
@@ -348,10 +297,9 @@ void BitMapUI::init()
                          GlobalDefine::optEdit);
         }
     }
-    if (q_edtStatus) {  // 状态提示
-        q_edtStatus->clear();
-        q_edtStatus->clearFocus();
-    }
+    // 状态提示
+    editStatus()->clear();
+    editStatus()->clearFocus();
 
     enableConnection(true);
 }
@@ -399,17 +347,6 @@ void BitMapUI::enableConnection(bool enable)
     }
 }
 
-// 启/停用界面控制按钮
-void BitMapUI::enableOptionButton(bool enable)
-{
-    if (q_btnConfirm) {
-        q_btnConfirm->setEnabled(enable);
-    }
-    if (q_btnCancel) {
-        q_btnCancel->setEnabled(enable);
-    }
-}
-
 // 校验界面数据
 bool BitMapUI::dataValid()
 {
@@ -423,14 +360,14 @@ bool BitMapUI::dataValid()
     // 名称
     QPalette palette = q_edtName->palette();
     if (q_data->name().empty()) {
-        q_edtStatus->setText(QStringLiteral("名称不能为空！"));
+        editStatus()->setText(QStringLiteral("名称不能为空！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
 
         return false;
     } else if (existed.contains(q_data->name().c_str())) {
-        q_edtStatus->setText(QStringLiteral("已存在同名项！"));
+        editStatus()->setText(QStringLiteral("已存在同名项！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
@@ -449,14 +386,14 @@ bool BitMapUI::dataValid()
 
     palette = q_edtCode->palette();
     if (q_data->proCode().empty()) {
-        q_edtStatus->setText(QStringLiteral("标识不能为空！"));
+        editStatus()->setText(QStringLiteral("标识不能为空！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
 
         return false;
     } else if (existed.contains(q_data->proCode().c_str())) {
-        q_edtStatus->setText(QStringLiteral("已存在同名标识！"));
+        editStatus()->setText(QStringLiteral("已存在同名标识！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
@@ -469,7 +406,7 @@ bool BitMapUI::dataValid()
     // 检查默认值
     palette = q_edtDefault->palette();
     if (q_edtDefault->text().length() > q_spinLength->value()) {
-        q_edtStatus->setText(QStringLiteral("默认值超出起止范围！"));
+        editStatus()->setText(QStringLiteral("默认值超出起止范围！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtDefault->setPalette(palette);
         q_edtDefault->setFocus();
@@ -491,7 +428,7 @@ bool BitMapUI::dataValid()
         }
     }
     if (error) {
-        q_edtStatus->setText(QStringLiteral("值含义中不能有此符号‘,’"));
+        editStatus()->setText(QStringLiteral("值含义中不能有此符号‘,’"));
         palette.setColor(QPalette::Base, Qt::red);
         q_table->setPalette(palette);
         q_table->setFocus();
@@ -531,12 +468,12 @@ bool BitMapUI::dataValid()
 
     if (remains >= offset) {
         if (newItem && remains < 0) {   // 如果是新增，需要判定剩余长度
-            q_edtStatus->setText(QStringLiteral("规划数据超过预定总长度！"));
+            editStatus()->setText(QStringLiteral("规划数据超过预定总长度！"));
 
             return false;
         }
     } else {
-        q_edtStatus->setText(QStringLiteral("规划数据超过预定总长度！"));
+        editStatus()->setText(QStringLiteral("规划数据超过预定总长度！"));
 
         return false;
     }

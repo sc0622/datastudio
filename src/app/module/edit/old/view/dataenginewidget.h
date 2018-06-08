@@ -2,12 +2,14 @@
 #define BASICTABLEWIDGET_H
 
 #include "KernelClass/planenode.h"
-
 #include <QtWidgets>
+#include "main_global.h"
 
 class LoggingWidget;
 class JXmlTable;
 struct _UIData;
+class JSplitter;
+
 /**
  * @brief 数据编辑主窗口，根据不同的数据类型，加载、编辑对应信息
  */
@@ -28,6 +30,8 @@ public:
     DataEngineWidget(QWidget *parent = nullptr);
     ~DataEngineWidget();
 
+    bool init();
+
     // 初始化界面
     void initUI(int type, void *data);
     // 主动初始化
@@ -46,10 +50,6 @@ public:
     bool queryWidgetState(const QString &name) const;
     // 处理来自其他模块的命令
     void dealCommand(int command, const QVariant &param);
-    //
-    void setMenuPtr(const std::string &name, QAction *action);
-    //
-    bool dealMenuCmd(const std::string &name);
 
 protected:
     /**加载显示数据**/
@@ -134,8 +134,6 @@ protected:
     void reorderTable(TableNode::smtTable &table, int from);
     // 查询当前规则数据父表
     TableNode::smtTable parentTable() const;
-    //
-    void setActionState(QAction *act, bool enabled);
 
 protected slots:
     // 表当前选中项变更
@@ -173,11 +171,13 @@ protected slots:
     void slotPaste();
 
 private:
+    void setActionEnabled(const QString &name, bool enabled = true);
+
+private:
+    JSplitter* splitterMain_;
     LoggingWidget   *q_loggingWidget;   // 信息录入界面
 
     JXmlTable       *q_table;       // 基本信息表
-    QGroupBox       *q_tableBox;    // 基本信息表框
-    QWidget         *q_tipWidget;   // 提示窗口
     QLabel          *q_edtStatus;   // 状态提示
 
     QAction         *q_actNew;      // 新增按钮
@@ -189,8 +189,6 @@ private:
     QAction         *q_actSaveDB;   // 保存到数据库
     QAction         *q_actSaveFile; // 保存到文件
     QAction         *q_paste;       // 右键菜单粘贴
-
-    QAction         *q_genTableGuid;// 生成表GUID
 
     const QString   q_planeName;    // 机型表
     const QString   q_systemName;   // 分系统表

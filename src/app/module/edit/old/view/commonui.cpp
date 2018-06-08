@@ -48,31 +48,32 @@ CommonUI::CommonUI(QWidget *parent)
 
     int row = 0;
     QGridLayout* gridLayout = new QGridLayout(basicGroup);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
+    gridLayout->setContentsMargins(6, 3, 0, 3);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称:")), row, 0);
     gridLayout->addWidget(q_edtName, row, 1);
     gridLayout->addWidget(labelNameFlag, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标   识:")), ++row, 0);
     gridLayout->addWidget(q_edtCode, row, 1);
     gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("下   限：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("下   限:")), ++row, 0);
     gridLayout->addWidget(q_spinMin, row, 1);
     gridLayout->addWidget(q_checkLower, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("上   限：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("上   限:")), ++row, 0);
     gridLayout->addWidget(q_spinMax, row, 1);
     gridLayout->addWidget(q_checkUpper, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("偏   置：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("偏   置:")), ++row, 0);
     gridLayout->addWidget(q_spinOffset, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("单   位：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("单   位:")), ++row, 0);
     gridLayout->addWidget(q_edtUnit, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("比例尺：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("比例尺:")), ++row, 0);
     gridLayout->addWidget(q_spinLSB, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("默认值：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("默认值:")), ++row, 0);
     gridLayout->addWidget(q_spinDefault, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述:")), ++row, 0);
     gridLayout->addWidget(q_edtRemak, row, 1, 2, 1);
     gridLayout->setRowStretch(++row, 1);
 
-    // 
+    //
     q_table = new JXmlTable(this);
     q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
                         "EigenvalueComTable");
@@ -93,48 +94,18 @@ CommonUI::CommonUI(QWidget *parent)
     q_table->horizontalHeader()->setSectionsMovable(false);
     QGroupBox *tableGroup = new QGroupBox(QStringLiteral("特征点信息"), this);
     QVBoxLayout *veriLayoutTable = new QVBoxLayout(tableGroup);
-    veriLayoutTable->setContentsMargins(2, 2, 2, 2);
+    veriLayoutTable->setContentsMargins(0, 0, 0, 0);
+    veriLayoutTable->setSpacing(1);
     veriLayoutTable->addWidget(q_table);
 
     JSplitter* splitter = new JSplitter(this);
     splitter->setOrientation(Qt::Vertical);
-    splitter->setScales(QList<double>() << 2.5 << 1.5);
-    splitter->setHandleColor(QColor(32, 32, 32, 10));
-    splitter->setHandleWidth(4);
+    splitter->setScales(QList<double>() << 1 << 2);
+    splitter->setHandleWidth(3);
     splitter->addWidget(basicGroup);
     splitter->addWidget(tableGroup);
 
-    q_edtStatus = new QLineEdit(this);
-    q_edtStatus->setMaximumHeight(30);
-    q_edtStatus->setEnabled(false);
-    q_edtStatus->setFrame(false);
-    QPalette palette = q_edtStatus->palette();
-    palette.setColor(QPalette::Text, Qt::red);
-    palette.setColor(QPalette::Base, Qt::transparent);
-    q_edtStatus->setPalette(palette);
-
-    q_btnConfirm = new QPushButton(QIcon(":/icd/editor/images/apply-32.png"),
-                                   QStringLiteral("确认"), this);
-    q_btnConfirm->setObjectName("btnConfirm");
-    q_btnConfirm->setMaximumSize(65, 35);
-    q_btnConfirm->setIconSize(QSize(24, 24));
-    q_btnConfirm->setFlat(true);
-    q_btnCancel = new QPushButton(QIcon(":/icd/editor/images/cancel-32.png"),
-                                  QStringLiteral("取消"), this);
-    q_btnCancel->setObjectName("btnCancel");
-    q_btnCancel->setMaximumSize(65, 35);
-    q_btnCancel->setIconSize(QSize(24, 24));
-    q_btnCancel->setFlat(true);
-    QHBoxLayout* btnLayout = new QHBoxLayout();
-    btnLayout->addStretch();
-    btnLayout->addWidget(q_btnConfirm);
-    btnLayout->addWidget(q_btnCancel);
-
-    QVBoxLayout* veriLayoutMain = new QVBoxLayout(this);
-    veriLayoutMain->setContentsMargins(0, 0, 0, 0);
-    veriLayoutMain->addWidget(splitter);
-    veriLayoutMain->addWidget(q_edtStatus);
-    veriLayoutMain->addLayout(btnLayout);
+    layoutMain()->insertWidget(0, splitter);
 
     // signal-slot
     QListIterator<QAction *> it = lstAction;
@@ -146,13 +117,10 @@ CommonUI::CommonUI(QWidget *parent)
     }
     connect(q_table, SIGNAL(itemPressed(QStandardItem *)),
             this, SLOT(slotTableItemPressed(QStandardItem *)));
-    connect(q_btnConfirm, SIGNAL(clicked()), this, SLOT(slotConfirm()));
-    connect(q_btnCancel, SIGNAL(clicked()), this, SLOT(slotCanceled()));
     enableConnection(true);
 
     // 记录原始颜色
     q_color = q_edtName->palette().color(QPalette::Base);
-    //setExtraAttributeVisable(false);
 }
 
 void CommonUI::setUIData(const _UIData &data)
@@ -161,7 +129,7 @@ void CommonUI::setUIData(const _UIData &data)
         return;
     }
     ICDMetaData::smtMeta &meta =
-        *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
+            *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
     q_old = std::dynamic_pointer_cast<ICDCommonData>(meta);
     q_data = std::dynamic_pointer_cast<ICDCommonData>(q_old->clone());
     setProperty("option", data.type);
@@ -169,9 +137,7 @@ void CommonUI::setUIData(const _UIData &data)
     init();
     // 如果是新增，则默认保存可用
     if (GlobalDefine::optNew == data.type) {
-        if (q_btnConfirm) {
-            q_btnConfirm->setEnabled(true);
-        }
+        buttonConfirm()->setEnabled(true);
     }
 
     show();
@@ -220,12 +186,10 @@ void CommonUI::slotTextChanged(const QString& text)
     // 校验数据
     QLineEdit *edt = qobject_cast<QLineEdit*>(sender());
     CustomDoubleSpinbox *dbSpin
-        = qobject_cast<CustomDoubleSpinbox*>(sender());
+            = qobject_cast<CustomDoubleSpinbox*>(sender());
     if (edt) {
-        if (edt == q_edtStatus) { // 如果出现错误提示，则灰化确认按钮
-            if (q_btnConfirm) {
-                q_btnConfirm->setEnabled(content.isEmpty());
-            }
+        if (edt == editStatus()) { // 如果出现错误提示，则灰化确认按钮
+            buttonConfirm()->setEnabled(content.isEmpty());
         } else {
             if (edt == q_edtName) { // 名称
                 q_data->setName(content.toStdString());
@@ -302,43 +266,6 @@ void CommonUI::slotTableItemPressed(QStandardItem *item)
     }
 }
 
-// 确认
-void CommonUI::slotConfirm()
-{
-    // 更新序号和字节号
-    QVariantList args;
-    args.append(qVariantFromValue((void*)&q_data));
-    jnotify->send("edit.fillBitSerial", args);
-
-    // 校验
-    if (!dataValid()) {
-        return;
-    }
-    bool result = false;
-
-    emit confirm(result);
-    if (result) {
-//         _UIData data;
-// 
-//         data.data = &q_data;
-//         setUIData(data);
-    } else {
-        q_edtStatus->setText(QStringLiteral("保存数据失败！"));
-        q_btnConfirm->setEnabled(true);
-    }
-}
-
-// 取消
-void CommonUI::slotCanceled()
-{
-    _UIData data;
-
-    data.data = &q_old;
-    setUIData(data);
-
-    emit canceled();
-}
-
 // 新增
 void CommonUI::slotNew()
 {
@@ -361,8 +288,8 @@ void CommonUI::slotNew()
 void CommonUI::slotDelete()
 {
     if (QMessageBox::No == QMessageBox::question(q_table,
-        QStringLiteral("删除确认"),
-        QStringLiteral("确认删除当前选中数据？"))) {
+                                                 QStringLiteral("删除确认"),
+                                                 QStringLiteral("确认删除当前选中数据？"))) {
         return;
     }
     std::map<int, int> items;
@@ -386,8 +313,8 @@ void CommonUI::slotDelete()
 void CommonUI::slotClear()
 {
     if (QMessageBox::No == QMessageBox::question(q_table,
-        QStringLiteral("删除确认"),
-        QStringLiteral("确认清空所有数据？"))) {
+                                                 QStringLiteral("删除确认"),
+                                                 QStringLiteral("确认清空所有数据？"))) {
         return;
     }
     q_table->clearContents();
@@ -396,6 +323,43 @@ void CommonUI::slotClear()
     if (q_actionNew) {
         q_actionNew->setEnabled(true);
     }
+}
+
+// 确认
+void CommonUI::confirm()
+{
+    // 更新序号和字节号
+    QVariantList args;
+    args.append(qVariantFromValue((void*)&q_data));
+    jnotify->send("edit.fillBitSerial", args);
+
+    // 校验
+    if (!dataValid()) {
+        return;
+    }
+    bool result = false;
+
+    emit confirmed(result);
+    if (result) {
+        //         _UIData data;
+        //
+        //         data.data = &q_data;
+        //         setUIData(data);
+    } else {
+        editStatus()->setText(QStringLiteral("保存数据失败！"));
+        buttonConfirm()->setEnabled(true);
+    }
+}
+
+// 取消
+void CommonUI::cancel()
+{
+    _UIData data;
+
+    data.data = &q_old;
+    setUIData(data);
+
+    emit canceled();
 }
 
 // 初始化界面数据
@@ -450,7 +414,7 @@ void CommonUI::init()
     }
     if (q_spinOffset) {    // 偏置
         q_spinOffset
-            ->setValue(q_data->offset());
+                ->setValue(q_data->offset());
     }
     if (q_edtUnit) {    // 单位
         q_edtUnit->setText(q_data->unit().c_str());
@@ -472,10 +436,8 @@ void CommonUI::init()
             insertValueOne(q_table->rowCount(), data);
         }
     }
-    if (q_edtStatus) {
-        q_edtStatus->clear();
-        q_edtStatus->clearFocus();
-    }
+    editStatus()->clear();
+    editStatus()->clearFocus();
 
     enableConnection(true);
 }
@@ -505,7 +467,7 @@ void CommonUI::enableConnection(bool enable)
                this, SLOT(slotTextChanged(const QString &)));
     disconnect(q_spinLSB, SIGNAL(valueChanged(const QString &)),
                this, SLOT(slotTextChanged(const QString &)));
-    disconnect(q_edtStatus, SIGNAL(textChanged(const QString &)),
+    disconnect(editStatus(), SIGNAL(textChanged(const QString &)),
                this, SLOT(slotTextChanged(const QString &)));
     disconnect(q_table, SIGNAL(contentChanged()),
                this, SLOT(slotEditFinished()));
@@ -532,21 +494,10 @@ void CommonUI::enableConnection(bool enable)
                 this, SLOT(slotTextChanged(const QString &)));
         connect(q_spinLSB, SIGNAL(valueChanged(const QString &)),
                 this, SLOT(slotTextChanged(const QString &)));
-        connect(q_edtStatus, SIGNAL(textChanged(const QString &)),
+        connect(editStatus(), SIGNAL(textChanged(const QString &)),
                 this, SLOT(slotTextChanged(const QString &)));
         connect(q_table, SIGNAL(contentChanged()),
                 this, SLOT(slotEditFinished()));
-    }
-}
-
-// 启/停用界面控制按钮
-void CommonUI::enableOptionButton(bool enable)
-{
-    if (q_btnConfirm) {
-        q_btnConfirm->setEnabled(enable);
-    }
-    if (q_btnCancel) {
-        q_btnCancel->setEnabled(enable);
     }
 }
 
@@ -563,14 +514,14 @@ bool CommonUI::dataValid()
     // 名称
     QPalette palette = q_edtName->palette();
     if (q_data->name().empty()) {
-        q_edtStatus->setText(QStringLiteral("名称不能为空！"));
+        editStatus()->setText(QStringLiteral("名称不能为空！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
 
         return false;
     } else if (existed.contains(q_data->name().c_str())) {
-        q_edtStatus->setText(QStringLiteral("已存在同名项！"));
+        editStatus()->setText(QStringLiteral("已存在同名项！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
@@ -589,14 +540,14 @@ bool CommonUI::dataValid()
 
     palette = q_edtCode->palette();
     if (q_data->proCode().empty()) {
-        q_edtStatus->setText(QStringLiteral("标识不能为空！"));
+        editStatus()->setText(QStringLiteral("标识不能为空！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
 
         return false;
     } else if (existed.contains(q_data->proCode().c_str())) {
-        q_edtStatus->setText(QStringLiteral("已存在同名标识！"));
+        editStatus()->setText(QStringLiteral("已存在同名标识！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
@@ -611,7 +562,7 @@ bool CommonUI::dataValid()
     if (q_checkLower->isChecked()) {    // 启用下限
         if (q_checkUpper->isChecked()) {    // 启用上限
             if (q_spinMin->value() > q_spinMax->value()) {
-                q_edtStatus->setText(QStringLiteral("范围下限不能大于上限！"));
+                editStatus()->setText(QStringLiteral("范围下限不能大于上限！"));
                 palette.setColor(QPalette::Base, Qt::red);
                 q_spinMin->setPalette(palette);
                 q_spinMin->setFocus();
@@ -624,8 +575,8 @@ bool CommonUI::dataValid()
             // 校验默认值
             palette = q_spinDefault->palette();
             if (q_spinDefault->value() < q_spinMin->value()
-                || q_spinDefault->value() > q_spinMax->value()) {
-                q_edtStatus->setText(QStringLiteral("默认值超出范围！"));
+                    || q_spinDefault->value() > q_spinMax->value()) {
+                editStatus()->setText(QStringLiteral("默认值超出范围！"));
                 palette.setColor(QPalette::Base, Qt::red);
                 q_spinDefault->setPalette(palette);
                 q_spinDefault->setFocus();
@@ -641,7 +592,7 @@ bool CommonUI::dataValid()
             // 校验默认值
             palette = q_spinDefault->palette();
             if (q_spinDefault->value() < q_spinMin->value()) {
-                q_edtStatus->setText(QStringLiteral("默认值超出范围！"));
+                editStatus()->setText(QStringLiteral("默认值超出范围！"));
                 palette.setColor(QPalette::Base, Qt::red);
                 q_spinDefault->setPalette(palette);
                 q_spinDefault->setFocus();
@@ -659,7 +610,7 @@ bool CommonUI::dataValid()
             // 校验默认值
             palette = q_spinDefault->palette();
             if (q_spinDefault->value() > q_spinMax->value()) {
-                q_edtStatus->setText(QStringLiteral("默认值超出范围！"));
+                editStatus()->setText(QStringLiteral("默认值超出范围！"));
                 palette.setColor(QPalette::Base, Qt::red);
                 q_spinDefault->setPalette(palette);
                 q_spinDefault->setFocus();
@@ -693,7 +644,7 @@ bool CommonUI::dataValid()
         args.append(qVariantFromValue((void*)&offset));
         jnotify->send("edit.queryLengthOffset", args);
         if (remains < offset || remains < 0) {
-            q_edtStatus->setText(QStringLiteral("规划数据超过预定总长度！"));
+            editStatus()->setText(QStringLiteral("规划数据超过预定总长度！"));
 
             return false;
         }
@@ -710,7 +661,7 @@ bool CommonUI::dataValid()
             continue;
         }
         if (!q_data->dataInRange(value.toDouble())) {
-            q_edtStatus->setText(QStringLiteral("特征值超出限定范围！"));
+            editStatus()->setText(QStringLiteral("特征值超出限定范围！"));
             q_table->setCurrentItem(q_table->item(i, 0));
 
             return false;

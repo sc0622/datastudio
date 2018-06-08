@@ -23,14 +23,14 @@ CoreTreeWidget::~CoreTreeWidget()
 CoreTreeWidget::BindTableTypes CoreTreeWidget::bindTableType() const
 {
     Q_D(const CoreTreeWidget);
-    return d->d_bindTableTypes;
+    return d->bindTableTypes_;
 }
 
 void CoreTreeWidget::setBindTableType(BindTableTypes value)
 {
     Q_D(CoreTreeWidget);
-    if (value != d->d_bindTableTypes) {
-        d->d_bindTableTypes = value;
+    if (value != d->bindTableTypes_) {
+        d->bindTableTypes_ = value;
         // emit
     }
 }
@@ -92,7 +92,7 @@ bool CoreTreeWidget::testTreeMode(CoreTreeWidget::TreeMode mode) const
 Icd::ParserPtr CoreTreeWidget::parser() const
 {
     Q_D(const CoreTreeWidget);
-    return d->d_parser;
+    return d->parser_;
 }
 
 void CoreTreeWidget::setParser(const Icd::ParserPtr &parser)

@@ -48,6 +48,20 @@ QMainWindow::separator:hover {
     background: #666;
 }
 
+/** QProgressBar **/
+
+QProgressBar {
+    background: #444;
+    border: 1px solid #544;
+    border-radius: 2px;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background: green;
+    width: 20px;
+}
+
 /** QTabWidget **/
 
 QTabWidget {
@@ -351,7 +365,7 @@ QTreeView::item:focus {
 
 QTreeView::item:selected,
 QTreeView::item:selected:!focus {
-    background: #334;
+    background: #335;
     font-weight: bold;
 }
 
@@ -1272,6 +1286,21 @@ DataItemWidget::tab-bar {
 
 QToolBar[__main__=true] {
     min-height: 55px;
+}
+
+/** QLabel **/
+
+QLabel#__status__ {
+    background: #1600ff00;
+}
+
+/** QLineEdit **/
+
+QLineEdit#__status__ {
+    background: #1600ff00;
+    outline: none;
+    border: none;
+    color: #ccc;
 }
 
 /** custom **/

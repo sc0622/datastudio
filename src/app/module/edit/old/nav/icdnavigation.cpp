@@ -84,6 +84,14 @@ ICDNavigation::~ICDNavigation()
     }
 }
 
+bool ICDNavigation::init()
+{
+    dataMgr_->init();
+    q_ui->init();
+
+    return true;
+}
+
 // 查询节点数据
 JLRESULT ICDNavigation::queryNodeData(const Icd::JNEvent &event)
 {

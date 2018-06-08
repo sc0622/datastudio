@@ -92,18 +92,15 @@ TreeView::TreeView(QWidget *parent)
         jnotify->send("database.config", args);
     });
     jnotify->on("monitor.toolbar.tree.loadDeep", this, [=](JNEvent &event){
-        const int deep = event.argument().toInt();
-        JMain::instance()->setOption("monitor", "option.tree.loadDeep", deep);
+        treeView_->setLoadingDeep(event.argument().toInt());
     });
     jnotify->on("monitor.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
-        JMain::instance()->setOption("monitor", "option.tree.showOffset", checked);
     });
     jnotify->on("monitor.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
-        JMain::instance()->setOption("monitor", "option.tree.showType", checked);
     });
     jnotify->on("monitor.toolbar.tree.showOrignal", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
@@ -111,12 +108,8 @@ TreeView::TreeView(QWidget *parent)
             return;
         }
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, args.at(0).toBool());
-        if (args.count() < 2) {
-            JMain::instance()->setOption("monitor", "option.tree.showOrignal", 0);
-        } else {
-            const int radix = args.at(1).toInt();
-            treeView_->setDataFormat(radix);
-            JMain::instance()->setOption("monitor", "option.tree.showOrignal", radix);
+        if (args.count() >= 2) {
+            treeView_->setDataFormat(args.at(1).toInt());
         }
     });
     jnotify->on("monitor.toolbar.tree.showData", this, [=](JNEvent &event){
@@ -127,17 +120,14 @@ TreeView::TreeView(QWidget *parent)
     jnotify->on("monitor.toolbar.tree.showReal", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowValue, checked);
-        JMain::instance()->setOption("monitor", "option.tree.showValue", checked);
     });
     jnotify->on("monitor.toolbar.tree.showDesc", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowSpec, checked);
-        JMain::instance()->setOption("monitor", "option.tree.showDesc", checked);
     });
     jnotify->on("monitor.toolbar.tree.flushToggle", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setRunning(checked);
-        JMain::instance()->setOption("monitor", "option.tree.flushEnabled", checked);
     });
     jnotify->on("monitor.toolbar.tree.flushPeriod", this, [=](JNEvent &){
         QInputDialog inputDlg(this);

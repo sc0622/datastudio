@@ -93,18 +93,15 @@ TreeView::TreeView(QWidget *parent)
         jnotify->send("database.config", args);
     });
     jnotify->on("simulate.toolbar.tree.loadDeep", this, [=](JNEvent &event){
-        const int deep = event.argument().toInt();
-        JMain::instance()->setOption("simulate", "option.tree.loadDeep", deep);
+        treeView_->setLoadingDeep(event.argument().toInt());
     });
     jnotify->on("simulate.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
-        JMain::instance()->setOption("simulate", "option.tree.showOffset", checked);
     });
     jnotify->on("simulate.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
-        JMain::instance()->setOption("simulate", "option.tree.showType", checked);
     });
     jnotify->on("simulate.toolbar.tree.showOrignal", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
@@ -112,33 +109,25 @@ TreeView::TreeView(QWidget *parent)
             return;
         }
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, args.at(0).toBool());
-        if (args.count() < 2) {
-            JMain::instance()->setOption("simulate", "option.tree.showOrignal", 0);
-        } else {
-            const int radix = args.at(1).toInt();
-            treeView_->setDataFormat(radix);
-            JMain::instance()->setOption("simulate", "option.tree.showOrignal", radix);
+        if (args.count() >= 2) {
+            treeView_->setDataFormat(args.at(1).toInt());
         }
     });
     jnotify->on("simulate.toolbar.tree.showData", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, checked);
-        JMain::instance()->setOption("simulate", "option.tree.showData", checked);
     });
     jnotify->on("simulate.toolbar.tree.showReal", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowValue, checked);
-        JMain::instance()->setOption("simulate", "option.tree.showValue", checked);
     });
     jnotify->on("simulate.toolbar.tree.showDesc", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowSpec, checked);
-        JMain::instance()->setOption("simulate", "option.tree.showDesc", checked);
     });
     jnotify->on("simulate.toolbar.tree.flushToggle", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setRunning(checked);
-        JMain::instance()->setOption("simulate", "option.tree.flushEnabled", checked);
     });
     jnotify->on("simulate.toolbar.tree.flushPeriod", this, [=](JNEvent &){
         QInputDialog inputDlg(this);

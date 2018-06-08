@@ -13,32 +13,29 @@ class TableUI : public MetaUI
 public:
     explicit TableUI(QWidget* parent = nullptr);
     // MetaUI interface
-    void setUIData(const _UIData &data);
-    void* uiData() const;
-    // 启/停用界面控制按钮
-    void enableOptionButton(bool enable);
+    void setUIData(const _UIData &data) override;
+    void* uiData() const override;
 
 signals:
-    void confirm(bool &);
-    void canceled();
 
 protected slots:
     // 编辑框文本变更
     void slotTextChanged(const QString& text);
     // 数据录入完成
-    void slotEditFinished();
+    void slotEditFinished() ;
     //
     void slotCheckStateChanged(bool checked);
-    // 确认
-    void slotConfirm();
-    // 取消
-    void slotCanceled();
 
 protected:
+    // 确认
+    void confirm() override;
+    // 取消
+    void cancel() override;
+
     // 初始化界面数据
     void init();
     // 启/停用信号槽
-    void enableConnection(bool enable);
+    void enableConnection(bool enable) override;
     // 校验界面数据
     bool dataValid();
 
@@ -48,14 +45,11 @@ private:
 
     QColor          q_color;    // 默认背景色
 
-    QLineEdit       *q_edtStatus; // 状态提示
     LimitLineEdit   *q_edtName;
     QLineEdit       *q_edtCode;
     QSpinBox        *q_spinLength;
     QCheckBox       *q_check;
     LimitTextEdit   *q_edtDescribe;
-    QPushButton     *q_btnConfirm;
-    QPushButton     *q_btnCancel;
 };
 
 #endif // TABLEUI_H

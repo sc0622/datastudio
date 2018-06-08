@@ -55,25 +55,18 @@ TreeView::TreeView(QWidget *parent)
         event.setReturnValue(true);
     });
     jnotify->on("edit.toolbar.tree.loadDeep", this, [=](JNEvent &event){
-        const int deep = event.argument().toInt();
-        JMain::instance()->setOption("edit", "option.tree.loadDeep", deep);
+        treeView_->setLoadingDeep(event.argument().toInt());
     });
     jnotify->on("edit.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
-        JMain::instance()->setOption("edit", "option.tree.showOffset", checked);
     });
     jnotify->on("edit.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
-        JMain::instance()->setOption("edit", "option.tree.showType", checked);
-    });
-    jnotify->on("edit.toolbar.tree.showData", this, [=](JNEvent &event){
-        const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, checked);
-        JMain::instance()->setOption("edit", "option.tree.showData", checked);
     });
     jnotify->on("edit.toolbar.tree.copy", this, [=](JNEvent &){
+        //
     });
     jnotify->on("edit.toolbar.tree.save", this, [=](JNEvent &){
         Icd::ParserPtr parser = treeView_->parser();
@@ -82,6 +75,7 @@ TreeView::TreeView(QWidget *parent)
         }
     });
     jnotify->on("edit.toolbar.tree.saveas", this, [=](JNEvent &){
+        //
     });
     jnotify->on("edit.toolbar.window.tree", this, [=](JNEvent &event){
         setVisible(event.argument().toBool());
