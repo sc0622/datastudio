@@ -250,6 +250,9 @@ public:
         ItemBitValue,       /**< BITVALUE */
         ItemComplex,        /**<  */
         ItemFrame,          /**<  */
+        ItemString,         /**<  */
+        ItemDateTime,       /**<  */
+        ItemArray,          /**<  */
         ItemTotal           /**<  */
     };
     Q_ENUM(ItemType)

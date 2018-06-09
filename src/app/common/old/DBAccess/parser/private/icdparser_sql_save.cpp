@@ -378,8 +378,8 @@ bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric,
     rule.sUnit = numeric->unit();
 
     // specs attribute
-    std::map<double, std::string> values = numeric->specs();
-    std::map<double, std::string>::iterator it = values.begin();
+    std::unordered_map<double, std::string> values = numeric->specs();
+    std::unordered_map<double, std::string>::iterator it = values.begin();
     QString set;
     for (; it != values.end(); ++it) {
         set += QString("%1[%2]#").arg(it->first).arg(it->second.c_str());
@@ -417,8 +417,8 @@ bool SqlParserData::ItemBit2rule(const Icd::BitItemPtr &bit,
     rule.nCode = bit->bitStart() / 8;
 
     // spec attribute
-    std::map<icd_uint64, std::string> values = bit->specs();
-    std::map<icd_uint64, std::string>::iterator it = values.begin();
+    std::unordered_map<icd_uint64, std::string> values = bit->specs();
+    std::unordered_map<icd_uint64, std::string>::iterator it = values.begin();
     QString set;
     for (; it != values.end(); ++it) {
         set += QString("%1[%2]#").arg(it->first).arg(it->second.c_str());

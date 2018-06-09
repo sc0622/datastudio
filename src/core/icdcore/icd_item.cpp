@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "icd_item.h"
 #include "icdcore_inc.h"
+#include <unordered_map>
 #include <assert.h>
 
 namespace Icd {
@@ -118,39 +119,45 @@ std::string Item::typeString() const
 std::string Item::typeString(ItemType type)
 {
     switch (type) {
-    case ItemHead: return "head";
-    case ItemCounter: return "counter";
-    case ItemCheck: return "check";
-    case ItemFrameCode: return "framecode";
     case ItemNumeric: return "numeric";
     case ItemBitMap: return "bitmap";
     case ItemBitValue: return "bitvalue";
     case ItemComplex: return "complex";
+    case ItemHead: return "head";
+    case ItemCounter: return "counter";
+    case ItemCheck: return "check";
+    case ItemFrameCode: return "framecode";
     case ItemFrame: return "frame";
+    case ItemString: return "string";
+    case ItemDateTime: return "datetime";
+    case ItemArray: return "array";
     default: return "invalid";
     }
 }
 
 ItemType Item::stringType(const std::string &str)
 {
-    typedef std::map<const std::string, const ItemType> map_strtype;
+    typedef std::unordered_map<std::string, int> map_strtype;
     static const map_strtype::value_type map_data[ItemTotal] = {
-        map_strtype::value_type("head", ItemHead),
-        map_strtype::value_type("counter", ItemCounter),
-        map_strtype::value_type("check", ItemCheck),
-        map_strtype::value_type("framecode", ItemFrameCode),
         map_strtype::value_type("numeric", ItemNumeric),
         map_strtype::value_type("bitmap", ItemBitMap),
         map_strtype::value_type("bitvalue", ItemBitValue),
         map_strtype::value_type("complex", ItemComplex),
-        map_strtype::value_type("frame", ItemFrame)
+        map_strtype::value_type("head", ItemHead),
+        map_strtype::value_type("counter", ItemCounter),
+        map_strtype::value_type("check", ItemCheck),
+        map_strtype::value_type("framecode", ItemFrameCode),
+        map_strtype::value_type("frame", ItemFrame),
+        map_strtype::value_type("string", ItemString),
+        map_strtype::value_type("datetime", ItemDateTime),
+        map_strtype::value_type("array", ItemArray)
     };
     static const map_strtype _map(map_data, map_data + _countof(map_data));
     map_strtype::const_iterator citer = _map.find(str);
     if (citer == _map.cend()) {
         return ItemInvalid;
     } else {
-        return citer->second;
+        return ItemType(citer->second);
     }
 }
 
@@ -186,15 +193,18 @@ ItemPtr Item::create(const std::string &id, ItemType type)
     }
 
     switch (type) {
-    case Icd::ItemHead: return Icd::ItemPtr(new Icd::HeaderItem(id));
-    case Icd::ItemCounter: return Icd::ItemPtr(new Icd::CounterItem(id));
-    case Icd::ItemCheck: return Icd::ItemPtr(new Icd::CheckItem(id));
-    case Icd::ItemFrameCode: return Icd::ItemPtr(new Icd::FrameCodeItem(id));
     case Icd::ItemNumeric: return Icd::ItemPtr(new Icd::NumericItem(id));
     case Icd::ItemBitMap:
     case Icd::ItemBitValue: return Icd::ItemPtr(new Icd::BitItem(id, type));
     case Icd::ItemComplex: return Icd::ItemPtr(new Icd::ComplexItem(id));
+    case Icd::ItemHead: return Icd::ItemPtr(new Icd::HeaderItem(id));
+    case Icd::ItemCounter: return Icd::ItemPtr(new Icd::CounterItem(id));
+    case Icd::ItemCheck: return Icd::ItemPtr(new Icd::CheckItem(id));
+    case Icd::ItemFrameCode: return Icd::ItemPtr(new Icd::FrameCodeItem(id));
     case Icd::ItemFrame: return Icd::ItemPtr(new Icd::FrameItem(id));
+    case Icd::ItemString: return Icd::ItemPtr(new Icd::StringItem(id));
+    case Icd::ItemDateTime: return Icd::ItemPtr(new Icd::DateTimeItem(id));
+    case Icd::ItemArray: return Icd::ItemPtr(new Icd::ArrayItem(id));
     default:
         assert(false);
         return Icd::ItemPtr();  // not supported data type

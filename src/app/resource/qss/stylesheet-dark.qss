@@ -638,7 +638,6 @@ QPlainTextEdit, QTextEdit {
     color: #ccc;
     selection-color: white;
     selection-background-color: #345;
-    font-family: "Consolas";
     outline: none;
 }
 

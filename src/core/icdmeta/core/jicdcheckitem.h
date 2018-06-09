@@ -19,34 +19,36 @@ class ICDMETA_EXPORT JIcdCheckItem : public JIcdItem
     Q_PROPERTY(int startPos READ startPos NOTIFY startPosChanged)
     Q_PROPERTY(int endPos READ endPos NOTIFY endPosChanged)
     Q_PROPERTY(int checkLength READ checkLength  NOTIFY checkLengthChanged)
+    Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
 public:
-    explicit JIcdCheckItem(const Icd::CheckItemPtr &data, QObject *parent = 0);
+    explicit JIcdCheckItem(const Icd::CheckItemPtr &data, QObject *parent = nullptr);
     ~JIcdCheckItem();
 
     static void registerQmlType();
     Icd::CheckItemPtr metaData() const;
 
     IcdCore::CheckType checkType() const;
-    int startPos() const;
-    int endPos() const;
-    int checkLength() const;
-
-    Q_INVOKABLE bool isValid() const;
-    Q_INVOKABLE QString typeName() const;
-
     Q_INVOKABLE QString checkTypeString() const;
     static QString checkTypeString(IcdCore::CheckType type);
     static IcdCore::CheckType stringCheckType(const QString &str);
 
-    QString text() const;
-    QString valueString() const;
-    QString fullValue() const;
+    int startPos() const;
+    int endPos() const;
+    int checkLength() const;
+
+    bool isValid() const;
+
+    QString typeName() const override;
+    QString text() const override;
+    QString valueString() const override;
+    QString fullValue() const override;
 
 signals:
     void checkTypeChanged();
     void startPosChanged();
     void endPosChanged();
     void checkLengthChanged();
+    void validChanged();
 
 public slots:
 

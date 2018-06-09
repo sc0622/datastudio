@@ -1,9 +1,8 @@
 ﻿#ifndef ICD_ITEM_BIT_H
 #define ICD_ITEM_BIT_H
 
-#include "icdcore_global.h"
 #include "icd_item.h"
-#include <map>
+#include <unordered_map>
 
 namespace Icd {
 
@@ -35,8 +34,8 @@ public:
 
     icd_uint64 mask() const;
 
-    std::map<icd_uint64, std::string> specs();
-    const std::map<icd_uint64, std::string> &specs() const;
+    std::unordered_map<icd_uint64, std::string> specs();
+    const std::unordered_map<icd_uint64, std::string> &specs() const;
     void addSpec(icd_uint64 key, const std::string &info);
     void removeSpec(icd_uint64 key);
     void clearSpec();

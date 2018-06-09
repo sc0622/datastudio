@@ -1028,11 +1028,11 @@ bool SqlParserData::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
     const int count = planes.size();
     if (deep >= Icd::ObjectSystem) {
         // read system base
-        std::map<int, std::vector<stSystem>> allSystem;
+        std::unordered_map<int, std::vector<stSystem>> allSystem;
         if (!db->readSystem(allSystem)) {
             return false;
         }
-        std::map<int, std::vector<stSystem>>::iterator it = allSystem.end();
+        std::unordered_map<int, std::vector<stSystem>>::iterator it = allSystem.end();
         for (int i = 0; i < count; ++i) {
             const stPlane &plane = planes[i];
             if ((it = allSystem.find(plane.nCode)) != allSystem.end()) {

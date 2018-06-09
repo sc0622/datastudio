@@ -155,8 +155,8 @@ std::string ICDBitData::stringValue() const
 {
     std::string result;
     char szTmp[128] = {0};
-    std::map<double, std::string> eigenvalue = values();
-    std::map<double, std::string>::iterator it = eigenvalue.begin();
+    std::unordered_map<double, std::string> eigenvalue = values();
+    std::unordered_map<double, std::string>::iterator it = eigenvalue.begin();
     for (; it != eigenvalue.end(); ++it) {
         sprintf_s(szTmp, sizeof(szTmp), "%d", (int)it->first);
         result.append(szTmp).append("[").append(it->second).append("]#");

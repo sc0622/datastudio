@@ -2,8 +2,8 @@
 #define DBACCESS_H
 
 #include "KernelClass/globalstruct.h"
-#include <map>
 #include "icdcore/3rdpart/jsoncpp/json_tool.h"
+#include <unordered_map>
 
 /**
 * @brief 数据库表定义
@@ -133,7 +133,7 @@ public:
      * @param [out] dic : 所有字典数据<字典标识, <字典数据集>>
      * @return 执行结果，true：成功；false：失败
      */
-    bool readDictionary(std::map<std::string, std::vector<stDictionary> >& dic);
+    bool readDictionary(std::unordered_map<std::string, std::vector<stDictionary> >& dic);
 
     /**
     * @brief 读取字典表数据
@@ -142,14 +142,14 @@ public:
     * @return 执行结果，true：成功；false：失败
     */
     bool readDictionary(const std::vector<std::string> &dics,
-                        std::map<std::string, std::vector<stDictionary> >& result);
+                        std::unordered_map<std::string, std::vector<stDictionary> >& result);
 
     /**
     * @brief 读取本地字典表数据（数据库无法连接时使用，注意与数据数据同步）
     * @param [out] dic : 所有字典数据<字典标识, <字典数据集>>
     * @return 执行结果，true：成功；false：失败
     */
-    bool readLocalDictionary(std::map<std::string, std::vector<stDictionary> >& dic);
+    bool readLocalDictionary(std::unordered_map<std::string, std::vector<stDictionary> >& dic);
 
     /**
     * @brief 读取机型基本信息
@@ -204,7 +204,7 @@ public:
      * @param [out] system : 所有系统信息<机型码, <分系统信息集>>
      * @return 执行结果，true：成功；false：失败
      */
-    bool readSystem(std::map<int, std::vector<stSystem> > &system);
+    bool readSystem(std::unordered_map<int, std::vector<stSystem> > &system);
 
     /**
     * @brief 读取系统信息
@@ -220,8 +220,7 @@ public:
      * @param [out] icdBase : ICD基本信息集<所属组, <字表信息集>>
      * @return 执行结果，true：成功；false：失败
      */
-    bool readICDBase(bool top,
-                     std::map<std::string, std::vector<stICDBase> >& icdBase);
+    bool readICDBase(bool top, std::unordered_map<std::string, std::vector<stICDBase> >& icdBase);
 
     /**
     * @brief 读取ICD表基本信息
@@ -331,7 +330,7 @@ public:
     * @param [in] rule : 规则数据<规则序号, <子表集>>
     * @return 执行结果，true：成功；false：失败
     */
-    bool deleteRules(const std::string &table, const std::map < int,
+    bool deleteRules(const std::string &table, const std::unordered_map < int,
                      std::vector < std::string >> &rule);
 
     /**

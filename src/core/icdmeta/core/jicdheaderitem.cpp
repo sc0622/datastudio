@@ -46,22 +46,13 @@ JIcdHeaderItem::~JIcdHeaderItem()
 
 void JIcdHeaderItem::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdHeaderItem);
-
-    //
 }
 
 Icd::HeaderItemPtr JIcdHeaderItem::metaData() const
 {
     Q_D(const JIcdHeaderItem);
     return d->data;
-}
-
-QString JIcdHeaderItem::dataString() const
-{
-    Q_D(const JIcdHeaderItem);
-    return QString::fromStdString(d->data->dataString());
 }
 
 QString JIcdHeaderItem::typeName() const
@@ -106,6 +97,12 @@ QString JIcdHeaderItem::fullValue() const
             .arg((uint)d->data->data(),
                  int(d->data->bufferSize() * 2), 16, QChar('0'))
             .toUpper();
+}
+
+QString JIcdHeaderItem::dataString() const
+{
+    Q_D(const JIcdHeaderItem);
+    return QString::fromStdString(d->data->dataString());
 }
 
 } // end of namespace icdmeta

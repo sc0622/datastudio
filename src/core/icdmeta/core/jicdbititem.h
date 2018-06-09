@@ -21,7 +21,7 @@ class ICDMETA_EXPORT JIcdBitItem : public JIcdItem
     Q_PROPERTY(int specCount READ specCount NOTIFY specCountChanged)
     Q_PROPERTY(QString currentSpec READ currentSpec NOTIFY currentSpecChanged)
 public:
-    explicit JIcdBitItem(const Icd::BitItemPtr &data, QObject *parent = 0);
+    explicit JIcdBitItem(const Icd::BitItemPtr &data, QObject *parent = nullptr);
     ~JIcdBitItem();
 
     static void registerQmlType();
@@ -33,26 +33,25 @@ public:
     int specCount() const;
     QString currentSpec() const;
 
-    QString text() const;
-    QString valueString() const;
-    QString fullValue() const;
+    QString text() const override;
+    QString valueString() const override;
+    QString fullValue() const override;
+    QString typeName() const override;
 
     Q_INVOKABLE bool testBit(int offset) const;
     Q_INVOKABLE quint64 mask() const;
     Q_INVOKABLE QString specAt(quint64 key) const;
     Q_INVOKABLE QString nameAt(int offset) const;
     Q_INVOKABLE QString descAt(int offset) const;
-    Q_INVOKABLE QString typeName() const;
 
 signals:
     void bitStartChanged();
     void bitCountChanged();
     void typeSizeChanged();
     void specCountChanged();
-    void currentSpecChanged(const QString &);
+    void currentSpecChanged(const QString &spec);
 
 public slots:
-
 
 private:
     Q_DISABLE_COPY(JIcdBitItem)

@@ -877,7 +877,6 @@ QTextEdit {
     border: 1px solid #334;
     selection-color: white;
     selection-background-color: darkblue;
-    font-family: "Consolas";
 }
 
 QTextEdit:focus {

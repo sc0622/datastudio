@@ -7,9 +7,9 @@
 namespace Icd {
 
 //
-typedef std::multimap<icd_uint64/*sequence*/, TablePtr> TableSeq;
+typedef std::unordered_multimap<icd_uint64/*sequence*/, TablePtr> TableSeq;
 typedef std::pair<TableSeq::const_iterator/*cbegin*/, TableSeq::const_iterator/*cend*/> TableSeqPair;
-typedef std::map<int/*sequence*/, TableSeq::const_iterator> TableSeqIterMap;
+typedef std::unordered_map<int/*sequence*/, TableSeq::const_iterator> TableSeqIterMap;
 
 // class FrameItemData
 

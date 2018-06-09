@@ -39,7 +39,8 @@ public:
     qreal bufferOffset() const;
     int count() const;
     int sequence() const;
-    QString text() const;
+
+    QString text() const override;
 
     char *buffer() const;
     void setBuffer(char *buffer);
@@ -53,9 +54,9 @@ public:
     Q_INVOKABLE icdmeta::JIcdTable *tableByDomain(
             const QString &domain, int domainType = IcdCore::DomainId) const;
 
-    Q_INVOKABLE void updateData();
-    Q_INVOKABLE void resetData();
-    Q_INVOKABLE void clearData();
+    void updateData() override;
+    void resetData() override;
+    void clearData() override;
 
     QVector<char> headers() const;
     QSharedPointer<icdmeta::JIcdCounterItem> counterItem();

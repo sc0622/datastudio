@@ -49,10 +49,7 @@ JIcdFrameCodeItem::~JIcdFrameCodeItem()
 
 void JIcdFrameCodeItem::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdFrameCodeItem);
-
-    //
 }
 
 Icd::FrameCodeItemPtr JIcdFrameCodeItem::metaData() const
@@ -73,10 +70,20 @@ IcdCore::FrameCodeType JIcdFrameCodeItem::frameCodeType() const
     }
 }
 
-QString JIcdFrameCodeItem::dataString() const
+QString JIcdFrameCodeItem::frameCoderTypeString() const
 {
     Q_D(const JIcdFrameCodeItem);
-    return QString::fromStdString(d->data->dataString());
+    return QString::fromStdString(d->data->frameCodeTypeString());
+}
+
+QString JIcdFrameCodeItem::frameCodeTypeString(IcdCore::FrameCodeType type)
+{
+    return QString::fromStdString(Icd::FrameCodeItem::frameCodeTypeString((Icd::FrameCodeType)type));
+}
+
+IcdCore::FrameCodeType JIcdFrameCodeItem::stringFrameCodeType(const QString &str)
+{
+    return (IcdCore::FrameCodeType)Icd::FrameCodeItem::stringFrameCodeType(str.toStdString());
 }
 
 QSharedPointer<icdmeta::JIcdFrameItem> JIcdFrameCodeItem::frame() const
@@ -113,20 +120,10 @@ QString JIcdFrameCodeItem::valueString() const
     return QString::number((ushort)(uchar)d->data->data());
 }
 
-QString JIcdFrameCodeItem::frameCoderTypeString() const
+QString JIcdFrameCodeItem::dataString() const
 {
     Q_D(const JIcdFrameCodeItem);
-    return QString::fromStdString(d->data->frameCodeTypeString());
-}
-
-QString JIcdFrameCodeItem::frameCodeTypeString(IcdCore::FrameCodeType type)
-{
-    return QString::fromStdString(Icd::FrameCodeItem::frameCodeTypeString((Icd::FrameCodeType)type));
-}
-
-IcdCore::FrameCodeType JIcdFrameCodeItem::stringFrameCodeType(const QString &str)
-{
-    return (IcdCore::FrameCodeType)Icd::FrameCodeItem::stringFrameCodeType(str.toStdString());
+    return QString::fromStdString(d->data->dataString());
 }
 
 void JIcdFrameCodeItem::updateData()

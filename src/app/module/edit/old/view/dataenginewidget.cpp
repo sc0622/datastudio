@@ -826,8 +826,8 @@ void DataEngineWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             datas.insert(7, pairData);
             pairData.first = QStringLiteral("ÌØÕ÷ÖµÃèÊö");
             pairData.second.clear();
-            std::map<double, std::string> items = common->values();
-            std::map<double, std::string>::iterator it = items.begin();
+            std::unordered_map<double, std::string> items = common->values();
+            std::unordered_map<double, std::string>::iterator it = items.begin();
             for (; it != items.end(); ++it) {
                 pairData.second += QString("%1 : <%2>\r\n")
                     .arg(it->first).arg(it->second.c_str());
@@ -843,8 +843,8 @@ void DataEngineWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             .arg(bit->lengthOfByte().c_str());
         QString value;
         QString content;
-        std::map<double, std::string> items = bit->values();
-        std::map<double, std::string>::iterator it = items.begin();
+        std::unordered_map<double, std::string> items = bit->values();
+        std::unordered_map<double, std::string>::iterator it = items.begin();
         pairData.second.clear();
         if (data->type() == GlobalDefine::dtBitMap) {
             for (; it != items.end(); ++it) {

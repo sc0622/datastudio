@@ -57,10 +57,10 @@ public:
     void deleteValue(double value);
 
     // 设置数据
-    void setValues(const std::map<double, std::string> &values);
+    void setValues(const std::unordered_map<double, std::string> &values);
 
     // 获取所有数据
-    std::map<double, std::string> values() const;
+    std::unordered_map<double, std::string> values() const;
 
     // 判定数据是否在限制范围内
     bool dataInRange(double value) const;

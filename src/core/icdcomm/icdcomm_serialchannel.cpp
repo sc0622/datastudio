@@ -221,13 +221,13 @@ std::string SerialChannel::config() const
 bool SerialChannel::setConfig(const std::string &config)
 {
     // parse
-    const std::map<std::string, std::string> items = parseConfig(config);
+    const std::unordered_map<std::string, std::string> items = parseConfig(config);
     if (items.empty()) {
         return false;
     }
 
     // id
-    std::map<std::string, std::string>::const_iterator citer = items.find("id");
+    std::unordered_map<std::string, std::string>::const_iterator citer = items.find("id");
     if (citer == items.cend()) {
         return false;
     }

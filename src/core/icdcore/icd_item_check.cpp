@@ -2,6 +2,7 @@
 #include "icd_item_check.h"
 #include <algorithm>
 #include <sstream>
+#include <unordered_map>
 #include <assert.h>
 
 namespace Icd {
@@ -92,35 +93,35 @@ std::string CheckItem::checkTypeString() const
 std::string CheckItem::checkTypeString(CheckType type)
 {
     switch (type) {
-    case CheckNone: return "none";
     case CheckSum8: return "sum8";
     case CheckSum16: return "sum16";
     case CheckCrc8: return "crc8";
     case CheckCrc16: return "crc16";
     case CheckXor8: return "xor8";
     case CheckXor16: return "xor16";
+    case CheckNone: return "none";
     default: return "?";
     }
 }
 
 CheckType CheckItem::stringCheckType(const std::string &str)
 {
-    typedef std::map<const std::string, const CheckType> map_strtype;
+    typedef std::unordered_map<std::string, int> map_strtype;
     static const map_strtype::value_type map_data[CheckTotal] = {
-        map_strtype::value_type("none", CheckNone),
         map_strtype::value_type("sum8", CheckSum8),
         map_strtype::value_type("sum16", CheckSum16),
         map_strtype::value_type("crc8", CheckCrc8),
         map_strtype::value_type("crc16", CheckCrc16),
         map_strtype::value_type("xor8", CheckXor8),
-        map_strtype::value_type("xor16", CheckXor16)
+        map_strtype::value_type("xor16", CheckXor16),
+        map_strtype::value_type("none", CheckNone)
     };
     static const map_strtype _map(map_data, map_data + _countof(map_data));
     map_strtype::const_iterator citer = _map.find(str);
     if (citer == _map.cend()) {
         return CheckInvalid;
     } else {
-        return citer->second;
+        return CheckType(citer->second);
     }
 }
 

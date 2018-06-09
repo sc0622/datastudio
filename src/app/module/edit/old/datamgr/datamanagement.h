@@ -262,7 +262,7 @@ protected:
     * @param [in] tableRules : 表规则信息
     * @return 表规则信息<所属组，<表规则>>
     */
-    std::map<std::string, TableNode::tableVector> loadXmlRuleData(
+    std::unordered_map<std::string, TableNode::tableVector> loadXmlRuleData(
             const DMSpace::_vectorIcdTR &tableRules);
 
     /**

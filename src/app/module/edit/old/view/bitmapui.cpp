@@ -284,8 +284,8 @@ void BitMapUI::init()
         q_edtDescribe->setText(q_data->remark().c_str());
     }
     if (q_table) {  // 特征值
-        std::map<double, std::string> items = q_data->values();
-        std::map<double, std::string>::iterator it = items.begin();
+        std::unordered_map<double, std::string> items = q_data->values();
+        std::unordered_map<double, std::string>::iterator it = items.begin();
         q_table->clearContents();
         _Eigenvalue data;
         int bound = q_data->length();
@@ -539,9 +539,9 @@ void BitMapUI::updateMapOne(int index, const _Eigenvalue &data, int option)
 }
 
 // 获取特征值表数据
-std::map<double, std::string> BitMapUI::tableValues() const
+std::unordered_map<double, std::string> BitMapUI::tableValues() const
 {
-    std::map<double, std::string> result;
+    std::unordered_map<double, std::string> result;
     if (!q_table) {
         return result;
     }

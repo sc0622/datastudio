@@ -2,6 +2,7 @@
 #include "icd_item_counter.h"
 #include <algorithm>
 #include <sstream>
+#include <unordered_map>
 #include <assert.h>
 
 namespace Icd {
@@ -81,7 +82,7 @@ std::string CounterItem::counterTypeString(CounterType type)
 
 CounterType CounterItem::stringCounterType(const std::string &str)
 {
-    typedef std::map<const std::string, const CounterType> map_strtype;
+    typedef std::unordered_map<std::string, int> map_strtype;
     static const map_strtype::value_type map_data[CounterTotal] = {
         map_strtype::value_type("u8", CounterU8),
         map_strtype::value_type("u16", CounterU16),
@@ -93,7 +94,7 @@ CounterType CounterItem::stringCounterType(const std::string &str)
     if (citer == _map.cend()) {
         return CounterInvalid;
     } else {
-        return citer->second;
+        return CounterType(citer->second);
     }
 }
 
@@ -158,16 +159,13 @@ CounterItem &CounterItem::operator =(const CounterItem &other)
 {
     Item::operator =(other);
     d->counterType = other.d->counterType;
-
     return *this;
 }
 
 Json::Value CounterItem::save() const
 {
     Json::Value json = Item::save();
-
     json["counterType"] = counterTypeString();
-
     return json;
 }
 

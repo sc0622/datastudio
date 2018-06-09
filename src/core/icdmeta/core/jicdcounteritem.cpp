@@ -46,10 +46,7 @@ JIcdCounterItem::~JIcdCounterItem()
 
 void JIcdCounterItem::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdCounterItem);
-
-    //
 }
 
 Icd::CounterItemPtr JIcdCounterItem::metaData() const
@@ -70,18 +67,6 @@ IcdCore::CounterType JIcdCounterItem::counterType() const
     }
 }
 
-uchar JIcdCounterItem::value() const
-{
-    Q_D(const JIcdCounterItem);
-    return d->data->value();
-}
-
-QString JIcdCounterItem::dataString() const
-{
-    Q_D(const JIcdCounterItem);
-    return QString::fromStdString(d->data->dataString());
-}
-
 QString JIcdCounterItem::counterTypeString() const
 {
     Q_D(const JIcdCounterItem);
@@ -96,6 +81,18 @@ QString JIcdCounterItem::counterTypeString(IcdCore::CounterType type)
 IcdCore::CounterType JIcdCounterItem::stringCounterType(const QString &str)
 {
     return (IcdCore::CounterType)Icd::CounterItem::stringCounterType(str.toStdString());
+}
+
+uchar JIcdCounterItem::value() const
+{
+    Q_D(const JIcdCounterItem);
+    return d->data->value();
+}
+
+QString JIcdCounterItem::dataString() const
+{
+    Q_D(const JIcdCounterItem);
+    return QString::fromStdString(d->data->dataString());
 }
 
 QString JIcdCounterItem::text() const

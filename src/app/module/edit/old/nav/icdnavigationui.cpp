@@ -56,6 +56,10 @@ ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     connect(q_treeView, &JTreeView::collapsed, this, [=](){
         q_treeView->resizeColumnToContents(0);
     });
+
+    jnotify->on("edit.tree.loadVehicle", this, [=](JNEvent &){
+        loadVehicle();
+    });
 }
 
 ICDNavigationUi::~ICDNavigationUi()

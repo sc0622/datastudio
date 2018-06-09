@@ -42,10 +42,7 @@ JIcdObject::JIcdObject(const Icd::ObjectPtr &data, QObject *parent)
 
 void JIcdObject::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdObject);
-
-    //
 }
 
 Icd::ObjectPtr JIcdObject::metaData() const
@@ -65,6 +62,12 @@ int JIcdObject::objectType() const
     case Icd::ObjectItem: return IcdCore::ObjectItem;
     default: return IcdCore::ObjectInvalid;
     };
+}
+
+QString JIcdObject::objectTypeString() const
+{
+    Q_D(const JIcdObject);
+    return QString::fromStdString(d->data->objectTypeString());
 }
 
 QString JIcdObject::id() const
@@ -91,7 +94,29 @@ QString JIcdObject::desc() const
     return QString::fromStdString(d->data->desc());
 }
 
-int JIcdObject::childCount()
+bool JIcdObject::isChecked() const
+{
+    Q_D(const JIcdObject);
+    return d->checked;
+}
+
+bool JIcdObject::isPrivateMark() const
+{
+    Q_D(const JIcdObject);
+    return d->data->isPrivateMark();
+}
+
+QString JIcdObject::domainOfType(int domainType) const
+{
+    switch (domainType) {
+    case IcdCore::DomainId: return id();
+    case IcdCore::DomainName: return name();
+    case IcdCore::DomainMark: return mark();
+    default: return "";
+    }
+}
+
+int JIcdObject::childCount() const
 {
     return 0;
 }
@@ -106,28 +131,22 @@ QString JIcdObject::valueString() const
     return name();
 }
 
-bool JIcdObject::isChecked() const
-{
-    Q_D(const JIcdObject);
-    return d->checked;
-}
-
-QString JIcdObject::objectTypeString() const
-{
-    Q_D(const JIcdObject);
-    return QString::fromStdString(d->data->objectTypeString());
-}
-
-bool JIcdObject::isPrivateMark() const
-{
-    Q_D(const JIcdObject);
-    return d->data->isPrivateMark();
-}
-
 void JIcdObject::updateData()
 {
     emit textChanged();
     emit valueStringChanged();
+}
+
+void JIcdObject::resetData()
+{
+    Q_D(JIcdObject);
+    d->data->resetData();
+}
+
+void JIcdObject::clearData()
+{
+    Q_D(JIcdObject);
+    d->data->clearData();
 }
 
 void JIcdObject::setId(const QString &value)
@@ -173,28 +192,6 @@ void JIcdObject::setChecked(bool value)
         d->checked = value;
         emit checkedChanged(value);
     }
-}
-
-QString JIcdObject::domainOfType(int domainType) const
-{
-    switch (domainType) {
-    case IcdCore::DomainId: return id();
-    case IcdCore::DomainName: return name();
-    case IcdCore::DomainMark: return mark();
-    default: return "";
-    }
-}
-
-void JIcdObject::resetData()
-{
-    Q_D(JIcdObject);
-    d->data->resetData();
-}
-
-void JIcdObject::clearData()
-{
-    Q_D(JIcdObject);
-    d->data->clearData();
 }
 
 } // end of namespace icdmeta

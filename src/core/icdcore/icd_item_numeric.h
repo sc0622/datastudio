@@ -4,7 +4,7 @@
 #include "icdcore_global.h"
 #include "icd_item.h"
 #include "icd_item_limit.h"
-#include <map>
+#include <unordered_map>
 
 namespace Icd {
 
@@ -63,8 +63,8 @@ public:
     std::string unit() const;
     void setUnit(const std::string &unit);
 
-    std::map<double, std::string> specs();
-    const std::map<double, std::string> &specs() const;
+    std::unordered_map<double, std::string> specs();
+    const std::unordered_map<double, std::string> &specs() const;
     void addSpec(double key, const std::string info);
     std::string specAt(double key) const;
     void removeSpec(double key);

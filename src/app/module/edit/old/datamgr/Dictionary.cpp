@@ -5,7 +5,7 @@ class CDictionaryPrivate
 public:
     CDictionary::mapCode    q_code2Dec;     // 编码转描述
     CDictionary::mapDec     q_dec2Code;     // 描述转编码
-    std::map<std::string, std::vector<stDictionary>> q_mapAll; // 原始数据
+    std::unordered_map<std::string, std::vector<stDictionary>> q_mapAll; // 原始数据
 };
 
 CDictionary::CDictionary(void)
@@ -36,7 +36,7 @@ CDictionary& CDictionary::instance()
 * @brief 初始化字典表数据(在使用查询接口前需要调用一次，否则无法查询数据)
 * @param [in] dic : 字典表数据集<字典标识, 字典数据集>
 */
-void CDictionary::initDictionary( const std::map<std::string, std::vector<stDictionary>>& dic )
+void CDictionary::initDictionary( const std::unordered_map<std::string, std::vector<stDictionary>>& dic )
 {
     if (NULL == d) {
         d = new CDictionaryPrivate;
@@ -46,9 +46,9 @@ void CDictionary::initDictionary( const std::map<std::string, std::vector<stDict
     d->q_dec2Code.clear();
     d->q_mapAll.clear();
 
-    std::map<int, stDictionary> code2Dec;
-    std::map<std::string, stDictionary> dec2Code;
-    std::map<std::string, std::vector<stDictionary>>::const_iterator it = dic.begin();
+    std::unordered_map<int, stDictionary> code2Dec;
+    std::unordered_map<std::string, stDictionary> dec2Code;
+    std::unordered_map<std::string, std::vector<stDictionary>>::const_iterator it = dic.begin();
     for (; it != dic.end(); ++it) {
         const std::vector<stDictionary>& table = it->second;
         const int count(table.size());
@@ -71,16 +71,14 @@ void CDictionary::initDictionary( const std::map<std::string, std::vector<stDict
 * @param [in] dic : 字典表数据集<字典标识, 字典数据集>
 * @return 执行结果，true：成功；false：失败
 */
-bool CDictionary::updateDictionary(const std::map<std::string, std::vector<stDictionary>>& dic)
+bool CDictionary::updateDictionary(const std::unordered_map<std::string, std::vector<stDictionary>>& dic)
 {
     if (NULL == d) {
         return false;
     }
-    std::map<int, stDictionary> code2Dec;
-    std::map<std::string, stDictionary> dec2Code;
-
-    std::map<std::string, std::vector<stDictionary>>::const_iterator
-        it = dic.begin();
+    std::unordered_map<int, stDictionary> code2Dec;
+    std::unordered_map<std::string, stDictionary> dec2Code;
+    std::unordered_map<std::string, std::vector<stDictionary>>::const_iterator it = dic.begin();
     for (; it != dic.end(); ++it) {
         const std::vector<stDictionary>& table = it->second;
         const int count(table.size());
@@ -118,17 +116,17 @@ bool CDictionary::updateDictionary(const std::string &table,
     if (itC == d->q_code2Dec.end()) {
         return false;
     }
-    std::map<int, stDictionary>& mapC = itC->second;
-    std::map<int, stDictionary>::iterator itID = mapC.end();
+    std::unordered_map<int, stDictionary>& mapC = itC->second;
+    std::unordered_map<int, stDictionary>::iterator itID = mapC.end();
     // dec
     mapDec::iterator itD = d->q_dec2Code.find(table);
     if (itD == d->q_dec2Code.end()) {
         return false;
     }
-    std::map<std::string, stDictionary>& mapD = itD->second;
-    std::map<std::string, stDictionary>::iterator itSD = mapD.end();
+    std::unordered_map<std::string, stDictionary>& mapD = itD->second;
+    std::unordered_map<std::string, stDictionary>::iterator itSD = mapD.end();
     // all
-    std::map<std::string, std::vector<stDictionary>>::iterator itA
+    std::unordered_map<std::string, std::vector<stDictionary>>::iterator itA
         = d->q_mapAll.find(table);
     if (itA == d->q_mapAll.end()) {
         return false;
@@ -194,8 +192,8 @@ bool CDictionary::convert2Dec( const std::string& table, int code, std::string&d
     if (it == d->q_code2Dec.end()) {
         return false;
     }
-    const std::map<int, stDictionary>& mapData = it->second;
-    std::map<int, stDictionary>::const_iterator itData = mapData.find(code);
+    const std::unordered_map<int, stDictionary>& mapData = it->second;
+    std::unordered_map<int, stDictionary>::const_iterator itData = mapData.find(code);
     if (itData == mapData.end()) {
         return false;
     }
@@ -220,8 +218,8 @@ bool CDictionary::convert2Code( const std::string& table, const std::string& dec
     if (it == d->q_dec2Code.end()) {
         return false;
     }
-    const std::map<std::string, stDictionary>& mapData = it->second;
-    std::map<std::string, stDictionary>::const_iterator itData = mapData.find(dec);
+    const std::unordered_map<std::string, stDictionary>& mapData = it->second;
+    std::unordered_map<std::string, stDictionary>::const_iterator itData = mapData.find(dec);
     if (itData == mapData.end()) {
         return false;
     }
@@ -240,7 +238,7 @@ std::vector<stDictionary> CDictionary::singleDic(const std::string& table)
     if (NULL == d) {
         return std::vector<stDictionary>();
     }
-    std::map<std::string, std::vector<stDictionary>>::iterator it
+    std::unordered_map<std::string, std::vector<stDictionary>>::iterator it
         = d->q_mapAll.find(table);
     if (it == d->q_mapAll.end()) {
         return std::vector<stDictionary>();
@@ -261,7 +259,7 @@ stDictionary CDictionary::singleItem(const std::string &table, int code)
     if (NULL == d) {
         return stDictionary();
     }
-    std::map<std::string, std::vector<stDictionary>>::iterator
+    std::unordered_map<std::string, std::vector<stDictionary>>::iterator
         it = d->q_mapAll.find(table);
     if (it == d->q_mapAll.end()) {
         return stDictionary();

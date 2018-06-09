@@ -90,6 +90,25 @@ QString JIcdComplexItem::typeName() const
     return QString::fromStdString(d->data->typeName());
 }
 
+void JIcdComplexItem::updateData()
+{
+    Q_D(JIcdComplexItem);
+    JIcdItem::updateData();
+    d->table->updateData();
+}
+
+void JIcdComplexItem::resetData()
+{
+    Q_D(JIcdComplexItem);
+    d->table->resetData();
+}
+
+void JIcdComplexItem::clearData()
+{
+    Q_D(JIcdComplexItem);
+    d->table->clearData();
+}
+
 JIcdObject *JIcdComplexItem::itemByMark(const QString &mark, bool deep) const
 {
     Q_D(const JIcdComplexItem);
@@ -134,25 +153,6 @@ JIcdTable *JIcdComplexItem::tableByDomain(const QString &domain, int domainType)
     }
 
     return qobject_cast<JIcdTable *>(item);
-}
-
-void JIcdComplexItem::updateData()
-{
-    Q_D(JIcdComplexItem);
-    JIcdItem::updateData();
-    d->table->updateData();
-}
-
-void JIcdComplexItem::resetData()
-{
-    Q_D(JIcdComplexItem);
-    d->table->resetData();
-}
-
-void JIcdComplexItem::clearData()
-{
-    Q_D(JIcdComplexItem);
-    d->table->clearData();
 }
 
 } // end of namespace icdmeta

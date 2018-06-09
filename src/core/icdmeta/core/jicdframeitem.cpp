@@ -91,18 +91,6 @@ int JIcdFrameItem::sequenceCount() const
     return d->data->sequenceCount();
 }
 
-QString JIcdFrameItem::dataString() const
-{
-    Q_D(const JIcdFrameItem);
-    return QString::fromStdString(d->data->dataString());
-}
-
-QString JIcdFrameItem::typeName() const
-{
-    Q_D(const JIcdFrameItem);
-    return QString::fromStdString(d->data->typeName());
-}
-
 int JIcdFrameItem::childCount() const
 {
     Q_D(const JIcdFrameItem);
@@ -114,6 +102,53 @@ QQmlListProperty<JIcdTable> JIcdFrameItem::tables()
     return QQmlListProperty<JIcdTable>(this, nullptr,
                                        &JIcdFrameItemPrivate::tableCount,
                                        &JIcdFrameItemPrivate::tableAt);
+}
+
+QString JIcdFrameItem::text() const
+{
+    return QString();
+}
+
+QString JIcdFrameItem::typeName() const
+{
+    Q_D(const JIcdFrameItem);
+    return QString::fromStdString(d->data->typeName());
+}
+
+QString JIcdFrameItem::valueString() const
+{
+    return QString();
+}
+
+QString JIcdFrameItem::dataString() const
+{
+    Q_D(const JIcdFrameItem);
+    return QString::fromStdString(d->data->dataString());
+}
+
+void JIcdFrameItem::updateData()
+{
+    Q_D(JIcdFrameItem);
+    JIcdItem::updateData();
+    for (auto &table : d->tables) {
+        table->updateData();
+    }
+}
+
+void JIcdFrameItem::resetData()
+{
+    Q_D(JIcdFrameItem);
+    for (auto &table : d->tables) {
+        table->resetData();
+    }
+}
+
+void JIcdFrameItem::clearData()
+{
+    Q_D(JIcdFrameItem);
+    for (auto &table : d->tables) {
+        table->clearData();
+    }
 }
 
 icdmeta::JIcdTable *JIcdFrameItem::itemAt(int index) const
@@ -197,41 +232,6 @@ JIcdTable *JIcdFrameItem::tableByDomain(const QString &domain,
     }
 
     return qobject_cast<JIcdTable *>(item);
-}
-
-QString JIcdFrameItem::text() const
-{
-    return QString();
-}
-
-QString JIcdFrameItem::valueString() const
-{
-    return QString();
-}
-
-void JIcdFrameItem::updateData()
-{
-    Q_D(JIcdFrameItem);
-    JIcdItem::updateData();
-    for (auto &table : d->tables) {
-        table->updateData();
-    }
-}
-
-void JIcdFrameItem::resetData()
-{
-    Q_D(JIcdFrameItem);
-    for (auto &table : d->tables) {
-        table->resetData();
-    }
-}
-
-void JIcdFrameItem::clearData()
-{
-    Q_D(JIcdFrameItem);
-    for (auto &table : d->tables) {
-        table->clearData();
-    }
 }
 
 } // end of namespace icdmeta

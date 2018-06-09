@@ -12,8 +12,8 @@ struct stDictionary;
 class CDictionary
 {
 public:
-    typedef std::map<std::string, std::map<int, stDictionary>> mapCode;
-    typedef std::map<std::string, std::map<std::string, stDictionary>> mapDec;
+    typedef std::unordered_map<std::string, std::unordered_map<int, stDictionary> > mapCode;
+    typedef std::unordered_map<std::string, std::unordered_map<std::string, stDictionary> > mapDec;
 
     /**
     * @brief 获取字典类实例
@@ -25,14 +25,14 @@ public:
     * @brief 初始化字典表数据(在使用查询接口前需要调用一次，否则无法查询数据)
     * @param [in] dic : 字典表数据集<字典标识, 字典数据集>
     */
-    void initDictionary(const std::map<std::string, std::vector<stDictionary>>& dic);
+    void initDictionary(const std::unordered_map<std::string, std::vector<stDictionary> >& dic);
 
     /**
     * @brief 更新数据
     * @param [in] dic : 字典表数据集<字典标识, 字典数据集>
     * @return 执行结果，true：成功；false：失败
     */
-    bool updateDictionary(const std::map<std::string, std::vector<stDictionary>>& dic);
+    bool updateDictionary(const std::unordered_map<std::string, std::vector<stDictionary> >& dic);
 
     /**
     * @brief 更新数据

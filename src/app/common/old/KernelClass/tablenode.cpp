@@ -449,7 +449,7 @@ TableNode &TableNode::operator =(const TableNode &rhs)
     d->q_real = rhs.d->q_real;
 
     ICDMetaData::ruleMap cloneRules;
-    std::map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
     ICDMetaData::ruleMap::const_iterator it = rhs.d->q_rule.begin();
     for (; it != rhs.d->q_rule.end(); ++it) {
         const ICDMetaData::smtMeta &meta = it->second;
@@ -467,7 +467,7 @@ TableNode &TableNode::operator =(const TableNode &rhs)
     }
     setRule(cloneRules);
     // 将帧识别码和帧数据建立连接
-    std::map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
     for (itC = codes.begin(); itC != codes.end(); ++itC) {
         ICDFrameCodeData::smtFrameCode &frameCode = itC->second;
         ICDComplexData::smtComplex complex =

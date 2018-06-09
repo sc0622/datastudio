@@ -34,18 +34,21 @@ public:
     Icd::ObjectPtr metaData() const;
 
     int objectType() const;
+    Q_INVOKABLE QString objectTypeString() const;
+
     QString id() const;
     QString name() const;
     QString mark() const;
     QString desc() const;
-    virtual int childCount();
+
+    bool isChecked() const;
+    Q_INVOKABLE bool isPrivateMark() const;
+    Q_INVOKABLE QString domainOfType(int domainType) const;
+
+    virtual int childCount() const;
     virtual QString text() const;
     virtual QString valueString() const;
-    bool isChecked() const;
-    Q_INVOKABLE QString objectTypeString() const;
-    Q_INVOKABLE bool isPrivateMark() const;
     Q_INVOKABLE virtual void updateData();
-    Q_INVOKABLE QString domainOfType(int domainType) const;
     Q_INVOKABLE virtual void resetData();
     Q_INVOKABLE virtual void clearData();
 

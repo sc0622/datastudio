@@ -2,7 +2,7 @@
 #define GLOBALSTRUCT_H
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <memory>
 
@@ -334,9 +334,9 @@ namespace DMSpace {
     typedef _vectorPS::const_iterator _vectorPS_Cit;
     typedef _vectorIcdTR::iterator _vectorIcdTR_It;
     typedef _vectorIcdTR::const_iterator _vectorIcdTR_Cit;
-    typedef std::map<int, stTableRules> srMap;
-    typedef std::map<std::string, srMap> ssrMap;
-    typedef std::map<std::string, std::vector<stTableRules>> svrMap;
+    typedef std::unordered_map<int, stTableRules> srMap;
+    typedef std::unordered_map<std::string, srMap> ssrMap;
+    typedef std::unordered_map<std::string, std::vector<stTableRules>> svrMap;
 }
 
 #endif // GLOBALSTRUCT_H

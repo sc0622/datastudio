@@ -10,7 +10,7 @@ class JIcdCheckItemPrivate
 public:
     JIcdCheckItemPrivate(JIcdCheckItem *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
+        , data(nullptr)
     {
 
     }
@@ -46,10 +46,7 @@ JIcdCheckItem::~JIcdCheckItem()
 
 void JIcdCheckItem::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdCheckItem);
-
-    //
 }
 
 Icd::CheckItemPtr JIcdCheckItem::metaData() const
@@ -90,18 +87,6 @@ int JIcdCheckItem::checkLength() const
     return d->data->checkLength();
 }
 
-bool JIcdCheckItem::isValid() const
-{
-    Q_D(const JIcdCheckItem);
-    return d->data->isValid();
-}
-
-QString JIcdCheckItem::typeName() const
-{
-    Q_D(const JIcdCheckItem);
-    return QString::fromStdString(d->data->typeName());
-}
-
 QString JIcdCheckItem::checkTypeString() const
 {
     Q_D(const JIcdCheckItem);
@@ -116,6 +101,18 @@ QString JIcdCheckItem::checkTypeString(IcdCore::CheckType type)
 IcdCore::CheckType JIcdCheckItem::stringCheckType(const QString &str)
 {
     return (IcdCore::CheckType)Icd::CheckItem::stringCheckType(str.toStdString());
+}
+
+bool JIcdCheckItem::isValid() const
+{
+    Q_D(const JIcdCheckItem);
+    return d->data->isValid();
+}
+
+QString JIcdCheckItem::typeName() const
+{
+    Q_D(const JIcdCheckItem);
+    return QString::fromStdString(d->data->typeName());
 }
 
 QString JIcdCheckItem::text() const

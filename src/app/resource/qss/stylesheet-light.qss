@@ -820,7 +820,6 @@ QTextEdit {
     color: #ccc;
     selection-color: white;
     selection-background-color: #344;
-    font-family: "Consolas";
     font-weight: bold;
 }
 

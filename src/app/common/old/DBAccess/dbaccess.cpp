@@ -274,7 +274,7 @@ void DBAccess::setTableLimitation(int top)
  * @param [out] dic : 所有字典数据<字典标识, <字典数据集>>
  * @return 执行结果，true：成功；false：失败
  */
-bool DBAccess::readDictionary(std::map<std::string, std::vector<stDictionary> > &dic)
+bool DBAccess::readDictionary(std::unordered_map<std::string, std::vector<stDictionary> > &dic)
 {
     if (!isOpen()) {
         return false;
@@ -316,7 +316,7 @@ bool DBAccess::readDictionary(std::map<std::string, std::vector<stDictionary> > 
 * @return 执行结果，true：成功；false：失败
 */
 bool DBAccess::readDictionary(const std::vector<std::string> &dics, 
-                              std::map<std::string, std::vector<stDictionary> >& result)
+                              std::unordered_map<std::string, std::vector<stDictionary> >& result)
 {
     if (!isOpen()) {
         return false;
@@ -357,7 +357,7 @@ bool DBAccess::readDictionary(const std::vector<std::string> &dics,
 * @param [out] dic : 所有字典数据<字典标识, <字典数据集>>
 * @return 执行结果，true：成功；false：失败
 */
-bool DBAccess::readLocalDictionary(std::map<std::string, std::vector<stDictionary> >& dic)
+bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<stDictionary> >& dic)
 {
     stDictionary stDic;
     std::vector<stDictionary> table;
@@ -1325,7 +1325,7 @@ bool DBAccess::deletePlane(const std::vector<int> &planes)
  * @param [out] system : 所有系统信息<机型码, <分系统信息集>>
  * @return 执行结果，true：成功；false：失败
  */
-bool DBAccess::readSystem(std::map<int, std::vector<stSystem> > &system)
+bool DBAccess::readSystem(std::unordered_map<int, std::vector<stSystem> > &system)
 {
     if (!isOpen()) {
         return false;
@@ -1397,8 +1397,7 @@ bool DBAccess::readSystem(int plane, std::vector<stSystem> &systems)
  * @param [out] icdBase : ICD基本信息集<所属组, <字表信息集>>
  * @return 执行结果，true：成功；false：失败
  */
-bool DBAccess::readICDBase(bool top,
-                           std::map<std::string, std::vector<stICDBase> > &icdBase)
+bool DBAccess::readICDBase(bool top, std::unordered_map<std::string, std::vector<stICDBase> > &icdBase)
 {
     if (!isOpen()) {
         return false;
@@ -2279,8 +2278,7 @@ bool DBAccess::saveRule(const std::string &table,
 * @return 执行结果，true：成功；false：失败
 */
 bool DBAccess::deleteRules(const std::string &table,
-                           const std::map < int,
-                           std::vector < std::string >> &rule)
+                           const std::unordered_map <int, std::vector < std::string >> &rule)
 {
     if (!isOpen()) {
         return false;
@@ -2291,8 +2289,7 @@ bool DBAccess::deleteRules(const std::string &table,
     QString cdtRule;
     QString cdtSubTable;
     int count = 0;
-    std::map < int,
-            std::vector < std::string >> ::const_iterator it = rule.begin();
+    std::unordered_map<int, std::vector < std::string >> ::const_iterator it = rule.begin();
     for (; it != rule.end(); ++it) {
         cdtRule.append(QString("'%1',").arg(it->first));
         count = it->second.size();

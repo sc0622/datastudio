@@ -2,6 +2,7 @@
 #define ICDMETADATA_H
 
 #include "icdelement.h"
+#include <map>
 
 namespace IcdDefine {
 

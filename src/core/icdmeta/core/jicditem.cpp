@@ -9,6 +9,9 @@
 #include "jicdbititem.h"
 #include "jicdcomplexitem.h"
 #include "jicdframeitem.h"
+#include "jicdstringitem.h"
+#include "jicddatetimeitem.h"
+#include "jicdarrayitem.h"
 
 namespace icdmeta {
 
@@ -19,7 +22,7 @@ class JIcdItemPrivate
 public:
     JIcdItemPrivate(JIcdItem *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
+        , data(nullptr)
     {
 
     }
@@ -49,10 +52,8 @@ JIcdItem::JIcdItem(const Icd::ItemPtr &data, QObject *parent)
 
 void JIcdItem::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdItem);
 
-    //
     JIcdObject::registerQmlType();
     JIcdHeaderItem::registerQmlType();
     JIcdCounterItem::registerQmlType();
@@ -62,6 +63,9 @@ void JIcdItem::registerQmlType()
     JIcdBitItem::registerQmlType();
     JIcdComplexItem::registerQmlType();
     JIcdFrameItem::registerQmlType();
+    JIcdStringItem::registerQmlType();
+    JIcdDateTimeItem::registerQmlType();
+    JIcdArrayItem::registerQmlType();
 }
 
 Icd::ItemPtr JIcdItem::metaData() const
@@ -83,6 +87,9 @@ IcdCore::ItemType JIcdItem::itemType() const
     case Icd::ItemBitValue: return IcdCore::ItemBitValue;
     case Icd::ItemComplex: return IcdCore::ItemComplex;
     case Icd::ItemFrame: return IcdCore::ItemFrame;
+    case Icd::ItemString: return IcdCore::ItemString;
+    case Icd::ItemDateTime: return IcdCore::ItemDateTime;
+    case Icd::ItemArray: return IcdCore::ItemArray;
     default: return IcdCore::ItemInvalid;
     };
 }
@@ -184,6 +191,12 @@ JIcdItem *JIcdItem::create(const Icd::ItemPtr &data, QObject *parent)
         return new JIcdComplexItem(JHandlePtrCast<Icd::ComplexItem, Icd::Item>(data), parent);
     case Icd::ItemFrame:
         return new JIcdFrameItem(JHandlePtrCast<Icd::FrameItem, Icd::Item>(data), parent);
+    case Icd::ItemString:
+        return new JIcdStringItem(JHandlePtrCast<Icd::StringItem, Icd::Item>(data), parent);
+    case Icd::ItemDateTime:
+        return new JIcdDateTimeItem(JHandlePtrCast<Icd::DateTimeItem, Icd::Item>(data), parent);
+    case Icd::ItemArray:
+        return new JIcdArrayItem(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(data), parent);
     default:
         break;
     }

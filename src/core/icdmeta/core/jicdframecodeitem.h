@@ -17,33 +17,32 @@ class ICDMETA_EXPORT JIcdFrameCodeItem : public JIcdItem
 {
     Q_OBJECT
     Q_PROPERTY(IcdCore::FrameCodeType frameCodeType READ frameCodeType NOTIFY frameCodeTypeChanged)
-    Q_PROPERTY(QString dataString READ dataString NOTIFY dataStringChanged)
     Q_PROPERTY(icdmeta::JIcdFrameItem* frame READ metaFrame NOTIFY frameChanged)
 public:
-    explicit JIcdFrameCodeItem(const Icd::FrameCodeItemPtr &data, QObject *parent = 0);
+    explicit JIcdFrameCodeItem(const Icd::FrameCodeItemPtr &data, QObject *parent = nullptr);
     ~JIcdFrameCodeItem();
 
     static void registerQmlType();
     Icd::FrameCodeItemPtr metaData() const;
 
     IcdCore::FrameCodeType frameCodeType() const;
-    QString dataString() const;
-    QSharedPointer<icdmeta::JIcdFrameItem> frame() const;
-    icdmeta::JIcdFrameItem *metaFrame() const;
-    QString text() const;
-    QString valueString() const;
-
     Q_INVOKABLE QString frameCoderTypeString() const;
     static QString frameCodeTypeString(IcdCore::FrameCodeType type);
     static IcdCore::FrameCodeType stringFrameCodeType(const QString &str);
 
-    Q_INVOKABLE void updateData();
-    Q_INVOKABLE void resetData();
-    Q_INVOKABLE void clearData();
+    QSharedPointer<icdmeta::JIcdFrameItem> frame() const;
+    icdmeta::JIcdFrameItem *metaFrame() const;
+
+    QString text() const override;
+    QString valueString() const override;
+    QString dataString() const override;
+
+    void updateData() override;
+    void resetData() override;
+    void clearData() override;
 
 signals:
     void frameCodeTypeChanged();
-    void dataStringChanged();
     void frameChanged();
 
 public slots:

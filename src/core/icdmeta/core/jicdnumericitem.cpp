@@ -80,12 +80,6 @@ IcdCore::NumericType JIcdNumericItem::numericType() const
     }
 }
 
-QString JIcdNumericItem::dataString() const
-{
-    Q_D(const JIcdNumericItem);
-    return QString::fromStdString(d->data->dataString());
-}
-
 qreal JIcdNumericItem::scale() const
 {
     Q_D(const JIcdNumericItem);
@@ -120,12 +114,6 @@ int JIcdNumericItem::specCount() const
 {
     Q_D(const JIcdNumericItem);
     return d->data->specs().size();
-}
-
-QString JIcdNumericItem::typeName() const
-{
-    Q_D(const JIcdNumericItem);
-    return QString::fromStdString(d->data->typeName());
 }
 
 QString JIcdNumericItem::specAt(double key) const
@@ -208,6 +196,18 @@ QString JIcdNumericItem::fullValue() const
         text.append(' ' % unit);
     }
     return text;
+}
+
+QString JIcdNumericItem::typeName() const
+{
+    Q_D(const JIcdNumericItem);
+    return QString::fromStdString(d->data->typeName());
+}
+
+QString JIcdNumericItem::dataString() const
+{
+    Q_D(const JIcdNumericItem);
+    return QString::fromStdString(d->data->dataString());
 }
 
 } // end of namespace icdmeta

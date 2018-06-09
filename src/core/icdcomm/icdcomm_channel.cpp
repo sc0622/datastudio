@@ -4,6 +4,7 @@
 #include "icdcomm_filechannel.h"
 #include "icdcomm_udpchannel.h"
 #include <sstream>
+#include <unordered_map>
 
 namespace Icd {
 
@@ -148,13 +149,13 @@ std::string Channel::config() const
 
 bool Channel::setConfig(const std::string &config)
 {
-    const std::map<std::string, std::string> items = parseConfig(config);
+    const std::unordered_map<std::string, std::string> items = parseConfig(config);
     if (items.empty()) {
         return false;
     }
 
     // id
-    std::map<std::string, std::string>::const_iterator citer = items.find("id");
+    std::unordered_map<std::string, std::string>::const_iterator citer = items.find("id");
     if (citer == items.cend()) {
         return false;
     }
@@ -200,9 +201,9 @@ void Channel::setRelayer(const ChannelPtr &relayer)
     d->relayer = relayer;
 }
 
-std::map<std::string, std::string> Channel::parseConfig(const std::string &config)
+std::unordered_map<std::string, std::string> Channel::parseConfig(const std::string &config)
 {
-    std::map<std::string, std::string> items;
+    std::unordered_map<std::string, std::string> items;
 
     std::string::size_type start = 0;
     std::string::size_type end = 0;

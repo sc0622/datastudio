@@ -18,23 +18,23 @@ class ICDMETA_EXPORT JIcdCounterItem : public JIcdItem
     Q_PROPERTY(IcdCore::CounterType counterType READ counterType NOTIFY counterTypeChanged)
     Q_PROPERTY(uchar value READ value NOTIFY valueChanged)
 public:
-    explicit JIcdCounterItem(const Icd::CounterItemPtr &data, QObject *parent = 0);
+    explicit JIcdCounterItem(const Icd::CounterItemPtr &data, QObject *parent = nullptr);
     ~JIcdCounterItem();
 
     static void registerQmlType();
     Icd::CounterItemPtr metaData() const;
 
     IcdCore::CounterType counterType() const;
-    uchar value() const;
-    QString text() const;
-    QString valueString() const;
-    QString fullValue() const;
-
-    Q_INVOKABLE QString dataString() const;
-
     Q_INVOKABLE QString counterTypeString() const;
     static QString counterTypeString(IcdCore::CounterType type);
     static IcdCore::CounterType stringCounterType(const QString &str);
+
+    uchar value() const;
+
+    QString text() const override;
+    QString valueString() const override;
+    QString fullValue() const override;
+    QString dataString() const override;
 
 signals:
     void counterTypeChanged();

@@ -1,7 +1,6 @@
 ﻿#ifndef ICD_ITEM_H
 #define ICD_ITEM_H
 
-#include "icdcore_global.h"
 #include "icd_object.h"
 #include <vector>
 
@@ -19,6 +18,9 @@ enum ItemType {
     ItemBitValue,       /**<  */
     ItemComplex,        /**<  */
     ItemFrame,          /**<  */
+    ItemString,         /**<  */
+    ItemDateTime,       /**<  */
+    ItemArray,          /**<  */
     ItemTotal           /**<  */
 };
 

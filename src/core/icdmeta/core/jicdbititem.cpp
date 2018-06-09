@@ -10,7 +10,7 @@ class JIcdBitItemPrivate
 public:
     JIcdBitItemPrivate(JIcdBitItem *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
+        , data(nullptr)
     {
 
     }
@@ -49,10 +49,7 @@ JIcdBitItem::~JIcdBitItem()
 
 void JIcdBitItem::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdBitItem);
-
-    //
 }
 
 Icd::BitItemPtr JIcdBitItem::metaData() const
@@ -161,6 +158,12 @@ QString JIcdBitItem::fullValue() const
                              int(d->data->bufferSize() * 8), 2, QChar('0'));
 }
 
+QString JIcdBitItem::typeName() const
+{
+    Q_D(const JIcdBitItem);
+    return QString::fromStdString(d->data->typeName());
+}
+
 bool JIcdBitItem::testBit(int offset) const
 {
     Q_D(const JIcdBitItem);
@@ -189,12 +192,6 @@ QString JIcdBitItem::descAt(int offset) const
 {
     Q_D(const JIcdBitItem);
     return QString::fromStdString(d->data->descAt(offset));
-}
-
-QString JIcdBitItem::typeName() const
-{
-    Q_D(const JIcdBitItem);
-    return QString::fromStdString(d->data->typeName());
 }
 
 } // end of namespace icdmeta

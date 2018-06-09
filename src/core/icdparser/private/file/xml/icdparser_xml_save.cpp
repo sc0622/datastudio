@@ -280,8 +280,8 @@ bool XmlParser::saveItemNumeric(TiXmlElement *emItem,
     emItem->SetAttribute("unit", numeric->unit());
 
     // spec
-    const std::map<double, std::string> &specs = numeric->specs();
-    for (std::map<double, std::string>::const_iterator citer = specs.cbegin();
+    const std::unordered_map<double, std::string> &specs = numeric->specs();
+    for (std::unordered_map<double, std::string>::const_iterator citer = specs.cbegin();
          citer != specs.cend(); ++citer) {
         // create spec element
         TiXmlElement *emSpec = new TiXmlElement("spec");
@@ -319,8 +319,8 @@ bool XmlParser::saveItemBit(TiXmlElement *emItem,
     emItem->SetAttribute("typeSize", bit->typeSize());
 
     // spec
-    const std::map<icd_uint64, std::string> &specs = bit->specs();
-    for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
+    const std::unordered_map<icd_uint64, std::string> &specs = bit->specs();
+    for (std::unordered_map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
          citer != specs.cend(); ++citer) {
         // create spec element
         TiXmlElement *emSpec = new TiXmlElement("spec");

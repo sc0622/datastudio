@@ -23,8 +23,12 @@ class ICDMETA_EXPORT JIcdItem : public JIcdObject
     Q_PROPERTY(qreal data READ data WRITE setData NOTIFY dataChanged)
     Q_PROPERTY(double defaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString fullValue READ fullValue NOTIFY fullValueChanged)
+    Q_PROPERTY(QString typeString READ typeString NOTIFY typeStringChanged)
+    Q_PROPERTY(QString dataString READ dataString NOTIFY dataStringChanged)
+    Q_PROPERTY(QString typeName READ typeName NOTIFY typeNameChanged)
+
 public:
-    explicit JIcdItem(const Icd::ItemPtr &data, QObject *parent = 0);
+    explicit JIcdItem(const Icd::ItemPtr &data, QObject *parent = nullptr);
 
     static void registerQmlType();
     Icd::ItemPtr metaData() const;
@@ -35,22 +39,22 @@ public:
     qreal bufferOffset() const;
     qreal data() const;
     double defaultValue() const;
-    virtual QString text() const;
-    virtual QString valueString() const;
+    virtual QString text() const override;
+    virtual QString valueString() const override;
     virtual QString fullValue() const;
 
-    Q_INVOKABLE QString typeString() const;
-    Q_INVOKABLE QString dataString() const;
-    Q_INVOKABLE QString typeName() const;
+    QString typeString() const;
+    virtual QString dataString() const;
+    virtual QString typeName() const;
 
     static QString typeString(IcdCore::ItemType type);
     static IcdCore::ItemType stringType(const QString &str);
 
-    static JIcdItem *create(const Icd::ItemPtr &data, QObject *parent = 0);
+    static JIcdItem *create(const Icd::ItemPtr &data, QObject *parent = nullptr);
 
-    Q_INVOKABLE virtual void updateData();
-    Q_INVOKABLE virtual void resetData();
-    Q_INVOKABLE virtual void clearData();
+    Q_INVOKABLE virtual void updateData() override;
+    Q_INVOKABLE virtual void resetData() override;
+    Q_INVOKABLE virtual void clearData() override;
 
 signals:
     void itemTypeChanged(IcdCore::ItemType value);
@@ -60,6 +64,9 @@ signals:
     void dataChanged(qreal value);
     void defaultValueChanged(qreal value);
     void fullValueChanged();
+    void typeStringChanged();
+    void dataStringChanged();
+    void typeNameChanged();
 
 public slots:
     void setDefaultValue(qreal value);

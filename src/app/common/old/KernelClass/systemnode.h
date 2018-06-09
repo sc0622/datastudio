@@ -12,7 +12,7 @@ class KERNELCLASS_EXPORT SystemNode
 {
 public:
     typedef std::shared_ptr<SystemNode> smtSystem;
-    typedef std::map<int, SystemNode::smtSystem> systemMap;
+    typedef std::unordered_map<int, SystemNode::smtSystem> systemMap;
     typedef std::vector<SystemNode::smtSystem> systemVector;
 
 public:

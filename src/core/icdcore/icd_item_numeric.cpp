@@ -1,7 +1,8 @@
 #include "precomp.h"
 #include "icd_item_numeric.h"
 #include <sstream>
-#include <limits.h>
+#include <unordered_map>
+#include <limits>
 
 namespace Icd {
 
@@ -28,7 +29,7 @@ private:
     double offset;              // 偏置
     LimitItemPtr limit;         // 范围
     std::string unit;           // 单位
-    std::map<double, std::string> specs;  // 特征点,画图或显示使用
+    std::unordered_map<double, std::string> specs;  // 特征点,画图或显示使用
 };
 
 // class NumericItem
@@ -112,7 +113,7 @@ std::string NumericItem::numericTypeString(Icd::NumericType type)
 
 NumericType NumericItem::stringNumericType(const std::string &str)
 {
-    typedef std::map<const std::string, const NumericType> map_strtype;
+    typedef std::unordered_map<std::string, int> map_strtype;
     static const map_strtype::value_type map_data[NumericTotal] = {
         map_strtype::value_type("i8", NumericInt8),
         map_strtype::value_type("u8", NumericUint8),
@@ -130,7 +131,7 @@ NumericType NumericItem::stringNumericType(const std::string &str)
     if (citer == _map.cend()) {
         return NumericInvalid;
     } else {
-        return citer->second;
+        return NumericType(citer->second);
     }
 }
 
@@ -273,12 +274,12 @@ void NumericItem::setUnit(const std::string &unit)
     d->unit = unit;
 }
 
-std::map<double, std::string> NumericItem::specs()
+std::unordered_map<double, std::string> NumericItem::specs()
 {
     return d->specs;
 }
 
-const std::map<double, std::string> &NumericItem::specs() const
+const std::unordered_map<double, std::string> &NumericItem::specs() const
 {
     return d->specs;
 }
@@ -290,8 +291,7 @@ void NumericItem::addSpec(double key, const std::string info)
 
 std::string NumericItem::specAt(double key) const
 {
-    std::map<double, std::string>::const_iterator citer =
-            d->specs.find(key);
+    std::unordered_map<double, std::string>::const_iterator citer = d->specs.find(key);
     if (citer != d->specs.cend()) {
         return citer->second;
     } else {
@@ -449,7 +449,7 @@ Json::Value NumericItem::save() const
     }
     if (!d->specs.empty()) {
         Json::Value specsJson;
-        for (std::map<double, std::string>::const_iterator
+        for (std::unordered_map<double, std::string>::const_iterator
              citer = d->specs.cbegin(); citer != d->specs.cend(); ++citer) {
             Json::Value specJson;
             specJson[Icd::dtoa(citer->first)] = citer->second;

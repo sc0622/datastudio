@@ -12,7 +12,7 @@ class KERNELCLASS_EXPORT PlaneNode
 {
 public:
     typedef std::shared_ptr<PlaneNode> smtPlane;
-    typedef std::map<int, PlaneNode::smtPlane> planeMap;
+    typedef std::unordered_map<int, PlaneNode::smtPlane> planeMap;
     typedef std::vector<PlaneNode::smtPlane> planeVector;
 
 public:

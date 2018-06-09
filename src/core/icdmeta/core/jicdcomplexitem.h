@@ -19,7 +19,7 @@ class ICDMETA_EXPORT JIcdComplexItem : public JIcdItem
     Q_PROPERTY(int childCount READ childCount NOTIFY childCountChanged)
     Q_PROPERTY(icdmeta::JIcdTable *table READ table NOTIFY tableChanged)
 public:
-    explicit JIcdComplexItem(const Icd::ComplexItemPtr &data, QObject *parent = 0);
+    explicit JIcdComplexItem(const Icd::ComplexItemPtr &data, QObject *parent = nullptr);
     ~JIcdComplexItem();
 
     static void registerQmlType();
@@ -28,18 +28,20 @@ public:
     int childCount() const;
     icdmeta::JIcdTable *table() const;
 
-    QString text() const;
-    QString valueString() const;
-    Q_INVOKABLE QString typeName() const;
+    QString text() const override;
+    QString valueString() const override;
+    QString typeName() const override;
+
+    void updateData() override;
+    void resetData() override;
+    void clearData() override;
+
     Q_INVOKABLE icdmeta::JIcdObject *itemByMark(const QString &mark, bool deep = true) const;
     Q_INVOKABLE icdmeta::JIcdTable *tableByMark(const QString &mark, bool deep = true) const;
     Q_INVOKABLE icdmeta::JIcdObject *itemByDomain(
             const QString &domain, int domainType = IcdCore::DomainId) const;
     Q_INVOKABLE icdmeta::JIcdTable *tableByDomain(
             const QString &domain, int domainType = IcdCore::DomainId) const;
-    Q_INVOKABLE void updateData();
-    Q_INVOKABLE void resetData();
-    Q_INVOKABLE void clearData();
 
 signals:
     void childCountChanged();

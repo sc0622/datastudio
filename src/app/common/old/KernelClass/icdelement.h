@@ -33,7 +33,7 @@ class KERNELCLASS_EXPORT ICDElement
 {
 public:
     typedef std::shared_ptr<ICDElement> smtElement;
-    typedef std::map<int, ICDElement::smtElement> elementMap;
+    typedef std::unordered_map<int, ICDElement::smtElement> elementMap;
     typedef std::vector<ICDElement::smtElement> elementVector;
 
 public:

@@ -33,6 +33,11 @@ DataManegement::DataManegement(QWidget *parent)
         }
     }
 
+    jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
+        QVariantList args;
+        args << "edit" << qVariantFromValue((void*)this);
+        jnotify->send("database.config", args);
+    });
     jnotify->on("edit.parser.changed", this, [=](Icd::JNEvent &event){
         dataSourceChanged(event);
     });
@@ -551,7 +556,7 @@ bool DataManegement::loadXmlBaseData(const DMSpace::_vectorPS &infrastructure,
     // 根据所属组进行分类
     count = tables.size();
     TableNode::smtTable table = 0;
-    std::map<std::string, TableNode::tableVector> classified;
+    std::unordered_map<std::string, TableNode::tableVector> classified;
     for (int i = 0; i < count; ++i) {
         if (table = tables[i]) {
             stICDBase icdBase = table->icdBase();
@@ -561,7 +566,7 @@ bool DataManegement::loadXmlBaseData(const DMSpace::_vectorPS &infrastructure,
 
     // 构造机型系统数据
     std::string group;
-    std::map<std::string, TableNode::tableVector>::iterator
+    std::unordered_map<std::string, TableNode::tableVector>::iterator
             itTable = classified.end();
     DMSpace::_vectorPS_Cit itPS = infrastructure.begin();
     for (; itPS != infrastructure.end(); ++itPS) {
@@ -596,7 +601,7 @@ bool DataManegement::loadDic()
     if (NULL == q_dbaccess) {
         return false;
     }
-    std::map<std::string, std::vector<stDictionary> > dic;
+    std::unordered_map<std::string, std::vector<stDictionary> > dic;
     /*
     if (!q_dbaccess->readDictionary(dic)) {
         qDebug() <<"readDictionary failed!";
@@ -622,7 +627,7 @@ bool DataManegement::reloadDic(const std::vector<std::string> &dics)
     if (NULL == q_dbaccess) {
         return false;
     }
-    std::map<std::string, std::vector<stDictionary> > data;
+    std::unordered_map<std::string, std::vector<stDictionary> > data;
     
     /*if (!q_dbaccess->readDictionary(dics, data)) {
         qDebug() <<"readDictionary failed!";
@@ -653,7 +658,7 @@ bool DataManegement::loadInfrastructure(int deep)
         return false;
     }
     // 读取系统
-    std::map<int, std::vector<stSystem> > systemBase;
+    std::unordered_map<int, std::vector<stSystem> > systemBase;
     if (deep >= Icd::ObjectSystem) {
         if (!q_dbaccess->readSystem(systemBase)) {
             qDebug() <<"readSystem failed!";
@@ -661,7 +666,7 @@ bool DataManegement::loadInfrastructure(int deep)
         }
     }
     // 查询表基本信息
-    std::map<std::string, std::vector<stICDBase>> icdBase;
+    std::unordered_map<std::string, std::vector<stICDBase>> icdBase;
     if (deep >= Icd::ObjectTable) {
         if (!q_dbaccess->readICDBase(true, icdBase)) {
             qDebug() <<"readICDBase failed!";
@@ -669,10 +674,8 @@ bool DataManegement::loadInfrastructure(int deep)
         }
     }
     //
-    std::map<std::string, std::vector<stICDBase>>::iterator itBase
-            = icdBase.end();
-    std::map<int, std::vector<stSystem> >::iterator it
-            = systemBase.end();
+    std::unordered_map<std::string, std::vector<stICDBase>>::iterator itBase = icdBase.end();
+    std::unordered_map<int, std::vector<stSystem> >::iterator it = systemBase.end();
     const int count = planeBase.size();
     //    int tableLevel = 1; // 顶层表从1开始
     for (int i = 0; i < count; ++i) {
@@ -751,9 +754,8 @@ bool DataManegement::loadXmlTypeRule(int planeType,
         return false;
     }
     SystemNode::smtSystem system;
-    std::map<std::string, TableNode::tableVector> rules
-            = loadXmlRuleData(tableRules);
-    std::map<std::string, TableNode::tableVector>::iterator it = rules.begin();
+    std::unordered_map<std::string, TableNode::tableVector> rules = loadXmlRuleData(tableRules);
+    std::unordered_map<std::string, TableNode::tableVector>::iterator it = rules.begin();
     // 将数据保存到内存中
     for (; it != rules.end(); ++it) {
         const std::string &group = it->first;
@@ -838,12 +840,9 @@ bool DataManegement::loadXmlSystemRule(int planeType, int system,
     if (!system) {
         return false;
     }
-    std::map<std::string, TableNode::tableVector> rules
-            = loadXmlRuleData(tableRules);
-    const std::string group = QString("%1/%2")
-            .arg(planeType).arg(system).toStdString();
-    std::map<std::string, TableNode::tableVector>::iterator it
-            = rules.find(group);
+    std::unordered_map<std::string, TableNode::tableVector> rules = loadXmlRuleData(tableRules);
+    const std::string group = QString("%1/%2").arg(planeType).arg(system).toStdString();
+    std::unordered_map<std::string, TableNode::tableVector>::iterator it = rules.find(group);
     // 将数据保存到内存中
     if (it != rules.end()) {
         singleSystem->setTable(it->second);
@@ -964,12 +963,9 @@ bool DataManegement::loadXmlTablemRule(int plane, int system,
     if (!system) {
         return false;
     }
-    std::map<std::string, TableNode::tableVector> rules
-            = loadXmlRuleData(tableRules);
-    const std::string group = QString("%1/%2")
-            .arg(plane).arg(system).toStdString();
-    std::map<std::string, TableNode::tableVector>::iterator it
-            = rules.find(group);
+    std::unordered_map<std::string, TableNode::tableVector> rules = loadXmlRuleData(tableRules);
+    const std::string group = QString("%1/%2").arg(plane).arg(system).toStdString();
+    std::unordered_map<std::string, TableNode::tableVector>::iterator it = rules.find(group);
     // 将数据保存到内存中
     if (it != rules.end()) {
         const TableNode::tableVector &tables = it->second;
@@ -1034,7 +1030,7 @@ bool DataManegement::recursiveLoadRule(const std::string &name,
     int size = 0;
     table->setICDBase(icdTR.first);
     const std::vector<stTableRules> &tableRules = icdTR.second;
-    std::map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
     const int count = tableRules.size();
     ICDMetaData::smtMeta metaData = 0;
     for (int i = 0; i < count; ++i) {
@@ -1069,7 +1065,7 @@ bool DataManegement::recursiveLoadRule(const std::string &name,
         table->addRule(metaData);
     }
     // 将帧识别码和帧数据建立连接
-    std::map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
     for (itC = codes.begin(); itC != codes.end(); ++itC) {
         ICDFrameCodeData::smtFrameCode &frameCode = itC->second;
         ICDComplexData::smtComplex complex =
@@ -1258,7 +1254,7 @@ bool DataManegement::loadRuleData(int planeType,
     // 查询关系，将表数据保存到内存中
     // 查询复合表的子表数据，并将之关联起来
     // 根据所属组进行分类，按描述排序
-    std::map<int, TableNode::tableVector> system_table;
+    std::unordered_map<int, TableNode::tableVector> system_table;
     count = topTables.size();
     TableNode::smtTable _table = 0;
     for (int i = 0; i < count; ++i) {
@@ -1288,7 +1284,7 @@ bool DataManegement::loadRuleData(int planeType,
 #endif
     // 将数据保存到内存中
     if (increment) {    // 如果是增量，则只更新
-        std::map<int, TableNode::tableVector>::iterator itIS
+        std::unordered_map<int, TableNode::tableVector>::iterator itIS
                 = system_table.begin();
         SystemNode::smtSystem sysNode;
         for (; itIS != system_table.end(); ++itIS) {
@@ -1303,7 +1299,7 @@ bool DataManegement::loadRuleData(int planeType,
             }
         }
     } else {    // 重新设置数据
-        std::map<int, TableNode::tableVector>::iterator itIS
+        std::unordered_map<int, TableNode::tableVector>::iterator itIS
                 = system_table.begin();
         SystemNode::smtSystem sysNode;
         for (; itIS != system_table.end(); ++itIS) {
@@ -1328,8 +1324,8 @@ void DataManegement::fillRules(TableNode::tableMap &tables,
 {
     ICDMetaData::smtMeta metaData = 0;
     ICDMetaData::ruleMap::iterator itR;
-    std::map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
-    std::map<int, ICDFrameCodeData::smtFrameCode>::iterator itC = codes.begin();
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC = codes.begin();
     TableNode::tableMap::iterator itTM = tables.end();
     DMSpace::svrMap::const_iterator itSSR = rules.begin();
     for (; itSSR != rules.end(); ++itSSR) {
@@ -1376,11 +1372,11 @@ void DataManegement::fillRules(TableNode::tableMap &tables,
 * @param [in] tableRules : 表规则信息
 * @return 表规则信息<所属组，<表规则>>
 */
-std::map<std::string, TableNode::tableVector> DataManegement::loadXmlRuleData(
+std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlRuleData(
         const DMSpace::_vectorIcdTR &tableRules)
 {
     //
-    std::map<std::string, TableNode::tableVector> result;
+    std::unordered_map<std::string, TableNode::tableVector> result;
     if (tableRules.empty()) {
         return result;
     }
@@ -2523,54 +2519,41 @@ JLRESULT DataManegement::saveFile(const Icd::JNEvent &event)
 // 更新数据库配置信息
 JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
 {
-    QVariantList args = event.argument().toList();
-    if (!args.isEmpty()) {
-        return -1;;
-    }
-
-    const QString *type = jVariantFromVoid<QString>(args[0]);
-    if (!type) {
+    Q_UNUSED(event);
+    const Json::Value option = JMain::instance()->option("edit", "parser");
+    if (!option.isObject()) {
         return -1;
     }
 
-    if ("sql" == *type) {
+    const std::string sourceType = option["sourceType"].asString();
+
+    if (sourceType == "sql") {
         q_dataSource = GlobalDefine::dsDatabase;
         // 重新初始化数据库
-        const Json::Value option = JMain::instance()->option("edit", "parser");
-        if (!option.isNull()) {
-            return -1;
-        }
         if (!q_dbaccess) {
             q_dbaccess = new DBAccess();
         }
         if (!q_dbaccess->init(option)) {
-            QMessageBox::warning(parentWidget_,
-                                 QStringLiteral("数据库错误"),
+            QMessageBox::warning(parentWidget_, QStringLiteral("数据库错误"),
                                  q_dbaccess->lastError().c_str());
-            return -1;;
+            return -1;
         }
         // 如果数据源为数据库，加载基础数据
         loadBaseData();
-    } else if (QStringLiteral("file") == *type) {
+    } else if (sourceType == "file") {
         q_dataSource = GlobalDefine::dsFile;
-        if (args.count() < 2) {
-            return -1;;
-        }
-
+        q_defaultPath = option["filePath"].asString();
+#if 0
         QString error;
-        const QString *file = jVariantFromVoid<QString>(args[0]);
-        if (!file) {
-            return -1;
-        }
-        q_defaultPath = file->toStdString();
-
-        //
         QVariantList newArgs;
         newArgs.append(GlobalDefine::dsFile);
         newArgs.append(qVariantFromValue((void*)&error));
         newArgs.append(int(Icd::ObjectTable));
         Icd::JNEvent newEvent("edit.loadInfrastructure", newArgs);
         return notifyRespond(newEvent);
+#else
+        jnotify->send("edit.tree.loadVehicle");
+#endif
     } else {
         q_dataSource = GlobalDefine::dsNone;
     }
@@ -3074,7 +3057,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table,
     table->setICDBase(base);
     ICDMetaData::ruleMap rules = table->allRule();
     ICDMetaData::ruleMap::iterator it = rules.begin();
-    std::map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
     for (; it != rules.end(); ++it) {
         ICDCommonData::smtCommon common
                 = SMT_CONVERT(ICDCommonData, it->second);
@@ -3089,7 +3072,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table,
         }
     }
     // 将帧识别码和帧数据建立连接
-    std::map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
     for (itC = codes.begin(); itC != codes.end(); ++itC) {
         ICDFrameCodeData::smtFrameCode &frameCode = itC->second;
         ICDComplexData::smtComplex complex =

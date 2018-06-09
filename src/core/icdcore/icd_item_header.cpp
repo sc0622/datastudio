@@ -64,9 +64,9 @@ void HeaderItem::setData(double data)
 
 std::string HeaderItem::dataString() const
 {
-    std::stringstream str;
-    str<< std::hex << (unsigned char)data();
-    return str.str();
+    std::stringstream ss;
+    ss << std::hex << (unsigned char)data();
+    return ss.str();
 }
 
 unsigned char HeaderItem::value() const

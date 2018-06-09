@@ -3,6 +3,7 @@
 #include "icd_table.h"
 #include <algorithm>
 #include <sstream>
+#include <unordered_map>
 #include <assert.h>
 
 namespace Icd {
@@ -84,7 +85,7 @@ std::string FrameCodeItem::frameCodeTypeString(FrameCodeType type)
 
 FrameCodeType FrameCodeItem::stringFrameCodeType(const std::string &str)
 {
-    typedef std::map<const std::string, const FrameCodeType> map_strtype;
+    typedef std::unordered_map<std::string, int> map_strtype;
     static const map_strtype::value_type map_data[FrameCodeTotal] = {
         map_strtype::value_type("u8", FrameCodeU8),
         map_strtype::value_type("u16", FrameCodeU16),
@@ -96,7 +97,7 @@ FrameCodeType FrameCodeItem::stringFrameCodeType(const std::string &str)
     if (citer == _map.cend()) {
         return FrameCodeInvalid;
     } else {
-        return citer->second;
+        return FrameCodeType(citer->second);
     }
 }
 

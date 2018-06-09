@@ -250,7 +250,7 @@ bool WorkerPool::loadConfig()
         return false;
     }
     //
-    std::map<std::string, Icd::WorkerPtr> relayers;
+    std::unordered_map<std::string, Icd::WorkerPtr> relayers;
     //
     char *line = new char[1024];
     memset(line, 0, 1024);
@@ -280,14 +280,14 @@ bool WorkerPool::loadConfig()
             continue;
         }
         // parse
-        const std::map<std::string, std::string> items = Icd::Channel::parseConfig(config);
+        const std::unordered_map<std::string, std::string> items = Icd::Channel::parseConfig(config);
         if (items.empty()) {
             continue;
         }
         // create worker
         Icd::WorkerPtr newWorker = Icd::WorkerPtr(new Icd::Worker(newChannel));
         // relayer
-        std::map<std::string, std::string>::const_iterator citer = items.find("relayer");
+        std::unordered_map<std::string, std::string>::const_iterator citer = items.find("relayer");
         if (citer != items.cend()) {
             relayers[citer->second] = newWorker;
         }
@@ -300,7 +300,7 @@ bool WorkerPool::loadConfig()
     line = 0;
 
     // relayers
-    std::map<std::string, Icd::WorkerPtr>::iterator iterRelayers = relayers.begin();
+    std::unordered_map<std::string, Icd::WorkerPtr>::iterator iterRelayers = relayers.begin();
     for (; iterRelayers != relayers.end(); ++iterRelayers) {
         Icd::WorkerPtr &relayer = iterRelayers->second;
         Icd::WorkerPtr worker = workerByChannelIdentity(iterRelayers->first);

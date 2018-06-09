@@ -12,7 +12,7 @@ class KERNELCLASS_EXPORT TableNode
 {
 public:
     typedef std::shared_ptr<TableNode> smtTable;
-    typedef std::map<std::string, TableNode::smtTable> tableMap;
+    typedef std::unordered_map<std::string, TableNode::smtTable> tableMap;
     typedef std::vector<TableNode::smtTable> tableVector;
 
 public:

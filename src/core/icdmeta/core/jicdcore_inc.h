@@ -12,6 +12,9 @@
 #include "jicdbititem.h"
 #include "jicdcomplexitem.h"
 #include "jicdframeitem.h"
+#include "jicdstringitem.h"
+#include "jicddatetimeitem.h"
+#include "jicdarrayitem.h"
 #include "jicdtable.h"
 
 #endif // JICDCORE_INC_H

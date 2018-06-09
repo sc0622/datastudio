@@ -28,7 +28,6 @@ class ICDCORE_EXPORT CheckItem : public Item
 public:
     explicit CheckItem(Object *parent = nullptr);
     explicit CheckItem(const std::string &id, Object *parent = nullptr);
-
     ~CheckItem();
 
     bool isValid() const;

@@ -15,27 +15,23 @@ class JIcdHeaderItemPrivate;
 class ICDMETA_EXPORT JIcdHeaderItem : public JIcdItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString dataString READ dataString NOTIFY dataStringChanged)
-    Q_PROPERTY(QString typeName READ typeName NOTIFY typeNameChanged)
     Q_PROPERTY(uchar value READ value NOTIFY valueChanged)
 public:
-    explicit JIcdHeaderItem(const Icd::HeaderItemPtr &data, QObject *parent = 0);
+    explicit JIcdHeaderItem(const Icd::HeaderItemPtr &data, QObject *parent = nullptr);
     ~JIcdHeaderItem();
 
     static void registerQmlType();
     Icd::HeaderItemPtr metaData() const;
 
-    QString dataString() const;
-    QString typeName() const;
-    uchar value() const;
+    QString typeName() const override;
 
-    QString text() const;
-    QString valueString() const;
-    QString fullValue() const;
+    uchar value() const;
+    QString text() const override;
+    QString valueString() const override;
+    QString fullValue() const override;
+    QString dataString() const override;
 
 signals:
-    void dataStringChanged();
-    void typeNameChanged();
     void valueChanged();
 
 public slots:

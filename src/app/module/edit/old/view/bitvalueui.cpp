@@ -473,8 +473,8 @@ void BitValueUI::init()
     // 特征值表
     if (q_table) {
         q_table->clearContents();
-        std::map<double, std::string> values = q_data->values();
-        std::map<double, std::string>::iterator it = values.begin();
+        std::unordered_map<double, std::string> values = q_data->values();
+        std::unordered_map<double, std::string>::iterator it = values.begin();
         for (; it != values.end(); ++it) {
             _Eigenvalue data;
 
@@ -717,7 +717,7 @@ bool BitValueUI::dataValid()
     // 特征值
     QString value;
     QString desc;
-    std::map<double, std::string> values;
+    std::unordered_map<double, std::string> values;
     const int count = q_table->rowCount();
     for (int i = 0; i < count; ++i) {
         value = q_table->itemValue(i, 0).toString();

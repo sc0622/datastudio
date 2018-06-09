@@ -4,6 +4,7 @@
 #include "icdcomm_global.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace Icd {
 
@@ -197,7 +198,7 @@ public:
      * @param config
      * @return tuple<name, value>
      */
-    static std::map<std::string, std::string> parseConfig(const std::string &config);
+    static std::unordered_map<std::string, std::string> parseConfig(const std::string &config);
 
 private:
     std::shared_ptr<ChannelData> d;

@@ -52,7 +52,7 @@ private:
     void updateMapOne(int index, const _Eigenvalue &data,
                       int option = GlobalDefine::optNew);
     // 获取特征值表数据
-    std::map<double, std::string> tableValues() const;
+    std::unordered_map<double, std::string> tableValues() const;
 
 private:
     ICDBitData::smtBit  q_data; // 界面数据
