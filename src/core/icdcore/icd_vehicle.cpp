@@ -127,7 +127,7 @@ SystemPtr Vehicle::systemByMark(const std::string &mark) const
 
 int Vehicle::childCount() const
 {
-    int count = d->systems.size();
+    int count = int(d->systems.size());
 
     // children
     for (SystemPtrArray::const_iterator citer = d->systems.cbegin();

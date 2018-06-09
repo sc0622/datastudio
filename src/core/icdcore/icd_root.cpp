@@ -122,7 +122,7 @@ VehiclePtr Root::vehicleByMark(const std::string &mark) const
 
 int Root::childCount() const
 {
-    int count = d->vehicles.size();
+    int count = int(d->vehicles.size());
 
     // children
     for (VehiclePtrArray::const_iterator citer = d->vehicles.cbegin();

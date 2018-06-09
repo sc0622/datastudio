@@ -126,7 +126,7 @@ NumericType NumericItem::stringNumericType(const std::string &str)
         map_strtype::value_type("f32", NumericFloat32),
         map_strtype::value_type("f64", NumericFloat64)
     };
-    static const map_strtype _map(map_data, map_data + _countof(map_data));
+    static const map_strtype _map(map_data, map_data + NumericTotal);
     map_strtype::const_iterator citer = _map.find(str);
     if (citer == _map.cend()) {
         return NumericInvalid;
@@ -328,7 +328,7 @@ std::pair<double, double> NumericItem::dataRange() const
         case NumericInt32:
         case NumericFloat32:
         case NumericFloat64:
-            range.first = double(-(0x1i64 << (typeSize - 1)));
+            range.first = double(-(1ll << (typeSize - 1)));
             break;
         default:
             break;
@@ -343,14 +343,14 @@ std::pair<double, double> NumericItem::dataRange() const
         case NumericUint16:
         case NumericUint32:
         case NumericUint64:
-            range.second = double((0x1i64 << typeSize) - 1);
+            range.second = double((1ll << typeSize) - 1);
             break;
         case NumericInt8:
         case NumericInt16:
         case NumericInt32:
         case NumericFloat32:
         case NumericFloat64:
-            range.second = double((0x1i64 << (typeSize - 1)) - 1);
+            range.second = double((1ll << (typeSize - 1)) - 1);
             break;
         default:
             break;

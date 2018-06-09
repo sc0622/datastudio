@@ -89,7 +89,7 @@ CounterType CounterItem::stringCounterType(const std::string &str)
         map_strtype::value_type("u32", CounterU32),
         map_strtype::value_type("u64", CounterU64)
     };
-    static const map_strtype _map(map_data, map_data + _countof(map_data));
+    static const map_strtype _map(map_data, map_data + CounterTotal);
     map_strtype::const_iterator citer = _map.find(str);
     if (citer == _map.cend()) {
         return CounterInvalid;

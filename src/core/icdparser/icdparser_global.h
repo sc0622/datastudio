@@ -20,12 +20,12 @@
 #define ICDPARSER_EXPORT
 #endif
 
-#if defined(ICDCORE_LIB) || defined(BUILDING_NODE_EXTENSION)
+#if defined(ICDCORE_LIB) || defined(BUILDING_NODE_EXTENSION) || defined(BUILDING_APP)
 #include "icdcore/icdcore_global.h"
 #endif
 
-#if defined(ICDWORKER_LIB) || defined(BUILDING_NODE_EXTENSION)
-#include "icdworker/icdworker_global.h"
+#if defined(ICDWORKER_LIB) || defined(BUILDING_NODE_EXTENSION) || defined(BUILDING_APP)
+//#include "icdworker/icdworker_global.h"
 #endif
 
 ////////////////////////////////
@@ -39,11 +39,6 @@ struct JParserPtrHandle
 {
     ParserPtr parser;
 };
-
-#ifdef QT_CORE_LIB
-#include <QMetaType>
-Q_DECLARE_METATYPE(JParserPtrHandle)
-#endif
 
 } // end of namespace Icd
 

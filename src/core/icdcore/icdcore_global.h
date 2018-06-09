@@ -113,7 +113,10 @@ std::string ICDCORE_EXPORT u64toa(icd_uint64 value, bool hex = false);
 double ICDCORE_EXPORT atod(const std::string &str);
 std::string ICDCORE_EXPORT dtoa(double value);
 
+std::string ICDCORE_EXPORT stringSection(const char *ch, char sep, int start = 0, int end = -1);
 std::string ICDCORE_EXPORT stringSection(const std::string &str, char sep, int start = 0, int end = -1);
+std::string ICDCORE_EXPORT stringSection(const char *ch, const std::string &sep,
+                                         int start = 0, int end = -1);
 std::string ICDCORE_EXPORT stringSection(const std::string &str, const std::string &sep,
                                          int start = 0, int end = -1);
 void ICDCORE_EXPORT splitString(const std::string &str, const std::string &delim,

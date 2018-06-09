@@ -127,7 +127,7 @@ TablePtr System::tableByMark(const std::string &mark) const
 
 int System::childCount() const
 {
-    int count = d->tables.size();
+    int count = static_cast<int>(d->tables.size());
 
     // children
     for (TablePtrArray::const_iterator citer = d->tables.cbegin();

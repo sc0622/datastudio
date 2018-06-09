@@ -56,7 +56,42 @@ private:
     LONGLONG	q_ocount;	// 对象初始化时的时间
 };
 #else
-#error("unupported operate system!")
+
+class JPreciTimer
+{
+public:
+    explicit JPreciTimer(void) {}
+    ~JPreciTimer(void) {}
+
+    //
+    void reset() {}
+
+    // 返回CPU计数器值(us)
+    inline long long uscount() const
+    {
+        return 0;
+    }
+
+    // 返回CPU计数器值(ms)
+    inline long long mscount() const
+    {
+        return 0;
+    }
+
+    // 返回从初始化到现在的时间间隔(us)
+    inline long long ustick() const
+    {
+        return 0;
+    }
+
+    // 返回从初始化到现在的时间间隔(ms)
+    inline long long mstick() const
+    {
+        return 0;
+    }
+
+private:
+};
 #endif
 
 #endif  // JPRECITIMER_H

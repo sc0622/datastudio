@@ -604,18 +604,18 @@ TablePtr Table::tableByMark(const std::string &mark, bool deep) const
         }
     }
 
-    return TablePtr(0);
+    return TablePtr();
 }
 
 ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType) const
 {
     if (domain.empty()) {
-        return ObjectPtr(0);
+        return ObjectPtr();
     }
 
-    int index = domain.find_first_of('/');
+    std::string::size_type index = domain.find_first_of('/');
     std::string current, next;
-    if (index == -1) {
+    if (index == std::string::npos) {
         current = domain;
     } else {
         current = domain.substr(0, index);
@@ -675,18 +675,18 @@ ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType) 
         }
     }
 
-    return ObjectPtr(0);
+    return ObjectPtr();
 }
 
 TablePtr Table::tableByDomain(const std::string &domain, Icd::DomainType domainType) const
 {
     if (domain.empty()) {
-        return TablePtr(0);
+        return TablePtr();
     }
 
-    int index = domain.find_first_of('/');
+    std::string::size_type index = domain.find_first_of('/');
     std::string current, next;
-    if (index == -1) {
+    if (index == std::string::npos) {
         current = domain;
     } else {
         current = domain.substr(0, index);

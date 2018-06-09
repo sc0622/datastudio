@@ -2,10 +2,12 @@
 #include "icdparser.h"
 #include "icdcore/icd_root.h"
 #include "icdcore/icd_vehicle.h"
-#include "private/generate/icdgenerate.h"
 #include <QMutexLocker>
 #include "private/file/icdparser_file.h"
+#if defined(_MSC_VER)
+#include "private/generate/icdgenerate.h"
 #include "private/sql/icdparser_sql.h"
+#endif
 
 namespace Icd {
 
@@ -56,7 +58,9 @@ ParserPtr Parser::create(const Json::Value &config)
     if (sourceType == "file") {
         return FileParser::create(config);
     } else if (sourceType == "sql") {
+#if defined(_MSC_VER)
         return SqlParser::create(config);
+#endif
     }
 
     return ParserPtr();
@@ -215,7 +219,7 @@ bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,
     if (!item) {
         return false;
     }
-
+#if defined(_MSC_VER)
     Json::Value config;
     config["filePath"] = filePath;
     GeneratorPtr generator = Generator::create(config, this);
@@ -224,12 +228,19 @@ bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,
     }
 
     return generator->generate(item, exportAll, rt, filePath);
+#else
+    Q_UNUSED(item);
+    Q_UNUSED(exportAll);
+    Q_UNUSED(rt);
+    Q_UNUSED(filePath);
+    return false;
+#endif
 }
 
 bool Parser::saveAs(const TablePtr &table, const std::string &filePath)
 {
     setProgressValue(0);
-
+#if defined(_MSC_VER)
     Json::Value config;
     config["filePath"] = filePath;
     GeneratorPtr generator = Generator::create(config, this);
@@ -238,6 +249,11 @@ bool Parser::saveAs(const TablePtr &table, const std::string &filePath)
     }
 
     return generator->generate(table, filePath);
+#else
+    Q_UNUSED(table);
+    Q_UNUSED(filePath);
+    return false;
+#endif
 }
 
 std::string Parser::message() const

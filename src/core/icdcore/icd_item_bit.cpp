@@ -20,6 +20,7 @@ public:
     }
 
     static std::string &trim(std::string &str);
+    static std::string trim(const std::string &str);
 
 private:
     int bitStart;   // 起始比特位,从0开始
@@ -36,6 +37,17 @@ std::string &BitItemData::trim(std::string &str)
     str.erase(0, str.find_first_not_of(' '));
     str.erase(str.find_last_not_of(' ') + 1);
     return str;
+}
+
+std::string BitItemData::trim(const std::string &str)
+{
+    if (str.empty()) {
+        return str;
+    }
+    std::string _str = str;
+    _str.erase(0, _str.find_first_not_of(' '));
+    _str.erase(_str.find_last_not_of(' ') + 1);
+    return _str;
 }
 
 // class BitItem
@@ -130,7 +142,7 @@ void BitItem::setData(double data)
     }
 
     //
-    const icd_uint64 mask = (((1ui64 << d->bitCount) - 1) << d->bitStart);
+    const icd_uint64 mask = (((1ull << d->bitCount) - 1) << d->bitStart);
     value = (value & (~mask)) | (((icd_uint64)data << d->bitStart) & mask);
 
     //
@@ -150,7 +162,7 @@ void BitItem::setData(double data)
 bool BitItem::testBit(int offset) const
 {
     const uint32_t data = (uint32_t)this->data();
-    return ((data & (1ui64 << offset)) != 0);
+    return ((data & (1ull << offset)) != 0);
 }
 
 std::string BitItem::dataString() const
@@ -171,7 +183,7 @@ std::string BitItem::dataString() const
         std::string str;
         std::unordered_map<icd_uint64,  std::string>::const_iterator citer = d->specs.begin();
         for (citer = d->specs.begin(); citer != d->specs.end(); ++citer) {
-            if ((data >> citer->first) & 1ui64) {
+            if ((data >> citer->first) & 1ull) {
                 str.append(citer->second).append(" | ");
             }
         }
@@ -224,7 +236,7 @@ void BitItem::setTypeSize(int size)
 
 icd_uint64 BitItem::mask() const
 {
-    return (((1ui64 << d->bitCount) - 1) << d->bitStart);
+    return (((1ull << d->bitCount) - 1) << d->bitStart);
 }
 
 std::unordered_map<icd_uint64, std::string> BitItem::specs()
@@ -286,7 +298,8 @@ std::string BitItem::nameOf(const std::string &spec)
     if (index == std::string::npos) {
         return spec;
     } else {
-        return BitItemData::trim(spec.substr(0, index));
+        std::string _str = spec.substr(0, index);
+        return BitItemData::trim(_str);
     }
 
     return std::string();
@@ -304,7 +317,8 @@ std::string BitItem::descAt(int offset) const
         return std::string();
     }
 
-    std::string descs = BitItemData::trim(spec.substr(index + 1));
+    std::string _section = spec.substr(index + 1);
+    std::string descs = BitItemData::trim(_section);
     if (descs.empty()) {
         return std::string();
     }
@@ -315,13 +329,15 @@ std::string BitItem::descAt(int offset) const
         if (index == std::string::npos) {
             return std::string();
         } else {
-            return BitItemData::trim(descs.substr(index + 1));
+            _section = descs.substr(index + 1);
+            return BitItemData::trim(_section);
         }
     } else {
         if (index == std::string::npos) {
             return descs;
         } else {
-            return BitItemData::trim(descs.substr(0, index));
+            _section = descs.substr(0, index);
+            return BitItemData::trim(_section);
         }
     }
 

@@ -348,9 +348,9 @@ ObjectPtr FrameItem::itemByDomain(const std::string &domain, DomainType domainTy
         return ItemPtr(0);
     }
 
-    int index = domain.find_first_of('/');
+    std::string::size_type index = domain.find_first_of('/');
     std::string current, next;
-    if (index == -1) {
+    if (index == std::string::npos) {
         current = domain;
     } else {
         current = domain.substr(0, index);

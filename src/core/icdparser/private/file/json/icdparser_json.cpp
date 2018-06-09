@@ -1,13 +1,17 @@
 #include "precomp.h"
 #include "icdparser_json.h"
 #include "icdcore/3rdpart/jsoncpp/json/json.h"
+#if defined(_MSC_VER)
 #include "../../../../icdwidget/icdwidget_global.h"
+#endif
 
 namespace Icd {
 
 JsonParser::JsonParser(const Json::Value &config)
     : FileParser(config)
+    #if defined(_MSC_VER)
     , Generator(Generator::GeneratorTypeJson)
+    #endif
 {
 
 }
@@ -172,7 +176,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     for (Json::ValueConstIterator citer = itemsJson.begin();
          citer != itemsJson.end(); ++citer) {
         const Json::Value &itemJson = *citer;
-        Icd::ItemPtr item = Icd::Item::create(Icd::itoa(items.size() + 1),
+        Icd::ItemPtr item = Icd::Item::create(Icd::itoa(int(items.size() + 1)),
                                               Icd::Item::stringType(itemJson["type"].asString()));
         if (!item) {
             continue;
@@ -677,6 +681,7 @@ Json::Value JsonParser::queryTable(const std::string &tableId) const
     return tableJson;
 }
 
+#if defined(_MSC_VER)
 bool JsonParser::startup()
 {
     if (!Generator::startup()) {
@@ -1240,5 +1245,8 @@ Json::Value JsonParser::generateJson(const QStandardItem *item, Json::Value &jso
 
     return Json::Value();
 }
+#else
+
+#endif
 
 } // end of namespace Icd

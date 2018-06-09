@@ -1,15 +1,20 @@
 ﻿#include "precomp.h"
 #include "icdparser_file.h"
 #include "icdparser_file_p.h"
-#include "../../../icdwidget/icdwidget_global.h"
 #include "json/icdparser_json.h"
-#include "xml/icdparser_xml.h"
-#include <fstream>
-#include <io.h>
 #if defined(_MSC_VER)
+#include "../../../icdwidget/icdwidget_global.h"
+#include "xml/icdparser_xml.h"
+#endif
+#include <fstream>
+#if defined(_MSC_VER)
+#include <io.h>
 #include <direct.h>
 #include <stdint.h>
 #elif defined(__unix__)
+#include <unistd.h>
+#include <sys/stat.h>
+#elif defined(__APPLE__)
 #include <unistd.h>
 #include <sys/stat.h>
 #else
@@ -72,7 +77,9 @@ FileParserPtr FileParser::create(const Json::Value &config)
     if (Icd::endsWith(filePath, ".json")) {
         return JsonParserPtr(new JsonParser(config));
     } else if (Icd::endsWith(filePath, ".xml")) {
+#if defined(_MSC_VER)
         return XmlParserPtr(new XmlParser(config));
+#endif
     }
 
     return FileParserPtr();

@@ -1,16 +1,20 @@
 #include "precomp.h"
 #include "icdcore_global.h"
 #include "3rdpart/jsoncpp/json/json.h"
+#include "3rdpart/jsoncpp/json_tool.h"
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include <io.h>
 #include <assert.h>
 
 #if defined(_MSC_VER)
+#include <io.h>
 #include <direct.h>
 #include <stdint.h>
 #elif defined(__unix__)
+#include <unistd.h>
+#include <sys/stat.h>
+#elif defined(__APPLE__)
 #include <unistd.h>
 #include <sys/stat.h>
 #else
@@ -58,7 +62,11 @@ int atoi(const std::string &str)
 
 icd_uint64 strtou64(const std::string &str, int radix)
 {
+#if defined(_MSC_VER)
     return _strtoui64(str.c_str(), 0, radix);
+#else
+    return strtoull(str.c_str(), 0, radix);
+#endif
 }
 
 icd_uint64 atou64(const std::string &str)
@@ -110,9 +118,19 @@ std::string dtoa(double value)
     return oss.str();
 }
 
+std::string stringSection(const char *ch, char sep, int start, int end)
+{
+    return stringSection(std::string(ch), std::string(&sep, 1), start, end);
+}
+
 std::string stringSection(const std::string &str, char sep, int start, int end)
 {
     return stringSection(str, std::string(&sep, 1), start, end);
+}
+
+std::string stringSection(const char *ch, const std::string &sep, int start, int end)
+{
+    return stringSection(std::string(ch), sep, start, end);
 }
 
 std::string stringSection(const std::string &str, const std::string &sep, int start, int end)
@@ -228,42 +246,12 @@ std::string &replaceString(std::string &str, const std::string &old_str,
 // add by iclosue
 int createPath(const std::string &path)
 {
-    uint32_t pathLength = path.length();
-    if (pathLength > MAX_PATH_LEN) {
-        return -1;
-    }
-
-    char tPath[MAX_PATH_LEN] = {0};
-    for (uint32_t i = 0;i < pathLength; ++i) {
-        tPath[i] = path[i];
-        if (tPath[i] == '\\' || tPath[i] == '/') {
-            if (ACCESS(tPath, 0) != 0) {
-                int ret = MKDIR(tPath);
-                if (ret != 0) {
-                    return ret;
-                }
-            }
-        }
-    }
-
-    return 0;
+    return Json::createPath(path);
 }
 
 std::string pathOfFile(const std::string &filePath)
 {
-    std::string path = filePath;
-    int index = path.find_last_of('/');
-    if (index == -1) {
-        index = path.find_last_of('\\');
-    }
-
-    if (index == -1) {
-        path = std::string();
-    } else {
-        path = path.substr(0, index + 1);
-    }
-
-    return path;
+    return Json::pathOfFile(filePath);
 }
 
 int asciiCountOfSize(int format, int size)

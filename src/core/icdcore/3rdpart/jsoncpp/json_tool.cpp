@@ -18,7 +18,7 @@ namespace Json {
 
 int createPath(const std::string &path)
 {
-    uint32_t pathLength = path.length();
+    std::string::size_type pathLength = path.length();
     if (pathLength > JSON_MAX_PATH_LEN) {
         return -1;
     }
@@ -194,9 +194,9 @@ bool make(const std::string &filePath, const Value &root, bool create, bool fast
 
     std::string contents;
     if (fast) {
-        contents = Json::FastWriter().write(root);
+        contents = FastWriter().write(root);
     } else {
-        contents = Json::StyledWriter().write(root);
+        contents = StyledWriter().write(root);
     }
 
     std::ofstream ofs;

@@ -24,17 +24,25 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include <io.h>
 #include <assert.h>
 
 #if defined(_MSC_VER)
+#include <io.h>
 #include <direct.h>
 #include <stdint.h>
 #elif defined(__unix__)
 #include <unistd.h>
 #include <sys/stat.h>
+#elif defined(__APPLE__)
+#include <unistd.h>
+#include <stdint.h>
+#include <sys/stat.h>
 #else
 #error(not supported os!)
+#endif
+
+#ifdef QT_CORE_LIB
+#include <QFile>
 #endif
 
 /* This header provides common string manipulation support, such as UTF-8,
@@ -54,7 +62,7 @@ static char getDecimalPoint() {
 }
 
 /// Converts a unicode code-point to UTF-8.
-inline JSONCPP_STRING codePointToUTF8(unsigned int cp) {
+static inline JSONCPP_STRING codePointToUTF8(unsigned int cp) {
     JSONCPP_STRING result;
 
     // based on description from http://en.wikipedia.org/wiki/UTF-8
@@ -96,7 +104,7 @@ typedef char UIntToStringBuffer[uintToStringBufferSize];
  * @param current Input/Output string buffer.
  *        Must have at least uintToStringBufferSize chars free.
  */
-inline void uintToString(LargestUInt value, char*& current) {
+static inline void uintToString(LargestUInt value, char*& current) {
     *--current = 0;
     do {
         *--current = static_cast<char>(value % 10U + static_cast<unsigned>('0'));
@@ -109,7 +117,7 @@ inline void uintToString(LargestUInt value, char*& current) {
  * We had a sophisticated way, but it did not work in WinCE.
  * @see https://github.com/open-source-parsers/jsoncpp/pull/9
  */
-inline void fixNumericLocale(char* begin, char* end) {
+static inline void fixNumericLocale(char* begin, char* end) {
     while (begin < end) {
         if (*begin == ',') {
             *begin = '.';
@@ -118,7 +126,7 @@ inline void fixNumericLocale(char* begin, char* end) {
     }
 }
 
-inline void fixNumericLocaleInput(char* begin, char* end) {
+static inline void fixNumericLocaleInput(char* begin, char* end) {
     char decimalPoint = getDecimalPoint();
     if (decimalPoint != '\0' && decimalPoint != '.') {
         while (begin < end) {
@@ -191,7 +199,7 @@ bool JSON_API merge(const Value &source, Value &target);
 
 // class Serializable
 
-class Serializable
+class JSON_API Serializable
 {
 public:
     virtual ~Serializable() {}

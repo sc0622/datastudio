@@ -1,6 +1,8 @@
 ﻿#include "precomp.h"
 #include "jprecitimer.h"
 
+#ifdef _MSC_VER
+
 JPreciTimer::JPreciTimer() : q_freq(0), q_ocount(0)
 {
     LARGE_INTEGER lcount;
@@ -25,3 +27,7 @@ void JPreciTimer::reset()
         q_ocount = 0;
     }
 }
+
+#else
+
+#endif

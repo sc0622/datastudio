@@ -4,7 +4,7 @@
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
 #if !defined(JSON_IS_AMALGAMATION)
-#include <json/writer.h>
+#include "json/writer.h"
 #include "json_tool.h"
 #endif // if !defined(JSON_IS_AMALGAMATION)
 #include <iomanip>
@@ -157,7 +157,7 @@ JSONCPP_STRING valueToString(double value, bool useSpecialFloats, unsigned int p
 JSONCPP_STRING valueToString(double value) { return valueToString(value, false, 17); }
 
 JSONCPP_STRING valueToString(bool value) { return value ? "true" : "false"; }
-
+/*
 static bool isAnyCharRequiredQuoting(char const* s, size_t n) {
   assert(s || !n);
 
@@ -169,7 +169,7 @@ static bool isAnyCharRequiredQuoting(char const* s, size_t n) {
   }
   return false;
 }
-
+*/
 static unsigned int utf8ToCodepoint(const char*& s, const char* e) {
   const unsigned int REPLACEMENT_CHARACTER = 0xFFFD;
 
