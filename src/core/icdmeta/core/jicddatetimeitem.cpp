@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "jicddatetimeitem.h"
+#include "icdcore/icd_item_datetime.h"
 
 namespace icdmeta {
 

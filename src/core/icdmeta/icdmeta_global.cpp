@@ -2,6 +2,8 @@
 #include "icdmeta_global.h"
 #include "core/jicdtable.h"
 #include "channel/JChannelPool.h"
+#include "protocol/JDataChannelMgr.h"
+#include "protocol/JFilterChannel.h"
 #include "protocol/JProtocolPool.h"
 #include "common/JLangModel.h"
 #include "common/JLogModel.h"
@@ -32,13 +34,10 @@ JCallbackEvent::JCallbackEvent(QJSValue callback, const QJSValueList &arguments)
 {
     data->callback = callback;
     data->arguments = arguments;
-
-    Q_INIT_RESOURCE(resource);
 }
 
 JCallbackEvent::~JCallbackEvent()
 {
-    Q_CLEANUP_RESOURCE(resource);
     delete data;
 }
 
@@ -136,6 +135,8 @@ void IcdCore::registerQmlType()
     icdmeta::JIcdTable::registerQmlType();
     icdmeta::JChannelPool::registerQmlType();
     icdmeta::JProtocolPool::registerQmlType();
+    icdmeta::JDataChannelMgr::registerQmlType();
+    icdmeta::JFilterChannel::registerQmlType();
     icdmeta::JCmdModel::registerQmlType();
 }
 
@@ -203,7 +204,7 @@ quint8 IcdCore::sumOfString(const QString &str)
         if (c == ' ') {
             continue;
         }
-        uchar uc = (uchar)c;
+        uchar uc = uchar(c);
         sum += uc;
     }
     return sum;
@@ -256,7 +257,7 @@ void IcdCore::delayCall(QJSValue callback, const QJSValue &args, qint64 msecs)
             d->timerDelay->disconnect(this);
             QCoreApplication::postEvent(this, new icdmeta::JCallbackEvent(callback, d->parseArgs(args)));
         });
-        d->timerDelay->start(msecs);
+        d->timerDelay->start(int(msecs));
     } else {
         QCoreApplication::postEvent(this, new icdmeta::JCallbackEvent(callback, d->parseArgs(args)));
     }
@@ -375,7 +376,7 @@ QString IcdCore::parsePath(const QString &path, bool canonical) const
 {
     QString _path = path;
     const QString appDir = QCoreApplication::applicationDirPath();
-    _path.replace("@AppDir@", appDir)
+    _path = _path.replace("@AppDir@", appDir)
             .replace("@ConfigDir@", configDir())
             .replace("@ThisDir@", QDir(appDir + "/../").canonicalPath());
     if (canonical) {
@@ -388,7 +389,7 @@ QString IcdCore::restorePath(const QString &path) const
 {
     QString _path = path;
     const QString appDir = QCoreApplication::applicationDirPath();
-    _path.replace(appDir, "@AppDir@")
+    _path = _path.replace(appDir, "@AppDir@")
             .replace(configDir(), "@ConfigDir@")
             .arg(QDir(appDir + "/../").canonicalPath(), "@ThisDir@");
     return _path;
@@ -415,13 +416,15 @@ void IcdCore::setFontSize(int size)
 void IcdCore::reset()
 {
     icdmeta::JCmdModel::instance()->reset();
+    icdmeta::JDataChannelMgr::instance()->reset();
+    icdmeta::JFilterChannel::instance()->reset();
     icdmeta::JProtocolPool::instance()->reset();
     icdmeta::JChannelPool::instance()->reset();
 }
 
 void IcdCore::customEvent(QEvent *event)
 {
-    switch (event->type()) {
+    switch (static_cast<int>(event->type())) {
     case icdmeta::Event_Callback:
     {
         auto cbEvent = reinterpret_cast<icdmeta::JCallbackEvent *>(event);
@@ -454,6 +457,7 @@ IcdCore::~IcdCore()
             callback();
         }
     }
+
     delete d;
 
     QCoreApplication::removeTranslator(d->translator);

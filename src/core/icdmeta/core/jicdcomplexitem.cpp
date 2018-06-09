@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "jicdcomplexitem.h"
+#include "icdcore/icd_item_complex.h"
 #include "jicdtable.h"
 
 namespace icdmeta {

@@ -25,7 +25,7 @@ public:
     static void registerQmlType();
     Icd::ComplexItemPtr metaData() const;
 
-    int childCount() const;
+    int childCount() const override;
     icdmeta::JIcdTable *table() const;
 
     QString text() const override;

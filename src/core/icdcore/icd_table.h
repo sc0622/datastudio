@@ -74,7 +74,7 @@ public:
     std::string typeName() const;
     std::string codeName() const;
 
-    void setParent(Object *parent);
+    void setParent(Object *parent) override;
     int childCount() const override;
     void resetData() override;
     void clearData() override;

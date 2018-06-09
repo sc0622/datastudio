@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "jicdcounteritem.h"
+#include "icdcore/icd_item_counter.h"
 
 namespace icdmeta {
 

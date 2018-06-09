@@ -1,7 +1,7 @@
 #ifndef ICDMETA_GLOBAL_H
 #define ICDMETA_GLOBAL_H
 
-#ifdef ICDCORE_LIB
+#if defined(ICDCORE_LIB) || defined(BUILDING_APP)
 #include "icdcore/icdcore_global.h"
 #ifdef ICDCORE_JSON_LIB
 #include "icdcore/3rdpart/jsoncpp/json_tool.h"

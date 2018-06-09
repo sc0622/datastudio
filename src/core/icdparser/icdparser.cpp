@@ -18,8 +18,8 @@ public:
     ParserData()
         : progressValue(0)
         , canceledSaveAs(true)
-        , mutex(QMutex::Recursive)
         , isBeginModify(false)
+        , mutex(QMutex::Recursive)
     {
 
     }
@@ -28,8 +28,8 @@ private:
     std::string message;
     qreal progressValue;
     bool canceledSaveAs;
-    QMutex mutex;
     bool isBeginModify;
+    QMutex mutex;
 };
 
 Parser::Parser(const Json::Value &config)
@@ -128,6 +128,7 @@ bool Parser::save(const std::string &domain, const ObjectPtr &object,
                   bool merge, bool fast) const
 {
     Q_UNUSED(domain);
+    Q_UNUSED(merge);
     Q_UNUSED(fast);
     if (!object) {
         return false;
@@ -150,6 +151,7 @@ bool Icd::Parser::saveJsonArray(const std::string &path, const Json::Value &valu
 {
     Q_UNUSED(path);
     Q_UNUSED(value);
+    Q_UNUSED(unique);
     Q_UNUSED(fast);
     return false;
 }

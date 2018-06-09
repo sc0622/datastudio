@@ -5,7 +5,6 @@
 #include "icdcore/icdcore_global.h"
 
 namespace Icd {
-template<typename T> class std::shared_ptr;
 class Channel;
 typedef std::shared_ptr<Channel> ChannelPtr;
 }

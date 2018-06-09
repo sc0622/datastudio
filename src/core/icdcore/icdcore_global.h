@@ -28,18 +28,41 @@
 
 ////////////////////////////////
 
+#ifdef __unix__
+#if __cplusplus >= 201103L
+#  include <exception>              // std::exception
+#  include <typeinfo>               // std::type_info in get_deleter
+#  include <iosfwd>                 // std::basic_ostream
+#  include <ext/atomicity.h>
+#  include <ext/concurrence.h>
+#  include <bits/functexcept.h>
+#  include <bits/stl_function.h>  // std::less
+#  include <bits/uses_allocator.h>
+#  include <type_traits>
+#  include <functional>
+#  include <debug/debug.h>
+#  include <bits/unique_ptr.h>
+#  include <bits/shared_ptr.h>
+#  if _GLIBCXX_USE_DEPRECATED
+#    include <backward/auto_ptr.h>
+#  endif
+#else
+#  include <backward/auto_ptr.h>
+#endif
+#endif
+
 // for shared_ptr, unique_ptr
 #include <memory>
 //template<class T> using JHandlePtr = std::shared_ptr<T>;
 //template<class T> using JUniquePtr = std::unique_ptr<T>;
 #ifndef JHandlePtrCast
-#define JHandlePtrCast ::std::dynamic_pointer_cast
+#define JHandlePtrCast std::dynamic_pointer_cast
 #endif
 
 #ifndef J_FRIEND_HANDLEPTR
 #define J_FRIEND_HANDLEPTR() \
-    template<typename T> friend class ::std::_Ref_count; \
-    template<typename T> friend class ::std::shared_ptr;
+    template<typename T> friend class std::_Ref_count; \
+    template<typename T> friend class std::shared_ptr;
 #endif
 
 #ifndef J_TYPEDEF_SHAREDPTR

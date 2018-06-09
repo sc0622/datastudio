@@ -1,5 +1,6 @@
 #include "precomp.h"
-#include "jicdArrayItem.h"
+#include "jicdarrayitem.h"
+#include "icdcore/icd_item_array.h"
 
 namespace icdmeta {
 

@@ -6,6 +6,8 @@
 #include "jicdcomplexitem.h"
 #include "jicdframecodeitem.h"
 #include "jicdframeitem.h"
+#include "icdcore/icd_table.h"
+#include "icdcore/icd_item_framecode.h"
 
 namespace icdmeta {
 
@@ -87,7 +89,7 @@ void JIcdTablePrivate::saveItem(const QSharedPointer<JIcdItem> &item)
 {
     switch (item->itemType()) {
     case IcdCore::ItemHead:
-        headers.append((char)qSharedPointerDynamicCast<JIcdHeaderItem>(item)->defaultValue());
+        headers.append(char(qSharedPointerDynamicCast<JIcdHeaderItem>(item)->defaultValue()));
         break;
     case IcdCore::ItemCounter:
         counterItem = qSharedPointerDynamicCast<JIcdCounterItem>(item);
@@ -366,7 +368,6 @@ icdmeta::JIcdObject *JIcdTable::itemByDomain(const QString &domain, int domainTy
         if (item->domainOfType(domainType) != current) {
             continue;
         }
-        const IcdCore::ItemType itemType = item->itemType();
         if (nextDomain.isEmpty()) {
             return item.data();
         } else {

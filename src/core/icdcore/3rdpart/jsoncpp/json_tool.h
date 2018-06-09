@@ -41,10 +41,6 @@
 #error(not supported os!)
 #endif
 
-#ifdef QT_CORE_LIB
-#include <QFile>
-#endif
-
 /* This header provides common string manipulation support, such as UTF-8,
  * portable conversion from/to string...
  *
@@ -155,8 +151,10 @@ bool JSON_API resolve(const char *filePath, const std::string &path, Value &valu
 bool JSON_API resolve(const std::string &filePath, const std::string &path, Value &value);
 
 Value JSON_API resolve(const Value &root, const std::string &path);
-bool JSON_API parse(const std::string &document, Value &root);
-Value JSON_API parse(const std::string &document, const std::string &path);
+
+bool JSON_API parse(const std::string &content, Value &root);
+Value JSON_API parse(const std::string &content, const std::string &path);
+bool JSON_API parse(const std::string &content, const std::string &path, Value &value);
 
 bool JSON_API make(const char *filePath, bool fast);
 bool JSON_API make(const std::string &filePath, bool fast);

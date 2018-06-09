@@ -1,7 +1,11 @@
 #include "precomp.h"
 #include "JChannel.h"
+#ifdef ICDCOMM_LIB
 #include "icdcomm/icdcomm_channel.h"
+#endif
+#ifdef ICDWORKER_LIB
 #include "icdworker/icdworker_inc.h"
+#endif
 #include "icdcore/3rdpart/jsoncpp/json/json.h"
 #include "JSuperChannel.h"
 

@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "jicdbititem.h"
+#include "icdcore/icd_item_bit.h"
 
 namespace icdmeta {
 
@@ -79,13 +80,13 @@ int JIcdBitItem::typeSize() const
 int JIcdBitItem::specCount() const
 {
     Q_D(const JIcdBitItem);
-    return d->data->specs().size();
+    return int(d->data->specs().size());
 }
 
 QString JIcdBitItem::currentSpec() const
 {
     Q_D(const JIcdBitItem);
-    return QString::fromStdString(d->data->specAt((quint64)data()));
+    return QString::fromStdString(d->data->specAt(quint64(data())));
 }
 
 QString JIcdBitItem::text() const
@@ -94,14 +95,14 @@ QString JIcdBitItem::text() const
     QString info("<font bold=1 face=Consolas>0x");
     // data
     info.append(QString("%1")
-                .arg((qulonglong)d->data->data(), int(d->data->bufferSize() * 2), 16, QChar('0'))
+                .arg(qulonglong(d->data->data()), int(d->data->bufferSize() * 2), 16, QChar('0'))
                 .toUpper());
     info.append(", ");
     // value
     switch (d->data->type()) {
     case Icd::ItemBitMap:
     {
-        info.append(QString("%1").arg((qulonglong)d->data->data(),
+        info.append(QString("%1").arg(qulonglong(d->data->data()),
                                       int(d->data->bufferSize() * 8), 2, QChar('0')));
         break;
     }
@@ -131,7 +132,7 @@ QString JIcdBitItem::valueString() const
     switch (d->data->type()) {
     case Icd::ItemBitMap:
     {
-        info = QString("%1").arg((qulonglong)d->data->data(),
+        info = QString("%1").arg(qulonglong(d->data->data()),
                                  int(d->data->bufferSize() * 8), 2, QChar('0'));
         break;
     }
@@ -154,7 +155,7 @@ QString JIcdBitItem::valueString() const
 QString JIcdBitItem::fullValue() const
 {
     Q_D(const JIcdBitItem);
-    return QString("%1").arg((qulonglong)d->data->data(),
+    return QString("%1").arg(qulonglong(d->data->data()),
                              int(d->data->bufferSize() * 8), 2, QChar('0'));
 }
 

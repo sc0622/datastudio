@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "JLangModel.h"
+#include "icdcore/3rdpart/jsoncpp/json_tool.h"
 
 namespace icdmeta {
 
@@ -58,39 +59,42 @@ bool JLangModelPrivate::parseLanguage(QLocale &locale, const QString &name)
         return false;
     }
 
-    const QJsonDocument document = JJson::document(":/pma/lang/langdict.json", false);
-    if (document.isNull()) {
+    QFile file(":/icdmeta/lang/langdict.json");
+    if (!file.open(QIODevice::ReadOnly)) {
         return false;
     }
 
-    const QJsonObject rootJson = document.object();
+    Json::Value rootJson;
+    if (!Json::parse(file.readAll().constData(), rootJson)) {
+        return false;
+    }
 
-    const QJsonArray languagesJson = rootJson["language"].toArray();
-    if (languagesJson.isEmpty()) {
+    const Json::Value languageJson = rootJson["language"];
+    if (languageJson.isNull()) {
         return false;
     }
 
     int languageCode = -1;
-    foreach (auto itemValue, languagesJson) {
-        const QJsonObject itemObject = itemValue.toObject();
-        const QString name = itemObject["name"].toString().toLower();
+    for (Json::ArrayIndex i = 0; i < languageJson.size(); ++i) {
+        const Json::Value itemJson = languageJson[i];
+        const QString name = QString::fromStdString(itemJson["name"].asString()).toLower();
         if (name == language) {
-            languageCode = itemObject["code"].toInt();
+            languageCode = itemJson["code"].asInt();
             break;
         }
     }
 
-    const QJsonArray countrysJson = rootJson["country"].toArray();
-    if (countrysJson.isEmpty()) {
+    const Json::Value countrysJson = rootJson["country"];
+    if (countrysJson.isNull()) {
         return false;
     }
 
     int countryCode = -1;
-    foreach (auto itemValue, countrysJson) {
-        const QJsonObject itemObject = itemValue.toObject();
-        const QString name = itemObject["name"].toString().toLower();
+    for (Json::ArrayIndex i = 0; i < countrysJson.size(); ++i) {
+        const Json::Value itemJson = countrysJson[i];
+        const QString name = QString::fromStdString(itemJson["name"].asString()).toLower();
         if (name == country) {
-            countryCode = itemObject["code"].toInt();
+            countryCode = itemJson["code"].asInt();
             break;
         }
     }

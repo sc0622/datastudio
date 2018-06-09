@@ -1,9 +1,9 @@
 #include "precomp.h"
 #include "JProtocol.h"
 #include "../core/jicdtable.h"
-#include "icdwidget/icdwidget_global.h"
 #include "../common/JWatcher.h"
-#include <QtConcurrent>
+#include "icdparser/icdparser.h"
+#include "icdcore/icd_item.h"
 
 namespace icdmeta {
 
@@ -363,7 +363,7 @@ bool JProtocol::restore(const Json::Value &json, int)
 
 void JProtocol::customEvent(QEvent *event)
 {
-    switch (event->type()) {
+    switch (static_cast<int>(event->type())) {
     case Event_ProtocolFeedback:
     {
         FeedbackEvent *fbEvent = reinterpret_cast<FeedbackEvent *>(event);

@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "jicditem.h"
-#include "icdcore/icd_item.h"
+#include "icdcore/icdcore_inc.h"
 #include "jicdheaderitem.h"
 #include "jicdcounteritem.h"
 #include "jicdcheckitem.h"
@@ -159,12 +159,12 @@ QString JIcdItem::typeName() const
 
 QString JIcdItem::typeString(IcdCore::ItemType type)
 {
-    return QString::fromStdString(Icd::Item::typeString((Icd::ItemType)type));
+    return QString::fromStdString(Icd::Item::typeString(Icd::ItemType(type)));
 }
 
 IcdCore::ItemType JIcdItem::stringType(const QString &str)
 {
-    return (IcdCore::ItemType)Icd::Item::stringType(str.toStdString());
+    return IcdCore::ItemType(Icd::Item::stringType(str.toStdString()));
 }
 
 JIcdItem *JIcdItem::create(const Icd::ItemPtr &data, QObject *parent)
@@ -232,7 +232,7 @@ void JIcdItem::setDefaultValue(qreal value)
 void JIcdItem::setData(qreal value)
 {
     Q_D(JIcdItem);
-    if (value != d->data->data()) {
+    if (!qFuzzyCompare(value, d->data->data())) {
         d->data->setData(value);
         emit dataChanged(value);
     }

@@ -308,7 +308,7 @@ void JDataChannelMgr::reset()
 
 void JDataChannelMgr::customEvent(QEvent *event)
 {
-    switch (event->type()) {
+    switch (static_cast<int>(event->type())) {
     case Event_Callback:
     {
         JCallbackEvent *cbEvent = reinterpret_cast<JCallbackEvent *>(event);

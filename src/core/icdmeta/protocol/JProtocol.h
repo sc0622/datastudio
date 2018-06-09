@@ -34,7 +34,7 @@ public:
     };
     Q_ENUM(LoadError)
 
-    explicit JProtocol(const QString &identity, QObject *parent = 0);
+    explicit JProtocol(const QString &identity, QObject *parent = nullptr);
     ~JProtocol();
 
     static void registerQmlType();
@@ -79,7 +79,7 @@ public:
     bool restore(const Json::Value &json, int /*deep*/ = -1) override;
 
 protected:
-    void customEvent(QEvent *event);
+    void customEvent(QEvent *event) override;
 
 private:
     Q_DISABLE_COPY(JProtocol)

@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "jicdframecodeitem.h"
+#include "icdcore/icd_item_framecode.h"
 #include "jicdframeitem.h"
 
 namespace icdmeta {

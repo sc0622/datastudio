@@ -1,4 +1,8 @@
 #include "json_tool.h"
+#ifdef QT_CORE_LIB
+//#include <QFile>
+//#include <QString>
+#endif
 
 #ifndef JSON_MAX_PATH_LEN
 #define JSON_MAX_PATH_LEN 256
@@ -72,7 +76,22 @@ bool resolve(const std::string &filePath, Value &root)
     if (!path.empty()) {
         //return false;
     }
-
+#if 0//def QT_CORE_LIB
+    QFile file(QString::fromLocal8Bit(filePath.c_str()));
+    if (!file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+    try {
+        root.clear();
+        Json::Reader reader;
+        if (!reader.parse(file.readAll().constData(), root, true)) {
+            return false;
+        }
+    } catch (RuntimeError msg) {
+        printf("Parse json file \"%s\":\n%s\n", filePath.c_str(), msg.what());
+        return false;
+    }
+#else
     std::ifstream ifs(filePath);
     if (!ifs) {
         printf("File \"%s\" open failure!\n", filePath.c_str());
@@ -81,7 +100,6 @@ bool resolve(const std::string &filePath, Value &root)
 
     try {
         root.clear();
-        //ifs >> root;
         Json::Reader reader;
         if (!reader.parse(ifs, root, true)) {
             return false;
@@ -92,6 +110,7 @@ bool resolve(const std::string &filePath, Value &root)
     }
 
     ifs.close();
+#endif
 
     return true;
 }
@@ -162,6 +181,23 @@ Value parse(const std::string &document, const std::string &path)
         printf("Parse json document with path \"%s\":\n%s\n", path.c_str(), msg.what());
         return Value::null;
     }
+}
+
+bool parse(const std::string &content, const std::string &path, Value &value)
+{
+    Value root;
+    if (!parse(content, root)) {
+        return false;
+    }
+
+    try {
+        value = Path(path).resolve(root);
+    } catch (RuntimeError msg) {
+        printf("Parse json :\n%s\n", msg.what());
+        return false;
+    }
+
+    return true;
 }
 
 bool make(const char *filePath, bool fast)
@@ -323,7 +359,7 @@ bool replaceItem(const std::string &filePath, const std::string &path,
             for (Json::Value::iterator iter = _value.begin();
                  iter != _value.end(); ++iter) {
                 const std::string key = oldValue.asString();
-                if (iter.memberName() == key) {
+                if (iter.name() == key) {
                     _value.removeMember(key);
                     _value[members.at(0)] = newValue[members.at(0)];
                     break;
@@ -372,7 +408,7 @@ bool removeItem(const std::string &filePath, const std::string &path,
         } else if (_value.isObject()) {
             for (Json::Value::iterator iter = _value.begin();
                  iter != _value.end(); ++iter) {
-                if (iter.memberName() == key) {
+                if (iter.name() == key) {
                     if (!value.isNull() && *iter != value) {
                         continue;
                     }
