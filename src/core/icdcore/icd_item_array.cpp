@@ -96,7 +96,7 @@ ArrayType ArrayItem::stringArrayType(const std::string &str)
         map_strtype::value_type("f32a", Float32Array),
         map_strtype::value_type("f64a", Float64Array),
     };
-    static const map_strtype _map(map_data, map_data + _countof(map_data));
+    static const map_strtype _map(map_data, map_data + ArrayTypeTotal);
     map_strtype::const_iterator citer = _map.find(str);
     if (citer == _map.cend()) {
         return InvalidArray;
@@ -150,6 +150,8 @@ bool ArrayItem::restore(const Json::Value &json, int deep)
     }
 
     setArrayType(arrayType);
+
+    return true;
 }
 
 }

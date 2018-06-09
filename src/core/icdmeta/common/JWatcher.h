@@ -11,7 +11,7 @@ class JWatcher : public QFutureWatcher<T>
 {
 public:
     explicit JWatcher(QObject *parent = nullptr)
-        : QFutureWatcher(parent)
+        : QFutureWatcher<T>(parent)
         , _callback(QJSValue::UndefinedValue)
         , _target(nullptr)
     {
@@ -19,7 +19,7 @@ public:
     }
 
     explicit JWatcher(QJSValue callback, QObject *target, QObject *parent = nullptr)
-        : QFutureWatcher(parent)
+        : QFutureWatcher<T>(parent)
         , _callback(callback)
         , _target(target)
     {

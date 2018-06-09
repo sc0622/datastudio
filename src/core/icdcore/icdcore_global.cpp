@@ -146,7 +146,7 @@ std::string stringSection(const std::string &str, const std::string &sep, int st
     std::vector<std::string> sections;
     splitString(str, sep, sections, false);
 
-    const int sectionsSize = (int)sections.size();
+    const int sectionsSize = int(sections.size());
 
     if (start < 0) {
         start += sectionsSize;
@@ -162,7 +162,7 @@ std::string stringSection(const std::string &str, const std::string &sep, int st
     std::string ret;
     int first_i = start, last_i = end;
     for (int x = 0, i = 0; x <= end && i < sectionsSize; ++i) {
-        const std::string &section = sections.at(i);
+        const std::string &section = sections.at(std::vector<std::string>::size_type(i));
         const bool empty = section.empty();
         if (x >= start) {
             if(x == start) {
@@ -264,8 +264,9 @@ int asciiCountOfSize(int format, int size)
         case 2: return 6;
         case 4: return 11;
         case 8: return 22;
-            break;
+        default: break;
         }
+        break;
     case 16: return size * 2;
     default:
         break;

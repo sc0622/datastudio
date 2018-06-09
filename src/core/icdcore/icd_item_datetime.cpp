@@ -77,6 +77,7 @@ bool DateTimeItem::restore(const Json::Value &json, int deep)
         return false;
     }
     //TODO
+    return true;
 }
 
 }

@@ -28,7 +28,7 @@ void JSearchWatcher::cancel()
 
 void JSearchWatcher::customEvent(QEvent *event)
 {
-    switch (event->type()) {
+    switch (static_cast<int>(event->type())) {
     case Event_SetProperty:
     {
         SetPropertyEvent *spEvent = reinterpret_cast<SetPropertyEvent *>(event);

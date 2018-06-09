@@ -73,10 +73,10 @@ public:
                     const Json::Value &value, bool fast = false) const override;
     bool mergeJson(const ::std::string &path, const Json::Value &value, bool fast = false) const override;
 
-    bool beginModify();
-    bool commitModify();
-    bool cancelModify();
-    bool endModify();
+    bool beginModify() override;
+    bool commitModify() override;
+    bool cancelModify() override;
+    bool endModify() override;
 
 public:
     Json::Value queryRoot() const;
