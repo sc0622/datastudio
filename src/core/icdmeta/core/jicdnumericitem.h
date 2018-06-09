@@ -24,7 +24,7 @@ class ICDMETA_EXPORT JIcdNumericItem : public JIcdItem
     Q_PROPERTY(QString unit READ unit NOTIFY unitChanged)
     Q_PROPERTY(int specCount READ specCount NOTIFY specCountChanged)
 public:
-    explicit JIcdNumericItem(const Icd::NumericItemPtr &data, QObject *parent = 0);
+    explicit JIcdNumericItem(const Icd::NumericItemPtr &data, QObject *parent = nullptr);
     ~JIcdNumericItem();
 
     static void registerQmlType();

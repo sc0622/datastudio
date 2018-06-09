@@ -5,7 +5,6 @@
 #include "../icdmeta_global.h"
 
 namespace Icd {
-template<typename T> class HandlePtr;
 class LimitItem;
 typedef std::shared_ptr<LimitItem> LimitItemPtr;
 }
@@ -22,7 +21,7 @@ class ICDMETA_EXPORT JIcdLimitItem : public QObject
     Q_PROPERTY(bool leftInf READ leftInf  NOTIFY leftInfChanged)
     Q_PROPERTY(bool rightInf READ rightInf NOTIFY rightInfChanged)
 public:
-    explicit JIcdLimitItem(const Icd::LimitItemPtr &data, QObject *parent = 0);
+    explicit JIcdLimitItem(const Icd::LimitItemPtr &data, QObject *parent = nullptr);
     ~JIcdLimitItem();
 
     static void registerQmlType();

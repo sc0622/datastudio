@@ -28,7 +28,7 @@ class ICDMETA_EXPORT JIcdTable : public JIcdObject
     Q_PROPERTY(icdmeta::JIcdCheckItem* checkItem READ metaCheckItem NOTIFY checkItemChanged)
     Q_PROPERTY(QQmlListProperty<icdmeta::JIcdFrameCodeItem> frameCodes READ metaFrameCodes NOTIFY frameCodesChanged)
 public:
-    explicit JIcdTable(const Icd::TablePtr &data, QObject *parent = 0);
+    explicit JIcdTable(const Icd::TablePtr &data, QObject *parent = nullptr);
     ~JIcdTable();
 
     static void registerQmlType();

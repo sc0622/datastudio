@@ -5,7 +5,6 @@
 #include "../icdmeta_global.h"
 
 namespace Icd {
-template<typename T> class std::shared_ptr;
 class Object;
 typedef std::shared_ptr<Object> ObjectPtr;
 }
@@ -27,7 +26,7 @@ class ICDMETA_EXPORT JIcdObject : public QObject
     Q_PROPERTY(QString valueString READ valueString NOTIFY valueStringChanged)
     Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY checkedChanged)
 public:
-    explicit JIcdObject(const Icd::ObjectPtr &data, QObject *parent = 0);
+    explicit JIcdObject(const Icd::ObjectPtr &data, QObject *parent = nullptr);
 
     static void registerQmlType();
 
