@@ -16,7 +16,7 @@ Window::Window(QWidget *parent)
 
     splitterMain_ = new JSplitter(QList<double>() << 1 << 3, this);
     splitterMain_->setObjectName("analyse.window.splitter.main");
-    splitterMain_->setOpaqueResize(true);
+    splitterMain_->setOpaqueResize(false);
     vertLayoutMain->addWidget(splitterMain_);
 
     treeView_ = new TreeView(this);

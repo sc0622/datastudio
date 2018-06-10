@@ -1,8 +1,9 @@
 import qbs
 import qbs.FileInfo
+import qbs.Utilities
 
 CoreDyLibrary {
-
+    condition: Utilities.versionCompare(Qt.core.version, '5.6.0') >= 0
     translationFileTags: base.concat([ 'qml', 'js' ])
     translations: [ 'icdmeta_zh_CN.ts' ]
     defaultTranslation: true

@@ -1,9 +1,11 @@
 import qbs
 import qbs.File
 import qbs.FileInfo
+import qbs.Utilities
 
 QmlPluginLibrary {
 
+    condition: Utilities.versionCompare(Qt.core.version, '5.6.0') >= 0
     uri: 'Icd.Core'
     type: base.concat([ 'customfile.out' ])
 

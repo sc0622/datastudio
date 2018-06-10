@@ -44,7 +44,7 @@ TableSelWidget::TableSelWidget(QWidget *parent)
         if (current && current->type() != Icd::TreeItemTypeTable) {
             return;
         }
-        accept();
+        this->accept();
     });
     connect(buttonOk, &QPushButton::clicked, this, &TableSelWidget::accept);
     connect(buttonCancel, &QPushButton::clicked, this, &TableSelWidget::reject);
