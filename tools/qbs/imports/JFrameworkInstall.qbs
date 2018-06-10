@@ -18,6 +18,7 @@ Product {
     property stringList moduleCoreExt: []
     property stringList moduleComponent: []
     property bool installCore: false
+    property bool installComponent: false
     property bool installJFrameworkdir: false
     property string thirdInstallDir: 'bin'
     property string coreInstallDir: 'bin'
@@ -32,10 +33,7 @@ Product {
         files: {
             var files = [];
             module3rdpart.forEach(function(item){
-                files.push(item + '/**/*.h');
-                files.push(item + '/**/*.hh');
-                files.push(item + '/**/*.hpp');
-                files.push(item + '/**/*.hxx');
+                files.push(item + '/**/*');
             })
             return files;
         }
@@ -270,7 +268,7 @@ Product {
 
     Group {
         id: component_jframe_dynamic
-        condition: jframeExists
+        condition: jframeExists && installComponent && !thisProject
         name: 'component_jframe_dynamic'
         prefix: jframeDir + '/component/jframe/'
         files: {
@@ -293,7 +291,7 @@ Product {
 
     Group {
         id: component_jframe_library
-        condition: jframeExists
+        condition: jframeExists && installComponent && !thisProject
         name: 'component_jframe_library'
         prefix: jframeDir + '/component/jframe/'
         files: {

@@ -16,6 +16,8 @@ Product {
     property stringList module3rdpart: []
     property stringList moduleCore: []
     property bool installMeta: false
+    property bool installMoxa: false
+    property bool installRass: false
 
     // 3rdpart - headers
 
@@ -156,7 +158,7 @@ Product {
         files: {
             var files = [];
             moduleCore.forEach(function(item){
-                files.push(item + EnvUtils.dylibSuffix(qbs));
+                files.push(item + EnvUtils.dylibSuffix(qbs) + '*');
             })
             return files;
         }
@@ -239,6 +241,66 @@ Product {
             //cmd.silent = true;
             cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
             return [cmd];
+        }
+    }
+
+    // moxa
+
+    Group {
+        id: dynamic_moxa
+        name: 'dynamic_moxa'
+        condition: installMoxa
+        prefix: datastudioDir + '/lib/3rdpart/moxa/'
+        files: [ 'pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') + '.dll' ]
+        qbs.install: true
+        qbs.installPrefix: project.projectName
+        qbs.installDir: 'bin'
+        fileTags: [ name + '.in' ]
+    }
+
+    Rule {
+        condition: datastudioExists && installMoxa && !thisProject
+        inputs: dynamic_moxa.fileTags
+        Artifact {
+            fileTags: [ 'library.out' ]
+            filePath: FileInfo.joinPaths(project.sourceDirectory,
+                                         FileInfo.relativePath(product.datastudioDir, input.filePath))
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand;
+            cmd.description = 'coping ' + input.fileName;
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
+            return [ cmd ];
+        }
+    }
+
+    // rass
+
+    Group {
+        id: dynamic_rass
+        name: 'dynamic_rass'
+        condition: installRass
+        prefix: datastudioDir + '/lib/3rdpart/rass/'
+        files: [ 'rass' + (qbs.buildVariant == 'debug' ? 'd' : '') + '_md.dll' ]
+        qbs.install: true
+        qbs.installPrefix: project.projectName
+        qbs.installDir: 'bin'
+        fileTags: [ name + '.in' ]
+    }
+
+    Rule {
+        condition: datastudioExists && installRass && !thisProject
+        inputs: dynamic_rass.fileTags
+        Artifact {
+            fileTags: [ 'library.out' ]
+            filePath: FileInfo.joinPaths(project.sourceDirectory,
+                                         FileInfo.relativePath(product.datastudioDir, input.filePath))
+        }
+        prepare: {
+            var cmd = new JavaScriptCommand;
+            cmd.description = 'coping ' + input.fileName;
+            cmd.sourceCode = function() { File.copy(input.filePath, output.filePath); }
+            return [ cmd ];
         }
     }
 }
