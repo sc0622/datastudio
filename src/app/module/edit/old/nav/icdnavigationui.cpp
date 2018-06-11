@@ -732,15 +732,13 @@ void ICDNavigationUi::createRuleMenu()
         args.append(int(GlobalDefine::dicDataType));
         jnotify->send("edit.queryDictionaryTable", args);
 
-        QAction *act = 0;
+        QAction *action = nullptr;
         const int count = dics.size();
         for (int i = 0; i < count; ++i) {
             const stDictionary &dic = dics.at(i);
-            act = q_ruleMenu->addAction(QString::fromStdString(dic.sDec),
-                                        this, &ICDNavigationUi::slotNew);
-            if (act) {
-                act->setData(dic.nCode);
-            }
+            action = q_ruleMenu->addAction(QString::fromStdString(dic.sDec));
+            action->setData(dic.nCode);
+            connect(action, &QAction::triggered, this, &ICDNavigationUi::slotNew);
         }
     }
 }
@@ -1860,15 +1858,15 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
     // 有子节点增加展开、收起菜单
     if (item->hasChildren()) {
         if (q_treeView->isItemExpanded(item)) {
-            menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                           QStringLiteral("收起"),
-                           q_treeView, [=]() {
+            QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
+                                                     QStringLiteral("收起"));
+            connect(actionCollapse, &QAction::triggered, this, [=](){
                 collapseItem(item);
             });
         } else {
-            menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                           QStringLiteral("展开"),
-                           q_treeView, [=]() {
+            QAction *actionExpand = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
+                           QStringLiteral("展开"));
+            connect(actionExpand, &QAction::triggered, this, [=](){
                 q_treeView->expandItem(item);
             });
         }

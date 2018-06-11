@@ -418,7 +418,7 @@ QTableView::item:focus {
 
 QTableView::item:selected,
 QTableView::item:selected:!focus {
-    background: #3f3f46;
+    background: #3f3f4a;
     color: #fff;
 }
 

@@ -35,7 +35,7 @@ void ChannelWidgetPrivate::init()
     tableView->setColumnCount(1);
 
     tableView->horizontalHeader()->setStretchLastSection(true);
-    tableView->setSelectionMode(QAbstractItemView::NoSelection);
+    tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->setSortingEnabled(false);
     tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     tableView->verticalHeader()->setFixedWidth(30);

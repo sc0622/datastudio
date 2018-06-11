@@ -129,6 +129,10 @@
 
 // from datastudio - core
 
+#if defined(JRASS_LIB) && !defined(JRASS_BUILD)
+#include "jrass/jrass.h"
+#endif
+
 #if defined(ICDCORE_LIB) && !defined(ICDCORE_BUILD)
 #include "icdcore/icdcore_inc.h"
 #if defined(ICDCORE_JSON_LIB)

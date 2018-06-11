@@ -8,7 +8,7 @@
 #define NONE_ENOUGH_MEMORY -200     //如果在返回字符串的时候，缓存空间不够，返回此值
 
 //模型运行状态
-enum SERVER_RUN_STATUS{
+enum SERVER_RUN_STATUS {
     SRS_UNKONW = 0,
     SRS_RUN,
     SRS_READY,

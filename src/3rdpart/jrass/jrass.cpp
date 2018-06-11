@@ -184,7 +184,7 @@ int JRassWrap::getCurrentModelRunTime(double &time, int waitTime)
     return d->rass.GetCurrentModelRunTime(time, waitTime);
 }
 
-int JRassWrap::SetPauseCheckExpress(const char *express, int waitTime)
+int JRassWrap::setPauseCheckExpress(const char *express, int waitTime)
 {
     return d->rass.SetPauseCheckExpression(std::string(express), waitTime);
 }
@@ -767,12 +767,12 @@ void JRassWrap::setMCastIp(const char *localIp, const char *mcastIp, unsigned sh
 
 int JRassWrap::startGMonAllServer()
 {
-    return d->rass.StartGMonAllServer();
+    return CRass::StartGMonAllServer();
 }
 
 int JRassWrap::stopGMonAllServer()
 {
-    return d->rass.StopGMonAllServer();
+    return CRass::StopGMonAllServer();
 }
 
 int JRassWrap::openCMon(const char *groupName, int waitTime)
@@ -830,16 +830,16 @@ int JRassWrap::closeAllCMon(int waitTime)
     return d->rass.CloseAllCMon(waitTime);
 }
 
-int JRassWrap::getAllCMonDes(MonitorGroupDesc *&groupDescs, int &count, int waitTime)
+int JRassWrap::getAllCMonDes(MonitorGroupDescNative *&groupDescs, int &count, int waitTime)
 {
     std::vector<MonitorGroupDes_t> *_groupDescs = nullptr;
     int result = d->rass.GetAllCMonDes(_groupDescs, waitTime);
     if (result == 0 && _groupDescs) {
         count = int(_groupDescs->size());
-        groupDescs = new MonitorGroupDesc[count];
+        groupDescs = new MonitorGroupDescNative[count];
         for (int i = 0; i < count; ++i) {
             const MonitorGroupDes_t &_groupDesc = _groupDescs->at(i);
-            MonitorGroupDesc &groupDesc = groupDescs[i];
+            MonitorGroupDescNative &groupDesc = groupDescs[i];
             if (!_groupDesc.name.empty()) {
                 const int size = _groupDesc.name.size();
                 groupDesc.name = new char[size + 1];
@@ -850,13 +850,13 @@ int JRassWrap::getAllCMonDes(MonitorGroupDesc *&groupDescs, int &count, int wait
                 const int size = _groupDesc.varsList.size();
                 groupDesc.varCount = size;
                 groupDesc.vars = new char*[size];
-                for (int i = 0; i < size; ++i) {
-                    const std::string &_var = _groupDesc.varsList[i];
+                for (int j = 0; j < size; ++j) {
+                    const std::string &_var = _groupDesc.varsList[j];
                     const int varSize = int(_var.size());
                     char *newVar = new char[varSize + 1];
                     memcpy(newVar, _var.c_str(), varSize);
                     newVar[size] = '\0';
-                    groupDesc.vars[i] = newVar;
+                    groupDesc.vars[j] = newVar;
                 }
             }
         }
@@ -866,7 +866,7 @@ int JRassWrap::getAllCMonDes(MonitorGroupDesc *&groupDescs, int &count, int wait
     return result;
 }
 
-int JRassWrap::getAllCMonDesFreeRes(MonitorGroupDesc *&groupDescs)
+int JRassWrap::getAllCMonDesFreeRes(MonitorGroupDescNative *&groupDescs)
 {
     if (groupDescs) {
         delete[] groupDescs;
