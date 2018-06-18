@@ -442,7 +442,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         QString &keys = *reinterpret_cast<QString *>(params->at(0));
         ICDMetaData::smtMeta &meta
                 = *reinterpret_cast<ICDMetaData::smtMeta *>(params->at(1));
-        bool *result = jVariantFromVoid<bool>(args[1]);
+        int *result = jVariantFromVoid<int>(args[1]);
         // ±£´æÊý¾Ý¿â
         *result = saveRule(keys, meta);
     } else if ("insertRule" == id) {

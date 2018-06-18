@@ -13,8 +13,7 @@ if (process.env.NODE_ENV) {
   process.env.Path += ';' + path.resolve(process.env.QTDIR_64, 'bin') + ';' +
     path.resolve(projectDir, 'lib/3rdpart/moxa');
 } else {
-  process.env.Path += ';' +
-    `${__dirname}`;
+  process.env.Path += ';' + `${__dirname}`;
 }
 
 let win = null;

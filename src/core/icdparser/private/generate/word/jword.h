@@ -14,7 +14,7 @@ class ICDPARSER_EXPORT JWord : public JOffice
 {
     Q_OBJECT
 public:
-    explicit JWord(QObject *parent = 0);
+    explicit JWord(QObject *parent = nullptr);
     ~JWord();
 
 Q_SIGNALS:

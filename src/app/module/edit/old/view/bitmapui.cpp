@@ -209,12 +209,9 @@ void BitMapUI::confirm()
 
     emit confirmed(result);
     if (result) {
-        //         _UIData data;
-        //         data.data = &q_data;
-        //         setUIData(data);
+        MetaUI::confirm();
     } else {
         editStatus()->setText(QStringLiteral("±£´æÊý¾ÝÊ§°Ü£¡"));
-        buttonConfirm()->setEnabled(true);
     }
 }
 
@@ -225,6 +222,8 @@ void BitMapUI::cancel()
 
     data.data = &q_old;
     setUIData(data);
+
+    MetaUI::cancel();
 
     emit canceled();
 }

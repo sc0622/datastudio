@@ -167,7 +167,7 @@ void CheckUI::slotTextChanged(const QString& text)
 // 确认
 void CheckUI::confirm()
 {
-    // 更新序号和字节号
+    // 更新序号和字节号]
     QVariantList args;
     args.append(qVariantFromValue((void*)&q_data));
     jnotify->send("edit.fillBitSerial", args);
@@ -180,13 +180,9 @@ void CheckUI::confirm()
 
     emit confirmed(result);
     if (result) {
-        //         _UIData data;
-        //
-        //         data.data = &q_data;
-        //         setUIData(data);
+        MetaUI::confirm();
     } else {
         editStatus()->setText(QStringLiteral("保存数据失败！"));
-        buttonConfirm()->setEnabled(true);
     }
 }
 
@@ -197,6 +193,8 @@ void CheckUI::cancel()
 
     data.data = &q_old;
     setUIData(data);
+
+    MetaUI::cancel();
 
     emit canceled();
 }

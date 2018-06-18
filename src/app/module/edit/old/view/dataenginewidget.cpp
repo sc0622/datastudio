@@ -240,7 +240,7 @@ void DataEngineWidget::initUI(int type, void *data)
 // 主动初始化
 void DataEngineWidget::reInit()
 {
-    void *data(0);
+    void *data = nullptr;
     std::vector<int> rule;
     ICDElement::smtElement element;
     std::vector<ICDElement::smtElement> elements;
@@ -2368,7 +2368,6 @@ void DataEngineWidget::slotSave2Memory(void *data, bool &result)
 
     // 保存数据到内存，分拷贝、插入、新增和编辑，拷贝、插入、新增直接保存到内存
     // 编辑由于涉及到数据的位置更换，所有先保存到副本数据，再一次性更新内存数据
-    bool reInitNeed = true;
     if (q_table->property("copyData").toInt() == q_newIndex
         && -1 != q_newIndex) {  // 保存拷贝数据
         QVector<int> params;
@@ -2411,22 +2410,19 @@ void DataEngineWidget::slotSave2Memory(void *data, bool &result)
             args.append(qVariantFromValue((void*)&params));
             args.append(qVariantFromValue((void*)&result));
             jnotify->send("edit.reorderNodeData", args);
-
             // 保存到内存
         } else { // 新增或者仅编辑了数据
             QVariantList args;
             args.append(qVariantFromValue((void*)data));
             args.append(qVariantFromValue((void*)&result));
             jnotify->send("edit.updateNodeData", args);
-            reInitNeed = false;
         }
     }
+
     if (result) {
         // 重新初始化界面
         int row = q_table->currentRow();
-        if (reInitNeed) {
-            reInit();
-        }
+        reInit();
         q_table->selectRow(row);
     } else {
         setActionEnabled("add", result);

@@ -141,7 +141,7 @@ private:
 
     // 构造单个规则子表节点
     QStandardItem* formSubTableNode(QStandardItem *parent,
-                                    const TableNode::smtTable& table,
+                                    const TableNode::smtTable& table, int index,
                                     int offset);
     // 重新调整规则子表节点顺序
     void reorderSubTableNode(const ICDMetaData::smtMeta &meta, int pos);
@@ -243,7 +243,7 @@ private:
     QString stringDataType(int type) const;
 
     // 构造数据偏移量字符串
-    QString offsetString(const ICDMetaData::smtMeta &meta, int offset = -1) const;
+    QString offsetString(const ICDElement::smtElement &element, int offset = -1) const;
 
     // 查询树中指定节点类型的最大值
     void maxID(QStandardItem *parent, int level, QString &id);

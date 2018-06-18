@@ -129,11 +129,13 @@ MetaUI *MetaUI::create(int metaUiType)
 
 void MetaUI::confirm()
 {
-
+    buttonConfirm_->setEnabled(false);
+    buttonCancel_->setEnabled(false);
 }
 
 void MetaUI::cancel()
 {
-
+    buttonConfirm_->setEnabled(false);
+    buttonCancel_->setEnabled(false);
 }
 

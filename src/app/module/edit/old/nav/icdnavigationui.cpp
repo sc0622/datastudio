@@ -1170,7 +1170,7 @@ bool ICDNavigationUi::reorderNodeData(const std::vector<int> &params)
                     args.append(qVariantFromValue((void*)&params));
                     args.append(qVariantFromValue((void*)&ret));
                     jnotify->send("edit.saveRule", args);
-                    result = ret;
+                    result = (result != 0);
                 }
             }
         }
@@ -1250,7 +1250,7 @@ ICDElement::smtElement ICDNavigationUi::savePastedData(const QVector<int> &param
         if (GlobalDefine::dtDiscern == current->data(RuleDefine).toInt()) {
             // 插入表数据
             item = formSubTableNode(current, SMT_CONVERT(TableNode, copyData),
-                                    meta ? meta->index() : -1);
+                                    current->row(), meta ? meta->index() : -1);
         } else {
             // 插入规则数据
             item = formRuleNode(current, SMT_CONVERT(ICDMetaData, copyData),
@@ -1522,12 +1522,14 @@ void ICDNavigationUi::reorderTableNode(const SystemNode::smtSystem &system,
 // 构造单个规则子表节点
 QStandardItem* ICDNavigationUi::formSubTableNode(QStandardItem *parent,
                                                  const TableNode::smtTable& table,
-                                                 int offset)
+                                                 int index, int offset)
 {
     stICDBase base = table->icdBase();
     QStandardItem *result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
-                                              QString::fromStdString(base.sDescribe)
-                                              + "<font color=green size=2>[TABLE]</font>");
+                                              QString("<font color=darkgreen size=2>[%1:%2]</font>"
+                                                      "%3<font color=darkgreen size=2>[TABLE]</font>")
+                                              .arg(index, 4, 10, QChar('0')).arg(offset, 4, 10, QChar('0'))
+                                              .arg(table->name().c_str()));
     result->setData(GlobalDefine::ntRule, LevelIndex);
     result->setData(GlobalDefine::dtComplex, RuleDefine);
     result->setData(base.sName.c_str(), SubTable);
@@ -1603,7 +1605,7 @@ QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent,
                     continue;
                 }
                 if (GlobalDefine::dtDiscern == meta->type()) { // 帧数据
-                    formSubTableNode(result, subData, meta->index());
+                    formSubTableNode(result, subData, i + 1, meta->index());
                 } else if (GlobalDefine::dtComplex == meta->type()) {
                     loadRuleNode(result, subData, meta->index());
                 }
@@ -1642,8 +1644,7 @@ void ICDNavigationUi::reorderRuleNode(const TableNode::smtTable& table,
 }
 
 // 加载规则节点
-void ICDNavigationUi::loadRuleNode(QStandardItem *parent,
-                                   const TableNode::smtTable &table, int offset)
+void ICDNavigationUi::loadRuleNode(QStandardItem *parent, const TableNode::smtTable &table, int offset)
 {
     if (!parent || !table) {
         return;
@@ -1865,7 +1866,7 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
             });
         } else {
             QAction *actionExpand = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                           QStringLiteral("展开"));
+                                                   QStringLiteral("展开"));
             connect(actionExpand, &QAction::triggered, this, [=](){
                 q_treeView->expandItem(item);
             });
@@ -2630,7 +2631,7 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
 {
     int result = 0;
     if (!data) {
-        return result;
+        return false;
     }
     QStandardItem *current = q_treeView->currentItem();
     ICDMetaData::smtMeta meta = data;
@@ -2669,13 +2670,13 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
 
         TableNode::smtTable oldTable = ruleNodeMap(current, plane);
         if (!oldTable) {
-            return result;
+            return false;
         }
         keyLst.takeFirst(); // root parent
         if (keyLst.size() > 0) {    // 位于复合数据层级
             oldTable = oldTable->subTable(keyLst.join("/").toStdString());
             if (!oldTable) {
-                return result;
+                return false;
             }
         }
         ICDComplexData::smtComplex oldData
@@ -2752,7 +2753,7 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
     args.append(qVariantFromValue((void*)&result));
     jnotify->send("edit.saveRule", args);
 
-    if (result) {
+    if (result != 0) {
         // 更新树节点
         QString identify = QString("%1").arg(meta->serial());
         if (GlobalDefine::dtComplex == meta->type()) {
@@ -2789,7 +2790,7 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
         }
     }
 
-    return result;
+    return true;
 }
 
 // 保存ICD规则数据
@@ -2813,7 +2814,7 @@ bool ICDNavigationUi::updateDetailRuleData(ICDMetaData::smtMeta &data)
     args.append(qVariantFromValue((void*)&result));
     jnotify->send("edit.saveRule", args);
 
-    if (result) {
+    if (result != 0) {
         // 更新树节点
         //        QString text = QString("%1[<font color=darkgreen>%2</font>]")
         //                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
@@ -2899,7 +2900,7 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
     args.append(qVariantFromValue((void*)&result));
     jnotify->send("edit.saveRule", args);
 
-    if (result) {
+    if (result != 0) {
         // 更新树节点
         QStandardItem *item = findItem(UserKey, data.sName.c_str(), current);
         if (item) { // 更新节点
@@ -2986,46 +2987,72 @@ QString ICDNavigationUi::stringDataType(int type) const
 }
 
 // 构造数据偏移量字符串
-QString ICDNavigationUi::offsetString(const ICDMetaData::smtMeta &meta, int offset) const
+QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int offset) const
 {
     QString result;
-    if (!meta) {
+    if (!element) {
         return result;
     }
-    ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, meta);
-    if (bit) {
-        if (offset >= 0) {
-            result = QString("<font color=darkgreen size=2>[%1:%2:%3(%4)]</font>"
-                             "%5<font color=darkgreen size=2>[%6]</font>")
-                    .arg(meta->serial(), 4, 10, QChar('0'))
-                    .arg(offset, 4, 10, QChar('0'))
-                    .arg(meta->index(), 4, 10, QChar('0'))
-                    .arg(bit->start(), 2, 10, QChar('0'))
-                    .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
-        } else {
-            result = QString("<font color=darkgreen size=2>[%1:%2(%3)]</font>"
-                             "%4<font color=darkgreen size=2>[%5</font>")
-                    .arg(meta->serial(), 4, 10, QChar('0'))
-                    .arg(meta->index(), 4, 10, QChar('0'))
-                    .arg(bit->start(), 2, 10, QChar('0'))
-                    .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+
+    switch (element->objectType()) {
+    case GlobalDefine::ntTable:
+    {
+        TableNode::smtTable table = SMT_CONVERT(TableNode, element);
+        if (!table) {
+            break;
         }
-    } else {
-        if (offset >= 0) {
-            result = QString("<font color=darkgreen size=2>[%1:%2:%3]</font>"
-                             "%4<font color=darkgreen size=2>[%5]</font>")
-                    .arg(meta->serial(), 4, 10, QChar('0'))
-                    .arg(offset, 4, 10, QChar('0'))
-                    .arg(meta->index(), 4, 10, QChar('0'))
-                    .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
-        } else {
-            result = QString("<font color=darkgreen size=2>[%1:%2]</font>"
-                             "%3<font color=darkgreen size=2>[%4]</font>")
-                    .arg(meta->serial(), 4, 10, QChar('0'))
-                    .arg(meta->index(), 4, 10, QChar('0'))
-                    .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
-        }
+        break;
     }
+    case GlobalDefine::ntRule:
+    {
+        ICDMetaData::smtMeta meta = SMT_CONVERT(ICDMetaData, element);
+        if (!meta) {
+            break;
+        }
+
+        if (meta->metaType() == IcdDefine::icdBit) {
+            ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, meta);
+            if (!bit) {
+                break;
+            }
+            if (offset >= 0) {
+                result = QString("<font color=darkgreen size=2>[%1:%2:%3(%4)]</font>"
+                                 "%5<font color=darkgreen size=2>[%6]</font>")
+                        .arg(meta->serial(), 4, 10, QChar('0'))
+                        .arg(offset + meta->index(), 4, 10, QChar('0'))
+                        .arg(meta->index(), 4, 10, QChar('0'))
+                        .arg(bit->start(), 2, 10, QChar('0'))
+                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+            } else {
+                result = QString("<font color=darkgreen size=2>[%1:%2(%3)]</font>"
+                                 "%4<font color=darkgreen size=2>[%5</font>")
+                        .arg(meta->serial(), 4, 10, QChar('0'))
+                        .arg(meta->index(), 4, 10, QChar('0'))
+                        .arg(bit->start(), 2, 10, QChar('0'))
+                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+            }
+        } else {
+            if (offset >= 0) {
+                result = QString("<font color=darkgreen size=2>[%1:%2:%3]</font>"
+                                 "%4<font color=darkgreen size=2>[%5]</font>")
+                        .arg(meta->serial(), 4, 10, QChar('0'))
+                        .arg(offset + meta->index(), 4, 10, QChar('0'))
+                        .arg(meta->index(), 4, 10, QChar('0'))
+                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+            } else {
+                result = QString("<font color=darkgreen size=2>[%1:%2]</font>"
+                                 "%3<font color=darkgreen size=2>[%4]</font>")
+                        .arg(meta->serial(), 4, 10, QChar('0'))
+                        .arg(meta->index(), 4, 10, QChar('0'))
+                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
     return result;
 }
 

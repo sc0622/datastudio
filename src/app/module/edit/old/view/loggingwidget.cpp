@@ -43,21 +43,25 @@ LoggingWidget::LoggingWidget(QWidget *parent)
 void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
 {
     if (currentMetaUi_) {
-        stackedWidget_->removeWidget(stackedWidget_);
-        currentMetaUi_->disconnect();
-        delete currentMetaUi_;
-        currentMetaUi_ = nullptr;
+        if (metaUiType != currentMetaUi_->uiType()) {
+            stackedWidget_->removeWidget(stackedWidget_);
+            delete currentMetaUi_;
+            currentMetaUi_ = nullptr;
+        }
     }
 
-    currentMetaUi_ = MetaUI::create(metaUiType);
     if (!currentMetaUi_) {
-        return;
+        currentMetaUi_ = MetaUI::create(metaUiType);
+        if (!currentMetaUi_) {
+            return;
+        }
+        stackedWidget_->addWidget(currentMetaUi_);
+        connect(currentMetaUi_, &MetaUI::confirmed, this, &LoggingWidget::slotConfirm);
+        connect(currentMetaUi_, &MetaUI::canceled, this, &LoggingWidget::slotCancel);
+        initTypeInfo(data);
     }
-    stackedWidget_->addWidget(currentMetaUi_);
 
     currentMetaUi_->setUIData(data);
-    connect(currentMetaUi_, &MetaUI::confirmed, this, &LoggingWidget::slotConfirm);
-    connect(currentMetaUi_, &MetaUI::canceled, this, &LoggingWidget::slotCancel);
 
     switch (metaUiType) {
     case MetaUI::wdHeader:
@@ -71,7 +75,6 @@ void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
     case MetaUI::wdComplex:
     case MetaUI::wdBuffer:
         groupType_->setVisible(true);
-        initTypeInfo(data);
         break;
     default:
         groupType_->setVisible(false);
@@ -107,15 +110,26 @@ void LoggingWidget::slotConfirm(bool &result)
     }
 
     emit dataSaved(data, result);
+    if (!result) {
+        return;
+    }
+
     // 如果是规则数据，则重新初始化数据类型下拉框
-    if (result) {
-        const int uiType = currentMetaUi_->uiType();
-        if (uiType >= MetaUI::wdHeader && uiType <= MetaUI::wdComplex) {
-            _UIData _data;
-            _data.data = data;
-            _data.type = GlobalDefine::optEdit;
-            initTypeInfo(_data);
-        }
+    if (!currentMetaUi_) {
+        return;
+    }
+
+    data = currentMetaUi_->uiData();
+    if (!data) {
+        return;
+    }
+
+    const int uiType = currentMetaUi_->uiType();
+    if (uiType >= MetaUI::wdHeader && uiType <= MetaUI::wdComplex) {
+        _UIData _data;
+        _data.data = data;
+        _data.type = GlobalDefine::optEdit;
+        initTypeInfo(_data);
     }
 }
 
