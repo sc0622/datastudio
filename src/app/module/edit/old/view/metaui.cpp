@@ -10,6 +10,7 @@
 #include "discernui.h"
 #include "complexui.h"
 #include "bufferui.h"
+#include "arrayui.h"
 #include "subtableui.h"
 #include "tableui.h"
 #include "systemui.h"
@@ -114,6 +115,7 @@ MetaUI *MetaUI::create(int metaUiType)
     case wdCheck: return new CheckUI();
     case wdFrameCode: return new FrameCodeUI();
     case wdCommon: return new CommonUI();
+    case wdArray: return new ArrayUI();
     case wdBitMap: return new BitMapUI();
     case wdBitValue: return new BitValueUI();
     case wdDiscern: return new DiscernUI();

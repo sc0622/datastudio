@@ -12,12 +12,14 @@ class ArrayItemData
 public:
     ArrayItemData()
         : arrayType(Int8Array)
+        , count(0)
     {
 
     }
 
 private:
     ArrayType arrayType;
+    int count;
 };
 
 // class ArrayItem
@@ -56,7 +58,7 @@ ArrayType ArrayItem::arrayType() const
 void ArrayItem::setArrayType(ArrayType type)
 {
     d->arrayType = type;
-    //TODO
+    setBufferSize(d->count * typeSize());
 }
 
 std::string ArrayItem::arrayTypeString() const
@@ -105,6 +107,24 @@ ArrayType ArrayItem::stringArrayType(const std::string &str)
     }
 }
 
+int ArrayItem::count() const
+{
+    return d->count;
+}
+
+void ArrayItem::setCount(int count)
+{
+    int _count = count;
+    if (_count < 1) {
+        _count = 1;
+    }
+
+    if (count != d->count) {
+        d->count = count;
+        setBufferSize(d->count * typeSize());
+    }
+}
+
 std::string ArrayItem::typeName() const
 {
     std::stringstream ss;
@@ -114,9 +134,27 @@ std::string ArrayItem::typeName() const
 
 std::string ArrayItem::typeString() const
 {
-    std::stringstream ss;
-    //TODO
-    return ss.str();
+    return arrayTypeString();
+}
+
+int ArrayItem::typeSize() const
+{
+    switch (d->arrayType) {
+    case Int8Array:
+    case UInt8Array: return 1;
+    case Int16Array:
+    case UInt16Array: return 2;
+    case Int32Array:
+    case UInt32Array: return 4;
+    case Int64Array:
+    case UInt64Array: return 8;
+    case Float32Array: return 4;
+    case Float64Array: return 8;
+    default:
+        break;
+    }
+
+    return 0;
 }
 
 Object *ArrayItem::clone() const
@@ -128,13 +166,65 @@ ArrayItem &ArrayItem::operator =(const ArrayItem &other)
 {
     Item::operator =(other);
     d->arrayType = other.d->arrayType;
+    d->count = other.d->count;
     return *this;
+}
+
+int8_t *ArrayItem::int8Array() const
+{
+    return reinterpret_cast<int8_t*>(buffer());
+}
+
+uint8_t *ArrayItem::uint8Array() const
+{
+    return reinterpret_cast<uint8_t*>(buffer());
+}
+
+int16_t *ArrayItem::int16Array() const
+{
+    return reinterpret_cast<int16_t*>(buffer());
+}
+
+uint16_t *ArrayItem::uint16Array() const
+{
+    return reinterpret_cast<uint16_t*>(buffer());
+}
+
+int32_t *ArrayItem::int32Array() const
+{
+    return reinterpret_cast<int32_t*>(buffer());
+}
+
+uint32_t *ArrayItem::uint32Array() const
+{
+    return reinterpret_cast<uint32_t*>(buffer());
+}
+
+int64_t *ArrayItem::int64Array() const
+{
+    return reinterpret_cast<int64_t*>(buffer());
+}
+
+uint64_t *ArrayItem::uint64Array() const
+{
+    return reinterpret_cast<uint64_t*>(buffer());
+}
+
+float_t *ArrayItem::floatArray() const
+{
+    return reinterpret_cast<float_t*>(buffer());
+}
+
+double_t *ArrayItem::doubleArray() const
+{
+    return reinterpret_cast<double_t*>(buffer());
 }
 
 Json::Value ArrayItem::save() const
 {
     Json::Value json = Item::save();
     json["arrayType"] = arrayTypeString();
+    json["count"] = d->count;
     return json;
 }
 
@@ -143,13 +233,14 @@ bool ArrayItem::restore(const Json::Value &json, int deep)
     if (!Item::restore(json, deep)) {
         return false;
     }
-
+    // arrayType
     ArrayType arrayType = stringArrayType(json["arrayType"].asString());
     if (arrayType == Icd::InvalidArray) {
         return false;
     }
-
     setArrayType(arrayType);
+    // count
+    setCount(json["count"].asInt());
 
     return true;
 }

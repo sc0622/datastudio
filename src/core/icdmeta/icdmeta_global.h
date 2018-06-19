@@ -172,9 +172,6 @@ class QJSValueList;
 
 namespace icdmeta {
 
-/**
- * @brief The CustomEvent enum
- */
 enum CustomEvent {
     Event_Callback = QEvent::User + 100,
     Event_StateMachine,
@@ -212,20 +209,10 @@ class ICDMETA_EXPORT IcdCore : public QObject
     Q_PROPERTY(QString configDir READ configDir WRITE setConfigDir NOTIFY configDirChanged)
     Q_PROPERTY(int fontSize READ fontSize WRITE setFontSize NOTIFY fontSizeChanged)
 public:
-    /**
-     * @brief registerQmlType
-     */
     static void registerQmlType();
 
-    /**
-     * @brief init
-     * @return
-     */
     bool init();
 
-    /**
-     * @brief The ObjectType enum
-     */
     enum ObjectType {
         ObjectInvalid = -1,
         ObjectRoot,
@@ -236,45 +223,36 @@ public:
     };
     Q_ENUM(ObjectType)
 
-    /**
-     * @brief The ItemType enum
-     */
     enum ItemType {
-        ItemInvalid = -1,   /**<  */
-        ItemHead,           /**<  */
-        ItemCounter,        /**<  */
-        ItemCheck,          /**<  */
-        ItemFrameCode,      /**<  */
-        ItemNumeric,        /**<  */
-        ItemBitMap,         /**< BITMAP */
-        ItemBitValue,       /**< BITVALUE */
-        ItemComplex,        /**<  */
-        ItemFrame,          /**<  */
-        ItemString,         /**<  */
-        ItemDateTime,       /**<  */
-        ItemArray,          /**<  */
-        ItemTotal           /**<  */
+        ItemInvalid = -1,
+        ItemHead,
+        ItemCounter,
+        ItemCheck,
+        ItemFrameCode,
+        ItemNumeric,
+        ItemBitMap,
+        ItemBitValue,
+        ItemComplex,
+        ItemFrame,
+        ItemString,
+        ItemDateTime,
+        ItemArray,
+        ItemTotal
     };
     Q_ENUM(ItemType)
 
-    /**
-     * @brief The CheckType enum
-     */
     enum CheckType {
-        CheckNone,      /**<  */
-        CheckSum8,      /**< 8 */
-        CheckSum16,     /**< 16 */
-        CheckCrc8,      /**< Crc8 */
-        CheckCrc16,     /**< Crc16 */
-        CheckXor8,      /**< Xor8 */
-        CheckXor16,     /**< Xor16 */
-        CheckTotal      /**<  */
+        CheckNone,
+        CheckSum8,
+        CheckSum16,
+        CheckCrc8,
+        CheckCrc16,
+        CheckXor8,
+        CheckXor16,
+        CheckTotal
     };
     Q_ENUM(CheckType)
 
-    /**
-     * @brief The CounterType enum
-     */
     enum CounterType {
         CounterInvalid = -1,
         CounterU8,
@@ -285,9 +263,6 @@ public:
     };
     Q_ENUM(CounterType)
 
-    /**
-     * @brief The FrameCodeType enum
-     */
     enum FrameCodeType {
         FrameCodeInvalid = -1,
         FrameCodeU8,
@@ -298,9 +273,6 @@ public:
     };
     Q_ENUM(FrameCodeType)
 
-    /**
-     * @brief The NumericType enum
-     */
     enum NumericType {
         NumericInvalid = -1,
         NumericInt8,
@@ -317,9 +289,22 @@ public:
     };
     Q_ENUM(NumericType)
 
-    /**
-     * @brief The DomainType enum
-     */
+    enum ArrayType {
+        InvalidArray = -1,
+        Int8Array,
+        UInt8Array,
+        Int16Array,
+        UInt16Array,
+        Int32Array,
+        UInt32Array,
+        Int64Array,
+        UInt64Array,
+        Float32Array,
+        Float64Array,
+        ArrayTypeTotal
+    };
+    Q_ENUM(ArrayType)
+
     enum DomainType {
         DomainValid = -1,
         DomainId,

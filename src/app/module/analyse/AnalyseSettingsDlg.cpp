@@ -46,6 +46,7 @@ bool TreeViewSettings::tryAccept()
             return false;
         }
 
+        JMain::instance()->setOption("analyse", "option.tree.loadDeep", deep);
         jnotify->send("analyse.toolbar.tree.loadDeep", deep);
     }
 
@@ -113,10 +114,14 @@ ChartViewSettings::~ChartViewSettings()
 bool ChartViewSettings::tryAccept()
 {
     if (d_modifyFlags.testBit(0)) {
-        jnotify->send("analyse.toolbar.chart.columnCount", d_spinBoxColumnCount->value());
+        const int columnCount = d_spinBoxColumnCount->value();
+        JMain::instance()->setOption("analyse", "option.chart.columnCount", columnCount);
+        jnotify->send("analyse.toolbar.chart.columnCount", columnCount);
     }
     if (d_modifyFlags.testBit(1)) {
-        jnotify->send("analyse.toolbar.chart.yLabelWidth", d_spinBoxYLabelWidth->value());
+        const int yLabelWidth = d_spinBoxYLabelWidth->value();
+        JMain::instance()->setOption("analyse", "option.chart.yLabelWidth", yLabelWidth);
+        jnotify->send("analyse.toolbar.chart.yLabelWidth", yLabelWidth);
     }
 
     return true;

@@ -32,6 +32,11 @@ QMessageBox {
     color: #ccc;
 }
 
+QMessageBox QLabel {
+    min-width: 100px;
+    min-height: 30px;
+}
+
 /** QMainWindow **/
 
 QMainWindow {
@@ -728,12 +733,14 @@ QListView {
 
 QListView::item {
     background: #eee;
-    padding: 0;
+    margin-bottom: 1px;
+    padding: 2px;
+    color: black;
     outline: none;
 }
 
 QListView::item:alternate {
-    background: #eee;
+    background: #eeeeff;
 }
 
 QListView::item:hover {
@@ -1091,4 +1098,8 @@ QLineEdit#__status__ {
 
 Icd--CoreTreeWidgetPrivate {
     qproperty-valueColor: blue;
+}
+
+JChart--Chart {
+    qproperty-zoomerColor: blue;
 }

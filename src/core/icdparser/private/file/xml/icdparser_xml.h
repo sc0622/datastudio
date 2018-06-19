@@ -81,6 +81,7 @@ private:
     bool parseItemCheck(const TiXmlElement *emItem, const Icd::CheckItemPtr &check) const;
     bool parseItemFrameCode(const TiXmlElement *emItem, const Icd::FrameCodeItemPtr &frameCode) const;
     bool parseItemNumeric(const TiXmlElement *emItem, const Icd::NumericItemPtr &numeric) const;
+    bool parseItemArray(const TiXmlElement *emItem, const Icd::ArrayItemPtr &array) const;
     bool parseItemBit(const TiXmlElement *emItem, const Icd::BitItemPtr &bit) const;
     bool parseItemComplex(const TiXmlElement *emItem, const Icd::ComplexItemPtr &complex, int deep) const;
     bool parseItemFrame(const TiXmlElement *emFrame, const Icd::FrameItemPtr &frame, int deep) const;
@@ -96,6 +97,7 @@ private:
     bool saveItemCheck(TiXmlElement *emItem, const Icd::CheckItemPtr &check) const;
     bool saveItemFrameCode(TiXmlElement *emItem, const Icd::FrameCodeItemPtr &frameCode) const;
     bool saveItemNumeric(TiXmlElement *emItem, const Icd::NumericItemPtr &numeric) const;
+    bool saveItemArray(TiXmlElement *emItem, const Icd::ArrayItemPtr &array) const;
     bool saveItemBit(TiXmlElement *emItem, const Icd::BitItemPtr &bit) const;
     bool saveItemComplex(TiXmlElement *emItem, const Icd::ComplexItemPtr &complex) const;
     bool saveItemFrame(TiXmlElement *emItem, const Icd::FrameItemPtr &frame) const;

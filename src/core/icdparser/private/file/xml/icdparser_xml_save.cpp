@@ -295,6 +295,20 @@ bool XmlParser::saveItemNumeric(TiXmlElement *emItem,
     return true;
 }
 
+bool XmlParser::saveItemArray(TiXmlElement *emItem, const ArrayItemPtr &array) const
+{
+    if (!emItem || !array) {
+        return false;
+    }
+
+    // arrayType
+    emItem->SetAttribute("arrayType", array->arrayTypeString());
+    // count
+    emItem->SetAttribute("count", array->count());
+
+    return true;
+}
+
 /**
  * @brief XmlParser::saveItemBit
  * @param emItem

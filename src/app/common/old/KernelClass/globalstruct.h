@@ -26,6 +26,7 @@ enum DataType {
     dt32,                   // 有符号32位
     dtF32,                  // 32位浮点数
     dtF64,                  // 64位浮点数
+    dtArray,                // 数组
     dtBitMap,               // BITMAP
     dtBitValue,             // BITVALUE
     dtComplex,              // 复合数据
@@ -72,6 +73,25 @@ enum FrameType {
 
     frameTotal      // 标记边界
 };
+
+/**
+ * @brief The ArrayType enum
+ */
+enum ArrayType {
+    InvalidArray = -1,
+    Int8Array,
+    UInt8Array,
+    Int16Array,
+    UInt16Array,
+    Int32Array,
+    UInt32Array,
+    Int64Array,
+    UInt64Array,
+    Float32Array,
+    Float64Array,
+    ArrayTypeTotal
+};
+
 /**
 * @brief ICD数据源定义
 */
@@ -103,6 +123,7 @@ enum DictionaryIndex {
     dicDataType = 0,    // 数据类型
     dicPowerType,       // 权限类型
     dicCounterType,     // 帧计数类型
+    dicArrayType,       // 数组类型
     dicCheckType,       // 校验类型
 };
 

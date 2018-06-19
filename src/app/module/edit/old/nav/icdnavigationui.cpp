@@ -2514,13 +2514,14 @@ bool ICDNavigationUi::updatePalneData(stPlane &data)
     jnotify->send("edit.savePlane", args);
 
     if (result) {
+        const QString nameSuffix("<font color=green size=2>[VEHICLE]</font>");
         // 更新树节点
         QStandardItem *item = findItem(UserKey, data.nCode, current);
         if (item) { // 更新节点
-            item->setText(QString(data.sName.c_str()));
+            item->setText(QString(data.sName.c_str()) + nameSuffix);
         } else { // 插入节点
             item = new QStandardItem();
-            item->setText(QString(data.sName.c_str()));
+            item->setText(QString(data.sName.c_str()) + nameSuffix);
             item->setData(data.nCode, UserKey);
             item->setData(GlobalDefine::noneState, ItemLoaded);
             item->setData(GlobalDefine::ntPlane, LevelIndex);
@@ -2554,13 +2555,14 @@ bool ICDNavigationUi::updateSystemData(stSystem &data)
     args.append(qVariantFromValue((void*)&result));
     jnotify->send("edit.saveSystem", args);
     if (result) {
+        const QString nameSuffix("<font color=green size=2>[SYSTEM]</font>");
         // 更新树节点
         QStandardItem *item = findItem(UserKey, data.nCode, current);
         if (item) { // 更新节点
-            item->setText(QString(data.sName.c_str()));
+            item->setText(QString(data.sName.c_str()) + nameSuffix);
         } else { // 插入节点
             item = new QStandardItem();
-            item->setText(QString(data.sName.c_str()));
+            item->setText(QString(data.sName.c_str()) + nameSuffix);
             item->setData(data.nCode, UserKey);
             item->setData(GlobalDefine::noneState, ItemLoaded);
             item->setData(GlobalDefine::ntSystem, LevelIndex);
@@ -2601,14 +2603,14 @@ bool ICDNavigationUi::updateICDData(stICDBase &data)
     jnotify->send("edit.saveTable", args);
 
     if (result) {
+        const QString nameSuffix("<font color=green size=2>[TABLE]</font>");
         // 更新树节点
-        QStandardItem *item = findItem(UserKey,
-                                       data.sName.c_str(), current);
+        QStandardItem *item = findItem(UserKey, data.sName.c_str(), current);
         if (item) { // 更新节点
-            item->setText(QString(data.sDescribe.c_str()));
+            item->setText(QString(data.sDescribe.c_str()) + nameSuffix);
         } else { // 插入节点
             item = new QStandardItem();
-            item->setText(QString(data.sDescribe.c_str()));
+            item->setText(QString(data.sDescribe.c_str()) + nameSuffix);
             item->setData(data.sName.c_str(), UserKey);
             item->setData(GlobalDefine::wholeState, ItemLoaded);
             item->setData(GlobalDefine::ntTable, LevelIndex);
@@ -2962,6 +2964,9 @@ QString ICDNavigationUi::stringDataType(int type) const
         break;
     case GlobalDefine::dtF64:       // 64位浮点数
         result = "F64";
+        break;
+    case GlobalDefine::dtArray:     // 64位浮点数
+        result = "ARRAY";
         break;
     case GlobalDefine::dtBitMap:    // 比特映射
         result = "BITMAP";

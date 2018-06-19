@@ -19,13 +19,18 @@ QDialog {
 QMessageBox QPushButton,
 QDialogButtonBox QPushButton {
     min-width: 6em;
-}
+} 
 
 /** QMessageBox **/
 
 QMessageBox {
     background: white;
     color: #ccc;
+}
+
+QMessageBox QLabel {
+    min-width: 100px;
+    min-height: 30px;
 }
 
 /** QMainWindow **/
@@ -746,13 +751,14 @@ QListView {
 
 QListView::item {
     background: #eee;
+    margin-bottom: 1px;
     color: black;
-    padding: 0;
+    padding: 2px;
     outline: none;
 }
 
 QListView::item:alternate {
-    background: #eee;
+    background: #eeeeff;
 }
 
 QListView::item:hover {
@@ -1186,4 +1192,8 @@ QLineEdit#__status__ {
 
 Icd--CoreTreeWidgetPrivate {
     qproperty-valueColor: blue;
+}
+
+JChart--Chart {
+    qproperty-zoomerColor: blue;
 }

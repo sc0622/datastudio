@@ -640,6 +640,33 @@ bool SqlParserData::parseItemNumeric(const stTableRules &rule,
     return true;
 }
 
+bool SqlParserData::parseItemArray(const stTableRules &rule, const ArrayItemPtr &array) const
+{
+    if (!array) {
+        return false;
+    }
+
+    // arrayType attribute
+    switch (atoi(rule.sDefault.c_str())) {
+    case GlobalDefine::Int8Array: array->setArrayType(Icd::Int8Array); break;
+    case GlobalDefine::UInt8Array: array->setArrayType(Icd::UInt8Array); break;
+    case GlobalDefine::Int16Array: array->setArrayType(Icd::Int16Array); break;
+    case GlobalDefine::UInt16Array: array->setArrayType(Icd::UInt16Array); break;
+    case GlobalDefine::Int32Array: array->setArrayType(Icd::Int32Array); break;
+    case GlobalDefine::UInt32Array: array->setArrayType(Icd::UInt32Array); break;
+    case GlobalDefine::Int64Array: array->setArrayType(Icd::Int64Array); break;
+    case GlobalDefine::UInt64Array: array->setArrayType(Icd::UInt64Array); break;
+    case GlobalDefine::Float32Array: array->setArrayType(Icd::Float32Array); break;
+    case GlobalDefine::Float64Array: array->setArrayType(Icd::Float64Array); break;
+    default: break;
+    }
+
+    // count
+    array->setCount(rule.uLength / array->typeSize());
+
+    return true;
+}
+
 /**
  * @brief SqlParserData::parseItemBit
  * @param rule

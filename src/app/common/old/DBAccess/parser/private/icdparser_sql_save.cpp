@@ -87,20 +87,20 @@ bool SqlParserData::Item2rule(const Icd::ItemPtr &item, stTableRules &rule) cons
         rule.uType = GlobalDefine::dtBitValue;
         break;
     case Icd::ItemComplex:
-        {
-            Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item);
-            if (!complex) {
-                break;
-            }
-            result = ItemComplex2rule(complex, rule);
-            // type attribute
-            if (complex->table()->allItem().empty()) {
-                rule.uType = GlobalDefine::dtBuffer;
-                rule.dOffset = complex->bufferSize();
-            } else {
-                rule.uType = GlobalDefine::dtComplex;
-            }
+    {
+        Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item);
+        if (!complex) {
+            break;
         }
+        result = ItemComplex2rule(complex, rule);
+        // type attribute
+        if (complex->table()->allItem().empty()) {
+            rule.uType = GlobalDefine::dtBuffer;
+            rule.dOffset = complex->bufferSize();
+        } else {
+            rule.uType = GlobalDefine::dtComplex;
+        }
+    }
         break;
     case Icd::ItemFrame:
         result = ItemFrame2rule(JHandlePtrCast<Icd::FrameItem, Icd::Item>(item), rule);
@@ -342,8 +342,8 @@ bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric,
     case Icd::NumericUint16: rule.uType = GlobalDefine::dtU16; break;
     case Icd::NumericInt32: rule.uType = GlobalDefine::dt32; break;
     case Icd::NumericUint32: rule.uType = GlobalDefine::dtU32; break;
-    //case Icd::NumericInt64: rule.uType = GlobalDefine::dt64; break;
-    //case Icd::NumericUint64: rule.uType = GlobalDefine::dtU64; break;
+        //case Icd::NumericInt64: rule.uType = GlobalDefine::dt64; break;
+        //case Icd::NumericUint64: rule.uType = GlobalDefine::dtU64; break;
     case Icd::NumericFloat32: rule.uType = GlobalDefine::dtF32; break;
     case Icd::NumericFloat64: rule.uType = GlobalDefine::dtF64; break;
     default: return false;
@@ -385,6 +385,53 @@ bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric,
         set += QString("%1[%2]#").arg(it->first).arg(it->second.c_str());
     }
     rule.sRule = set.left(set.lastIndexOf("#")).toStdString();
+
+    return true;
+}
+
+bool SqlParserData::ItemArray2rule(const ArrayItemPtr &array, stTableRules &rule) const
+{
+    if (!array) {
+        return false;
+    }
+
+    // arrayType attribute
+    switch (array->arrayType()) {
+    case Icd::Int8Array:
+        rule.sDefault = QString::number(GlobalDefine::Int8Array).toStdString();
+        break;
+    case Icd::UInt8Array:
+        rule.sDefault = QString::number(GlobalDefine::UInt8Array).toStdString();
+        break;
+    case Icd::Int16Array:
+        rule.sDefault = QString::number(GlobalDefine::Int16Array).toStdString();
+        break;
+    case Icd::UInt16Array:
+        rule.sDefault = QString::number(GlobalDefine::UInt16Array).toStdString();
+        break;
+    case Icd::Int32Array:
+        rule.sDefault = QString::number(GlobalDefine::Int32Array).toStdString();
+        break;
+    case Icd::UInt32Array:
+        rule.sDefault = QString::number(GlobalDefine::UInt32Array).toStdString();
+        break;
+    case Icd::Int64Array:
+        rule.sDefault = QString::number(GlobalDefine::Int64Array).toStdString();
+        break;
+    case Icd::UInt64Array:
+        rule.sDefault = QString::number(GlobalDefine::UInt64Array).toStdString();
+        break;
+    case Icd::Float32Array:
+        rule.sDefault = QString::number(GlobalDefine::Float32Array).toStdString();
+        break;
+    case Icd::Float64Array:
+        rule.sDefault = QString::number(GlobalDefine::Float64Array).toStdString();
+        break;
+    default:
+        break;
+    }
+    // length attribute
+    rule.uLength = (unsigned short)array->bufferSize();
 
     return true;
 }
@@ -594,9 +641,9 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
 
     // length attribute
     Icd::FrameItem *frame
-        = dynamic_cast<Icd::FrameItem *>(table->parent());
+            = dynamic_cast<Icd::FrameItem *>(table->parent());
     Icd::ComplexItem *complex
-        = dynamic_cast<Icd::ComplexItem *>(table->parent());
+            = dynamic_cast<Icd::ComplexItem *>(table->parent());
     if (frame) {
         base.nLength = qCeil(frame->bufferSize());
     } else if (complex) {
@@ -624,7 +671,7 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
             // code attribute
             if (previous) {
                 if (GlobalDefine::dtBitMap == previous->uType
-                    || GlobalDefine::dtBitValue == previous->uType) {
+                        || GlobalDefine::dtBitValue == previous->uType) {
                     if (GlobalDefine::dtBitMap == rule.uType
                             || GlobalDefine::dtBitValue == rule.uType) {
                         bit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
@@ -639,7 +686,7 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
                 } else {
                     rule.nCode = previous->nCode + previous->uLength;
                     if (GlobalDefine::dtBitMap == rule.uType
-                        || GlobalDefine::dtBitValue == rule.uType) {
+                            || GlobalDefine::dtBitValue == rule.uType) {
                         bit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
                         // need plus byte offset
                         rule.nCode += bit->bitStart() / 8;
@@ -648,7 +695,7 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
             } else {
                 rule.nCode = 0;
                 if (GlobalDefine::dtBitMap == rule.uType
-                    || GlobalDefine::dtBitValue == rule.uType) {
+                        || GlobalDefine::dtBitValue == rule.uType) {
                     bit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
                     // need plus byte offset
                     rule.nCode += bit->bitStart() / 8;

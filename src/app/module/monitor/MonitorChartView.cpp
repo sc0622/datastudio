@@ -13,6 +13,10 @@ ChartView::ChartView(QWidget *parent)
     d_chartView = new Icd::ChartView(false, this);
     vertLayoutMain->addWidget(d_chartView);
 
+    jnotify->on("monitor.toolbar.flushToggle", this, [=](JNEvent &event){
+        const bool checked = event.argument().toBool();
+        d_chartView->setRunning(checked);
+    });
     jnotify->on("monitor.toolbar.chart.clean", this, [=](JNEvent &){
         d_chartView->clearCharts();
     });

@@ -538,6 +538,34 @@ bool XmlParser::parseItemNumeric(const TiXmlElement *emItem,
     return true;
 }
 
+bool XmlParser::parseItemArray(const TiXmlElement *emItem, const ArrayItemPtr &array) const
+{
+    if (!emItem || !array) {
+        return false;
+    }
+
+    int iVal = 0;
+    std::string sVal;
+
+    // arrayType attribute
+    if (emItem->QueryStringAttribute("arrayType", &sVal) != TIXML_SUCCESS) {
+        return false;
+    }
+    const Icd::ArrayType arrayType = Icd::ArrayItem::stringArrayType(
+                QString::fromStdString(sVal).toStdString());
+    if (arrayType == Icd::InvalidArray) {
+        return false;
+    }
+    array->setArrayType(arrayType);
+
+    // count
+    if (emItem->QueryIntAttribute("count", &iVal) == TIXML_SUCCESS) {
+        array->setCount(iVal);
+    }
+
+    return true;
+}
+
 /**
  * @brief XmlParser::parseItemBit
  * @param emItem

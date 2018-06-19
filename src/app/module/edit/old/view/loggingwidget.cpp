@@ -58,7 +58,6 @@ void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
         stackedWidget_->addWidget(currentMetaUi_);
         connect(currentMetaUi_, &MetaUI::confirmed, this, &LoggingWidget::slotConfirm);
         connect(currentMetaUi_, &MetaUI::canceled, this, &LoggingWidget::slotCancel);
-        initTypeInfo(data);
     }
 
     currentMetaUi_->setUIData(data);
@@ -69,11 +68,13 @@ void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
     case MetaUI::wdCheck:
     case MetaUI::wdFrameCode:
     case MetaUI::wdCommon:
+    case MetaUI::wdArray:
     case MetaUI::wdBitMap:
     case MetaUI::wdBitValue:
     case MetaUI::wdDiscern:
     case MetaUI::wdComplex:
     case MetaUI::wdBuffer:
+        initTypeInfo(data);
         groupType_->setVisible(true);
         break;
     default:
@@ -196,6 +197,9 @@ void LoggingWidget::slotTypeChanged(int index)
     case GlobalDefine::dtF64:
         metaUiType = MetaUI::wdCommon;
         break;
+    case GlobalDefine::dtArray:
+        metaUiType = MetaUI::wdArray;
+        break;
     case GlobalDefine::dtBitMap:
         metaUiType = MetaUI::wdBitMap;
         break;
@@ -264,6 +268,7 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
         case GlobalDefine::dt32:
         case GlobalDefine::dtF32:
         case GlobalDefine::dtF64:
+        case GlobalDefine::dtArray:
         case GlobalDefine::dtBitMap:
         case GlobalDefine::dtBitValue:
             upperBound = GlobalDefine::dtBitValue;
@@ -279,7 +284,9 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
         case GlobalDefine::dtBuffer:
             lowerBound = GlobalDefine::dtBuffer;
             upperBound = GlobalDefine::dtBuffer;
-        default:break;
+            break;
+        default:
+            break;
         }
     }
     enableConnection(false);

@@ -221,7 +221,7 @@ JLRESULT ICDMainView::dealNavigationCommand(const Icd::JNEvent &event)
         return -1;
     }
 
-    q_ui->dealCommand(args[0].toInt(), var);
+    q_ui->dealCommand(args[0].toInt(), *var);
 
     return 0;
 }

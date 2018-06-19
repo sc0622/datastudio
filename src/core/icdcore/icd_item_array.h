@@ -38,11 +38,26 @@ public:
     static std::string arrayTypeString(ArrayType type);
     static ArrayType stringArrayType(const std::string &str);
 
+    int count() const;
+    void setCount(int count);
+
     std::string typeName() const override;
     std::string typeString() const override;
+    int typeSize() const;
 
     Object *clone() const override;
     ArrayItem &operator =(const ArrayItem &other);
+
+    int8_t *int8Array() const;
+    uint8_t *uint8Array() const;
+    int16_t *int16Array() const;
+    uint16_t *uint16Array() const;
+    int32_t *int32Array() const;
+    uint32_t *uint32Array() const;
+    int64_t *int64Array() const;
+    uint64_t *uint64Array() const;
+    float_t *floatArray() const;
+    double_t *doubleArray() const;
 
     // Serializable interface
 public:

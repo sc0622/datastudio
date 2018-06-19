@@ -15,12 +15,17 @@ class JIcdArrayItemPrivate;
 class ICDMETA_EXPORT JIcdArrayItem : public JIcdItem
 {
     Q_OBJECT
+    Q_PROPERTY(IcdCore::ArrayType arrayType READ arrayType NOTIFY arrayTypeChanged)
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     explicit JIcdArrayItem(const Icd::ArrayItemPtr &data, QObject *parent = nullptr);
     ~JIcdArrayItem();
 
     static void registerQmlType();
     Icd::ArrayItemPtr metaData() const;
+
+    IcdCore::ArrayType arrayType() const;
+    int count() const;
 
     QString typeName() const override;
 
@@ -30,6 +35,8 @@ public:
     QString dataString() const override;
 
 signals:
+    void arrayTypeChanged();
+    void countChanged();
 
 public slots:
 

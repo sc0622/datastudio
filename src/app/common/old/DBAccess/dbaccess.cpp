@@ -34,10 +34,11 @@ public:
         , q_icd(DBAccess::tableName(DataBaseDefine::dbICDBase))
         , q_userPower(DBAccess::tableName(DataBaseDefine::dbUserPower))
     {
-        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbDataType)); // 数据类型
-        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbPowerType));// 权限类型
-        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbCounterType));// 帧计数类型
-        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbCheckType));// 校验类型
+        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbDataType));       // 数据类型
+        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbPowerType));      // 权限类型
+        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbCounterType));    // 帧计数类型
+        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbCheckType));      // 校验类型
+        q_dic.push_back(DBAccess::tableName(DataBaseDefine::dbArrayType));      // 数组类型
     }
 
 public:
@@ -99,6 +100,9 @@ std::string DBAccess::tableName(DataBaseDefine::TableDefine dbf)
         break;
     case DataBaseDefine::dbCheckType:
         result = "Dic_CheckType";
+        break;
+    case DataBaseDefine::dbArrayType:
+        result = "Dic_ArrayType";
         break;
     default:
         break;
@@ -315,7 +319,7 @@ bool DBAccess::readDictionary(std::unordered_map<std::string, std::vector<stDict
 * @param [out] result : 字典数据<字典标识, <字典数据集>>
 * @return 执行结果，true：成功；false：失败
 */
-bool DBAccess::readDictionary(const std::vector<std::string> &dics, 
+bool DBAccess::readDictionary(const std::vector<std::string> &dics,
                               std::unordered_map<std::string, std::vector<stDictionary> >& result)
 {
     if (!isOpen()) {
@@ -400,7 +404,6 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         dic[tableName(DataBaseDefine::dbCounterType)] = table;
         table.clear();
     }
-
     // 数据类型
     {
         stDic.nCode = GlobalDefine::dtHead;
@@ -439,6 +442,9 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         stDic.nCode = GlobalDefine::dtF64;
         stDic.sDec = QStringLiteral("64位浮点数").toStdString();
         table.push_back(stDic);
+        stDic.nCode = GlobalDefine::dtArray;
+        stDic.sDec = QStringLiteral("数组").toStdString();
+        table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtBitMap;
         stDic.sDec = QStringLiteral("比特映射").toStdString();
         table.push_back(stDic);
@@ -455,6 +461,42 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         stDic.sDec = QStringLiteral("数据预留区").toStdString();
         table.push_back(stDic);
         dic[tableName(DataBaseDefine::dbDataType)] = table;
+        table.clear();
+    }
+    // 数组类型
+    {
+        stDic.nCode = GlobalDefine::Int8Array;
+        stDic.sDec = QStringLiteral("8位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::UInt8Array;
+        stDic.sDec = QStringLiteral("8位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::Int16Array;
+        stDic.sDec = QStringLiteral("16位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::UInt16Array;
+        stDic.sDec = QStringLiteral("16位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::Int32Array;
+        stDic.sDec = QStringLiteral("32位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::UInt32Array;
+        stDic.sDec = QStringLiteral("32位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::Int64Array;
+        stDic.sDec = QStringLiteral("64位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::UInt64Array;
+        stDic.sDec = QStringLiteral("64位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::Float32Array;
+        stDic.sDec = QStringLiteral("32位浮点数").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::Float64Array;
+        stDic.sDec = QStringLiteral("64位浮点数").toStdString();
+        table.push_back(stDic);
+
+        dic[tableName(DataBaseDefine::dbArrayType)] = table;
         table.clear();
     }
 
@@ -2026,7 +2068,7 @@ bool DBAccess::saveTableRules(const std::vector<std::pair<stICDBase, DMSpace::sr
 * @param [in] subTables : 待删除子表名
 * @return 执行结果，true：成功；false：失败
 */
-bool DBAccess::deleteTableRules(const std::string &table, 
+bool DBAccess::deleteTableRules(const std::string &table,
                                 const DMSpace::srMap&rules,
                                 const std::vector<std::string> &subTable)
 {

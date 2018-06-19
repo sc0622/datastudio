@@ -19,7 +19,7 @@
       "analyse" : {
          "option" : {
             "chart" : {
-               "columnCount" : 2,
+               "columnCount" : 1,
                "showYAlign" : true,
                "showYLabel" : true,
                "syncTrack" : true,
@@ -76,6 +76,7 @@
                "xAxisSync" : true,
                "yLabelWidth" : 10
             },
+            "flushEnabled" : false,
             "tree" : {
                "flushEnabled" : true,
                "loadDeep" : 2,
@@ -99,12 +100,13 @@
       },
       "simulate" : {
          "option" : {
+            "flushEnabled" : true,
             "tree" : {
                "flushEnabled" : true,
                "loadDeep" : 2,
                "showDesc" : true,
                "showOffset" : true,
-               "showOrignal" : 0,
+               "showOrignal" : 16,
                "showReal" : true,
                "showType" : true,
                "showValue" : true

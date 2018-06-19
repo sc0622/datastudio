@@ -375,7 +375,7 @@ void ToolBar::updateMonitor()
     // view
     addMonitorViewAction(option["tree"]);
     // flush-switch
-    addMonitorFlushSwitchAction(option["tree"]);
+    addMonitorFlushSwitchAction(option);
     addSeparator();
     // tree
     addMonitorTreeAction(option["tree"]);
@@ -600,7 +600,7 @@ void ToolBar::addMonitorFlushSwitchAction(const Json::Value &option)
     // period of flush
     QAction *actionPeriodOfFlush = menuFlush->addAction(tr("Period of flush"));
     connect(actionPeriodOfFlush, &QAction::triggered, this, [=](){
-        jnotify->send("monitor.toolbar.tree.flushPeriod");
+        jnotify->send("monitor.toolbar.flushPeriod");
     });
 
     auto setFlushStatus = [=](bool checked){
@@ -611,15 +611,15 @@ void ToolBar::addMonitorFlushSwitchAction(const Json::Value &option)
     };
     connect(buttonFlush, &QToolButton::toggled, this, [=](bool checked){
         setFlushStatus(checked);
-        JMain::instance()->setOption("monitor", "option.tree.flushEnabled", checked);
-        jnotify->send("monitor.toolbar.tree.flushToggle", checked);
+        JMain::instance()->setOption("monitor", "option.flushEnabled", checked);
+        jnotify->send("monitor.toolbar.flushToggle", checked);
     });
 
     if (option.isMember("flushEnabled")) {
         const bool checked = option["flushEnabled"].asBool();
         setFlushStatus(checked);
         if (!checked) {
-            jnotify->send("monitor.toolbar.tree.flushToggle", false);
+            jnotify->send("monitor.toolbar.flushToggle", false);
         }
     } else {
         setFlushStatus(true);
@@ -832,7 +832,7 @@ void ToolBar::updateSimulate()
     // view
     addSimulateViewAction(option["tree"]);
     // flush-switch
-    addSimulateFlushSwitchAction(option["tree"]);
+    addSimulateFlushSwitchAction(option);
     addSeparator();
     // tree
     addSimulateTreeAction(option["tree"]);
@@ -1058,7 +1058,7 @@ void ToolBar::addSimulateFlushSwitchAction(const Json::Value &option)
     // period of flush
     QAction *actionPeriodOfFlush = menuFlush->addAction(tr("Period of flush"));
     connect(actionPeriodOfFlush, &QAction::triggered, this, [=](){
-        jnotify->send("monitor.toolbar.tree.flushPeriod");
+        jnotify->send("monitor.toolbar.flushPeriod");
     });
 
     auto setFlushStatus = [=](bool checked){
@@ -1069,15 +1069,15 @@ void ToolBar::addSimulateFlushSwitchAction(const Json::Value &option)
     };
     connect(buttonFlush, &QToolButton::toggled, this, [=](bool checked){
         setFlushStatus(checked);
-        JMain::instance()->setOption("simulate", "option.tree.flushEnabled", checked);
-        jnotify->send("simulate.toolbar.tree.flushToggle", checked);
+        JMain::instance()->setOption("simulate", "option.flushEnabled", checked);
+        jnotify->send("simulate.toolbar.flushToggle", checked);
     });
 
     if (option.isMember("flushEnabled")) {
         const bool checked = option["flushEnabled"].asBool();
         setFlushStatus(checked);
         if (!checked) {
-            jnotify->send("simulate.toolbar.tree.flushToggle", false);
+            jnotify->send("simulate.toolbar.flushToggle", false);
         }
     } else {
         setFlushStatus(true);

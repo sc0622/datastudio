@@ -764,7 +764,7 @@ void CoreTreeWidgetPrivate::exportBindingStatus(const QString &filePath)
 
 void CoreTreeWidgetPrivate::exportTableData(QStandardItem *item)
 {
-    if (item) {
+    if (!item) {
         return;
     }
 
@@ -1136,13 +1136,13 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
         }
         // exprot all
         QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  QStringLiteral("导出全部数据"));
+                                                  QStringLiteral("导出全部协议"));
         connect(actionExportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("导出已加载数据"));
+                                                     QStringLiteral("导出已加载协议"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1228,13 +1228,13 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
         }
         // export all
         QAction *exportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                            QStringLiteral("导出全部数据"));
+                                            QStringLiteral("导出全部协议"));
         connect(exportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("导出已加载数据"));
+                                                     QStringLiteral("导出已加载协议"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1319,13 +1319,13 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
         }
         // export all
         QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  QStringLiteral("导出全部数据"));
+                                                  QStringLiteral("导出全部协议"));
         connect(actionExportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("导出已加载数据"));
+                                                     QStringLiteral("导出已加载协议"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1488,13 +1488,13 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
         }
         // export all
         QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  QStringLiteral("导出全部数据"));
+                                                  QStringLiteral("导出全部协议"));
         connect(actionExportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("导出已加载数据"));
+                                                     QStringLiteral("导出已加载协议"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1594,13 +1594,13 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
     }
     // export all
     QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                              QStringLiteral("导出全部数据"));
+                                              QStringLiteral("导出全部协议"));
     connect(actionExportAll, &QAction::triggered, this, [=](){
         exportData(item, true);
     });
     // export exists
     QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                 QStringLiteral("导出已加载数据"));
+                                                 QStringLiteral("导出已加载协议"));
     connect(actionExportExists, &QAction::triggered, this, [=](){
         exportData(item, false);
     });

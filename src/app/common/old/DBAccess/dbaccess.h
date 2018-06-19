@@ -20,6 +20,7 @@ namespace DataBaseDefine{
         dbPowerType,            // 权限类型表
         dbCounterType,          // 帧计数类型表
         dbCheckType,            // 校验类型表
+        dbArrayType,            // 数组型表
         dbTotal                 // 边界标记
     };
 }

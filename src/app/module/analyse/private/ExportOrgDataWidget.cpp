@@ -30,9 +30,25 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
         checkBox = new QCheckBox(this);
         formLayout->addRow(QStringLiteral("导出包时间："), checkBox);
     }
+
+    QHBoxLayout *layoutBottom = new QHBoxLayout();
+    layoutMain->addLayout(layoutBottom);
+
+    layoutBottom->addStretch();
+
     QPushButton *buttonOk = new QPushButton(QStringLiteral("确定"), this);
-    QPushButton *buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    buttonOk->setMinimumWidth(120);
     buttonOk->setEnabled(false);
+    layoutBottom->addWidget(buttonOk);
+
+    layoutBottom->addSpacing(20);
+
+    QPushButton *buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    buttonCancel->setMinimumWidth(120);
+    layoutBottom->addWidget(buttonCancel);
+
+    layoutBottom->addStretch();
+
     connect(editPath, &QLineEdit::textChanged, [=](const QString &text){
         if (text.isEmpty()) {
             buttonOk->setEnabled(false);
@@ -54,7 +70,6 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
         }
         editPath->setText(targetFilePath);
         editPath->setToolTip(targetFilePath);
-        //
     });
     connect(buttonOk, &QPushButton::clicked, [=](){
         const QString target = editPath->text().trimmed();
@@ -74,10 +89,6 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
     connect(buttonCancel, &QPushButton::clicked, [=](){
         emit rejected();
     });
-    QHBoxLayout *layoutBottom = new QHBoxLayout();
-    layoutMain->addLayout(layoutBottom);
-    layoutBottom->addWidget(buttonOk);
-    layoutBottom->addWidget(buttonCancel);
 }
 
 void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)

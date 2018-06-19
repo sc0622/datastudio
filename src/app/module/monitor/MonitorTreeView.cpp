@@ -125,11 +125,11 @@ TreeView::TreeView(QWidget *parent)
         const bool checked = event.argument().toBool();
         treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowSpec, checked);
     });
-    jnotify->on("monitor.toolbar.tree.flushToggle", this, [=](JNEvent &event){
+    jnotify->on("monitor.toolbar.flushToggle", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
         treeView_->setRunning(checked);
     });
-    jnotify->on("monitor.toolbar.tree.flushPeriod", this, [=](JNEvent &){
+    jnotify->on("monitor.toolbar.flushPeriod", this, [=](JNEvent &){
         QInputDialog inputDlg(this);
         inputDlg.setWindowTitle(tr("Input period of flushing"));
         inputDlg.setLabelText(tr("Flushing period:"));
@@ -143,7 +143,7 @@ TreeView::TreeView(QWidget *parent)
             return;
         }
         treeView_->setIntervalUpdate(inputDlg.intValue());
-        JMain::instance()->setOption("monitor", "option.tree.flushPeriod",
+        JMain::instance()->setOption("monitor", "option.flushPeriod",
                                      inputDlg.intValue());
     });
     jnotify->on("monitor.toolbar.tree.channel.binding", this, [=](JNEvent &){

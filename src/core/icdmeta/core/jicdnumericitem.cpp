@@ -75,8 +75,8 @@ IcdCore::NumericType JIcdNumericItem::numericType() const
     case Icd::NumericUint32: return IcdCore::NumericUint32;
     case Icd::NumericInt64: return IcdCore::NumericInt64;
     case Icd::NumericUint64: return IcdCore::NumericUint64;
-    case Icd::NumericFloat64: return IcdCore::NumericFloat64;
     case Icd::NumericFloat32: return IcdCore::NumericFloat32;
+    case Icd::NumericFloat64: return IcdCore::NumericFloat64;
     default: return IcdCore::NumericInvalid;
     }
 }

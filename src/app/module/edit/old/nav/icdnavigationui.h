@@ -92,8 +92,7 @@ protected Q_SLOTS:
     void slotItemPressed(QStandardItem *item);
 
     // 切换选中节点
-    void slotCurrentChanged(QStandardItem *current,
-                            QStandardItem *previous);
+    void slotCurrentChanged(QStandardItem *current, QStandardItem *previous);
 
     // 加载规则表数据
     void slotLoadRule();

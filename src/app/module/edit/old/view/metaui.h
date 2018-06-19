@@ -50,6 +50,7 @@ public:
         wdCheck,    // 校验界面
         wdFrameCode,// 帧识别码
         wdCommon,   // 通用界面
+        wdArray,    // 数组界面
         wdBitMap,   // bitMap界面
         wdBitValue, // bitValue界面
         wdDiscern,  // 帧数据界面

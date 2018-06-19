@@ -12,12 +12,12 @@
 <context>
     <name>Analyse::ChartViewSettings</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="85"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="86"/>
         <source>Column count:</source>
         <translation>图表列数：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="90"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="91"/>
         <source>Y-label width:</source>
         <translation>纵轴标签字符宽度：</translation>
     </message>
@@ -25,27 +25,27 @@
 <context>
     <name>Analyse::SettingsDlg</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="151"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="156"/>
         <source>Other settings for analyse module</source>
         <translation>分析图模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="161"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="166"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="165"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="170"/>
         <source>Chart view</source>
         <translation>图表视图</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="174"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="179"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="178"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="183"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -53,53 +53,53 @@
 <context>
     <name>Analyse::TreeView</name>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="131"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="135"/>
         <source>Any file (*.*)</source>
         <translation>Any file (*.*)</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="133"/>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="249"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="137"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="252"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="134"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="138"/>
         <source>Any file (*.*);;ICD file (*.icd);;Data file (*.dat);;Text file (*.txt)</source>
         <translation>Any file (*.*);;ICD file (*.icd);;Data file (*.dat);;Text file (*.txt)</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="252"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="255"/>
         <source>Parsing data file...</source>
         <translation>正在解析数据文件…</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="281"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="284"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="282"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="285"/>
         <source>Parse failure! There&apos;re no valid data.</source>
         <translation>解析失败！没有有效数据。</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="317"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="320"/>
         <source>Parse success</source>
         <translation>解析成功</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="319"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="322"/>
         <source>Parse failure!</source>
         <translation>解析失败！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="322"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="325"/>
         <source>Parsing result</source>
         <translation>解析结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="394"/>
+        <location filename="../../module/analyse/AnalyseTreeView.cpp" line="396"/>
         <source>--</source>
         <translation>——</translation>
     </message>
@@ -1047,7 +1047,7 @@
 <context>
     <name>Monitor::ChartView</name>
     <message>
-        <location filename="../../module/monitor/MonitorChartView.cpp" line="220"/>
+        <location filename="../../module/monitor/MonitorChartView.cpp" line="224"/>
         <source>Drag and drog left tree node to here</source>
         <translation>拖放左边树节点到这里</translation>
     </message>

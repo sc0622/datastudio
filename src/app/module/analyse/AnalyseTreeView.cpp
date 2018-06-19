@@ -8,51 +8,52 @@ namespace Analyse {
 
 TreeView::TreeView(QWidget *parent)
     : QWidget(parent)
+    , exportDataDlg_(nullptr)
 {
     QVBoxLayout *vertLyoutMain = new QVBoxLayout(this);
     vertLyoutMain->setContentsMargins(0, 0, 0, 0);
 
-    d_treeView = new Icd::CoreTreeWidget(this);
-    d_treeView->setTreeMode(Icd::CoreTreeWidget::TreeModeAnalyse);
-    vertLyoutMain->addWidget(d_treeView);
+    treeView_ = new Icd::CoreTreeWidget(this);
+    treeView_->setTreeMode(Icd::CoreTreeWidget::TreeModeAnalyse);
+    vertLyoutMain->addWidget(treeView_);
 
     jnotify->on("analyse.toolbar.database.config", this, [=](JNEvent &){
         QVariantList args;
         args << "analyse" << qVariantFromValue((void*)this);
         jnotify->send("database.config", args);
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
         jnotify->send("analyse.tree.item.pressed", qVariantFromValue((void*)item));
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
         QVariantList args;
         args.append(qVariantFromValue((void*)item));
-        QStandardItem *itemTable = d_treeView->findItemTable(item);
+        QStandardItem *itemTable = treeView_->findItemTable(item);
         args.append(qVariantFromValue((void*)itemTable));
         jnotify->send("analyse.tree.item.clicked", args);
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::currentItemChanged, this,
+    connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
         args.append(qVariantFromValue((void*)current));
         args.append(qVariantFromValue((void*)previous));
         jnotify->send("analyse.tree.item.currentchanged", args);
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::itemUnloaded, this,
+    connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue((void*)item));
         args.append(qVariantFromValue((void*)tableItem));
         jnotify->send("analyse.tree.item.unloaded", args);
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::unbindItem, this,
+    connect(treeView_, &Icd::CoreTreeWidget::unbindItem, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue((void*)item));
         args.append(qVariantFromValue((void*)tableItem));
         jnotify->send("analyse.tree.item.unbind", args);
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::exportAnalyseData, this,
+    connect(treeView_, &Icd::CoreTreeWidget::exportAnalyseData, this,
             [=](QStandardItem *item, const QString &filePath,
             bool hasTimeFormat, int headerSize){
         exportData(item, filePath, hasTimeFormat, headerSize);
@@ -69,7 +70,7 @@ TreeView::TreeView(QWidget *parent)
         if (!handle) {
             return;
         }
-        handle->parser = d_treeView->parser();
+        handle->parser = treeView_->parser();
         event.setReturnValue(true);
     });
     jnotify->on("analyse.toolbar.database.config", this, [=](JNEvent &){
@@ -80,13 +81,16 @@ TreeView::TreeView(QWidget *parent)
         args.append(qVariantFromValue((void*)this));
         jnotify->send("database.config", args);
     });
+    jnotify->on("analyse.toolbar.tree.loadDeep", this, [=](JNEvent &event){
+        treeView_->setLoadingDeep(event.argument().toInt());
+    });
     jnotify->on("analyse.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
+        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
     });
     jnotify->on("analyse.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        d_treeView->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
+        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
     });
     jnotify->on("analyse.toolbar.tree.loadData", this, [=](JNEvent &){
         loadRecordData();
@@ -123,7 +127,7 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    d_treeView->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
+    treeView_->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
 }
 
 void TreeView::loadRecordData()
@@ -149,15 +153,15 @@ void TreeView::loadRecordData()
 
 void TreeView::unloadRecordData()
 {
-    d_treeView->clearContents();
-    d_table = Icd::TablePtr();
-    d_fileTables.clear();
-    d_tempFiles.clear();
+    treeView_->clearContents();
+    table_ = Icd::TablePtr();
+    fileTables_.clear();
+    tempFiles_.clear();
 }
 
 bool TreeView::updateParser()
 {
-    d_treeView->clearContents();
+    treeView_->clearContents();
 
     const Json::Value config = JMain::instance()->option("analyse", "parser");
     if (config.isNull()) {
@@ -169,9 +173,8 @@ bool TreeView::updateParser()
         return false;
     }
 
-    d_treeView->setParser(parser);
-
-    d_treeView->clearContents();
+    treeView_->setParser(parser);
+    treeView_->clearContents();
 
     return true;
 }
@@ -240,7 +243,7 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
 {
     bool result = true;
 
-    const Icd::ParserPtr parser = d_treeView->parser();
+    const Icd::ParserPtr parser = treeView_->parser();
     if (!parser) {
         return false;
     }
@@ -254,7 +257,7 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
         if (!parser->parse(domain.section('/', 0, 0).toStdString(),
                            domain.section('/', 1, 1).toStdString(),
                            domain.section('/', 2).toStdString(),
-                           d_table, Icd::ObjectItem)) {
+                           table_, Icd::ObjectItem)) {
             return false;
         }
         return true;
@@ -270,7 +273,7 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
                     QFile sourceFile(filePath);
                     if (sourceFile.open(QFile::ReadOnly)) {
                         // parity
-                        if (!Icd::checkData(d_table, headerSize, &sourceFile, tempFile.data())) {
+                        if (!Icd::checkData(table_, headerSize, &sourceFile, tempFile.data())) {
                             success = false;
                         }
                     } else {
@@ -295,19 +298,19 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
                 } else {
                     newFilePath = filePath;
                 }
-                if (d_treeView->loadData(d_table, newFilePath, hasTimeFormat, headerSize, domain)) {
-                    d_fileTables[newFilePath] = d_table;
+                if (treeView_->loadData(table_, newFilePath, hasTimeFormat, headerSize, domain)) {
+                    fileTables_[newFilePath] = table_;
                     if (tempFile) {
-                        d_tempFiles[newFilePath] = tempFile;
+                        tempFiles_[newFilePath] = tempFile;
                     }
                     struct { Icd::TablePtr table; } data;
-                    data.table = d_table;
+                    data.table = table_;
                     QVariantList args;
                     args.append(newFilePath);
                     args.append(qVariantFromValue((void*)&data));
                     jnotify->send("analyse.tableLoaded", args);
                 }
-                d_table = Icd::TablePtr();
+                table_ = Icd::TablePtr();
             }
         }
         progressDialog->disconnect(this);
@@ -336,7 +339,6 @@ void TreeView::exportData(const QStandardItem *item, const QString &filePath,
         return;
     }
 
-    //
     QString domain;
     int bitOffset = -1;
 
@@ -359,8 +361,8 @@ void TreeView::exportData(const QStandardItem *item, const QString &filePath,
         return;
     }
 
-    auto &citer = d_fileTables.find(filePath);
-    if (citer == d_fileTables.cend()) {
+    auto &citer = fileTables_.find(filePath);
+    if (citer == fileTables_.cend()) {
         return;
     }
 
@@ -384,22 +386,22 @@ void TreeView::exportData(const QStandardItem *item, const QString &filePath,
                 .arg(bitOffset);
     }
 
-    if (d_exportDataDlg) {
-        d_exportDataDlg->deleteLater();
-        d_exportDataDlg = nullptr;
+    if (exportDataDlg_) {
+        exportDataDlg_->deleteLater();
+        exportDataDlg_ = nullptr;
     }
 
-    d_exportDataDlg = new ExportDataDlg(filePath, table, objectItem, hasTimeFormat,
+    exportDataDlg_ = new ExportDataDlg(filePath, table, objectItem, hasTimeFormat,
                                         headerSize, bitOffset,this);
-    d_exportDataDlg->setWindowTitle(d_exportDataDlg->windowTitle() + tr("--")
+    exportDataDlg_->setWindowTitle(exportDataDlg_->windowTitle() + tr("--")
                                     + (bitName.isEmpty() ? "" : bitName + '@')
                                     + generateTitle(objectItem)
                                     + '@' + QFileInfo(filePath).fileName());
-    connect(d_exportDataDlg, &ExportDataDlg::finished, this, [=](){
-        d_exportDataDlg->deleteLater();
-        d_exportDataDlg = nullptr;
+    connect(exportDataDlg_, &ExportDataDlg::finished, this, [=](){
+        exportDataDlg_->deleteLater();
+        exportDataDlg_ = nullptr;
     });
-    d_exportDataDlg->show();
+    exportDataDlg_->show();
 }
 
 QString TreeView::generateTitle(const Icd::ObjectPtr &item) const

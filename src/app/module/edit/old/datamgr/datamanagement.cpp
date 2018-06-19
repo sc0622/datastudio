@@ -236,8 +236,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
             return -1;
         }
         const int type = args[1].toInt();
-        if (type > GlobalDefine::dicCheckType
-                || type < GlobalDefine::dicDataType) {
+        if (type > GlobalDefine::dicCheckType || type < GlobalDefine::dicDataType) {
             return 0;
         }
         std::vector<stDictionary> *dics = jVariantFromVoid<std::vector<stDictionary>>(args[0]);
@@ -258,7 +257,11 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         case GlobalDefine::dicCheckType:   // 校验类型
             dicName = DBAccess::tableName(DataBaseDefine::dbCheckType);
             break;
-        default:break;
+        case GlobalDefine::dicArrayType:   // 数组类型
+            dicName = DBAccess::tableName(DataBaseDefine::dbArrayType);
+            break;
+        default:
+            break;
         }
         *dics = CDictionary::instance().singleDic(dicName);
     } else if ("loadRules" == id) {    // 加载规则数据
@@ -628,7 +631,7 @@ bool DataManegement::reloadDic(const std::vector<std::string> &dics)
         return false;
     }
     std::unordered_map<std::string, std::vector<stDictionary> > data;
-    
+
     /*if (!q_dbaccess->readDictionary(dics, data)) {
         qDebug() <<"readDictionary failed!";
         return false;
@@ -988,7 +991,7 @@ bool DataManegement::loadXmlTablemRule(int plane, int system,
 * @param [in] table : ICD表名
 * @return 执行结果，true：成功；false：失败
 */
-void DataManegement::unLloadTableRule(int plane, 
+void DataManegement::unLloadTableRule(int plane,
                                       int system,
                                       const std::string &table)
 {
@@ -1184,7 +1187,7 @@ PlaneNode::smtPlane DataManegement::planeNode(int code)
 * @param [in] remove : 删除标识
 * @return 规则表数据
 */
-DMSpace::pairIcdTR DataManegement::singleIcdTR(const std::string &name, 
+DMSpace::pairIcdTR DataManegement::singleIcdTR(const std::string &name,
                                                DMSpace::_vectorIcdTR &rules,
                                                bool remove /*= false*/) const
 {
@@ -1250,7 +1253,7 @@ bool DataManegement::loadRuleData(int planeType,
     }
     // 填充规则
     fillRules(tableNodes, rules);
-    
+
     // 查询关系，将表数据保存到内存中
     // 查询复合表的子表数据，并将之关联起来
     // 根据所属组进行分类，按描述排序
@@ -1764,7 +1767,7 @@ bool DataManegement::saveTable(const QString &keys,
 }
 
 // 修改ICD表数据
-bool DataManegement::modifyTable(const QString &keys, 
+bool DataManegement::modifyTable(const QString &keys,
                                  const TableNode::smtTable &table)
 {
     // 保存内存
@@ -1942,7 +1945,7 @@ int DataManegement::saveRule(const QString &keys,
 }
 
 // 保存规则数据
-bool DataManegement::insertRule(const QString &keys, 
+bool DataManegement::insertRule(const QString &keys,
                                 const ICDMetaData::smtMeta &meta)
 {
     if (!meta) {
@@ -2578,7 +2581,7 @@ JLRESULT DataManegement::queryDBError(const Icd::JNEvent &event)
 }
 
 // 查询顶层表
-TableNode::smtTable DataManegement::rootTable(int plane, 
+TableNode::smtTable DataManegement::rootTable(int plane,
                                               int system,
                                               const std::string &table)
 {
@@ -2605,6 +2608,9 @@ std::string DataManegement::dicName(GlobalDefine::DictionaryIndex dic) const
         break;
     case GlobalDefine::dicPowerType:   // 权限类型
         dicName = DBAccess::tableName(DataBaseDefine::dbPowerType);
+        break;
+    case GlobalDefine::dicArrayType:   // 数组类型
+        dicName = DBAccess::tableName(DataBaseDefine::dbArrayType);
         break;
     case GlobalDefine::dicCheckType:   // 校验类型
         dicName = DBAccess::tableName(DataBaseDefine::dbCheckType);

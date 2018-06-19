@@ -10,6 +10,7 @@
 #include "KernelClass/icdbitdata.h"
 #include "KernelClass/icdframecodedata.h"
 #include "KernelClass/icdcounterdata.h"
+#include "KernelClass/icdarraydata.h"
 
 DataEngineWidget::DataEngineWidget(QWidget *parent)
     : QWidget(parent)
@@ -166,8 +167,12 @@ void DataEngineWidget::initUI(int type, void *data)
     } else if (type == GlobalDefine::ntPlane) {
         ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
         PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(element);
+        auto &systems = plane->allSystem();
+        foreach (const auto &system, systems) {
+            q_vData.push_back(system);
+        }
         q_data = plane->clone();
-        showData(plane->allSystem());
+        showData(systems);
     } else if (type == GlobalDefine::ntSystem) {
         ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
         SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(element);
@@ -751,6 +756,7 @@ void DataEngineWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
 
     if (data->metaType() == IcdDefine::icdCommon) {
         if (data->type() == GlobalDefine::dtHead) {
+            //
         } else if (data->type() == GlobalDefine::dtCounter) {
             ICDCounterData::smtCounter counter
                 = std::dynamic_pointer_cast<ICDCounterData>(data);
@@ -758,6 +764,20 @@ void DataEngineWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             dic.dicType = GlobalDefine::dictDec;
             dic.condition = QString::number(counter->counterType())
                 .toStdString();
+
+            args.clear();
+            args.append(qVariantFromValue((void*)&dic));
+            jnotify->send("edit.queryDictionary", args);
+
+            pairData.first = QStringLiteral("帧类型");
+            pairData.second = QString(dic.result.c_str());
+            datas.insert(1, pairData);
+        }  else if (data->type() == GlobalDefine::dtArray) {
+            ICDArrayData::smtArray array
+                = std::dynamic_pointer_cast<ICDArrayData>(data);
+            dic.dic = GlobalDefine::dicArrayType;
+            dic.dicType = GlobalDefine::dictDec;
+            dic.condition = QString::number(array->arrayType()).toStdString();
 
             args.clear();
             args.append(qVariantFromValue((void*)&dic));
@@ -1001,7 +1021,8 @@ void DataEngineWidget::updateOne(int index,
     case optCopy:
         q_table->insertRow(index);
         q_table->setProperty("copyData", index);
-    default:break;
+    default:
+        break;
     }
     if (!data) {
         return;
@@ -1133,27 +1154,23 @@ ICDElement::smtElement DataEngineWidget::currentData() const
                 }
             }
         } else if (GlobalDefine::ntSystem == q_dataType) {
-            SystemNode::smtSystem system
-                = std::dynamic_pointer_cast<SystemNode>(q_data);
+            SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(q_data);
             if (system) {
                 result = system->table(key.toStdString());
             }
         } else if (GlobalDefine::ntTable == q_dataType) {
-            TableNode::smtTable table
-                = std::dynamic_pointer_cast<TableNode>(q_data);
+            TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(q_data);
             if (table) {
                 result = table->rule(key.toInt());
             }
         } else if (GlobalDefine::ntRule == q_dataType) {
             if (GlobalDefine::dtComplex == q_subType) {
-                TableNode::smtTable table
-                    = std::dynamic_pointer_cast<TableNode>(q_data);
+                TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(q_data);
                 if (table) {
                     result = table->rule(key.toInt());
                 }
             } else if (GlobalDefine::dtDiscern == q_subType) {
-                ICDComplexData::smtComplex complex
-                    = std::dynamic_pointer_cast<ICDComplexData>(q_data);
+                ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(q_data);
                 if (complex) {
                     result = complex->table(key.toStdString());
                 }
@@ -1282,8 +1299,7 @@ void DataEngineWidget::updateSystemUI(GlobalDefine::OptionType option)
 {
     stSystem base;
     // 查询当前选中数据
-    SystemNode::smtSystem system
-        = std::dynamic_pointer_cast<SystemNode>(currentData());
+    SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(currentData());
     if (!system) {
         int column = 0;
         int row = q_table->currentRow();
@@ -1411,22 +1427,19 @@ void DataEngineWidget::newICDRule(int type)
         rule.uType = type;
     }
     rule.sPrgCode = QString("code_%1").arg(q_newIndex).toStdString();
-    ICDMetaData::smtMeta smtData
-        = ICDFactory::instance().CreatObject(rule);
+    ICDMetaData::smtMeta smtData = ICDFactory::instance().CreatObject(rule);
     // 更新表
     updateOne(q_newIndex, smtData, optNew);
     q_table->selectRow(q_newIndex);
 
     // 将还未保存的数据长度设为0，使长度校验正确提示
-    q_table->setItemData(q_newIndex, q_table->columnCount() - 1,
-                         0, Qt::UserRole);
+    q_table->setItemData(q_newIndex, q_table->columnCount() - 1, 0, Qt::UserRole);
 }
 
 // 更新规则编辑数据界面
 void DataEngineWidget::updateICDRuleUI(GlobalDefine::OptionType option)
 {
-    ICDMetaData::smtMeta meta
-        = std::dynamic_pointer_cast<ICDMetaData>(currentData());
+    ICDMetaData::smtMeta meta = std::dynamic_pointer_cast<ICDMetaData>(currentData());
     if (GlobalDefine::optNew == option) {    // 新增
         if (!meta) {
             int column = 0;
@@ -1483,6 +1496,8 @@ void DataEngineWidget::updateDetailUI(const _UIData &data)
             q_loggingWidget->initUIData(MetaUI::wdCounter, data);
         } else if (GlobalDefine::dtCheck == meta->type()) {
             q_loggingWidget->initUIData(MetaUI::wdCheck, data);
+        } else if (GlobalDefine::dtArray == meta->type()) {
+            q_loggingWidget->initUIData(MetaUI::wdArray, data);
         } else if (GlobalDefine::dtFrameCode == meta->type()) {
             q_loggingWidget->initUIData(MetaUI::wdFrameCode, data);
         } else {

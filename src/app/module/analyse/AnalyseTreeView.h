@@ -51,11 +51,11 @@ private:
     QString generateTitle(const Icd::ObjectPtr &item) const;
 
 private:
-    Icd::CoreTreeWidget *d_treeView;
-    Icd::TablePtr d_table;
-    ExportDataDlg *d_exportDataDlg;
-    QMap<QString/*filePath*/, Icd::TablePtr> d_fileTables;
-    QMap<QString/*filePath*/, QSharedPointer<QTemporaryFile>> d_tempFiles;
+    Icd::CoreTreeWidget *treeView_;
+    Icd::TablePtr table_;
+    ExportDataDlg *exportDataDlg_;
+    QMap<QString/*filePath*/, Icd::TablePtr> fileTables_;
+    QMap<QString/*filePath*/, QSharedPointer<QTemporaryFile>> tempFiles_;
 };
 
 }
