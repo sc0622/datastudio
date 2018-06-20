@@ -47,12 +47,8 @@ MetaUI::MetaUI(QWidget *parent)
     editStatus_->setFrame(false);
     layoutMain_->addWidget(editStatus_);
 
-    connect(buttonConfirm_, &QPushButton::clicked, this, [=](){
-        confirm();
-    });
-    connect(buttonCancel_, &QPushButton::clicked, this, [=](){
-        cancel();
-    });
+    connect(buttonConfirm_, &QPushButton::clicked, this, &MetaUI::confirm);
+    connect(buttonCancel_, &QPushButton::clicked, this, &MetaUI::cancel);
 }
 
 int MetaUI::uiType() const

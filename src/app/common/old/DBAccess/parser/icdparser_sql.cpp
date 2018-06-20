@@ -438,16 +438,13 @@ bool SqlParser::convert2Other(const Icd::VehiclePtrArray &vehicles, std::vector<
     if (data.empty() || 2 != data.size()) {
         return false;
     }
-    DMSpace::_vectorPS  &infrastructure
-            = *reinterpret_cast<DMSpace::_vectorPS *>(data[0]);
-    DMSpace::_vectorIcdTR &tableRules
-            = *reinterpret_cast<DMSpace::_vectorIcdTR *>(data[1]);
+    DMSpace::_vectorPS  &infrastructure = *reinterpret_cast<DMSpace::_vectorPS *>(data[0]);
+    DMSpace::_vectorIcdTR &tableRules = *reinterpret_cast<DMSpace::_vectorIcdTR *>(data[1]);
     TablePtrArray tableArray;
     stPlane planeBase;
     stSystem systemBase;
     const int count = vehicles.size();
-    int bound = 0;
-    int size = 0;
+    int bound = 0, size = 0;
     std::string group;
     for (int i = 0; i < count; ++i) {
         const VehiclePtr &vehicle = vehicles[i];
@@ -467,8 +464,7 @@ bool SqlParser::convert2Other(const Icd::VehiclePtrArray &vehicles, std::vector<
             tableArray = system->allTable();
             size = tableArray.size();
             for (int k = 0; k < size; ++k) {
-                if (!d->table2TableRules(tableArray[k], group,
-                                         std::string(""), tableRules)) {
+                if (!d->table2TableRules(tableArray[k], group, std::string(""), tableRules)) {
                     return false;
                 }
             }
@@ -490,18 +486,15 @@ bool SqlParser::convert2Core(const std::vector<int> &data, Icd::VehiclePtrArray 
     if (2 != data.size()) {
         return false;
     }
-    DMSpace::_vectorPS &plane_system
-            = *reinterpret_cast<DMSpace::_vectorPS *>(data[0]);
-    DMSpace::_vectorIcdTR &tableRules
-            = *reinterpret_cast<DMSpace::_vectorIcdTR *>(data[1]);
+    DMSpace::_vectorPS &plane_system = *reinterpret_cast<DMSpace::_vectorPS *>(data[0]);
+    DMSpace::_vectorIcdTR &tableRules = *reinterpret_cast<DMSpace::_vectorIcdTR *>(data[1]);
     DMSpace::_vectorPS_Cit itPS = plane_system.begin();
     std::string planeID;
     for (; itPS != plane_system.end(); ++itPS) {
         const stPlane &plane = itPS->first;
         planeID = QString::number(plane.nCode).toStdString();
         Icd::VehiclePtr vehicle(new Icd::Vehicle());
-        if (!d->parseVehicle(planeID, vehicle, plane_system,
-                             tableRules, Icd::ObjectItem)) {
+        if (!d->parseVehicle(planeID, vehicle, plane_system, tableRules, Icd::ObjectItem)) {
             return false;
         }
 

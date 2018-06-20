@@ -294,7 +294,10 @@ stTableRules ICDFactory::convert2Rule(const ICDMetaData::smtMeta &meta)
     case GlobalDefine::dtBuffer:    //
     {
         ICDCustomizedData::smtCustom custom = SMT_CONVERT(ICDCustomizedData, meta);
-        result.dOffset = custom->offset();
+        if (custom) {
+            result.sPrgCode = custom->proCode();
+            result.dOffset = custom->offset();
+        }
         break;
     }
     default:

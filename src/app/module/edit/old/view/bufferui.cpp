@@ -238,7 +238,6 @@ bool BufferUI::dataValid()
     args.append(qVariantFromValue((void*)&existed));
     args.append(qVariantFromValue((void*)&section));
     jnotify->send("edit.queryExistedData", args);
-
     // 名称
     QPalette palette = q_edtName->palette();
     if (q_data->name().empty()) {
@@ -246,14 +245,12 @@ bool BufferUI::dataValid()
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
-
         return false;
     } else if (existed.contains(q_data->name().c_str())) {
         editStatus()->setText(QStringLiteral("已存在同名项！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
-
         return false;
     } else {
         palette.setColor(QPalette::Base, q_color);
@@ -272,14 +269,12 @@ bool BufferUI::dataValid()
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
-
         return false;
     } else if (existed.contains(q_data->proCode().c_str())) {
         editStatus()->setText(QStringLiteral("已存在同名标识！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
-
         return false;
     } else {
         palette.setColor(QPalette::Base, q_color);

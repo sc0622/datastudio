@@ -7,8 +7,7 @@ class ICDCustomizedDataPrivate;
 /**
  * @brief ICD专用数据类
  */
-class KERNELCLASS_EXPORT ICDCustomizedData
-        : public ICDCommonData
+class KERNELCLASS_EXPORT ICDCustomizedData : public ICDCommonData
 {
 public:
     typedef std::shared_ptr<ICDCustomizedData> smtCustom;

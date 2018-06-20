@@ -28,11 +28,6 @@ QMessageBox {
     color: #ccc;
 }
 
-QMessageBox QLabel {
-    min-width: 100px;
-    min-height: 30px;
-}
-
 /** QMainWindow **/
 
 QMainWindow {

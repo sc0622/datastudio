@@ -1525,6 +1525,7 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
     if (GlobalDefine::dsNone == q_dataSource) {
         return result;
     }
+
     QStringList items = condition.split("/");
     // 根据数据源的不同来重新读取数据
     if (GlobalDefine::dsDatabase == q_dataSource) {
@@ -1534,13 +1535,10 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
             result = loadTypeRule(items.at(0).toInt(), increment);
             break;
         case 2:
-            result = loadSystemRule(items.at(0).toInt(),
-                                    items.at(1).toInt(), increment);
+            result = loadSystemRule(items.at(0).toInt(), items.at(1).toInt(), increment);
             break;
         case 3:
-            result = loadTableRule(items.at(0).toInt(),
-                                   items.at(1).toInt(),
-                                   items.at(2).toStdString());
+            result = loadTableRule(items.at(0).toInt(), items.at(1).toInt(), items.at(2).toStdString());
             break;
         default:
             break;
@@ -1559,10 +1557,12 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
         // 解析数据
         switch (items.size()) {
         case 1: // 机型
+        {
             if (!parser->parse(items.first().toStdString(), vehicle, Icd::ObjectItem)) {
                 break;
             }
             break;
+        }
         case 2: // 系统
         {
             Icd::SystemPtr system(new Icd::System());
@@ -1573,8 +1573,8 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
             vehicle = Icd::VehiclePtr(new Icd::Vehicle());
             vehicle->setId(items[0].toStdString());
             vehicle->appendSystem(system);
-        }
             break;
+        }
         case 3: // 表
         {
             Icd::TablePtr table(new Icd::Table());
@@ -1589,11 +1589,12 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
             vehicle = Icd::VehiclePtr(new Icd::Vehicle());
             vehicle->setId(items[0].toStdString());
             vehicle->appendSystem(system);
-        }
             break;
+        }
         default:
             break;
         }
+
         if (!vehicle) {
             return result;
         }
@@ -1615,12 +1616,11 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
             result = loadXmlTypeRule(items[0].toInt(), tableRules);
             break;
         case 2:
-            result = loadXmlSystemRule(items[0].toInt(),
-                    items[1].toInt(), tableRules);
+            result = loadXmlSystemRule(items[0].toInt(), items[1].toInt(), tableRules);
             break;
         case 3:
-            result = loadXmlTablemRule(items[0].toInt(), items[1].toInt(),
-                    items[2].toStdString(), tableRules);
+            result = loadXmlTablemRule(items[0].toInt(), items[1].toInt(), items[2].toStdString(),
+                    tableRules);
             break;
         default:
             break;
@@ -1638,16 +1638,10 @@ void DataManegement::unLoadRules(const QString &condition)
 {
     QStringList items = condition.split("/");
     switch (items.size()) {
-    case 1:
-        unLoadTypeRule(items.at(0).toInt());
-        break;
-    case 2:
-        unLoadSystemRule(items.at(0).toInt(), items.at(1).toInt());
-        break;
+    case 1: unLoadTypeRule(items.at(0).toInt()); break;
+    case 2: unLoadSystemRule(items.at(0).toInt(), items.at(1).toInt()); break;
     case 3:
-        unLloadTableRule(items.at(0).toInt(),
-                         items.at(1).toInt(),
-                         items.at(2).toStdString());
+        unLloadTableRule(items.at(0).toInt(), items.at(1).toInt(), items.at(2).toStdString());
         break;
     default:
         break;
@@ -1658,7 +1652,6 @@ void DataManegement::unLoadRules(const QString &condition)
 bool DataManegement::modifyAllKC(const std::vector<PlaneNode::smtPlane> &planes)
 {
     q_planes = planes;
-
     return true;
 }
 
@@ -1688,8 +1681,7 @@ bool DataManegement::deletePlane(const std::vector<int> &keys)
 }
 
 // 保存系统数据
-bool DataManegement::saveSystem(int plane,
-                                const std::vector<stSystem>& system)
+bool DataManegement::saveSystem(int plane, const std::vector<stSystem>& system)
 {
     // 保存内存
     const int count = system.size();
@@ -1703,8 +1695,7 @@ bool DataManegement::saveSystem(int plane,
         if (data) {
             data->setSystem(stData);
         } else {
-            smtPlane->addSystem(SystemNode::smtSystem(
-                                    new SystemNode(stData)));
+            smtPlane->addSystem(SystemNode::smtSystem(new SystemNode(stData)));
         }
     }
 
@@ -1737,8 +1728,7 @@ bool DataManegement::deleteSystem(int plane, const std::vector<int>& system)
 }
 
 // 保存ICD表数据
-bool DataManegement::saveTable(const QString &keys,
-                               const std::vector<stICDBase> &tables)
+bool DataManegement::saveTable(const QString &keys, const std::vector<stICDBase> &tables)
 {
     // 保存内存
     const int count = tables.size();
@@ -1808,8 +1798,7 @@ bool DataManegement::modifyTable(const QString &keys,
 }
 
 // 删除ICD表数据
-bool DataManegement::deleteTable(const QString &keys,
-                                 const std::vector<std::string>& tables)
+bool DataManegement::deleteTable(const QString &keys, const std::vector<std::string>& tables)
 {
     bool result = false;
     QStringList keyLst = keys.split("/");
@@ -1835,8 +1824,7 @@ bool DataManegement::deleteTable(const QString &keys,
 }
 
 // 保存规则数据
-int DataManegement::saveRule(const QString &keys,
-                             const ICDMetaData::smtMeta &meta)
+int DataManegement::saveRule(const QString &keys, const ICDMetaData::smtMeta &meta)
 {
     int result = 0;
     if (!meta) {
@@ -1860,15 +1848,13 @@ int DataManegement::saveRule(const QString &keys,
         }
     }
     // 如果是帧识别码，先绑定帧数据
-    ICDFrameCodeData::smtFrameCode frameCode
-            = std::dynamic_pointer_cast<ICDFrameCodeData>(meta);
+    ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(meta);
     if (frameCode) {    // 重置帧数据
         std::string code = frameCode->defaultStr();
         if (code.empty()) {
             frameCode->bindData(0);
         } else {
-            ICDComplexData::smtComplex complex
-                    = std::dynamic_pointer_cast<ICDComplexData>(
+            ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(
                         table->rule(atoi(code.c_str())));
             frameCode->bindData(complex);
         }
@@ -2374,9 +2360,8 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
         *result = table;
     } else if (GlobalDefine::ntRule == element->objectType()) {
         // 规则
-        ICDCommonData::smtCommon data
-                = SMT_CONVERT(ICDCommonData,
-                              *reinterpret_cast<ICDMetaData::smtMeta *>(params->at(1)));
+        ICDCommonData::smtCommon data =
+                SMT_CONVERT(ICDCommonData, *reinterpret_cast<ICDMetaData::smtMeta *>(params->at(1)));
         ICDMetaData::smtMeta meta = SMT_CONVERT(ICDMetaData, element);
         TableNode::smtTable table = SMT_CONVERT(TableNode, desElement);
         if (!data || !meta || !table) {
@@ -2581,9 +2566,7 @@ JLRESULT DataManegement::queryDBError(const Icd::JNEvent &event)
 }
 
 // 查询顶层表
-TableNode::smtTable DataManegement::rootTable(int plane,
-                                              int system,
-                                              const std::string &table)
+TableNode::smtTable DataManegement::rootTable(int plane, int system, const std::string &table)
 {
     TableNode::smtTable result;
     PlaneNode::smtPlane smtPlane = planeNode(plane);
@@ -2693,23 +2676,20 @@ bool DataManegement::generateAll(DMSpace::_vectorPS &plane_system,
                 }
                 if (table->isEmpty()) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-                    err = QStringLiteral("不允许存在空表<%1>，请完善后重试！")
-                            .arg(table->name().c_str());
+                    err = QStringLiteral("不允许存在空表<%1>，请完善后重试！").arg(table->name().c_str());
                     return false;
 #endif
                 }
                 if (table->lengthCheck()
                         && table->length() != (int)table->realLength()) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-                    err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！")
-                            .arg(table->name().c_str());
+                    err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！").arg(table->name().c_str());
                     return false;
 #endif
                 }
                 if (table->hasEmptySubTable(nameTip)) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-                    err = QStringLiteral("表<%1>下存在空子表，请完善后重试！")
-                            .arg(nameTip.c_str());
+                    err = QStringLiteral("表<%1>下存在空子表，请完善后重试！").arg(nameTip.c_str());
                     return false;
 #endif
                 }
@@ -2765,23 +2745,19 @@ bool DataManegement::generatePlane(int planeId,
             }
             if (table->isEmpty()) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-                err = QStringLiteral("不允许存在空表<%1>，请完善后重试！")
-                        .arg(table->name().c_str());
+                err = QStringLiteral("不允许存在空表<%1>，请完善后重试！").arg(table->name().c_str());
                 return false;
 #endif
             }
-            if (table->lengthCheck()
-                    && table->length() != (int)table->realLength()) {
+            if (table->lengthCheck() && table->length() != (int)table->realLength()) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-                err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！")
-                        .arg(table->name().c_str());
+                err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！").arg(table->name().c_str());
                 return false;
 #endif
             }
             if (table->hasEmptySubTable(nameTip)) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-                err = QStringLiteral("表<%1>下存在空子表，请完善后重试！")
-                        .arg(nameTip.c_str());
+                err = QStringLiteral("表<%1>下存在空子表，请完善后重试！").arg(nameTip.c_str());
                 return false;
 #endif
             }
@@ -2803,11 +2779,8 @@ bool DataManegement::generatePlane(int planeId,
     return true;
 }
 
-bool DataManegement::generateSystem(int planeId,
-                                    int systemId,
-                                    DMSpace::_vectorPS &plane_system,
-                                    TableNode::tableVector &tables,
-                                    QString &err)
+bool DataManegement::generateSystem(int planeId, int systemId, DMSpace::_vectorPS &plane_system,
+                                    TableNode::tableVector &tables, QString &err)
 {
     PlaneNode::smtPlane smtPlane = planeNode(planeId);
     if (!smtPlane) {
@@ -2831,23 +2804,19 @@ bool DataManegement::generateSystem(int planeId,
         }
         if (table->isEmpty()) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-            err = QStringLiteral("不允许存在空表<%1>，请完善后重试！")
-                    .arg(table->name().c_str());
+            err = QStringLiteral("不允许存在空表<%1>，请完善后重试！").arg(table->name().c_str());
             return false;
 #endif
         }
-        if (table->lengthCheck()
-                && table->length() != (int)table->realLength()) {
+        if (table->lengthCheck() && table->length() != (int)table->realLength()) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-            err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！")
-                    .arg(table->name().c_str());
+            err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！").arg(table->name().c_str());
             return false;
 #endif
         }
         if (table->hasEmptySubTable(nameTip)) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-            err = QStringLiteral("表<%1>下存在空子表，请完善后重试！")
-                    .arg(nameTip.c_str());
+            err = QStringLiteral("表<%1>下存在空子表，请完善后重试！").arg(nameTip.c_str());
             return false;
 #endif
         }
@@ -2899,15 +2868,13 @@ bool DataManegement::generateTable(int planeId,
     if (table->lengthCheck()
             && table->length() != (int)table->realLength()) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-        err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！")
-                .arg(table->name().c_str());
+        err = QStringLiteral("表<%1>数据项定义不完整，请完善后重试！").arg(table->name().c_str());
         return false;
 #endif
     }
     if (table->hasEmptySubTable(nameTip)) {
 #if (DEF_IGNORE_EMPTY_TABLE != 1)
-        err = QStringLiteral("表<%1>下存在空子表，请完善后重试！")
-                .arg(nameTip.c_str());
+        err = QStringLiteral("表<%1>下存在空子表，请完善后重试！").arg(nameTip.c_str());
         return false;
 #endif
     }
@@ -2921,7 +2888,7 @@ bool DataManegement::generateTable(int planeId,
     systems.push_back(smtSystem->system());
     TableNode::tableVector subTables = table->subTables();
     const int number = subTables.size();
-    for (int l = 0; l < number; l++) {
+    for (int l = 0; l < number; ++l) {
         if (!(table = subTables[l])) {
             continue;
         }
@@ -2967,13 +2934,11 @@ ICDMetaData::ruleMap DataManegement::convert2IcdRules(
     const int count = rules.size();
     for (int i = 0; i < count; ++i) {
         const stTableRules &ruleData = rules.at(i);
-        ICDMetaData::smtMeta metaData
-                = ICDFactory::instance().CreatObject(ruleData);
+        ICDMetaData::smtMeta metaData = ICDFactory::instance().CreatObject(ruleData);
         if (NULL != metaData) {
             result[ruleData.nSerial] = metaData;
             if (GlobalDefine::dtFrameCode == ruleData.uType) {
-                codes[atoi(ruleData.sDefault.c_str())]
-                        = SMT_CONVERT(ICDFrameCodeData, metaData);
+                codes[atoi(ruleData.sDefault.c_str())] = SMT_CONVERT(ICDFrameCodeData, metaData);
             }
         }
     }
@@ -2984,8 +2949,7 @@ ICDMetaData::ruleMap DataManegement::convert2IcdRules(
         itCode.next();
         if ((it = result.find(itCode.key())) != result.end()) {
             ICDFrameCodeData::smtFrameCode frameCode = itCode.value();
-            ICDComplexData::smtComplex complex =
-                    SMT_CONVERT(ICDComplexData, it->second);
+            ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, it->second);
             if (frameCode && complex) {
                 frameCode->bindData(complex);
             }
@@ -3026,8 +2990,7 @@ bool DataManegement::copySystemData(SystemNode::smtSystem &system,
     }
     system->setNumeralId(systemId);
     stICDBase icdBase;
-    icdBase.sGroup = QString("%1/%2").arg(planeId)
-            .arg(systemId).toStdString();
+    icdBase.sGroup = QString("%1/%2").arg(planeId).arg(systemId).toStdString();
     TableNode::smtTable table = 0;
     TableNode::tableVector newTable;
     TableNode::tableVector tables = system->allTable();
@@ -3047,16 +3010,14 @@ bool DataManegement::copySystemData(SystemNode::smtSystem &system,
 }
 
 // 拷贝表数据（重新定义子规则表标识）
-bool DataManegement::copyTableData(TableNode::smtTable &table,
-                                   const stICDBase &icdBase)
+bool DataManegement::copyTableData(TableNode::smtTable &table, const stICDBase &icdBase)
 {
     if (!table) {
         return false;
     }
 
     stICDBase base = table->icdBase();
-    base.sID = QUuid::createUuid()
-            .toString().remove(QRegExp("[{}-]")).toStdString();
+    base.sID = QUuid::createUuid().toString().remove(QRegExp("[{}-]")).toStdString();
     base.sName = std::string("ICDTable_").append(base.sID);
     base.sParentName = icdBase.sName;
     base.sGroup = icdBase.sGroup;
@@ -3065,12 +3026,10 @@ bool DataManegement::copyTableData(TableNode::smtTable &table,
     ICDMetaData::ruleMap::iterator it = rules.begin();
     std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // 帧识别码
     for (; it != rules.end(); ++it) {
-        ICDCommonData::smtCommon common
-                = SMT_CONVERT(ICDCommonData, it->second);
+        ICDCommonData::smtCommon common = SMT_CONVERT(ICDCommonData, it->second);
         if (common) {
             if (GlobalDefine::dtFrameCode == common->type()) {
-                codes[atoi(common->defaultStr().c_str())]
-                        = SMT_CONVERT(ICDFrameCodeData, common);
+                codes[atoi(common->defaultStr().c_str())] = SMT_CONVERT(ICDFrameCodeData, common);
             }
         }
         if (!copyRuleData(it->second, base)) {
@@ -3081,8 +3040,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table,
     std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
     for (itC = codes.begin(); itC != codes.end(); ++itC) {
         ICDFrameCodeData::smtFrameCode &frameCode = itC->second;
-        ICDComplexData::smtComplex complex =
-                SMT_CONVERT(ICDComplexData, table->rule(itC->first));
+        ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, table->rule(itC->first));
         if (frameCode && complex) {
             frameCode->bindData(complex);
         }
@@ -3092,8 +3050,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table,
 }
 
 // 拷贝规则数据（重新定义子规则表标识）
-bool DataManegement::copyRuleData(ICDMetaData::smtMeta &meta,
-                                  const stICDBase &icdBase)
+bool DataManegement::copyRuleData(ICDMetaData::smtMeta &meta, const stICDBase &icdBase)
 {
     if (!meta) {
         return false;
@@ -3101,8 +3058,7 @@ bool DataManegement::copyRuleData(ICDMetaData::smtMeta &meta,
     if (meta->metaType() != IcdDefine::icdComplex) {
         return true;
     }
-    ICDComplexData::smtComplex complex
-            = SMT_CONVERT(ICDComplexData, meta);
+    ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, meta);
     if (!complex) {
         return false;
     }

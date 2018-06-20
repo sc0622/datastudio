@@ -191,8 +191,7 @@ bool TableNode::addRule(const ICDMetaData::smtMeta &rule)
     if (IcdDefine::icdComplex == rule->metaType()) {
         setComplexity(true);
     }
-    ICDFrameCodeData::smtFrameCode frameCode
-        = std::dynamic_pointer_cast<ICDFrameCodeData>(rule);
+    ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(rule);
     if (frameCode) {
         frameCode->setDefaultStr(frameCode->bindingStringSerial());
     }

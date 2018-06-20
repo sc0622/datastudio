@@ -132,6 +132,8 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
 
         return true;
     }
+    case Icd::ItemArray:
+        return false;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
         chart = 0;
@@ -141,10 +143,7 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
     }
 
     //
-    const QString domain = baseInfo.filePath + '/'
-            + item->data(Icd::TreeItemDomainRole).toString();
-
-    //
+    const QString domain = baseInfo.filePath + '/' + item->data(Icd::TreeItemDomainRole).toString();
     bool isNewChart = false;
 
     //

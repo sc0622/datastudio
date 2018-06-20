@@ -143,9 +143,8 @@ void CheckUI::slotTextChanged(const QString& text)
         }
     } else if (box) {
         if (box == q_boxCheckType) {
-            q_data->setCheckType(
-                        q_boxCheckType->itemData(q_boxCheckType->currentIndex())
-                        .toInt());
+            q_data->setCheckType(q_boxCheckType->itemData(q_boxCheckType->currentIndex())
+                                 .toInt());
             q_spinStart->setDisabled(GlobalDefine::ctInvalid == q_data->checkType());
             q_spinEnd->setDisabled(GlobalDefine::ctInvalid == q_data->checkType());
             int bound = q_spinEnd->property("bound").toInt();
@@ -333,7 +332,6 @@ bool CheckUI::dataValid()
     args.append(qVariantFromValue((void*)&existed));
     args.append(qVariantFromValue((void*)&section));
     jnotify->send("edit.queryExistedData", args);
-
     // 名称
     QPalette palette = q_edtName->palette();
     if (q_data->name().empty()) {
@@ -341,14 +339,12 @@ bool CheckUI::dataValid()
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
-
         return false;
     } else if (existed.contains(q_data->name().c_str())) {
         editStatus()->setText(QStringLiteral("已存在同名项！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtName->setPalette(palette);
         q_edtName->setFocus();
-
         return false;
     } else {
         palette.setColor(QPalette::Base, q_color);
@@ -356,7 +352,6 @@ bool CheckUI::dataValid()
     }
     // 编码
     section = "code";
-
     args.clear();
     args.append(qVariantFromValue((void*)&existed));
     args.append(qVariantFromValue((void*)&section));
@@ -368,14 +363,12 @@ bool CheckUI::dataValid()
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
-
         return false;
     } else if (existed.contains(q_data->proCode().c_str())) {
         editStatus()->setText(QStringLiteral("已存在同名标识！"));
         palette.setColor(QPalette::Base, Qt::red);
         q_edtCode->setPalette(palette);
         q_edtCode->setFocus();
-
         return false;
     } else {
         palette.setColor(QPalette::Base, q_color);

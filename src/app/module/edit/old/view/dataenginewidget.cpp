@@ -1421,7 +1421,7 @@ void DataEngineWidget::newICDRule(int type)
         rule.nSerial = 1;
     }
     rule.sName = QString("item_%1").arg(rule.nSerial).toStdString();
-    if (type > GlobalDefine::dtDiscern || type < GlobalDefine::dtHead) {
+    if (type > GlobalDefine::dtBuffer || type < GlobalDefine::dtHead) {
         rule.uType = GlobalDefine::dtU8;
     } else {
         rule.uType = type;

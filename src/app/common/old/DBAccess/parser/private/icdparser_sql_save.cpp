@@ -78,6 +78,8 @@ bool SqlParserData::Item2rule(const Icd::ItemPtr &item, stTableRules &rule) cons
         break;
     case Icd::ItemArray:
         result = ItemArray2rule(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item), rule);
+        // type attribute
+        rule.uType = GlobalDefine::dtArray;
         break;
     case Icd::ItemBitMap:
         result = ItemBit2rule(JHandlePtrCast<Icd::BitItem, Icd::Item>(item), rule);
@@ -123,10 +125,8 @@ bool SqlParserData::Item2rule(const Icd::ItemPtr &item, stTableRules &rule) cons
  * @param rules
  * @return
  */
-bool SqlParserData::Item2TableRules(const Icd::ItemPtr &item,
-                                    const std::string &group,
-                                    const std::string &parent,
-                                    DMSpace::_vectorIcdTR &rules) const
+bool SqlParserData::Item2TableRules(const Icd::ItemPtr &item, const std::string &group,
+                                    const std::string &parent, DMSpace::_vectorIcdTR &rules) const
 {
     bool result = true;
     if (0 == item) {
@@ -136,21 +136,15 @@ bool SqlParserData::Item2TableRules(const Icd::ItemPtr &item,
     switch (item->type()) {
     case Icd::ItemFrameCode:
         result = ItemFrameCode2TableRules(JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(item),
-                                          group,
-                                          parent,
-                                          rules);
+                                          group, parent, rules);
         break;
     case Icd::ItemComplex:
         result = ItemComplex2TableRules(JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item),
-                                        group,
-                                        parent,
-                                        rules);
+                                        group, parent, rules);
         break;
     case Icd::ItemFrame:
         result = ItemFrame2TableRules(JHandlePtrCast<Icd::FrameItem, Icd::Item>(item),
-                                      group,
-                                      parent,
-                                      rules);
+                                      group, parent, rules);
         break;
     default:
         break;
@@ -486,8 +480,7 @@ bool SqlParserData::ItemBit2rule(const Icd::BitItemPtr &bit,
  * @param rule
  * @return
  */
-bool SqlParserData::ItemComplex2rule(const Icd::ComplexItemPtr &complex,
-                                     stTableRules &rule) const
+bool SqlParserData::ItemComplex2rule(const Icd::ComplexItemPtr &complex, stTableRules &rule) const
 {
     if (0 == complex) {
         return false;
@@ -641,14 +634,12 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
     base.sGroup = group;
 
     // remark attribute
-    base.sRemark = QString("%1##%2")
-            .arg(table->desc().c_str()).arg(table->sequence()).toStdString();
+    base.sRemark = QString("%1##%2").arg(table->desc().c_str()).arg(table->sequence())
+            .toStdString();
 
     // length attribute
-    Icd::FrameItem *frame
-            = dynamic_cast<Icd::FrameItem *>(table->parent());
-    Icd::ComplexItem *complex
-            = dynamic_cast<Icd::ComplexItem *>(table->parent());
+    Icd::FrameItem *frame = dynamic_cast<Icd::FrameItem *>(table->parent());
+    Icd::ComplexItem *complex = dynamic_cast<Icd::ComplexItem *>(table->parent());
     if (frame) {
         base.nLength = qCeil(frame->bufferSize());
     } else if (complex) {
@@ -672,7 +663,6 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
             if (!Item2rule(item, rule)) {
                 return false;
             }
-
             // code attribute
             if (previous) {
                 if (GlobalDefine::dtBitMap == previous->uType

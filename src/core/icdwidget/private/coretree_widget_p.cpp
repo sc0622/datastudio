@@ -1004,14 +1004,13 @@ QStringList CoreTreeWidgetPrivate::mimeTypes() const
 
 QMimeData *CoreTreeWidgetPrivate::mimeData(const QList<QStandardItem *> &items) const
 {
-    //
     if (items.isEmpty()) {
-        return 0;
+        return nullptr;
     }
 
     QStandardItem *item = items.first();
     if (!item) {
-        return 0;
+        return nullptr;
     }
 
     QMimeData *mData = new QMimeData();
@@ -1026,7 +1025,7 @@ QMimeData *CoreTreeWidgetPrivate::mimeData(const QList<QStandardItem *> &items) 
     }
     if (treeModes_ & CoreTreeWidget::TreeModeTableSel) {
         if (item->type() != Icd::TreeItemTypeTable) {
-            return 0;
+            return nullptr;
         }
         mData->setData("icd/table-drag/tablesel", QByteArray("1"));
     }
@@ -1046,7 +1045,7 @@ QMimeData *CoreTreeWidgetPrivate::mimeData(const QList<QStandardItem *> &items) 
         QStandardItem *itemTable = findItemTable(item);
         if (!itemTable) {
             delete mData;
-            return 0;
+            return nullptr;
         }
 
         mData->setProperty("itemTable", QVariant::fromValue((void *)itemTable));
@@ -1054,7 +1053,7 @@ QMimeData *CoreTreeWidgetPrivate::mimeData(const QList<QStandardItem *> &items) 
     }
     default:
         delete mData;
-        return 0;
+        return nullptr;
     }
 
     return mData;
@@ -1534,6 +1533,7 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
     case Icd::ItemCheck:
     case Icd::ItemFrameCode:
     case Icd::ItemNumeric:
+    case Icd::ItemArray:
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
     case Icd::ItemComplex:

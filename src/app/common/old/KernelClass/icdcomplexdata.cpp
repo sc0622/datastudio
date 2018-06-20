@@ -179,8 +179,7 @@ void ICDComplexData::updateLength(const std ::string &name)
         for (int i = 0; i < count; ++i) {
             if ((table = d->q_table[i]) && table->id() == subName) {
                 if (std::string::npos != pos) {
-                    subName = (-1 == pos) ?
-                        "" : name.substr(pos + strlen("/"));
+                    subName = (-1 == pos) ? "" : name.substr(pos + strlen("/"));
                     table->updateLength(subName);
                 } else {
                     table->updateLength("");

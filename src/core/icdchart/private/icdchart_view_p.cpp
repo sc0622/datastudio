@@ -95,6 +95,8 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
 
         return true;
     }
+    case Icd::ItemArray:
+        return false;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
         chart = nullptr;

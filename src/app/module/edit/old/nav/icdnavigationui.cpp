@@ -3036,7 +3036,7 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
                         .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
             } else {
                 result = QString("<font color=darkgreen size=2>[%1:%2(%3)]</font>"
-                                 "%4<font color=darkgreen size=2>[%5</font>")
+                                 "%4<font color=darkgreen size=2>[%5]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(bit->start(), 2, 10, QChar('0'))

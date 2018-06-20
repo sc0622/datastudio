@@ -18,7 +18,7 @@ class JIcdTablePrivate
 public:
     JIcdTablePrivate(JIcdTable *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
+        , data(nullptr)
     {
 
     }
@@ -113,10 +113,10 @@ void JIcdTablePrivate::removeItem(const QSharedPointer<JIcdItem> &item)
     case IcdCore::ItemHead:
         break;
     case IcdCore::ItemCounter:
-        counterItem = Q_NULLPTR;
+        counterItem = nullptr;
         break;
     case IcdCore::ItemCheck:
-        checkItem = Q_NULLPTR;
+        checkItem = nullptr;
         break;
     case IcdCore::ItemFrameCode:
     {
@@ -143,8 +143,8 @@ void JIcdTablePrivate::removeItem(const QSharedPointer<JIcdItem> &item)
 void JIcdTablePrivate::clearItem()
 {
     headers.clear();
-    counterItem = Q_NULLPTR;
-    checkItem = Q_NULLPTR;
+    counterItem = nullptr;
+    checkItem = nullptr;
     frameCodes.clear();
 }
 
@@ -167,10 +167,7 @@ JIcdTable::~JIcdTable()
 
 void JIcdTable::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JIcdTable);
-
-    //
     JIcdItem::registerQmlType();
 }
 
@@ -242,7 +239,7 @@ icdmeta::JIcdItem *JIcdTable::itemById(const QString &id) const
         }
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 icdmeta::JIcdObject *JIcdTable::itemByMark(const QString &mark, bool deep) const
@@ -283,7 +280,7 @@ icdmeta::JIcdObject *JIcdTable::itemByMark(const QString &mark, bool deep) const
                 if (!frame) {
                     break;
                 }
-                const auto childItem = frame->itemByDomain(mark, deep);
+                const auto childItem = frame->itemByMark(mark, deep);
                 if (childItem) {
                     return childItem;
                 }

@@ -50,13 +50,10 @@ public:
 
     bool init();
 
-protected:
+private:
     // 消息响应回调
     JLRESULT notifyRespond(const Icd::JNEvent &event);
 
-protected:
-
-private:
     /**
      * @brief 加载基础数据
      * @param [out] error : 错误信息
@@ -71,8 +68,7 @@ private:
     * @param [in] tableRules : 表规则信息
     * @return 执行结果，true：成功；false：失败
     */
-    bool loadXmlBaseData(const DMSpace::_vectorPS &infrastructure,
-                         const DMSpace::_vectorIcdTR &tableRules);
+    bool loadXmlBaseData(const DMSpace::_vectorPS &infrastructure, const DMSpace::_vectorIcdTR &tableRules);
 
     /**
      * @brief 加载字典表数据
@@ -108,8 +104,7 @@ private:
     * @param [in] tableRules : 表规则信息
     * @return 执行结果，true：成功；false：失败
     */
-    bool loadXmlTypeRule(int planeType,
-                         DMSpace::_vectorIcdTR &tableRules);
+    bool loadXmlTypeRule(int planeType, DMSpace::_vectorIcdTR &tableRules);
     /**
     * @brief 卸载指定机型的所有ICD表
     * @param [in] planeType : 飞机型号码
@@ -132,8 +127,7 @@ private:
     * @param [in] system : 系统码
     * @return 执行结果，true：成功；false：失败
     */
-    bool loadXmlSystemRule(int planeType, int system,
-                           DMSpace::_vectorIcdTR &tableRules);
+    bool loadXmlSystemRule(int planeType, int system, DMSpace::_vectorIcdTR &tableRules);
     /**
     * @brief 卸载指定机型下分系统的所有ICD表
     * @param [in] planeType : 飞机型号码
@@ -160,8 +154,7 @@ private:
     * @param [in] tableRules : 表规则信息
     * @return 执行结果，true：成功；false：失败
     */
-    bool loadXmlTablemRule(int plane, int system, const std::string &table,
-                           DMSpace::_vectorIcdTR &tableRules);
+    bool loadXmlTablemRule(int plane, int system, const std::string &table, DMSpace::_vectorIcdTR &tableRules);
 
     /**
     * @brief 卸载单张ICD表
@@ -179,9 +172,7 @@ private:
      * @param [in] rules : 表规则数据
      * @return 执行结果，true：成功；false：失败
      */
-    bool recursiveLoadRule(const std::string& name,
-                           TableNode::smtTable &table,
-                           DMSpace::_vectorIcdTR &rules);
+    bool recursiveLoadRule(const std::string& name, TableNode::smtTable &table, DMSpace::_vectorIcdTR &rules);
 
     /**
      * @brief 删除单条规则
@@ -234,8 +225,7 @@ private:
     * @param [in] remove : 删除标识
     * @return 规则表数据
     */
-    DMSpace::pairIcdTR singleIcdTR(const std::string &name,
-                                   DMSpace::_vectorIcdTR &rules,
+    DMSpace::pairIcdTR singleIcdTR(const std::string &name, DMSpace::_vectorIcdTR &rules,
                                    bool remove = false) const;
 
 protected:
@@ -246,16 +236,13 @@ protected:
      * @param [in] increment : 增量标识
      * @return 执行结果，true：成功；false：失败
      */
-    bool loadRuleData(int planeType,
-                      const DMSpace::_vectorSB &ICDBase,
-                      bool increment = false);
+    bool loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBase, bool increment = false);
     /**
     * @brief 填充规则数据
     * @param [in] tables : 表集
     * @param [in] rules : 规则数据集<表名, 规则数据集>
     */
-    void fillRules(TableNode::tableMap &tables,
-                   const DMSpace::svrMap &rules);
+    void fillRules(TableNode::tableMap &tables, const DMSpace::svrMap &rules);
 
     /**
     * @brief 加载规则数据
@@ -271,15 +258,12 @@ protected:
      * @param [in] name : 表名
      * @return 子表数据
      */
-    TableNode::smtTable recursiveLinkTable(TableNode::tableMap& allTable,
-                                           const std::string& name);
+    TableNode::smtTable recursiveLinkTable(TableNode::tableMap& allTable, const std::string& name);
 
     // 查询字典表
     bool queryDictionary(stQueryDic &data);
     // 加载规则数据
-    bool loadRules(PlaneNode::smtPlane &plane,
-                   const QString &condition,
-                   bool increment);
+    bool loadRules(PlaneNode::smtPlane &plane, const QString &condition, bool increment);
     // 卸载规则数据
     void unLoadRules(const QString &condition);
     // 修改所有机型数据
@@ -295,25 +279,19 @@ protected:
     // 删除系统数据
     bool deleteSystem(int plane, const std::vector<int>& system);
     // 保存ICD表数据
-    bool saveTable(const QString &keys,
-                   const std::vector<stICDBase> &tables);
+    bool saveTable(const QString &keys, const std::vector<stICDBase> &tables);
     // 修改ICD表数据
     bool modifyTable(const QString &keys, const TableNode::smtTable &table);
     // 删除ICD表数据
-    bool deleteTable(const QString &keys,
-                     const std::vector<std::string>& tables);
+    bool deleteTable(const QString &keys, const std::vector<std::string>& tables);
     // 保存规则数据
-    int saveRule(const QString &keys,
-                 const ICDMetaData::smtMeta &meta);
+    int saveRule(const QString &keys, const ICDMetaData::smtMeta &meta);
     // 保存规则数据
-    bool insertRule(const QString &keys,
-                    const ICDMetaData::smtMeta &meta);
+    bool insertRule(const QString &keys, const ICDMetaData::smtMeta &meta);
     // 删除规则数据
-    bool deleteRule(const QString &keys,
-                    const std::vector<int> &rules);
+    bool deleteRule(const QString &keys, const std::vector<int> &rules);
     // 删除帧识别码子表
-    bool deleteSubTable(const QString &keys,
-                        const std::vector<std::string> &subTables);
+    bool deleteSubTable(const QString &keys, const std::vector<std::string> &subTables);
     // 查询内存数据
     JLRESULT querySingleElement(const Icd::JNEvent &event);
     // 查询加载数据源
@@ -331,65 +309,43 @@ protected:
     // 查询数据库错误信息
     JLRESULT queryDBError(const Icd::JNEvent &event);
     // 查询顶层表
-    TableNode::smtTable rootTable(int plane,
-                                  int system,
-                                  const std::string &table);
+    TableNode::smtTable rootTable(int plane, int system, const std::string &table);
     // 查询字典名
     std::string dicName(GlobalDefine::DictionaryIndex dic) const;
 
     // 构造需要保存的数据
-    bool generateSavedData(QStringList &keyList,
-                           DMSpace::_vectorPS &plane_system,
-                           DMSpace::_vectorIcdTR &tableRules,
-                           QString &err);
-    bool generateAll(DMSpace::_vectorPS &plane_system,
-                     TableNode::tableVector &tables,
-                     QString &err);
-    bool generatePlane(int planeId,
-                       DMSpace::_vectorPS &plane_system,
-                       TableNode::tableVector &tables,
+    bool generateSavedData(QStringList &keyList, DMSpace::_vectorPS &plane_system,
+                           DMSpace::_vectorIcdTR &tableRules, QString &err);
+    bool generateAll(DMSpace::_vectorPS &plane_system, TableNode::tableVector &tables, QString &err);
+    bool generatePlane(int planeId, DMSpace::_vectorPS &plane_system, TableNode::tableVector &tables,
                        QString &err);
-    bool generateSystem(int planeId,
-                        int systemId,
-                        DMSpace::_vectorPS &plane_system,
-                        TableNode::tableVector &tables,
-                        QString &err);
-    bool generateTable(int planeId,
-                       int systemId,
-                       const std::string &tableId,
-                       const std::string &subId,
-                       DMSpace::_vectorPS &plane_system,
-                       TableNode::tableVector &tables,
-                       QString &err);
+    bool generateSystem(int planeId, int systemId, DMSpace::_vectorPS &plane_system,
+                        TableNode::tableVector &tables, QString &err);
+    bool generateTable(int planeId, int systemId, const std::string &tableId, const std::string &subId,
+                       DMSpace::_vectorPS &plane_system, TableNode::tableVector &tables, QString &err);
 
     // 将规则内存数据转换成通用结构
-    DMSpace::_vectorIcdTR convert2TableRules(
-            const std::vector<TableNode::smtTable> &tables) const;
+    DMSpace::_vectorIcdTR convert2TableRules(const std::vector<TableNode::smtTable> &tables) const;
     // 将通用结构转换成规则内存数据
-    ICDMetaData::ruleMap convert2IcdRules(
-            const std::vector<stTableRules> &rules);
+    ICDMetaData::ruleMap convert2IcdRules(const std::vector<stTableRules> &rules);
 
     // 拷贝机型数据（重新定义所有规则表标识）
     bool copyPlaneData(PlaneNode::smtPlane &plane, int planeId);
     // 拷贝系统数据（重新定义所有规则表标识）
     bool copySystemData(SystemNode::smtSystem &system, int planeId, int systemId);
     // 拷贝机数据（重新定义子规则表标识）
-    bool copyTableData(TableNode::smtTable &table,
-                       const stICDBase &icdBase);
+    bool copyTableData(TableNode::smtTable &table, const stICDBase &icdBase);
     // 拷贝规则数据（重新定义子规则表标识）
-    bool copyRuleData(ICDMetaData::smtMeta &meta,
-                      const stICDBase &icdBase);
+    bool copyRuleData(ICDMetaData::smtMeta &meta, const stICDBase &icdBase);
     // 加载xml文件信息
     std::string readXmlFile();
 
 private:
     QWidget *parentWidget_;
-    DBAccess*        q_dbaccess;     // 数据库访问实例
-    // ICD内存数据<具体机型数据>
-    PlaneNode::planeVector  q_planes;
-
-    int             q_dataSource;   // 数据源
-    std::string     q_defaultPath;  // 加载文件默认路径
+    DBAccess *q_dbaccess;               // 数据库访问实例
+    PlaneNode::planeVector q_planes;    // ICD内存数据<具体机型数据>
+    int q_dataSource;                   // 数据源
+    std::string q_defaultPath;          // 加载文件默认路径
 };
 
 #endif // DATAMANEGEMENT_H

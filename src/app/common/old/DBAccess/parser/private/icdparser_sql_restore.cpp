@@ -842,16 +842,12 @@ bool SqlParserData::parseTable(const std::string &tableId,
         return false;
     }
     base = icdTR.first;
-
     // id attribute
     table->setId(base.sName);
-
     // name attribute
     table->setName(base.sDescribe);
-
     // mark attribute
     table->setMark(base.sCode);
-
     // sequence attribute
     QStringList lstData = QString::fromStdString(base.sRemark).split("##");
     if (lstData.size() > 1) {
@@ -929,30 +925,23 @@ bool SqlParserData::parseSystem(const std::string &planeID,
 
     // id attribute
     system->setId(QString::number(systemBase.nCode).toStdString());
-
     // name attribute
     system->setName(systemBase.sName);
-
     // mark attribute
     system->setMark(systemBase.sSign);
-
     // desc attribute
     system->setDesc(systemBase.sDescribe);
-
     //
     if (deep <= Icd::ObjectSystem) {
         return true;
     }
 
     // parse table
-    QString group = QString("%1/%2")
-            .arg(planeID.c_str()).arg(systemBase.nCode);
+    QString group = QString("%1/%2").arg(planeID.c_str()).arg(systemBase.nCode);
     DMSpace::_vectorIcdTR_Cit it = tableRules.begin();
     for (; it != tableRules.end(); ++it) {
         const stICDBase &base = it->first;
-
-        if (!base.sParentName.empty()
-                || base.sGroup != group.toStdString()) {
+        if (!base.sParentName.empty() || base.sGroup != group.toStdString()) {
             continue;   // skip sub tables and other group
         }
         Icd::TablePtr table(new Icd::Table(system.get()));
@@ -993,16 +982,12 @@ bool SqlParserData::parseVehicle(const std::string &planeID,
 
     // id attribute
     vehicle->setId(QString::number(plane.nCode).toStdString());
-
     // name attribute
     vehicle->setName(plane.sName);
-
     // mark attribute
     vehicle->setMark(plane.sSign);
-
     // desc attribute
     vehicle->setDesc(plane.sDescribe);
-
     //
     if (deep <= Icd::ObjectVehicle) {
         return true;
@@ -1017,9 +1002,7 @@ bool SqlParserData::parseVehicle(const std::string &planeID,
         const stSystem &single = systems[i];
         Icd::SystemPtr system(new Icd::System(vehicle.get()));
         // group
-        group = QString("%1/%2")
-                .arg(planeID.c_str()).arg(single.nCode).toStdString();
-
+        group = QString("%1/%2").arg(planeID.c_str()).arg(single.nCode).toStdString();
         // generate rules
         if (deep >= Icd::ObjectTable) {
             for (itR = tableRules.begin(); itR != tableRules.end(); ++itR) {
@@ -1029,12 +1012,10 @@ bool SqlParserData::parseVehicle(const std::string &planeID,
                 }
             }
         }
-
         // parse system
         if (!parseSystem(planeID, single, system, rules, deep)) {
             return false;
         }
-
         // save
         vehicle->appendSystem(system);
     }
