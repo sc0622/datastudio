@@ -76,6 +76,9 @@ bool SqlParserData::Item2rule(const Icd::ItemPtr &item, stTableRules &rule) cons
     case Icd::ItemNumeric:
         result = ItemNumeric2rule(JHandlePtrCast<Icd::NumericItem, Icd::Item>(item), rule);
         break;
+    case Icd::ItemArray:
+        result = ItemArray2rule(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item), rule);
+        break;
     case Icd::ItemBitMap:
         result = ItemBit2rule(JHandlePtrCast<Icd::BitItem, Icd::Item>(item), rule);
         // type attribute
@@ -195,6 +198,9 @@ bool SqlParserData::ItemCounter2rule(const Icd::CounterItemPtr &counter,
     case Icd::CounterU32:
         rule.sDefault = QString::number(GlobalDefine::counterU32).toStdString();
         break;
+    case Icd::CounterU64:
+        rule.sDefault = QString::number(GlobalDefine::counterU64).toStdString();
+        break;
     default:
         break;
     }
@@ -229,11 +235,10 @@ bool SqlParserData::ItemCheck2rule(const Icd::CheckItemPtr &check,
         rule.sDefault = QString::number(GlobalDefine::ct16And).toStdString();
         break;
     case Icd::CheckCrc8:
-        //rule.sDefault = QString::number(GlobalDefine::ctCRC8).toStdString();
-        //break;
-        return false;   // not supported
+        rule.sDefault = QString::number(GlobalDefine::ctCRC8).toStdString();
+        break;
     case Icd::CheckCrc16:
-        rule.sDefault = QString::number(GlobalDefine::ctCRC).toStdString();
+        rule.sDefault = QString::number(GlobalDefine::ctCRC16).toStdString();
         break;
     case Icd::CheckXor8:
         rule.sDefault = QString::number(GlobalDefine::ctXor8).toStdString();
@@ -342,8 +347,8 @@ bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric,
     case Icd::NumericUint16: rule.uType = GlobalDefine::dtU16; break;
     case Icd::NumericInt32: rule.uType = GlobalDefine::dt32; break;
     case Icd::NumericUint32: rule.uType = GlobalDefine::dtU32; break;
-        //case Icd::NumericInt64: rule.uType = GlobalDefine::dt64; break;
-        //case Icd::NumericUint64: rule.uType = GlobalDefine::dtU64; break;
+    case Icd::NumericInt64: rule.uType = GlobalDefine::dt64; break;
+    case Icd::NumericUint64: rule.uType = GlobalDefine::dtU64; break;
     case Icd::NumericFloat32: rule.uType = GlobalDefine::dtF32; break;
     case Icd::NumericFloat64: rule.uType = GlobalDefine::dtF64; break;
     default: return false;

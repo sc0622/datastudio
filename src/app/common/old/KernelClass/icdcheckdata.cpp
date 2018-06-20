@@ -76,11 +76,12 @@ void ICDCheckData::setCheckType(int checkType)
     switch (checkType)
     {
     case GlobalDefine::ct8And:      // 8位和校验
+    case GlobalDefine::ctCRC8:      // CRC8校验
     case GlobalDefine::ctXor8:      // 8位异或和校验
         setLength(1);
         break;
     case GlobalDefine::ct16And:     // 16位和校验
-    case GlobalDefine::ctCRC:       // CRC校验
+    case GlobalDefine::ctCRC16:     // CRC16校验
     case GlobalDefine::ctXor16:     // 16位异或和校验
         setLength(2);
         break;

@@ -127,6 +127,11 @@ bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
             return false;
         }
         break;
+    case Icd::ItemArray:
+        if (!saveItemArray(emItem, JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item))) {
+            return false;
+        }
+        break;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
         if (!saveItemBit(emItem, JHandlePtrCast<Icd::BitItem, Icd::Item>(item))) {

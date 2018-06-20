@@ -134,7 +134,7 @@ std::string ArrayItem::typeName() const
 
 std::string ArrayItem::typeString() const
 {
-    return arrayTypeString();
+    return Item::typeString() + "#" + arrayTypeString();
 }
 
 int ArrayItem::typeSize() const

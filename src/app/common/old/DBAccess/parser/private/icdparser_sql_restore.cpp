@@ -336,11 +336,14 @@ bool SqlParserData::parseItem(const stTableRules &rule,
     case GlobalDefine::dt16:
     case GlobalDefine::dtU32:
     case GlobalDefine::dt32:
-        //case GlobalDefine::dtU64:
-        //case GlobalDefine::dt64:
+    case GlobalDefine::dtU64:
+    case GlobalDefine::dt64:
     case GlobalDefine::dtF32:
     case GlobalDefine::dtF64:
         item = Icd::NumericItemPtr(new Icd::NumericItem());
+        break;
+    case GlobalDefine::dtArray:
+        item = Icd::ArrayItemPtr(new Icd::ArrayItem());
         break;
     case GlobalDefine::dtBitMap:
         item = Icd::BitItemPtr(new Icd::BitItem(Icd::ItemBitMap));
@@ -382,6 +385,9 @@ bool SqlParserData::parseItem(const stTableRules &rule,
         break;
     case Icd::ItemNumeric:
         result = parseItemNumeric(rule, JHandlePtrCast<Icd::NumericItem, Icd::Item>(item));
+        break;
+    case Icd::ItemArray:
+        result = parseItemArray(rule, JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item));
         break;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
@@ -444,9 +450,9 @@ bool SqlParserData::parseItemCounter(const stTableRules &rule,
     case GlobalDefine::counterU32:
         counter->setCounterType(Icd::CounterU32);
         break;
-        /*case GlobalDefine::counterU64:
+    case GlobalDefine::counterU64:
         counter->setCounterType(Icd::CounterU64);
-        break;*/
+        break;
     default:
         break;
     }
@@ -479,10 +485,10 @@ bool SqlParserData::parseItemCheck(const stTableRules &rule,
     case GlobalDefine::ct16And:
         check->setCheckType(Icd::CheckSum16);
         break;
-        /*case GlobalDefine::ctCRC8:
+    case GlobalDefine::ctCRC8:
         check->setCheckType(Icd::CheckCrc8);
-        break;*/
-    case GlobalDefine::ctCRC:
+        break;
+    case GlobalDefine::ctCRC16:
         check->setCheckType(Icd::CheckCrc16);
         break;
     case GlobalDefine::ctXor8:
@@ -575,12 +581,12 @@ bool SqlParserData::parseItemNumeric(const stTableRules &rule,
     case GlobalDefine::dt32:
         numeric->setNumericType(Icd::NumericInt32);
         break;
-        /*case GlobalDefine::dtU64:
+    case GlobalDefine::dtU64:
         numeric->setNumericType(Icd::NumericUint64);
         break;
     case GlobalDefine::dt64:
         numeric->setNumericType(Icd::NumericInt64);
-        break;*/
+        break;
     case GlobalDefine::dtF32:
         numeric->setNumericType(Icd::NumericFloat32);
         break;
@@ -741,7 +747,7 @@ bool SqlParserData::parseItemComplex(const stTableRules &rule,
             // id attribute
             if (rule.sRule.empty()) {
                 table->setId(QUuid::createUuid().toString().remove(QRegExp("[{}-]"))
-                        .prepend("ICDTable_").toStdString());
+                             .prepend("ICDTable_").toStdString());
             } else {
                 table->setId(rule.sRule);
             }

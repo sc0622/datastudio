@@ -2959,6 +2959,12 @@ QString ICDNavigationUi::stringDataType(int type) const
     case GlobalDefine::dt32:        // 有符号32位
         result = "I32";
         break;
+    case GlobalDefine::dtU64:       // 无符号64位
+        result = "U64";
+        break;
+    case GlobalDefine::dt64:        // 有符号64位
+        result = "I64";
+        break;
     case GlobalDefine::dtF32:       // 32位浮点数
         result = "F32";
         break;

@@ -51,6 +51,8 @@ ICDCommonData::ICDCommonData(const stTableRules &rule)
     case GlobalDefine::dtF32:       // 32位浮点数
         setLength(4);
         break;
+    case GlobalDefine::dtU64:       // 无符号64位
+    case GlobalDefine::dt64:        // 有符号64位
     case GlobalDefine::dtF64:       // 64位浮点数
         setLength(8);
         break;

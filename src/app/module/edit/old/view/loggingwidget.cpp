@@ -194,6 +194,8 @@ void LoggingWidget::slotTypeChanged(int index)
     case GlobalDefine::dtF32:
         metaUiType = MetaUI::wdCommon;
         break;
+    case GlobalDefine::dtU64:
+    case GlobalDefine::dt64:
     case GlobalDefine::dtF64:
         metaUiType = MetaUI::wdCommon;
         break;
@@ -266,6 +268,8 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
         case GlobalDefine::dt16:
         case GlobalDefine::dtU32:
         case GlobalDefine::dt32:
+        case GlobalDefine::dtU64:
+        case GlobalDefine::dt64:
         case GlobalDefine::dtF32:
         case GlobalDefine::dtF64:
         case GlobalDefine::dtArray:

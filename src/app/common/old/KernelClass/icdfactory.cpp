@@ -86,6 +86,8 @@ ICDMetaData::smtMeta ICDFactory::CreatObject(const stTableRules &rule)
     case GlobalDefine::dt16:        // 有符号16位
     case GlobalDefine::dtU32:       // 无符号32位
     case GlobalDefine::dt32:        // 有符号32位
+    case GlobalDefine::dtU64:       // 无符号64位
+    case GlobalDefine::dt64:        // 有符号64位
     case GlobalDefine::dtF32:       // 32位浮点数
     case GlobalDefine::dtF64:       // 64位浮点数
         result = ICDMetaData::smtMeta(new ICDCommonData(rule));
@@ -152,6 +154,8 @@ ICDMetaData::smtMeta ICDFactory::CreatObject(GlobalDefine::DataType type)
     case GlobalDefine::dtF32:       // 32位浮点数
         result = ICDMetaData::smtMeta(new ICDCommonData(rule));
         break;
+    case GlobalDefine::dtU64:       // 无符号64位
+    case GlobalDefine::dt64:        // 有符号64位
     case GlobalDefine::dtF64:       // 64位浮点数
         result = ICDMetaData::smtMeta(new ICDCommonData(rule));
         break;
@@ -233,6 +237,8 @@ stTableRules ICDFactory::convert2Rule(const ICDMetaData::smtMeta &meta)
     case GlobalDefine::dt16:       // 有符号16位
     case GlobalDefine::dtU32:      // 无符号32位
     case GlobalDefine::dt32:       // 有符号32位
+    case GlobalDefine::dtU64:      // 无符号64位
+    case GlobalDefine::dt64:       // 有符号64位
     case GlobalDefine::dtF32:      // 32位浮点数
     case GlobalDefine::dtF64:      // 64位浮点数
     {
@@ -370,6 +376,8 @@ bool ICDFactory::copyBaseData(ICDMetaData::smtMeta from,
     case GlobalDefine::dt16:       // 有符号16位
     case GlobalDefine::dtU32:      // 无符号32位
     case GlobalDefine::dt32:       // 有符号32位
+    case GlobalDefine::dtU64:      // 无符号64位
+    case GlobalDefine::dt64:       // 有符号64位
     case GlobalDefine::dtF32:      // 32位浮点数
     case GlobalDefine::dtF64:      // 64位浮点数
     {

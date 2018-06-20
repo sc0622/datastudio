@@ -376,8 +376,11 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         stDic.nCode = GlobalDefine::ct16And;
         stDic.sDec = QStringLiteral("16位和校验").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::ctCRC;
-        stDic.sDec = QStringLiteral("CRC校验").toStdString();
+        stDic.nCode = GlobalDefine::ctCRC8;
+        stDic.sDec = QStringLiteral("CRC8校验").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ctCRC16;
+        stDic.sDec = QStringLiteral("CRC16校验").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ctXor8;
         stDic.sDec = QStringLiteral("8位异或和校验").toStdString();
@@ -400,6 +403,9 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::counterU32;
         stDic.sDec = QStringLiteral("32位计数").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::counterU64;
+        stDic.sDec = QStringLiteral("64位计数").toStdString();
         table.push_back(stDic);
         dic[tableName(DataBaseDefine::dbCounterType)] = table;
         table.clear();
@@ -435,6 +441,12 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dt32;
         stDic.sDec = QStringLiteral("有符号32位").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::dtU64;
+        stDic.sDec = QStringLiteral("无符号64位").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::dt64;
+        stDic.sDec = QStringLiteral("有符号64位").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtF32;
         stDic.sDec = QStringLiteral("32位浮点数").toStdString();

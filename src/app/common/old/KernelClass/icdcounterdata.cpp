@@ -68,7 +68,11 @@ void ICDCounterData::setCounterType(int counterType)
     case GlobalDefine::counterU32:
         setLength(4);
         break;
-    default:break;
+    case GlobalDefine::counterU64:
+        setLength(8);
+        break;
+    default:
+        break;
     }
 }
 

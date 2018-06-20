@@ -301,6 +301,12 @@ bool XmlParser::parseItem(const TiXmlElement *emItem, Icd::ItemPtr &item, int de
             return false;
         }
         break;
+    case Icd::ItemArray:
+        // parse array informations
+        if (!parseItemArray(emItem, JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item))) {
+            return false;
+        }
+        break;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
         // parse bit informations

@@ -227,6 +227,8 @@ bool TableNode::addRule(const ICDMetaData::smtMeta &rule)
         case GlobalDefine::dt16:        // 有符号16位
         case GlobalDefine::dtU32:       // 无符号32位
         case GlobalDefine::dt32:        // 有符号32位
+        case GlobalDefine::dtU64:       // 无符号64位
+        case GlobalDefine::dt64:        // 有符号64位
         case GlobalDefine::dtF32:       // 32位浮点数
         case GlobalDefine::dtF64:       // 64位浮点数
             *std::dynamic_pointer_cast<ICDCommonData>(it->second)

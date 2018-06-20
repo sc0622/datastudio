@@ -24,6 +24,8 @@ enum DataType {
     dt16,                   // 有符号16位
     dtU32,                  // 无符号32位
     dt32,                   // 有符号32位
+    dtU64,                  // 无符号64位
+    dt64,                   // 有符号64位
     dtF32,                  // 32位浮点数
     dtF64,                  // 64位浮点数
     dtArray,                // 数组
@@ -44,7 +46,8 @@ enum CheckType {
 
     ct8And      = 0,        // 8位和校验
     ct16And,                // 16位和校验
-    ctCRC,                  // CRC校验
+    ctCRC8,                 // CRC8校验
+    ctCRC16,                  // CRC16校验
     ctXor8,                 // 8位异或和校验
     ctXor16,                // 16位异或和校验
 
@@ -58,6 +61,7 @@ enum CounterType {
     counterU8 = 0,      // 8位计数
     counterU16,         // 16位计数
     counterU32,         // 32位计数
+    counterU64,         // 32位计数
 
     counterTotal        // 标记边界
 };
