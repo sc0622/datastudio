@@ -54,7 +54,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Desktop/111.json",
+            "filePath" : "@ConfigDir@/protocol.json",
             "sourceType" : "file"
          }
       },
@@ -94,7 +94,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Desktop/111.json",
+            "filePath" : "@ConfigDir@/protocol.json",
             "sourceType" : "file"
          }
       },
