@@ -27,6 +27,8 @@ public:
     int counterType() const;
     std::string stringType() const;
 
+    std::string typeString() const override;
+
 private:
     ICDCounterDataPrivate   *d;
 };

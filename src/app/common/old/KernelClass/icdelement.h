@@ -70,6 +70,8 @@ public:
     ICDElement(const ICDElement &rhs);
     ICDElement &operator = (const ICDElement &rhs);
 
+    virtual std::string typeString() const;
+
 private:
     ICDElementPrivate    *d;
 };

@@ -238,9 +238,6 @@ private:
     // 保存子表数据
     bool updateSubTableData(stICDBase &data);
 
-    // 将数据类型转换成对应的英文字符串
-    QString stringDataType(int type) const;
-
     // 构造数据偏移量字符串
     QString offsetString(const ICDElement::smtElement &element, int offset = -1) const;
 

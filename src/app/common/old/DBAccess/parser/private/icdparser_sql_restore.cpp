@@ -330,16 +330,7 @@ bool SqlParserData::parseItem(const stTableRules &rule,
     case GlobalDefine::dtFrameCode:
         item = Icd::FrameCodeItemPtr(new Icd::FrameCodeItem());
         break;
-    case GlobalDefine::dtU8:
-    case GlobalDefine::dt8:
-    case GlobalDefine::dtU16:
-    case GlobalDefine::dt16:
-    case GlobalDefine::dtU32:
-    case GlobalDefine::dt32:
-    case GlobalDefine::dtU64:
-    case GlobalDefine::dt64:
-    case GlobalDefine::dtF32:
-    case GlobalDefine::dtF64:
+    case GlobalDefine::dtNumeric:
         item = Icd::NumericItemPtr(new Icd::NumericItem());
         break;
     case GlobalDefine::dtArray:
@@ -562,39 +553,18 @@ bool SqlParserData::parseItemNumeric(const stTableRules &rule,
     }
 
     // numericType attribute
-    switch (rule.uType) {
-    case GlobalDefine::dtU8:
-        numeric->setNumericType(Icd::NumericUint8);
-        break;
-    case GlobalDefine::dt8:
-        numeric->setNumericType(Icd::NumericInt8);
-        break;
-    case GlobalDefine::dtU16:
-        numeric->setNumericType(Icd::NumericUint16);
-        break;
-    case GlobalDefine::dt16:
-        numeric->setNumericType(Icd::NumericInt16);
-        break;
-    case GlobalDefine::dtU32:
-        numeric->setNumericType(Icd::NumericUint32);
-        break;
-    case GlobalDefine::dt32:
-        numeric->setNumericType(Icd::NumericInt32);
-        break;
-    case GlobalDefine::dtU64:
-        numeric->setNumericType(Icd::NumericUint64);
-        break;
-    case GlobalDefine::dt64:
-        numeric->setNumericType(Icd::NumericInt64);
-        break;
-    case GlobalDefine::dtF32:
-        numeric->setNumericType(Icd::NumericFloat32);
-        break;
-    case GlobalDefine::dtF64:
-        numeric->setNumericType(Icd::NumericFloat64);
-        break;
-    default:
-        break;
+    switch (rule.subType) {
+    case GlobalDefine::NumericI8: numeric->setNumericType(Icd::NumericI8); break;
+    case GlobalDefine::NumericU8: numeric->setNumericType(Icd::NumericU8); break;
+    case GlobalDefine::NumericI16: numeric->setNumericType(Icd::NumericI16); break;
+    case GlobalDefine::NumericU16: numeric->setNumericType(Icd::NumericU16); break;
+    case GlobalDefine::NumericI32: numeric->setNumericType(Icd::NumericI32); break;
+    case GlobalDefine::NumericU32: numeric->setNumericType(Icd::NumericU32); break;
+    case GlobalDefine::NumericI64: numeric->setNumericType(Icd::NumericI64); break;
+    case GlobalDefine::NumericU64: numeric->setNumericType(Icd::NumericU64); break;
+    case GlobalDefine::NumericF32: numeric->setNumericType(Icd::NumericF32); break;
+    case GlobalDefine::NumericF64: numeric->setNumericType(Icd::NumericF64); break;
+    default: break;
     }
 
     // value attribute
@@ -654,16 +624,16 @@ bool SqlParserData::parseItemArray(const stTableRules &rule, const ArrayItemPtr 
 
     // arrayType attribute
     switch (atoi(rule.sDefault.c_str())) {
-    case GlobalDefine::Int8Array: array->setArrayType(Icd::Int8Array); break;
-    case GlobalDefine::UInt8Array: array->setArrayType(Icd::UInt8Array); break;
-    case GlobalDefine::Int16Array: array->setArrayType(Icd::Int16Array); break;
-    case GlobalDefine::UInt16Array: array->setArrayType(Icd::UInt16Array); break;
-    case GlobalDefine::Int32Array: array->setArrayType(Icd::Int32Array); break;
-    case GlobalDefine::UInt32Array: array->setArrayType(Icd::UInt32Array); break;
-    case GlobalDefine::Int64Array: array->setArrayType(Icd::Int64Array); break;
-    case GlobalDefine::UInt64Array: array->setArrayType(Icd::UInt64Array); break;
-    case GlobalDefine::Float32Array: array->setArrayType(Icd::Float32Array); break;
-    case GlobalDefine::Float64Array: array->setArrayType(Icd::Float64Array); break;
+    case GlobalDefine::ArrayI8: array->setArrayType(Icd::ArrayI8); break;
+    case GlobalDefine::ArrayU8: array->setArrayType(Icd::ArrayU8); break;
+    case GlobalDefine::ArrayI16: array->setArrayType(Icd::ArrayI16); break;
+    case GlobalDefine::ArrayU16: array->setArrayType(Icd::ArrayU16); break;
+    case GlobalDefine::ArrayI32: array->setArrayType(Icd::ArrayI32); break;
+    case GlobalDefine::ArrayU32: array->setArrayType(Icd::ArrayU32); break;
+    case GlobalDefine::ArrayI64: array->setArrayType(Icd::ArrayI64); break;
+    case GlobalDefine::ArrayU64: array->setArrayType(Icd::ArrayU64); break;
+    case GlobalDefine::ArrayF32: array->setArrayType(Icd::ArrayF32); break;
+    case GlobalDefine::ArrayF64: array->setArrayType(Icd::ArrayF64); break;
     default: break;
     }
 

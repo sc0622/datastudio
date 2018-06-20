@@ -66,6 +66,12 @@ public:
     virtual void setRemark(const std::string &remark);
     std::string remark() const;
 
+    //
+    int subType() const;
+    void setSubType(int subType);
+
+    virtual std::string typeString() const override;
+
 protected:
     void setLength(int length);
 

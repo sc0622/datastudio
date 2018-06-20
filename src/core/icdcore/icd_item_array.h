@@ -7,18 +7,18 @@ namespace Icd {
 
 //
 enum ArrayType {
-    InvalidArray = -1,
-    Int8Array,
-    UInt8Array,
-    Int16Array,
-    UInt16Array,
-    Int32Array,
-    UInt32Array,
-    Int64Array,
-    UInt64Array,
-    Float32Array,
-    Float64Array,
-    ArrayTypeTotal
+    ArrayInvalid = -1,
+    ArrayI8,
+    ArrayU8,
+    ArrayI16,
+    ArrayU16,
+    ArrayI32,
+    ArrayU32,
+    ArrayI64,
+    ArrayU64,
+    ArrayF32,
+    ArrayF64,
+    ArrayTotal
 };
 
 class ArrayItem;

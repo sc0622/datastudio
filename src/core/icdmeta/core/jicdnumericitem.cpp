@@ -67,16 +67,16 @@ IcdCore::NumericType JIcdNumericItem::numericType() const
 {
     Q_D(const JIcdNumericItem);
     switch (d->data->numericType()) {
-    case Icd::NumericInt8: return IcdCore::NumericInt8;
-    case Icd::NumericUint8: return IcdCore::NumericUint8;
-    case Icd::NumericInt16: return IcdCore::NumericInt16;
-    case Icd::NumericUint16: return IcdCore::NumericUint16;
-    case Icd::NumericInt32: return IcdCore::NumericInt32;
-    case Icd::NumericUint32: return IcdCore::NumericUint32;
-    case Icd::NumericInt64: return IcdCore::NumericInt64;
-    case Icd::NumericUint64: return IcdCore::NumericUint64;
-    case Icd::NumericFloat32: return IcdCore::NumericFloat32;
-    case Icd::NumericFloat64: return IcdCore::NumericFloat64;
+    case Icd::NumericI8: return IcdCore::NumericI8;
+    case Icd::NumericU8: return IcdCore::NumericU8;
+    case Icd::NumericI16: return IcdCore::NumericI16;
+    case Icd::NumericU16: return IcdCore::NumericU16;
+    case Icd::NumericI32: return IcdCore::NumericI32;
+    case Icd::NumericU32: return IcdCore::NumericU32;
+    case Icd::NumericI64: return IcdCore::NumericI64;
+    case Icd::NumericU64: return IcdCore::NumericU64;
+    case Icd::NumericF32: return IcdCore::NumericF32;
+    case Icd::NumericF64: return IcdCore::NumericF64;
     default: return IcdCore::NumericInvalid;
     }
 }

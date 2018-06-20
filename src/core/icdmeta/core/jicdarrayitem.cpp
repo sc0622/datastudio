@@ -60,17 +60,17 @@ IcdCore::ArrayType JIcdArrayItem::arrayType() const
 {
     Q_D(const JIcdArrayItem);
     switch (d->data->arrayType()) {
-    case Icd::Int8Array: return IcdCore::Int8Array;
-    case Icd::UInt8Array: return IcdCore::UInt8Array;
-    case Icd::Int16Array: return IcdCore::Int16Array;
-    case Icd::UInt16Array: return IcdCore::UInt16Array;
-    case Icd::Int32Array: return IcdCore::Int32Array;
-    case Icd::UInt32Array: return IcdCore::UInt32Array;
-    case Icd::Int64Array: return IcdCore::Int64Array;
-    case Icd::UInt64Array: return IcdCore::UInt64Array;
-    case Icd::Float32Array: return IcdCore::Float32Array;
-    case Icd::Float64Array: return IcdCore::Float64Array;
-    default: return IcdCore::InvalidArray;
+    case Icd::ArrayI8: return IcdCore::ArrayI8;
+    case Icd::ArrayU8: return IcdCore::ArrayU8;
+    case Icd::ArrayI16: return IcdCore::ArrayI16;
+    case Icd::ArrayU16: return IcdCore::ArrayU16;
+    case Icd::ArrayI32: return IcdCore::ArrayI32;
+    case Icd::ArrayU32: return IcdCore::ArrayU32;
+    case Icd::ArrayI64: return IcdCore::ArrayI64;
+    case Icd::ArrayU64: return IcdCore::ArrayU64;
+    case Icd::ArrayF32: return IcdCore::ArrayF32;
+    case Icd::ArrayF64: return IcdCore::ArrayF64;
+    default: return IcdCore::ArrayInvalid;
     }
 }
 

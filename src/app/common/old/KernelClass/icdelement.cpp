@@ -109,3 +109,14 @@ ICDElement &ICDElement::operator =(const ICDElement &rhs)
 
     return *this;
 }
+
+std::string ICDElement::typeString() const
+{
+    switch (d->objectType) {
+    case GlobalDefine::ntPlane: return "vehicle";
+    case GlobalDefine::ntSystem: return "system";
+    case GlobalDefine::ntTable: return "table";
+    case GlobalDefine::ntRule: return "item";
+    default: return "?";
+    }
+}

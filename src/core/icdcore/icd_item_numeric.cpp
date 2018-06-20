@@ -74,16 +74,16 @@ void NumericItem::setNumericType(Icd::NumericType type)
 {
     d->numericType = type;
     switch (type) {
-    case NumericInt8:
-    case NumericUint8: setBufferSize(1); break;
-    case NumericInt16:
-    case NumericUint16: setBufferSize(2); break;
-    case NumericInt32:
-    case NumericUint32:
-    case NumericFloat32: setBufferSize(4); break;
-    case NumericInt64:
-    case NumericUint64:
-    case NumericFloat64: setBufferSize(8); break;
+    case NumericI8:
+    case NumericU8: setBufferSize(1); break;
+    case NumericI16:
+    case NumericU16: setBufferSize(2); break;
+    case NumericI32:
+    case NumericU32:
+    case NumericF32: setBufferSize(4); break;
+    case NumericI64:
+    case NumericU64:
+    case NumericF64: setBufferSize(8); break;
     default:
         break;
     }
@@ -97,16 +97,16 @@ std::string NumericItem::numericTypeString() const
 std::string NumericItem::numericTypeString(Icd::NumericType type)
 {
     switch (type) {
-    case NumericInt8: return "i8";
-    case NumericUint8: return "u8";
-    case NumericInt16: return "i16";
-    case NumericUint16: return "u16";
-    case NumericInt32: return "i32";
-    case NumericUint32: return "u32";
-    case NumericInt64: return "i64";
-    case NumericUint64: return "u64";
-    case NumericFloat32: return "f32";
-    case NumericFloat64: return "f64";
+    case NumericI8: return "i8";
+    case NumericU8: return "u8";
+    case NumericI16: return "i16";
+    case NumericU16: return "u16";
+    case NumericI32: return "i32";
+    case NumericU32: return "u32";
+    case NumericI64: return "i64";
+    case NumericU64: return "u64";
+    case NumericF32: return "f32";
+    case NumericF64: return "f64";
     default: return "?";
     }
 }
@@ -115,16 +115,16 @@ NumericType NumericItem::stringNumericType(const std::string &str)
 {
     typedef std::unordered_map<std::string, int> map_strtype;
     static const map_strtype::value_type map_data[NumericTotal] = {
-        map_strtype::value_type("i8", NumericInt8),
-        map_strtype::value_type("u8", NumericUint8),
-        map_strtype::value_type("i16", NumericInt16),
-        map_strtype::value_type("u16", NumericUint16),
-        map_strtype::value_type("i32", NumericInt32),
-        map_strtype::value_type("u32", NumericUint32),
-        map_strtype::value_type("i64", NumericInt64),
-        map_strtype::value_type("u64", NumericUint64),
-        map_strtype::value_type("f32", NumericFloat32),
-        map_strtype::value_type("f64", NumericFloat64)
+        map_strtype::value_type("i8", NumericI8),
+        map_strtype::value_type("u8", NumericU8),
+        map_strtype::value_type("i16", NumericI16),
+        map_strtype::value_type("u16", NumericU16),
+        map_strtype::value_type("i32", NumericI32),
+        map_strtype::value_type("u32", NumericU32),
+        map_strtype::value_type("i64", NumericI64),
+        map_strtype::value_type("u64", NumericU64),
+        map_strtype::value_type("f32", NumericF32),
+        map_strtype::value_type("f64", NumericF64)
     };
     static const map_strtype _map(map_data, map_data + NumericTotal);
     map_strtype::const_iterator citer = _map.find(str);
@@ -144,16 +144,16 @@ double NumericItem::originalData() const
 
     double value = 0.0;
     switch (d->numericType) {
-    case NumericInt8: value = *(icd_int8 *)buffer; break;
-    case NumericUint8: value = *(icd_uint8 *)buffer; break;
-    case NumericInt16: value = *(icd_int16 *)buffer; break;
-    case NumericUint16: value = *(icd_uint16 *)buffer; break;
-    case NumericInt32: value = *(icd_int32 *)buffer; break;
-    case NumericUint32: value = *(icd_uint32 *)buffer; break;
-    case NumericInt64: value = double(*(icd_int64 *)buffer); break;
-    case NumericUint64: value = double(*(icd_uint64 *)buffer); break;
-    case NumericFloat32: value = *(icd_float32 *)buffer; break;
-    case NumericFloat64: value = *(icd_float64 *)buffer; break;
+    case NumericI8: value = *(icd_int8 *)buffer; break;
+    case NumericU8: value = *(icd_uint8 *)buffer; break;
+    case NumericI16: value = *(icd_int16 *)buffer; break;
+    case NumericU16: value = *(icd_uint16 *)buffer; break;
+    case NumericI32: value = *(icd_int32 *)buffer; break;
+    case NumericU32: value = *(icd_uint32 *)buffer; break;
+    case NumericI64: value = double(*(icd_int64 *)buffer); break;
+    case NumericU64: value = double(*(icd_uint64 *)buffer); break;
+    case NumericF32: value = *(icd_float32 *)buffer; break;
+    case NumericF64: value = *(icd_float64 *)buffer; break;
     default: return 0.0;
     }
 
@@ -203,16 +203,16 @@ void NumericItem::setData(double data)
     value = (value - d->offset) / d->scale;
 
     switch (d->numericType) {
-    case NumericInt8: *(icd_int8 *)buffer = (icd_int8)value; break;
-    case NumericUint8: *(icd_uint8 *)buffer = (icd_uint8)value; break;
-    case NumericInt16: *(icd_int16 *)buffer = (icd_int16)value; break;
-    case NumericUint16: *(icd_uint16 *)buffer = (icd_uint16)value; break;
-    case NumericInt32: *(icd_int32 *)buffer = (icd_int32)value; break;
-    case NumericUint32: *(icd_uint32 *)buffer = (icd_uint32)value; break;
-    case NumericInt64: *(icd_int64 *)buffer = (icd_int64)value; break;
-    case NumericUint64: *(icd_uint64 *)buffer = (icd_uint64)value; break;
-    case NumericFloat32: *(icd_float32 *)buffer = (icd_float32)value; break;
-    case NumericFloat64: *(icd_float64 *)buffer = (icd_float64)value; break;
+    case NumericI8: *(icd_int8 *)buffer = (icd_int8)value; break;
+    case NumericU8: *(icd_uint8 *)buffer = (icd_uint8)value; break;
+    case NumericI16: *(icd_int16 *)buffer = (icd_int16)value; break;
+    case NumericU16: *(icd_uint16 *)buffer = (icd_uint16)value; break;
+    case NumericI32: *(icd_int32 *)buffer = (icd_int32)value; break;
+    case NumericU32: *(icd_uint32 *)buffer = (icd_uint32)value; break;
+    case NumericI64: *(icd_int64 *)buffer = (icd_int64)value; break;
+    case NumericU64: *(icd_uint64 *)buffer = (icd_uint64)value; break;
+    case NumericF32: *(icd_float32 *)buffer = (icd_float32)value; break;
+    case NumericF64: *(icd_float64 *)buffer = (icd_float64)value; break;
     default: return;
     }
 }
@@ -317,17 +317,17 @@ std::pair<double, double> NumericItem::dataRange() const
 
     if (d->limit->leftInf()) {
         switch (d->numericType) {
-        case NumericUint8:
-        case NumericUint16:
-        case NumericUint32:
-        case NumericUint64:
+        case NumericU8:
+        case NumericU16:
+        case NumericU32:
+        case NumericU64:
             range.first = 0.0;
             break;
-        case NumericInt8:
-        case NumericInt16:
-        case NumericInt32:
-        case NumericFloat32:
-        case NumericFloat64:
+        case NumericI8:
+        case NumericI16:
+        case NumericI32:
+        case NumericF32:
+        case NumericF64:
             range.first = double(-(1ll << (typeSize - 1)));
             break;
         default:
@@ -339,17 +339,17 @@ std::pair<double, double> NumericItem::dataRange() const
 
     if (d->limit->rightInf()) {
         switch (d->numericType) {
-        case NumericUint8:
-        case NumericUint16:
-        case NumericUint32:
-        case NumericUint64:
+        case NumericU8:
+        case NumericU16:
+        case NumericU32:
+        case NumericU64:
             range.second = double((1ll << typeSize) - 1);
             break;
-        case NumericInt8:
-        case NumericInt16:
-        case NumericInt32:
-        case NumericFloat32:
-        case NumericFloat64:
+        case NumericI8:
+        case NumericI16:
+        case NumericI32:
+        case NumericF32:
+        case NumericF64:
             range.second = double((1ll << (typeSize - 1)) - 1);
             break;
         default:
@@ -375,16 +375,16 @@ std::string NumericItem::typeName() const
     std::stringstream ss;
     ss << "icd_";
     switch (d->numericType) {
-    case NumericInt8:
-    case NumericInt16:
-    case NumericInt32:
-    case NumericInt64: ss << "int"; break;
-    case NumericUint8:
-    case NumericUint16:
-    case NumericUint32:
-    case NumericUint64: ss << "uint"; break;
-    case NumericFloat32:
-    case NumericFloat64: ss << "float"; break;
+    case NumericI8:
+    case NumericI16:
+    case NumericI32:
+    case NumericI64: ss << "int"; break;
+    case NumericU8:
+    case NumericU16:
+    case NumericU32:
+    case NumericU64: ss << "uint"; break;
+    case NumericF32:
+    case NumericF64: ss << "float"; break;
     default: return "?";
     }
     ss << ((int)bufferSize() << 3);

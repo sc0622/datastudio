@@ -628,16 +628,16 @@ QString JMain::typeString(const Icd::ItemPtr &item)
 QString JMain::numericTypeString(int numericType)
 {
     switch (numericType) {
-    case Icd::NumericInt8: return tr("Int8");
-    case Icd::NumericUint8: return tr("UInt8");
-    case Icd::NumericInt16: return tr("Int16");
-    case Icd::NumericUint16: return tr("UInt16");
-    case Icd::NumericInt32: return tr("Int32");
-    case Icd::NumericUint32: return tr("UInt32");
-    case Icd::NumericInt64: return tr("Int64");
-    case Icd::NumericUint64: return tr("UInt64");
-    case Icd::NumericFloat32: return tr("Float32");
-    case Icd::NumericFloat64: return tr("Float64");
+    case Icd::NumericI8: return tr("Int8");
+    case Icd::NumericU8: return tr("UInt8");
+    case Icd::NumericI16: return tr("Int16");
+    case Icd::NumericU16: return tr("UInt16");
+    case Icd::NumericI32: return tr("Int32");
+    case Icd::NumericU32: return tr("UInt32");
+    case Icd::NumericI64: return tr("Int64");
+    case Icd::NumericU64: return tr("UInt64");
+    case Icd::NumericF32: return tr("Float32");
+    case Icd::NumericF64: return tr("Float64");
     default:
         break;
     }

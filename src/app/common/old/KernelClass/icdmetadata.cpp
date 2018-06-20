@@ -9,6 +9,7 @@ public:
         , q_type(-1)
         , q_serial(1)
         , q_length(0)
+        , q_subType(-1)
     {}
 
 private:
@@ -16,6 +17,7 @@ private:
     int         q_type;     // 规则具体类型
     int         q_serial;   // 标志号
     int         q_length;   // 数据长度
+    int         q_subType;  //
 };
 
 ICDMetaData::ICDMetaData(const stTableRules &rules)
@@ -28,6 +30,7 @@ ICDMetaData::ICDMetaData(const stTableRules &rules)
     setType(rules.uType);
     setSerial(rules.nSerial);
     setRemark(rules.sRemark);
+    setSubType(rules.subType);
 }
 
 ICDMetaData::ICDMetaData(const ICDMetaData &rhs)
@@ -121,7 +124,7 @@ int ICDMetaData::type() const
 
 void ICDMetaData::setSerial(int serial)
 {
-    // 
+    //
     char szTmp[32] = {0};
     sprintf_s(szTmp, sizeof(szTmp), "%d", serial);
 
@@ -148,4 +151,32 @@ void ICDMetaData::setRemark(const std::string &remark)
 std::string ICDMetaData::remark() const
 {
     return describe();
+}
+
+int ICDMetaData::subType() const
+{
+    return d->q_subType;
+}
+
+void ICDMetaData::setSubType(int subType)
+{
+    d->q_subType = subType;
+}
+
+std::string ICDMetaData::typeString() const
+{
+    switch (d->q_type) {
+    case GlobalDefine::dtHead: return "head";
+    case GlobalDefine::dtCounter: return "counter";
+    case GlobalDefine::dtCheck: return "check";
+    case GlobalDefine::dtFrameCode: return "framecode";
+    case GlobalDefine::dtNumeric: return "numeric";
+    case GlobalDefine::dtArray: return "array";
+    case GlobalDefine::dtBitMap: return "bitmap";
+    case GlobalDefine::dtBitValue: return "bitvalue";
+    case GlobalDefine::dtComplex: return "complex";
+    case GlobalDefine::dtDiscern: return "frame";
+    case GlobalDefine::dtBuffer: return "buffer";
+    default: return "?";
+    }
 }

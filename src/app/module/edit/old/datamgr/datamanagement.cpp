@@ -251,7 +251,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         case GlobalDefine::dicPowerType:   // 权限类型
             dicName = DBAccess::tableName(DataBaseDefine::dbPowerType);
             break;
-        case GlobalDefine::dicCounterType:  // 帧计数类型
+        case GlobalDefine::dicCounterType: // 帧计数类型
             dicName = DBAccess::tableName(DataBaseDefine::dbCounterType);
             break;
         case GlobalDefine::dicCheckType:   // 校验类型
@@ -259,6 +259,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
             break;
         case GlobalDefine::dicArrayType:   // 数组类型
             dicName = DBAccess::tableName(DataBaseDefine::dbArrayType);
+            break;
+        case GlobalDefine::dicNumericType:  // 数值类型
+            dicName = DBAccess::tableName(DataBaseDefine::dbNumericType);
             break;
         default:
             break;

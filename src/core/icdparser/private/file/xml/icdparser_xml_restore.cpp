@@ -559,7 +559,7 @@ bool XmlParser::parseItemArray(const TiXmlElement *emItem, const ArrayItemPtr &a
     }
     const Icd::ArrayType arrayType = Icd::ArrayItem::stringArrayType(
                 QString::fromStdString(sVal).toStdString());
-    if (arrayType == Icd::InvalidArray) {
+    if (arrayType == Icd::ArrayInvalid) {
         return false;
     }
     array->setArrayType(arrayType);

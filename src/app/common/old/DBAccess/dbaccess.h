@@ -19,8 +19,9 @@ namespace DataBaseDefine{
         dbDataType,             // 数据类型表
         dbPowerType,            // 权限类型表
         dbCounterType,          // 帧计数类型表
-        dbCheckType,            // 校验类型表
         dbArrayType,            // 数组型表
+        dbNumericType,          // 数值型表
+        dbCheckType,            // 校验类型表
         dbTotal                 // 边界标记
     };
 }

@@ -75,6 +75,8 @@ bool SqlParserData::Item2rule(const Icd::ItemPtr &item, stTableRules &rule) cons
         break;
     case Icd::ItemNumeric:
         result = ItemNumeric2rule(JHandlePtrCast<Icd::NumericItem, Icd::Item>(item), rule);
+        // type attribute
+        rule.uType = GlobalDefine::dtNumeric;
         break;
     case Icd::ItemArray:
         result = ItemArray2rule(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item), rule);
@@ -326,8 +328,7 @@ bool SqlParserData::ItemFrameCode2TableRules(const Icd::FrameCodeItemPtr &frameC
  * @param rule
  * @return
  */
-bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric,
-                                     stTableRules &rule) const
+bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric, stTableRules &rule) const
 {
     if (0 == numeric) {
         return false;
@@ -335,16 +336,16 @@ bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric,
 
     // numericType attribute
     switch (numeric->numericType()) {
-    case Icd::NumericInt8: rule.uType = GlobalDefine::dt8; break;
-    case Icd::NumericUint8: rule.uType = GlobalDefine::dtU8; break;
-    case Icd::NumericInt16: rule.uType = GlobalDefine::dt16; break;
-    case Icd::NumericUint16: rule.uType = GlobalDefine::dtU16; break;
-    case Icd::NumericInt32: rule.uType = GlobalDefine::dt32; break;
-    case Icd::NumericUint32: rule.uType = GlobalDefine::dtU32; break;
-    case Icd::NumericInt64: rule.uType = GlobalDefine::dt64; break;
-    case Icd::NumericUint64: rule.uType = GlobalDefine::dtU64; break;
-    case Icd::NumericFloat32: rule.uType = GlobalDefine::dtF32; break;
-    case Icd::NumericFloat64: rule.uType = GlobalDefine::dtF64; break;
+    case Icd::NumericI8: rule.subType = GlobalDefine::NumericI8; break;
+    case Icd::NumericU8: rule.subType = GlobalDefine::NumericU8; break;
+    case Icd::NumericI16: rule.subType = GlobalDefine::NumericI16; break;
+    case Icd::NumericU16: rule.subType = GlobalDefine::NumericU16; break;
+    case Icd::NumericI32: rule.subType = GlobalDefine::NumericI32; break;
+    case Icd::NumericU32: rule.subType = GlobalDefine::NumericU32; break;
+    case Icd::NumericI64: rule.subType = GlobalDefine::NumericI64; break;
+    case Icd::NumericU64: rule.subType = GlobalDefine::NumericU64; break;
+    case Icd::NumericF32: rule.subType = GlobalDefine::NumericF32; break;
+    case Icd::NumericF64: rule.subType = GlobalDefine::NumericF64; break;
     default: return false;
     }
 
@@ -364,10 +365,8 @@ bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric,
     const Icd::LimitItemPtr limit = numeric->limit();
     if (limit) {
         rule.sRange = QString("%1~%2")
-                .arg(limit->leftInf() ?
-                         "" : QString::number(limit->minimum()))
-                .arg(limit->rightInf() ?
-                         "" : QString::number(limit->maximum()))
+                .arg(limit->leftInf() ? "" : QString::number(limit->minimum()))
+                .arg(limit->rightInf() ? "" : QString::number(limit->maximum()))
                 .toStdString();
     } else {
         rule.sRange = "-Inf~+Inf";
@@ -396,35 +395,35 @@ bool SqlParserData::ItemArray2rule(const ArrayItemPtr &array, stTableRules &rule
 
     // arrayType attribute
     switch (array->arrayType()) {
-    case Icd::Int8Array:
-        rule.sDefault = QString::number(GlobalDefine::Int8Array).toStdString();
+    case Icd::ArrayI8:
+        rule.sDefault = QString::number(GlobalDefine::ArrayI8).toStdString();
         break;
-    case Icd::UInt8Array:
-        rule.sDefault = QString::number(GlobalDefine::UInt8Array).toStdString();
+    case Icd::ArrayU8:
+        rule.sDefault = QString::number(GlobalDefine::ArrayU8).toStdString();
         break;
-    case Icd::Int16Array:
-        rule.sDefault = QString::number(GlobalDefine::Int16Array).toStdString();
+    case Icd::ArrayI16:
+        rule.sDefault = QString::number(GlobalDefine::ArrayI16).toStdString();
         break;
-    case Icd::UInt16Array:
-        rule.sDefault = QString::number(GlobalDefine::UInt16Array).toStdString();
+    case Icd::ArrayU16:
+        rule.sDefault = QString::number(GlobalDefine::ArrayU16).toStdString();
         break;
-    case Icd::Int32Array:
-        rule.sDefault = QString::number(GlobalDefine::Int32Array).toStdString();
+    case Icd::ArrayI32:
+        rule.sDefault = QString::number(GlobalDefine::ArrayI32).toStdString();
         break;
-    case Icd::UInt32Array:
-        rule.sDefault = QString::number(GlobalDefine::UInt32Array).toStdString();
+    case Icd::ArrayU32:
+        rule.sDefault = QString::number(GlobalDefine::ArrayU32).toStdString();
         break;
-    case Icd::Int64Array:
-        rule.sDefault = QString::number(GlobalDefine::Int64Array).toStdString();
+    case Icd::ArrayI64:
+        rule.sDefault = QString::number(GlobalDefine::ArrayI64).toStdString();
         break;
-    case Icd::UInt64Array:
-        rule.sDefault = QString::number(GlobalDefine::UInt64Array).toStdString();
+    case Icd::ArrayU64:
+        rule.sDefault = QString::number(GlobalDefine::ArrayU64).toStdString();
         break;
-    case Icd::Float32Array:
-        rule.sDefault = QString::number(GlobalDefine::Float32Array).toStdString();
+    case Icd::ArrayF32:
+        rule.sDefault = QString::number(GlobalDefine::ArrayF32).toStdString();
         break;
-    case Icd::Float64Array:
-        rule.sDefault = QString::number(GlobalDefine::Float64Array).toStdString();
+    case Icd::ArrayF64:
+        rule.sDefault = QString::number(GlobalDefine::ArrayF64).toStdString();
         break;
     default:
         break;
@@ -441,8 +440,7 @@ bool SqlParserData::ItemArray2rule(const ArrayItemPtr &array, stTableRules &rule
  * @param rule
  * @return
  */
-bool SqlParserData::ItemBit2rule(const Icd::BitItemPtr &bit,
-                                 stTableRules &rule) const
+bool SqlParserData::ItemBit2rule(const Icd::BitItemPtr &bit, stTableRules &rule) const
 {
     if (0 == bit) {
         return false;

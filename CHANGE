@@ -1,4 +1,12 @@
 
+-- V4.3.0
+    tools: VS2015，Qt5.11.0，Qbs>=1.9.1
+    depends:
+        1) jframework: v2.5.0;
+
+    fixed:
+        1) 完善edit模块新增功能，增加array、numeric数据类型及编辑功能
+
 -- V4.2.1
     tools: VS2015，Qt5.11.0，Qbs>=1.9.1
     depends:

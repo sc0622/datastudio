@@ -15,8 +15,9 @@ class CommonUI : public MetaUI
     Q_OBJECT
 public:
     explicit CommonUI(QWidget* parent = nullptr);
+    explicit CommonUI(int uiType, QWidget* parent = nullptr);
 
-    int uiType() const override;
+    virtual int uiType() const override;
 
     // MetaUI interface
     void setUIData(const _UIData &data) override;
@@ -45,6 +46,7 @@ private slots:
     void slotClear();
 
 private:
+    void initUI(int uiType);
     // 确认
     void confirm() override;
     // 取消
@@ -52,6 +54,8 @@ private:
 
     // 初始化界面数据
     void init();
+    // 初始化数值类型下拉框
+    void initBoxType();
     // 启/停用信号槽
     void enableConnection(bool enable);
     // 校验界面数据
@@ -71,6 +75,7 @@ private:
 
     LimitLineEdit   *q_edtName;
     QLineEdit       *q_edtCode;
+    QComboBox       *q_boxNumericType;  // 数值类型
     LimitTextEdit   *q_edtRemak;
 
     // 范围

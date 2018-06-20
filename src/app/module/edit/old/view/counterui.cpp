@@ -128,8 +128,7 @@ void CounterUI::slotTextChanged(const QString& text)
     } else if (box) {
         if (box == q_boxCounterType) {
             q_data->setCounterType(
-                q_boxCounterType->itemData(q_boxCounterType->currentIndex())
-                .toInt());
+                q_boxCounterType->itemData(q_boxCounterType->currentIndex()).toInt());
         }
         enableOptionButton(true);
     }
@@ -191,7 +190,7 @@ void CounterUI::init()
         q_edtCode->setText(q_data->proCode().c_str());
         q_edtCode->clearFocus();
     }
-    if (q_boxCounterType) {   // 校验类型
+    if (q_boxCounterType) {   // 计数器类型
         int index = q_boxCounterType->findData(q_data->counterType());
         q_boxCounterType->setCurrentIndex((index < 0) ? 0 : index);
     }
@@ -213,7 +212,7 @@ void CounterUI::init()
     enableConnection(true);
 }
 
-// 初始化校验类型下拉框
+// 初始化计数器类型下拉框
 void CounterUI::initBoxType()
 {
     if (!q_boxCounterType) {

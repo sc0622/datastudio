@@ -84,7 +84,20 @@ int ICDCounterData::counterType() const
 std::string ICDCounterData::stringType() const
 {
     char szTmp[128] = {0};
-    sprintf_s(szTmp, sizeof(szTmp), "%d", counterType());
+    sprintf_s(szTmp, sizeof(szTmp), "%d", d->counterType);
 
     return std::string(szTmp);
+}
+
+std::string ICDCounterData::typeString() const
+{
+    std::string sType;
+    switch (d->counterType) {
+    case GlobalDefine::counterU8:  sType = "u8"; break;
+    case GlobalDefine::counterU16:  sType = "u16"; break;
+    case GlobalDefine::counterU32:  sType = "u32"; break;
+    case GlobalDefine::counterU64:  sType = "u64"; break;
+    default: sType = "?"; break;
+    }
+    return ICDMetaData::typeString() + '#' + sType;
 }

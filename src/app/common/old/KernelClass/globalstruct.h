@@ -12,46 +12,33 @@ namespace GlobalDefine {
  * @brief ICD数据类型定义，与字典表Dic_DataType同步
  */
 enum DataType {
-    dtInvalid   = -1,       // 无效
-
-    dtHead      = 10,       // 包头
-    dtCounter,              // 帧计数
-    dtCheck,                // 校验
-    dtFrameCode,            // 帧识别码
-    dtU8,                   // 无符号8位
-    dt8,                    // 有符号8位
-    dtU16,                  // 无符号16位
-    dt16,                   // 有符号16位
-    dtU32,                  // 无符号32位
-    dt32,                   // 有符号32位
-    dtU64,                  // 无符号64位
-    dt64,                   // 有符号64位
-    dtF32,                  // 32位浮点数
-    dtF64,                  // 64位浮点数
-    dtArray,                // 数组
-    dtBitMap,               // BITMAP
-    dtBitValue,             // BITVALUE
-    dtComplex,              // 复合数据
-    dtDiscern,              // 帧数据
-    dtBuffer,               // 数据预留区
-
-    dtTotal                 // 标记边界
+    dtInvalid   = -1,   // 无效
+    dtHead      = 10,   // 包头
+    dtCounter,          // 帧计数
+    dtCheck,            // 校验
+    dtFrameCode,        // 帧识别码
+    dtNumeric,          // 数值
+    dtArray,            // 数组
+    dtBitMap,           // BITMAP
+    dtBitValue,         // BITVALUE
+    dtComplex,          // 复合数据
+    dtDiscern,          // 帧数据
+    dtBuffer,           // 数据预留区
+    dtTotal             // 标记边界
 };
 
 /**
  * @brief ICD校验类型定义，与字典表Dic_CheckType同步
  */
 enum CheckType {
-    ctInvalid   = -1,       // 无效
-
-    ct8And      = 0,        // 8位和校验
-    ct16And,                // 16位和校验
-    ctCRC8,                 // CRC8校验
-    ctCRC16,                  // CRC16校验
-    ctXor8,                 // 8位异或和校验
-    ctXor16,                // 16位异或和校验
-
-    ctTotal                 // 标记边界
+    ctInvalid   = -1,   // 无效
+    ct8And,             // 8位和校验
+    ct16And,            // 16位和校验
+    ctCRC8,             // CRC8校验
+    ctCRC16,            // CRC16校验
+    ctXor8,             // 8位异或和校验
+    ctXor16,            // 16位异或和校验
+    ctTotal             // 标记边界
 };
 
 /**
@@ -62,7 +49,6 @@ enum CounterType {
     counterU16,         // 16位计数
     counterU32,         // 32位计数
     counterU64,         // 32位计数
-
     counterTotal        // 标记边界
 };
 
@@ -74,26 +60,42 @@ enum FrameType {
     frame16,        // 16位帧识别码
     frame32,        // 32位帧识别码
     frame64,        // 64位帧识别码
-
     frameTotal      // 标记边界
+};
+
+/**
+ * @brief The NumericType enum
+ */
+enum NumericType {
+    NumericI8,          // 有符号8位
+    NumericU8,          // 无符号8位
+    NumericI16,         // 有符号16位
+    NumericU16,         // 无符号16位
+    NumericI32,         // 有符号32位
+    NumericU32,         // 无符号32位
+    NumericI64,         // 有符号64位
+    NumericU64,         // 无符号64位
+    NumericF32,         // 32位浮点数
+    NumericF64,         // 64位浮点数
+    NumericTotal
 };
 
 /**
  * @brief The ArrayType enum
  */
 enum ArrayType {
-    InvalidArray = -1,
-    Int8Array,
-    UInt8Array,
-    Int16Array,
-    UInt16Array,
-    Int32Array,
-    UInt32Array,
-    Int64Array,
-    UInt64Array,
-    Float32Array,
-    Float64Array,
-    ArrayTypeTotal
+    ArrayInvalid = -1,
+    ArrayI8,
+    ArrayU8,
+    ArrayI16,
+    ArrayU16,
+    ArrayI32,
+    ArrayU32,
+    ArrayI64,
+    ArrayU64,
+    ArrayF32,
+    ArrayF64,
+    ArrayTotal
 };
 
 /**
@@ -103,7 +105,6 @@ enum DataSource {
     dsNone = 0,     // 无效
     dsDatabase,     // 数据库
     dsFile,         // 文件 [xml、json]
-
     dsTotal         // 标记边界
 };
 
@@ -116,7 +117,6 @@ enum NodeType{
     ntSystem,           // 分系统
     ntTable,            // 规则表
     ntRule,             // 具体规则
-
     tlTotal             // 标记边界
 };
 
@@ -128,6 +128,7 @@ enum DictionaryIndex {
     dicPowerType,       // 权限类型
     dicCounterType,     // 帧计数类型
     dicArrayType,       // 数组类型
+    dicNumericType,     // 数值类型
     dicCheckType,       // 校验类型
 };
 
@@ -331,6 +332,7 @@ struct stTableRules
     std::string     sUnit;      // 单位
     std::string     sRule;      // 规则
     std::string     sRemark;    // 备注
+    unsigned short  subType;    // 子类型
 
     stTableRules()
     {
@@ -340,6 +342,7 @@ struct stTableRules
         uType = -1;
         dOffset = 0.0;
         dScale = 1.0;
+        subType = -1;
     }
 
     bool operator < (const stTableRules &rhs) const

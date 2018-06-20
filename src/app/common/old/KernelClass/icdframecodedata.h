@@ -32,8 +32,10 @@ public:
     int bindingSerial() const;
     std::string bindingStringSerial() const;
 
+    std::string typeString() const override;
+
 private:
-    ICDFrameCodeDataPrivate     *d;
+    ICDFrameCodeDataPrivate *d;
 };
 
 #endif // ICDFRAMECODEDATA_H

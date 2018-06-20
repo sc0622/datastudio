@@ -9,6 +9,7 @@
 #include "icdcounterdata.h"
 #include "icdframecodedata.h"
 #include "icdarraydata.h"
+#include "icdnumericdata.h"
 
 /**
  * @brief 获取工厂访问实例
@@ -80,20 +81,13 @@ ICDMetaData::smtMeta ICDFactory::CreatObject(const stTableRules &rule)
         result = ICDMetaData::smtMeta(new ICDFrameCodeData(rule));
         break;
     case GlobalDefine::dtHead:      // 包头
-    case GlobalDefine::dtU8:        // 无符号8位
-    case GlobalDefine::dt8:         // 有符号8位
-    case GlobalDefine::dtU16:       // 无符号16位
-    case GlobalDefine::dt16:        // 有符号16位
-    case GlobalDefine::dtU32:       // 无符号32位
-    case GlobalDefine::dt32:        // 有符号32位
-    case GlobalDefine::dtU64:       // 无符号64位
-    case GlobalDefine::dt64:        // 有符号64位
-    case GlobalDefine::dtF32:       // 32位浮点数
-    case GlobalDefine::dtF64:       // 64位浮点数
         result = ICDMetaData::smtMeta(new ICDCommonData(rule));
         break;
     case GlobalDefine::dtArray:    // 数组
         result = ICDMetaData::smtMeta(new ICDArrayData(rule));
+        break;
+    case GlobalDefine::dtNumeric:   // 数值
+        result = ICDMetaData::smtMeta(new ICDNumericData(rule));
         break;
     case GlobalDefine::dtBitMap:    // BITMAP
     case GlobalDefine::dtBitValue:  // BITVALUE
@@ -126,8 +120,6 @@ ICDMetaData::smtMeta ICDFactory::CreatObject(GlobalDefine::DataType type)
     char szTmp[20] = { 0 };
     switch (type) {
     case GlobalDefine::dtHead:      // 包头
-    case GlobalDefine::dtU8:        // 无符号8位
-    case GlobalDefine::dt8:         // 有符号8位
         result = ICDMetaData::smtMeta(new ICDCommonData(rule));
         break;
     case GlobalDefine::dtCounter:   // 帧计数
@@ -145,22 +137,13 @@ ICDMetaData::smtMeta ICDFactory::CreatObject(GlobalDefine::DataType type)
         rule.sDefault = std::string(szTmp);
         result = ICDMetaData::smtMeta(new ICDFrameCodeData(rule));
         break;
-    case GlobalDefine::dtU16:       // 无符号16位
-    case GlobalDefine::dt16:        // 有符号16位
-        result = ICDMetaData::smtMeta(new ICDCommonData(rule));
-        break;
-    case GlobalDefine::dtU32:       // 无符号32位
-    case GlobalDefine::dt32:        // 有符号32位
-    case GlobalDefine::dtF32:       // 32位浮点数
-        result = ICDMetaData::smtMeta(new ICDCommonData(rule));
-        break;
-    case GlobalDefine::dtU64:       // 无符号64位
-    case GlobalDefine::dt64:        // 有符号64位
-    case GlobalDefine::dtF64:       // 64位浮点数
-        result = ICDMetaData::smtMeta(new ICDCommonData(rule));
-        break;
     case GlobalDefine::dtArray:    // 数组
+        sprintf_s(szTmp, "%d", GlobalDefine::ArrayI8);
+        rule.sDefault = std::string(szTmp);
         result = ICDMetaData::smtMeta(new ICDArrayData(rule));
+        break;
+    case GlobalDefine::dtNumeric:   // 数值
+        result = ICDMetaData::smtMeta(new ICDNumericData(rule));
         break;
     case GlobalDefine::dtBitMap:    // BITMAP
     case GlobalDefine::dtBitValue:  // BITVALUE
@@ -199,6 +182,7 @@ stTableRules ICDFactory::convert2Rule(const ICDMetaData::smtMeta &meta)
     result.uType = meta->type();
     result.sName = meta->name();
     result.sRemark = meta->remark();
+    result.subType = meta->subType();
 
     switch (meta->type()) {
     case GlobalDefine::dtCounter:
@@ -231,16 +215,7 @@ stTableRules ICDFactory::convert2Rule(const ICDMetaData::smtMeta &meta)
         break;
     }
     case GlobalDefine::dtHead:     // 包头
-    case GlobalDefine::dtU8:       // 无符号8位
-    case GlobalDefine::dt8:        // 有符号8位
-    case GlobalDefine::dtU16:      // 无符号16位
-    case GlobalDefine::dt16:       // 有符号16位
-    case GlobalDefine::dtU32:      // 无符号32位
-    case GlobalDefine::dt32:       // 有符号32位
-    case GlobalDefine::dtU64:      // 无符号64位
-    case GlobalDefine::dt64:       // 有符号64位
-    case GlobalDefine::dtF32:      // 32位浮点数
-    case GlobalDefine::dtF64:      // 64位浮点数
+    case GlobalDefine::dtNumeric:  // 数值
     {
         ICDCommonData::smtCommon common = SMT_CONVERT(ICDCommonData, meta);
         if (common) {
@@ -322,6 +297,7 @@ bool ICDFactory::copyBaseData(ICDMetaData::smtMeta from,
     to->setIndex(from->index());
     to->setSerial(from->serial());
     to->setRemark(from->remark());
+    to->setSubType(from->subType());
 
     ICDCommonData::smtCommon _comFrom = SMT_CONVERT(ICDCommonData, from);
     ICDCommonData::smtCommon _comTo = SMT_CONVERT(ICDCommonData, to);
@@ -373,16 +349,6 @@ bool ICDFactory::copyBaseData(ICDMetaData::smtMeta from,
         break;
     }
     case GlobalDefine::dtHead:     // 包头
-    case GlobalDefine::dtU8:       // 无符号8位
-    case GlobalDefine::dt8:        // 有符号8位
-    case GlobalDefine::dtU16:      // 无符号16位
-    case GlobalDefine::dt16:       // 有符号16位
-    case GlobalDefine::dtU32:      // 无符号32位
-    case GlobalDefine::dt32:       // 有符号32位
-    case GlobalDefine::dtU64:      // 无符号64位
-    case GlobalDefine::dt64:       // 有符号64位
-    case GlobalDefine::dtF32:      // 32位浮点数
-    case GlobalDefine::dtF64:      // 64位浮点数
     {
         break;
     }
@@ -395,6 +361,16 @@ bool ICDFactory::copyBaseData(ICDMetaData::smtMeta from,
         }
         _to->setArrayType(_from->arrayType());
         _to->setCount(_from->count());
+        break;
+    }
+    case GlobalDefine::dtNumeric:
+    {
+        ICDNumericData::smtNumeric _from = SMT_CONVERT(ICDNumericData, from);
+        ICDNumericData::smtNumeric _to = SMT_CONVERT(ICDNumericData, to);
+        if (!_from || !_to) {
+            return false;
+        }
+        _to->setNumericType(_from->numericType());
         break;
     }
     case GlobalDefine::dtBitMap:   // BITMAP

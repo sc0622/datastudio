@@ -11,16 +11,16 @@ namespace Icd {
 //
 enum NumericType {
     NumericInvalid = -1,
-    NumericInt8,
-    NumericUint8,
-    NumericInt16,
-    NumericUint16,
-    NumericInt32,
-    NumericUint32,
-    NumericInt64,
-    NumericUint64,
-    NumericFloat32,
-    NumericFloat64,
+    NumericI8,
+    NumericU8,
+    NumericI16,
+    NumericU16,
+    NumericI32,
+    NumericU32,
+    NumericI64,
+    NumericU64,
+    NumericF32,
+    NumericF64,
     NumericTotal
 };
 

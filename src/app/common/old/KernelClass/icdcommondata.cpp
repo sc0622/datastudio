@@ -36,25 +36,10 @@ ICDCommonData::ICDCommonData(const stTableRules &rule)
     setUnit(rule.sUnit);
     setScale(rule.dScale);
     setRule(rule.sRule);
+
     switch (rule.uType) {
     case GlobalDefine::dtHead:      // 包头
-    case GlobalDefine::dtU8:        // 无符号8位
-    case GlobalDefine::dt8:         // 有符号8位
         setLength(1);
-        break;
-    case GlobalDefine::dtU16:       // 无符号16位
-    case GlobalDefine::dt16:        // 有符号16位
-        setLength(2);
-        break;
-    case GlobalDefine::dtU32:       // 无符号32位
-    case GlobalDefine::dt32:        // 有符号32位
-    case GlobalDefine::dtF32:       // 32位浮点数
-        setLength(4);
-        break;
-    case GlobalDefine::dtU64:       // 无符号64位
-    case GlobalDefine::dt64:        // 有符号64位
-    case GlobalDefine::dtF64:       // 64位浮点数
-        setLength(8);
         break;
     default:
         break;

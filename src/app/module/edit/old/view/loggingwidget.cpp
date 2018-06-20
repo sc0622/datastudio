@@ -69,6 +69,7 @@ void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
     case MetaUI::wdFrameCode:
     case MetaUI::wdCommon:
     case MetaUI::wdArray:
+    case MetaUI::wdNumeric:
     case MetaUI::wdBitMap:
     case MetaUI::wdBitValue:
     case MetaUI::wdDiscern:
@@ -181,26 +182,11 @@ void LoggingWidget::slotTypeChanged(int index)
         rule.sDefault = QString::number(GlobalDefine::frame8).toStdString();
         metaUiType = MetaUI::wdFrameCode;
         break;
-    case GlobalDefine::dtU8:
-    case GlobalDefine::dt8:
-        metaUiType = MetaUI::wdCommon;
-        break;
-    case GlobalDefine::dtU16:
-    case GlobalDefine::dt16:
-        metaUiType = MetaUI::wdCommon;
-        break;
-    case GlobalDefine::dtU32:
-    case GlobalDefine::dt32:
-    case GlobalDefine::dtF32:
-        metaUiType = MetaUI::wdCommon;
-        break;
-    case GlobalDefine::dtU64:
-    case GlobalDefine::dt64:
-    case GlobalDefine::dtF64:
-        metaUiType = MetaUI::wdCommon;
-        break;
     case GlobalDefine::dtArray:
         metaUiType = MetaUI::wdArray;
+        break;
+    case GlobalDefine::dtNumeric:
+        metaUiType = MetaUI::wdNumeric;
         break;
     case GlobalDefine::dtBitMap:
         metaUiType = MetaUI::wdBitMap;
@@ -262,17 +248,8 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
         case GlobalDefine::dtCounter:
         case GlobalDefine::dtCheck:
         case GlobalDefine::dtFrameCode:
-        case GlobalDefine::dtU8:
-        case GlobalDefine::dt8:
-        case GlobalDefine::dtU16:
-        case GlobalDefine::dt16:
-        case GlobalDefine::dtU32:
-        case GlobalDefine::dt32:
-        case GlobalDefine::dtU64:
-        case GlobalDefine::dt64:
-        case GlobalDefine::dtF32:
-        case GlobalDefine::dtF64:
         case GlobalDefine::dtArray:
+        case GlobalDefine::dtNumeric:
         case GlobalDefine::dtBitMap:
         case GlobalDefine::dtBitValue:
             upperBound = GlobalDefine::dtBitValue;

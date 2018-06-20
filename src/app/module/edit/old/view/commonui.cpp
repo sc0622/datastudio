@@ -3,6 +3,7 @@
 #include "limittextedit.h"
 #include "limitlineedit.h"
 #include "customdoublespinbox.h"
+#include "KernelClass/icdnumericdata.h"
 #include "jwt/jxmltable.h"
 #include "jwt/jsplitter.h"
 
@@ -13,114 +14,16 @@
 
 CommonUI::CommonUI(QWidget *parent)
     : MetaUI(parent)
+    , q_boxNumericType(nullptr)
 {
-    QGroupBox *basicGroup = new QGroupBox(QStringLiteral("基本信息"), this);
-    // 基本属性
-    q_edtName = new LimitLineEdit(this);
-    q_edtName->setMaxLength(40);
-    q_edtName->setToolTip(QStringLiteral("最多40个字符！"));
-    QLabel *labelNameFlag = new QLabel("<font color=red>*</font>");
-    labelNameFlag->setFixedWidth(20);
-    q_edtCode = new QLineEdit(this);
-    QRegExp regExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,19}");
-    q_edtCode->setValidator(new QRegExpValidator(regExp));
-    q_edtCode->setMaxLength(20);
-    q_edtCode->setToolTip(QStringLiteral("最多20个字符！"));
-    q_spinMin = new CustomDoubleSpinbox(this);
-    q_spinMin->setRange(-pow(10.0, 10), pow(10.0, 10));
-    q_spinMax = new CustomDoubleSpinbox(this);
-    q_spinMax->setRange(-pow(10.0, 10), pow(10.0, 10));
-    q_checkLower = new QCheckBox(this);
-    q_checkUpper = new QCheckBox(this);
-    q_spinOffset = new CustomDoubleSpinbox(this);
-    q_spinOffset->setRange(-pow(10.0, 10), pow(10.0, 10));
-    q_edtUnit = new LimitLineEdit(this);
-    q_edtUnit->setMaxLength(20);
-    q_spinLSB = new CustomDoubleSpinbox(this);
-    q_spinLSB->setRange(1e-16, 1e16);
-    q_spinLSB->setDecimals(16);
-    q_spinDefault = new CustomDoubleSpinbox(this);
-    q_spinDefault->setRange(-pow(10.0, 10), pow(10.0, 10));
-    q_spinDefault->setDecimals(16);
-    q_edtRemak = new LimitTextEdit(this);
-    q_edtRemak->setMaxLength(200);
-    q_edtRemak->setToolTip(QStringLiteral("最多200个字符！"));
+    initUI(uiType());
+}
 
-    int row = 0;
-    QGridLayout* gridLayout = new QGridLayout(basicGroup);
-    gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
-    gridLayout->addWidget(q_edtName, row, 1);
-    gridLayout->addWidget(labelNameFlag, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), ++row, 0);
-    gridLayout->addWidget(q_edtCode, row, 1);
-    gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("下   限：")), ++row, 0);
-    gridLayout->addWidget(q_spinMin, row, 1);
-    gridLayout->addWidget(q_checkLower, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("上   限：")), ++row, 0);
-    gridLayout->addWidget(q_spinMax, row, 1);
-    gridLayout->addWidget(q_checkUpper, row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("偏   置：")), ++row, 0);
-    gridLayout->addWidget(q_spinOffset, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("单   位：")), ++row, 0);
-    gridLayout->addWidget(q_edtUnit, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("比例尺：")), ++row, 0);
-    gridLayout->addWidget(q_spinLSB, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("默认值：")), ++row, 0);
-    gridLayout->addWidget(q_spinDefault, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
-    gridLayout->addWidget(q_edtRemak, row, 1, 2, 1);
-    gridLayout->setRowStretch(++row, 1);
-
-    //
-    q_table = new JXmlTable(this);
-    q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
-                        "EigenvalueComTable");
-    q_table->setContextMenuPolicy(Qt::ActionsContextMenu);
-    QList<QAction *> lstAction;
-    q_actionNew = new QAction(QStringLiteral("新增"), q_table);
-    q_table->addAction(q_actionNew);
-    q_actionNew->setObjectName("new");
-    lstAction << q_actionNew;
-    q_actionClear = new QAction(QStringLiteral("清空"), q_table);
-    q_table->addAction(q_actionClear);
-    q_actionClear->setObjectName("clear");
-    lstAction << q_actionClear;
-    q_table->setSelectionBehavior(QAbstractItemView::SelectRows);
-    q_table->setSelectionMode(QAbstractItemView::MultiSelection);
-    q_table->verticalHeader()->setFixedWidth(40);
-    q_table->verticalHeader()->setDefaultAlignment(Qt::AlignCenter);
-    q_table->horizontalHeader()->setSectionsMovable(false);
-    QGroupBox *tableGroup = new QGroupBox(QStringLiteral("特征点信息"), this);
-    QVBoxLayout *veriLayoutTable = new QVBoxLayout(tableGroup);
-    veriLayoutTable->setContentsMargins(0, 0, 0, 0);
-    veriLayoutTable->setSpacing(1);
-    veriLayoutTable->addWidget(q_table);
-
-    JSplitter* splitter = new JSplitter(this);
-    splitter->setOrientation(Qt::Vertical);
-    splitter->setScales(QList<double>() << 1 << 2);
-    splitter->setHandleWidth(3);
-    splitter->addWidget(basicGroup);
-    splitter->addWidget(tableGroup);
-
-    layoutMain()->insertWidget(0, splitter);
-
-    // signal-slot
-    QListIterator<QAction *> it = lstAction;
-    while (it.hasNext()) {
-        QAction *act = it.next();
-        connect(act, &QAction::triggered, [=](){
-            dealAction(act);
-        });
-    }
-    connect(q_table, SIGNAL(itemPressed(QStandardItem *)),
-            this, SLOT(slotTableItemPressed(QStandardItem *)));
-    enableConnection(true);
-
-    // 记录原始颜色
-    q_color = q_edtName->palette().color(QPalette::Base);
+CommonUI::CommonUI(int uiType, QWidget *parent)
+    : MetaUI(parent)
+    , q_boxNumericType(nullptr)
+{
+    initUI(uiType);
 }
 
 int CommonUI::uiType() const
@@ -138,6 +41,12 @@ void CommonUI::setUIData(const _UIData &data)
     q_old = std::dynamic_pointer_cast<ICDCommonData>(meta);
     q_data = std::dynamic_pointer_cast<ICDCommonData>(q_old->clone());
     setProperty("option", data.type);
+
+    if (uiType() == wdNumeric) {
+        enableConnection(false);
+        initBoxType();
+        enableConnection(true);
+    }
 
     init();
     // 如果是新增，则默认保存可用
@@ -190,8 +99,8 @@ void CommonUI::slotTextChanged(const QString& text)
     QString content = text.trimmed();
     // 校验数据
     QLineEdit *edt = qobject_cast<QLineEdit*>(sender());
-    CustomDoubleSpinbox *dbSpin
-            = qobject_cast<CustomDoubleSpinbox*>(sender());
+    QComboBox *box = qobject_cast<QComboBox*>(sender());
+    CustomDoubleSpinbox *dbSpin = qobject_cast<CustomDoubleSpinbox*>(sender());
     if (edt) {
         if (edt == editStatus()) { // 如果出现错误提示，则灰化确认按钮
             buttonConfirm()->setEnabled(content.isEmpty());
@@ -205,6 +114,14 @@ void CommonUI::slotTextChanged(const QString& text)
             }
             enableOptionButton(true);
         }
+    } else if (box) {
+        if (box == q_boxNumericType) {
+            ICDNumericData::smtNumeric _data = std::dynamic_pointer_cast<ICDNumericData>(q_data);
+            if (_data) {
+                _data->setNumericType(q_boxNumericType->itemData(q_boxNumericType->currentIndex()).toInt());
+            }
+        }
+        enableOptionButton(true);
     } else if (dbSpin) {
         if (dbSpin == q_spinMin || dbSpin == q_spinMax) {   // 范围
             QString min;
@@ -330,6 +247,122 @@ void CommonUI::slotClear()
     }
 }
 
+void CommonUI::initUI(int uiType)
+{
+    QGroupBox *basicGroup = new QGroupBox(QStringLiteral("基本信息"), this);
+    // 基本属性
+    q_edtName = new LimitLineEdit(this);
+    q_edtName->setMaxLength(40);
+    q_edtName->setToolTip(QStringLiteral("最多40个字符！"));
+    QLabel *labelNameFlag = new QLabel("<font color=red>*</font>");
+    labelNameFlag->setFixedWidth(20);
+    q_edtCode = new QLineEdit(this);
+    QRegExp regExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,19}");
+    q_edtCode->setValidator(new QRegExpValidator(regExp));
+    q_edtCode->setMaxLength(20);
+    q_edtCode->setToolTip(QStringLiteral("最多20个字符！"));
+    q_spinMin = new CustomDoubleSpinbox(this);
+    q_spinMin->setRange(-pow(10.0, 10), pow(10.0, 10));
+    q_spinMax = new CustomDoubleSpinbox(this);
+    q_spinMax->setRange(-pow(10.0, 10), pow(10.0, 10));
+    q_checkLower = new QCheckBox(this);
+    q_checkUpper = new QCheckBox(this);
+    q_spinOffset = new CustomDoubleSpinbox(this);
+    q_spinOffset->setRange(-pow(10.0, 10), pow(10.0, 10));
+    q_edtUnit = new LimitLineEdit(this);
+    q_edtUnit->setMaxLength(20);
+    q_spinLSB = new CustomDoubleSpinbox(this);
+    q_spinLSB->setRange(1e-16, 1e16);
+    q_spinLSB->setDecimals(16);
+    q_spinDefault = new CustomDoubleSpinbox(this);
+    q_spinDefault->setRange(-pow(10.0, 10), pow(10.0, 10));
+    q_spinDefault->setDecimals(16);
+    q_edtRemak = new LimitTextEdit(this);
+    q_edtRemak->setMaxLength(200);
+    q_edtRemak->setToolTip(QStringLiteral("最多200个字符！"));
+
+    int row = 0;
+    QGridLayout* gridLayout = new QGridLayout(basicGroup);
+    gridLayout->setContentsMargins(6, 3, 0, 3);
+    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
+    gridLayout->addWidget(q_edtName, row, 1);
+    gridLayout->addWidget(labelNameFlag, row, 2);
+    gridLayout->addWidget(new QLabel(QStringLiteral("标   识：")), ++row, 0);
+    gridLayout->addWidget(q_edtCode, row, 1);
+    if (uiType == wdNumeric) {
+        gridLayout->addWidget(new QLabel(QStringLiteral("值类型：")), ++row, 0);
+        q_boxNumericType = new QComboBox(this);
+        gridLayout->addWidget(q_boxNumericType, row, 1);
+    }
+    gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
+    gridLayout->addWidget(new QLabel(QStringLiteral("下   限：")), ++row, 0);
+    gridLayout->addWidget(q_spinMin, row, 1);
+    gridLayout->addWidget(q_checkLower, row, 2);
+    gridLayout->addWidget(new QLabel(QStringLiteral("上   限：")), ++row, 0);
+    gridLayout->addWidget(q_spinMax, row, 1);
+    gridLayout->addWidget(q_checkUpper, row, 2);
+    gridLayout->addWidget(new QLabel(QStringLiteral("偏   置：")), ++row, 0);
+    gridLayout->addWidget(q_spinOffset, row, 1);
+    gridLayout->addWidget(new QLabel(QStringLiteral("单   位：")), ++row, 0);
+    gridLayout->addWidget(q_edtUnit, row, 1);
+    gridLayout->addWidget(new QLabel(QStringLiteral("比例尺：")), ++row, 0);
+    gridLayout->addWidget(q_spinLSB, row, 1);
+    gridLayout->addWidget(new QLabel(QStringLiteral("默认值：")), ++row, 0);
+    gridLayout->addWidget(q_spinDefault, row, 1);
+    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
+    gridLayout->addWidget(q_edtRemak, row, 1, 2, 1);
+    gridLayout->setRowStretch(++row, 1);
+
+    //
+    q_table = new JXmlTable(this);
+    q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
+                        "EigenvalueComTable");
+    q_table->setContextMenuPolicy(Qt::ActionsContextMenu);
+    QList<QAction *> lstAction;
+    q_actionNew = new QAction(QStringLiteral("新增"), q_table);
+    q_table->addAction(q_actionNew);
+    q_actionNew->setObjectName("new");
+    lstAction << q_actionNew;
+    q_actionClear = new QAction(QStringLiteral("清空"), q_table);
+    q_table->addAction(q_actionClear);
+    q_actionClear->setObjectName("clear");
+    lstAction << q_actionClear;
+    q_table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    q_table->setSelectionMode(QAbstractItemView::MultiSelection);
+    q_table->verticalHeader()->setFixedWidth(40);
+    q_table->verticalHeader()->setDefaultAlignment(Qt::AlignCenter);
+    q_table->horizontalHeader()->setSectionsMovable(false);
+    QGroupBox *tableGroup = new QGroupBox(QStringLiteral("特征点信息"), this);
+    QVBoxLayout *veriLayoutTable = new QVBoxLayout(tableGroup);
+    veriLayoutTable->setContentsMargins(0, 0, 0, 0);
+    veriLayoutTable->setSpacing(1);
+    veriLayoutTable->addWidget(q_table);
+
+    JSplitter* splitter = new JSplitter(this);
+    splitter->setOrientation(Qt::Vertical);
+    splitter->setScales(QList<double>() << 1 << 2);
+    splitter->setHandleWidth(3);
+    splitter->addWidget(basicGroup);
+    splitter->addWidget(tableGroup);
+
+    layoutMain()->insertWidget(0, splitter);
+
+    // signal-slot
+    QListIterator<QAction *> it = lstAction;
+    while (it.hasNext()) {
+        QAction *act = it.next();
+        connect(act, &QAction::triggered, [=](){
+            dealAction(act);
+        });
+    }
+    connect(q_table, SIGNAL(itemPressed(QStandardItem *)),
+            this, SLOT(slotTableItemPressed(QStandardItem *)));
+    enableConnection(true);
+
+    // 记录原始颜色
+    q_color = q_edtName->palette().color(QPalette::Base);
+}
+
 // 确认
 void CommonUI::confirm()
 {
@@ -387,6 +420,13 @@ void CommonUI::init()
         q_edtCode->setPalette(palette);
         q_edtCode->setText(q_data->proCode().c_str());
         q_edtCode->clearFocus();
+    }
+    if (q_boxNumericType) {   // 数值类型
+        ICDNumericData::smtNumeric numeric = std::dynamic_pointer_cast<ICDNumericData>(q_data);
+        if (numeric) {
+            int index = q_boxNumericType->findData(numeric->numericType());
+            q_boxNumericType->setCurrentIndex((index < 0) ? 0 : index);
+        }
     }
     QStringList lstRange = QString(q_data->range().c_str()).split("~");
     if (q_spinMin) {    // 范围下限
@@ -447,6 +487,27 @@ void CommonUI::init()
     enableConnection(true);
 }
 
+void CommonUI::initBoxType()
+{
+    if (!q_boxNumericType) {
+        return;
+    }
+    // 清空原始数据
+    q_boxNumericType->clear();
+    // 查询数据
+    std::vector<stDictionary> names;
+    QVariantList args;
+    args.append(qVariantFromValue((void*)&names));
+    args.append(int(GlobalDefine::dicNumericType));
+    jnotify->send("edit.queryDictionaryTable", args);
+
+    const int count = names.size();
+    for (int i = 0; i < count; ++i) {
+        const stDictionary &dic = names.at(i);
+        q_boxNumericType->addItem(dic.sDec.c_str(), dic.nCode);
+    }
+}
+
 // 启/停用信号槽
 void CommonUI::enableConnection(bool enable)
 {
@@ -454,6 +515,10 @@ void CommonUI::enableConnection(bool enable)
                this, SLOT(slotTextChanged(const QString &)));
     disconnect(q_edtCode, SIGNAL(textChanged(const QString &)),
                this, SLOT(slotTextChanged(const QString &)));
+    if (q_boxNumericType) {
+        disconnect(q_boxNumericType, SIGNAL(currentTextChanged(const QString &)),
+                   this, SLOT(slotTextChanged(const QString &)));
+    }
     disconnect(q_spinMin, SIGNAL(valueChanged(const QString &)),
                this, SLOT(slotTextChanged(const QString &)));
     disconnect(q_checkLower, SIGNAL(toggled(bool)),
@@ -481,6 +546,10 @@ void CommonUI::enableConnection(bool enable)
                 this, SLOT(slotTextChanged(const QString &)));
         connect(q_edtCode, SIGNAL(textChanged(const QString &)),
                 this, SLOT(slotTextChanged(const QString &)));
+        if (q_boxNumericType) {
+            connect(q_boxNumericType, SIGNAL(currentTextChanged(const QString &)),
+                    this, SLOT(slotTextChanged(const QString &)));
+        }
         connect(q_spinMin, SIGNAL(valueChanged(const QString &)),
                 this, SLOT(slotTextChanged(const QString &)));
         connect(q_checkLower, SIGNAL(toggled(bool)),

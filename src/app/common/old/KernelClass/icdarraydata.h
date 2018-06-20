@@ -29,6 +29,8 @@ public:
 
     int typeSize() const;
 
+    std::string typeString() const override;
+
 private:
     ICDArrayDataPrivate *d;
 };

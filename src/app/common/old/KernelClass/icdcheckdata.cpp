@@ -99,7 +99,7 @@ int ICDCheckData::checkType() const
 std::string ICDCheckData::stringType() const
 {
     char szTmp[128] = {0};
-    sprintf_s(szTmp, sizeof(szTmp), "%d", checkType());
+    sprintf_s(szTmp, sizeof(szTmp), "%d", d->checkType);
 
     return std::string(szTmp);
 }
@@ -130,4 +130,19 @@ std::string ICDCheckData::checkRange() const
     sprintf_s(szTmp, sizeof(szTmp), "%d~%d", start(), end());
 
     return std::string(szTmp);
+}
+
+std::string ICDCheckData::typeString() const
+{
+    std::string sType;
+    switch (d->checkType) {
+    case GlobalDefine::ct8And:  sType = "sum8"; break;
+    case GlobalDefine::ct16And:  sType = "sum16"; break;
+    case GlobalDefine::ctCRC8:  sType = "crc8"; break;
+    case GlobalDefine::ctCRC16:  sType = "crc16"; break;
+    case GlobalDefine::ctXor8:  sType = "xor8"; break;
+    case GlobalDefine::ctXor16:  sType = "xor16"; break;
+    default: sType = "?"; break;
+    }
+    return ICDMetaData::typeString() + '#' + sType;
 }

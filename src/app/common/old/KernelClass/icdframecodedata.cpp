@@ -120,3 +120,16 @@ std::string ICDFrameCodeData::bindingStringSerial() const
 
     return d->q_data->stringSerial();
 }
+
+std::string ICDFrameCodeData::typeString() const
+{
+    std::string sType;
+    switch (d->frameType) {
+    case GlobalDefine::frame8:  sType = "u8"; break;
+    case GlobalDefine::frame16:  sType = "u16"; break;
+    case GlobalDefine::frame32:  sType = "u32"; break;
+    case GlobalDefine::frame64:  sType = "u64"; break;
+    default: sType = "?"; break;
+    }
+    return ICDMetaData::typeString() + '#' + sType;
+}

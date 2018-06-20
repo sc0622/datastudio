@@ -275,33 +275,33 @@ public:
 
     enum NumericType {
         NumericInvalid = -1,
-        NumericInt8,
-        NumericUint8,
-        NumericInt16,
-        NumericUint16,
-        NumericInt32,
-        NumericUint32,
-        NumericInt64,
-        NumericUint64,
-        NumericFloat64,
-        NumericFloat32,
+        NumericI8,
+        NumericU8,
+        NumericI16,
+        NumericU16,
+        NumericI32,
+        NumericU32,
+        NumericI64,
+        NumericU64,
+        NumericF64,
+        NumericF32,
         NumericTotal
     };
     Q_ENUM(NumericType)
 
     enum ArrayType {
-        InvalidArray = -1,
-        Int8Array,
-        UInt8Array,
-        Int16Array,
-        UInt16Array,
-        Int32Array,
-        UInt32Array,
-        Int64Array,
-        UInt64Array,
-        Float32Array,
-        Float64Array,
-        ArrayTypeTotal
+        ArrayInvalid = -1,
+        ArrayI8,
+        ArrayU8,
+        ArrayI16,
+        ArrayU16,
+        ArrayI32,
+        ArrayU32,
+        ArrayI64,
+        ArrayU64,
+        ArrayF32,
+        ArrayF64,
+        ArrayTotal
     };
     Q_ENUM(ArrayType)
 

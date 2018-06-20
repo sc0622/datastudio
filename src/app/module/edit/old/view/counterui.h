@@ -2,12 +2,12 @@
 #define COUNTERUI_H
 
 #include <QtWidgets>
-
 #include "metaui.h"
 #include "KernelClass/icdcounterdata.h"
 
 class LimitTextEdit;
 class LimitLineEdit;
+
 class CounterUI : public MetaUI
 {
     Q_OBJECT

@@ -35,7 +35,6 @@ ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     //q_treeView->setFilterModel(new JTreeSortFilterModel(q_treeView));
 
     verMainLayout->addWidget(q_treeView);
-
     //
     //JTreeSortFilterModel *filterModel = new JTreeSortFilterModel(this);
     //q_treeView->setFilterModel(filterModel);
@@ -1330,7 +1329,8 @@ QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent,
     SystemNode::systemVector subSystem = plane->allSystem();
     QStandardItem* result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
                                               QString::fromStdString(plane->name())
-                                              + "<font color=green size=2>[VEHICLE]</font>");
+                                              + QString("<font color=green size=2>[%1]</font>")
+                                              .arg(QString::fromStdString(plane->typeString()).toUpper()));
     result->setData(plane->id().c_str(), UserKey);
     if (subSystem.empty()) {
         result->setData(GlobalDefine::wholeState, ItemLoaded);
@@ -1395,7 +1395,8 @@ QStandardItem* ICDNavigationUi::formSystemNode(QStandardItem *parent,
     const int count = icdTable.size();
     QStandardItem* result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-system.png"),
                                               QString::fromStdString(system->name())
-                                              + "<font color=green size=2>[SYSTEM]</font>");
+                                              + QString("<font color=green size=2>[%1]</font>")
+                                              .arg(QString::fromStdString(system->typeString()).toUpper()));
     result->setData(system->numeralId(), UserKey);
     if (0 == count) {
         result->setData(GlobalDefine::wholeState, ItemLoaded);
@@ -1466,7 +1467,8 @@ QStandardItem* ICDNavigationUi::formTableNode(QStandardItem *parent,
     }
     QStandardItem* result = new QStandardItem(QIcon(":/datastudio/image/global/circle-gray.png"),
                                               QString::fromStdString(table->icdBase().sDescribe)
-                                              + "<font color=green size=2>[TABLE]</font>");
+                                              + QString("<font color=green size=2>[%1]</font>")
+                                              .arg(QString::fromStdString(table->typeString()).toUpper()));
     result->setToolTip(result->text());
     result->setData(table->key().c_str(), UserKey);
     result->setData(GlobalDefine::noneState, ItemLoaded);
@@ -1527,9 +1529,11 @@ QStandardItem* ICDNavigationUi::formSubTableNode(QStandardItem *parent,
     stICDBase base = table->icdBase();
     QStandardItem *result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
                                               QString("<font color=darkgreen size=2>[%1:%2]</font>"
-                                                      "%3<font color=darkgreen size=2>[TABLE]</font>")
-                                              .arg(index, 4, 10, QChar('0')).arg(offset, 4, 10, QChar('0'))
-                                              .arg(table->name().c_str()));
+                                                      "%3<font color=darkgreen size=2>[%4]</font>")
+                                              .arg(index, 4, 10, QChar('0'))
+                                              .arg(offset, 4, 10, QChar('0'))
+                                              .arg(table->name().c_str())
+                                              .arg(QString::fromStdString(table->typeString()).toUpper()));
     result->setData(GlobalDefine::ntRule, LevelIndex);
     result->setData(GlobalDefine::dtComplex, RuleDefine);
     result->setData(base.sName.c_str(), SubTable);
@@ -1580,8 +1584,7 @@ void ICDNavigationUi::reorderSubTableNode(const ICDMetaData::smtMeta &meta,
 }
 
 // 构造规则节点
-QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent,
-                                             const ICDMetaData::smtMeta& meta,
+QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent, const ICDMetaData::smtMeta& meta,
                                              int offset)
 {
     if (NULL == meta) {
@@ -2144,8 +2147,7 @@ TableNode::smtTable ICDNavigationUi::subRuleNodeMap(QStandardItem* item,
 }
 
 // 单条规则数据
-ICDMetaData::smtMeta ICDNavigationUi::ruleNodeData(QStandardItem *item,
-                                                   PlaneNode::smtPlane plane)
+ICDMetaData::smtMeta ICDNavigationUi::ruleNodeData(QStandardItem *item, PlaneNode::smtPlane plane)
 {
     ICDMetaData::smtMeta result;
     if (!item || !plane) {
@@ -2159,8 +2161,7 @@ ICDMetaData::smtMeta ICDNavigationUi::ruleNodeData(QStandardItem *item,
         SystemNode::smtSystem system = plane->system(sysCode.toInt());
         if (system) {
             QString tableCode = keyLst.takeFirst();
-            TableNode::smtTable table
-                    = system->table(tableCode.toStdString());
+            TableNode::smtTable table = system->table(tableCode.toStdString());
             if (table) {
                 QString lastKey = keyLst.takeLast();
                 int serial = lastKey.toInt();
@@ -2176,13 +2177,12 @@ ICDMetaData::smtMeta ICDNavigationUi::ruleNodeData(QStandardItem *item,
             }
         }
     }
+
     return result;
 }
 
 // 查询节点
-QStandardItem *ICDNavigationUi::findItem(int role,
-                                         const QVariant& value,
-                                         QStandardItem* parent,
+QStandardItem *ICDNavigationUi::findItem(int role, const QVariant& value, QStandardItem* parent,
                                          bool direct) const
 {
     if (!q_treeView) {
@@ -2520,8 +2520,8 @@ bool ICDNavigationUi::updatePalneData(stPlane &data)
         if (item) { // 更新节点
             item->setText(QString(data.sName.c_str()) + nameSuffix);
         } else { // 插入节点
-            item = new QStandardItem();
-            item->setText(QString(data.sName.c_str()) + nameSuffix);
+            item = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
+                                     QString(data.sName.c_str()) + nameSuffix);
             item->setData(data.nCode, UserKey);
             item->setData(GlobalDefine::noneState, ItemLoaded);
             item->setData(GlobalDefine::ntPlane, LevelIndex);
@@ -2561,8 +2561,8 @@ bool ICDNavigationUi::updateSystemData(stSystem &data)
         if (item) { // 更新节点
             item->setText(QString(data.sName.c_str()) + nameSuffix);
         } else { // 插入节点
-            item = new QStandardItem();
-            item->setText(QString(data.sName.c_str()) + nameSuffix);
+            item = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-system.png"),
+                                     QString(data.sName.c_str()) + nameSuffix);
             item->setData(data.nCode, UserKey);
             item->setData(GlobalDefine::noneState, ItemLoaded);
             item->setData(GlobalDefine::ntSystem, LevelIndex);
@@ -2609,8 +2609,8 @@ bool ICDNavigationUi::updateICDData(stICDBase &data)
         if (item) { // 更新节点
             item->setText(QString(data.sDescribe.c_str()) + nameSuffix);
         } else { // 插入节点
-            item = new QStandardItem();
-            item->setText(QString(data.sDescribe.c_str()) + nameSuffix);
+            item = new QStandardItem(QIcon(":/icdwidget/image/tree/circle-green.png"),
+                                     QString(data.sDescribe.c_str()) + nameSuffix);
             item->setData(data.sName.c_str(), UserKey);
             item->setData(GlobalDefine::wholeState, ItemLoaded);
             item->setData(GlobalDefine::ntTable, LevelIndex);
@@ -2876,19 +2876,18 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
     args.append(planeID);
     jnotify->send("edit.querySinglePlane", args);
 
-    ICDComplexData::smtComplex complex
-            = SMT_CONVERT(ICDComplexData, ruleNodeData(current, plane));
+    ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, ruleNodeData(current, plane));
     if (!complex) {
         return result;
     }
-    ICDComplexData::smtComplex smtData
-            = SMT_CONVERT(ICDComplexData, complex->clone());
-    TableNode::smtTable table;
+    ICDComplexData::smtComplex smtData = SMT_CONVERT(ICDComplexData, complex->clone());
+    TableNode::smtTable table = smtData->table(data.sName);
     data.nLength = complex->length();
-    if (table = smtData->table(data.sName)) {
+    if (table) {
         table->setICDBase(data);
     } else {
-        smtData->addTable(TableNode::smtTable(new TableNode(data)));
+        table = TableNode::smtTable(new TableNode(data));
+        smtData->addTable(table);
     }
     keys = keys.left(keys.lastIndexOf("/"));
     //keys.append("/").append(value.sName.c_str());
@@ -2908,8 +2907,13 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
         if (item) { // 更新节点
             item->setText(data.sDescribe.c_str());
         } else { // 插入节点
-            item = new QStandardItem();
-            item->setText(QString(data.sDescribe.c_str()));
+            item = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
+                                     QString("<font color=darkgreen size=2>[%1:%2]</font>"
+                                             "%3<font color=darkgreen size=2>[%4]</font>")
+                                     .arg(current->rowCount(), 4, 10, QChar('0'))
+                                     .arg(complex->index(), 4, 10, QChar('0'))
+                                     .arg(data.sDescribe.c_str())
+                                     .arg(QString::fromStdString(table->typeString()).toUpper()));
             item->setData(data.sName.c_str(), UserKey);
             item->setData(GlobalDefine::ntRule, LevelIndex);
             item->setData(GlobalDefine::dtComplex, RuleDefine);
@@ -2919,79 +2923,6 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
         }
         // 更新数据状态标识
         updateDataState(item, StateChanged);
-    }
-
-    return result;
-}
-
-// 将数据类型转换成对应的英文字符串
-QString ICDNavigationUi::stringDataType(int type) const
-{
-    QString result;
-    switch (type) {
-    case GlobalDefine::dtHead:      // 包头
-        result = "HEAD";
-        break;
-    case GlobalDefine::dtCounter:   // 帧计数
-        result = "COUNTER";
-        break;
-    case GlobalDefine::dtCheck:    // 校验
-        result = "CHECK";
-        break;
-    case GlobalDefine::dtFrameCode: // 帧识别码
-        result = "FRAMECODE";
-        break;
-    case GlobalDefine::dtU8:        // 无符号8位
-        result = "U8";
-        break;
-    case GlobalDefine::dt8:         // 有符号8位
-        result = "I8";
-        break;
-    case GlobalDefine::dtU16:       // 无符号16位
-        result = "U16";
-        break;
-    case GlobalDefine::dt16:        // 有符号16位
-        result = "I16";
-        break;
-    case GlobalDefine::dtU32:       // 无符号32位
-        result = "U32";
-        break;
-    case GlobalDefine::dt32:        // 有符号32位
-        result = "I32";
-        break;
-    case GlobalDefine::dtU64:       // 无符号64位
-        result = "U64";
-        break;
-    case GlobalDefine::dt64:        // 有符号64位
-        result = "I64";
-        break;
-    case GlobalDefine::dtF32:       // 32位浮点数
-        result = "F32";
-        break;
-    case GlobalDefine::dtF64:       // 64位浮点数
-        result = "F64";
-        break;
-    case GlobalDefine::dtArray:     // 64位浮点数
-        result = "ARRAY";
-        break;
-    case GlobalDefine::dtBitMap:    // 比特映射
-        result = "BITMAP";
-        break;
-    case GlobalDefine::dtBitValue:  // 比特值
-        result = "BITVALUE";
-        break;
-    case GlobalDefine::dtComplex:   // 复合数据
-        result = "COMPLEX";
-        break;
-    case GlobalDefine::dtDiscern:   // 帧数据
-        result = "FRAME";
-        break;
-    case GlobalDefine::dtBuffer:    // 数据预留区
-        result = "BUFFER";
-        break;
-    default:
-        result = "INVALID";
-        break;
     }
 
     return result;
@@ -3021,6 +2952,8 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
             break;
         }
 
+        const QString typeString = QString::fromStdString(meta->typeString()).toUpper();
+
         if (meta->metaType() == IcdDefine::icdBit) {
             ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, meta);
             if (!bit) {
@@ -3033,14 +2966,14 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
                         .arg(offset + meta->index(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(bit->start(), 2, 10, QChar('0'))
-                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+                        .arg(meta->name().c_str()).arg(typeString);
             } else {
                 result = QString("<font color=darkgreen size=2>[%1:%2(%3)]</font>"
                                  "%4<font color=darkgreen size=2>[%5]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(bit->start(), 2, 10, QChar('0'))
-                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+                        .arg(meta->name().c_str()).arg(typeString);
             }
         } else {
             if (offset >= 0) {
@@ -3049,13 +2982,13 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(offset + meta->index(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
-                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+                        .arg(meta->name().c_str()).arg(typeString);
             } else {
                 result = QString("<font color=darkgreen size=2>[%1:%2]</font>"
                                  "%3<font color=darkgreen size=2>[%4]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
-                        .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
+                        .arg(meta->name().c_str()).arg(typeString);
             }
         }
         break;

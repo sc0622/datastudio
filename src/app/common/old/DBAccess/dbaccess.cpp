@@ -424,35 +424,8 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         stDic.nCode = GlobalDefine::dtFrameCode;
         stDic.sDec = QStringLiteral("帧识别码").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dtU8;
-        stDic.sDec = QStringLiteral("无符号8位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dt8;
-        stDic.sDec = QStringLiteral("有符号8位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dtU16;
-        stDic.sDec = QStringLiteral("无符号16位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dt16;
-        stDic.sDec = QStringLiteral("有符号16位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dtU32;
-        stDic.sDec = QStringLiteral("无符号32位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dt32;
-        stDic.sDec = QStringLiteral("有符号32位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dtU64;
-        stDic.sDec = QStringLiteral("无符号64位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dt64;
-        stDic.sDec = QStringLiteral("有符号64位").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dtF32;
-        stDic.sDec = QStringLiteral("32位浮点数").toStdString();
-        table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dtF64;
-        stDic.sDec = QStringLiteral("64位浮点数").toStdString();
+        stDic.nCode = GlobalDefine::dtNumeric;
+        stDic.sDec = QStringLiteral("数值").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtArray;
         stDic.sDec = QStringLiteral("数组").toStdString();
@@ -475,36 +448,72 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         dic[tableName(DataBaseDefine::dbDataType)] = table;
         table.clear();
     }
-    // 数组类型
+    // 数值类型
     {
-        stDic.nCode = GlobalDefine::Int8Array;
+        stDic.nCode = GlobalDefine::NumericI8;
         stDic.sDec = QStringLiteral("8位有符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::UInt8Array;
+        stDic.nCode = GlobalDefine::NumericU8;
         stDic.sDec = QStringLiteral("8位无符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::Int16Array;
+        stDic.nCode = GlobalDefine::NumericI16;
         stDic.sDec = QStringLiteral("16位有符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::UInt16Array;
+        stDic.nCode = GlobalDefine::NumericU16;
         stDic.sDec = QStringLiteral("16位无符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::Int32Array;
+        stDic.nCode = GlobalDefine::NumericI32;
         stDic.sDec = QStringLiteral("32位有符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::UInt32Array;
+        stDic.nCode = GlobalDefine::NumericU32;
         stDic.sDec = QStringLiteral("32位无符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::Int64Array;
+        stDic.nCode = GlobalDefine::NumericI64;
         stDic.sDec = QStringLiteral("64位有符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::UInt64Array;
+        stDic.nCode = GlobalDefine::NumericU64;
         stDic.sDec = QStringLiteral("64位无符号").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::Float32Array;
+        stDic.nCode = GlobalDefine::NumericF32;
         stDic.sDec = QStringLiteral("32位浮点数").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::Float64Array;
+        stDic.nCode = GlobalDefine::NumericF64;
+        stDic.sDec = QStringLiteral("64位浮点数").toStdString();
+        table.push_back(stDic);
+
+        dic[tableName(DataBaseDefine::dbNumericType)] = table;
+        table.clear();
+    }
+    // 数组类型
+    {
+        stDic.nCode = GlobalDefine::ArrayI8;
+        stDic.sDec = QStringLiteral("8位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayU8;
+        stDic.sDec = QStringLiteral("8位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayI16;
+        stDic.sDec = QStringLiteral("16位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayU16;
+        stDic.sDec = QStringLiteral("16位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayI32;
+        stDic.sDec = QStringLiteral("32位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayU32;
+        stDic.sDec = QStringLiteral("32位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayI64;
+        stDic.sDec = QStringLiteral("64位有符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayU64;
+        stDic.sDec = QStringLiteral("64位无符号").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayF32;
+        stDic.sDec = QStringLiteral("32位浮点数").toStdString();
+        table.push_back(stDic);
+        stDic.nCode = GlobalDefine::ArrayF64;
         stDic.sDec = QStringLiteral("64位浮点数").toStdString();
         table.push_back(stDic);
 
@@ -644,23 +653,25 @@ bool DBAccess::savePlanes(const DMSpace::_vectorPS &infrastructure,
         for (int i = 0; i < count; ++i) {
             const stTableRules &tableRule = rules[i];
             rulCmd.append(QString("('%1','%2','%3','%4','%5','%6',"
-                                  "'%7','%8','%9','%10','%11','%12'),")
+                                  "'%7','%8','%9','%10','%11','%12','%13'),")
                           .arg(tableRule.nCode).arg(tableRule.nSerial)
                           .arg(tableRule.sName.c_str())
-                          .arg(tableRule.sPrgCode.c_str()).arg(tableRule.uType)
+                          .arg(tableRule.sPrgCode.c_str())
+                          .arg(tableRule.uType)
                           .arg(tableRule.sDefault.c_str())
                           .arg(tableRule.sRange.c_str())
                           .arg(tableRule.dOffset, 0, 'g', 16)
                           .arg(tableRule.sUnit.c_str())
                           .arg(tableRule.dScale, 0, 'g', 16)
                           .arg(tableRule.sRule.c_str())
-                          .arg(tableRule.sRemark.c_str()));
+                          .arg(tableRule.sRemark.c_str())
+                          .arg(tableRule.subType));
         }
         if (!rulCmd.isEmpty()) {
             rulCmd.chop(QString(",").size());
             rulCmd = QString("delete from %1;insert into %1 (number,serial"
                              ",name,code,type,defaultValue,range,offset,"
-                             "unit,scale,regulation,remark) values %2;")
+                             "unit,scale,regulation,remark,subType) values %2;")
                     .arg(base.sName.c_str()).arg(rulCmd);
             cdtRule.append(rulCmd);
         }
@@ -923,22 +934,24 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
         for (int i = 0; i < count; ++i) {
             const stTableRules &tableRule = tableRules[i];
             rulCmd.append(QString("('%1','%2','%3','%4','%5','%6','%7',"
-                                  "'%8','%9','%10','%11','%12'),").arg(tableRule.nCode)
+                                  "'%8','%9','%10','%11','%12','%13'),").arg(tableRule.nCode)
                           .arg(tableRule.nSerial).arg(tableRule.sName.c_str())
-                          .arg(tableRule.sPrgCode.c_str()).arg(tableRule.uType)
+                          .arg(tableRule.sPrgCode.c_str())
+                          .arg(tableRule.uType)
                           .arg(tableRule.sDefault.c_str())
                           .arg(tableRule.sRange.c_str())
                           .arg(tableRule.dOffset, 0, 'g', 16)
                           .arg(tableRule.sUnit.c_str())
                           .arg(tableRule.dScale, 0, 'g', 16)
                           .arg(tableRule.sRule.c_str())
-                          .arg(tableRule.sRemark.c_str()));
+                          .arg(tableRule.sRemark.c_str())
+                          .arg(tableRule.subType));
         }
         if (!rulCmd.isEmpty()) {
             rulCmd.chop(QString(",").size());
             rulCmd = QString("insert into %1 (number,serial,name,"
                              "code,type,defaultValue,range,offset,unit,"
-                             "scale,regulation,remark) values %2;")
+                             "scale,regulation,remark,subType) values %2;")
                     .arg(icdBase.sName.c_str()).arg(rulCmd);
         }
         rulCmd.prepend(QString("delete from %1;")
@@ -1688,6 +1701,7 @@ bool DBAccess::readTableRules(const std::string &table, DMSpace::srMap &rules)
         rule.dScale = query.value(index++).toDouble();
         rule.sRule = query.value(index++).toString().toStdString();
         rule.sRemark = query.value(index++).toString().toStdString();
+        rule.subType = (unsigned short)query.value(index++).toInt();
 
         rules[rule.nSerial] = rule;
         index = 0;
@@ -1747,6 +1761,7 @@ bool DBAccess::readTableRules(const std::vector<std::string> &tables,
         rule.dScale = query.value(index++).toDouble();
         rule.sRule = query.value(index++).toString().toStdString();
         rule.sRemark = query.value(index++).toString().toStdString();
+        rule.subType = (unsigned short)query.value(index++).toInt();
 
         if (preName != name) {
             if (!preName.empty()) {
@@ -1785,22 +1800,24 @@ bool DBAccess::saveTableRules(const stICDBase &icdBase,
     for (; it != rules.end(); ++it) {
         const stTableRules& tableRule(it->second);
         cdtRule.append(QString("('%1','%2','%3','%4','%5','%6','%7',"
-                               "'%8','%9','%10','%11','%12'),").arg(tableRule.nCode)
+                               "'%8','%9','%10','%11','%12','%13'),").arg(tableRule.nCode)
                        .arg(tableRule.nSerial).arg(tableRule.sName.c_str())
-                       .arg(tableRule.sPrgCode.c_str()).arg(tableRule.uType)
+                       .arg(tableRule.sPrgCode.c_str())
+                       .arg(tableRule.uType)
                        .arg(tableRule.sDefault.c_str())
                        .arg(tableRule.sRange.c_str())
                        .arg(tableRule.dOffset, 0, 'g', 16)
                        .arg(tableRule.sUnit.c_str())
                        .arg(tableRule.dScale, 0, 'g', 16)
                        .arg(tableRule.sRule.c_str())
-                       .arg(tableRule.sRemark.c_str()));
+                       .arg(tableRule.sRemark.c_str())
+                       .arg(tableRule.subType));
     }
     if (!cdtRule.isEmpty()) {
         cdtRule.chop(QString(",").size());
         cdtRule = QString("insert into %1 (number,serial,name,code"
                           ",type,defaultValue,range,offset,unit,scale,"
-                          "regulation,remark) values %2;")
+                          "regulation,remark,subType) values %2;")
                 .arg(icdBase.sName.c_str()).arg(cdtRule);
     }
     cdtRule.prepend(QString("delete from %1;").arg(icdBase.sName.c_str()));
@@ -1836,11 +1853,11 @@ bool DBAccess::saveTableRules(const stICDBase &icdBase,
                    "=b.tableName) when matched then update set"
                    " a.ptName=b.ptName,a.id=b.id,a.code=b.code,"
                    "a.length=b.length,a.bGroup=b.bGroup,"
-                   "a.describe=b.describe,a.remark=b.remark"
+                   "a.describe=b.describe,a.remark=b.remark,a.subType=b.subType"
                    " when not matched then insert(tableName,"
                    "ptName,id,code,length,bGroup,describe,remark)"
                    " values(b.tableName,b.ptName,b.id,b.code,"
-                   "b.length,b.bGroup,b.describe,b.remark)"
+                   "b.length,b.bGroup,b.describe,b.remark,b.subType)"
                    "output $action,inserted.*,deleted.*;")
             .arg(d->q_icd.c_str()).arg(cdtICD);
 
@@ -1882,11 +1899,11 @@ bool DBAccess::saveTableRules(const stICDBase &icdBase,
                        "=b.tableName) when matched then update set"
                        " a.ptName=b.ptName,a.id=b.id,a.code=b.code,"
                        "a.length=b.length,a.bGroup=b.bGroup,"
-                       "a.describe=b.describe,a.remark=b.remark"
+                       "a.describe=b.describe,a.remark=b.remark,a.subType=b.subType"
                        " when not matched then insert(tableName,"
                        "ptName,id,code,length,bGroup,describe,remark)"
                        " values(b.tableName,b.ptName,b.id,b.code,"
-                       "b.length,b.bGroup,b.describe,b.remark)"
+                       "b.length,b.bGroup,b.describe,b.remark,b.subType)"
                        "output $action,inserted.*,deleted.*;")
                 .arg(d->q_icd.c_str()).arg(cdtSubTable);
     }
@@ -1957,23 +1974,25 @@ bool DBAccess::saveTableRules(const std::vector<std::pair<stICDBase, DMSpace::sr
         for (; it != mapRules.end(); ++it) {
             const stTableRules& tableRule(it->second);
             rulCmd.append(QString("('%1','%2','%3','%4','%5','%6','%7',"
-                                  "'%8','%9','%10','%11','%12'),")
+                                  "'%8','%9','%10','%11','%12','%13'),")
                           .arg(tableRule.nCode).arg(tableRule.nSerial)
                           .arg(tableRule.sName.c_str())
-                          .arg(tableRule.sPrgCode.c_str()).arg(tableRule.uType)
+                          .arg(tableRule.sPrgCode.c_str())
+                          .arg(tableRule.uType)
                           .arg(tableRule.sDefault.c_str())
                           .arg(tableRule.sRange.c_str())
                           .arg(tableRule.dOffset, 0, 'g', 16)
                           .arg(tableRule.sUnit.c_str())
                           .arg(tableRule.dScale, 0, 'g', 16)
                           .arg(tableRule.sRule.c_str())
-                          .arg(tableRule.sRemark.c_str()));
+                          .arg(tableRule.sRemark.c_str())
+                          .arg(tableRule.subType));
         }
         if (!rulCmd.isEmpty()) {
             rulCmd.chop(QString(",").size());
             rulCmd = QString("insert into %1 (number,serial,name,"
                              "code,type,defaultValue,range,offset,unit,"
-                             "scale,regulation,remark) values %2;")
+                             "scale,regulation,remark,subType) values %2;")
                     .arg(icdBase.sName.c_str()).arg(rulCmd);
             cdtRule.append(rulCmd);
         }
@@ -2037,11 +2056,11 @@ bool DBAccess::saveTableRules(const std::vector<std::pair<stICDBase, DMSpace::sr
     sql.append(QString("merge %1 a using (%2) b on (a.tableName=b.tableName)"
                        " when matched then update set a.ptName=b.ptName,a.id"
                        "=b.id,a.code=b.code,a.length=b.length,a.bGroup"
-                       "=b.bGroup,a.describe=b.describe,a.remark=b.remark when"
+                       "=b.bGroup,a.describe=b.describe,a.remark=b.remark,a.subType=b.subType when"
                        " not matched then insert(tableName,ptName,id,code,"
                        "length,bGroup,describe,remark) values(b.tableName,"
                        "b.ptName,b.id,b.code,b.length,b.bGroup,b.describe,"
-                       "b.remark) output $action,inserted.*,deleted.*;")
+                       "b.remarkb.subType) output $action,inserted.*,deleted.*;")
                .arg(d->q_icd.c_str()).arg(cdtICD));
     if (!query.exec(sql)) {
         d->q_error = query.lastError().text();
@@ -2098,7 +2117,7 @@ bool DBAccess::deleteTableRules(const std::string &table,
         cdtRule
                 += QString("select '%1' number,'%2' serial,'%3' name,"
                            "'%4' code,'%5' type,'%6' defaultValue,'%7' range,'%8' offset,"
-                           "'%9' unit,'%10' scale,'%11' regulation,'%12' remark union ")
+                           "'%9' unit,'%10' scale,'%11' regulation,'%12' remark,'%13' subType union ")
                 .arg(tableRule.nCode).arg(tableRule.nSerial)
                 .arg(tableRule.sName.c_str()).arg(tableRule.sPrgCode.c_str())
                 .arg(tableRule.uType).arg(tableRule.sDefault.c_str())
@@ -2106,7 +2125,8 @@ bool DBAccess::deleteTableRules(const std::string &table,
                 .arg(tableRule.dOffset, 0, 'g', 16)
                 .arg(tableRule.sUnit.c_str())
                 .arg(tableRule.dScale, 0, 'g', 16)
-                .arg(tableRule.sRule.c_str()).arg(tableRule.sRemark.c_str());
+                .arg(tableRule.sRule.c_str()).arg(tableRule.sRemark.c_str())
+                .arg(tableRule.subType);
     }
     cdtRule.chop(QString(" union ").size());
     QString sql;
@@ -2117,13 +2137,13 @@ bool DBAccess::deleteTableRules(const std::string &table,
                       "a.name=b.name,a.code=b.code,a.type=b.type,"
                       "a.defaultValue=b.defaultValue,a.range=b.range,"
                       "a.offset=b.offset,a.unit=b.unit,a.scale=b.scale,"
-                      "a.regulation=b.regulation,a.remark=b.remark when"
+                      "a.regulation=b.regulation,a.remark=b.remark,a.subType=b.subType when"
                       " not matched then insert(number,serial,name"
                       ",code,type,defaultValue,range,offset,unit,scale,"
                       "regulation,remark) values(b.number,b.serial,"
                       "b.name,b.code,b.type,b.defaultValue,"
                       "b.range,b.offset,b.unit,b.scale,b.regulation,"
-                      "b.remark) output $action,inserted.*,deleted.*;")
+                      "b.remark,b.subType) output $action,inserted.*,deleted.*;")
                 .arg(table.c_str()).arg(cdtRule);
         // 清空本次存储的最大序号之后的数据
         sql.append(QString("delete from %1 where serial > %2;")
@@ -2176,25 +2196,26 @@ bool DBAccess::saveRule(const std::string &table, const stTableRules &rule)
     QString condition
             = QString("select '%1' number,'%2' serial,'%3' name,'%4' code,"
                       "'%5' type,'%6' defaultValue,'%7' range,'%8' offset,'%9' unit,"
-                      "'%10' scale,'%11' regulation,'%12' remark")
+                      "'%10' scale,'%11' regulation,'%12' remark,'%13' subType")
             .arg(rule.nCode).arg(rule.nSerial)
             .arg(rule.sName.c_str()).arg(rule.sPrgCode.c_str())
             .arg(rule.uType).arg(rule.sDefault.c_str())
             .arg(rule.sRange.c_str()).arg(rule.dOffset, 0, 'g', 16)
             .arg(rule.sUnit.c_str()).arg(rule.dScale, 0, 'g', 16)
-            .arg(rule.sRule.c_str()).arg(rule.sRemark.c_str());
+            .arg(rule.sRule.c_str()).arg(rule.sRemark.c_str())
+            .arg(rule.subType);
 
     QString sql = QString("merge %1 a using (%2) b on (a.serial=b.serial)"
                           "when matched then update set a.number=b.number,"
                           "a.name=b.name,a.code=b.code,a.type=b.type,"
                           "a.defaultValue=b.defaultValue,a.range=b.range,"
                           "a.offset=b.offset,a.unit=b.unit,a.scale=b.scale,"
-                          "a.regulation=b.regulation,a.remark=b.remark when not"
+                          "a.regulation=b.regulation,a.remark=b.remark,a.subType=b.subType when not"
                           " matched then insert(number,serial,name,code,type,"
                           "defaultValue,range,offset,unit,scale,regulation,"
                           "remark) values(b.number,b.serial,b.name,b.code,"
                           "b.type,b.defaultValue,b.range,b.offset,b.unit,"
-                          "b.scale,b.regulation,b.remark) output $action,"
+                          "b.scale,b.regulation,b.remark,b.subType) output $action,"
                           "inserted.*,deleted.*;")
             .arg(table.c_str()).arg(condition);
 
@@ -2238,24 +2259,25 @@ bool DBAccess::saveRule(const std::string &table,
     QString condition
             = QString("select '%1' number,'%2' serial,'%3' name,'%4' code,"
                       "'%5' type,'%6' defaultValue,'%7' range,'%8' offset,'%9' unit,"
-                      "'%10' scale,'%11' regulation,'%12' remark")
+                      "'%10' scale,'%11' regulation,'%12' remark, '%13' subType")
             .arg(rule.nCode).arg(rule.nSerial)
             .arg(rule.sName.c_str()).arg(rule.sPrgCode.c_str())
             .arg(rule.uType).arg(rule.sDefault.c_str())
             .arg(rule.sRange.c_str()).arg(rule.dOffset, 0, 'g', 16)
             .arg(rule.sUnit.c_str()).arg(rule.dScale, 0, 'g', 16)
-            .arg(rule.sRule.c_str()).arg(rule.sRemark.c_str());
+            .arg(rule.sRule.c_str()).arg(rule.sRemark.c_str())
+            .arg(rule.subType);
 
     QString sql = QString("merge %1 a using (%2) b on (a.serial=b.serial)"
                           "when matched then update set a.number=b.number,a.name"
                           "=b.name,a.code=b.code,a.type=b.type,a.defaultValue"
                           "=b.defaultValue,a.range=b.range,a.offset=b.offset,"
                           "a.unit=b.unit,a.scale=b.scale,a.regulation=b.regulation,"
-                          "a.remark=b.remark when not matched then insert(number,"
-                          "serial,name,code,type,defaultValue,range,offset,unit,"
+                          "a.remark=b.remark,a.subType=b.subType when not matched "
+                          "then insert(number,serial,name,code,type,defaultValue,range,offset,unit,"
                           "scale,regulation,remark) values(b.number,b.serial,"
                           "b.name,b.code,b.type,b.defaultValue,b.range,b.offset,"
-                          "b.unit,b.scale,b.regulation,b.remark) output $action,"
+                          "b.unit,b.scale,b.regulation,b.remark,b.subType) output $action,"
                           "inserted.*,deleted.*;")
             .arg(table.c_str()).arg(condition);
 
@@ -2459,6 +2481,7 @@ std::string DBAccess::createICDTableCmd(const std::string &table)
                           "scale double precision null,"
                           "regulation varchar(%2) null,"
                           "remark varchar(200) null,"
+                          "subType smallint null,"
                           "constraint PK_%3 primary key (serial)\r\n"
                           ");").arg(name)
             .arg(max(2000, d->q_tableLimitation * 42))

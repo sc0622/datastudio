@@ -11,7 +11,7 @@ class ArrayItemData
     friend class ArrayItem;
 public:
     ArrayItemData()
-        : arrayType(Int8Array)
+        : arrayType(ArrayI8)
         , count(0)
     {
 
@@ -69,16 +69,16 @@ std::string ArrayItem::arrayTypeString() const
 std::string ArrayItem::arrayTypeString(ArrayType type)
 {
     switch (type) {
-    case Int8Array: return "i8a";
-    case UInt8Array: return "u8a";
-    case Int16Array: return "i16a";
-    case UInt16Array: return "u16a";
-    case Int32Array: return "i32a";
-    case UInt32Array: return "u32a";
-    case Int64Array: return "i64a";
-    case UInt64Array: return "u64a";
-    case Float32Array: return "f32a";
-    case Float64Array: return "f64a";
+    case ArrayI8: return "i8a";
+    case ArrayU8: return "u8a";
+    case ArrayI16: return "i16a";
+    case ArrayU16: return "u16a";
+    case ArrayI32: return "i32a";
+    case ArrayU32: return "u32a";
+    case ArrayI64: return "i64a";
+    case ArrayU64: return "u64a";
+    case ArrayF32: return "f32a";
+    case ArrayF64: return "f64a";
     default: return "?";
     }
 }
@@ -86,22 +86,22 @@ std::string ArrayItem::arrayTypeString(ArrayType type)
 ArrayType ArrayItem::stringArrayType(const std::string &str)
 {
     typedef std::unordered_map<std::string, int> map_strtype;
-    static const map_strtype::value_type map_data[ArrayTypeTotal] = {
-        map_strtype::value_type("i8a", Int8Array),
-        map_strtype::value_type("u8a", UInt8Array),
-        map_strtype::value_type("i16a", Int16Array),
-        map_strtype::value_type("u16a", UInt16Array),
-        map_strtype::value_type("i32a", Int32Array),
-        map_strtype::value_type("u32a", UInt32Array),
-        map_strtype::value_type("i64a", Int64Array),
-        map_strtype::value_type("u64a", UInt64Array),
-        map_strtype::value_type("f32a", Float32Array),
-        map_strtype::value_type("f64a", Float64Array),
+    static const map_strtype::value_type map_data[ArrayTotal] = {
+        map_strtype::value_type("i8a", ArrayI8),
+        map_strtype::value_type("u8a", ArrayU8),
+        map_strtype::value_type("i16a", ArrayI16),
+        map_strtype::value_type("u16a", ArrayU16),
+        map_strtype::value_type("i32a", ArrayI32),
+        map_strtype::value_type("u32a", ArrayU32),
+        map_strtype::value_type("i64a", ArrayI64),
+        map_strtype::value_type("u64a", ArrayU64),
+        map_strtype::value_type("f32a", ArrayF32),
+        map_strtype::value_type("f64a", ArrayF64),
     };
-    static const map_strtype _map(map_data, map_data + ArrayTypeTotal);
+    static const map_strtype _map(map_data, map_data + ArrayTotal);
     map_strtype::const_iterator citer = _map.find(str);
     if (citer == _map.cend()) {
-        return InvalidArray;
+        return ArrayInvalid;
     } else {
         return ArrayType(citer->second);
     }
@@ -140,16 +140,16 @@ std::string ArrayItem::typeString() const
 int ArrayItem::typeSize() const
 {
     switch (d->arrayType) {
-    case Int8Array:
-    case UInt8Array: return 1;
-    case Int16Array:
-    case UInt16Array: return 2;
-    case Int32Array:
-    case UInt32Array: return 4;
-    case Int64Array:
-    case UInt64Array: return 8;
-    case Float32Array: return 4;
-    case Float64Array: return 8;
+    case ArrayI8:
+    case ArrayU8: return 1;
+    case ArrayI16:
+    case ArrayU16: return 2;
+    case ArrayI32:
+    case ArrayU32: return 4;
+    case ArrayI64:
+    case ArrayU64: return 8;
+    case ArrayF32: return 4;
+    case ArrayF64: return 8;
     default:
         break;
     }
@@ -235,7 +235,7 @@ bool ArrayItem::restore(const Json::Value &json, int deep)
     }
     // arrayType
     ArrayType arrayType = stringArrayType(json["arrayType"].asString());
-    if (arrayType == Icd::InvalidArray) {
+    if (arrayType == Icd::ArrayInvalid) {
         return false;
     }
     setArrayType(arrayType);

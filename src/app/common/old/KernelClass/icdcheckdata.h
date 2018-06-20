@@ -38,6 +38,8 @@ public:
     // 将校验范围转换为字符串(x~x)
     std::string checkRange() const;
 
+    std::string typeString() const override;
+
 private:
     ICDCheckDataPrivate     *d;
 };
