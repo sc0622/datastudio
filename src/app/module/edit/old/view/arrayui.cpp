@@ -8,19 +8,19 @@ ArrayUI::ArrayUI(QWidget *parent)
 {
     QGroupBox* group = new QGroupBox(QStringLiteral("基本信息"), this);
     q_edtName = new LimitLineEdit(this);
-    q_edtName->setMaxLength(40);
-    q_edtName->setToolTip(QStringLiteral("最多40个字符！"));
+    q_edtName->setMaxLength(256);
+    q_edtName->setToolTip(QStringLiteral("最多256个字符！"));
     q_edtCode = new QLineEdit(this);
-    QRegExp regExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,19}");
+    QRegExp regExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,255}");
     q_edtCode->setValidator(new QRegExpValidator(regExp));
-    q_edtCode->setMaxLength(20);
-    q_edtCode->setToolTip(QStringLiteral("最多20个字符！"));
+    q_edtCode->setMaxLength(256);
+    q_edtCode->setToolTip(QStringLiteral("最多256个字符！"));
     q_boxArrayType = new QComboBox(this);
     q_spinCount = new QSpinBox(this);
     q_spinCount->setRange(1, INT_MAX);
     q_edtRemak = new LimitTextEdit(this);
-    q_edtRemak->setMaxLength(200);
-    q_edtRemak->setToolTip(QStringLiteral("最多200个字符！"));
+    q_edtRemak->setMaxLength(256);
+    q_edtRemak->setToolTip(QStringLiteral("最多256个字符！"));
 
     int row = 0;
     QGridLayout* gridLayout = new QGridLayout(group);

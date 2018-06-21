@@ -35,8 +35,8 @@ SubTableUI::SubTableUI(QWidget* parent)
     QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
     q_edtName = new LimitLineEdit(this);
     q_edtName->setObjectName("edtName");
-    q_edtName->setMaxLength(120);
-    q_edtName->setToolTip(QStringLiteral("最多120个字符！"));
+    q_edtName->setMaxLength(256);
+    q_edtName->setToolTip(QStringLiteral("最多256个字符！"));
     q_boxType = new QComboBox(this);
     q_spinCode = new JLargeSpinBox(this);
     q_spinCode->setObjectName("edtCode");
@@ -48,8 +48,8 @@ SubTableUI::SubTableUI(QWidget* parent)
     q_spinSequence->setRange(1, 1e9);
     q_edtDescribe = new LimitTextEdit(this);
     q_edtDescribe->setObjectName("edtDescribe");
-    q_edtDescribe->setMaxLength(180);
-    q_edtDescribe->setToolTip(QStringLiteral("最多180个字符！"));
+    q_edtDescribe->setMaxLength(256);
+    q_edtDescribe->setToolTip(QStringLiteral("最多256个字符！"));
 
     int row = 0;
     QGridLayout *gridLayout = new QGridLayout(group);

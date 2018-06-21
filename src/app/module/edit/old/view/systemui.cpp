@@ -9,18 +9,18 @@ SystemUI::SystemUI(QWidget *parent)
     QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
     q_edtName = new LimitLineEdit(this);
     q_edtName->setObjectName("edtName");
-    q_edtName->setMaxLength(30);
-    q_edtName->setToolTip(QStringLiteral("最多30个字符！"));
+    q_edtName->setMaxLength(256);
+    q_edtName->setToolTip(QStringLiteral("最多256个字符！"));
     q_edtCode = new QLineEdit(this);
-    QRegExp regExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,29}");
+    QRegExp regExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,255}");
     q_edtCode->setValidator(new QRegExpValidator(regExp));
     q_edtCode->setObjectName("edtCode");
-    q_edtCode->setMaxLength(30);
-    q_edtCode->setToolTip(QStringLiteral("最多30个字符！"));
+    q_edtCode->setMaxLength(256);
+    q_edtCode->setToolTip(QStringLiteral("最多256个字符！"));
     q_edtDescribe = new LimitTextEdit(this);
     q_edtDescribe->setObjectName("edtDescribe");
-    q_edtDescribe->setMaxLength(120);
-    q_edtDescribe->setToolTip(QStringLiteral("最多120个字符！"));
+    q_edtDescribe->setMaxLength(256);
+    q_edtDescribe->setToolTip(QStringLiteral("最多256个字符！"));
 
     int row = 0;
     q_gridLayout = new QGridLayout(group);
