@@ -9,8 +9,10 @@ public:
     LanguageMgrPrivate(LanguageMgr *q)
         : J_QPTR(q)
         , langType(LanguageMgr::LangInvalid)
-        , trSystem(Q_NULLPTR)
-        , trApp(Q_NULLPTR)
+        , trQt(nullptr)
+        , trQtBase(nullptr)
+        , trQtHelp(nullptr)
+        , trApp(nullptr)
     {
 
     }
@@ -21,14 +23,18 @@ public:
 private:
     J_DECLARE_PUBLIC(LanguageMgr)
     LanguageMgr::LangType langType;
-    QTranslator *trSystem;
+    QTranslator *trQt;
+    QTranslator *trQtBase;
+    QTranslator *trQtHelp;
     QTranslator *trApp;
 };
 
 void LanguageMgrPrivate::init()
 {
     Q_Q(LanguageMgr);
-    trSystem = new QTranslator(q);
+    trQt = new QTranslator(q);
+    trQtBase = new QTranslator(q);
+    trQtHelp = new QTranslator(q);
     trApp = new QTranslator(q);
 }
 
@@ -168,7 +174,6 @@ bool LanguageMgr::installTranslator()
 
 bool LanguageMgr::installTranslators(const QString &language)
 {
-    //
     removeTranslators();
 
     if (language.isEmpty()) {
@@ -191,16 +196,32 @@ bool LanguageMgr::installTranslators(const QString &language)
     bool result = true;
 
     // translator - qt
-    if (d->trSystem->load(locale, ":/datastudio/lang/qt_")) {
-        qApp->installTranslator(d->trSystem);
+    if (d->trQt->load(locale, ":/icdwidget/lang/qt_")) {
+        result = qApp->installTranslator(d->trQt);
     } else {
         //qWarning() << "qt translator load failure.";
         result = false;
     }
 
+    // translator - qt/base
+    if (d->trQtBase->load(locale, ":/icdwidget/lang/qtbase_")) {
+        result = qApp->installTranslator(d->trQtBase);
+    } else {
+        //qWarning() << "qt-base translator load failure.";
+        result = false;
+    }
+
+    // translator - qt/help
+    if (d->trQtHelp->load(locale, ":/icdwidget/lang/qt_help_")) {
+        result = qApp->installTranslator(d->trQtHelp);
+    } else {
+        //qWarning() << "qt-help translator load failure.";
+        result = false;
+    }
+
     // translator - application
     if (d->trApp->load(locale, ":/datastudio/lang/app_")) {
-        qApp->installTranslator(d->trApp);
+        result = qApp->installTranslator(d->trApp);
     } else {
         //qWarning() << "application translator load failure.";
         result = false;
@@ -212,7 +233,9 @@ bool LanguageMgr::installTranslators(const QString &language)
 void LanguageMgr::removeTranslators()
 {
     Q_D(LanguageMgr);
-    qApp->removeTranslator(d->trSystem);
+    qApp->removeTranslator(d->trQt);
+    qApp->removeTranslator(d->trQtBase);
+    qApp->removeTranslator(d->trQtHelp);
     qApp->removeTranslator(d->trApp);
 }
 

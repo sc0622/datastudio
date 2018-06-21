@@ -1528,8 +1528,8 @@ QStandardItem* ICDNavigationUi::formSubTableNode(QStandardItem *parent,
 {
     stICDBase base = table->icdBase();
     QStandardItem *result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
-                                              QString("<font color=darkgreen size=2>[%1:%2]</font>"
-                                                      "%3<font color=darkgreen size=2>[%4]</font>")
+                                              QString("<font color=green size=2>[%1:%2]</font>"
+                                                      "%3<font color=green size=2>[%4]</font>")
                                               .arg(index, 4, 10, QChar('0'))
                                               .arg(offset, 4, 10, QChar('0'))
                                               .arg(table->name().c_str())
@@ -2762,7 +2762,7 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
             identify.append("/").append(complex->rule().c_str());
         }
         QStandardItem *item = findItem(UserKey, identify, current);
-        //        QString text = QString("%1[<font color=darkgreen>%2</font>]")
+        //        QString text = QString("%1[<font color=green>%2</font>]")
         //                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         QString text = offsetString(meta, offset);
         if (item) { // 更新节点
@@ -2818,7 +2818,7 @@ bool ICDNavigationUi::updateDetailRuleData(ICDMetaData::smtMeta &data)
 
     if (result != 0) {
         // 更新树节点
-        //        QString text = QString("%1[<font color=darkgreen>%2</font>]")
+        //        QString text = QString("%1[<font color=green>%2</font>]")
         //                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         QString text;
         ICDElement::smtElement element;
@@ -2908,8 +2908,8 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
             item->setText(data.sDescribe.c_str());
         } else { // 插入节点
             item = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
-                                     QString("<font color=darkgreen size=2>[%1:%2]</font>"
-                                             "%3<font color=darkgreen size=2>[%4]</font>")
+                                     QString("<font color=green size=2>[%1:%2]</font>"
+                                             "%3<font color=green size=2>[%4]</font>")
                                      .arg(current->rowCount(), 4, 10, QChar('0'))
                                      .arg(complex->index(), 4, 10, QChar('0'))
                                      .arg(data.sDescribe.c_str())
@@ -2960,16 +2960,16 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
                 break;
             }
             if (offset >= 0) {
-                result = QString("<font color=darkgreen size=2>[%1:%2:%3(%4)]</font>"
-                                 "%5<font color=darkgreen size=2>[%6]</font>")
+                result = QString("<font color=green size=2>[%1:%2:%3(%4)]</font>"
+                                 "%5<font color=green size=2>[%6]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(offset + meta->index(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(bit->start(), 2, 10, QChar('0'))
                         .arg(meta->name().c_str()).arg(typeString);
             } else {
-                result = QString("<font color=darkgreen size=2>[%1:%2(%3)]</font>"
-                                 "%4<font color=darkgreen size=2>[%5]</font>")
+                result = QString("<font color=green size=2>[%1:%2(%3)]</font>"
+                                 "%4<font color=green size=2>[%5]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(bit->start(), 2, 10, QChar('0'))
@@ -2977,15 +2977,15 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
             }
         } else {
             if (offset >= 0) {
-                result = QString("<font color=darkgreen size=2>[%1:%2:%3]</font>"
-                                 "%4<font color=darkgreen size=2>[%5]</font>")
+                result = QString("<font color=green size=2>[%1:%2:%3]</font>"
+                                 "%4<font color=green size=2>[%5]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(offset + meta->index(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(meta->name().c_str()).arg(typeString);
             } else {
-                result = QString("<font color=darkgreen size=2>[%1:%2]</font>"
-                                 "%3<font color=darkgreen size=2>[%4]</font>")
+                result = QString("<font color=green size=2>[%1:%2]</font>"
+                                 "%3<font color=green size=2>[%4]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(meta->name().c_str()).arg(typeString);

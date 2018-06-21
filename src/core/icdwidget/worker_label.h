@@ -25,9 +25,8 @@ public:
      * @param attrs
      * @param parent
      */
-    explicit WorkerLabel(const Icd::WorkerPtr &worker,
-                         ChannelWidget::OperateAttributes attrs,
-                         QWidget *parent = 0);
+    explicit WorkerLabel(const Icd::WorkerPtr &worker, ChannelWidget::OperateAttributes attrs,
+                         QWidget *parent = nullptr);
 
     ~WorkerLabel();
 

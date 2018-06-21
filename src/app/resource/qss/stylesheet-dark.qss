@@ -18,13 +18,6 @@ QDialog, QStackedWidget, QSplitter {
     background: #353535;
 }
 
-/** * **/
-
-QMessageBox QPushButton,
-QDialogButtonBox QPushButton {
-    min-width: 6em;
-}
-
 /** QMessageBox **/
 
 QMessageBox {
@@ -60,6 +53,44 @@ QProgressBar {
 QProgressBar::chunk {
     background: green;
     width: 20px;
+}
+
+/** QSlider **/
+
+QSlider::horizontal {
+    height: 14px;
+}
+
+QSlider::groove:horizontal {
+    height: 4px;
+    border-radius: 2px;
+    border: 1px solid #666;
+    background: #556;
+}
+
+QSlider::handle:horizontal {
+    background: rgb(0, 160, 230);
+    width: 14px;
+    border-radius: 6px;
+    margin: -5px 0;
+}
+
+QSlider::vertical {
+    width: 14px;
+}
+
+QSlider::groove:vertical {
+    width: 4px;
+    border-radius: 2px;
+    border: 1px solid #666;
+    background: #556;
+}
+
+QSlider::handle:vertical {
+    background: rgb(0, 160, 230);
+    width: 14px;
+    border-radius: 6px;
+    margin: -5px 0;
 }
 
 /** QTabWidget **/
@@ -459,6 +490,14 @@ QPushButton:pressed {
 QPushButton:disabled {
     background: #444;
     color: #888;
+}
+
+/** QMessageBox/QDialogButtonBox **/
+
+QMessageBox QPushButton,
+QDialogButtonBox QPushButton {
+    min-width: 6em;
+    min-height: 1.2em;
 }
 
 /** QToolButton **/
@@ -1047,27 +1086,33 @@ QScrollBar::sub-page:vertical {
 /** QWizards **/
 
 QWizard QPushButton {
-    min-width: 70px;
+    min-width: 5em;
 }
 
 /** custom **/
 
 /** QTreeView QTableView QPushButton **/
 
-QTreeView QPushButton#buttonRun, QTableView QPushButton {
+QTreeView QPushButton#buttonRun,
+ QTableView QPushButton[_flat_="true"] {
     background: #803a3a3a;
-    min-width: 12px;
+    border: 1px solid #30666666;
+    width: 70px;
+    height: 40px;
 }
 
-QTreeView QPushButton#buttonRun:hover, QTableView QPushButton:hover {
+QTreeView QPushButton#buttonRun:hover, 
+QTableView QPushButton[_flat_="true"]:hover {
     background: #305060;
 }
 
-QTreeView QPushButton#buttonRun:pressed, QTableView QPushButton:pressed {
+QTreeView QPushButton#buttonRun:pressed, 
+QTableView QPushButton[_flat_="true"]:pressed {
     background: #306070;
 }
 
-QTreeView QPushButton#buttonRun:disabled, QTableView QPushButton:disabled {
+QTreeView QPushButton#buttonRun:disabled, 
+QTableView QPushButton[_flat_="true"]:disabled {
     background: #80323232;
     color: #bbb;
 }
@@ -1199,13 +1244,23 @@ GeneralWidget {
 
 QLabel#channelIcon,
 QLabel#channelType {
-    color: lightgreen;
-    font: 75 15pt 'Microsoft Yahei';
+    color: green;
+    font: 75 15pt;
 }
 
-QLabel#labelName {
-    color: lightblue;
-    font: 75 12pt 'Microsoft Yahei';
+QLineEdit#labelName {
+    background: #302f2f2f;
+    border: none;
+    color: lightgreen;
+    font: 75 14pt;
+    min-height: 0.8em;
+}
+
+QLineEdit#labelDetail {
+    background: #302f2f2f;
+    border: none;
+    color: #888;
+    min-height: 1.1em;
 }
 
 /****************************************************************/

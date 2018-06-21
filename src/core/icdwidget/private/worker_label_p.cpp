@@ -4,8 +4,7 @@
 
 namespace Icd {
 
-WorkerLabelPrivate::WorkerLabelPrivate(const Icd::WorkerPtr &worker,
-                                       WorkerLabel *q)
+WorkerLabelPrivate::WorkerLabelPrivate(const Icd::WorkerPtr &worker, WorkerLabel *q)
     : J_QPTR(q)
     , worker(worker)
     , attributes(ChannelWidget::NoOperate)
@@ -31,8 +30,8 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
     q->setFixedHeight(60);
 
     QHBoxLayout *horiLayoutMain = new QHBoxLayout(q);
-    horiLayoutMain->setContentsMargins(4, 0, 0, 0);
-    horiLayoutMain->setSpacing(4);
+    horiLayoutMain->setContentsMargins(3, 0, 0, 0);
+    horiLayoutMain->setSpacing(3);
 
     labelChannelIcon = new QLabel(q);
     labelChannelIcon->setObjectName("channelIcon");
@@ -42,34 +41,31 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
 
     labelChannelType = new QLabel(q);
     labelChannelType->setObjectName("channelType");
-    labelChannelType->setFixedSize(70, 60);
-    labelChannelType->setMinimumWidth(70);
+    labelChannelType->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     horiLayoutMain->addWidget(labelChannelType);
 
+    horiLayoutMain->addSpacing(6);
+
     QVBoxLayout *vertLayoutCenter = new QVBoxLayout();
-    vertLayoutCenter->setContentsMargins(0, 0, 0, 0);
-    vertLayoutCenter->setSpacing(1);
+    vertLayoutCenter->setContentsMargins(0, 8, 0, 8);
+    vertLayoutCenter->setSpacing(6);
     horiLayoutMain->addLayout(vertLayoutCenter);
 
-    labeName = new QLabel(q);
-    labeName->setObjectName("labelName");
-    labeName->setFixedHeight(30);
-    vertLayoutCenter->addWidget(labeName);
+    labelName = new QLineEdit(q);
+    labelName->setObjectName("labelName");
+    labelName->setDisabled(true);
+    vertLayoutCenter->addWidget(labelName);
 
-    labelDetail = new QLabel(q);
-    labelDetail->setObjectName("detail");
-    labelDetail->setFixedHeight(30);
+    labelDetail = new QLineEdit(q);
+    labelDetail->setObjectName("labelDetail");
+    labelDetail->setDisabled(true);
     vertLayoutCenter->addWidget(labelDetail);
 
     if (attrs & ChannelWidget::OperateOpen) {
         buttonOpen = new QPushButton(QStringLiteral("打开"), q);
-        buttonOpen->setObjectName("buttonOpen");
-        buttonOpen->setFixedSize(70, 35);
-        buttonOpen->setMinimumWidth(70);
+        buttonOpen->setProperty("_flat_", true);
+        buttonOpen->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonOpen);
-
-        horiLayoutMain->addSpacing(5);
-
         //
         QObject::connect(buttonOpen, &QPushButton::clicked, q, [=](){
             if (worker) {
@@ -89,23 +85,17 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
 
     if (attrs & ChannelWidget::OperateSwitchRecv) {
         buttonSwitchRecv = new QPushButton(QStringLiteral("启动接收"), q);
-        buttonSwitchRecv->setObjectName("buttonSwitchRecv");
-        buttonSwitchRecv->setFixedSize(70, 35);
-        buttonSwitchRecv->setMinimumWidth(70);
+        buttonSwitchRecv->setProperty("_flat_", true);
+        buttonSwitchRecv->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonSwitchRecv);
-
-        horiLayoutMain->addSpacing(10);
-
         //
         QObject::connect(buttonSwitchRecv, &QPushButton::clicked, q, [=](){
             if (worker) {
                 if (worker->workerRecv()->isRunning()) {
                     worker->workerRecv()->stop();
                 } else {
-                    if (!worker->isOpen()) {
-                        if (!worker->open()) {
-                            return;
-                        }
+                    if (!worker->open()) {
+                        return;
                     }
                     worker->workerRecv()->start();
                 }
@@ -124,13 +114,9 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
 
     if (attrs & ChannelWidget::OperateRemove) {
         buttonRemove = new QPushButton(QStringLiteral("删除"), q);
-        buttonRemove->setObjectName("buttonRemove");
-        buttonRemove->setFixedSize(70, 35);
-        buttonRemove->setMinimumWidth(70);
+        buttonRemove->setProperty("_flat_", true);
+        buttonRemove->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonRemove);
-
-        horiLayoutMain->addSpacing(10);
-
         //
         QObject::connect(buttonRemove, &QPushButton::clicked, q, [=](){
             if (worker) {
@@ -151,16 +137,17 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
     }
 
     labelIndicator = new QLabel(q);
-    labelIndicator->setFixedSize(15, 30);
+    labelIndicator->setFixedSize(8, 15);
     horiLayoutMain->addWidget(labelIndicator);
 
-    //
     QObject::connect(worker.get(), &Icd::Worker::channelConfigChanged, q, [=](){
         if (worker) {
             // name
-            labeName->setText(QString::fromStdString(worker->channel()->name()));
+            labelName->setText(QString::fromStdString(worker->channel()->name()));
             // desc
             labelDetail->setText(QString::fromStdString(worker->channel()->desc()));
+            //
+            updateDetailText();
         }
     });
     QObject::connect(worker.get(), &Icd::Worker::closed, q, [=](){
@@ -194,7 +181,7 @@ void WorkerLabelPrivate::updateUi()
     }
 
     // name
-    labeName->setText(QString::fromStdString(worker->channel()->name()));
+    labelName->setText(QString::fromStdString(worker->channel()->name()));
     // desc
     labelDetail->setText(QString::fromStdString(worker->channel()->desc()));
     // switchRecv
@@ -203,6 +190,8 @@ void WorkerLabelPrivate::updateUi()
                                   ? QStringLiteral("停止接收")
                                   : QStringLiteral("启动接收"));
     }
+    //
+    updateDetailText();
 }
 
 void WorkerLabelPrivate::setDirty()
@@ -218,6 +207,23 @@ void WorkerLabelPrivate::setDirty()
 ChannelWidget::OperateAttributes WorkerLabelPrivate::attrs() const
 {
     return attributes;
+}
+
+void WorkerLabelPrivate::updateDetailText()
+{
+    const QString text = elidedText(labelDetail->font(), labelDetail->text(), 300);
+    labelDetail->setText(text);
+}
+
+QString WorkerLabelPrivate::elidedText(const QFont &font, const QString &text, int width)
+{
+    QFontMetrics fontMetrics(font);
+    const int fontWidth = fontMetrics.width(text);
+    if(fontWidth >= width) {
+        return fontMetrics.elidedText(text, Qt::ElideMiddle, width);
+    } else {
+        return text;
+    }
 }
 
 } // end of namespace Icd

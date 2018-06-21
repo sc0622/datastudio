@@ -1,7 +1,10 @@
 import qbs
+import qbs.File
 import qbs.FileInfo
 
 CoreDyLibrary {
+    type: base.concat([ 'qmlfiles.out' ])
+    Qt.core.resourceFileBaseName: 'resource'
 
     Depends { name: 'Qt.widgets' }
     Depends { name: 'Qt.concurrent' }
@@ -32,8 +35,29 @@ CoreDyLibrary {
 
     Group {
         name: 'Resources'
-        files: [ 'resource/*.qrc' ]
+        prefix: 'resource/'
+        excludeFiles: [ '**/*.ts', '**/*.psd' ]
+        files: [ '**/*' ]
+        fileTags: [ 'qt.core.resource_data' ]
+        Qt.core.resourcePrefix: '/icdwidget'
+        Qt.core.resourceSourceBase: 'resource'
     }
-    cpp.cxxStandardLibrary: 'c++98'
 
+    Probe {
+        id: probeQmlFiles
+        readonly property path qtTrPath: Qt.core.binPath + '/../translations/'
+        readonly property path sourceDirectory: product.sourceDirectory
+        configure: {
+            var qmlfiles = [ 'qt_zh_CN', 'qt_help_zh_CN', 'qtbase_zh_CN' ]
+            var targetDir = sourceDirectory + '/resource/lang/';
+            qmlfiles.forEach(function(file){
+                var file2 = file + '.qm';
+                var source = qtTrPath + file2;
+                if (File.exists(source)) {
+                    File.copy(source, targetDir + file2);
+                }
+            })
+            found = true;
+        }
+    }
 }

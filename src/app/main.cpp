@@ -43,6 +43,7 @@ int main(int argc, char **argv)
     settings.setValue("WORKSPACE_DIR", QDir(projectDir + "/example").canonicalPath());
     settings.endGroup();
 
+    IcdWidget::instance()->init();
     Logging::instance()->init();
     JMain::initTranslators();
 

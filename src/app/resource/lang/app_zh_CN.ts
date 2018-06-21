@@ -1179,7 +1179,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="49"/>
+        <location filename="../../main.cpp" line="50"/>
         <source>Data Studio</source>
         <translation>数据工作室</translation>
     </message>

@@ -126,4 +126,31 @@ enum TreeItemDataRole {
 
 } // end of namespace Icd
 
+// class IcdWidget
+
+class IcdWidgetPrivate;
+
+class ICDWIDGET_EXPORT IcdWidget : public QObject
+{
+    Q_OBJECT
+public:
+
+    bool init();
+
+    void registerSingletonRelease(SingletonReleaseCallback callback);
+
+signals:
+
+public slots:
+
+private:
+    explicit IcdWidget(QObject *parent = nullptr);
+    ~IcdWidget();
+
+private:
+    Q_DISABLE_COPY(IcdWidget)
+    J_DECLARE_PRIVATE(IcdWidget)
+    J_DECLARE_SINGLE_INSTANCE(IcdWidget)
+};
+
 #endif // ICDWIDGET_GLOBAL_H

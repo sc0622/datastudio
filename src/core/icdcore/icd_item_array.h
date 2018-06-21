@@ -48,16 +48,17 @@ public:
     Object *clone() const override;
     ArrayItem &operator =(const ArrayItem &other);
 
-    int8_t *int8Array() const;
-    uint8_t *uint8Array() const;
-    int16_t *int16Array() const;
-    uint16_t *uint16Array() const;
-    int32_t *int32Array() const;
-    uint32_t *uint32Array() const;
-    int64_t *int64Array() const;
-    uint64_t *uint64Array() const;
-    float_t *floatArray() const;
-    double_t *doubleArray() const;
+    std::string toString() const;
+    int8_t *i8() const;
+    uint8_t *u8() const;
+    int16_t *i16() const;
+    uint16_t *u16() const;
+    int32_t *i32() const;
+    uint32_t *u32() const;
+    int64_t *i64() const;
+    uint64_t *u64() const;
+    float_t *f32() const;
+    double_t *f64() const;
 
     // Serializable interface
 public:

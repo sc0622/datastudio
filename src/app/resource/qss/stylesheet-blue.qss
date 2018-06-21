@@ -12,13 +12,6 @@ QWidget[__node__="true"] {
 
 QDialog {
     /*background: #293956;*/
-}
-
-/** * **/
-
-QMessageBox QPushButton,
-QDialogButtonBox QPushButton {
-    min-width: 6em;
 } 
 
 /** QMessageBox **/
@@ -56,6 +49,44 @@ QProgressBar {
 QProgressBar::chunk {
     background: green;
     width: 20px;
+}
+
+/** QSlider **/
+
+QSlider::horizontal {
+    height: 14px;
+}
+
+QSlider::groove:horizontal {
+    height: 4px;
+    border-radius: 2px;
+    border: 1px solid #aaa;
+    background: #cce;
+} 
+
+QSlider::handle:horizontal {
+    background: rgb(0, 160, 230);
+    width: 14px;
+    border-radius: 6px;
+    margin: -5px 0;
+} 
+
+QSlider::vertical {
+    width: 14px;
+}
+
+QSlider::groove:vertical {
+    width: 4px;
+    border-radius: 2px;
+    border: 1px solid #aaa;
+    background: #556;
+}
+
+QSlider::handle:vertical {
+    background: rgb(0, 160, 230);
+    width: 14px;
+    border-radius: 6px;
+    margin: -5px 0;
 }
 
 /** QTabWidget **/
@@ -411,8 +442,8 @@ QTableView::item:focus {
 
 QTableView::item:selected,
 QTableView::item:selected:!focus {
-    background: #5599ee; 
-    color: #ffffaa;
+    background: #fff29d; 
+    color: blue;
 }
 
 QTableView QTableCornerButton::section {
@@ -454,6 +485,14 @@ QPushButton:disabled {
     background: #fff;
     color: #888;
     border: 1px solid #aaafa0;
+}
+
+/** QMessageBox/QDialogButtonBox **/
+
+QMessageBox QPushButton,
+QDialogButtonBox QPushButton {
+    min-width: 6em;
+    min-height: 1.2em;
 }
 
 /** QToolButton **/
@@ -992,24 +1031,62 @@ QScrollBar::sub-page:vertical {
     background: none;
 }
 
+/** QWizards **/
+
+QWizard QPushButton {
+    min-width: 5em;
+}
+
 /** custom **/
+
+/****************************************************************/
+
+/** QLabel **/
+
+QLabel#channelIcon,
+QLabel#channelType {
+    color: green;
+    font: 75 15pt;
+}
+
+QLineEdit#labelName {
+    background: #10888888;
+    border: none;
+    color: darkblue;
+    font: 75 14pt;
+    min-height: 0.8em;
+}
+
+QLineEdit#labelDetail {
+    background: #10888888;
+    border: none;
+    color: #666;
+    min-height: 1.1em;
+}
+
+/****************************************************************/
 
 /** QTreeView QTableView QPushButton **/
 
-QTreeView QPushButton, QTableView QPushButton { 
+QTreeView QPushButton#buttonRun, 
+QTableView QPushButton[_flat_="true"] { 
     background: #80dddddd;
-    min-width: 1em;
+    width: 70px;
+    height: 40px;
 }
 
-QTreeView QPushButton:hover, QTableView QPushButton:hover {
+QTreeView QPushButton#buttonRun:hover, 
+QTableView QPushButton[_flat_="true"]:hover {
     background: #a0ff729d;
 }
  
-QTreeView QPushButton:pressed, QTableView QPushButton:pressed {
+QTreeView QPushButton#buttonRun:pressed, 
+QTableView QPushButton[_flat_="true"]:pressed {
     background: #306070;
 }
 
-QTreeView QPushButton:disabled, QTableView QPushButton:disabled {
+QTreeView QPushButton#buttonRun:disabled, 
+QTableView QPushButton[_flat_="true"]:disabled {
     background: #80aaaaaa;
     color: #bbb;
 }

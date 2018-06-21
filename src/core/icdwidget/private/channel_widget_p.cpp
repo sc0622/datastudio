@@ -13,7 +13,6 @@ ChannelWidgetPrivate::ChannelWidgetPrivate(ChannelWidget *q)
 
 ChannelWidgetPrivate::~ChannelWidgetPrivate()
 {
-    //
     Q_Q(ChannelWidget);
     Icd::WorkerPool::getInstance()->disconnect(q);
 }
@@ -45,25 +44,20 @@ void ChannelWidgetPrivate::init()
     tableView->setDragDropMode(QAbstractItemView::DragDrop);
     tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    //
     QObject::connect(tableView, &JTableView::currentCellChanged, q, [=]
                      (int currentRow, int, int previousRow, int){
-        //
         if (previousRow >= 0) {
             WorkerLabel *label = qobject_cast<WorkerLabel *>(tableView->cellWidget(previousRow, 0));
             if (label) {
                 label->setIndicatorVisible(false);
             }
         }
-        //
         if (currentRow >= 0) {
-            //
             WorkerLabel *label = qobject_cast<WorkerLabel *>(tableView->cellWidget(currentRow, 0));
             if (label) {
                 label->setIndicatorVisible(true);
             }
         }
-        //
         emit q->currentRowChanged(currentRow, previousRow);
     });
     QObject::connect(tableView, &JTableView::cellDoubleClicked, q, [=](int row, int){
@@ -77,16 +71,10 @@ void ChannelWidgetPrivate::init()
                      [=](const Icd::WorkerPtr &worker){
         int count = tableView->rowCount();
         for (int i = 0; i < count; ++i) {
-            //
             WorkerLabel *label = qobject_cast<WorkerLabel *>(tableView->cellWidget(i, 0));
-            if (!label) {
+            if (!label || worker != label->worker()) {
                 continue;
             }
-            //
-            if (worker != label->worker()) {
-                continue;
-            }
-            //
             tableView->removeRow(i);
             break;
         }
@@ -95,8 +83,6 @@ void ChannelWidgetPrivate::init()
                      &Icd::WorkerPool::workerCleared, q, [=](){
         q->clearWorker();
     });
-
-    //q->setEditEnabled(true);
 }
 
 void ChannelWidgetPrivate::moveItemToBottom(QStandardItem *item)

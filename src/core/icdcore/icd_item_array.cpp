@@ -69,16 +69,16 @@ std::string ArrayItem::arrayTypeString() const
 std::string ArrayItem::arrayTypeString(ArrayType type)
 {
     switch (type) {
-    case ArrayI8: return "i8a";
-    case ArrayU8: return "u8a";
-    case ArrayI16: return "i16a";
-    case ArrayU16: return "u16a";
-    case ArrayI32: return "i32a";
-    case ArrayU32: return "u32a";
-    case ArrayI64: return "i64a";
-    case ArrayU64: return "u64a";
-    case ArrayF32: return "f32a";
-    case ArrayF64: return "f64a";
+    case ArrayI8: return "i8";
+    case ArrayU8: return "u8";
+    case ArrayI16: return "i16";
+    case ArrayU16: return "u16";
+    case ArrayI32: return "i32";
+    case ArrayU32: return "u32";
+    case ArrayI64: return "i64";
+    case ArrayU64: return "u64";
+    case ArrayF32: return "f32";
+    case ArrayF64: return "f64";
     default: return "?";
     }
 }
@@ -87,16 +87,16 @@ ArrayType ArrayItem::stringArrayType(const std::string &str)
 {
     typedef std::unordered_map<std::string, int> map_strtype;
     static const map_strtype::value_type map_data[ArrayTotal] = {
-        map_strtype::value_type("i8a", ArrayI8),
-        map_strtype::value_type("u8a", ArrayU8),
-        map_strtype::value_type("i16a", ArrayI16),
-        map_strtype::value_type("u16a", ArrayU16),
-        map_strtype::value_type("i32a", ArrayI32),
-        map_strtype::value_type("u32a", ArrayU32),
-        map_strtype::value_type("i64a", ArrayI64),
-        map_strtype::value_type("u64a", ArrayU64),
-        map_strtype::value_type("f32a", ArrayF32),
-        map_strtype::value_type("f64a", ArrayF64),
+        map_strtype::value_type("i8", ArrayI8),
+        map_strtype::value_type("u8", ArrayU8),
+        map_strtype::value_type("i16", ArrayI16),
+        map_strtype::value_type("u16", ArrayU16),
+        map_strtype::value_type("i32", ArrayI32),
+        map_strtype::value_type("u32", ArrayU32),
+        map_strtype::value_type("i64", ArrayI64),
+        map_strtype::value_type("u64", ArrayU64),
+        map_strtype::value_type("f32", ArrayF32),
+        map_strtype::value_type("f64", ArrayF64),
     };
     static const map_strtype _map(map_data, map_data + ArrayTotal);
     map_strtype::const_iterator citer = _map.find(str);
@@ -170,52 +170,57 @@ ArrayItem &ArrayItem::operator =(const ArrayItem &other)
     return *this;
 }
 
-int8_t *ArrayItem::int8Array() const
+std::string ArrayItem::toString() const
+{
+    return std::string(buffer(), static_cast<size_t>(bufferSize()));
+}
+
+int8_t *ArrayItem::i8() const
 {
     return reinterpret_cast<int8_t*>(buffer());
 }
 
-uint8_t *ArrayItem::uint8Array() const
+uint8_t *ArrayItem::u8() const
 {
     return reinterpret_cast<uint8_t*>(buffer());
 }
 
-int16_t *ArrayItem::int16Array() const
+int16_t *ArrayItem::i16() const
 {
     return reinterpret_cast<int16_t*>(buffer());
 }
 
-uint16_t *ArrayItem::uint16Array() const
+uint16_t *ArrayItem::u16() const
 {
     return reinterpret_cast<uint16_t*>(buffer());
 }
 
-int32_t *ArrayItem::int32Array() const
+int32_t *ArrayItem::i32() const
 {
     return reinterpret_cast<int32_t*>(buffer());
 }
 
-uint32_t *ArrayItem::uint32Array() const
+uint32_t *ArrayItem::u32() const
 {
     return reinterpret_cast<uint32_t*>(buffer());
 }
 
-int64_t *ArrayItem::int64Array() const
+int64_t *ArrayItem::i64() const
 {
     return reinterpret_cast<int64_t*>(buffer());
 }
 
-uint64_t *ArrayItem::uint64Array() const
+uint64_t *ArrayItem::u64() const
 {
     return reinterpret_cast<uint64_t*>(buffer());
 }
 
-float_t *ArrayItem::floatArray() const
+float_t *ArrayItem::f32() const
 {
     return reinterpret_cast<float_t*>(buffer());
 }
 
-double_t *ArrayItem::doubleArray() const
+double_t *ArrayItem::f64() const
 {
     return reinterpret_cast<double_t*>(buffer());
 }

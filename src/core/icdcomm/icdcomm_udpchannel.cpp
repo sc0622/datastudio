@@ -228,7 +228,7 @@ std::string UdpChannel::desc() const
        << ":" << d->d->d_localPort
        << ", R-" << d->d->d_remoteHost.toString().toStdString()
        << ":" << d->d->d_remotePort
-       << " " << d->openMode("-M=");
+       << ", " << d->openMode("M=");
     return os.str();
 }
 

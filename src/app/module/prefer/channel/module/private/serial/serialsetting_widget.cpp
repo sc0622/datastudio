@@ -22,6 +22,8 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
     vertLayoutGroupBox->addLayout(formLayout);
 
     d_comboBoxPortName = new QComboBox(this);
+    d_comboBoxPortName->setEditable(true);
+    d_comboBoxPortName->lineEdit()->setValidator(new QRegExpValidator(QRegExp("COM[\\d]{1,3}")));
     formLayout->addRow(QStringLiteral("¶Ë¿ÚÃû£º"), d_comboBoxPortName);
 
     d_comboBoxBaudRate = new QComboBox(this);

@@ -324,12 +324,12 @@ bool FileChannel::setConfig(const std::string &config)
 std::string FileChannel::desc() const
 {
     std::ostringstream os;
-    os << "" << QFileInfo(QString::fromStdString(d->filePath))
+    os << "D=" << QFileInfo(QString::fromStdString(d->filePath))
           .absolutePath().toStdString() << ", ";
     // openmode
-    os << d->openmode("-m=");
+    os << d->openmode("M=");
     // saveformat
-    os << ", " << d->saveformat("-s=");
+    os << ", " << d->saveformat("S=");
     return os.str();
 }
 

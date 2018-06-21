@@ -114,4 +114,70 @@ QString JIcdArrayItem::dataString() const
     return QString::fromStdString(d->data->dataString());
 }
 
+QString JIcdArrayItem::toString() const
+{
+    Q_D(const JIcdArrayItem);
+    return  QString::fromStdString(d->data->toString());
+}
+
+int8_t *JIcdArrayItem::i8() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->i8();
+}
+
+uint8_t *JIcdArrayItem::u8() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->u8();
+}
+
+int16_t *JIcdArrayItem::i16() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->i16();
+}
+
+uint16_t *JIcdArrayItem::u16() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->u16();
+}
+
+int32_t *JIcdArrayItem::i32() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->i32();
+}
+
+uint32_t *JIcdArrayItem::u32() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->u32();
+}
+
+int64_t *JIcdArrayItem::i64() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->i64();
+}
+
+uint64_t *JIcdArrayItem::u64() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->u64();
+}
+
+float_t *JIcdArrayItem::f32() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->f32();
+}
+
+double_t *JIcdArrayItem::f64() const
+{
+    Q_D(const JIcdArrayItem);
+    return  d->data->f64();
+}
+
 } // end of namespace icdmeta
