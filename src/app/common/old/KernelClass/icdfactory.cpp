@@ -94,7 +94,7 @@ ICDMetaData::smtMeta ICDFactory::CreatObject(const stTableRules &rule)
         result = ICDMetaData::smtMeta(new ICDBitData(rule));
         break;
     case GlobalDefine::dtComplex:   // 复合数据
-    case GlobalDefine::dtDiscern:   // 帧数据
+    case GlobalDefine::dtFrame:     // 帧数据
         result = ICDMetaData::smtMeta(new ICDComplexData(rule));
         break;
     case GlobalDefine::dtBuffer:    // 数据预留区
@@ -150,7 +150,7 @@ ICDMetaData::smtMeta ICDFactory::CreatObject(GlobalDefine::DataType type)
         result = ICDMetaData::smtMeta(new ICDBitData(rule));
         break;
     case GlobalDefine::dtComplex:   // 复合数据
-    case GlobalDefine::dtDiscern:   // 帧数据
+    case GlobalDefine::dtFrame:     // 帧数据
         result = ICDMetaData::smtMeta(new ICDComplexData(rule));
         break;
     case GlobalDefine::dtBuffer:    // 数据预留区
@@ -254,7 +254,7 @@ stTableRules ICDFactory::convert2Rule(const ICDMetaData::smtMeta &meta)
         break;
     }
     case GlobalDefine::dtComplex:  // 复合数据
-    case GlobalDefine::dtDiscern:  // 帧数据
+    case GlobalDefine::dtFrame:     // 帧数据
     {
         ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, meta);
         if (complex) {
@@ -385,8 +385,8 @@ bool ICDFactory::copyBaseData(ICDMetaData::smtMeta from,
         _to->setBitLength(_from->bitLength());
         break;
     }
-    case GlobalDefine::dtComplex:  // 复合数据
-    case GlobalDefine::dtDiscern:  // 帧数据
+    case GlobalDefine::dtComplex:   // 复合数据
+    case GlobalDefine::dtFrame:     // 帧数据
     {
         ICDComplexData::smtComplex _from = SMT_CONVERT(ICDComplexData, from);
         ICDComplexData::smtComplex _to = SMT_CONVERT(ICDComplexData, to);

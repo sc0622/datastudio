@@ -3,19 +3,15 @@
 
 #include <QSpinBox>
 
-class hexSpinBox : public QSpinBox
+class HexSpinBox : public QSpinBox
 {
     Q_OBJECT
 
 public:
-    hexSpinBox(QWidget *parent);
-    ~hexSpinBox();
+    explicit HexSpinBox(QWidget *parent = nullptr);
 
 protected:
     virtual QString textFromValue(int val) const override;
-
-private:
-    
 };
 
 #endif // HEXSPINBOX_H

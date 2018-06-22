@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "limittextedit.h"
+#include "LimitTextEdit.h"
 
 #ifndef CHSCALE
 #   define     CHSCALE     2
@@ -10,11 +10,6 @@ LimitTextEdit::LimitTextEdit(QWidget *parent)
     , q_max(-1)
 {
     connect(this, SIGNAL(textChanged()), SLOT(_textChanged()));
-}
-
-LimitTextEdit::~LimitTextEdit()
-{
-
 }
 
 void LimitTextEdit::_textChanged()
@@ -38,6 +33,11 @@ void LimitTextEdit::setMaxLength( int maxLength )
     if (maxLength > 0) {
         q_max = maxLength;
     }
+}
+
+int LimitTextEdit::maxLength() const
+{
+    return q_max;
 }
 
 QString LimitTextEdit::fuzzyText(const QString &text) const

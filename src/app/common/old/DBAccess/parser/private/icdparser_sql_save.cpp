@@ -112,7 +112,7 @@ bool SqlParserData::Item2rule(const Icd::ItemPtr &item, stTableRules &rule) cons
     case Icd::ItemFrame:
         result = ItemFrame2rule(JHandlePtrCast<Icd::FrameItem, Icd::Item>(item), rule);
         // type attribute
-        rule.uType = GlobalDefine::dtDiscern;
+        rule.uType = GlobalDefine::dtFrame;
         break;
     default:
         break;

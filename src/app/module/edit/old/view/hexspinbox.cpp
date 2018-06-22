@@ -1,19 +1,14 @@
 #include "precomp.h"
-#include "hexspinbox.h"
+#include "HexSpinBox.h"
 
-hexSpinBox::hexSpinBox(QWidget *parent)
+HexSpinBox::HexSpinBox(QWidget *parent)
     : QSpinBox(parent)
 {
     setDisplayIntegerBase(16);
     setPrefix("0x");
 }
 
-hexSpinBox::~hexSpinBox()
-{
-
-}
-
-QString hexSpinBox::textFromValue(int val) const
+QString HexSpinBox::textFromValue(int val) const
 {
     int maxValue = maximum();
     int count = QString::number(maxValue, 16).size();

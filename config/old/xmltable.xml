@@ -8,7 +8,7 @@ link: http://www.smartsoft.com/
 copyright (c) 2015 smartsoft inc. all right reserved.
 -->
 <jxmltable version="1.0">
-  <table name="PlaneTable" orientations="horizontal" headerWidth="200" sync="false" >
+  <table name="VehicleTable" orientations="horizontal" headerWidth="200" sync="false" >
     <!--机型信息表-->
     <item name="机型名称" type="string" editable="false" />
     <item name="机型编码" type="string" editable="false" />
@@ -22,12 +22,26 @@ copyright (c) 2015 smartsoft inc. all right reserved.
     <item name="描述" type="string" editable="false" />
   </table>
 
-  <table name="IcdTable" orientation="horizontal" headerWidth="200" sync="false">
+  <table name="Table" orientation="horizontal" headerWidth="200" sync="false">
     <!--表信息表-->
     <item name="名称" type="string" editable="false" />
     <item name="编码" type="string" editable="false" />
     <item name="长度" type="string" editable="false" />
     <item name="描述" type="string" editable="false" />
+  </table>
+
+  <table name="FrameTable" orientations="horizontal" headerWidth="180" sync="false">
+    <!--帧定义表-->
+    <item name="名称" type="string" editable="false" />
+    <item name="帧码" type="string" editable="false" />
+    <item name="时序" type="string" editable="false" />
+    <item name="描述" type="string" editable="false" maxLength="60" />
+  </table>
+
+  <table name="ObjectTable" orientations="horizontal" headerWidth="180" sync="false">
+    <!--通用属性表-->
+    <item name="属性" type="string" editable="false" headerSize="120" />
+    <item name="数值" type="string" editable="false" />
   </table>
 
   <table name="RuleTable" orientations="horizontal" headerWidth="180" sync="false">
@@ -59,19 +73,5 @@ copyright (c) 2015 smartsoft inc. all right reserved.
     <item name="描述" type="string" editable="true" maxLength="60" headerSize="170"/>
     <item name="0值含义" type="string" editable="true" headerSize="75" />
     <item name="1值含义" type="string" editable="true" headerSize="75" />
-  </table>
-
-  <table name="DiscertTable" orientations="horizontal" headerWidth="180" sync="false">
-    <!--帧定义表-->
-    <item name="名称" type="string" editable="false" />
-    <item name="帧码" type="string" editable="false" />
-    <item name="时序" type="string" editable="false" />
-    <item name="描述" type="string" editable="false" maxLength="60" />
-  </table>
-  
-  <table name="CommonTable" orientations="horizontal" headerWidth="180" sync="false">
-    <!--通用属性表-->
-    <item name="属性" type="string" editable="false" headerSize="120" />
-    <item name="数值" type="string" editable="false" />
   </table>
 </jxmltable>

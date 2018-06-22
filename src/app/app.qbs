@@ -85,10 +85,17 @@ Project {
         }
 
         Group {
-            name: 'old.ui'
+            name: 'old.ui.headers'
             condition: useOldEdit
             prefix: 'module/edit/old/'
-            files: [ '**/*.h', '**/*.cpp' ]
+            files: [ '**/*.h' ]
+        }
+
+        Group {
+            name: 'old.ui.sources'
+            condition: useOldEdit
+            prefix: 'module/edit/old/'
+            files: [ '**/*.cpp' ]
         }
     }
 }

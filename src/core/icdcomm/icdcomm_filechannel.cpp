@@ -234,13 +234,13 @@ bool FileChannel::isOpen() const
 std::string FileChannel::config() const
 {
     std::ostringstream os;
+    os << " " << Channel::config();
     os << "file: --filePath=" << d->filePath << " ";
     // openmode
     os << d->openmode();
     // saveformat
     os << " " << d->saveformat();
     //
-    os << " " << Channel::config();
 
     return os.str();
 }

@@ -2,7 +2,7 @@
 #include "EditWindow.h"
 #ifdef EDIT_OLD
 #include "old/nav/icdnavigation.h"
-#include "old/view/icdmainview.h"
+#include "old/view/EditMainView.h"
 #else
 #include "EditTreeView.h"
 #include "EditSetView.h"
@@ -26,7 +26,7 @@ Window::Window(QWidget *parent)
     nav_ = new ICDNavigation(this);
     splitterMain_->addWidget(nav_);
 
-    view_ = new ICDMainView(this);
+    view_ = new EditMainView(this);
     splitterMain_->addWidget(view_);
 #else
     treeView_ = new TreeView(this);

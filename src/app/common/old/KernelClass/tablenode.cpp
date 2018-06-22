@@ -268,7 +268,7 @@ bool TableNode::deleteRule(const std::vector<int> &rule)
         if (it != d->q_rule.end()) {
             ICDMetaData::smtMeta meta = it->second;
             // Ö¡Êý¾Ý
-            if (meta && GlobalDefine::dtDiscern == meta->type()) {
+            if (meta && GlobalDefine::dtFrame == meta->type()) {
                 dirty = true;
             }
             d->q_rule.erase(it);

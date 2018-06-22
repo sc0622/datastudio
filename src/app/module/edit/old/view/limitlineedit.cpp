@@ -38,6 +38,11 @@ void LimitLineEdit::setMaxLength( int maxLength )
     }
 }
 
+int LimitLineEdit::maxLength() const
+{
+    return q_max;
+}
+
 QString LimitLineEdit::fuzzyText(const QString &text) const
 {
     // Qt5.6中文字符串用3个字节表示，但数据库是2字节，所以，这里要进行

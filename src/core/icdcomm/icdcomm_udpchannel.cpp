@@ -146,12 +146,13 @@ bool UdpChannel::isOpen() const
 std::string UdpChannel::config() const
 {
     std::ostringstream os;
-    os << "udp: --local=" << d->d->d_localHost.toString().toStdString()
+    os << " " << Channel::config()
+       << "udp: --local=" << d->d->d_localHost.toString().toStdString()
        << ":" << d->d->d_localPort
        << " --remote=" << d->d->d_remoteHost.toString().toStdString()
        << ":" << d->d->d_remotePort
-       << " " << d->openMode()     // openmode
-       << " " << Channel::config();
+       << " " << d->openMode();
+
     return os.str();
 }
 
@@ -224,9 +225,9 @@ bool UdpChannel::setConfig(const std::string &config)
 std::string UdpChannel::desc() const
 {
     std::ostringstream os;
-    os << "L-" << d->d->d_localHost.toString().toStdString()
+    os << "L=" << d->d->d_localHost.toString().toStdString()
        << ":" << d->d->d_localPort
-       << ", R-" << d->d->d_remoteHost.toString().toStdString()
+       << ", R=" << d->d->d_remoteHost.toString().toStdString()
        << ":" << d->d->d_remotePort
        << ", " << d->openMode("M=");
     return os.str();

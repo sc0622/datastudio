@@ -6,13 +6,13 @@
 class LimitLineEdit : public QLineEdit
 {
     Q_OBJECT
-
 public:
     explicit LimitLineEdit(QWidget *parent);
     ~LimitLineEdit();
 
     void setMaxLength(int maxLength);
-    int maxLength() const {return q_max;};
+    int maxLength() const;
+
     // 获取在限定范围内的有效字符串
     QString fuzzyText(const QString &text) const;
 

@@ -341,7 +341,7 @@ void ICDNavigationUi::slotDelete()
         QString keys = queryNodeKeys(current);
         keys = keys.left(keys.lastIndexOf(currentKey) - strlen("/"));
         if (GlobalDefine::dtComplex == current->data(RuleDefine).toInt()
-                && GlobalDefine::dtDiscern
+                && GlobalDefine::dtFrame
                 == current->parent()->data(RuleDefine).toInt()) {    // 帧数据
             std::vector<std::string> rules;
             // 查询子表
@@ -793,7 +793,7 @@ void ICDNavigationUi::updateRuleTip(const TableNode::smtTable &table, QStandardI
                 if (!(subData = subTable[i])) {
                     continue;
                 }
-                if (GlobalDefine::dtDiscern == meta->type()) { // 帧数据
+                if (GlobalDefine::dtFrame == meta->type()) { // 帧数据
                     ruleItem = findItem(UserKey, subData->key().c_str(), ruleItem);
                 } else if (GlobalDefine::dtComplex == meta->type()) {
                 }
@@ -849,7 +849,7 @@ bool ICDNavigationUi::updateNodeData(int dataAddr)
             updateTopTableTip();
         } else {
             variant = current->data(RuleDefine);
-            if (GlobalDefine::dtDiscern == variant.toInt()) {
+            if (GlobalDefine::dtFrame == variant.toInt()) {
                 result = updateSubTableData(*reinterpret_cast<stICDBase *>(dataAddr));
             } else {    // 编辑具体规则数据
                 result = updateDetailRuleData(*reinterpret_cast<ICDMetaData::smtMeta *>(dataAddr));
@@ -1030,7 +1030,7 @@ bool ICDNavigationUi::deleteNode(const std::vector<QString> &nodeID)
         std::vector<void*> params;
         QString keys = queryNodeKeys(current);
         int ruleType = current->data(RuleDefine).toInt();
-        if (GlobalDefine::dtDiscern == ruleType) {
+        if (GlobalDefine::dtFrame == ruleType) {
             // 帧数据
             std::vector<std::string> rules;
             for (int i = 0; i < count; ++i) {
@@ -1159,7 +1159,7 @@ bool ICDNavigationUi::reorderNodeData(const std::vector<int> &params)
                 jnotify->send("edit.modifyTable", args);
             } else {
                 variant = current->data(RuleDefine);
-                if (GlobalDefine::dtDiscern == variant.toInt()) {
+                if (GlobalDefine::dtFrame == variant.toInt()) {
                     int ret = 0;
                     keys = keys.left(keys.lastIndexOf("/"));
                     params.push_back(&keys);
@@ -1188,7 +1188,7 @@ bool ICDNavigationUi::reorderNodeData(const std::vector<int> &params)
             TableNode::smtTable table = SMT_CONVERT(TableNode, element);
             reorderRuleNode(table, pos);
         } else if (GlobalDefine::ntRule == level) {
-            if (GlobalDefine::dtDiscern == current->data(RuleDefine).toInt()) {    // 帧数据
+            if (GlobalDefine::dtFrame == current->data(RuleDefine).toInt()) {    // 帧数据
                 ICDMetaData::smtMeta meta = SMT_CONVERT(ICDMetaData, element);
                 reorderSubTableNode(meta, pos);
             } else {
@@ -1246,7 +1246,7 @@ ICDElement::smtElement ICDNavigationUi::savePastedData(const QVector<int> &param
     case GlobalDefine::ntRule:      // 规则节点
         queryNodeData(QString(), element);
         meta = SMT_CONVERT(ICDMetaData, element);
-        if (GlobalDefine::dtDiscern == current->data(RuleDefine).toInt()) {
+        if (GlobalDefine::dtFrame == current->data(RuleDefine).toInt()) {
             // 插入表数据
             item = formSubTableNode(current, SMT_CONVERT(TableNode, copyData),
                                     current->row(), meta ? meta->index() : -1);
@@ -1607,7 +1607,7 @@ QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent, const ICDMet
                 if (!(subData = subTable[i])) {
                     continue;
                 }
-                if (GlobalDefine::dtDiscern == meta->type()) { // 帧数据
+                if (GlobalDefine::dtFrame == meta->type()) { // 帧数据
                     formSubTableNode(result, subData, i + 1, meta->index());
                 } else if (GlobalDefine::dtComplex == meta->type()) {
                     loadRuleNode(result, subData, meta->index());
@@ -1838,7 +1838,7 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
                                       QStringLiteral("清空"),
                                       this, SLOT(slotClear()));
             break;
-        case GlobalDefine::dtDiscern:   // 帧数据，增加新增菜单
+        case GlobalDefine::dtFrame:   // 帧数据，增加新增菜单
             actNew = menu.addAction(QIcon(":/datastudio/image/global/add.png"),
                                     QStringLiteral("新增"),
                                     this, SLOT(slotNew()));
@@ -2711,7 +2711,7 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
                     base.sRemark = complex->remark();
                     table->setICDBase(base);
                 }
-            } else if (GlobalDefine::dtDiscern == meta->type()) {
+            } else if (GlobalDefine::dtFrame == meta->type()) {
                 // 更新子表数据
                 TableNode::tableVector tables = newData->allTable();
                 const int count = tables.size();
@@ -2775,7 +2775,7 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
             if (GlobalDefine::dtComplex == meta->type()) {
                 item->setData(complex->rule().c_str(), SubTable);
                 item->setIcon(QIcon(":/icdwidget/image/tree/icon-complex.png"));
-            } else if (GlobalDefine::dtDiscern == meta->type()) {
+            } else if (GlobalDefine::dtFrame == meta->type()) {
                 item->setIcon(QIcon(":/icdwidget/image/tree/icon-frame.png"));
             } else {
                 item->setIcon(QIcon(":/icdwidget/image/tree/icon-item.png"));

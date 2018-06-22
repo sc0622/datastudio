@@ -439,7 +439,7 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
         stDic.nCode = GlobalDefine::dtComplex;
         stDic.sDec = QStringLiteral("复合数据").toStdString();
         table.push_back(stDic);
-        stDic.nCode = GlobalDefine::dtDiscern;
+        stDic.nCode = GlobalDefine::dtFrame;
         stDic.sDec = QStringLiteral("帧数据").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtBuffer;

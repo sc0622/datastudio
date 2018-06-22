@@ -22,7 +22,7 @@ enum DataType {
     dtBitMap,           // BITMAP
     dtBitValue,         // BITVALUE
     dtComplex,          // 复合数据
-    dtDiscern,          // 帧数据
+    dtFrame,            // 帧数据
     dtBuffer,           // 数据预留区
     dtTotal             // 标记边界
 };

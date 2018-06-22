@@ -1,0 +1,60 @@
+#ifndef CHECK_EDIT_H
+#define CHECK_EDIT_H
+
+#include "ItemEdit.h"
+#include "KernelClass/icdcheckdata.h"
+
+class CheckEdit : public ObjectEdit
+{
+    Q_OBJECT
+public:
+    explicit CheckEdit(QWidget *parent = nullptr);
+
+    int windowType() const override;
+
+    // MetaUI interface
+    void setUIData(const _UIData &data) override;
+    void*uiData() const override;
+    // 切换数据类型
+    void changeDataType(int type) override;
+    // 原始数据类型
+    int originalType() const override;
+
+signals:
+
+private slots:
+    // 编辑框数据录入完成
+    void slotEditFinished();
+    // 编辑框文本变更
+    void slotTextChanged(const QString& text);
+
+private:
+    // 确认
+    void confirm() override;
+    // 取消
+    void cancel() override;
+
+    // 初始化界面数据
+    void init();
+    // 初始化校验类型下拉框
+    void initBoxType();
+    // 启/停用信号槽
+    void enableConnection(bool enable);
+    // 校验界面数据
+    bool dataValid();
+
+private:
+    ICDCheckData::smtCheck      q_data; // 界面数据
+    ICDCheckData::smtCheck      q_old;  // 原始数据
+
+    QColor          q_color;    // 默认背景色
+
+    LimitLineEdit   *q_edtName;
+    QLineEdit       *q_edtCode;
+    QComboBox       *q_boxCheckType;    // 校验类型
+    QSpinBox        *q_spinStart;       // 校验起始位
+    QSpinBox        *q_spinEnd;         // 校验终止位
+    LimitTextEdit   *q_edtRemak;
+};
+
+#endif // CHECK_EDIT_H

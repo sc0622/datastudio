@@ -7,7 +7,7 @@ class JSplitter;
 
 #ifdef EDIT_OLD
 class ICDNavigation;
-class ICDMainView;
+class EditMainView;
 #endif
 
 namespace Edit {
@@ -35,7 +35,7 @@ private:
     JSplitter *splitterMain_;
 #ifdef EDIT_OLD
     ICDNavigation *nav_;
-    ICDMainView *view_;
+    EditMainView *view_;
 #else
     TreeView *treeView_;
     SetView *setView_;

@@ -175,7 +175,7 @@ std::string ICDMetaData::typeString() const
     case GlobalDefine::dtBitMap: return "bitmap";
     case GlobalDefine::dtBitValue: return "bitvalue";
     case GlobalDefine::dtComplex: return "complex";
-    case GlobalDefine::dtDiscern: return "frame";
+    case GlobalDefine::dtFrame: return "frame";
     case GlobalDefine::dtBuffer: return "buffer";
     default: return "?";
     }

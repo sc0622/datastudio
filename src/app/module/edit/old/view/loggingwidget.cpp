@@ -1,25 +1,24 @@
 #include "precomp.h"
-#include "loggingwidget.h"
-#include "bitmapui.h"
-#include "bitvalueui.h"
-#include "counterui.h"
-#include "checkui.h"
-#include "commonui.h"
-#include "headerui.h"
-#include "planeui.h"
-#include "systemui.h"
-#include "tableui.h"
-#include "subtableui.h"
+#include "LoggingWidget.h"
 #include "KernelClass/icdfactory.h"
 #include "KernelClass/icdbitdata.h"
-#include "complexui.h"
-#include "discernui.h"
-#include "framecodeui.h"
-#include "bufferui.h"
+#include "BitMapEdit.h"
+#include "BitValueEdit.h"
+#include "CounterEdit.h"
+#include "CheckEdit.h"
+#include "HeaderEdit.h"
+#include "VehicleEdit.h"
+#include "SystemEdit.h"
+#include "TableEdit.h"
+#include "SubTableEdit.h"
+#include "ComplexEdit.h"
+#include "FrameEdit.h"
+#include "FrameCodeEdit.h"
+#include "BufferEdit.h"
 
 LoggingWidget::LoggingWidget(QWidget *parent)
     : QWidget(parent)
-    , currentMetaUi_(nullptr)
+    , currentEdit_(nullptr)
 {
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
     layoutMain->setContentsMargins(0, 0, 0, 0);
@@ -40,41 +39,41 @@ LoggingWidget::LoggingWidget(QWidget *parent)
     enableConnection(true);
 }
 
-void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
+void LoggingWidget::initUIData(int windowType, const _UIData &data)
 {
-    if (currentMetaUi_) {
-        if (metaUiType != currentMetaUi_->uiType()) {
+    if (currentEdit_) {
+        if (windowType != currentEdit_->windowType()) {
             stackedWidget_->removeWidget(stackedWidget_);
-            delete currentMetaUi_;
-            currentMetaUi_ = nullptr;
+            delete currentEdit_;
+            currentEdit_ = nullptr;
         }
     }
 
-    if (!currentMetaUi_) {
-        currentMetaUi_ = MetaUI::create(metaUiType);
-        if (!currentMetaUi_) {
+    if (!currentEdit_) {
+        currentEdit_ = ObjectEdit::create(windowType);
+        if (!currentEdit_) {
             return;
         }
-        stackedWidget_->addWidget(currentMetaUi_);
-        connect(currentMetaUi_, &MetaUI::confirmed, this, &LoggingWidget::slotConfirm);
-        connect(currentMetaUi_, &MetaUI::canceled, this, &LoggingWidget::slotCancel);
+        stackedWidget_->addWidget(currentEdit_);
+        connect(currentEdit_, &ObjectEdit::confirmed, this, &LoggingWidget::slotConfirm);
+        connect(currentEdit_, &ObjectEdit::canceled, this, &LoggingWidget::slotCancel);
     }
 
-    currentMetaUi_->setUIData(data);
+    currentEdit_->setUIData(data);
 
-    switch (metaUiType) {
-    case MetaUI::wdHeader:
-    case MetaUI::wdCounter:
-    case MetaUI::wdCheck:
-    case MetaUI::wdFrameCode:
-    case MetaUI::wdCommon:
-    case MetaUI::wdArray:
-    case MetaUI::wdNumeric:
-    case MetaUI::wdBitMap:
-    case MetaUI::wdBitValue:
-    case MetaUI::wdDiscern:
-    case MetaUI::wdComplex:
-    case MetaUI::wdBuffer:
+    switch (windowType) {
+    case ObjectEdit::wdItem:
+    case ObjectEdit::wdHeader:
+    case ObjectEdit::wdCounter:
+    case ObjectEdit::wdCheck:
+    case ObjectEdit::wdFrameCode:
+    case ObjectEdit::wdArray:
+    case ObjectEdit::wdNumeric:
+    case ObjectEdit::wdBitMap:
+    case ObjectEdit::wdBitValue:
+    case ObjectEdit::wdFrame:
+    case ObjectEdit::wdComplex:
+    case ObjectEdit::wdBuffer:
         initTypeInfo(data);
         groupType_->setVisible(true);
         break;
@@ -86,8 +85,8 @@ void LoggingWidget::initUIData(int metaUiType, const _UIData &data)
 
 void *LoggingWidget::uiData()
 {
-    if (currentMetaUi_) {
-        return currentMetaUi_->uiData();
+    if (currentEdit_) {
+        return currentEdit_->uiData();
     } else {
         return nullptr;
     }
@@ -95,18 +94,18 @@ void *LoggingWidget::uiData()
 
 void LoggingWidget::enableOptionButton(bool enable)
 {
-    if (currentMetaUi_) {
-        currentMetaUi_->enableOptionButton(enable);
+    if (currentEdit_) {
+        currentEdit_->enableOptionButton(enable);
     }
 }
 
 void LoggingWidget::slotConfirm(bool &result)
 {
-    if (!currentMetaUi_) {
+    if (!currentEdit_) {
         return;
     }
 
-    void *data = currentMetaUi_->uiData();
+    void *data = currentEdit_->uiData();
     if (!data) {
         return;
     }
@@ -117,17 +116,17 @@ void LoggingWidget::slotConfirm(bool &result)
     }
 
     // 如果是规则数据，则重新初始化数据类型下拉框
-    if (!currentMetaUi_) {
+    if (!currentEdit_) {
         return;
     }
 
-    data = currentMetaUi_->uiData();
+    data = currentEdit_->uiData();
     if (!data) {
         return;
     }
 
-    const int uiType = currentMetaUi_->uiType();
-    if (uiType >= MetaUI::wdHeader && uiType <= MetaUI::wdComplex) {
+    const int windowType = currentEdit_->windowType();
+    if (windowType >= ObjectEdit::wdHeader && windowType <= ObjectEdit::wdComplex) {
         _UIData _data;
         _data.data = data;
         _data.type = GlobalDefine::optEdit;
@@ -137,10 +136,10 @@ void LoggingWidget::slotConfirm(bool &result)
 
 void LoggingWidget::slotCancel()
 {
-    if (currentMetaUi_) {
+    if (currentEdit_) {
         if (boxType_->isVisible()) {
             enableConnection(false);
-            boxType_->setCurrentIndex(boxType_->findData(currentMetaUi_->originalType()));
+            boxType_->setCurrentIndex(boxType_->findData(currentEdit_->originalType()));
             enableConnection(true);
         }
     }
@@ -152,57 +151,56 @@ void LoggingWidget::slotTypeChanged(int index)
 {
     Q_UNUSED(index);
     // 原始数据
-    if (!currentMetaUi_) {
+    if (!currentEdit_) {
         return;
     }
 
-    ICDCommonData::smtCommon &smtData =
-            *reinterpret_cast<ICDCommonData::smtCommon*>(currentMetaUi_->uiData());
+    ICDCommonData::smtCommon &smtData = *reinterpret_cast<ICDCommonData::smtCommon*>(currentEdit_->uiData());
     if (!smtData) {
         return;
     }
 
     bool newData = ((GlobalDefine::dtTotal - GlobalDefine::dtHead) == boxType_->count());
     stTableRules rule = ICDFactory::instance().convert2Rule(smtData);
-    int metaUiType = MetaUI::wdCommon;
+    int windowType = ObjectEdit::wdItem;
     // 获取原始数据
     switch (rule.uType = boxType_->currentData().toInt()) {
     case GlobalDefine::dtHead:
-        metaUiType = MetaUI::wdHeader;
+        windowType = ObjectEdit::wdHeader;
         break;
     case GlobalDefine::dtCounter:
         rule.sDefault = QString::number(GlobalDefine::counterU8).toStdString();
-        metaUiType = MetaUI::wdCounter;
+        windowType = ObjectEdit::wdCounter;
         break;
     case GlobalDefine::dtCheck:
         rule.sDefault = QString::number(GlobalDefine::ctInvalid).toStdString();
-        metaUiType = MetaUI::wdCheck;
+        windowType = ObjectEdit::wdCheck;
         break;
     case GlobalDefine::dtFrameCode:
         rule.sDefault = QString::number(GlobalDefine::frame8).toStdString();
-        metaUiType = MetaUI::wdFrameCode;
+        windowType = ObjectEdit::wdFrameCode;
         break;
     case GlobalDefine::dtArray:
-        metaUiType = MetaUI::wdArray;
+        windowType = ObjectEdit::wdArray;
         break;
     case GlobalDefine::dtNumeric:
-        metaUiType = MetaUI::wdNumeric;
+        windowType = ObjectEdit::wdNumeric;
         break;
     case GlobalDefine::dtBitMap:
-        metaUiType = MetaUI::wdBitMap;
+        windowType = ObjectEdit::wdBitMap;
         break;
     case GlobalDefine::dtBitValue:
-        metaUiType = MetaUI::wdBitValue;
+        windowType = ObjectEdit::wdBitValue;
         break;
     case GlobalDefine::dtComplex:
-        metaUiType = MetaUI::wdComplex;
+        windowType = ObjectEdit::wdComplex;
         break;
-    case GlobalDefine::dtDiscern:
-        metaUiType = MetaUI::wdDiscern;
+    case GlobalDefine::dtFrame:
+        windowType = ObjectEdit::wdFrame;
         rule.dOffset = 1.0;
         break;
     case GlobalDefine::dtBuffer:
-        metaUiType = MetaUI::wdBuffer;
+        windowType = ObjectEdit::wdBuffer;
 		break;
     default:
         break;
@@ -216,9 +214,9 @@ void LoggingWidget::slotTypeChanged(int index)
     }
 
     // 重新刷新界面
-    initUIData(metaUiType, data);
-    if (!newData && currentMetaUi_) {
-        currentMetaUi_->changeDataType(rule.uType);
+    initUIData(windowType, data);
+    if (!newData && currentEdit_) {
+        currentEdit_->changeDataType(rule.uType);
     }
 }
 
@@ -258,9 +256,9 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
             lowerBound = GlobalDefine::dtComplex;
             upperBound = GlobalDefine::dtComplex;
             break;
-        case GlobalDefine::dtDiscern:
-            lowerBound = GlobalDefine::dtDiscern;
-            upperBound = GlobalDefine::dtDiscern;
+        case GlobalDefine::dtFrame:
+            lowerBound = GlobalDefine::dtFrame;
+            upperBound = GlobalDefine::dtFrame;
             break;
         case GlobalDefine::dtBuffer:
             lowerBound = GlobalDefine::dtBuffer;

@@ -342,7 +342,7 @@ bool SqlParserData::parseItem(const stTableRules &rule,
     case GlobalDefine::dtBitValue:
         item =Icd::BitItemPtr( new Icd::BitItem(Icd::ItemBitValue));
         break;
-    case GlobalDefine::dtDiscern:
+    case GlobalDefine::dtFrame:
         item = Icd::FrameItemPtr(new Icd::FrameItem());
         break;
     case GlobalDefine::dtComplex:

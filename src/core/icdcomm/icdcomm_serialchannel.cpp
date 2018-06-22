@@ -58,7 +58,6 @@ std::string SerialChannel::portName() const
 
 void SerialChannel::setPortName(const std::string &portName)
 {
-    //
     d->serialPort->setPortName(portName);
 }
 
@@ -69,7 +68,6 @@ int SerialChannel::baudRate() const
 
 void SerialChannel::setBaudRate(int baudRate)
 {
-    //
     d->serialPort->setBaudRate(baudRate);
 }
 
@@ -80,7 +78,6 @@ SerialChannel::DataBits SerialChannel::dataBits() const
 
 void SerialChannel::setDataBits(DataBits dataBits)
 {
-    //
     d->serialPort->setDataBits((JSerialPort::DataBits)dataBits);
 }
 
@@ -91,7 +88,6 @@ SerialChannel::StopBits SerialChannel::stopBits() const
 
 void SerialChannel::setStopBits(SerialChannel::StopBits stopBits)
 {
-    //
     d->serialPort->setStopBits((JSerialPort::StopBits)stopBits);
 }
 
@@ -102,7 +98,6 @@ SerialChannel::Parity SerialChannel::parity() const
 
 void SerialChannel::setParity(SerialChannel::Parity parity)
 {
-    //
     d->serialPort->setParity((JSerialPort::Parity)parity);
 }
 
@@ -177,6 +172,9 @@ bool SerialChannel::isOpen() const
 std::string SerialChannel::config() const
 {
     std::ostringstream os;
+
+    os << " " << Channel::config();
+
     os << "serial: --portName=" << d->serialPort->portName()
        << " --baudRate=" << (int)d->serialPort->baudRate()
        << " --dataBits=" << (int)d->serialPort->dataBits()
@@ -211,8 +209,6 @@ std::string SerialChannel::config() const
         os << "<?>";
         break;
     }
-
-    os << " " << Channel::config();
 
     return os.str();
 }
@@ -342,9 +338,8 @@ std::string SerialChannel::desc() const
 bool SerialChannel::setConfig(const std::string &portName, int baudRate,
                               DataBits dataBits, StopBits stopBits, Parity parity)
 {
-    //
     close();
-    //
+
     d->serialPort->setPortName(portName);
     d->serialPort->setBaudRate(baudRate);
     d->serialPort->setDataBits((JSerialPort::DataBits)dataBits);
