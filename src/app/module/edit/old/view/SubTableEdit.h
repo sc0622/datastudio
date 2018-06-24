@@ -11,48 +11,39 @@ class SubTableEdit : public ObjectEdit
 public:
     explicit SubTableEdit(QWidget* parent = nullptr);
 
-    int windowType() const override;
-
-    // MetaUI interface
-    void setUIData(const _UIData &data) override;
-    void* uiData() const override;
-
 signals:
 
-private slots:
-    // 编辑框文本变更
-    void slotTextChanged(const QString& text);
-    // 帧码数据变更
-    void slotCodeChanged(const qulonglong &value);
-    // 数据录入完成
-    void slotEditFinished();
+public slots:
+    void onCodeChanged(const qulonglong &value);
+
+    // ObjectEdit interface
+protected:
+    int windowType() const override;
+    bool onEditFinished() override;
+    bool onTextChanged(const QString &text) override;
+    bool init() override;
+    void enableConnect(bool enabled) override;
+    bool confirm() override;
+    bool validate();
+    void *nonData() override;
+    void *nonOldData() override;
+    bool setData(const _UIData &data) override;
+
+    QString name() const override;
+    void setName(const QString &text) override;
+
+    QString mark() const override;
+    void setMark(const QString &text) override;
+
+    QString desc() const override;
+    void setDesc(const QString &text) override;
 
 private:
-    // 确认
-    void confirm() override;
-    // 取消
-    void cancel() override;
-
-    // 初始化界面数据
-    void init();
-    // 初始化帧码长度下拉框
-    void initBoxLenght();
-    // 启/停用信号槽
-    void enableConnection(bool enable);
-    // 校验界面数据
-    bool dataValid();
-
-private:
-    stICDBase       q_data;     // 基本信息
-    stICDBase       q_old;      // 原始数据
-
-    QColor          q_color;    // 默认背景色
-
-    LimitLineEdit   *q_edtName;
-    QComboBox       *q_boxType;   // 帧码长度
-    JLargeSpinBox   *q_spinCode;
-    QSpinBox        *q_spinSequence;
-    LimitTextEdit   *q_edtDescribe;
+    stICDBase data_;
+    stICDBase oldData_;
+    QComboBox *comboLength_;
+    JLargeSpinBox *spinCode_;
+    QSpinBox *spinSequence_;
 };
 
 #endif // SUBTABLE_EDIT_H

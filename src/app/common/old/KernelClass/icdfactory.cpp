@@ -33,7 +33,7 @@ ICDElement::smtElement ICDFactory::clone(const ICDElement::smtElement &elemet)
     }
 
     switch (elemet->objectType()) {
-    case GlobalDefine::ntPlane:
+    case GlobalDefine::ntVehicle:
     {
         PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, elemet);
         return plane->clone();

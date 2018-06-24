@@ -16,13 +16,43 @@
 #include "TableEdit.h"
 #include "SystemEdit.h"
 #include "VehicleEdit.h"
+#include "LimitTextEdit.h"
 
 ObjectEdit::ObjectEdit(QWidget *parent)
     : QWidget(parent)
+    , isBaseData_(false)
 {
     layoutMain_ = new QVBoxLayout(this);
     layoutMain_->setContentsMargins(0, 0, 0, 0);
     layoutMain_->setSpacing(1);
+
+    splitterBase_ = new JSplitter(Qt::Vertical, this);
+    splitterBase_->setScales(QList<double>() << 1 << 2);
+    splitterBase_->setHandleWidth(3);
+    layoutMain_->addWidget(splitterBase_);
+
+    groupBoxBase_ = new QGroupBox(QStringLiteral("基本信息"), this);
+    splitterBase_->addWidget(groupBoxBase_);
+
+    layoutBase_ = new QFormLayout(groupBoxBase_);
+    layoutBase_->setLabelAlignment(Qt::AlignRight);
+    layoutBase_->setContentsMargins(3, 3, 3, 3);
+
+    editName_ = new QLineEdit(this);
+    editName_->setMaxLength(255);
+    editName_->setToolTip(QStringLiteral("最多255个字符"));
+    layoutBase_->addRow(QStringLiteral("<font color=red>*</font>名称："), editName_);
+
+    editMark_ = new QLineEdit(this);
+    editMark_->setMaxLength(255);
+    editMark_->setToolTip(QStringLiteral("最多255个字符"));
+    editMark_->setValidator(new QRegExpValidator(QRegExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,254}")));
+    layoutBase_->addRow(QStringLiteral("<font color=red>*</font>标识："), editMark_);
+
+    editDesc_ = new LimitTextEdit(this);
+    editDesc_->setMaxLength(255);
+    editDesc_->setToolTip(QStringLiteral("最多255个字符！"));
+    layoutBase_->addRow(QStringLiteral("描述："), editDesc_);
 
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutMain_->addLayout(layoutButton);
@@ -44,12 +74,41 @@ ObjectEdit::ObjectEdit(QWidget *parent)
     editStatus_ = new QLineEdit(this);
     editStatus_->setObjectName("__status__");
     editStatus_->setFixedHeight(22);
-    editStatus_->setReadOnly(true);
-    editStatus_->setFrame(false);
+    editStatus_->setEnabled(false);
     layoutMain_->addWidget(editStatus_);
 
-    connect(buttonConfirm_, &QPushButton::clicked, this, &ObjectEdit::confirm);
-    connect(buttonCancel_, &QPushButton::clicked, this, &ObjectEdit::cancel);
+    connect(buttonConfirm_, &QPushButton::clicked, this, [=](){
+        if (data_) {
+            QVariantList args;
+            args.append(qVariantFromValue((void*)&data_));
+            jnotify->send("edit.fillBitSerial", args);
+        }
+
+        if (!_validate()) {
+            return;
+        }
+
+        if (!confirm()) {
+            return;
+        }
+
+        bool result = false;
+        emit confirmed(result);
+        if (result) {
+            enableCommit(false);
+        } else {
+            setStatus(QStringLiteral("保存数据失败！"));
+        }
+    });
+    connect(buttonCancel_, &QPushButton::clicked, this, [=](){
+        _UIData data;
+        data.data = nonOldData();
+        setExtData(data, isBaseData_);
+        cancel();
+        enableCommit(false);
+    });
+
+    enableConnect(true);
 }
 
 ObjectEdit::~ObjectEdit()
@@ -62,51 +121,50 @@ int ObjectEdit::windowType() const
     return wdUnknown;
 }
 
-void ObjectEdit::setUIData(const _UIData &data)
+void ObjectEdit::changeType(int type)
 {
-    Q_UNUSED(data);
-    show();
-}
-
-void* ObjectEdit::uiData() const
-{
-    return NULL;
-}
-
-void ObjectEdit::changeDataType(int type)
-{
-    Q_UNUSED(type);
+    if (data_) {
+        data_->setType(type);
+        enableCommit(true);
+    }
 }
 
 int ObjectEdit::originalType() const
 {
-    return GlobalDefine::dtInvalid;
+    if (oldData_) {
+        return oldData_->type();
+    } else {
+        return GlobalDefine::dtInvalid;
+    }
 }
 
-void ObjectEdit::enableOptionButton(bool enable)
+void *ObjectEdit::nonData()
 {
-    buttonConfirm_->setEnabled(enable);
-    buttonCancel_->setEnabled(enable);
+    if (!data_) {
+        return nullptr;
+    }
+
+    return reinterpret_cast<void*>(&data_);
 }
 
-QVBoxLayout *ObjectEdit::layoutMain() const
+void *ObjectEdit::nonOldData()
 {
-    return layoutMain_;
+    if (!oldData_) {
+        return nullptr;
+    }
+
+    return reinterpret_cast<void*>(&oldData_);
 }
 
-QPushButton *ObjectEdit::buttonConfirm() const
+bool ObjectEdit::setData(const _UIData &data)
 {
-    return buttonConfirm_;
+    return setExtData(data, false);
 }
 
-QPushButton *ObjectEdit::buttonCancel() const
+void ObjectEdit::enableCommit(bool enabled)
 {
-    return buttonCancel_;
-}
-
-QLineEdit *ObjectEdit::editStatus() const
-{
-    return editStatus_;
+    buttonConfirm_->setEnabled(enabled);
+    buttonCancel_->setEnabled(enabled);
 }
 
 ObjectEdit *ObjectEdit::create(int windowType)
@@ -132,15 +190,329 @@ ObjectEdit *ObjectEdit::create(int windowType)
     }
 }
 
-void ObjectEdit::confirm()
+
+bool ObjectEdit::onEditFinished()
 {
-    buttonConfirm_->setEnabled(false);
-    buttonCancel_->setEnabled(false);
+    bool result = false;
+    const QObject *sender = this->sender();
+    if (sender == editDesc_) {
+        setDesc(editDesc_->toPlainText().trimmed());
+        result = true;
+    }
+
+    if (result) {
+        enableCommit(true);
+    }
+
+    return result;
+}
+
+bool ObjectEdit::onTextChanged(const QString &text)
+{
+    bool result = false;
+    const QObject *sender = this->sender();
+    if (sender == editName_) {
+        setName(text.trimmed());
+        result = true;
+    } else if (sender == editMark_) {
+        setMark(text.trimmed());
+       result = true;
+    } else if (sender == editDesc_) {
+        setDesc(text.trimmed());
+        result = true;
+    } if (sender == editStatus_) {
+        enableConfirm(text.trimmed().isEmpty());
+    }
+
+    if (result) {
+        enableCommit(true);
+    }
+
+    return result;
+}
+
+QVBoxLayout *ObjectEdit::layoutMain() const
+{
+    return layoutMain_;
+}
+
+JSplitter *ObjectEdit::splitterBase() const
+{
+    return splitterBase_;
+}
+
+QFormLayout *ObjectEdit::layoutBase() const
+{
+    return layoutBase_;
+}
+
+void ObjectEdit::addFormRow(QWidget *label, QWidget *field) const
+{
+    layoutBase_->insertRow(layoutBase_->rowCount() - 1, label, field);
+    layoutBase_->setAlignment(label, Qt::AlignVCenter);
+}
+
+void ObjectEdit::addFormRow(QWidget *label, QLayout *field) const
+{
+    layoutBase_->insertRow(layoutBase_->rowCount() - 1, label, field);
+    layoutBase_->setAlignment(label, Qt::AlignVCenter);
+}
+
+void ObjectEdit::addFormRow(const QString &labelText, QWidget *field) const
+{
+    layoutBase_->insertRow(layoutBase_->rowCount() - 1, labelText, field);
+}
+
+void ObjectEdit::addFormRow(const QString &labelText, QLayout *field) const
+{
+    layoutBase_->insertRow(layoutBase_->rowCount() - 1, labelText, field);
+}
+
+bool ObjectEdit::init()
+{
+    return true;
+}
+
+void ObjectEdit::enableConnect(bool enabled)
+{
+    disconnect(editName_, &QLineEdit::textChanged, this, &ObjectEdit::onTextChanged);
+    disconnect(editMark_, &QLineEdit::textChanged, this, &ObjectEdit::onTextChanged);
+    disconnect(editDesc_, &QTextEdit::textChanged, this, &ObjectEdit::onEditFinished);
+    disconnect(editStatus_, &QLineEdit::textChanged, this, &ObjectEdit::onTextChanged);
+    if (enabled) {
+        connect(editName_, &QLineEdit::textChanged, this, &ObjectEdit::onTextChanged);
+        connect(editMark_, &QLineEdit::textChanged, this, &ObjectEdit::onTextChanged);
+        connect(editDesc_, &QTextEdit::textChanged, this, &ObjectEdit::onEditFinished);
+        connect(editStatus_, &QLineEdit::textChanged, this, &ObjectEdit::onTextChanged);
+    }
+}
+
+bool ObjectEdit::confirm()
+{
+    return true;
 }
 
 void ObjectEdit::cancel()
 {
-    buttonConfirm_->setEnabled(false);
-    buttonCancel_->setEnabled(false);
+
 }
 
+bool ObjectEdit::validate()
+{
+    return true;
+}
+
+void ObjectEdit::enableConfirm(bool enabled)
+{
+    buttonConfirm_->setEnabled(enabled);
+}
+
+void ObjectEdit::enabledCancel(bool enabled)
+{
+    buttonCancel_->setEnabled(enabled);
+}
+
+void ObjectEdit::setStatus(const QString &text)
+{
+    if (text.isEmpty()) {
+        editStatus_->clear();
+        editStatus_->clearFocus();
+    } else {
+        editStatus_->setText(text);
+    }
+}
+
+ICDMetaData *ObjectEdit::data()
+{
+    return data_.get();
+}
+
+ICDMetaData *ObjectEdit::oldData()
+{
+    return oldData_.get();
+}
+
+bool ObjectEdit::setExtData(const _UIData &data, bool base)
+{
+    if (!data.data) {
+        return false;
+    }
+
+    isBaseData_ = base;
+
+    if (!base) {
+        ICDMetaData::smtMeta &meta = *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
+        if (!meta) {
+            return false;
+        }
+        oldData_ = meta;
+        data_ = oldData_->clone();
+    }
+
+    setProperty("option", data.type);
+
+    enableCommit(false);
+    enableConnect(false);
+    setStatus(QString());
+
+    if (!_init()) {
+        enableConnect(true);
+        return false;
+    }
+
+    enableConnect(true);
+
+    if (data.type == GlobalDefine::optNew) {
+        enableConfirm(true);
+    }
+
+    show();
+
+    return true;
+}
+
+LimitTextEdit *ObjectEdit::editDesc() const
+{
+    return editDesc_;
+}
+
+QString ObjectEdit::name() const
+{
+    return QString::fromStdString(data_->name());
+}
+
+void ObjectEdit::setName(const QString &text)
+{
+    data_->setName(text.toStdString());
+}
+
+QString ObjectEdit::mark() const
+{
+    return QString::fromStdString(data_->proCode());
+}
+
+void ObjectEdit::setMark(const QString &text)
+{
+    data_->setProCode(text.toStdString());
+}
+
+QString ObjectEdit::desc() const
+{
+    return QString::fromStdString(data_->describe());
+}
+
+void ObjectEdit::setDesc(const QString &text)
+{
+    data_->setDescribe(text.toStdString());
+}
+
+bool ObjectEdit::_init()
+{
+    editName_->clearFocus();
+    editName_->setProperty("highlight", false);
+    editName_->setText(name());
+
+    editMark_->clearFocus();
+    editMark_->setProperty("highlight", false);
+    editMark_->setText(mark());
+
+    editDesc_->setText(desc());
+
+    return init();
+}
+
+bool ObjectEdit::_validate()
+{
+    // name
+    if (name().isEmpty()) {
+        editName_->setFocus();
+        editName_->setProperty("highlight", true);
+        setStatus(QStringLiteral("名称不能为空！"));
+        return false;
+    } else {
+        QString section = "name";
+        QMap<QString, QString> existed;
+        QVariantList args;
+        args.append(qVariantFromValue((void*)&existed));
+        args.append(qVariantFromValue((void*)&section));
+        jnotify->send("edit.queryExistedData", args);
+        if (existed.contains(name())) {
+            editName_->setFocus();
+            editName_->setProperty("highlight", true);
+            setStatus(QStringLiteral("已存在同名项！"));
+            return false;
+        } else {
+            editName_->setProperty("highlight", false);
+        }
+    }
+
+    // mark
+    const QString mark = this->mark();
+    if (mark.isEmpty()) {
+        editMark_->setFocus();
+        editMark_->setProperty("highlight", true);
+        setStatus(QStringLiteral("标识不能为空！"));
+        return false;
+    } else {
+        QString section = "code";
+        QMap<QString, QString> existed;
+        QVariantList args;
+        args.append(qVariantFromValue((void*)&existed));
+        args.append(qVariantFromValue((void*)&section));
+        jnotify->send("edit.queryExistedData", args);
+        if (existed.contains(mark)) {
+            editMark_->setFocus();
+            editMark_->setProperty("highlight", true);
+            setStatus(QStringLiteral("已存在同名项！"));
+            return false;
+        } else {
+            editMark_->setProperty("highlight", false);
+        }
+    }
+
+    // anothers
+    if (!validate()) {
+        return false;
+    }
+    //
+    if (data_) {
+        //
+        int lengthCheck = 0;
+        QVariantList args;
+        args.append(qVariantFromValue((void*)&lengthCheck));
+        QString command("lengthCheck");
+        args.append(qVariantFromValue((void*)&command));
+        jnotify->send("edit.queryTableInformation", args);
+        if (0 == lengthCheck) {
+            return true;    // 不进行长度校验
+        }
+
+        const bool newItem = (property("option").toInt() == GlobalDefine::optNew);
+        // 长度
+        int remains = 0;
+        int offset = 0;
+        // 剩余可用长度
+        args.clear();
+        args.append(qVariantFromValue((void*)&remains));
+        command = "remains";
+        args.append(qVariantFromValue((void*)&command));
+        jnotify->send("edit.queryTableInformation", args);
+
+        // 长度偏移量
+        args.clear();
+        args.append(qVariantFromValue((void*)&data_));
+        args.append(qVariantFromValue((void*)&offset));
+        jnotify->send("edit.queryLengthOffset", args);
+        if (remains >= offset) {
+            if (newItem && remains < 0) {   // 如果是新增，需要判定剩余长度
+                setStatus(QStringLiteral("规划数据超过预定总长度！"));
+                return false;
+            }
+        } else {
+            setStatus(QStringLiteral("规划数据超过预定总长度！"));
+            return false;
+        }
+    }
+
+    return true;
+}

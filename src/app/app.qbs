@@ -78,10 +78,17 @@ Project {
         }
 
         Group {
-            name: 'old.KernelClass'
+            name: 'old.KernelClass.headers'
             condition: useOldEdit
             prefix: 'common/old/KernelClass/'
-            files: [ '**/*.h', '**/*.cpp' ]
+            files: [ '**/*.h' ]
+        }
+
+        Group {
+            name: 'old.KernelClass.sources'
+            condition: useOldEdit
+            prefix: 'common/old/KernelClass/'
+            files: [ '**/*.cpp' ]
         }
 
         Group {

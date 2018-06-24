@@ -19,7 +19,7 @@ private:
     std::string q_unit;     // 单位
     std::string q_rule;     // 规则
     // 数据对应关系<数值, 中文含义>
-    std::unordered_map<double, std::string> q_value;
+    std::map<double, std::string> q_value;
     DataLimitation q_limit;
 };
 
@@ -81,12 +81,12 @@ ICDMetaData::smtMeta ICDCommonData::clone() const
 
 void ICDCommonData::setProCode(const std::string& proCode)
 {
-    setSign(proCode);
+    ICDMetaData::setProCode(proCode);
 }
 
 std::string ICDCommonData::proCode() const
 {
-    return sign();
+    return ICDMetaData::proCode();
 }
 
 void ICDCommonData::setDefaultStr(const std::string& str)
@@ -189,7 +189,7 @@ void ICDCommonData::addValue(double value, const std::string &meaning)
 // 删除数据
 void ICDCommonData::deleteValue(double value)
 {
-    std::unordered_map<double, std::string>::iterator it = d->q_value.find(value);
+    std::map<double, std::string>::iterator it = d->q_value.find(value);
     if (it != d->q_value.end()) {
         d->q_value.erase(it);
     }
@@ -198,7 +198,7 @@ void ICDCommonData::deleteValue(double value)
 }
 
 // 设置数据
-void ICDCommonData::setValues(const std::unordered_map<double, std::string> &values)
+void ICDCommonData::setValues(const std::map<double, std::string> &values)
 {
     d->q_value = values;
 
@@ -206,7 +206,7 @@ void ICDCommonData::setValues(const std::unordered_map<double, std::string> &val
 }
 
 // 获取所有数据
-std::unordered_map<double, std::string> ICDCommonData::values() const
+std::map<double, std::string> ICDCommonData::values() const
 {
     return d->q_value;
 }
@@ -237,7 +237,7 @@ std::string ICDCommonData::stringValue() const
     char szTmp[128] = {0};
     std::string::size_type dotPos = std::string::npos;
     std::string::size_type lastZero = std::string::npos;
-    std::unordered_map<double, std::string>::iterator it = d->q_value.begin();
+    std::map<double, std::string>::iterator it = d->q_value.begin();
     for (; it != d->q_value.end(); ++it) {
         sprintf_s(szTmp, sizeof(szTmp), "%f", it->first);
         value = szTmp;

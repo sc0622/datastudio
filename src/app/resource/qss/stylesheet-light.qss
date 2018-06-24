@@ -1259,7 +1259,13 @@ QLineEdit#__status__ {
     color: #222;
 }
 
-/** custom **/
+/** QLineEdit[***] **/
+
+QLineEdit[highlight="true"] {
+    color: red;
+}
+
+/** custome-ext **/
 
 Icd--CoreTreeWidgetPrivate {
     qproperty-valueColor: blue;

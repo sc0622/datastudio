@@ -26,7 +26,7 @@ private:
     int bitStart;   // 起始比特位,从0开始
     int bitCount;   // 比特长度
     int typeSize;   // 数据类型字节数
-    std::unordered_map<icd_uint64, std::string> specs;    // 特征点
+    std::map<icd_uint64, std::string> specs;    // 特征点
 };
 
 std::string &BitItemData::trim(std::string &str)
@@ -171,7 +171,7 @@ std::string BitItem::dataString() const
     switch (type()) {
     case ItemBitValue:
     {
-        std::unordered_map<icd_uint64, std::string>::const_iterator citer = d->specs.find(data);
+        std::map<icd_uint64, std::string>::const_iterator citer = d->specs.find(data);
         if (citer != d->specs.end()) {
             return citer->second;
         } else {
@@ -181,7 +181,7 @@ std::string BitItem::dataString() const
     case ItemBitMap:
     {
         std::string str;
-        std::unordered_map<icd_uint64,  std::string>::const_iterator citer = d->specs.begin();
+        std::map<icd_uint64,  std::string>::const_iterator citer = d->specs.begin();
         for (citer = d->specs.begin(); citer != d->specs.end(); ++citer) {
             if ((data >> citer->first) & 1ull) {
                 str.append(citer->second).append(" | ");
@@ -239,12 +239,12 @@ icd_uint64 BitItem::mask() const
     return (((1ull << d->bitCount) - 1) << d->bitStart);
 }
 
-std::unordered_map<icd_uint64, std::string> BitItem::specs()
+std::map<icd_uint64, std::string> BitItem::specs()
 {
     return d->specs;
 }
 
-const std::unordered_map<icd_uint64, std::string> &BitItem::specs() const
+const std::map<icd_uint64, std::string> &BitItem::specs() const
 {
     return d->specs;
 }
@@ -266,7 +266,7 @@ void BitItem::clearSpec()
 
 std::string BitItem::specAt(icd_uint64 key) const
 {
-    std::unordered_map<icd_uint64, std::string>::const_iterator citer = d->specs.find(key);
+    std::map<icd_uint64, std::string>::const_iterator citer = d->specs.find(key);
     if (citer != d->specs.cend()) {
         return citer->second;
     } else {
@@ -375,7 +375,7 @@ Json::Value BitItem::save() const
     json["typeSize"] = typeSize();
     if (!d->specs.empty()) {
         Json::Value specsJson;
-        for (std::unordered_map<icd_uint64, std::string>::const_iterator
+        for (std::map<icd_uint64, std::string>::const_iterator
              citer = d->specs.cbegin(); citer != d->specs.cend(); ++citer) {
             Json::Value specJson;
             specJson[Icd::u64toa(citer->first, true)] = citer->second;

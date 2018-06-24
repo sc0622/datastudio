@@ -15,19 +15,19 @@
 
 DataEditWidget::DataEditWidget(QWidget *parent)
     : QWidget(parent)
-    , q_planeName("VehicleTable")
-    , q_systemName("SystemTable")
-    , q_tableName("Table")
-    , q_ruleName("RuleTable")
-    , q_frameName("FrameTable")
-    , q_objectName("ObjectTable")
-    , q_dataType(-1)
-    , q_subType(-1)
-    , q_newIndex(-1)
-    , q_changePos(-1)
-    , q_data(0)
+    , vehicleName_("VehicleTable")
+    , systemName_("SystemTable")
+    , tableName_("Table")
+    , ruleName_("RuleTable")
+    , frameName_("FrameTable")
+    , objectName_("ObjectTable")
+    , dataType_(-1)
+    , subType_(-1)
+    , newIndex_(-1)
+    , changedPos(-1)
+    , data_(0)
 {
-    q_defaultPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+    defaultPath_ = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 
     QVBoxLayout* veriLayoutMain = new QVBoxLayout(this);
     veriLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -39,34 +39,34 @@ DataEditWidget::DataEditWidget(QWidget *parent)
     splitterMain_->setHandleWidth(3);
     veriLayoutMain->addWidget(splitterMain_);
 
-    q_table = new JXmlTable(this);
-    q_table->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
-                        q_planeName);
-    q_table->setSortingEnabled(false);
-    q_table->setContextMenuPolicy(Qt::CustomContextMenu);
-    q_paste = new QAction(QStringLiteral("粘贴"), q_table);
-    q_table->addAction(q_paste);
-    splitterMain_->addWidget(q_table);
+    tableView_ = new JXmlTable(this);
+    tableView_->loadConfig(JMain::instance()->configDir().append("/old/xmltable.xml"),
+                           vehicleName_);
+    tableView_->setSortingEnabled(false);
+    tableView_->setContextMenuPolicy(Qt::CustomContextMenu);
+    actionPast_ = new QAction(QStringLiteral("粘贴"), tableView_);
+    tableView_->addAction(actionPast_);
+    splitterMain_->addWidget(tableView_);
 
-    q_loggingWidget = new LoggingWidget(this);
-    splitterMain_->addWidget(q_loggingWidget);
+    loggingWidget_ = new LoggingWidget(this);
+    splitterMain_->addWidget(loggingWidget_);
 
-    q_edtStatus = new QLabel(this);
-    q_edtStatus->setObjectName("__status__");
-    q_edtStatus->setFixedHeight(22);
-    q_edtStatus->setTextFormat(Qt::RichText);
-    q_edtStatus->setAlignment(Qt::AlignCenter);
-    q_edtStatus->hide();
-    veriLayoutMain->addWidget(q_edtStatus);
+    editStatus_ = new QLabel(this);
+    editStatus_->setObjectName("__status__");
+    editStatus_->setFixedHeight(22);
+    editStatus_->setTextFormat(Qt::RichText);
+    editStatus_->setAlignment(Qt::AlignCenter);
+    editStatus_->hide();
+    veriLayoutMain->addWidget(editStatus_);
 
-    connect(q_loggingWidget, &LoggingWidget::dataSaved, this, &DataEditWidget::slotSave2Memory);
-    connect(q_loggingWidget, &LoggingWidget::canceled, this, &DataEditWidget::slotCanceled);
-    connect(q_paste, &QAction::triggered, this, &DataEditWidget::slotPaste);
+    connect(loggingWidget_, &LoggingWidget::dataSaved, this, &DataEditWidget::slotSave2Memory);
+    connect(loggingWidget_, &LoggingWidget::canceled, this, &DataEditWidget::slotCanceled);
+    connect(actionPast_, &QAction::triggered, this, &DataEditWidget::slotPaste);
 
     enableConnection(true);
 
     // 默认隐藏
-    q_loggingWidget->setVisible(false);
+    loggingWidget_->setVisible(false);
 
     //
     jnotify->on("edit.toolbar.item.add", this, [=](JNEvent &){
@@ -122,18 +122,18 @@ void DataEditWidget::initUI(int type, void *data)
     }
 
     // 删除上次数据
-    if (GlobalDefine::ntUnknown == q_dataType) {
-        q_data.reset();
+    if (GlobalDefine::ntUnknown == dataType_) {
+        data_.reset();
     } else {
-        q_vData.clear();
+        vData_.clear();
     }
     // 重置变更项
-    q_changePos = -1;
+    changedPos = -1;
 
-    q_dataType = type;
-    q_subType = -1;
-    q_newIndex = -1;
-    q_loggingWidget->setVisible(false);
+    dataType_ = type;
+    subType_ = -1;
+    newIndex_ = -1;
+    loggingWidget_->setVisible(false);
     setActionEnabled("add", true);
     setActionEnabled("insert", false);
     setActionEnabled("remove", false);
@@ -150,52 +150,52 @@ void DataEditWidget::initUI(int type, void *data)
 
     setActionEnabled("db", dataState);
 
-    q_table->verticalHeader()->setSectionsMovable(true);    // 默认可以交换数据项位置
+    tableView_->verticalHeader()->setSectionsMovable(true);    // 默认可以交换数据项位置
     //q_table->setSortingEnabled(true);   // 默认启用排序功能
-    q_table->setProperty("copyData", -1);   // 重置拷贝数据属性
+    tableView_->setProperty("copyData", -1);   // 重置拷贝数据属性
 
     // 初始化数据过程中断开表信号槽
     enableConnection(false);
     if (GlobalDefine::ntUnknown == type) {
-        q_vData = *reinterpret_cast<std::vector<ICDElement::smtElement> *>(data);
-        const int count = q_vData.size();
+        vData_ = *reinterpret_cast<std::vector<ICDElement::smtElement> *>(data);
+        const int count = vData_.size();
         std::vector<PlaneNode::smtPlane> planes;
         for (int i = 0; i < count; ++i) {
-            planes.push_back(std::dynamic_pointer_cast<PlaneNode>(q_vData[i])->clone());
+            planes.push_back(std::dynamic_pointer_cast<PlaneNode>(vData_[i])->clone());
         }
         showData(planes);
         setActionEnabled("file", !planes.empty());
-    } else if (type == GlobalDefine::ntPlane) {
+    } else if (type == GlobalDefine::ntVehicle) {
         ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
         PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(element);
         auto &systems = plane->allSystem();
         foreach (const auto &system, systems) {
-            q_vData.push_back(system);
+            vData_.push_back(system);
         }
-        q_data = plane->clone();
+        data_ = plane->clone();
         showData(systems);
     } else if (type == GlobalDefine::ntSystem) {
         ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
         SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(element);
-        q_data = system->clone();
+        data_ = system->clone();
         showData(system->allTable());
     } else if (type == GlobalDefine::ntTable) {
         ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
         TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(element);
-        q_data = table->clone();
+        data_ = table->clone();
         if (table) {
             showData(table->allRule());
         }
     } else if (type == GlobalDefine::ntRule) {
         std::vector<int> &rule = *reinterpret_cast<std::vector<int> *>(data);
         if (2 == rule.size()) {
-            q_subType = rule.at(0);
+            subType_ = rule.at(0);
             ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(rule.at(1));
             //element = *reinterpret_cast<ICDElement::smtElement *>(rule.at(1));
-            if (GlobalDefine::dtComplex == q_subType) {
+            if (GlobalDefine::dtComplex == subType_) {
                 TableNode::smtTable table = SMT_CONVERT(TableNode, element);
                 if (table) {
-                    q_data = table->clone();
+                    data_ = table->clone();
                     showData(table->allRule());
                 } else {
                     showData(ICDMetaData::ruleMap());
@@ -203,7 +203,7 @@ void DataEditWidget::initUI(int type, void *data)
             } else {
                 ICDMetaData::smtMeta meta = SMT_CONVERT(ICDMetaData, element);
                 if (meta) {
-                    q_data = meta->clone();
+                    data_ = meta->clone();
                     showData(meta);
                     if (GlobalDefine::dtFrame != meta->type()) {
                         _UIData data;
@@ -230,16 +230,16 @@ void DataEditWidget::initUI(int type, void *data)
         jnotify->send("edit.queryNodeFlag", args);
 
         if (Qt::Unchecked == loaded) {
-            q_edtStatus->setText(QStringLiteral("尚未加载数据，不能进行操作"));
-            q_edtStatus->setHidden(loaded);
+            editStatus_->setText(QStringLiteral("尚未加载数据，不能进行操作"));
+            editStatus_->setHidden(loaded);
             // 更新按钮状态
             setActionEnabled("add", loaded);
             setActionEnabled("insert", loaded);
         } else {
-            setTipsVisible(q_ruleName == q_table->tableName());
+            setTipsVisible(ruleName_ == tableView_->tableName());
         }
     } else {
-        setTipsVisible(q_ruleName == q_table->tableName());
+        setTipsVisible(ruleName_ == tableView_->tableName());
     }
 }
 
@@ -251,7 +251,7 @@ void DataEditWidget::reInit()
     ICDElement::smtElement element;
     std::vector<ICDElement::smtElement> elements;
     // 查询原始数据重新初始化表
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         PlaneNode::planeVector planes;
         QVariantList args;
         args.append(qVariantFromValue((void*)&planes));
@@ -268,15 +268,15 @@ void DataEditWidget::reInit()
         QString lParam;
         args.append(qVariantFromValue((void*)&lParam));
         jnotify->send("edit.queryNodeData", args);
-        if (GlobalDefine::ntRule == q_dataType) {
-            rule.push_back(q_subType);
+        if (GlobalDefine::ntRule == dataType_) {
+            rule.push_back(subType_);
             rule.push_back((int)&element);
             data = &rule;
         } else {
             data = &element;
         }
     }
-    initUI(q_dataType, data);
+    initUI(dataType_, data);
 }
 
 // 查询当前显示表数据信息
@@ -292,8 +292,8 @@ int DataEditWidget::queryTableInformation(const QString &type) const
     //            && GlobalDefine::dtComplex == q_subType)) {
     //        key = "parentTable";
     //    }
-    if (GlobalDefine::ntRule == q_dataType) {
-        if (GlobalDefine::dtComplex != q_subType) {
+    if (GlobalDefine::ntRule == dataType_) {
+        if (GlobalDefine::dtComplex != subType_) {
             key = "parentTable";
         }
     }
@@ -332,9 +332,9 @@ int DataEditWidget::queryTableInformation(const QString &type) const
 QMap<QString, QString> DataEditWidget::queryExistedData(const QString &section) const
 {
     QMap<QString, QString> result;
-    if (GlobalDefine::ntRule == q_dataType
-            && !(GlobalDefine::dtComplex == q_subType
-                 || GlobalDefine::dtFrame == q_subType)) {
+    if (GlobalDefine::ntRule == dataType_
+            && !(GlobalDefine::dtComplex == subType_
+                 || GlobalDefine::dtFrame == subType_)) {
         // 非复合/帧规则数据，查询父表
         QString keys;
         ICDElement::smtElement element;
@@ -358,8 +358,8 @@ QMap<QString, QString> DataEditWidget::queryExistedData(const QString &section) 
         ICDMetaData::ruleMap rules = table->allRule();
         ICDMetaData::ruleMap::const_iterator it = rules.begin();
         for (; it != rules.end(); ++it) {
-            if (!(meta = it->second) || !q_data
-                    || atoi(q_data->id().c_str()) == meta->serial()) {
+            if (!(meta = it->second) || !data_
+                    || atoi(data_->id().c_str()) == meta->serial()) {
                 continue;
             }
             if ("name" == section) {
@@ -377,16 +377,16 @@ QMap<QString, QString> DataEditWidget::queryExistedData(const QString &section) 
         } else if ("code" == section) {
             column = 1;
         }
-        if (!q_table || column < 0 || column >(q_table->colorCount() - 1)) {
+        if (!tableView_ || column < 0 || column >(tableView_->colorCount() - 1)) {
             return result;
         }
         QString value;
-        const int count = q_table->rowCount();
+        const int count = tableView_->rowCount();
         for (int i = 0; i < count; ++i) {
-            if (q_table->currentRow() == i) {
+            if (tableView_->currentRow() == i) {
                 continue;
             }
-            value = q_table->itemValue(i, column).toString();
+            value = tableView_->itemValue(i, column).toString();
             result[value] = value;
         }
     }
@@ -484,7 +484,7 @@ int DataEditWidget::queryOffset(const ICDMetaData::smtMeta &meta) const
     }
     // 计算原始长度和编辑数据长度差
     if (!canMerged(meta)) {
-        if (-1 != q_newIndex && q_table->currentRow() == q_newIndex) {
+        if (-1 != newIndex_ && tableView_->currentRow() == newIndex_) {
             // 新增
             ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, meta);
             if (bit) {
@@ -507,7 +507,7 @@ int DataEditWidget::queryOffset(const ICDMetaData::smtMeta &meta) const
             }
         }
     } else {
-        if (-1 == q_newIndex) { // 编辑
+        if (-1 == newIndex_) { // 编辑
             result = meta->index();
             ICDMetaData::smtMeta old = table->rule(meta->serial());
             ICDMetaData::smtMeta next = table->rule(meta->serial() + 1);
@@ -558,13 +558,13 @@ void DataEditWidget::dealCommand(int command, const QVariant &param)
 // 加载显示机型
 void DataEditWidget::showData(const PlaneNode::planeVector &planes)
 {
-    if (NULL == q_table) {
+    if (NULL == tableView_) {
         return;
     }
-    if (q_table->tableName() != q_planeName) {
-        q_table->setTableName(q_planeName);
+    if (tableView_->tableName() != vehicleName_) {
+        tableView_->setTableName(vehicleName_);
     }
-    q_table->clearContents();
+    tableView_->clearContents();
     const int count = planes.size();
     for (int row = 0; row < count; ++row) {
         updateOne(row, planes[row], optNew);
@@ -575,13 +575,13 @@ void DataEditWidget::showData(const PlaneNode::planeVector &planes)
 // 加载显示系统
 void DataEditWidget::showData(const SystemNode::systemVector &systems)
 {
-    if (NULL == q_table) {
+    if (NULL == tableView_) {
         return;
     }
-    if (q_table->tableName() != q_systemName) {
-        q_table->setTableName(q_systemName);
+    if (tableView_->tableName() != systemName_) {
+        tableView_->setTableName(systemName_);
     }
-    q_table->clearContents();
+    tableView_->clearContents();
     const int count = systems.size();
     for (int i = 0; i < count; ++i) {
         updateOne(i, systems[i], optNew);
@@ -592,13 +592,13 @@ void DataEditWidget::showData(const SystemNode::systemVector &systems)
 // 加载显示ICD表
 void DataEditWidget::showData(const TableNode::tableVector &tables)
 {
-    if (NULL == q_table) {
+    if (NULL == tableView_) {
         return;
     }
-    if (q_table->tableName() != q_tableName) {
-        q_table->setTableName(q_tableName);
+    if (tableView_->tableName() != tableName_) {
+        tableView_->setTableName(tableName_);
     }
-    q_table->clearContents();
+    tableView_->clearContents();
     const int count = tables.size();
     TableNode::smtTable item = 0;
     for (int i = 0, row = 0; i < count; ++i) {
@@ -613,13 +613,13 @@ void DataEditWidget::showData(const TableNode::tableVector &tables)
 // 加载显示规则
 void DataEditWidget::showData(const ICDMetaData::ruleMap &rules)
 {
-    if (NULL == q_table) {
+    if (NULL == tableView_) {
         return;
     }
-    if (q_table->tableName() != q_ruleName) {
-        q_table->setTableName(q_ruleName);
+    if (tableView_->tableName() != ruleName_) {
+        tableView_->setTableName(ruleName_);
     }
-    q_table->clearContents();
+    tableView_->clearContents();
     // JXmlTable内部尚未实现mapToSource功能，暂时禁用排序
     //q_table->setSortingEnabled(false);
     // 清空数据时，隐藏提示
@@ -644,12 +644,11 @@ void DataEditWidget::showData(const ICDMetaData::smtMeta &data)
 {
     setTipsVisible(false);
     if (GlobalDefine::dtFrame == data->type()) {  // 帧数据
-        if (q_table->tableName() != q_frameName) {
-            q_table->setTableName(q_frameName);
+        if (tableView_->tableName() != frameName_) {
+            tableView_->setTableName(frameName_);
         }
-        q_table->clearContents();
-        ICDComplexData::smtComplex complex
-                = std::dynamic_pointer_cast<ICDComplexData>(data);
+        tableView_->clearContents();
+        ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(data);
         // 按码排序
         TableNode::tableVector subTable = complex->allTable();
         const int count = subTable.size();
@@ -664,9 +663,9 @@ void DataEditWidget::showData(const ICDMetaData::smtMeta &data)
         setActionEnabled("clean", subTable.size() > 0);
     } else {
         // 具体规则项不允许拖拽
-        q_table->verticalHeader()->setSectionsMovable(false);
-        if (q_table->tableName() != q_objectName) {
-            q_table->setTableName(q_objectName);
+        tableView_->verticalHeader()->setSectionsMovable(false);
+        if (tableView_->tableName() != objectName_) {
+            tableView_->setTableName(objectName_);
         }
         updateMetaOne(data);
         // 隐藏操作按钮
@@ -682,36 +681,31 @@ void DataEditWidget::showData(const ICDMetaData::smtMeta &data)
 }
 
 // 子表
-void DataEditWidget::updateSubOne(int index,
-                                    const stICDBase &data,
-                                    optType type)
+void DataEditWidget::updateSubOne(int index, const stICDBase &data, optType type)
 {
     int column(0);
     switch (type) {
     case optNew:
         // 插入空白行
-        q_table->insertRow(index);
+        tableView_->insertRow(index);
         break;
     case optEdit:
         break;
     case optDelete:
-        q_table->removeRow(index);
+        tableView_->removeRow(index);
         break;
     case optCopy:
-        q_table->insertRow(index);
-        q_table->setProperty("copyData", index);
+        tableView_->insertRow(index);
+        tableView_->setProperty("copyData", index);
     default:break;
     }
     // 插入数据
-    QStringList lst = QString::fromStdString(data.sRemark).split("##");
-    q_table->setItemData(index, column, data.sName.c_str(), Qt::UserRole);
-    q_table->setItemValue(index, column, data.sDescribe.c_str());
-    q_table->setItemValue(index, ++column, data.sCode.c_str());
-    q_table->setItemData(index, column, data.sGroup.c_str(), Qt::UserRole);
-    if (lst.size() > 1) {
-        q_table->setItemValue(index, ++column, lst.last());
-    }
-    q_table->setItemValue(index, ++column, lst.first());
+    tableView_->setItemData(index, column, data.sID.c_str(), Qt::UserRole);
+    tableView_->setItemData(index, column, data.sGroup.c_str(), Qt::UserRole + 1);
+    tableView_->setItemValue(index, column, data.sName.c_str());
+    tableView_->setItemValue(index, ++column, "0x" + QString::fromStdString(data.sCode));
+    tableView_->setItemValue(index, ++column, data.sRemark.c_str());
+    tableView_->setItemValue(index, ++column, data.sDescribe.c_str());
 }
 
 // 规则属性
@@ -736,8 +730,7 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
 
     // 构造显示数据
     pairData.first = QStringLiteral("数据类型");
-    pairData.second = dic.result.empty()
-            ? QStringLiteral("无效") : QString(dic.result.c_str());
+    pairData.second = dic.result.empty() ? QStringLiteral("无效") : QString(dic.result.c_str());
     datas.append(pairData);
     pairData.first = QStringLiteral("数据名称");
     pairData.second = QString(common->name().c_str());
@@ -770,10 +763,10 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             args.append(qVariantFromValue((void*)&dic));
             jnotify->send("edit.queryDictionary", args);
 
-            pairData.first = QStringLiteral("帧头类型");
+            pairData.first = QStringLiteral("计数器类型");
             pairData.second = QString(dic.result.c_str());
             datas.insert(1, pairData);
-        }  else if (data->type() == GlobalDefine::dtArray) {
+        } else if (data->type() == GlobalDefine::dtArray) {
             ICDArrayData::smtArray array
                     = std::dynamic_pointer_cast<ICDArrayData>(data);
             dic.dic = GlobalDefine::dicArrayType;
@@ -787,26 +780,12 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             pairData.first = QStringLiteral("数组类型");
             pairData.second = QString(dic.result.c_str());
             datas.insert(1, pairData);
-        } else if (data->type() == GlobalDefine::dtNumeric) {
-            ICDNumericData::smtNumeric numeric = std::dynamic_pointer_cast<ICDNumericData>(data);
-            dic.dic = GlobalDefine::dicNumericType;
-            dic.dicType = GlobalDefine::dictDec;
-            dic.condition = QString::number(numeric->numericType()).toStdString();
-
-            args.clear();
-            args.append(qVariantFromValue((void*)&dic));
-            jnotify->send("edit.queryDictionary", args);
-
-            pairData.first = QStringLiteral("数值类型");
-            pairData.second = QString(dic.result.c_str());
-            datas.insert(1, pairData);
         } else if (data->type() == GlobalDefine::dtCheck) {
-            ICDCheckData::smtCheck check
-                    = std::dynamic_pointer_cast<ICDCheckData>(data);
+            ICDCheckData::smtCheck check = std::dynamic_pointer_cast<ICDCheckData>(data);
             QPair<QString, QString> &ref = datas[5];
-            ref.first = QStringLiteral("校验起始位");
+            ref.first = QStringLiteral("起始偏移");
             ref.second = QString::number(check->start());
-            pairData.first = QStringLiteral("校验终止位");
+            pairData.first = QStringLiteral("终止偏移");
             pairData.second = QString::number(check->end());
             datas.insert(6, pairData);
             dic.dic = GlobalDefine::dicCheckType;
@@ -829,13 +808,28 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             if (!complex) {
                 pairData.second = QStringLiteral("不绑定");
             } else {
-                pairData.second = QStringLiteral("绑定<%1>")
-                        .arg(complex->name().c_str());
+                pairData.second = QStringLiteral("绑定<%1>").arg(complex->name().c_str());
             }
             datas.insert(3, pairData);
         } else {
-            QStringList lstRange
-                    = QString(common->range().c_str()).split("~");
+            int rowOffset = 5;
+            if (data->type() == GlobalDefine::dtNumeric) {
+                ICDNumericData::smtNumeric numeric = std::dynamic_pointer_cast<ICDNumericData>(data);
+                dic.dic = GlobalDefine::dicNumericType;
+                dic.dicType = GlobalDefine::dictDec;
+                dic.condition = QString::number(numeric->numericType()).toStdString();
+
+                args.clear();
+                args.append(qVariantFromValue((void*)&dic));
+                jnotify->send("edit.queryDictionary", args);
+
+                pairData.first = QStringLiteral("数值类型");
+                pairData.second = QString(dic.result.c_str());
+                datas.insert(1, pairData);
+                ++rowOffset;
+            }
+
+            QStringList lstRange = QString(common->range().c_str()).split("~");
             if (lstRange.size() < 2) {
                 lstRange.append("");
             }
@@ -845,88 +839,89 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             if (lstRange.last().isEmpty()) {
                 lstRange.last() = "+Inf";
             }
+
+            // specs
+            pairData.first = QStringLiteral("特征值描述");
+            pairData.second.clear();
+            std::map<double, std::string> items = common->values();
+            std::map<double, std::string>::iterator it = items.begin();
+            for (; it != items.end(); ++it) {
+                pairData.second += QString("%1: %2\r\n").arg(it->first).arg(it->second.c_str());
+            }
+            pairData.second = pairData.second.trimmed();
+            datas.insert(rowOffset + 2, pairData);
+            // range
             pairData.first = QStringLiteral("数据范围");
             pairData.second = QString().append(lstRange.first())
                     .append(" ~ ").append(lstRange.last());
-            datas.insert(5, pairData);
-            pairData.first = QStringLiteral("比例尺");
-            pairData.second = QString::number(common->scale(), 'g', 16);
-            datas.insert(7, pairData);
+            datas.insert(rowOffset, pairData);
+            // unit
             pairData.first = QStringLiteral("单位");
             pairData.second = QString(common->unit().c_str());
-            datas.insert(7, pairData);
+            datas.insert(rowOffset + 2, pairData);
+            // offset
             pairData.first = QStringLiteral("偏置");
             pairData.second = QString::number(common->offset(), 'g', 16);
-            datas.insert(7, pairData);
-            pairData.first = QStringLiteral("特征值描述");
-            pairData.second.clear();
-            std::unordered_map<double, std::string> items = common->values();
-            std::unordered_map<double, std::string>::iterator it = items.begin();
-            for (; it != items.end(); ++it) {
-                pairData.second += QString("%1 : <%2>\r\n")
-                        .arg(it->first).arg(it->second.c_str());
-            }
-            pairData.second = pairData.second.trimmed();
-            datas.insert(7, pairData);
-            resizeRow = 7;
+            datas.insert(rowOffset + 2, pairData);
+            // scale
+            pairData.first = QStringLiteral("比例尺");
+            pairData.second = QString::number(common->scale(), 'g', 16);
+            datas.insert(rowOffset + 2, pairData);
+            resizeRow = rowOffset + 5;
         }
     } else if (data->metaType() == IcdDefine::icdBit) {
         ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, data);
         QPair<QString, QString> &ref = datas[4];
-        ref.second = QStringLiteral("%1 字节")
-                .arg(bit->lengthOfByte().c_str());
-        QString value;
-        QString content;
-        std::unordered_map<double, std::string> items = bit->values();
-        std::unordered_map<double, std::string>::iterator it = items.begin();
+        ref.second = QStringLiteral("%1 字节").arg(bit->lengthOfByte().c_str());
+        std::map<double, std::string> items = bit->values();
+        std::map<double, std::string>::iterator it = items.begin();
         pairData.second.clear();
         if (data->type() == GlobalDefine::dtBitMap) {
             for (; it != items.end(); ++it) {
                 if (it->second.empty()) {
                     continue;   // 隐藏描述为空的数据
                 }
-                content = " ";
+                QString content;
                 QStringList lst = QString(it->second.c_str()).split(":");
                 QStringList lstValue = lst.last().split(";");
                 if (lstValue.size() > 1) {
                     if (!lstValue.first().isEmpty()) {
-                        content.append("0:").append(lstValue.first());
+                        content.append("0: ").append(lstValue.first());
                     }
                     if (!lstValue.last().isEmpty()) {
-                        content.append(", 1:").append(lstValue.last());
+                        content.append(", 1: ").append(lstValue.last());
                     }
                 } else {
                     content.clear();
                 }
                 QString(it->second.c_str()).split(":").last();
-                value = QString::number((int)it->first);
-                pairData.second += QString("%1 : <%2%3>\r\n")
-                        .arg(value).arg(lst.first()).arg(content);
+                QString value = QString::number((int)it->first);
+                if (content.isEmpty()) {
+                    pairData.second += QString("%1: %2\r\n").arg(value, 2, QChar('0')).arg(lst.first());
+                } else {
+                    pairData.second += QString("%1: %2 [%3]\r\n")
+                            .arg(value, 2, QChar('0')).arg(lst.first()).arg(content);
+                }
             }
         } else if (data->type() == GlobalDefine::dtBitValue) {
-            pairData.first = QStringLiteral("比例尺");
-            pairData.second = QString::number(bit->scale(), 'g', 16);
-            datas.insert(6, pairData);
+            // unit
             pairData.first = QStringLiteral("单位");
             pairData.second = QString(bit->unit().c_str());
             datas.insert(6, pairData);
+            // scale
+            pairData.first = QStringLiteral("比例尺");
+            pairData.second = QString::number(bit->scale(), 'g', 16);
+            datas.insert(6, pairData);
+            // offset
             pairData.first = QStringLiteral("偏置");
             pairData.second = QString::number(bit->offset(), 'g', 16);
             datas.insert(6, pairData);
-            QString fill;
             pairData.second.clear();
             for (; it != items.end(); ++it) {
                 if (it->second.empty()) {
                     continue;   // 隐藏描述为空的数据
                 }
-                value = QString::number((int)it->first, 2)
-                        .right(bit->length());
-                if (value.length() < bit->length()) {
-                    fill = QString(bit->length() - value.length(), '0');
-                    value.insert(0, fill);
-                }
-                pairData.second += QString("%1 : <%2>\r\n")
-                        .arg(value).arg(it->second.c_str());
+                pairData.second += QString("%1: %2\r\n").arg((int)it->first) .arg(it->second.c_str());
             }
         }
         pairData.first = QStringLiteral("特征值描述");
@@ -934,24 +929,24 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
         resizeRow = 7;
         datas.insert(6, pairData);
         pairData.first = QStringLiteral("比特位");
-        pairData.second = QString("%1~%2")
-                .arg(bit->start()).arg(bit->start() + bit->length() - 1);
+        pairData.second = QString("%1~%2").arg(bit->start()).arg(bit->start() + bit->length() - 1);
         datas.insert(5, pairData);
     }
+
     pairData.first = QStringLiteral("描述");
     pairData.second = QString(common->remark().c_str());
     datas.append(pairData);
     // 更新表
     QListIterator<QPair<QString, QString>> it = datas;
     int row = 0;
-    q_table->setRowCount(datas.size());
+    tableView_->setRowCount(datas.size());
     while (it.hasNext()) {
         pairData = it.next();
-        q_table->setItemValue(row, 0, pairData.first);
-        q_table->setItemValue(row++, 1, pairData.second);
+        tableView_->setItemValue(row, 0, pairData.first);
+        tableView_->setItemValue(row++, 1, pairData.second);
     }
     if (resizeRow > -1) {
-        q_table->resizeRowToContents(resizeRow);
+        tableView_->resizeRowToContents(resizeRow);
     }
 }
 
@@ -962,26 +957,26 @@ void DataEditWidget::updateOne(int index, const PlaneNode::smtPlane &data, optTy
     switch (type) {
     case optNew:
         // 插入空白行
-        q_table->insertRow(index);
+        tableView_->insertRow(index);
         break;
     case optEdit:
         break;
     case optDelete:
-        q_table->removeRow(index);
+        tableView_->removeRow(index);
         break;
     case optCopy:
-        q_table->insertRow(index);
-        q_table->setProperty("copyData", index);
+        tableView_->insertRow(index);
+        tableView_->setProperty("copyData", index);
     default:break;
     }
     if (!data) {
         return;
     }
     // 插入数据
-    q_table->setItemData(index, column, data->id().c_str(), Qt::UserRole);
-    q_table->setItemValue(index, column, data->name().c_str());
-    q_table->setItemValue(index, ++column, data->sign().c_str());
-    q_table->setItemValue(index, ++column, data->describe().c_str());
+    tableView_->setItemData(index, column, data->id().c_str(), Qt::UserRole);
+    tableView_->setItemValue(index, column, data->name().c_str());
+    tableView_->setItemValue(index, ++column, data->sign().c_str());
+    tableView_->setItemValue(index, ++column, data->describe().c_str());
 }
 
 void DataEditWidget::updateOne(int index, const SystemNode::smtSystem &data, optType type)
@@ -990,26 +985,26 @@ void DataEditWidget::updateOne(int index, const SystemNode::smtSystem &data, opt
     switch (type) {
     case optNew:
         // 插入空白行
-        q_table->insertRow(index);
+        tableView_->insertRow(index);
         break;
     case optEdit:
         break;
     case optDelete:
-        q_table->removeRow(index);
+        tableView_->removeRow(index);
         break;
     case optCopy:
-        q_table->insertRow(index);
-        q_table->setProperty("copyData", index);
+        tableView_->insertRow(index);
+        tableView_->setProperty("copyData", index);
     default:break;
     }
     if (!data) {
         return;
     }
     // 插入数据
-    q_table->setItemData(index, column, data->numeralId(), Qt::UserRole);
-    q_table->setItemValue(index, column, data->name().c_str());
-    q_table->setItemValue(index, ++column, data->sign().c_str());
-    q_table->setItemValue(index, ++column, data->describe().c_str());
+    tableView_->setItemData(index, column, data->numeralId(), Qt::UserRole);
+    tableView_->setItemValue(index, column, data->name().c_str());
+    tableView_->setItemValue(index, ++column, data->sign().c_str());
+    tableView_->setItemValue(index, ++column, data->describe().c_str());
 }
 
 void DataEditWidget::updateOne(int index, const TableNode::smtTable &data, optType type)
@@ -1019,16 +1014,16 @@ void DataEditWidget::updateOne(int index, const TableNode::smtTable &data, optTy
     switch (type) {
     case optNew:
         // 插入空白行
-        q_table->insertRow(index);
+        tableView_->insertRow(index);
         break;
     case optEdit:
         break;
     case optDelete:
-        q_table->removeRow(index);
+        tableView_->removeRow(index);
         break;
     case optCopy:
-        q_table->insertRow(index);
-        q_table->setProperty("copyData", index);
+        tableView_->insertRow(index);
+        tableView_->setProperty("copyData", index);
     default:
         break;
     }
@@ -1036,14 +1031,12 @@ void DataEditWidget::updateOne(int index, const TableNode::smtTable &data, optTy
         return;
     }
     // 插入数据
-    q_table->setItemData(index, column, data->key().c_str(), Qt::UserRole);
-    q_table->setItemValue(index, column, base.sDescribe.c_str());
-    q_table->setItemData(index, ++column, base.sGroup.c_str(), Qt::UserRole);
-    q_table->setItemValue(index, column, base.sCode.c_str());
-    q_table->setItemData(index, ++column, base.sID.c_str(), Qt::UserRole);
-    q_table->setItemValue(index, column, base.nLength);
-    q_table->setItemValue(index, ++column, QString(base.sRemark.c_str())
-                          .split("##").first());
+    tableView_->setItemData(index, column, data->key().c_str(), Qt::UserRole);
+    tableView_->setItemData(index, column, base.sGroup.c_str(), Qt::UserRole + 1);
+    tableView_->setItemValue(index, column, base.sName.c_str());
+    tableView_->setItemValue(index, ++column, "0x" + QString::fromStdString(base.sCode));
+    tableView_->setItemValue(index, ++column, base.sRemark.c_str());
+    tableView_->setItemValue(index, ++column, base.sDescribe.c_str());
 }
 
 void DataEditWidget::updateOne(int index, const ICDMetaData::smtMeta &data, optType type)
@@ -1059,16 +1052,16 @@ void DataEditWidget::updateOne(int index, const ICDMetaData::smtMeta &data, optT
     switch (type) {
     case optNew:
         // 插入空白行
-        q_table->insertRow(index);
+        tableView_->insertRow(index);
         break;
     case optEdit:
         break;
     case optDelete:
-        q_table->removeRow(index);
+        tableView_->removeRow(index);
         break;
     case optCopy:
-        q_table->insertRow(index);
-        q_table->setProperty("copyData", index);
+        tableView_->insertRow(index);
+        tableView_->setProperty("copyData", index);
     default:break;
     }
     const ICDCommonData::smtCommon common = std::dynamic_pointer_cast<ICDCommonData>(data);
@@ -1076,59 +1069,59 @@ void DataEditWidget::updateOne(int index, const ICDMetaData::smtMeta &data, optT
     QString indentify = QString::number(common->serial());
     if (GlobalDefine::dtComplex == common->type()) {
         // 复合数据记录子表ID
-        q_table->setItemData(index, column, common->rule().c_str(), ComplexTable);
+        tableView_->setItemData(index, column, common->rule().c_str(), ComplexTable);
     }
     // 插入数据
-    q_table->setItemData(index, column, indentify, Qt::UserRole);
-    q_table->setItemValue(index, column, common->name().c_str());
-    q_table->setItemValue(index, ++column, common->proCode().c_str());
+    tableView_->setItemData(index, column, indentify, Qt::UserRole);
+    tableView_->setItemValue(index, column, common->name().c_str());
+    tableView_->setItemValue(index, ++column, common->proCode().c_str());
     if (frameCode) {
-        q_table->setItemData(index, column, frameCode->bindingSerial(), Qt::UserRole);
+        tableView_->setItemData(index, column, frameCode->bindingSerial(), Qt::UserRole);
     }
     if (optCopy == type) {
         // 复制的数据，根据前一项的数据重新设置起始字号
         int code = 0;
         if (index > 0) {
-            code = q_table->itemValue(index - 1, 2).toInt();
-            code += q_table->itemData(index - 1, q_table->columnCount() - 1,
-                                      Qt::UserRole).toInt();
+            code = tableView_->itemValue(index - 1, 2).toInt();
+            code += tableView_->itemData(index - 1, tableView_->columnCount() - 1,
+                                         Qt::UserRole).toInt();
         }
-        q_table->setItemValue(index, ++column, code);
+        tableView_->setItemValue(index, ++column, code);
     } else {
-        q_table->setItemValue(index, ++column, common->index());
+        tableView_->setItemValue(index, ++column, common->index());
     }
-    q_table->setItemValue(index, ++column, common->lengthOfByte().c_str());
+    tableView_->setItemValue(index, ++column, common->lengthOfByte().c_str());
     dic.condition = QString::number(common->type()).toStdString();
-    q_table->setItemData(index, ++column, common->type(), Qt::UserRole);
-    q_table->setItemData(index, column, common->subType(), Qt::UserRole + 1);
+    tableView_->setItemData(index, ++column, common->type(), Qt::UserRole);
+    tableView_->setItemData(index, column, common->subType(), Qt::UserRole + 1);
 
     QVariantList args;
     args.append(qVariantFromValue((void*)&dic));
     jnotify->send("edit.queryDictionary", args);
 
-    q_table->setItemValue(index, column,
-                          dic.result.empty()
-                          ? QStringLiteral("无效") : dic.result.c_str());
-    q_table->setItemValue(index, ++column, data->remark().c_str());
-    q_table->setItemData(index, column, data->byteLength(), Qt::UserRole);
+    tableView_->setItemValue(index, column,
+                             dic.result.empty()
+                             ? QStringLiteral("无效") : dic.result.c_str());
+    tableView_->setItemValue(index, ++column, data->remark().c_str());
+    tableView_->setItemData(index, column, data->byteLength(), Qt::UserRole);
 }
 
 // 获取当前选中项数据
 ICDElement::smtElement DataEditWidget::currentData() const
 {
     ICDElement::smtElement result;
-    if (!q_table) {
+    if (!tableView_) {
         return result;
     }
     int column = 0;
-    int row = q_table->currentRow();
+    int row = tableView_->currentRow();
     if (row < 0) {
         return result;
     }
-    if (row == q_newIndex) {    // 新增数据
-        if (q_table->property("copyData").toInt() == q_newIndex) {
+    if (row == newIndex_) {    // 新增数据
+        if (tableView_->property("copyData").toInt() == newIndex_) {
             // 如果当前选中数据是拷贝数据，直接从内存获取
-            QString keys = q_table->property("source").toString();
+            QString keys = tableView_->property("source").toString();
             keys = keys.mid(keys.indexOf("##") + strlen("##"));
             if (keys.isEmpty()) {
                 return result;
@@ -1140,40 +1133,40 @@ ICDElement::smtElement DataEditWidget::currentData() const
         } else {    // 插入或者新增
         }
     } else {    // 编辑数据
-        QString key = q_table->itemData(row, column, Qt::UserRole).toString();
+        QString key = tableView_->itemData(row, column, Qt::UserRole).toString();
         // 查询拷贝数据
-        if (GlobalDefine::ntUnknown == q_dataType) {
-            const int count = q_vData.size();
+        if (GlobalDefine::ntUnknown == dataType_) {
+            const int count = vData_.size();
             for (int i = 0; i < count; ++i) {
-                if (q_vData[i]->id() == key.toStdString()) {
-                    result = q_vData[i];
+                if (vData_[i]->id() == key.toStdString()) {
+                    result = vData_[i];
                 }
             }
-        } else if (GlobalDefine::ntPlane == q_dataType) {
-            const int count = q_vData.size();
+        } else if (GlobalDefine::ntVehicle == dataType_) {
+            const int count = vData_.size();
             for (int i = 0; i < count; ++i) {
-                if (q_vData[i]->id() == key.toStdString()) {
-                    result = q_vData[i];
+                if (vData_[i]->id() == key.toStdString()) {
+                    result = vData_[i];
                 }
             }
-        } else if (GlobalDefine::ntSystem == q_dataType) {
-            SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(q_data);
+        } else if (GlobalDefine::ntSystem == dataType_) {
+            SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(data_);
             if (system) {
                 result = system->table(key.toStdString());
             }
-        } else if (GlobalDefine::ntTable == q_dataType) {
-            TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(q_data);
+        } else if (GlobalDefine::ntTable == dataType_) {
+            TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(data_);
             if (table) {
                 result = table->rule(key.toInt());
             }
-        } else if (GlobalDefine::ntRule == q_dataType) {
-            if (GlobalDefine::dtComplex == q_subType) {
-                TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(q_data);
+        } else if (GlobalDefine::ntRule == dataType_) {
+            if (GlobalDefine::dtComplex == subType_) {
+                TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(data_);
                 if (table) {
                     result = table->rule(key.toInt());
                 }
-            } else if (GlobalDefine::dtFrame == q_subType) {
-                ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(q_data);
+            } else if (GlobalDefine::dtFrame == subType_) {
+                ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(data_);
                 if (complex) {
                     result = complex->table(key.toStdString());
                 }
@@ -1187,30 +1180,26 @@ ICDElement::smtElement DataEditWidget::currentData() const
 // 启/停用信号槽
 void DataEditWidget::enableConnection(bool enable)
 {
-    disconnect(q_table,
-               SIGNAL(currentItemChanged(QStandardItem *, QStandardItem *)),
-               this,
-               SLOT(slotCurrentItemChanged(QStandardItem *, QStandardItem *)));
-    disconnect(q_table, SIGNAL(contentChanged()),
+    disconnect(tableView_, SIGNAL(currentItemChanged(QStandardItem *, QStandardItem *)),
+               this, SLOT(slotCurrentItemChanged(QStandardItem *, QStandardItem *)));
+    disconnect(tableView_, SIGNAL(contentChanged()),
                this, SLOT(slotContentChanged()));
-    disconnect(q_table, SIGNAL(itemPressed(QStandardItem *)),
+    disconnect(tableView_, SIGNAL(itemPressed(QStandardItem *)),
                this, SLOT(slotItemPressed(QStandardItem *)));
-    disconnect(q_table, SIGNAL(customContextMenuRequested(const QPoint &)),
+    disconnect(tableView_, SIGNAL(customContextMenuRequested(const QPoint &)),
                this, SLOT(slotCustomContextMenu(const QPoint &)));
-    disconnect(q_table->verticalHeader(), SIGNAL(sectionMoved(int, int, int)),
+    disconnect(tableView_->verticalHeader(), SIGNAL(sectionMoved(int, int, int)),
                this, SLOT(slotDataPosChanged(int, int, int)));
     if (enable) {
-        connect(q_table,
-                SIGNAL(currentItemChanged(QStandardItem *, QStandardItem *)),
-                this,
-                SLOT(slotCurrentItemChanged(QStandardItem *, QStandardItem *)));
-        connect(q_table, SIGNAL(contentChanged()),
+        connect(tableView_, SIGNAL(currentItemChanged(QStandardItem *, QStandardItem *)),
+                this, SLOT(slotCurrentItemChanged(QStandardItem *, QStandardItem *)));
+        connect(tableView_, SIGNAL(contentChanged()),
                 this, SLOT(slotContentChanged()));
-        connect(q_table, SIGNAL(itemPressed(QStandardItem *)),
+        connect(tableView_, SIGNAL(itemPressed(QStandardItem *)),
                 this, SLOT(slotItemPressed(QStandardItem *)));
-        connect(q_table, SIGNAL(customContextMenuRequested(const QPoint &)),
+        connect(tableView_, SIGNAL(customContextMenuRequested(const QPoint &)),
                 this, SLOT(slotCustomContextMenu(const QPoint &)));
-        connect(q_table->verticalHeader(), SIGNAL(sectionMoved(int, int, int)),
+        connect(tableView_->verticalHeader(), SIGNAL(sectionMoved(int, int, int)),
                 this, SLOT(slotDataPosChanged(int, int, int)));
     }
 }
@@ -1218,14 +1207,14 @@ void DataEditWidget::enableConnection(bool enable)
 // 新增机型
 void DataEditWidget::newPlane()
 {
-    if (!q_table) {
+    if (!tableView_) {
         return;
     }
     QString id;
     stPlane plane;
     QVariantList args;
     args.append(qVariantFromValue((void*)&id));
-    args.append(int(GlobalDefine::ntPlane));
+    args.append(int(GlobalDefine::ntVehicle));
     jnotify->send("edit.queryId", args);
 
     plane.nCode = id.toInt();
@@ -1233,9 +1222,9 @@ void DataEditWidget::newPlane()
     plane.sSign = QString("plane_%1").arg(plane.nCode).toStdString();
     PlaneNode::smtPlane smtData(new PlaneNode(plane));
     // 更新表
-    q_newIndex = q_table->rowCount();
-    updateOne(q_newIndex, smtData, optNew);
-    q_table->selectRow(q_newIndex);
+    newIndex_ = tableView_->rowCount();
+    updateOne(newIndex_, smtData, optNew);
+    tableView_->selectRow(newIndex_);
 }
 
 // 更新机型编辑数据界面
@@ -1247,37 +1236,34 @@ void DataEditWidget::updatePlaneUI(GlobalDefine::OptionType option)
     // 查询当前选中数据
     if (!plane) {
         int column = 0;
-        int row = q_table->currentRow();
+        int row = tableView_->currentRow();
         if (row < 0) {
             return;
         }
         QString id;
         QVariantList args;
         args.append(qVariantFromValue((void*)&id));
-        args.append(int(GlobalDefine::ntPlane));
+        args.append(int(GlobalDefine::ntVehicle));
         jnotify->send("edit.queryId", args);
 
         base.nCode = id.toInt();
-        base.sName = q_table->itemValue(row, column)
-                .toString().toStdString();
-        base.sSign = q_table->itemValue(row, ++column)
-                .toString().toStdString();
-        base.sDescribe = q_table->itemValue(row, ++column)
-                .toString().toStdString();
+        base.sName = tableView_->itemValue(row, column).toString().toStdString();
+        base.sSign = tableView_->itemValue(row, ++column).toString().toStdString();
+        base.sDescribe = tableView_->itemValue(row, ++column).toString().toStdString();
     } else {
         base = plane->plane();
     }
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(ObjectEdit::wdVehicle, data);
-    q_loggingWidget->setVisible(true);
+    loggingWidget_->initUIData(ObjectEdit::wdVehicle, data);
+    loggingWidget_->setVisible(true);
 }
 
 // 新增系统
 void DataEditWidget::newSystem()
 {
-    if (!q_table) {
+    if (!tableView_) {
         return;
     }
     QString id;
@@ -1292,9 +1278,9 @@ void DataEditWidget::newSystem()
     system.sSign = QString("system_%1").arg(system.nCode).toStdString();
     SystemNode::smtSystem smtData(new SystemNode(system));
     // 更新表
-    q_newIndex = q_table->rowCount();
-    updateOne(q_newIndex, smtData, optNew);
-    q_table->selectRow(q_newIndex);
+    newIndex_ = tableView_->rowCount();
+    updateOne(newIndex_, smtData, optNew);
+    tableView_->selectRow(newIndex_);
 }
 
 // 更新系统编辑数据界面
@@ -1305,7 +1291,7 @@ void DataEditWidget::updateSystemUI(GlobalDefine::OptionType option)
     SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(currentData());
     if (!system) {
         int column = 0;
-        int row = q_table->currentRow();
+        int row = tableView_->currentRow();
         if (row < 0) {
             return;
         }
@@ -1314,25 +1300,24 @@ void DataEditWidget::updateSystemUI(GlobalDefine::OptionType option)
         args.append(qVariantFromValue((void*)&id));
         args.append(int(GlobalDefine::ntSystem));
         jnotify->send("edit.queryId", args);
-
         base.nCode = id.toInt();
-        base.sName = q_table->itemValue(row, column).toString().toStdString();
-        base.sSign = q_table->itemValue(row, ++column).toString().toStdString();
-        base.sDescribe = q_table->itemValue(row, ++column).toString().toStdString();
+        base.sName = tableView_->itemValue(row, column).toString().toStdString();
+        base.sSign = tableView_->itemValue(row, ++column).toString().toStdString();
+        base.sDescribe = tableView_->itemValue(row, ++column).toString().toStdString();
     } else {
         base = system->system();
     }
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(ObjectEdit::wdSystem, data);
-    q_loggingWidget->setVisible(true);
+    loggingWidget_->initUIData(ObjectEdit::wdSystem, data);
+    loggingWidget_->setVisible(true);
 }
 
 // 新增ICD表
 void DataEditWidget::newICDTable()
 {
-    if (!q_table) {
+    if (!tableView_) {
         return;
     }
     QString id;
@@ -1349,17 +1334,16 @@ void DataEditWidget::newICDTable()
     jnotify->send("edit.queryId", args);
 
     table.check = false;
-    table.sName = id.toStdString();
-    table.sID = id.mid(id.lastIndexOf("_") + strlen("_")).toStdString();
-    table.sDescribe = QStringLiteral("表%1").arg(q_table->rowCount() + 1).toStdString();
-    table.sCode = QString("table_%1").arg(q_table->rowCount() + 1).toStdString();
+    table.sID = id.toStdString();
+    table.sName = QStringLiteral("表%1").arg(tableView_->rowCount() + 1).toStdString();
+    table.sCode = QString("table_%1").arg(tableView_->rowCount() + 1).toStdString();
     table.nLength = 0;
     table.sGroup = keys.toStdString();
     TableNode::smtTable smtData(new TableNode(table));
     // 更新表
-    q_newIndex = q_table->rowCount();
-    updateOne(q_newIndex, smtData, optNew);
-    q_table->selectRow(q_newIndex);
+    newIndex_ = tableView_->rowCount();
+    updateOne(newIndex_, smtData, optNew);
+    tableView_->selectRow(newIndex_);
 }
 
 // 更新ICD表编辑数据界面
@@ -1370,41 +1354,40 @@ void DataEditWidget::updateICDTableUI(GlobalDefine::OptionType option)
     TableNode::smtTable table = SMT_CONVERT(TableNode, currentData());
     if (!table) {
         int column = 0;
-        int row = q_table->currentRow();
+        int row = tableView_->currentRow();
         if (row < 0) {
             return;
         }
         base.check = false;
-        base.sDescribe = q_table->itemValue(row, column).toString().toStdString();
-        base.sName = q_table->itemData(row, column, Qt::UserRole).toString().toStdString();
-        base.sCode = q_table->itemValue(row, ++column).toString().toStdString();
-        base.sGroup = q_table->itemData(row, column, Qt::UserRole).toString().toStdString();
-        base.nLength = q_table->itemValue(row, ++column).toInt();
-        base.sID = q_table->itemData(row, column, Qt::UserRole).toString().toStdString();
-        base.sRemark = q_table->itemValue(row, ++column).toString().toStdString();
+        base.sID = tableView_->itemData(row, column, Qt::UserRole).toString().toStdString();
+        base.sGroup = tableView_->itemData(row, column, Qt::UserRole + 1).toString().toStdString();
+        base.sName = tableView_->itemValue(row, column).toString().toStdString();
+        base.sCode = tableView_->itemValue(row, ++column).toString().remove(0, 2).toStdString();
+        base.nLength = tableView_->itemValue(row, ++column).toInt();
+        base.sRemark = tableView_->itemValue(row, ++column).toString().toStdString();
     } else {
         base = table->icdBase();
     }
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(ObjectEdit::wdTable, data);
-    q_loggingWidget->setVisible(true);
+    loggingWidget_->initUIData(ObjectEdit::wdTable, data);
+    loggingWidget_->setVisible(true);
 }
 
 // 新增规则
 void DataEditWidget::newICDRule(int type)
 {
-    if (!q_table) {
+    if (!tableView_) {
         return;
     }
-    q_newIndex = q_table->rowCount();
+    newIndex_ = tableView_->rowCount();
     stTableRules rule;
-    int index = q_table->rowCount() - 1;
+    int index = tableView_->rowCount() - 1;
     if (index > -1) {
-        rule.nSerial = q_table->itemData(index, 0, Qt::UserRole).toInt() + 1;
-        rule.nCode = q_table->itemValue(index, 2).toInt();
-        rule.nCode += q_table->itemData(index, q_table->columnCount() - 1, Qt::UserRole).toInt();
+        rule.nSerial = tableView_->itemData(index, 0, Qt::UserRole).toInt() + 1;
+        rule.nCode = tableView_->itemValue(index, 2).toInt();
+        rule.nCode += tableView_->itemData(index, tableView_->columnCount() - 1, Qt::UserRole).toInt();
     } else {
         rule.nCode = 0;
         rule.nSerial = 1;
@@ -1422,14 +1405,14 @@ void DataEditWidget::newICDRule(int type)
         break;
     }
     //
-    rule.sPrgCode = QString("code_%1").arg(q_newIndex).toStdString();
+    rule.sPrgCode = QString("code_%1").arg(newIndex_).toStdString();
     ICDMetaData::smtMeta smtData = ICDFactory::instance().CreatObject(rule);
     // 更新表
-    updateOne(q_newIndex, smtData, optNew);
-    q_table->selectRow(q_newIndex);
+    updateOne(newIndex_, smtData, optNew);
+    tableView_->selectRow(newIndex_);
 
     // 将还未保存的数据长度设为0，使长度校验正确提示
-    q_table->setItemData(q_newIndex, q_table->columnCount() - 1, 0, Qt::UserRole);
+    tableView_->setItemData(newIndex_, tableView_->columnCount() - 1, 0, Qt::UserRole);
 }
 
 // 更新规则编辑数据界面
@@ -1441,20 +1424,20 @@ void DataEditWidget::updateICDRuleUI(GlobalDefine::OptionType option)
             int column = 0;
             stTableRules rule;
             // 查询界面数据
-            rule.sName = q_table->itemValue(q_newIndex, column).toString().toStdString();
-            rule.nSerial = q_table->itemData(q_newIndex, column, Qt::UserRole).toInt();
-            rule.sPrgCode = q_table->itemValue(q_newIndex, ++column).toString().toStdString();
-            rule.nCode = q_table->itemValue(q_newIndex, ++column).toInt();
-            rule.uLength = q_table->itemValue(q_newIndex, ++column).toInt();
-            rule.uType = q_table->itemData(q_newIndex, ++column, Qt::UserRole).toInt();
-            rule.subType = q_table->itemData(q_newIndex, column, Qt::UserRole + 1).toInt();
-            rule.sRemark = q_table->itemValue(q_newIndex, ++column).toString().toStdString();
+            rule.sName = tableView_->itemValue(newIndex_, column).toString().toStdString();
+            rule.nSerial = tableView_->itemData(newIndex_, column, Qt::UserRole).toInt();
+            rule.sPrgCode = tableView_->itemValue(newIndex_, ++column).toString().toStdString();
+            rule.nCode = tableView_->itemValue(newIndex_, ++column).toInt();
+            rule.uLength = tableView_->itemValue(newIndex_, ++column).toInt();
+            rule.uType = tableView_->itemData(newIndex_, ++column, Qt::UserRole).toInt();
+            rule.subType = tableView_->itemData(newIndex_, column, Qt::UserRole + 1).toInt();
+            rule.sRemark = tableView_->itemValue(newIndex_, ++column).toString().toStdString();
             meta = ICDFactory::instance().CreatObject(rule);
         } else {
             // 更新字节序号和顺序号
             meta = meta->clone();
-            meta->setIndex(q_table->itemValue(q_newIndex, 2).toInt());
-            meta->setSerial(q_table->rowCount());
+            meta->setIndex(tableView_->itemValue(newIndex_, 2).toInt());
+            meta->setSerial(tableView_->rowCount());
             // 帧识别码，重置绑定信息
             ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(meta);
             if (frameCode) {
@@ -1482,51 +1465,51 @@ void DataEditWidget::updateDetailUI(const _UIData &data)
     }
     if (IcdDefine::icdCommon == meta->metaType()) {
         if (GlobalDefine::dtHead == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdHeader, data);
+            loggingWidget_->initUIData(ObjectEdit::wdHeader, data);
         } else if (GlobalDefine::dtCounter == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdCounter, data);
+            loggingWidget_->initUIData(ObjectEdit::wdCounter, data);
         } else if (GlobalDefine::dtCheck == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdCheck, data);
+            loggingWidget_->initUIData(ObjectEdit::wdCheck, data);
         } else if (GlobalDefine::dtArray == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdArray, data);
+            loggingWidget_->initUIData(ObjectEdit::wdArray, data);
         } else if (GlobalDefine::dtNumeric == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdNumeric, data);
+            loggingWidget_->initUIData(ObjectEdit::wdNumeric, data);
         } else if (GlobalDefine::dtFrameCode == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdFrameCode, data);
+            loggingWidget_->initUIData(ObjectEdit::wdFrameCode, data);
         } else {
-            q_loggingWidget->initUIData(ObjectEdit::wdItem, data);
+            loggingWidget_->initUIData(ObjectEdit::wdItem, data);
         }
     } else if (IcdDefine::icdCustom == meta->metaType()) {
         if (GlobalDefine::dtBuffer == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdBuffer, data);
+            loggingWidget_->initUIData(ObjectEdit::wdBuffer, data);
         }
     } else if (IcdDefine::icdBit == meta->metaType()) {
         if (GlobalDefine::dtBitMap == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdBitMap, data);
+            loggingWidget_->initUIData(ObjectEdit::wdBitMap, data);
         } else if (GlobalDefine::dtBitValue == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdBitValue, data);
+            loggingWidget_->initUIData(ObjectEdit::wdBitValue, data);
         }
     } else if (IcdDefine::icdComplex == meta->metaType()) {
         if (GlobalDefine::dtComplex == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdComplex, data);
+            loggingWidget_->initUIData(ObjectEdit::wdComplex, data);
         } else if (GlobalDefine::dtFrame == meta->type()) {
-            q_loggingWidget->initUIData(ObjectEdit::wdFrame, data);
+            loggingWidget_->initUIData(ObjectEdit::wdFrame, data);
         }
     }
-    q_loggingWidget->setVisible(true);
+    loggingWidget_->setVisible(true);
 }
 
 // 新增子表
 void DataEditWidget::newSubTable()
 {
-    if (!q_table) {
+    if (!tableView_) {
         return;
     }
     int maxCount = 0;
     QVariantList args;
     args.append(qVariantFromValue((void*)&maxCount));
     jnotify->send("edit.queryMaxTableCount", args);
-    if (q_table->rowCount() >= maxCount) {
+    if (tableView_->rowCount() >= maxCount) {
 
         QMessageBox::information(this, QStringLiteral("新增"),
                                  QStringLiteral("子表已达上限，无法新增！如需提升上限，请联系管理员！"));
@@ -1549,19 +1532,15 @@ void DataEditWidget::newSubTable()
     args.append(int(GlobalDefine::ntTable));
     jnotify->send("edit.queryId", args);
 
-    base.sName = id.toStdString();
-    base.sID = id.mid(id.lastIndexOf("_") + strlen("_")).toStdString();
-    base.sDescribe = QStringLiteral("表%1")
-            .arg(q_table->rowCount() + 1).toUpper().toStdString();
-    base.sCode = QString("%1").arg(q_table->rowCount() + 1,
-                                   2, 16, QChar('0')).toStdString();
-    base.sGroup = QString("%1/%2").arg(keyLst.at(0))
-            .arg(keyLst.at(1)).toStdString();
-    base.sRemark = "##1";
+    base.sID = id.toStdString();
+    base.sName = QStringLiteral("表%1").arg(tableView_->rowCount() + 1).toUpper().toStdString();
+    base.sCode = QString("0x%1").arg(tableView_->rowCount() + 1, 2, 16, QChar('0')).toStdString();
+    base.sGroup = QString("%1/%2").arg(keyLst.at(0)).arg(keyLst.at(1)).toStdString();
+    base.sRemark = "1";
     // 更新表
-    q_newIndex = q_table->rowCount();
-    updateSubOne(q_newIndex, base, optNew);
-    q_table->selectRow(q_newIndex);
+    newIndex_ = tableView_->rowCount();
+    updateSubOne(newIndex_, base, optNew);
+    tableView_->selectRow(newIndex_);
 }
 
 // 更新子表编辑数据界面
@@ -1573,40 +1552,35 @@ void DataEditWidget::updateSubTableUI(GlobalDefine::OptionType option)
             = std::dynamic_pointer_cast<TableNode>(currentData());
     if (!table) {
         int column = 0;
-        int row = q_table->currentRow();
+        int row = tableView_->currentRow();
         if (row < 0) {
             return;
         }
-        base.sDescribe = q_table->itemValue(row, column)
-                .toString().toStdString();
-        base.sName = q_table->itemData(row, column, Qt::UserRole)
-                .toString().toStdString();
-        base.sCode = q_table->itemValue(row, ++column)
-                .toString().toStdString();
-        base.sGroup = q_table->itemData(row, column, Qt::UserRole)
-                .toString().toStdString();
-        base.sRemark = q_table->itemValue(row, ++column)
-                .toString().toStdString();
-        base.sRemark.insert(0, q_table->itemValue(row, ++column).toString().toStdString() + "##");
+        base.sID = tableView_->itemData(row, column, Qt::UserRole).toString().toStdString();
+        base.sGroup = tableView_->itemData(row, column, Qt::UserRole + 1).toString().toStdString();
+        base.sName = tableView_->itemValue(row, column).toString().toStdString();
+        base.sCode = tableView_->itemValue(row, ++column).toString().remove(0, 2).toStdString();
+        base.sRemark = tableView_->itemValue(row, ++column).toString().toStdString();
+        base.sDescribe = tableView_->itemValue(row, ++column).toString().toStdString();
     } else {
         base = table->icdBase();
     }
     _UIData data;
     data.data = &base;
     data.type = option;
-    q_loggingWidget->initUIData(ObjectEdit::wdSubTable, data);
-    q_loggingWidget->setVisible(true);
+    loggingWidget_->initUIData(ObjectEdit::wdSubTable, data);
+    loggingWidget_->setVisible(true);
 }
 
 // 显/隐状态提示
 void DataEditWidget::setTipsVisible(bool visible)
 {
-    if (!q_edtStatus) {
+    if (!editStatus_) {
         return;
     }
-    q_edtStatus->setVisible(visible);
+    editStatus_->setVisible(visible);
     if (visible) {
-        TableNode::smtTable table = SMT_CONVERT(TableNode, q_data);
+        TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
         if (!table) {
             return;
         }
@@ -1616,8 +1590,8 @@ void DataEditWidget::setTipsVisible(bool visible)
                 + QStringLiteral("已定义： %1 字节，").arg(table->length())
                 + QStringLiteral("实际规划： %1 字节")
                 .arg(table->realLength());
-        q_edtStatus->setText(tips);
-        if (-1 == q_newIndex) {
+        editStatus_->setText(tips);
+        if (-1 == newIndex_) {
             setActionEnabled("add", true);
             setActionEnabled("insert", true);
         }
@@ -1635,10 +1609,10 @@ void DataEditWidget::setTipsVisible(bool visible)
 int DataEditWidget::queryFirstBitSerial(int bitIndex)
 {
     int result = -1;
-    if (!q_table) {
+    if (!tableView_) {
         return result;
     }
-    int row = q_table->currentRow();
+    int row = tableView_->currentRow();
     if (row < 0) {
         return result;
     }
@@ -1646,9 +1620,9 @@ int DataEditWidget::queryFirstBitSerial(int bitIndex)
     int value = 0;
     // 查询
     for (int i = row - 1; i > -1; --i) {
-        value = q_table->itemValue(i, column).toInt();
+        value = tableView_->itemValue(i, column).toInt();
         if (bitIndex == value) {
-            result = q_table->itemData(i, 0, Qt::UserRole).toInt();
+            result = tableView_->itemData(i, 0, Qt::UserRole).toInt();
         } else if (value < bitIndex) {
             break;  //
         }
@@ -1669,13 +1643,13 @@ bool DataEditWidget::canMerged(const ICDMetaData::smtMeta &meta) const
     ICDMetaData::smtMeta metaPre = table->rule(meta->serial() - 1);
     ICDMetaData::smtMeta metaNext = 0;
 
-    if (GlobalDefine::ntRule == q_dataType
-            && !(GlobalDefine::dtComplex == q_subType
-                 || GlobalDefine::dtFrame == q_subType)) {
+    if (GlobalDefine::ntRule == dataType_
+            && !(GlobalDefine::dtComplex == subType_
+                 || GlobalDefine::dtFrame == subType_)) {
         // 非复合/帧规则数据，当前数据为已有数据
         metaNext = table->rule(meta->serial() + 1);
     } else {
-        if (q_table->currentRow() == q_newIndex && -1 != q_newIndex) {
+        if (tableView_->currentRow() == newIndex_ && -1 != newIndex_) {
             // 当前数据为未保存的新增数据
             metaNext = table->rule(meta->serial());
         } else {
@@ -1720,8 +1694,8 @@ bool DataEditWidget::canMerged(const ICDMetaData::smtMeta &meta) const
 // 显示右键菜单
 void DataEditWidget::showMenu()
 {
-    QMenu menu(q_table);
-    if (q_newIndex != q_table->currentRow()) {
+    QMenu menu(tableView_);
+    if (newIndex_ != tableView_->currentRow()) {
         menu.addAction(QStringLiteral("复制"), this, SLOT(slotCopy()));
     }
     QAction *act = menu.addAction(QStringLiteral("粘贴"), this,
@@ -1735,21 +1709,21 @@ void DataEditWidget::showMenu()
 bool DataEditWidget::canPasted() const
 {
     bool result = true;
-    QString keys = q_table->property("source").toString();
-    if (keys.isEmpty() || -1 != q_newIndex) {
+    QString keys = tableView_->property("source").toString();
+    if (keys.isEmpty() || -1 != newIndex_) {
         // 没有源数据或者表中有未保存数据
         result = false;
     } else {    //
         QStringList typeList = keys.mid(0, keys.indexOf("##")).split("_");
         const int level = typeList.first().toInt();
-        if (level == q_dataType) {  // 源数据和目标数据层级相同
-            if (GlobalDefine::ntTable < q_dataType) {
+        if (level == dataType_) {  // 源数据和目标数据层级相同
+            if (GlobalDefine::ntTable < dataType_) {
                 // 规则数据层
                 const int subType = typeList.last().toInt();
-                if (GlobalDefine::dtComplex == q_subType) {
+                if (GlobalDefine::dtComplex == subType_) {
                     // 目标子类型为复合数据，则允许粘贴除子表数据之外的所有数据
                     result = (GlobalDefine::dtFrame != subType);
-                } else if (GlobalDefine::dtFrame == q_subType) {
+                } else if (GlobalDefine::dtFrame == subType_) {
                     // 目标子类型为子表数据，则只允许粘贴子表数据
                     result = (GlobalDefine::dtFrame == subType);
                 } else {
@@ -1759,11 +1733,11 @@ bool DataEditWidget::canPasted() const
             }
         } else {    // 源数据和目标数据层级不同
             const int subType = typeList.last().toInt();
-            if (GlobalDefine::ntTable > q_dataType) {
+            if (GlobalDefine::ntTable > dataType_) {
                 // 目标层级在表层次以上，不允许粘贴源数据
                 result = false;
             } else {
-                if (GlobalDefine::ntTable == q_dataType) {
+                if (GlobalDefine::ntTable == dataType_) {
                     // 表层次                // 查询当前节点是否加载数据
                     int loadState = 0;
                     QVariantList args;
@@ -1785,7 +1759,7 @@ bool DataEditWidget::canPasted() const
                     }
                 } else {
                     // 规则数据层
-                    if (GlobalDefine::dtComplex == q_subType) {
+                    if (GlobalDefine::dtComplex == subType_) {
                         // 目标子类型为复合数据，则允许粘贴规则数据
                         result = (GlobalDefine::ntTable == level);
                     } else {
@@ -1803,7 +1777,7 @@ bool DataEditWidget::canPasted() const
 // 删除数据
 void DataEditWidget::deleteRule(int pos)
 {
-    TableNode::smtTable table = SMT_CONVERT(TableNode, q_data);
+    TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
     ICDMetaData::ruleMap rules = table->allRule();
     if (rules.empty()) {
         return;
@@ -1853,7 +1827,7 @@ void DataEditWidget::insertRule(const ICDMetaData::smtMeta &meta, int pos)
     if (!meta) {
         return;
     }
-    TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(q_data);
+    TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(data_);
     if (!table) {
         return;
     }
@@ -1925,33 +1899,33 @@ void DataEditWidget::insertRule(const ICDMetaData::smtMeta &meta, int pos)
 // 变更机型位置
 void DataEditWidget::movePlane(int from, int to)
 {
-    const int count = q_vData.size();
+    const int count = vData_.size();
     if (from < 0 || to >= count) {
         return;
     }
-    ICDElement::smtElement element = q_vData[from];
+    ICDElement::smtElement element = vData_[from];
     if (from < to) {    // 从前向后移
         for (int i = from; i < to; ++i) {
-            q_vData[i] = q_vData[i + 1];
+            vData_[i] = vData_[i + 1];
         }
     } else {    // 从后向前移
         for (int i = from; i > to; --i) {
-            q_vData[i] = q_vData[i - 1];
+            vData_[i] = vData_[i - 1];
         }
     }
-    q_vData[to] = element;
+    vData_[to] = element;
     std::vector<PlaneNode::smtPlane> planes;
     for (int i = 0; i < count; ++i) {
-        planes.push_back(SMT_CONVERT(PlaneNode, q_vData[i])->clone());
+        planes.push_back(SMT_CONVERT(PlaneNode, vData_[i])->clone());
     }
     showData(planes);
-    q_table->selectRow(to);
+    tableView_->selectRow(to);
 }
 
 // 变更系统位置
 void DataEditWidget::moveSystem(int from, int to)
 {
-    PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, q_data);
+    PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, data_);
     if (!plane) {
         return;
     }
@@ -1973,13 +1947,13 @@ void DataEditWidget::moveSystem(int from, int to)
     systems[to] = system;
     plane->setSystem(systems);
     showData(systems);
-    q_table->selectRow(to);
+    tableView_->selectRow(to);
 }
 
 // 变更表位置
 void DataEditWidget::moveTable(int from, int to)
 {
-    SystemNode::smtSystem system = SMT_CONVERT(SystemNode, q_data);
+    SystemNode::smtSystem system = SMT_CONVERT(SystemNode, data_);
     if (!system) {
         return;
     }
@@ -2001,13 +1975,13 @@ void DataEditWidget::moveTable(int from, int to)
     tables[to] = table;
     system->setTable(tables);
     showData(tables);
-    q_table->selectRow(to);
+    tableView_->selectRow(to);
 }
 
 // 变更规则位置
 void DataEditWidget::moveRule(int from, int to)
 {
-    TableNode::smtTable table = SMT_CONVERT(TableNode, q_data);
+    TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
     if (!table) {
         return;
     }
@@ -2019,13 +1993,13 @@ void DataEditWidget::moveRule(int from, int to)
     deleteRule(from);
     insertRule(meta, to);
     showData(table->allRule());
-    q_table->selectRow(to - 1);
+    tableView_->selectRow(to - 1);
 }
 
 // 变更子表位置
 void DataEditWidget::moveSubTable(int from, int to)
 {
-    ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, q_data);
+    ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, data_);
     if (!complex) {
         return;
     }
@@ -2047,39 +2021,39 @@ void DataEditWidget::moveSubTable(int from, int to)
     tables[to] = table;
     complex->setTable(tables);
     showData(complex);
-    q_table->selectRow(to);
+    tableView_->selectRow(to);
 }
 
 void DataEditWidget::saveEditData(void *data)
 {
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         PlaneNode::smtPlane plane;
         const stPlane &_plane = *reinterpret_cast<stPlane *>(data);
-        const int count = q_vData.size();
+        const int count = vData_.size();
         for (int i = 0; i < count; ++i) {
-            if (atoi(q_vData[i]->id().c_str()) == _plane.nCode) {
-                plane = std::dynamic_pointer_cast<PlaneNode>(q_vData[i]);
+            if (atoi(vData_[i]->id().c_str()) == _plane.nCode) {
+                plane = std::dynamic_pointer_cast<PlaneNode>(vData_[i]);
                 plane->setPlane(_plane);
                 break;
             }
         }
-    } else if (GlobalDefine::ntPlane == q_dataType) {
+    } else if (GlobalDefine::ntVehicle == dataType_) {
         const stSystem &_system = *reinterpret_cast<stSystem *>(data);
-        PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(q_data);
+        PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(data_);
         SystemNode::smtSystem system = plane->system(_system.nCode);
         if (system) {
             system->setSystem(_system);
         }
-    } else if (GlobalDefine::ntSystem == q_dataType) {
+    } else if (GlobalDefine::ntSystem == dataType_) {
         const stICDBase &_icdBase = *reinterpret_cast<stICDBase *>(data);
-        SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(q_data);
-        TableNode::smtTable table = system->table(_icdBase.sName);
+        SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(data_);
+        TableNode::smtTable table = system->table(_icdBase.sID);
         if (table) {
             table->setICDBase(_icdBase);
         }
-    } else if (GlobalDefine::ntTable == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_) {
         ICDMetaData::smtMeta meta = *reinterpret_cast<ICDMetaData::smtMeta *>(data);
-        TableNode::smtTable table = SMT_CONVERT(TableNode, q_data);
+        TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
         ICDMetaData::smtMeta old = table->rule(meta->serial());
         // 如果数据长度变更，则重新计算表数据项字节号
         bool reorder = false;   // 重新整理数据标志
@@ -2100,10 +2074,10 @@ void DataEditWidget::saveEditData(void *data)
         if (reorder) {
             reorderTable(table, meta->serial() + 1);
         }
-    } else if (GlobalDefine::ntRule == q_dataType) {
-        if (GlobalDefine::dtComplex == q_subType) {
+    } else if (GlobalDefine::ntRule == dataType_) {
+        if (GlobalDefine::dtComplex == subType_) {
             ICDMetaData::smtMeta meta = *reinterpret_cast<ICDMetaData::smtMeta *>(data);
-            TableNode::smtTable table = SMT_CONVERT(TableNode, q_data);
+            TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
             ICDMetaData::smtMeta old = table->rule(meta->serial());
             // 如果数据长度变更，则重新计算表数据项字节号
             bool reorder = false;   // 重新整理数据标志
@@ -2124,9 +2098,9 @@ void DataEditWidget::saveEditData(void *data)
             if (reorder) {
                 reorderTable(table, meta->serial() + 1);
             }
-        } else if (GlobalDefine::dtFrame == q_subType) {
+        } else if (GlobalDefine::dtFrame == subType_) {
             const stICDBase &_icdBase = *reinterpret_cast<stICDBase *>(data);
-            ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(q_data);
+            ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(data_);
             TableNode::smtTable table = complex->table(_icdBase.sName);
             table->setICDBase(_icdBase);
         }
@@ -2176,9 +2150,9 @@ TableNode::smtTable DataEditWidget::parentTable() const
 {
     TableNode::smtTable table = 0;
     // 分表下面的节点和规则节点两类，表下面的节点，查询q_data副本数据
-    if (GlobalDefine::ntRule == q_dataType
-            && !(GlobalDefine::dtComplex == q_subType
-                 || GlobalDefine::dtFrame == q_subType)) {
+    if (GlobalDefine::ntRule == dataType_
+            && !(GlobalDefine::dtComplex == subType_
+                 || GlobalDefine::dtFrame == subType_)) {
         // 非复合/帧规则数据，查询父表
         QString keys;
         ICDElement::smtElement element;
@@ -2196,7 +2170,7 @@ TableNode::smtTable DataEditWidget::parentTable() const
         table = SMT_CONVERT(TableNode, element);
     } else {
         // 规则节点，在拷贝数据中查询父表
-        table = SMT_CONVERT(TableNode, q_data);
+        table = SMT_CONVERT(TableNode, data_);
     }
 
     return table;
@@ -2205,11 +2179,11 @@ TableNode::smtTable DataEditWidget::parentTable() const
 // 更新编辑数据界面
 void DataEditWidget::updateLoggingUI(GlobalDefine::OptionType option)
 {
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         updatePlaneUI(option);
-    } else if (GlobalDefine::ntPlane == q_dataType) {
+    } else if (GlobalDefine::ntVehicle == dataType_) {
         updateSystemUI(option);
-    } else if (GlobalDefine::ntSystem == q_dataType) {
+    } else if (GlobalDefine::ntSystem == dataType_) {
         if (GlobalDefine::optNew == option) {
             updateICDTableUI(option);
         } else {
@@ -2225,34 +2199,32 @@ void DataEditWidget::updateLoggingUI(GlobalDefine::OptionType option)
                 if (loaded > 0) {
                     updateICDTableUI(option);
                 } else {
-                    q_loggingWidget->setVisible(false);
+                    loggingWidget_->setVisible(false);
                 }
             }
         }
-    } else if (GlobalDefine::ntTable == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_) {
         updateICDRuleUI(option);
-    } else if (GlobalDefine::ntRule == q_dataType) {
-        if (GlobalDefine::dtComplex == q_subType) {
+    } else if (GlobalDefine::ntRule == dataType_) {
+        if (GlobalDefine::dtComplex == subType_) {
             updateICDRuleUI(option);
-        } else if (GlobalDefine::dtFrame == q_subType) {
+        } else if (GlobalDefine::dtFrame == subType_) {
             updateSubTableUI(option);
-        } else {
-            //q_loggingWidget->setVisible(false);
         }
     }
     // 根据是否有位置变动，判定是否启用保存按钮
-    if (q_changePos >= 0) {
-        q_loggingWidget->enableOptionButton(true);
+    if (changedPos >= 0) {
+        loggingWidget_->enableCommit(true);
     }
 }
 
 // 表当前选中项变更
 void DataEditWidget::slotCurrentItemChanged(QStandardItem *current,
-                                              QStandardItem *previous)
+                                            QStandardItem *previous)
 {
     if (!current) {
         // 隐藏数据录入窗口
-        q_loggingWidget->setVisible(false);
+        loggingWidget_->setVisible(false);
         setActionEnabled("up", false);
         setActionEnabled("down", false);
         setActionEnabled("remove", false);
@@ -2261,34 +2233,34 @@ void DataEditWidget::slotCurrentItemChanged(QStandardItem *current,
             // 未变更选中行
             return;
         } else {
-            if (q_newIndex < 0 || q_newIndex != current->row()) {
+            if (newIndex_ < 0 || newIndex_ != current->row()) {
                 updateLoggingUI(GlobalDefine::optEdit);
             } else {     // 新增数据并未保存用户就切换选中表中其他数据
                 updateLoggingUI(GlobalDefine::optNew);
             }
         }
-        int count = q_table->rowCount();
+        int count = tableView_->rowCount();
         // 除了具体规则节点，其他节点均允许变更位置
-        if (count > 1 && GlobalDefine::ntRule != q_dataType
-                || GlobalDefine::dtFrame == q_subType
-                || GlobalDefine::dtComplex == q_subType) {
+        if (count > 1 && GlobalDefine::ntRule != dataType_
+                || GlobalDefine::dtFrame == subType_
+                || GlobalDefine::dtComplex == subType_) {
             setActionEnabled("up", 0 != current->row());
             setActionEnabled("down", count - 1 != current->row());
             // 变更数据顺序后未保存，不允许删除
-            setActionEnabled("remove", q_changePos < 0 ? true :false);
+            setActionEnabled("remove", changedPos < 0 ? true :false);
         } else if (1 == count) {
             setActionEnabled("remove", true);
         }
     }
     // 切换节点后，根据列表中是否有新增数据，决定新增按钮是否可用
-    if (-1 != q_newIndex) {
+    if (-1 != newIndex_) {
         setActionEnabled("add", false);
         setActionEnabled("insert", false);
         setActionEnabled("up", false);
         setActionEnabled("down", false);
     } else {
         // 变更数据位置后，未保存数据，不允许新增、插入
-        if (q_changePos >= 0) {
+        if (changedPos >= 0) {
             setActionEnabled("add", false);
             setActionEnabled("insert", false);
         }
@@ -2301,7 +2273,7 @@ void DataEditWidget::slotItemPressed(QStandardItem *item)
     Q_UNUSED(item);
     if (Qt::RightButton == QApplication::mouseButtons()) {
         // 具体规则定义时，不显示右键菜单
-        if (q_objectName != q_table->tableName()) {
+        if (objectName_ != tableView_->tableName()) {
             showMenu();
         }
     }
@@ -2311,17 +2283,17 @@ void DataEditWidget::slotItemPressed(QStandardItem *item)
 void DataEditWidget::slotCustomContextMenu(const QPoint &pos)
 {
     // 具体规则定义时，不显示右键菜单
-    if (q_objectName != q_table->tableName()) {
-        QMenu menu(q_table);
-        int row = q_table->currentRow();
-        if (row > -1 && q_newIndex != row) {
+    if (objectName_ != tableView_->tableName()) {
+        QMenu menu(tableView_);
+        int row = tableView_->currentRow();
+        if (row > -1 && newIndex_ != row) {
             menu.addAction(QStringLiteral("复制"), this, SLOT(slotCopy()));
         }
         QAction *act = menu.addAction(QStringLiteral("粘贴"), this,
                                       SLOT(slotPaste()));
         // 根据源数据和目的数据层次，决定粘贴选项可用状态
         act->setEnabled(canPasted());
-        menu.exec(q_table->viewport()->mapToGlobal(pos));
+        menu.exec(tableView_->viewport()->mapToGlobal(pos));
     }
 }
 
@@ -2329,37 +2301,37 @@ void DataEditWidget::slotCustomContextMenu(const QPoint &pos)
 void DataEditWidget::slotContentChanged()
 {
     // 仅在规则表数据时显示提示
-    setTipsVisible(q_ruleName == q_table->tableName());
+    setTipsVisible(ruleName_ == tableView_->tableName());
 }
 
 void DataEditWidget::slotDataPosChanged(int logical,
-                                          int oldIndex,
-                                          int newIndex)
+                                        int oldIndex,
+                                        int newIndex)
 {
     Q_UNUSED(logical);
-    if (q_changePos < 0) {
-        q_changePos = qMin(oldIndex, newIndex);
-    } else if (q_changePos > 0) {
-        q_changePos = qMin(q_changePos, qMin(oldIndex, newIndex));
+    if (changedPos < 0) {
+        changedPos = qMin(oldIndex, newIndex);
+    } else if (changedPos > 0) {
+        changedPos = qMin(changedPos, qMin(oldIndex, newIndex));
     }
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         movePlane(oldIndex, newIndex);
-    } else if (GlobalDefine::ntPlane == q_dataType) {
+    } else if (GlobalDefine::ntVehicle == dataType_) {
         moveSystem(oldIndex, newIndex);
-    } else if (GlobalDefine::ntSystem == q_dataType) {
+    } else if (GlobalDefine::ntSystem == dataType_) {
         moveTable(oldIndex, newIndex);
-    } else if (GlobalDefine::ntTable == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_) {
         // 规则序号从1开始
         moveRule(oldIndex + 1, newIndex + 1);
-    } else if (GlobalDefine::ntRule == q_dataType) {
-        if (GlobalDefine::dtComplex == q_subType) {
+    } else if (GlobalDefine::ntRule == dataType_) {
+        if (GlobalDefine::dtComplex == subType_) {
             // 规则序号从1开始
             moveRule(oldIndex + 1, newIndex + 1);
-        } else if (GlobalDefine::dtFrame == q_subType) {
+        } else if (GlobalDefine::dtFrame == subType_) {
             moveSubTable(oldIndex, newIndex);
         }
     }
-    q_loggingWidget->enableOptionButton(true);
+    loggingWidget_->enableCommit(true);
 }
 
 // 保存数据
@@ -2371,11 +2343,11 @@ void DataEditWidget::slotSave2Memory(void *data, bool &result)
 
     // 保存数据到内存，分拷贝、插入、新增和编辑，拷贝、插入、新增直接保存到内存
     // 编辑由于涉及到数据的位置更换，所有先保存到副本数据，再一次性更新内存数据
-    if (q_table->property("copyData").toInt() == q_newIndex
-            && -1 != q_newIndex) {  // 保存拷贝数据
+    if (tableView_->property("copyData").toInt() == newIndex_
+            && -1 != newIndex_) {  // 保存拷贝数据
         QVector<int> params;
         ICDElement::smtElement element;
-        QString keys = q_table->property("source").toString();
+        QString keys = tableView_->property("source").toString();
         keys = keys.mid(keys.indexOf("##") + strlen("##"));
         params << (int)&keys << (int)data;
 
@@ -2385,11 +2357,11 @@ void DataEditWidget::slotSave2Memory(void *data, bool &result)
         jnotify->send("edit.savePastedData", args);
 
         result = true;
-    } else if (-1 != q_newIndex
-               && (q_table->rowCount() - 1) != q_newIndex
-               && q_table->currentRow() == q_newIndex) {   // 插入数据
+    } else if (-1 != newIndex_
+               && (tableView_->rowCount() - 1) != newIndex_
+               && tableView_->currentRow() == newIndex_) {   // 插入数据
         std::vector<int> params;
-        params.push_back(q_table->currentRow());
+        params.push_back(tableView_->currentRow());
         params.push_back((int)data);
 
         QVariantList args;
@@ -2398,16 +2370,16 @@ void DataEditWidget::slotSave2Memory(void *data, bool &result)
         jnotify->send("edit.insertNodeData", args);
 
     } else {    // 新增（插入数据到最后一项算作新增）/编辑
-        if (-1 != q_changePos) {    // 改变了数据项的位置
+        if (-1 != changedPos) {    // 改变了数据项的位置
             // 保存数据到副本
             saveEditData(data);
             std::vector<int> params;
-            if (GlobalDefine::ntUnknown == q_dataType) {
-                params.push_back((int)&q_vData);
+            if (GlobalDefine::ntUnknown == dataType_) {
+                params.push_back((int)&vData_);
             } else {
-                params.push_back((int)&q_data);
+                params.push_back((int)&data_);
             }
-            params.push_back(q_changePos);
+            params.push_back(changedPos);
 
             QVariantList args;
             args.append(qVariantFromValue((void*)&params));
@@ -2424,9 +2396,9 @@ void DataEditWidget::slotSave2Memory(void *data, bool &result)
 
     if (result) {
         // 重新初始化界面
-        int row = q_table->currentRow();
+        int row = tableView_->currentRow();
         reInit();
-        q_table->selectRow(row);
+        tableView_->selectRow(row);
     } else {
         setActionEnabled("add", result);
         setActionEnabled("insert", result);
@@ -2435,14 +2407,14 @@ void DataEditWidget::slotSave2Memory(void *data, bool &result)
 
 void DataEditWidget::slotCanceled()
 {
-    if (-1 != q_changePos) {
+    if (-1 != changedPos) {
         return;  // 只有拖动数据位置时才重新初始化
     }
 
     // 重新初始化界面
-    int row = q_table->currentRow();
+    int row = tableView_->currentRow();
     reInit();
-    q_table->selectRow(row);
+    tableView_->selectRow(row);
 
     //q_loggingWidget->setVisible(false);
 }
@@ -2450,65 +2422,65 @@ void DataEditWidget::slotCanceled()
 // 新增
 void DataEditWidget::slotNew(const QVariant &param)
 {
-    if (GlobalDefine::ntUnknown == q_dataType) {   // 机型
+    if (GlobalDefine::ntUnknown == dataType_) {   // 机型
         newPlane();
-    } else if (GlobalDefine::ntPlane == q_dataType) {  // 系统
+    } else if (GlobalDefine::ntVehicle == dataType_) {  // 系统
         newSystem();
-    } else if (GlobalDefine::ntSystem == q_dataType) { // 表
+    } else if (GlobalDefine::ntSystem == dataType_) { // 表
         newICDTable();
-    } else if (GlobalDefine::ntTable == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_) {
         newICDRule(param.toInt());
-    } else if (GlobalDefine::ntRule == q_dataType) {
-        if (GlobalDefine::dtComplex == q_subType) {
+    } else if (GlobalDefine::ntRule == dataType_) {
+        if (GlobalDefine::dtComplex == subType_) {
             newICDRule(param.toInt());
-        } else if (GlobalDefine::dtFrame == q_subType) {
+        } else if (GlobalDefine::dtFrame == subType_) {
             newSubTable();
         }
     }
     // 变更数据项以后，必须保存数据之后才能继续移动
-    if (-1 != q_newIndex) {
-        q_table->verticalHeader()->setSectionsMovable(false);
+    if (-1 != newIndex_) {
+        tableView_->verticalHeader()->setSectionsMovable(false);
     }
 }
 
 // 插入
 void DataEditWidget::slotInsert()
 {
-    if (GlobalDefine::ntTable == q_dataType
-            || (GlobalDefine::ntRule == q_dataType
-                && GlobalDefine::dtComplex == q_subType)) {
-        if (!q_table) {
+    if (GlobalDefine::ntTable == dataType_
+            || (GlobalDefine::ntRule == dataType_
+                && GlobalDefine::dtComplex == subType_)) {
+        if (!tableView_) {
             return;
         }
         stTableRules rule;
-        int index = q_table->currentRow();
+        int index = tableView_->currentRow();
         if (index < 0) {    // 未选中数据，插入到末尾，做新增处理
             newICDRule(GlobalDefine::dtNumeric);
         } else {
-            q_newIndex = index;
-            rule.nSerial = q_table->itemData(index, 0, Qt::UserRole).toInt();
-            rule.nCode = q_table->itemValue(index - 1, 2).toInt();
-            rule.nCode += q_table->itemData(index - 1,
-                                            q_table->columnCount() - 1,
-                                            Qt::UserRole).toInt();
-            //             if (index > 0
-            //                 && q_table->itemValue(index - 1, 2).toInt() == rule.nCode) {
-            //                 // 如果插入位置在两个同字节的bit之间，
-            //                 // 则将插入位置移动到bit字节之前
-            //                 rule.nSerial = queryFirstBitSerial(rule.nCode);
-            //             }
+            newIndex_ = index;
+            rule.nSerial = tableView_->itemData(index, 0, Qt::UserRole).toInt();
+            rule.nCode = tableView_->itemValue(index - 1, 2).toInt();
+            rule.nCode += tableView_->itemData(index - 1, tableView_->columnCount() - 1,
+                                               Qt::UserRole).toInt();
             rule.sName = QString("item_%1").arg(index).toStdString();
             rule.uType = GlobalDefine::dtNumeric;
+            // subType
+            switch (rule.uType) {
+            case GlobalDefine::dtNumeric: rule.subType = GlobalDefine::NumericU8; break;
+            default:
+                break;
+            }
+            //
             rule.sPrgCode = QString("code_%1").arg(index).toStdString();
             ICDMetaData::smtMeta smtData
                     = ICDFactory::instance().CreatObject(rule);
             // 更新表
-            updateOne(q_newIndex, smtData, optNew);
-            q_table->selectRow(q_newIndex);
+            updateOne(newIndex_, smtData, optNew);
+            tableView_->selectRow(newIndex_);
         }
         // 变更数据项以后，必须保存数据之后才能继续移动
-        if (-1 != q_newIndex) {
-            q_table->verticalHeader()->setSectionsMovable(false);
+        if (-1 != newIndex_) {
+            tableView_->verticalHeader()->setSectionsMovable(false);
         }
     }
 }
@@ -2516,59 +2488,59 @@ void DataEditWidget::slotInsert()
 // 上移
 void DataEditWidget::slotMoveUp()
 {
-    int row = q_table->currentRow();
-    if (q_changePos < 0) {
-        q_changePos = row - 1;
-    } else if (q_changePos > 0) {
-        q_changePos = qMin(q_changePos, row - 1);
+    int row = tableView_->currentRow();
+    if (changedPos < 0) {
+        changedPos = row - 1;
+    } else if (changedPos > 0) {
+        changedPos = qMin(changedPos, row - 1);
     }
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         movePlane(row, row - 1);
-    } else if (GlobalDefine::ntPlane == q_dataType) {
+    } else if (GlobalDefine::ntVehicle == dataType_) {
         moveSystem(row, row - 1);
-    } else if (GlobalDefine::ntSystem == q_dataType) {
+    } else if (GlobalDefine::ntSystem == dataType_) {
         moveTable(row, row - 1);
-    } else if (GlobalDefine::ntTable == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_) {
         // 规则序号从1开始
         moveRule(row + 1, row);
-    } else if (GlobalDefine::ntRule == q_dataType) {
-        if (GlobalDefine::dtComplex == q_subType) {
+    } else if (GlobalDefine::ntRule == dataType_) {
+        if (GlobalDefine::dtComplex == subType_) {
             // 规则序号从1开始
             moveRule(row + 1, row);
-        } else if (GlobalDefine::dtFrame == q_subType) {
+        } else if (GlobalDefine::dtFrame == subType_) {
             moveTable(row, row - 1);
         }
     }
-    q_loggingWidget->enableOptionButton(true);
+    loggingWidget_->enableCommit(true);
 }
 
 // 下移
 void DataEditWidget::slotMoveDown()
 {
-    int row = q_table->currentRow();
-    if (q_changePos < 0) {
-        q_changePos = row;
-    } else if (q_changePos > 0) {
-        q_changePos = qMin(q_changePos, row);
+    int row = tableView_->currentRow();
+    if (changedPos < 0) {
+        changedPos = row;
+    } else if (changedPos > 0) {
+        changedPos = qMin(changedPos, row);
     }
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         movePlane(row, row + 1);
-    } else if (GlobalDefine::ntPlane == q_dataType) {
+    } else if (GlobalDefine::ntVehicle == dataType_) {
         moveSystem(row, row + 1);
-    } else if (GlobalDefine::ntSystem == q_dataType) {
+    } else if (GlobalDefine::ntSystem == dataType_) {
         moveTable(row, row + 1);
-    } else if (GlobalDefine::ntTable == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_) {
         // 规则序号从1开始
         moveRule(row + 1, row + 2);
-    } else if (GlobalDefine::ntRule == q_dataType) {
-        if (GlobalDefine::dtComplex == q_subType) {
+    } else if (GlobalDefine::ntRule == dataType_) {
+        if (GlobalDefine::dtComplex == subType_) {
             // 规则序号从1开始
             moveRule(row + 1, row + 2);
-        } else if (GlobalDefine::dtFrame == q_subType) {
+        } else if (GlobalDefine::dtFrame == subType_) {
             moveTable(row, row + 1);
         }
     }
-    q_loggingWidget->enableOptionButton(true);
+    loggingWidget_->enableCommit(true);
 }
 
 // 删除
@@ -2576,21 +2548,21 @@ void DataEditWidget::slotDelete()
 {
     bool result = false;
     bool showTip = false;
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除机型及所有下属数据\r\n确认删除？"),
                                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
-    } else if (GlobalDefine::ntPlane == q_dataType) {
+    } else if (GlobalDefine::ntVehicle == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除分系统及所有下属数据\r\n确认删除？"),
                                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
-    } else if (GlobalDefine::ntSystem == q_dataType) {
+    } else if (GlobalDefine::ntSystem == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除ICD表及所有下属数据")
@@ -2598,8 +2570,8 @@ void DataEditWidget::slotDelete()
                                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
-    } else if (GlobalDefine::ntTable == q_dataType
-               || GlobalDefine::ntRule == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_
+               || GlobalDefine::ntRule == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除数据定义及所有下属数据")
@@ -2611,18 +2583,18 @@ void DataEditWidget::slotDelete()
     } else {
         return;
     }
-    q_table->setProperty("copyData", -1);   // 重置拷贝数据属性
+    tableView_->setProperty("copyData", -1);   // 重置拷贝数据属性
     // 删除
-    int current = q_table->currentRow();
-    if (current == q_newIndex && -1 != q_newIndex) {    // 删除尚未保存的数据
-        q_newIndex = -1;
-        q_table->removeRow(current);
+    int current = tableView_->currentRow();
+    if (current == newIndex_ && -1 != newIndex_) {    // 删除尚未保存的数据
+        newIndex_ = -1;
+        tableView_->removeRow(current);
         setActionEnabled("add", true);
-        setActionEnabled("insert", q_dataType > GlobalDefine::ntSystem);
-        q_table->verticalHeader()->setSectionsMovable(true);
+        setActionEnabled("insert", dataType_ > GlobalDefine::ntSystem);
+        tableView_->verticalHeader()->setSectionsMovable(true);
     } else {    // 删除内存数据
-        QVariant data = q_table->itemData(current, 0, Qt::UserRole);
-        QVariant subTable = q_table->itemData(current, 0, ComplexTable);
+        QVariant data = tableView_->itemData(current, 0, Qt::UserRole);
+        QVariant subTable = tableView_->itemData(current, 0, ComplexTable);
         QString key = data.toString();
         // 复合表需要将子表加入规则id，与导航树同步
         if (subTable.isValid()) {
@@ -2634,15 +2606,15 @@ void DataEditWidget::slotDelete()
         args.append(qVariantFromValue((void*)&result));
         jnotify->send("edit.deleteNode", args);
         if (result) {
-            if (q_table->currentRow() == q_newIndex) {
-                q_newIndex = -1;
+            if (tableView_->currentRow() == newIndex_) {
+                newIndex_ = -1;
             }
-            q_table->removeRow(q_table->currentRow());
+            tableView_->removeRow(tableView_->currentRow());
             setTipsVisible(showTip);
             // 重新初始化
-            int row = q_table->currentRow();
+            int row = tableView_->currentRow();
             reInit();
-            q_table->selectRow(row);
+            tableView_->selectRow(row);
         }
     }
 }
@@ -2651,29 +2623,29 @@ void DataEditWidget::slotDelete()
 void DataEditWidget::slotClear()
 {
     bool result = false;
-    if (GlobalDefine::ntUnknown == q_dataType) {
+    if (GlobalDefine::ntUnknown == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除所有机型，包括所有下属数据")
                                                      + QStringLiteral("\r\n确认删除？"))) {
             return;
         }
-    } else if (GlobalDefine::ntPlane == q_dataType) {
+    } else if (GlobalDefine::ntVehicle == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除当前机型的所有系统，包括所有下属数据")
                                                      + QStringLiteral("\r\n确认删除？"))) {
             return;
         }
-    } else if (GlobalDefine::ntSystem == q_dataType) {
+    } else if (GlobalDefine::ntSystem == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除当前系统的所有协议表，包括所有下属数据")
                                                      + QStringLiteral("\r\n确认删除？"))) {
             return;
         }
-    } else if (GlobalDefine::ntTable == q_dataType
-               || GlobalDefine::ntRule == q_dataType) {
+    } else if (GlobalDefine::ntTable == dataType_
+               || GlobalDefine::ntRule == dataType_) {
         if (QMessageBox::No == QMessageBox::question(this,
                                                      QStringLiteral("确认提示"),
                                                      QStringLiteral("即将删除当前表的所有数据定义，包括所有下属数据")
@@ -2685,10 +2657,9 @@ void DataEditWidget::slotClear()
     }
     std::vector<QString> keys;
 
-    const int count = q_table->rowCount();
+    const int count = tableView_->rowCount();
     for (int i = 0; i < count; ++i) {
-        QVariant data = q_table->itemData(i, 0, Qt::UserRole);
-
+        QVariant data = tableView_->itemData(i, 0, Qt::UserRole);
         keys.push_back(data.toString());
     }
     QVariantList args;
@@ -2698,12 +2669,6 @@ void DataEditWidget::slotClear()
 
     if (result) {
         reInit();
-        //         q_table->clearContents();
-        //         q_table->setRowCount(0);
-        //         if (GlobalDefine::ntUnknown == q_dataType) {
-        //             q_btnSaveFile->setEnabled(false);
-        //             q_btnSaveDB->setEnabled(true);
-        //         }
     }
 }
 
@@ -2735,7 +2700,7 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
     if (GlobalDefine::dsDatabase == type) {   // 保存数据库
         actionName = "db";
         setActionEnabled(actionName, false);
-        params << (int)&err << (int)&q_defaultPath;
+        params << (int)&err << (int)&defaultPath_;
         args.clear();
         args.append(qVariantFromValue((void*)&params));
         args.append(int(GlobalDefine::dsDatabase));
@@ -2745,21 +2710,21 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
     } else if (GlobalDefine::dsFile == type) {  // 保存文件
         actionName = "file";
         setActionEnabled(actionName, false);
-        QString file = QFileDialog::getSaveFileName(this, QStringLiteral("保存协议数据"), q_defaultPath,
+        QString file = QFileDialog::getSaveFileName(this, QStringLiteral("保存协议数据"), defaultPath_,
                                                     "JSON files (*.json);;"
                                                     "XML files (*.xml)");
         if (file.isEmpty()) {
             setActionEnabled(actionName, true);
             return;
         }
-        q_defaultPath = file;
-        params << (int)&err << (int)&q_defaultPath;
+        defaultPath_ = file;
+        params << (int)&err << (int)&defaultPath_;
         args.clear();
         args.append(qVariantFromValue((void*)&params));
         args.append(int(GlobalDefine::dsFile));
         jnotify->send("edit.saveMemoryData", args);
 
-        tip = QStringLiteral("保存数据到文件[%1]").arg(q_defaultPath);
+        tip = QStringLiteral("保存数据到文件[%1]").arg(defaultPath_);
     }
 
     if (!err.isEmpty()) {
@@ -2779,8 +2744,8 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
 void DataEditWidget::slotCopy()
 {
     QString keys;
-    QString id = q_table->itemData(q_table->currentRow(),
-                                   0, Qt::UserRole).toString();
+    QString id = tableView_->itemData(tableView_->currentRow(),
+                                      0, Qt::UserRole).toString();
     QVariantList args;
     args.append(qVariantFromValue((void*)&keys));
     jnotify->send("edit.queryNodeKeys", args);
@@ -2791,14 +2756,14 @@ void DataEditWidget::slotCopy()
     } else {
         keys.append("/").append(id);
     }
-    keys.prepend(QString("%1_%2##").arg(q_dataType).arg(q_subType));
-    q_table->setProperty("source", keys);
+    keys.prepend(QString("%1_%2##").arg(dataType_).arg(subType_));
+    tableView_->setProperty("source", keys);
 }
 
 // 粘贴
 void DataEditWidget::slotPaste()
 {
-    QString keys = q_table->property("source").toString();
+    QString keys = tableView_->property("source").toString();
     keys = keys.mid(keys.indexOf("##") + strlen("##"));
     if (keys.isEmpty()) {
         return;
@@ -2814,52 +2779,52 @@ void DataEditWidget::slotPaste()
                                  QStringLiteral("粘贴失败！，数据源无效！"));
         return;
     }
-    if (GlobalDefine::ntUnknown == q_dataType) {   // 根节点
+    if (GlobalDefine::ntUnknown == dataType_) {   // 根节点
         PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, element);
         // 更新机型
         if (plane) {
-            q_newIndex = q_table->rowCount();
-            updateOne(q_newIndex, plane, optCopy);
-            q_table->selectRow(q_newIndex);
+            newIndex_ = tableView_->rowCount();
+            updateOne(newIndex_, plane, optCopy);
+            tableView_->selectRow(newIndex_);
         }
-    } else if (GlobalDefine::ntPlane == q_dataType) {   // 机型
+    } else if (GlobalDefine::ntVehicle == dataType_) {   // 机型
         SystemNode::smtSystem system = SMT_CONVERT(SystemNode, element);
         // 更新系统
         if (system) {
-            q_newIndex = q_table->rowCount();
-            updateOne(q_newIndex, system, optCopy);
-            q_table->selectRow(q_newIndex);
+            newIndex_ = tableView_->rowCount();
+            updateOne(newIndex_, system, optCopy);
+            tableView_->selectRow(newIndex_);
         }
-    } else if (GlobalDefine::ntSystem == q_dataType) {  // 系统
+    } else if (GlobalDefine::ntSystem == dataType_) {  // 系统
         // 更新表
-        q_newIndex = q_table->rowCount();
-        updateOne(q_newIndex, SMT_CONVERT(TableNode, element), optCopy);
-        q_table->selectRow(q_newIndex);
-    } else if (GlobalDefine::ntTable == q_dataType) {   // 表
+        newIndex_ = tableView_->rowCount();
+        updateOne(newIndex_, SMT_CONVERT(TableNode, element), optCopy);
+        tableView_->selectRow(newIndex_);
+    } else if (GlobalDefine::ntTable == dataType_) {   // 表
         // 更新规则
-        q_newIndex = q_table->rowCount();
-        updateOne(q_newIndex, SMT_CONVERT(ICDMetaData, element), optCopy);
-        q_table->selectRow(q_newIndex);
+        newIndex_ = tableView_->rowCount();
+        updateOne(newIndex_, SMT_CONVERT(ICDMetaData, element), optCopy);
+        tableView_->selectRow(newIndex_);
         // 将还未保存的数据长度设为0，使长度校验正确提示
-        q_table->setItemData(q_newIndex, q_table->columnCount() - 1,
-                             0, Qt::UserRole);
-    } else if (GlobalDefine::ntRule == q_dataType) {    // 规则
-        if (GlobalDefine::dtComplex == q_subType) {
+        tableView_->setItemData(newIndex_, tableView_->columnCount() - 1,
+                                0, Qt::UserRole);
+    } else if (GlobalDefine::ntRule == dataType_) {    // 规则
+        if (GlobalDefine::dtComplex == subType_) {
             // 更新表
-            q_newIndex = q_table->rowCount();
-            updateOne(q_newIndex,
+            newIndex_ = tableView_->rowCount();
+            updateOne(newIndex_,
                       SMT_CONVERT(ICDMetaData, element),
                       optCopy);
-            q_table->selectRow(q_newIndex);
+            tableView_->selectRow(newIndex_);
             // 将还未保存的数据长度设为0，使长度校验正确提示
-            q_table->setItemData(q_newIndex, q_table->columnCount() - 1,
-                                 0, Qt::UserRole);
-        } else if (GlobalDefine::dtFrame == q_subType) {
+            tableView_->setItemData(newIndex_, tableView_->columnCount() - 1,
+                                    0, Qt::UserRole);
+        } else if (GlobalDefine::dtFrame == subType_) {
             int maxCount = 0;
             args.clear();
             args.append(qVariantFromValue((void*)&maxCount));
             jnotify->send("edit.queryMaxTableCount", args);
-            if (q_table->rowCount() >= maxCount) {
+            if (tableView_->rowCount() >= maxCount) {
 
                 QMessageBox::information(this, QStringLiteral("粘贴"),
                                          QStringLiteral("子表已达上限，无法粘贴！如需提升上限，请联系管理员！"));
@@ -2868,15 +2833,15 @@ void DataEditWidget::slotPaste()
             TableNode::smtTable table = SMT_CONVERT(TableNode, element);
             if (table) {
                 // 更新表
-                q_newIndex = q_table->rowCount();
-                updateSubOne(q_newIndex, table->icdBase(), optCopy);
-                q_table->selectRow(q_newIndex);
+                newIndex_ = tableView_->rowCount();
+                updateSubOne(newIndex_, table->icdBase(), optCopy);
+                tableView_->selectRow(newIndex_);
             }
         }
     }
     // 变更数据项以后，必须保存数据之后才能继续移动
-    if (-1 != q_newIndex) {
-        q_table->verticalHeader()->setSectionsMovable(false);
+    if (-1 != newIndex_) {
+        tableView_->verticalHeader()->setSectionsMovable(false);
     }
 }
 

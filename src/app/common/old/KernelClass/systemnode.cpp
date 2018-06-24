@@ -80,7 +80,7 @@ void SystemNode::setNumeralId(int id)
     char szTmp[32] = {0};
     sprintf_s(szTmp, sizeof(szTmp), "%d", id);
 
-    ICDElement::setID(std::string(szTmp));
+    ICDElement::setId(std::string(szTmp));
 
     d->q_code = id;
 }
@@ -110,15 +110,15 @@ bool SystemNode::isEmpty() const
  * @param [in] name : ICD表标识
  * @return 下挂ICD表信息
  */
-TableNode::smtTable SystemNode::table(const std::string &name) const
+TableNode::smtTable SystemNode::table(const std::string &id) const
 {
-    TableNode::smtTable result = 0;
+    TableNode::smtTable result = nullptr;
     const int count = d->q_table.size();
     for (int i = 0; i < count; ++i) {
-        if ((result = d->q_table[i]) && result->key() == name) {
+        if ((result = d->q_table[i]) && result->key() == id) {
             break;
         } else {
-            result = 0;
+            result = nullptr;
         }
     }
 
@@ -139,7 +139,6 @@ void SystemNode::addTable(const TableNode::smtTable &table)
     for (int i = 0; i < count; ++i) {
         if ((_table = d->q_table[i]) && _table->id() == table->id()) {
             d->q_table[i] = table;
-
             break;
         } else {
             _table = 0;

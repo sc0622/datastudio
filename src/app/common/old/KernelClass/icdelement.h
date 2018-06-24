@@ -48,20 +48,23 @@ public:
     GlobalDefine::NodeType objectType() const;
 
     // 设置/获取ID
-    virtual void setID(std::string id);
-    std::string id() const;
+    virtual void setId(std::string id);
+    virtual std::string id() const;
 
     // 设置/获取名称
     virtual void setName(const std::string& name);
-    std::string name() const;
+    virtual std::string name() const;
+
+    virtual void setProCode(const std::string& proCode);
+    virtual std::string proCode() const;
 
     // 设置/获取标识
     virtual void setSign(const std::string& sign);
-    std::string sign() const;
+    virtual std::string sign() const;
 
     // 设置/获取描述
     virtual void setDescribe(const std::string& describe);
-    std::string describe() const;
+    virtual std::string describe() const;
     /**
      * @brief 克隆（深拷贝）
      * @return 实例

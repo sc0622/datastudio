@@ -26,7 +26,7 @@ PlaneNode::PlaneNode(int id,
                      const std::string &name,
                      const std::string &sign,
                      const std::string &describe)
-                     : ICDElement(GlobalDefine::ntPlane)
+                     : ICDElement(GlobalDefine::ntVehicle)
                      , d(new PlaneNodePrivate())
 {
     setNumeralId(id);
@@ -40,7 +40,7 @@ PlaneNode::PlaneNode(int id,
  * @param [in] plane : 飞机基本信息
  */
 PlaneNode::PlaneNode(const stPlane &plane)
-    : ICDElement(GlobalDefine::ntPlane)
+    : ICDElement(GlobalDefine::ntVehicle)
     , d(new PlaneNodePrivate())
 {
     setNumeralId(plane.nCode);
@@ -82,7 +82,7 @@ void PlaneNode::setNumeralId(int id)
     char szTmp[32] = {0};
     sprintf_s(szTmp, sizeof(szTmp), "%d", id);
 
-    ICDElement::setID(std::string(szTmp));
+    ICDElement::setId(std::string(szTmp));
 
     d->q_code = id;
 }

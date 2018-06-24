@@ -705,12 +705,6 @@ bool DataManegement::loadInfrastructure(int deep)
                         stICDBase& base = collBase.at(j);
                         // 只加入隶属于系统节点的规则表
                         if (base.sParentName.empty()) {
-                            // 填写界面等级
-                            //                             if (base.sLevel.empty()) {
-                            //                                 base.sLevel = QString("%1_%2")
-                            //                                     .arg(tableLevel).arg(j + 1)
-                            //                                     .toStdString();
-                            //                             }
                             TableNode::smtTable tableNode(new TableNode(base));
                             systemNode->addTable(tableNode);
                         }
@@ -751,8 +745,7 @@ bool DataManegement::loadTypeRule(int planeType, bool increment)
 * @param [in] tableRules : 表规则信息
 * @return 执行结果，true：成功；false：失败
 */
-bool DataManegement::loadXmlTypeRule(int planeType,
-                                     DMSpace::_vectorIcdTR &tableRules)
+bool DataManegement::loadXmlTypeRule(int planeType, DMSpace::_vectorIcdTR &tableRules)
 {
     // 查询内存中是否已经加载基础架构数据
     PlaneNode::smtPlane plane = planeNode(planeType);
@@ -765,8 +758,7 @@ bool DataManegement::loadXmlTypeRule(int planeType,
     // 将数据保存到内存中
     for (; it != rules.end(); ++it) {
         const std::string &group = it->first;
-        system = plane->system(QString(group.c_str())
-                               .split("/").last().toInt());
+        system = plane->system(QString(group.c_str()).split("/").last().toInt());
         if (system) {
             system->setTable(it->second);
         }
@@ -787,13 +779,12 @@ void DataManegement::unLoadTypeRule(int planeType)
         SystemNode::systemVector systems = smtPlane->allSystem();
         const int count = systems.size();
         SystemNode::smtSystem smtSystem = 0;
-        TableNode::tableVector tables;
         TableNode::smtTable smtTable = 0;
         for (int i = 0; i < count; ++i) {
             if (!(smtSystem = systems[i])) {
                 continue;
             }
-            tables = smtSystem->allTable();
+            const TableNode::tableVector &tables = smtSystem->allTable();
             const int bound = tables.size();
             for (int j = 0; j < bound; ++j) {
                 if (!(smtTable = tables[j])) {
@@ -873,7 +864,7 @@ void DataManegement::unLoadSystemRule(int planeType, int system)
     if (!smtSystem) {
         return;
     }
-    TableNode::tableVector tables = smtSystem->allTable();
+    const TableNode::tableVector &tables = smtSystem->allTable();
     const int count = tables.size();
     TableNode::smtTable smtTable = 0;
     for (int i = 0; i < count; ++i) {
@@ -892,9 +883,7 @@ void DataManegement::unLoadSystemRule(int planeType, int system)
  * @param [in] table : ICD表名
  * @return 执行结果，true：成功；false：失败
  */
-bool DataManegement::loadTableRule(int plane,
-                                   int system,
-                                   const std::string &table)
+bool DataManegement::loadTableRule(int plane, int system, const std::string &table)
 {
     if (NULL == q_dbaccess) {
         return false;
@@ -929,7 +918,7 @@ bool DataManegement::loadTableRule(int plane,
         const stICDBase &icdData = icdBases[j];
 
         TableNode::smtTable table(new TableNode(icdData));
-        tableNodes[icdData.sName] = table;
+        tableNodes[icdData.sID] = table;
     }
     // 填充规则
     fillRules(tableNodes, rules);
@@ -940,8 +929,7 @@ bool DataManegement::loadTableRule(int plane,
     if (!_table) {
         return false;
     }
-    _table->setLengthCheck(_table->length() == (int)_table->realLength()
-                           && _table->length() > 0);
+    _table->setLengthCheck(_table->length() == (int)_table->realLength() && _table->length() > 0);
     // 更新内存数据
     sysNode->addTable(_table);
 
@@ -1021,7 +1009,7 @@ void DataManegement::unLloadTableRule(int plane,
  * @param [in] rules : 表规则数据
  * @return 执行结果，true：成功；false：失败
  */
-bool DataManegement::recursiveLoadRule(const std::string &name,
+bool DataManegement::recursiveLoadRule(const std::string &id,
                                        TableNode::smtTable &table,
                                        DMSpace::_vectorIcdTR &rules)
 {
@@ -1029,8 +1017,8 @@ bool DataManegement::recursiveLoadRule(const std::string &name,
         return false;
     }
     // 查询数据
-    DMSpace::pairIcdTR icdTR = singleIcdTR(name, rules, true);
-    if (icdTR.first.sName.empty()) {
+    DMSpace::pairIcdTR icdTR = singleIcdTR(id, rules, true);
+    if (icdTR.first.sID.empty()) {
         return false;
     }
     int size = 0;
@@ -1190,14 +1178,13 @@ PlaneNode::smtPlane DataManegement::planeNode(int code)
 * @param [in] remove : 删除标识
 * @return 规则表数据
 */
-DMSpace::pairIcdTR DataManegement::singleIcdTR(const std::string &name,
-                                               DMSpace::_vectorIcdTR &rules,
-                                               bool remove /*= false*/) const
+DMSpace::pairIcdTR DataManegement::singleIcdTR(const std::string &id, DMSpace::_vectorIcdTR &rules,
+                                               bool remove) const
 {
     DMSpace::pairIcdTR result;
     DMSpace::_vectorIcdTR_It it = rules.begin();
     for (; it != rules.end(); ++it) {
-        if (name == it->first.sName) {
+        if (id == it->first.sID) {
             result = *it;
             break;
         }
@@ -1216,8 +1203,7 @@ DMSpace::pairIcdTR DataManegement::singleIcdTR(const std::string &name,
  * @param [in] increment : 增量标识
  * @return 执行结果，true：成功；false：失败
  */
-bool DataManegement::loadRuleData(int planeType,
-                                  const DMSpace::_vectorSB &ICDBase,
+bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBase,
                                   bool increment)
 {
     // 访问数据库
@@ -1240,13 +1226,13 @@ bool DataManegement::loadRuleData(int planeType,
         size = base.size();
         for (int j = 0; j < size; ++j) {
             const stICDBase &icdData = base[j];
-            tables.push_back(icdData.sName);
+            tables.push_back(icdData.sID);
             // 挑选顶层表
             if (icdData.sParentName.empty()) {
-                topTables.push_back(icdData.sName);
+                topTables.push_back(icdData.sID);
             }
             TableNode::smtTable table(new TableNode(icdData));
-            tableNodes[icdData.sName] = table;
+            tableNodes[icdData.sID] = table;
         }
     }
     // 读取规则数据
@@ -1397,12 +1383,12 @@ std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlR
         const std::vector<stTableRules> &rules = icdTR.second;
         // 没有父表，证明是顶层表
         if (icdBase.sParentName.empty()) {
-            topTables.push_back(icdBase.sName);
+            topTables.push_back(icdBase.sID);
         }
         TableNode::smtTable tableNode(new TableNode(icdBase));
         mapRules = convert2IcdRules(rules);
         tableNode->setRule(mapRules);
-        tables[icdBase.sName] = tableNode;
+        tables[icdBase.sID] = tableNode;
         mapRules.clear();
     }
     // 查询复合表的子表数据，并将之关联起来
@@ -1429,9 +1415,9 @@ std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlR
  * @return 子表数据
  */
 TableNode::smtTable DataManegement::recursiveLinkTable(TableNode::tableMap &allTable,
-                                                       const std::string &name)
+                                                       const std::string &tableId)
 {
-    TableNode::tableMap::iterator itTM = allTable.find(name);
+    TableNode::tableMap::iterator itTM = allTable.find(tableId);
     if (itTM == allTable.end()) {
         return TableNode::smtTable();
     }
@@ -1459,8 +1445,7 @@ TableNode::smtTable DataManegement::recursiveLinkTable(TableNode::tableMap &allT
             count = lstName.size();
             // 读取子表数据
             for (int i = 0; i < count; ++i) {
-                subTable = recursiveLinkTable(allTable,
-                                              lstName[i].toStdString());
+                subTable = recursiveLinkTable(allTable, lstName[i].toStdString());
                 if (NULL != subTable) {
                     // 建立连接
                     complex->addTable(subTable);
@@ -1748,7 +1733,7 @@ bool DataManegement::saveTable(const QString &keys, const std::vector<stICDBase>
     }
     for (int i = 0; i < count; ++i) {
         const stICDBase &table = tables[i];
-        TableNode::smtTable data = system->table(table.sName);
+        TableNode::smtTable data = system->table(table.sID);
         if (data) {
             data->setICDBase(table);
         } else {
@@ -2287,11 +2272,11 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
         }
     }
     // 更新数据
-    if (GlobalDefine::ntPlane == element->objectType()) {
+    if (GlobalDefine::ntVehicle == element->objectType()) {
         QString id;
         // 机型
         const stPlane &base = *reinterpret_cast<stPlane *>(params->at(1));
-        id = jnotify->send("edit.queryId", int(GlobalDefine::ntPlane)).toString();
+        id = jnotify->send("edit.queryId", int(GlobalDefine::ntVehicle)).toString();
         // 克隆数据
         PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, element)->clone();
         if (!plane) {
@@ -2421,7 +2406,7 @@ JLRESULT DataManegement::saveDatabase(const Icd::JNEvent &event)
 
     if (0 == keyList.size()) {
     } else if (1 == keyList.size()) {  // 保存机型
-        dataLevel = GlobalDefine::ntPlane;
+        dataLevel = GlobalDefine::ntVehicle;
     } else if (2 == keyList.size()) {   // 保存系统
         dataLevel = GlobalDefine::ntSystem;
     } else {    // 保存表
@@ -3020,8 +3005,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table, const stICDBase &
     }
 
     stICDBase base = table->icdBase();
-    base.sID = QUuid::createUuid().toString().remove(QRegExp("[{}-]")).toStdString();
-    base.sName = std::string("ICDTable_").append(base.sID);
+    base.sID = QUuid::createUuid().toString().toStdString();
     base.sParentName = icdBase.sName;
     base.sGroup = icdBase.sGroup;
     table->setICDBase(base);

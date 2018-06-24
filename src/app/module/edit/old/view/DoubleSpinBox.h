@@ -3,16 +3,13 @@
 
 #include <QDoubleSpinBox>
 
-class DoubleSpinbox : public QDoubleSpinBox
+class DoubleSpinBox : public QDoubleSpinBox
 {
     Q_OBJECT
 public:
-    explicit DoubleSpinbox(QWidget *parent = nullptr);
+    explicit DoubleSpinBox(QWidget *parent = nullptr);
 
-    virtual QString textFromValue(double val) const;
-
-protected:
-    virtual QValidator::State validate(QString &input, int &pos) const override;
+    QString textFromValue(double value) const override;
 };
 
 #endif // DOUBLESPINBOX_H

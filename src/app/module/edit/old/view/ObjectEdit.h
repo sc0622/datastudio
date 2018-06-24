@@ -2,17 +2,14 @@
 #define OBJECT_EDIT_H
 
 #include <QWidget>
-#include "KernelClass/globalstruct.h"
+#include "KernelClass/icdmetadata.h"
 
-/**
-* @brief 初始化数据结构
-*/
 struct _UIData
 {
-    void    *data;      // 初始化数据
-    GlobalDefine::OptionType   type;   // 操作类型
+    void *data;      // 初始化数据
+    GlobalDefine::OptionType type;   // 操作类型
 
-    _UIData() : data(0), type(GlobalDefine::optEdit){}
+    _UIData() : data(0), type(GlobalDefine::optEdit) {}
 };
 
 struct _UIPos
@@ -22,8 +19,7 @@ struct _UIPos
     int rowSpan;
     int columnSpan;
 
-    _UIPos() : row(0), column(0), rowSpan(1), columnSpan(1)
-    {}
+    _UIPos() : row(0), column(0), rowSpan(1), columnSpan(1) {}
 };
 
 struct _Eigenvalue
@@ -31,13 +27,17 @@ struct _Eigenvalue
     double  value;      // 数据
     QString describe;   // 描述
 
-    _Eigenvalue() : value(0.0)
-    {}
+    _Eigenvalue() : value(0.0) {}
 };
 
 class QVBoxLayout;
-class QPushButton;
+class QFormLayout;
+class QGroupBox;
 class QLineEdit;
+class QPushButton;
+class JSplitter;
+class LimitLineEdit;
+class LimitTextEdit;
 
 class ObjectEdit : public QWidget
 {
@@ -45,22 +45,22 @@ class ObjectEdit : public QWidget
 public:
     enum WindowType {
         wdUnknown = -1,
-        wdHeader,   // 表头界面
-        wdCounter,  // 帧计数界面
-        wdCheck,    // 校验界面
-        wdFrameCode,// 帧识别码
-        wdItem,     // 通用界面
-        wdArray,    // 数组界面
-        wdNumeric,  // 数值
-        wdBitMap,   // bitMap界面
-        wdBitValue, // bitValue界面
-        wdFrame,    // 帧数据界面
-        wdComplex,  // 复合数据界面
-        wdBuffer,   // 数据预留区界面
-        wdSubTable, // 子表界面
-        wdTable,    // 表界面
-        wdSystem,   // 系统界面
-        wdVehicle,  // 机型界面
+        wdHeader,
+        wdCounter,
+        wdCheck,
+        wdFrameCode,
+        wdItem,
+        wdArray,
+        wdNumeric,
+        wdBitMap,
+        wdBitValue,
+        wdFrame,
+        wdComplex,
+        wdBuffer,
+        wdSubTable,
+        wdTable,
+        wdSystem,
+        wdVehicle,
     };
     Q_ENUM(WindowType)
 
@@ -68,22 +68,13 @@ public:
     virtual ~ObjectEdit();
 
     virtual int windowType() const;
-
-    // 设置界面数据
-    virtual void setUIData(const _UIData &data);
-    // 获取界面编辑数据
-    virtual void* uiData() const;
-    // 切换数据类型
-    virtual void changeDataType(int type);
-    // 原始数据类型
+    virtual void changeType(int type);
     virtual int originalType() const;
-    // 启/停用界面控制按钮
-    void enableOptionButton(bool enable);
+    virtual void *nonData();
+    virtual void *nonOldData();
+    virtual bool setData(const _UIData &data);
 
-    QVBoxLayout *layoutMain() const;
-    QPushButton *buttonConfirm() const;
-    QPushButton *buttonCancel() const;
-    QLineEdit *editStatus() const;
+    void enableCommit(bool enabled);
 
     static ObjectEdit *create(int windowType);
 
@@ -91,17 +82,62 @@ signals:
     void confirmed(bool &);
     void canceled();
 
-public slots:
+protected slots:
+    virtual bool onEditFinished();
+    virtual bool onTextChanged(const QString &text);
 
 protected:
-    virtual void confirm();
+    QVBoxLayout *layoutMain() const;
+    JSplitter *splitterBase() const;
+    QFormLayout *layoutBase() const;
+    void addFormRow(QWidget *label, QWidget *field) const;
+    void addFormRow(QWidget *label, QLayout *field) const;
+    void addFormRow(const QString &labelText, QWidget *field) const;
+    void addFormRow(const QString &labelText, QLayout *field) const;
+
+    virtual bool init();
+    virtual void enableConnect(bool enabled);
+    virtual bool confirm();
     virtual void cancel();
+    virtual bool validate();
+
+    void enableConfirm(bool enabled);
+    void enabledCancel(bool enabled);
+    void setStatus(const QString &text = QString());
+
+    virtual ICDMetaData *data();
+    virtual ICDMetaData *oldData();
+    bool setExtData(const _UIData &data, bool base);
+
+    LimitTextEdit *editDesc() const;
+
+    virtual QString name() const;
+    virtual void setName(const QString &text);
+
+    virtual QString mark() const;
+    virtual void setMark(const QString &text);
+
+    virtual QString desc() const;
+    virtual void setDesc(const QString &text);
 
 private:
+    bool _init();
+    bool _validate();
+
+private:
+    ICDMetaData::smtMeta data_;
+    ICDMetaData::smtMeta oldData_;
     QVBoxLayout *layoutMain_;
+    JSplitter *splitterBase_;
+    QGroupBox *groupBoxBase_;
+    QFormLayout *layoutBase_;
+    QLineEdit *editName_;
+    QLineEdit *editMark_;
+    LimitTextEdit *editDesc_;
     QPushButton *buttonConfirm_;
     QPushButton *buttonCancel_;
-    QLineEdit   *editStatus_;
+    QLineEdit *editStatus_;
+    bool isBaseData_;
 };
 
 #endif // OBJECT_EDIT_H

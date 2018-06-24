@@ -9,52 +9,29 @@
 SubTableEdit::SubTableEdit(QWidget* parent)
     : ObjectEdit(parent)
 {
-    QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
-    q_edtName = new LimitLineEdit(this);
-    q_edtName->setObjectName("edtName");
-    q_edtName->setMaxLength(256);
-    q_edtName->setToolTip(QStringLiteral("最多256个字符！"));
-    q_boxType = new QComboBox(this);
-    q_spinCode = new JLargeSpinBox(this);
-    q_spinCode->setObjectName("edtCode");
-    q_spinCode->setRadix(16);
-    q_spinCode->setRange(0, 0xff);
-    q_spinCode->setPrefix("0x");
-    q_spinCode->setFillChar(QChar('0'));
-    q_spinSequence = new QSpinBox(this);
-    q_spinSequence->setRange(1, 1e9);
-    q_edtDescribe = new LimitTextEdit(this);
-    q_edtDescribe->setObjectName("edtDescribe");
-    q_edtDescribe->setMaxLength(256);
-    q_edtDescribe->setToolTip(QStringLiteral("最多256个字符！"));
+    comboLength_ = new QComboBox(this);
+    addFormRow(QStringLiteral("帧码长度："), comboLength_);
 
-    int row = 0;
-    QGridLayout *gridLayout = new QGridLayout(group);
-    gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名   称：")), row, 0);
-    gridLayout->addWidget(q_edtName, row, 1);
-    gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("帧类型：")), ++row, 0);
-    gridLayout->addWidget(q_boxType, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("帧   码：")), ++row, 0);
-    gridLayout->addWidget(q_spinCode, row, 1);
-    gridLayout->addWidget(new QLabel("<font color=red>*</font>"), row, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("时   序：")), ++row, 0);
-    gridLayout->addWidget(q_spinSequence, row, 1);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描   述：")), ++row, 0);
-    gridLayout->addWidget(q_edtDescribe, row, 1, 2, 1);
-    gridLayout->setRowStretch(++row, 1);
+    spinCode_ = new JLargeSpinBox(this);
+    spinCode_->setObjectName("edtCode");
+    spinCode_->setRadix(16);
+    spinCode_->setRange(0, 0xff);
+    spinCode_->setPrefix("0x");
+    spinCode_->setFillChar(QChar('0'));
+    addFormRow(QStringLiteral("帧码："), spinCode_);
 
-    layoutMain()->insertWidget(0, group);
+    spinSequence_ = new QSpinBox(this);
+    spinSequence_->setRange(1, 1e9);
+    addFormRow(QStringLiteral("时序："), spinSequence_);
 
-    // 
-    initBoxLenght();
+    enableConnect(true);
+}
 
-    // signal-slot
-    enableConnection(true);
-
-    // 记录原始颜色
-    q_color = q_edtName->palette().color(QPalette::Base);
+void SubTableEdit::onCodeChanged(const qulonglong &value)
+{
+    Q_UNUSED(value);
+    data_.sCode = spinCode_->text().remove(spinCode_->prefix()).toStdString();
+    enableCommit(true);
 }
 
 int SubTableEdit::windowType() const
@@ -62,280 +39,175 @@ int SubTableEdit::windowType() const
     return wdSubTable;
 }
 
-void SubTableEdit::setUIData(const _UIData &data)
+bool SubTableEdit::onEditFinished()
 {
-    if (!data.data) {
-        return;
-    }
-    q_data = *reinterpret_cast<stICDBase*>(data.data);
-    q_old = q_data;
-    setProperty("option", data.type);
-
-    init();
-    // 如果是新增，则默认保存可用
-    if (GlobalDefine::optNew == data.type) {
-        buttonConfirm()->setEnabled(true);
+    if (ObjectEdit::onEditFinished()) {
+        return true;
     }
 
-    show();
+    return false;
 }
 
-void* SubTableEdit::uiData() const
+bool SubTableEdit::onTextChanged(const QString &text)
 {
-    return (void*)&q_data;
-}
-
-void SubTableEdit::slotTextChanged(const QString &text)
-{
-    // 校验数据
-    QLineEdit *edt = qobject_cast<QLineEdit *>(sender());
-    QComboBox *box = qobject_cast<QComboBox *>(sender());
-    QSpinBox *spin = qobject_cast<QSpinBox *>(sender());
-    if (edt) {
-        QString content = text.trimmed();
-        if (edt == editStatus()) { // 如果出现错误提示，则灰化确认按钮
-            buttonConfirm()->setEnabled(content.isEmpty());
-        } else if (edt == q_edtName) {
-            q_data.sDescribe = content.toStdString();
-        }
-        enableOptionButton(true);
-    } else if (box) {
-        if (box == q_boxType) {
-            int Len = 2 * q_boxType->currentData().toInt();
-            QString strValue = QString().fill('f', Len);
-            q_spinCode->setRange(0, strValue.prepend("0x").toUInt(0, 16));
-            Len -= q_data.sCode.length();
-            if (Len > 0) {
-                q_data.sCode.insert(0, Len, '0');
-            } else if (Len < 0) {
-                q_data.sCode = q_data.sCode.substr(abs(Len));
-            }
-            q_spinCode->setValue(QString(q_data.sCode.c_str()).toInt(0, 16));
-        }
-        enableOptionButton(true);
-    } else if (spin) {
-        if (spin == q_spinSequence) {
-            QStringList lst = QString(q_data.sRemark.c_str()).split("##");
-            if (lst.empty()) {
-                lst << "" << "";
-            } else if (lst.size() < 2) {
-                lst << "";
-            }
-            lst[1] = QString::number(spin->value());
-            q_data.sRemark = lst.join("##").toStdString();
-        }
-        enableOptionButton(true);
+    if (ObjectEdit::onTextChanged(text)) {
+        return true;
     }
-}
 
-// 帧码数据变更
-void SubTableEdit::slotCodeChanged(const qulonglong &value)
-{
-    Q_UNUSED(value);
-    q_data.sCode = q_spinCode->text().remove(q_spinCode->prefix()).toStdString();
-
-    enableOptionButton(true);
-}
-
-// 数据录入完成
-void SubTableEdit::slotEditFinished()
-{
-    LimitTextEdit *edt = qobject_cast<LimitTextEdit*>(sender());
-    if (edt) {
-        QString content = edt->toPlainText().trimmed();
-        if (edt == q_edtDescribe) {
-            QStringList lst = QString(q_data.sRemark.c_str()).split("##");
-            if (lst.empty()) {
-                lst << "" << "";
-            } else if (lst.size() < 2) {
-                lst << "";
-            }
-            lst[0] = content;
-            q_data.sRemark = lst.join("##").toStdString();
-        }
-        enableOptionButton(true);
-    }
-}
-
-// 确认
-void SubTableEdit::confirm()
-{
-    // 校验
-    if (!dataValid()) {
-        return;
-    }
     bool result = false;
-
-    emit confirmed(result);
-    if (result) {
-        ObjectEdit::confirm();
-    } else {
-        editStatus()->setText(QStringLiteral("保存数据失败！"));
-    }
-}
-
-// 取消
-void SubTableEdit::cancel()
-{
-    _UIData data;
-
-    data.data = &q_old;
-    setUIData(data);
-
-    ObjectEdit::cancel();
-
-    emit canceled();
-}
-
-// 初始化界面数据
-void SubTableEdit::init()
-{
-    enableConnection(false);
-
-    enableOptionButton(false);
-    QPalette palette;
-    if (q_edtName) {
-        palette = q_edtName->palette();
-        palette.setColor(QPalette::Base, q_color);
-        q_edtName->setPalette(palette);
-        q_edtName->setText(q_data.sDescribe.c_str());
-        q_edtName->clearFocus();
-    }
-    if (q_boxType) {  // 帧码长度
-        q_boxType->setCurrentIndex(q_boxType->findData(q_data.sCode.length() / 2));
-    }
-    if (q_spinCode) {
-        palette = q_spinCode->palette();
-        palette.setColor(QPalette::Base, q_color);
-
-        QString strValue = QString().fill('f', q_data.sCode.length());
-        q_spinCode->setRange(0, strValue.prepend("0x").toUInt(0, 16));
-        q_spinCode->setPalette(palette);
-        q_spinCode->setValue(QString(q_data.sCode.c_str()).toInt(0, 16));
-        q_spinCode->clearFocus();
-        q_data.sCode = q_spinCode->text().remove(q_spinCode->prefix())
-            .toStdString();
-    }
-    QStringList lst = QString(q_data.sRemark.c_str()).split("##");
-    if (q_spinSequence) {
-        q_spinSequence->setValue(lst.last().toInt());
-    }
-    if (q_edtDescribe) {
-        q_edtDescribe->setText(lst.first());
-        q_edtDescribe->clearFocus();
-    }
-    editStatus()->clear();
-    editStatus()->clearFocus();
-
-    enableConnection(true);
-}
-
-// 初始化帧码长度下拉框
-void SubTableEdit::initBoxLenght()
-{
-    // 固定，只有1、2、4字节可选
-    if (!q_boxType) {
-        return;
-    }
-    // 清空原始数据
-    q_boxType->clear();
-
-    q_boxType->addItem(QStringLiteral("1字节"), 1);
-    q_boxType->addItem(QStringLiteral("2字节"), 2);
-    q_boxType->addItem(QStringLiteral("4字节"), 4);
-}
-
-void SubTableEdit::enableConnection(bool enable)
-{
-    disconnect(q_edtName, SIGNAL(textChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-    disconnect(q_boxType, SIGNAL(currentTextChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-    disconnect(q_spinCode, SIGNAL(valueChanged(const qulonglong &)),
-               this, SLOT(slotCodeChanged(const qulonglong &)));
-    disconnect(q_spinSequence, SIGNAL(valueChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-    disconnect(q_edtDescribe, SIGNAL(textChanged()),
-               this, SLOT(slotEditFinished()));
-    disconnect(editStatus(), SIGNAL(textChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-
-    if (enable) {
-        connect(q_edtName, SIGNAL(textChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-        connect(q_boxType, SIGNAL(currentTextChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-        connect(q_spinCode, SIGNAL(valueChanged(const qulonglong &)),
-                this, SLOT(slotCodeChanged(const qulonglong &)));
-        connect(q_spinSequence, SIGNAL(valueChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-        connect(q_edtDescribe, SIGNAL(textChanged()),
-                this, SLOT(slotEditFinished()));
-        connect(editStatus(), SIGNAL(textChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-    }
-}
-
-// 校验界面数据
-bool SubTableEdit::dataValid()
-{
-    QString section = "name";
-    QMap<QString, QString> existed;
-    QVariantList args;
-    args.append(qVariantFromValue((void*)&existed));
-    args.append(qVariantFromValue((void*)&section));
-    jnotify->send("edit.queryExistedData", args);
-
-    // 名称
-    QPalette palette = q_edtName->palette();
-    if (q_data.sDescribe.empty()) {
-        editStatus()->setText(QStringLiteral("名称不能为空！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_edtName->setPalette(palette);
-        q_edtName->setFocus();
-
-        return false;
-    } else if (existed.contains(q_data.sDescribe.c_str())) {
-        editStatus()->setText(QStringLiteral("已存在同名项！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_edtName->setPalette(palette);
-        q_edtName->setFocus();
-
-        return false;
-    } else {
-        palette.setColor(QPalette::Base, q_color);
-        q_edtName->setPalette(palette);
-    }
-    // 标识
-    section = "code";
-    args.clear();
-    args.append(qVariantFromValue((void*)&existed));
-    args.append(qVariantFromValue((void*)&section));
-    jnotify->send("edit.queryExistedData", args);
-
-    palette = q_spinCode->palette();
-    if (q_data.sCode.empty()) {
-        editStatus()->setText(QStringLiteral("帧码不能为空！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_spinCode->setPalette(palette);
-        q_spinCode->setFocus();
-
-        return false;
-    } else if (existed.contains(q_data.sCode.c_str())) {
-        editStatus()->setText(QStringLiteral("已存在同名标识！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_spinCode->setPalette(palette);
-        q_spinCode->setFocus();
-
-        return false;
-    } else {
-        if (q_data.sCode.size() < 2) {
-            q_data.sCode.insert(0, "0");
-            q_spinCode->setValue(QString(q_data.sCode.c_str()).toInt(0, 16));
+    const QObject *sender = this->sender();
+    if (sender == comboLength_) {
+        int length = 2 * comboLength_->currentData().toInt();
+        QString strValue = QString().fill('f', length);
+        spinCode_->setRange(0, strValue.prepend("0x").toUInt(0, 16));
+        length -= data_.sCode.length();
+        if (length > 0) {
+            data_.sCode.insert(0, length, '0');
+        } else if (length < 0) {
+            data_.sCode = data_.sCode.substr(abs(length));
         }
-        palette.setColor(QPalette::Base, q_color);
-        q_spinCode->setPalette(palette);
+        spinCode_->setValue(QString(data_.sCode.c_str()).toInt(0, 16));
+        result = true;
+    } else if (sender == spinSequence_) {
+        data_.sRemark = QString::number(spinSequence_->value()).toStdString();
+        result = true;
+    }
+
+    if (result) {
+        enableCommit(true);
+    }
+
+    return result;
+}
+
+bool SubTableEdit::init()
+{
+    // length
+    comboLength_->clear();
+    comboLength_->addItem(QStringLiteral("1字节"), 1);
+    comboLength_->addItem(QStringLiteral("2字节"), 2);
+    comboLength_->addItem(QStringLiteral("4字节"), 4);
+    if (comboLength_) {
+        comboLength_->setCurrentIndex(comboLength_->findData(data_.sCode.length() / 2));
+    }
+    // code
+    QString strValue = QString().fill('f', data_.sCode.length());
+    spinCode_->setRange(0, strValue.prepend("0x").toUInt(0, 16));
+    spinCode_->setValue(QString(data_.sCode.c_str()).toInt(0, 16));
+    spinCode_->clearFocus();
+    data_.sCode = spinCode_->text().remove(spinCode_->prefix()).toStdString();
+    // sequence;
+    spinSequence_->setValue(QString::fromStdString(data_.sRemark).toInt());
+
+    return true;
+}
+
+void SubTableEdit::enableConnect(bool enabled)
+{
+    ObjectEdit::enableConnect(enabled);
+
+    disconnect(comboLength_, SIGNAL(currentTextChanged(const QString &)),
+               this, SLOT(onTextChanged(const QString &)));
+    disconnect(spinCode_, SIGNAL(valueChanged(const qulonglong &)),
+               this, SLOT(onCodeChanged(const qulonglong &)));
+    disconnect(spinSequence_, SIGNAL(valueChanged(const QString &)),
+               this, SLOT(onTextChanged(const QString &)));
+    if (enabled) {
+        connect(comboLength_, SIGNAL(currentTextChanged(const QString &)),
+                this, SLOT(onTextChanged(const QString &)));
+        connect(spinCode_, SIGNAL(valueChanged(const qulonglong &)),
+                this, SLOT(onCodeChanged(const qulonglong &)));
+        connect(spinSequence_, SIGNAL(valueChanged(const QString &)),
+                this, SLOT(onTextChanged(const QString &)));
+    }
+}
+
+bool SubTableEdit::confirm()
+{
+    return true;
+}
+
+bool SubTableEdit::validate()
+{
+    if (data_.sCode.empty()) {
+        spinCode_->setFocus();
+        spinCode_->setProperty("highlight", true);
+        setStatus(QStringLiteral("帧码不能为空！"));
+        return false;
+    } else {
+
+        QString section = "code";
+        QMap<QString, QString> existed;
+        QVariantList args;
+        args.append(qVariantFromValue((void*)&existed));
+        args.append(qVariantFromValue((void*)&section));
+        jnotify->send("edit.queryExistedData", args);
+        if (existed.contains(data_.sCode.c_str())) {
+            spinCode_->setFocus();
+            spinCode_->setProperty("highlight", true);
+            setStatus(QStringLiteral("已存在同名标识！"));
+            return false;
+        } else {
+            if (data_.sCode.size() < 2) {
+                data_.sCode.insert(0, "0");
+                spinCode_->setValue(QString(data_.sCode.c_str()).toInt(0, 16));
+            }
+            spinCode_->clearFocus();
+            spinCode_->setProperty("highlight", false);
+        }
     }
 
     return true;
+}
+
+void *SubTableEdit::nonData()
+{
+    return &data_;
+}
+
+void *SubTableEdit::nonOldData()
+{
+    return &oldData_;
+}
+
+bool SubTableEdit::setData(const _UIData &data)
+{
+    if (!data.data) {
+        return false;
+    }
+
+    data_ = *reinterpret_cast<stICDBase*>(data.data);
+    oldData_ = data_;
+
+    return setExtData(data, true);
+}
+
+QString SubTableEdit::name() const
+{
+    return QString::fromStdString(data_.sName);
+}
+
+void SubTableEdit::setName(const QString &text)
+{
+    data_.sName = text.toStdString();
+}
+
+QString SubTableEdit::mark() const
+{
+    return QString::fromStdString(data_.sCode);
+}
+
+void SubTableEdit::setMark(const QString &text)
+{
+    data_.sCode = text.toStdString();
+}
+
+QString SubTableEdit::desc() const
+{
+    return QString::fromStdString(data_.sDescribe);
+}
+
+void SubTableEdit::setDesc(const QString &text)
+{
+    data_.sDescribe = text.toStdString();
 }

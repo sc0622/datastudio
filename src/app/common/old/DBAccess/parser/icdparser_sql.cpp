@@ -168,8 +168,7 @@ bool SqlParser::parse(const std::string &vehicleId,
     }
 
     // parse tables
-    QString group = QString("%1/%2")
-            .arg(vehicleId.c_str()).arg(systemId.c_str());
+    QString group = QString("%1/%2").arg(vehicleId.c_str()).arg(systemId.c_str());
     DMSpace::_vectorIcdTR_Cit it = rules.begin();
     for (; it != rules.end(); ++it) {
         const stICDBase &base = it->first;
@@ -179,7 +178,7 @@ bool SqlParser::parse(const std::string &vehicleId,
             continue;   // skip sub tables and other group
         }
         Icd::TablePtr table(new Icd::Table());
-        if (!d->parseTable(base.sName, table, rules, deep)) {
+        if (!d->parseTable(base.sID, table, rules, deep)) {
             return false;
         }
         table->setDomain(vehicleId + "/" + systemId + "/" + table->id());
@@ -202,8 +201,7 @@ bool SqlParser::parse(const std::string &vehicleId,
     if (deep >= Icd::ObjectItem) {
         rules = d->tableRules(tableId);
     } else {
-        rules.push_back(std::make_pair(d->icdBase(tableId),
-                                       std::vector<stTableRules>()));
+        rules.push_back(std::make_pair(d->icdBase(tableId), std::vector<stTableRules>()));
     }
 
     // parse table
@@ -240,11 +238,11 @@ bool SqlParser::parse(const std::string &vehicleId,
     Q_UNUSED(systemId);
 
     stICDBase single;
-    single.sName = tableId;
+    single.sID = tableId;
     // table-rules
     DMSpace::_vectorIcdTR _rules = d->tableRules(tableId);
     DMSpace::pairIcdTR icdTR = d->singleIcdTR(_rules, single);
-    if (icdTR.first.sName.empty()) {
+    if (icdTR.first.sID.empty()) {
         return false;
     }
     const std::vector<stTableRules> &rules = icdTR.second;
@@ -332,8 +330,7 @@ bool SqlParser::save(const Icd::VehiclePtrArray &vehicles) const
             tableArray = system->allTable();
             size = tableArray.size();
             for (int k = 0; k < size; ++k) {
-                if (!d->table2TableRules(tableArray[k], group,
-                                         std::string(""), tableRules)) {
+                if (!d->table2TableRules(tableArray[k], group, std::string(""), tableRules)) {
                     return false;
                 }
             }

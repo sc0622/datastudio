@@ -22,8 +22,7 @@ class ICDMetaDataPrivate;
 /**
  * @brief ICD规则基本数据类
  */
-class KERNELCLASS_EXPORT ICDMetaData
-    : public ICDElement
+class KERNELCLASS_EXPORT ICDMetaData : public ICDElement
 {
 public:
     typedef std::shared_ptr<ICDMetaData> smtMeta;

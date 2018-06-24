@@ -341,8 +341,8 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         chart->setChartTheme(JChart::ChartThemeDark);
         chart->setLegendVisible(showYAlign);
         chart->setBitsRange(itemBit->bitStart(), itemBit->bitStart() + itemBit->bitCount() - 1);
-        const std::unordered_map<icd_uint64, std::string> &specs = itemBit->specs();
-        for (std::unordered_map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
+        const std::map<icd_uint64, std::string> &specs = itemBit->specs();
+        for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
              citer != specs.cend(); ++citer) {
             JChart::AbstractSeries *series = chart->seriesAt(citer->first);
             if (series) {

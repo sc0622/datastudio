@@ -10,8 +10,7 @@ namespace Icd {
  * @param rule
  * @return
  */
-bool SqlParserData::object2rule(const Icd::ObjectPtr &object,
-                                stTableRules &rule) const
+bool SqlParserData::object2rule(const Icd::ObjectPtr &object, stTableRules &rule) const
 {
     if (0 == object) {
         return false;
@@ -53,8 +52,7 @@ bool SqlParserData::Item2rule(const Icd::ItemPtr &item, stTableRules &rule) cons
     // other attribute
     switch (item->type()) {
     case Icd::ItemHead:
-        result = ItemHead2rule(JHandlePtrCast<Icd::HeaderItem, Icd::Item>(item),
-                               rule);
+        result = ItemHead2rule(JHandlePtrCast<Icd::HeaderItem, Icd::Item>(item), rule);
         // type attribute
         rule.uType = GlobalDefine::dtHead;
         break;
@@ -376,8 +374,8 @@ bool SqlParserData::ItemNumeric2rule(const Icd::NumericItemPtr &numeric, stTable
     rule.sUnit = numeric->unit();
 
     // specs attribute
-    std::unordered_map<double, std::string> values = numeric->specs();
-    std::unordered_map<double, std::string>::iterator it = values.begin();
+    std::map<double, std::string> values = numeric->specs();
+    std::map<double, std::string>::iterator it = values.begin();
     QString set;
     for (; it != values.end(); ++it) {
         set += QString("%1[%2]#").arg(it->first).arg(it->second.c_str());
@@ -461,8 +459,8 @@ bool SqlParserData::ItemBit2rule(const Icd::BitItemPtr &bit, stTableRules &rule)
     rule.nCode = bit->bitStart() / 8;
 
     // spec attribute
-    std::unordered_map<icd_uint64, std::string> values = bit->specs();
-    std::unordered_map<icd_uint64, std::string>::iterator it = values.begin();
+    std::map<icd_uint64, std::string> values = bit->specs();
+    std::map<icd_uint64, std::string>::iterator it = values.begin();
     QString set;
     for (; it != values.end(); ++it) {
         set += QString("%1[%2]#").arg(it->first).arg(it->second.c_str());
@@ -530,8 +528,7 @@ bool SqlParserData::ItemComplex2TableRules(const Icd::ComplexItemPtr &complex,
  * @param rule
  * @return
  */
-bool SqlParserData::ItemFrame2rule(const Icd::FrameItemPtr &frame,
-                                   stTableRules &rule) const
+bool SqlParserData::ItemFrame2rule(const Icd::FrameItemPtr &frame, stTableRules &rule) const
 {
     if (0 == frame) {
         return false;
@@ -548,15 +545,14 @@ bool SqlParserData::ItemFrame2rule(const Icd::FrameItemPtr &frame,
     if (!tables.empty()) {
         Icd::TablePtrMap::iterator it = tables.begin();
         Icd::TablePtr table = it->second;
-
         // rule attribute
-        QString names;
+        QStringList ids;
         for (; it != tables.end(); ++it) {
             if (table = it->second) {
-                names += QString("%1@").arg(table->id().c_str());
+                ids.append(QString::fromStdString(table->id()));
             }
         }
-        rule.sRule = names.left(names.lastIndexOf("@")).toStdString();
+        rule.sRule = ids.join('@').toStdString();
     }
 
     return true;
@@ -585,7 +581,8 @@ bool SqlParserData::ItemFrame2TableRules(const Icd::FrameItemPtr &frame,
         DMSpace::_vectorIcdTR subTables;
         Icd::TablePtr table = 0;
         for (; it != tables.end(); ++it) {
-            if (table = it->second) {
+            table = it->second;
+            if (table) {
                 // rules
                 if (!table2TableRules(table, group, parent, subTables)) {
                     return false;
@@ -612,29 +609,20 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
     stICDBase base;
     std::vector<stTableRules> tableRules;
     DMSpace::_vectorIcdTR subTables;
-
-    // name attribute
-    base.sName = table->id();
-
     // id attribute
-    base.sID = base.sName.substr(base.sName.find("_") + strlen("_"));
-
+    base.sID = table->id();
+    // name attribute
+    base.sName = table->name();
     // code attribute
     base.sCode = table->mark();
-
     // parent attribute
     base.sParentName = parent;
-
     // describe attribute
-    base.sDescribe = table->name();
-
+    base.sDescribe = table->desc();
     // group attribute
     base.sGroup = group;
-
     // remark attribute
-    base.sRemark = QString("%1##%2").arg(table->desc().c_str()).arg(table->sequence())
-            .toStdString();
-
+    base.sRemark = QString::number(table->sequence()).toStdString();
     // length attribute
     Icd::FrameItem *frame = dynamic_cast<Icd::FrameItem *>(table->parent());
     Icd::ComplexItem *complex = dynamic_cast<Icd::ComplexItem *>(table->parent());
@@ -696,7 +684,7 @@ bool SqlParserData::table2TableRules(const Icd::TablePtr &table,
             }
 
             // sub tablerules
-            if (!Item2TableRules(item, group, base.sName, subTables)) {
+            if (!Item2TableRules(item, group, base.sID, subTables)) {
                 return false;
             }
 

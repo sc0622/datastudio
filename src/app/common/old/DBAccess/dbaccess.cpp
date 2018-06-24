@@ -1001,7 +1001,7 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
             if (GlobalDefine::ntSystem == dataLevel) {
                 lstDeleteSystem.clear();    // 保存层次为机型时，不删除机型数据
                 cdtDeleteTable.clear();
-            } else if (GlobalDefine::ntPlane > dataLevel) {    // 所有机型
+            } else if (GlobalDefine::ntVehicle > dataLevel) {    // 所有机型
                 cdtDeletePlane.append(QString("delete from %1 where code"
                                               " not in(select a.code from (%2) a)")
                                       .arg(tableName(DataBaseDefine::dbPlane).c_str())

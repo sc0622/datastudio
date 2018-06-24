@@ -128,7 +128,7 @@ void ICDMetaData::setSerial(int serial)
     char szTmp[32] = {0};
     sprintf_s(szTmp, sizeof(szTmp), "%d", serial);
 
-    setID(std::string(szTmp));
+    setId(std::string(szTmp));
 
     d->q_serial = serial;
 }

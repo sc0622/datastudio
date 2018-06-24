@@ -2,13 +2,11 @@
 #define ICDCOMMONDATA_H
 #include "icdmetadata.h"
 
-
 class ICDCommonDataPrivate;
 /**
  * @brief ICD通用数据类
  */
-class KERNELCLASS_EXPORT ICDCommonData
-        : public ICDMetaData
+class KERNELCLASS_EXPORT ICDCommonData : public ICDMetaData
 {
 public:
     typedef std::shared_ptr<ICDCommonData> smtCommon;
@@ -23,8 +21,8 @@ public:
     ICDMetaData::smtMeta clone() const;
 
     // 设置/获取编码
-    virtual void setProCode(const std::string& proCode);
-    virtual std::string proCode() const;
+    virtual void setProCode(const std::string& proCode) override;
+    virtual std::string proCode() const override;
 
     // 设置/获取默认值
     virtual void setDefaultStr(const std::string& str);
@@ -57,10 +55,10 @@ public:
     void deleteValue(double value);
 
     // 设置数据
-    void setValues(const std::unordered_map<double, std::string> &values);
+    void setValues(const std::map<double, std::string> &values);
 
     // 获取所有数据
-    std::unordered_map<double, std::string> values() const;
+    std::map<double, std::string> values() const;
 
     // 判定数据是否在限制范围内
     bool dataInRange(double value) const;

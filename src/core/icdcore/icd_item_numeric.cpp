@@ -29,7 +29,7 @@ private:
     double offset;              // 偏置
     LimitItemPtr limit;         // 范围
     std::string unit;           // 单位
-    std::unordered_map<double, std::string> specs;  // 特征点,画图或显示使用
+    std::map<double, std::string> specs;  // 特征点,画图或显示使用
 };
 
 // class NumericItem
@@ -274,12 +274,12 @@ void NumericItem::setUnit(const std::string &unit)
     d->unit = unit;
 }
 
-std::unordered_map<double, std::string> NumericItem::specs()
+std::map<double, std::string> NumericItem::specs()
 {
     return d->specs;
 }
 
-const std::unordered_map<double, std::string> &NumericItem::specs() const
+const std::map<double, std::string> &NumericItem::specs() const
 {
     return d->specs;
 }
@@ -291,7 +291,7 @@ void NumericItem::addSpec(double key, const std::string info)
 
 std::string NumericItem::specAt(double key) const
 {
-    std::unordered_map<double, std::string>::const_iterator citer = d->specs.find(key);
+    std::map<double, std::string>::const_iterator citer = d->specs.find(key);
     if (citer != d->specs.cend()) {
         return citer->second;
     } else {
@@ -449,7 +449,7 @@ Json::Value NumericItem::save() const
     }
     if (!d->specs.empty()) {
         Json::Value specsJson;
-        for (std::unordered_map<double, std::string>::const_iterator
+        for (std::map<double, std::string>::const_iterator
              citer = d->specs.cbegin(); citer != d->specs.cend(); ++citer) {
             Json::Value specJson;
             specJson[Icd::dtoa(citer->first)] = citer->second;

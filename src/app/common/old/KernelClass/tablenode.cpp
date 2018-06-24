@@ -49,10 +49,11 @@ TableNode::~TableNode()
 
 void TableNode::setICDBase(const stICDBase& icdBase)
 {
-    setID(icdBase.sName);
-    setName(icdBase.sDescribe);
-    setSign(icdBase.sCode);
-    setDescribe(icdBase.sRemark);
+    setId(icdBase.sID);
+    setName(icdBase.sName);
+    setProCode(icdBase.sCode);
+    setDescribe(icdBase.sDescribe);
+    d->q_base.sRemark = icdBase.sRemark;
 
     d->q_base = icdBase;
     // 子表不进行长度校验
@@ -309,7 +310,7 @@ void TableNode::clearRule()
 * @brief 获取所有ICD子表
 * @return 子表名集
 */
-std::vector<std::string> TableNode::subTableNames() const
+std::vector<std::string> TableNode::subTableIds() const
 {
     std::vector<std::string> result;
     if (!isComplex()) {
@@ -320,9 +321,8 @@ std::vector<std::string> TableNode::subTableNames() const
     for (; it != d->q_rule.end(); ++it) {
         const ICDMetaData::smtMeta &meta = it->second;
         if (IcdDefine::icdComplex == meta->metaType()) {
-            ICDComplexData::smtComplex complex
-                = std::dynamic_pointer_cast<ICDComplexData>(meta);
-            subResult = complex->tableNames();
+            ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(meta);
+            subResult = complex->tableIds();
             result.insert(result.end(), subResult.begin(), subResult.end());
         }
     }
@@ -344,8 +344,7 @@ TableNode::tableVector TableNode::subTables() const
     for (; it != d->q_rule.end(); ++it) {
         const ICDMetaData::smtMeta &meta = it->second;
         if (IcdDefine::icdComplex == meta->metaType()) {
-            ICDComplexData::smtComplex complex
-                = SMT_CONVERT(ICDComplexData, meta);
+            ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, meta);
             subResult = complex->subTables();
             result.insert(result.end(), subResult.begin(), subResult.end());
         }
@@ -428,6 +427,56 @@ TableNode::smtTable TableNode::clone() const
     TableNode::smtTable table(new TableNode(*this));
 
     return table;
+}
+
+void TableNode::setId(std::string id)
+{
+    d->q_base.sID = id;
+}
+
+std::string TableNode::id() const
+{
+    return d->q_base.sID;
+}
+
+void TableNode::setName(const std::string &name)
+{
+    d->q_base.sName = name;
+}
+
+std::string TableNode::name() const
+{
+    return d->q_base.sName;
+}
+
+void TableNode::setProCode(const std::string &proCode)
+{
+    setSign(proCode);
+}
+
+std::string TableNode::proCode() const
+{
+    return sign();
+}
+
+void TableNode::setSign(const std::string &sign)
+{
+    d->q_base.sCode = sign;
+}
+
+std::string TableNode::sign() const
+{
+    return d->q_base.sCode;
+}
+
+void TableNode::setDescribe(const std::string &describe)
+{
+    d->q_base.sDescribe = describe;
+}
+
+std::string TableNode::describe() const
+{
+    return d->q_base.sDescribe;
 }
 
 TableNode::TableNode(const TableNode &rhs)

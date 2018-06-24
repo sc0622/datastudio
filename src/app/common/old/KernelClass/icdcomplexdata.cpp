@@ -93,7 +93,7 @@ TableNode::tableVector ICDComplexData::allTable() const
 * @brief 获取所有表名（包括子表）
 * @return 表名集
 */
-std::vector<std::string> ICDComplexData::tableNames() const
+std::vector<std::string> ICDComplexData::tableIds() const
 {
     std::vector<std::string> result;
     std::vector<std::string> subResult;
@@ -103,7 +103,7 @@ std::vector<std::string> ICDComplexData::tableNames() const
         if (!(table = d->q_table[i])) {
             continue;
         }
-        subResult = table->subTableNames();
+        subResult = table->subTableIds();
         if (!subResult.empty()) {
             result.insert(result.end(), subResult.begin(), subResult.end());
         }
@@ -140,17 +140,17 @@ TableNode::tableVector ICDComplexData::subTables() const
 * @param [in] name : 表名（表名1/表名2/……/目标表）
 * @return 子表名集
 */
-TableNode::smtTable ICDComplexData::table(const std::string &name) const
+TableNode::smtTable ICDComplexData::table(const std::string &id) const
 {
     TableNode::smtTable result;
-    if (name.empty()) {
+    if (id.empty()) {
         return result;
     }
-    std::size_t pos = name.find("/");
-    std::string subName = name.substr(0, pos);
+    std::size_t pos = id.find("/");
+    std::string subId = id.substr(0, pos);
     const int count = d->q_table.size();
     for (int i = 0; i < count; ++i) {
-        if ((result = d->q_table[i]) && result->id() == subName) {
+        if ((result = d->q_table[i]) && result->id() == subId) {
             break;
         } else {
             result = 0;
@@ -158,8 +158,8 @@ TableNode::smtTable ICDComplexData::table(const std::string &name) const
     }
     if (result) {
         if (std::string::npos != pos) {
-            subName = name.substr(pos + strlen("/"));
-            result = result->subTable(subName);
+            subId = id.substr(pos + strlen("/"));
+            result = result->subTable(subId);
         }
     }
 
@@ -169,18 +169,18 @@ TableNode::smtTable ICDComplexData::table(const std::string &name) const
 /**
 * @brief 更新长度（包括子表）
 */
-void ICDComplexData::updateLength(const std ::string &name)
+void ICDComplexData::updateLength(const std ::string &id)
 {
-    if (!name.empty()) {
-        std::size_t pos = name.find("/");
-        std::string subName = name.substr(0, pos);
+    if (!id.empty()) {
+        std::size_t pos = id.find("/");
+        std::string subId = id.substr(0, pos);
         const int count = d->q_table.size();
         TableNode::smtTable table = 0;
         for (int i = 0; i < count; ++i) {
-            if ((table = d->q_table[i]) && table->id() == subName) {
+            if ((table = d->q_table[i]) && table->id() == subId) {
                 if (std::string::npos != pos) {
-                    subName = (-1 == pos) ? "" : name.substr(pos + strlen("/"));
-                    table->updateLength(subName);
+                    subId = (-1 == pos) ? "" : id.substr(pos + strlen("/"));
+                    table->updateLength(subId);
                 } else {
                     table->updateLength("");
                 }
@@ -220,9 +220,9 @@ bool ICDComplexData::deleteTable(const std::vector<std::string> &table)
  * @param [in] serial : 表序号
  * @return 执行结果，true：成功；false：失败
  */
-bool ICDComplexData::deleteTableItem(const std::string &name, int serial)
+bool ICDComplexData::deleteTableItem(const std::string &id, int serial)
 {
-    TableNode::smtTable _table = this->table(name);
+    TableNode::smtTable _table = this->table(id);
     if (!_table) {
         return _table->deleteRule(std::vector<int>(1, serial));
     }
@@ -237,7 +237,6 @@ bool ICDComplexData::deleteTableItem(const std::string &name, int serial)
 void ICDComplexData::clearTable()
 {
     d->q_table.clear();
-
     setRule(std::string());
     calculateLength();
 }
@@ -252,7 +251,7 @@ std::string ICDComplexData::stringValue() const
         if (!(_table = d->q_table[i])) {
             continue;
         }
-        result.append(_table->icdBase().sName).append("@");
+        result.append(_table->icdBase().sID).append("@");
     }
     result = result.substr(0, result.find_last_of("@"));
 
@@ -273,26 +272,25 @@ void ICDComplexData::setProCode(const std::string& proCode)
         TableNode::smtTable smtData = table(rule());
         if (smtData) {
             stICDBase base = smtData->icdBase();
-
             base.sCode = proCode;
             smtData->setICDBase(base);
         }
     }
 }
 
-bool ICDComplexData::hasEmptyTable(std::string &names) const
+bool ICDComplexData::hasEmptyTable(std::string &tableIds) const
 {
     if (d->q_table.empty()) {
-        names = name();
+        tableIds = id();
         return true;
     }
     const int count = d->q_table.size();
     for (int i = 0; i < count; ++i) {
         if (d->q_table[i]->isEmpty()) {
             if (GlobalDefine::dtComplex == type()) {
-                names = d->q_table[i]->name();
+                tableIds = d->q_table[i]->id();
             } else {
-                names = name() + "|" + d->q_table[i]->name();
+                tableIds = id() + "|" + d->q_table[i]->id();
             }
             return true;
         }
@@ -308,8 +306,7 @@ void ICDComplexData::setName(const std::string &name)
         TableNode::smtTable smtData = table(rule());
         if (smtData) {
             stICDBase base = smtData->icdBase();
-
-            base.sDescribe = name;
+            base.sName = name;
             smtData->setICDBase(base);
         }
     }
@@ -323,7 +320,6 @@ void ICDComplexData::setRemark(const std::string &remark)
         TableNode::smtTable smtData = table(rule());
         if (smtData) {
             stICDBase base = smtData->icdBase();
-
             base.sRemark = remark;
             smtData->setICDBase(base);
         }
@@ -402,6 +398,5 @@ ICDComplexData &ICDComplexData::operator =(const ICDComplexData &rhs)
 ICDMetaData::smtMeta ICDComplexData::clone() const
 {
     ICDComplexData::smtComplex complex(new ICDComplexData(*this));
-
     return complex;
 }

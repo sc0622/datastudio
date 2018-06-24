@@ -172,7 +172,7 @@ private:
      * @param [in] rules : 表规则数据
      * @return 执行结果，true：成功；false：失败
      */
-    bool recursiveLoadRule(const std::string& name, TableNode::smtTable &table, DMSpace::_vectorIcdTR &rules);
+    bool recursiveLoadRule(const std::string& id, TableNode::smtTable &table, DMSpace::_vectorIcdTR &rules);
 
     /**
      * @brief 删除单条规则
@@ -225,8 +225,7 @@ private:
     * @param [in] remove : 删除标识
     * @return 规则表数据
     */
-    DMSpace::pairIcdTR singleIcdTR(const std::string &name, DMSpace::_vectorIcdTR &rules,
-                                   bool remove = false) const;
+    DMSpace::pairIcdTR singleIcdTR(const std::string &id, DMSpace::_vectorIcdTR &rules, bool remove = false) const;
 
 protected:
     /**
@@ -258,7 +257,7 @@ protected:
      * @param [in] name : 表名
      * @return 子表数据
      */
-    TableNode::smtTable recursiveLinkTable(TableNode::tableMap& allTable, const std::string& name);
+    TableNode::smtTable recursiveLinkTable(TableNode::tableMap& allTable, const std::string& tableId);
 
     // 查询字典表
     bool queryDictionary(stQueryDic &data);

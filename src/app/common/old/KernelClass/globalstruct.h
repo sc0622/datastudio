@@ -6,6 +6,11 @@
 #include <vector>
 #include <memory>
 
+//
+#ifndef MAX_BIT_COUNT
+#define MAX_BIT_COUNT 64
+#endif
+
 namespace GlobalDefine {
 
 /**
@@ -113,7 +118,7 @@ enum DataSource {
  */
 enum NodeType{
     ntUnknown   = -1,   // 未知
-    ntPlane = 0,        // 机型
+    ntVehicle = 0,        // 机型
     ntSystem,           // 分系统
     ntTable,            // 规则表
     ntRule,             // 具体规则
@@ -312,7 +317,7 @@ struct stICDBase
 
     bool operator < (const stICDBase &rhs) const
     {
-        return sName < rhs.sName;
+        return sID < rhs.sID;
     }
 };
 

@@ -178,23 +178,23 @@ DMSpace::_vectorIcdTR SqlParserData::tableRules(const std::string &planeID,
     DMSpace::_vectorIcdTR result;
 
     // read icdbase
-    std::vector<std::string> names;
+    std::vector<std::string> tableIds;
     std::vector<stICDBase> tables = icdBaseArray(planeID, systemID);
     const int count = tables.size();
     for (int i = 0; i < count; ++i) {
-        names.push_back(tables[i].sName);
+        tableIds.push_back(tables[i].sID);
     }
 
     DMSpace::svrMap rules;
     // read rules
-    if (!db->readTableRules(names, rules)) {
+    if (!db->readTableRules(tableIds, rules)) {
         return result;
     }
 
     DMSpace::svrMap::iterator it = rules.end();
     for (int i = 0; i < count; ++i) {
         const stICDBase &single = tables[i];
-        if ((it = rules.find(single.sName)) != rules.end()) {
+        if ((it = rules.find(single.sID)) != rules.end()) {
             result.push_back(std::make_pair(single, it->second));
         } else {
             result.push_back(std::make_pair(single, std::vector<stTableRules>()));
@@ -207,21 +207,21 @@ DMSpace::_vectorIcdTR SqlParserData::tableRules(const std::string &planeID,
 DMSpace::_vectorIcdTR SqlParserData::tableRules(const std::string &tableId) const
 {
     DMSpace::_vectorIcdTR result;
-    std::vector<std::string> names;
+    std::vector<std::string> tableIds;
 
     // read subTables
-    names = db->querySubTables(tableId);
-    names.insert(names.begin(), tableId);
+    tableIds = db->querySubTables(tableId);
+    tableIds.insert(tableIds.begin(), tableId);
 
     // read icdbase
     std::vector<stICDBase> tables;
-    if (!db->readICDBase(names, tables)) {
+    if (!db->readICDBase(tableIds, tables)) {
         return result;
     }
 
     DMSpace::svrMap rules;
     // read rules
-    if (!db->readTableRules(names, rules)) {
+    if (!db->readTableRules(tableIds, rules)) {
         return result;
     }
 
@@ -229,7 +229,7 @@ DMSpace::_vectorIcdTR SqlParserData::tableRules(const std::string &tableId) cons
     const int count = tables.size();
     for (int i = 0; i < count; ++i) {
         const stICDBase &single = tables[i];
-        if ((it = rules.find(single.sName)) != rules.end()) {
+        if ((it = rules.find(single.sID)) != rules.end()) {
             result.push_back(std::make_pair(single, it->second));
         } else {
             result.push_back(std::make_pair(single, std::vector<stTableRules>()));
@@ -247,7 +247,7 @@ DMSpace::pairIcdTR SqlParserData::singleIcdTR(const DMSpace::_vectorIcdTR &rules
     const int count = rules.size();
     for (int i = 0; i < count; ++i) {
         const DMSpace::pairIcdTR &icdTR = rules[i];
-        if (icdTR.first.sName == icdBase.sName) {
+        if (icdTR.first.sID == icdBase.sID) {
             result = icdTR;
             break;
         }
@@ -756,8 +756,7 @@ bool SqlParserData::parseItemFrame(const stTableRules &rule,
     // bufferSize
     frame->setBufferSize(rule.uLength);
 
-    QStringList lstTable = QString::fromStdString(rule.sRule)
-            .split("@", QString::SkipEmptyParts);
+    QStringList lstTable = QString::fromStdString(rule.sRule).split("@", QString::SkipEmptyParts);
     QStringListIterator it = lstTable;
 
     // sequenceCount
@@ -766,18 +765,18 @@ bool SqlParserData::parseItemFrame(const stTableRules &rule,
     stICDBase base;
     DMSpace::pairIcdTR icdTR;
     while (it.hasNext()) {
-        base.sName = it.next().toStdString();
+        base.sID = it.next().toStdString();
         // find base
         icdTR = singleIcdTR(tableRules, base);
-        if (icdTR.first.sName.empty()) {
-            qDebug() << "find:" << QString::fromStdString(base.sName);
+        if (icdTR.first.sID.empty()) {
+            qDebug() << "find:" << QString::fromStdString(base.sID);
             return false;
         }
         base = icdTR.first;
         // parse table
         Icd::TablePtr table(new Icd::Table());
-        if (!parseTable(base.sName, table, tableRules, deep)) {
-            qDebug() << "parseTable:" << QString::fromStdString(base.sName);
+        if (!parseTable(base.sID, table, tableRules, deep)) {
+            qDebug() << "parseTable:" << QString::fromStdString(base.sID);
             return false;
         }
 
@@ -795,10 +794,8 @@ bool SqlParserData::parseItemFrame(const stTableRules &rule,
  * @param deep
  * @return
  */
-bool SqlParserData::parseTable(const std::string &tableId,
-                               const Icd::TablePtr &table,
-                               const DMSpace::_vectorIcdTR &tableRules,
-                               int deep) const
+bool SqlParserData::parseTable(const std::string &tableId, const Icd::TablePtr &table,
+                               const DMSpace::_vectorIcdTR &tableRules, int deep) const
 {
     if (0 == table) {
         return false;
@@ -806,26 +803,22 @@ bool SqlParserData::parseTable(const std::string &tableId,
 
     // icdbase
     stICDBase base;
-    base.sName = tableId;
+    base.sID = tableId;
     DMSpace::pairIcdTR icdTR = singleIcdTR(tableRules, base);
-    if (icdTR.first.sName.empty()) {
+    if (icdTR.first.sID.empty()) {
         return false;
     }
     base = icdTR.first;
     // id attribute
-    table->setId(base.sName);
+    table->setId(base.sID);
     // name attribute
-    table->setName(base.sDescribe);
+    table->setName(base.sName);
     // mark attribute
     table->setMark(base.sCode);
     // sequence attribute
-    QStringList lstData = QString::fromStdString(base.sRemark).split("##");
-    if (lstData.size() > 1) {
-        table->setSequence(lstData.last().toInt());
-    }
-
+    table->setSequence(QString::fromStdString(base.sRemark).toInt());
     // desc attribute
-    table->setDesc(lstData.first().toStdString());
+    table->setDesc(base.sDescribe);
 
     if (deep <= Icd::ObjectTable) {
         return true;
@@ -841,8 +834,7 @@ bool SqlParserData::parseTable(const std::string &tableId,
         if (!parseItem(rule, item, tableRules, deep)) {
             QString error = QStringLiteral("解析规则数据失败！")
                     + QStringLiteral("（表：[%1]；数据定义：[%2]）")
-                    .arg(base.sName.c_str())
-                    .arg(rule.sName.c_str());
+                    .arg(base.sID.c_str()).arg(rule.sName.c_str());
             qWarning() << error;
             return false;
         }
@@ -860,8 +852,7 @@ bool SqlParserData::parseTable(const std::string &tableId,
             continue;
         }
         // find frame
-        Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(
-                    table->itemById(frameId));
+        Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(table->itemById(frameId));
         if (!frame) {
             continue;
         }
@@ -915,7 +906,7 @@ bool SqlParserData::parseSystem(const std::string &planeID,
             continue;   // skip sub tables and other group
         }
         Icd::TablePtr table(new Icd::Table(system.get()));
-        if (!parseTable(base.sName, table, tableRules, deep)) {
+        if (!parseTable(base.sID, table, tableRules, deep)) {
             return false;
         }
         // save

@@ -35,7 +35,7 @@ public:
     * @param [in] names : 空表名字（父表到子表）
     * @return true：有；false：没有
     */
-    bool hasEmptyTable(std::string &names) const;
+    bool hasEmptyTable(std::string &tableIds) const;
 
     /**
      * @brief 设置表数据
@@ -60,7 +60,7 @@ public:
     * @brief 获取所有表名（包括子表）
     * @return 表名集
     */
-    std::vector<std::string> tableNames() const;
+    std::vector<std::string> tableIds() const;
 
     /**
     * @brief 获取所有子表数据
@@ -73,12 +73,12 @@ public:
     * @param [in] name : 表名（表名1/表名2/……/目标表）
     * @return 子表名集
     */
-    TableNode::smtTable table(const std ::string &name) const;
+    TableNode::smtTable table(const std ::string &id) const;
 
     /**
     * @brief 更新长度（包括子表）
     */
-    void updateLength(const std ::string &name);
+    void updateLength(const std ::string &id);
 
     /**
      * @brief 删除表数据
@@ -93,7 +93,7 @@ public:
      * @param [in] serial : 表序号
      * @return 执行结果，true：成功；false：失败
      */
-    bool deleteTableItem(const std::string& name, int serial);
+    bool deleteTableItem(const std::string& id, int serial);
 
     /**
      * @brief 删除所有表数据

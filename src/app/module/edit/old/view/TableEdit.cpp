@@ -7,48 +7,21 @@
 TableEdit::TableEdit(QWidget* parent)
     : ObjectEdit(parent)
 {
-    QGroupBox *group = new QGroupBox(QStringLiteral("基本信息"));
-    q_edtName = new LimitLineEdit(this);
-    q_edtName->setObjectName("edtName");
-    q_edtName->setMaxLength(256);
-    q_edtName->setToolTip(QStringLiteral("最多256个字符！"));
-    q_edtCode = new QLineEdit(this);
-    q_edtCode->setObjectName("edtCode");
-    QRegExp regExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,255}");
-    q_edtCode->setValidator(new QRegExpValidator(regExp));
-    q_edtCode->setMaxLength(256);
-    q_edtCode->setToolTip(QStringLiteral("最多256个字符！"));
-    q_spinLength = new QSpinBox(this);
-    q_spinLength->setObjectName("edtLength");
-    q_spinLength->setRange(0, 1e6);
-    q_spinLength->setSuffix(QStringLiteral("   字节"));
-    q_edtDescribe = new LimitTextEdit(this);
-    q_edtDescribe->setObjectName("edtDescribe");
-    q_edtDescribe->setMaxLength(256);
-    q_edtDescribe->setToolTip(QStringLiteral("最多256个字符！"));
+    spinLength_ = new QSpinBox(this);
+    spinLength_->setObjectName("edtLength");
+    spinLength_->setRange(0, 1e6);
+    spinLength_->setSuffix(QStringLiteral(" 字节"));
+    checkLength_ = new QCheckBox(QStringLiteral("长度："), this);
+    addFormRow(checkLength_, spinLength_);
 
-    QGridLayout *gridLayout = new QGridLayout(group);
-    gridLayout->setContentsMargins(6, 3, 0, 3);
-    gridLayout->addWidget(new QLabel(QStringLiteral("名称：")), 0, 0);
-    gridLayout->addWidget(q_edtName, 0, 1);
-    gridLayout->addWidget(new QLabel("<font color=red>*</font>"), 0, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("标识：")), 1, 0);
-    gridLayout->addWidget(q_edtCode, 1, 1);
-    gridLayout->addWidget(new QLabel("<font color=red>*</font>"), 1, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("长度：")), 2, 0);
-    gridLayout->addWidget(q_spinLength, 2, 1);
-    gridLayout->addWidget(q_check = new QCheckBox(this), 2, 2);
-    gridLayout->addWidget(new QLabel(QStringLiteral("描述：")), 3, 0);
-    gridLayout->addWidget(q_edtDescribe, 3, 1, 2, 1);
-    gridLayout->setRowStretch(4, 1);
+    enableConnect(true);
+}
 
-    layoutMain()->insertWidget(0, group);
-
-    // signal-slot
-    enableConnection(true);
-
-    // 记录原始颜色
-    q_color = q_edtName->palette().color(QPalette::Base);
+void TableEdit::onCheckStateChanged(bool checked)
+{
+    spinLength_->setEnabled(checked);
+    data_.check = checked;
+    enableCommit(true);
 }
 
 int TableEdit::windowType() const
@@ -56,247 +29,124 @@ int TableEdit::windowType() const
     return wdTable;
 }
 
-void TableEdit::setUIData(const _UIData &data)
+bool TableEdit::onEditFinished()
 {
-    if (!data.data) {
-        return;
-    }
-    q_data = *reinterpret_cast<stICDBase*>(data.data);
-    q_old = q_data;
-    setProperty("option", data.type);
-
-    init();
-    // 如果是新增，则默认保存可用
-    if (GlobalDefine::optNew == data.type) {
-        buttonConfirm()->setEnabled(true);
+    if (ObjectEdit::onEditFinished()) {
+        return true;
     }
 
-    show();
+    return false;
 }
 
-void* TableEdit::uiData() const
+bool TableEdit::onTextChanged(const QString &text)
 {
-    return (void*)&q_data;
-}
-
-void TableEdit::slotTextChanged(const QString &text)
-{
-    QString content = text.trimmed();
-    // 校验数据
-    QLineEdit *edt = qobject_cast<QLineEdit*>(sender());
-    QSpinBox *spin = qobject_cast<QSpinBox*>(sender());
-    if (edt) {
-        if (edt == editStatus()) { // 如果出现错误提示，则灰化确认按钮
-            buttonConfirm()->setEnabled(content.isEmpty());
-        } else if (edt == q_edtName) {
-            q_data.sDescribe = content.toStdString();
-        } else if (edt == q_edtCode) {
-            q_data.sCode = content.toStdString();
-        }
-        enableOptionButton(true);
-    } else if (spin) {
-        if (spin == q_spinLength) {
-            q_data.nLength = spin->value();
-        }
-        enableOptionButton(true);
+    if (ObjectEdit::onTextChanged(text)) {
+        return true;
     }
+
+    if (sender() == spinLength_) {
+        data_.nLength = spinLength_->value();
+        enableCommit(true);
+        return true;
+    }
+
+    return false;
 }
 
-// 数据录入完成
-void TableEdit::slotEditFinished()
+bool TableEdit::init()
 {
-    LimitTextEdit *edt = qobject_cast<LimitTextEdit*>(sender());
-    if (edt) {
-        QString content = edt->toPlainText().trimmed();
-        if (edt == q_edtDescribe) {
-            q_data.sRemark = content.toStdString();
-        }
-        enableOptionButton(true);
+    //
+    checkLength_->setChecked(data_.check);
+    //
+    spinLength_->setValue(data_.nLength);
+    spinLength_->setEnabled(data_.check);
+    spinLength_->clearFocus();
+
+    return true;
+}
+
+void TableEdit::enableConnect(bool enabled)
+{
+    ObjectEdit::enableConnect(enabled);
+
+    disconnect(spinLength_, SIGNAL(valueChanged(const QString &)),
+               this, SLOT(onTextChanged(const QString &)));
+    disconnect(checkLength_, SIGNAL(toggled(bool)),
+               this, SLOT(onCheckStateChanged(bool)));
+    if (enabled) {
+        connect(spinLength_, SIGNAL(valueChanged(const QString &)),
+                this, SLOT(onTextChanged(const QString &)));
+        connect(checkLength_, SIGNAL(toggled(bool)),
+                this, SLOT(onCheckStateChanged(bool)));
     }
 }
 
-void TableEdit::slotCheckStateChanged(bool checked)
+bool TableEdit::validate()
 {
-    if (q_spinLength) {
-        q_spinLength->setEnabled(checked);
-    }
-    q_data.check = checked;
-
-    enableOptionButton(true);
-}
-
-// 确认
-void TableEdit::confirm()
-{
-    if (!dataValid()) {
-        return;
-    }
-    bool result = false;
-
-    emit confirmed(result);
-    if (result) {
-        ObjectEdit::confirm();
-    } else {
-        editStatus()->setText(QStringLiteral("保存数据失败！"));
-    }
-}
-
-// 取消
-void TableEdit::cancel()
-{
-    _UIData data;
-
-    data.data = &q_old;
-    setUIData(data);
-
-    ObjectEdit::cancel();
-
-    emit canceled();
-}
-
-// 初始化界面数据
-void TableEdit::init()
-{
-    enableConnection(false);
-
-    enableOptionButton(false);
-    QPalette palette;
-    if (q_edtName) {
-        palette = q_edtName->palette();
-        palette.setColor(QPalette::Base, q_color);
-        q_edtName->setPalette(palette);
-        q_edtName->setText(q_data.sDescribe.c_str());
-        q_edtName->clearFocus();
-    }
-    if (q_edtCode) {
-        palette = q_edtCode->palette();
-        palette.setColor(QPalette::Base, q_color);
-        q_edtCode->setPalette(palette);
-        q_edtCode->setText(q_data.sCode.c_str());
-        q_edtCode->clearFocus();
-    }
-    if (q_check) {
-        q_check->setChecked(q_data.check);
-    }
-    if (q_spinLength) {
-        q_spinLength->setValue(q_data.nLength);
-        q_spinLength->setEnabled(q_data.check);
-        q_spinLength->clearFocus();
-    }
-    if (q_edtDescribe) {
-        q_edtDescribe->setText(QString(q_data.sRemark.c_str())
-                               .split("##").first());
-        q_edtDescribe->clearFocus();
-    }
-        editStatus()->clear();
-        editStatus()->clearFocus();
-
-    enableConnection(true);
-}
-
-void TableEdit::enableConnection(bool enable)
-{
-    disconnect(q_edtName, SIGNAL(textChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-    disconnect(q_edtCode, SIGNAL(textChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-    disconnect(q_spinLength, SIGNAL(valueChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-    disconnect(q_check, SIGNAL(toggled(bool)),
-               this, SLOT(slotCheckStateChanged(bool)));
-    disconnect(q_edtDescribe, SIGNAL(textChanged()),
-               this, SLOT(slotEditFinished()));
-    disconnect(editStatus(), SIGNAL(textChanged(const QString &)),
-               this, SLOT(slotTextChanged(const QString &)));
-
-    if (enable) {
-        connect(q_edtName, SIGNAL(textChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-        connect(q_edtCode, SIGNAL(textChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-        connect(q_spinLength, SIGNAL(valueChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-        connect(q_check, SIGNAL(toggled(bool)),
-                this, SLOT(slotCheckStateChanged(bool)));
-        connect(q_edtDescribe, SIGNAL(textChanged()),
-                this, SLOT(slotEditFinished()));
-        connect(editStatus(), SIGNAL(textChanged(const QString &)),
-                this, SLOT(slotTextChanged(const QString &)));
-    }
-}
-
-// 校验界面数据
-bool TableEdit::dataValid()
-{
-    QString section = "name";
-    QMap<QString, QString> existed;
-    QVariantList args;
-    args.append(qVariantFromValue((void*)&existed));
-    args.append(qVariantFromValue((void*)&section));
-    jnotify->send("edit.queryExistedData", args);
-
-    // 名称
-    QPalette palette = q_edtName->palette();
-    if (q_data.sDescribe.empty()) {
-        editStatus()->setText(QStringLiteral("名称不能为空！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_edtName->setPalette(palette);
-        q_edtName->setFocus();
-
-        return false;
-    } else if (existed.contains(q_data.sDescribe.c_str())) {
-        editStatus()->setText(QStringLiteral("已存在同名项！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_edtName->setPalette(palette);
-        q_edtName->setFocus();
-
-        return false;
-    } else {
-        palette.setColor(QPalette::Base, q_color);
-        q_edtName->setPalette(palette);
-    }
-    // 编码
-    section = "code";
-
-    args.clear();
-    args.append(qVariantFromValue((void*)&existed));
-    args.append(qVariantFromValue((void*)&section));
-    jnotify->send("edit.queryExistedData", args);
-
-    palette = q_edtCode->palette();
-    if (q_data.sCode.empty()) {
-        editStatus()->setText(QStringLiteral("标识不能为空！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_edtCode->setPalette(palette);
-        q_edtCode->setFocus();
-
-        return false;
-    } else if (existed.contains(q_data.sCode.c_str())) {
-        editStatus()->setText(QStringLiteral("已存在同名标识！"));
-        palette.setColor(QPalette::Base, Qt::red);
-        q_edtCode->setPalette(palette);
-        q_edtCode->setFocus();
-
-        return false;
-    } else {
-        palette.setColor(QPalette::Base, q_color);
-        q_edtCode->setPalette(palette);
-    }
-
-    // 查询已规划数据长度，避免出现修改数据长度比原来已规划数据长度小的情况
-    if (q_data.check) {
+    if (data_.check) {
         int total = 0;
-
-        args.clear();
+        QVariantList args;
         args.append(qVariantFromValue((void*)&total));
         QString command("total");
         args.append(qVariantFromValue((void*)&command));
         jnotify->send("edit.queryTableInformation", args);
-        if (total > q_data.nLength) {
-            editStatus()->setText(QStringLiteral("已规划数据超过当前预设长度！"));
+        if (total > data_.nLength) {
+            setStatus(QStringLiteral("已规划数据超过当前预设长度！"));
             return false;
         }
     }
 
     return true;
+}
+
+void *TableEdit::nonData()
+{
+    return reinterpret_cast<void*>(&data_);
+}
+
+void *TableEdit::nonOldData()
+{
+    return reinterpret_cast<void*>(&oldData_);
+}
+
+bool TableEdit::setData(const _UIData &data)
+{
+    if (!data.data) {
+        return false;
+    }
+
+    data_ = *reinterpret_cast<stICDBase*>(data.data);
+    oldData_ = data_;
+
+    return setExtData(data, true);
+}
+
+QString TableEdit::name() const
+{
+    return QString::fromStdString(data_.sName);
+}
+
+void TableEdit::setName(const QString &text)
+{
+    data_.sName = text.toStdString();
+}
+
+QString TableEdit::mark() const
+{
+    return QString::fromStdString(data_.sCode);
+}
+
+void TableEdit::setMark(const QString &text)
+{
+    data_.sCode = text.toStdString();
+}
+
+QString TableEdit::desc() const
+{
+    return QString::fromStdString(data_.sDescribe);
+}
+
+void TableEdit::setDesc(const QString &text)
+{
+    data_.sDescribe = text.toStdString();
 }

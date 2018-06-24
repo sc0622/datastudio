@@ -521,8 +521,8 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         JChart::FileBitChart *bitChart = new JChart::FileBitChart(q);
         bitChart->setLegendVisible(showYAlign);
         bitChart->setBitsRange(itemBit->bitStart(), itemBit->bitStart() + itemBit->bitCount() - 1);
-        const std::unordered_map<icd_uint64, std::string> &specs = itemBit->specs();
-        for (std::unordered_map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
+        const std::map<icd_uint64, std::string> &specs = itemBit->specs();
+        for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
              citer != specs.cend(); ++citer) {
             JChart::AbstractSeries *series = bitChart->seriesAt(citer->first);
             if (series) {

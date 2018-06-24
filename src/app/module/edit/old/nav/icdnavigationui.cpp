@@ -23,7 +23,6 @@ ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     q_treeView->setHeaderLabel(QStringLiteral("协议"));
     q_treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     q_treeView->setAcceptDrops(true);
-    //q_treeView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     QStandardItem *root = new QStandardItem();
     root->setText(QStringLiteral("协议"));
     root->setData(GlobalDefine::ntUnknown, LevelIndex);
@@ -32,23 +31,12 @@ ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     root->setData(GlobalDefine::dsNone, DataSource);
     q_treeView->addTopLevelItem(root);
     q_treeView->setItemDelegateForColumn(0, new JTreeItemDelegate(q_treeView));
-    //q_treeView->setFilterModel(new JTreeSortFilterModel(q_treeView));
-
     verMainLayout->addWidget(q_treeView);
-    //
-    //JTreeSortFilterModel *filterModel = new JTreeSortFilterModel(this);
-    //q_treeView->setFilterModel(filterModel);
 
-    //
-    //connect(searchEdit_, &Icd::SearchEdit::textChanged, this, [=](const QString &text){
-    //    filterModel->setFilterPattern(text);
-    //});
     connect(q_treeView, SIGNAL(itemPressed(QStandardItem *)),
             this, SLOT(slotItemPressed(QStandardItem *)));
-    connect(q_treeView,
-            SIGNAL(currentItemChanged(QStandardItem *, QStandardItem *)),
-            this,
-            SLOT(slotCurrentChanged(QStandardItem *, QStandardItem *)));
+    connect(q_treeView, SIGNAL(currentItemChanged(QStandardItem *, QStandardItem *)),
+            this, SLOT(slotCurrentChanged(QStandardItem *, QStandardItem *)));
     connect(q_treeView, &JTreeView::expanded, this, [=](){
         q_treeView->resizeColumnToContents(0);
     });
@@ -101,7 +89,7 @@ void ICDNavigationUi::slotItemPressed(QStandardItem *item)
                 loadData("file");
             }
             break;
-        case GlobalDefine::ntPlane:     // 机型
+        case GlobalDefine::ntVehicle:     // 机型
         case GlobalDefine::ntSystem:    // 分系统
         {
             if (hasRuleTable(item)) {
@@ -305,7 +293,7 @@ void ICDNavigationUi::slotDelete()
     int level = current->data(LevelIndex).toInt();
     QString currentKey = current->data(UserKey).toString();
     // 先删除数据库
-    if (GlobalDefine::ntPlane == level) {   // 机型
+    if (GlobalDefine::ntVehicle == level) {   // 机型
         std::vector<int> planeID(1, currentKey.toInt());
         QVariantList args;
         args.append(qVariantFromValue((void*)&planeID));
@@ -314,7 +302,7 @@ void ICDNavigationUi::slotDelete()
     } else if (GlobalDefine::ntSystem == level) {   // 系统
         std::vector<void*> params;
         std::vector<int> systemID(1, currentKey.toInt());
-        QString planeID = parentKey(GlobalDefine::ntPlane);
+        QString planeID = parentKey(GlobalDefine::ntVehicle);
 
         params.push_back(&planeID);
         params.push_back(&systemID);
@@ -421,7 +409,6 @@ void ICDNavigationUi::loadData(const QString &name)
     QString error;
     if (name == "database") {
         dataSource = GlobalDefine::dsDatabase;
-
         QVariantList args;
         args.append(int(dataSource));
         args.append(qVariantFromValue((void*)&error));
@@ -429,7 +416,6 @@ void ICDNavigationUi::loadData(const QString &name)
         jnotify->send("edit.loadInfrastructure", args);
     } else if (name == "file") {
         dataSource = GlobalDefine::dsFile;
-
         QVariantList args;
         args.append(int(dataSource));
         args.append(qVariantFromValue((void*)&error));
@@ -437,8 +423,7 @@ void ICDNavigationUi::loadData(const QString &name)
         jnotify->send("edit.loadInfrastructure", args);
     }
     if (!error.isEmpty()) {
-        switch (dataSource)
-        {
+        switch (dataSource) {
         case GlobalDefine::dsDatabase:
             break;
         case GlobalDefine::dsFile:
@@ -448,6 +433,7 @@ void ICDNavigationUi::loadData(const QString &name)
             error.prepend(QStringLiteral("加载数据失败！"));
             break;
         }
+
         QMessageBox::warning(this, QStringLiteral("加载数据"), error);
         // 加载失败，直接返回
         return;
@@ -527,7 +513,7 @@ void ICDNavigationUi::updateRuleItems(const PlaneNode::smtPlane& plane)
     if (!level.isValid()) {
         return;
     }
-    if (GlobalDefine::ntPlane == level.toInt()) { // 机型下所有规则表
+    if (GlobalDefine::ntVehicle == level.toInt()) { // 机型下所有规则表
         SystemNode::systemVector systems = plane->allSystem();
         const int count = systems.size();
         QStandardItem *item = NULL;
@@ -835,7 +821,7 @@ bool ICDNavigationUi::updateNodeData(int dataAddr)
     }
     if (GlobalDefine::ntUnknown == level.toInt()) {
         result = updatePalneData(*reinterpret_cast<stPlane *>(dataAddr));
-    } else if (GlobalDefine::ntPlane == level.toInt()) {
+    } else if (GlobalDefine::ntVehicle == level.toInt()) {
         result = updateSystemData(*reinterpret_cast<stSystem *>(dataAddr));
     } else if (GlobalDefine::ntSystem == level.toInt()) {
         result = updateICDData(*reinterpret_cast<stICDBase *>(dataAddr));
@@ -872,7 +858,7 @@ QString ICDNavigationUi::nextID(int type)
         return result;
     }
     int code = -1;
-    if (GlobalDefine::ntPlane == type) { // 机型
+    if (GlobalDefine::ntVehicle == type) { // 机型
         maxID(current, type, result);
         if (result.isEmpty()) {
             result = QString("1001");
@@ -908,8 +894,7 @@ QString ICDNavigationUi::nextID(int type)
                     .append(QString("_%1").arg(code, 4, 10, QChar('0')));
         }
 #else
-        result = QUuid::createUuid().toString()
-                .remove(QRegExp("[{}-]")).prepend("ICDTable_");
+        result = "ICDTable_" + QUuid::createUuid().toString();
 #endif
     }
 
@@ -927,24 +912,21 @@ bool ICDNavigationUi::insertNodeData(const std::vector<int> &params)
     if (!current) {
         return result;
     }
-    ICDMetaData::smtMeta meta
-            = *reinterpret_cast<ICDMetaData::smtMeta *>(params.at(1));
+    ICDMetaData::smtMeta meta = *reinterpret_cast<ICDMetaData::smtMeta *>(params.at(1));
     QString keys = queryNodeKeys(current);
     QStringList keyLst = keys.split("/", QString::SkipEmptyParts);
-    int planeID = keyLst.takeFirst().toInt();
+    int vehicleId = keyLst.takeFirst().toInt();
     int systemID = keyLst.takeFirst().toInt();
     ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, meta);
     if (GlobalDefine::dtComplex == meta->type()) {
         stICDBase base;
-        base.sID = QUuid::createUuid()
-                .toString().remove(QRegExp("[{}-]")).toStdString();
-        base.sName.append("ICDTable_").append(base.sID);
+        base.sID = "ICDTable_" + QUuid::createUuid().toString().toStdString();
+        base.sName = complex->name();
         base.sCode = complex->proCode();
         base.nLength = complex->length();
         base.sParentName = keyLst.last().toStdString();
-        base.sGroup = QString("%1/%2").arg(planeID)
-                .arg(systemID).toStdString();
-        base.sDescribe = complex->name();
+        base.sGroup = QString("%1/%2").arg(vehicleId).arg(systemID).toStdString();
+        base.sDescribe = complex->describe();
         base.sRemark = complex->remark();
         TableNode::smtTable table(new TableNode(base));
         complex->addTable(table);
@@ -995,10 +977,10 @@ bool ICDNavigationUi::deleteNode(const std::vector<QString> &nodeID)
         args.append(qVariantFromValue((void*)&planeID));
         args.append(qVariantFromValue((void*)&result));
         jnotify->send("edit.deletePlane", args);
-    } else if (GlobalDefine::ntPlane == level) {
+    } else if (GlobalDefine::ntVehicle == level) {
         std::vector<int> systemID;
         std::vector<void*> params;
-        QString planeID = parentKey(GlobalDefine::ntPlane);
+        QString planeID = parentKey(GlobalDefine::ntVehicle);
 
         for (int i = 0; i < count; ++i) {
             systemID.push_back(nodeID.at(i).toInt());
@@ -1025,8 +1007,7 @@ bool ICDNavigationUi::deleteNode(const std::vector<QString> &nodeID)
         args.append(qVariantFromValue((void*)&params));
         args.append(qVariantFromValue((void*)&result));
         jnotify->send("edit.deleteTable", args);
-    } else if (GlobalDefine::ntTable == level
-               || GlobalDefine::ntRule == level) {
+    } else if (GlobalDefine::ntTable == level || GlobalDefine::ntRule == level) {
         std::vector<void*> params;
         QString keys = queryNodeKeys(current);
         int ruleType = current->data(RuleDefine).toInt();
@@ -1122,7 +1103,7 @@ bool ICDNavigationUi::reorderNodeData(const std::vector<int> &params)
     } else {
         int planeID = keyLst.takeFirst().toInt();
         element = *reinterpret_cast<ICDElement::smtElement *>(params.at(0));
-        if (GlobalDefine::ntPlane == level) {
+        if (GlobalDefine::ntVehicle == level) {
             QVariantList args;
             args.append(qVariantFromValue((void*)&element));
             args.append(qVariantFromValue((void*)&result));
@@ -1178,7 +1159,7 @@ bool ICDNavigationUi::reorderNodeData(const std::vector<int> &params)
     if (result) {
         if (GlobalDefine::ntUnknown == level) {
             reorderPlaneNode(elements, pos);
-        } else if (GlobalDefine::ntPlane == level) {
+        } else if (GlobalDefine::ntVehicle == level) {
             PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, element);
             reorderSystemNode(plane, pos);
         } else if (GlobalDefine::ntSystem == level) {
@@ -1231,7 +1212,7 @@ ICDElement::smtElement ICDNavigationUi::savePastedData(const QVector<int> &param
         // 插入机型数据
         item = formPlaneNode(current, SMT_CONVERT(PlaneNode, copyData));
         break;
-    case GlobalDefine::ntPlane:     // 机型节点
+    case GlobalDefine::ntVehicle:     // 机型节点
         // 插入系统数据
         item = formSystemNode(current, SMT_CONVERT(SystemNode, copyData));
         break;
@@ -1320,8 +1301,7 @@ bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err
 }
 
 // 构造单个机型节点（包括下挂分系统）
-QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent,
-                                              const PlaneNode::smtPlane &plane)
+QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent, const PlaneNode::smtPlane &plane)
 {
     if (!parent || !plane) {
         return nullptr;
@@ -1338,7 +1318,7 @@ QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent,
         result->setData(GlobalDefine::noneState, ItemLoaded);
     }
     result->setData(GlobalDefine::noneState, DataChanged);
-    result->setData(GlobalDefine::ntPlane, LevelIndex);
+    result->setData(GlobalDefine::ntVehicle, LevelIndex);
     parent->appendRow(result);
 
     const int count = subSystem.size();
@@ -1354,8 +1334,7 @@ QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent,
 }
 
 // 重新调整机型节点顺序
-void ICDNavigationUi::reorderPlaneNode(const std::vector<ICDElement::smtElement> &planes,
-                                       int pos)
+void ICDNavigationUi::reorderPlaneNode(const std::vector<ICDElement::smtElement> &planes, int pos)
 {
     QStandardItem *current = q_treeView->currentItem();
     if (!current) {
@@ -1373,7 +1352,10 @@ void ICDNavigationUi::reorderPlaneNode(const std::vector<ICDElement::smtElement>
     const int count = planes.size();
     for (int i = pos; i < count; ++i) {
         if (item = items.value(planes[i]->id().c_str())) {
-            item->setText(planes[i]->name().c_str());
+            auto plane = planes[i];
+            item->setText(QString::fromStdString(plane->name())
+                          + QString("<font color=green size=2>[%1]</font>")
+                          .arg(QString::fromStdString(plane->typeString()).toUpper()));
             item->setData(GlobalDefine::wholeState, DataChanged);
             current->insertRow(i, item);
         }
@@ -1423,8 +1405,7 @@ QStandardItem* ICDNavigationUi::formSystemNode(QStandardItem *parent,
 }
 
 // 重新调整系统节点顺序
-void ICDNavigationUi::reorderSystemNode(const PlaneNode::smtPlane &plane,
-                                        int pos)
+void ICDNavigationUi::reorderSystemNode(const PlaneNode::smtPlane &plane, int pos)
 {
     QStandardItem *current = q_treeView->currentItem();
     if (!current || !plane) {
@@ -1447,7 +1428,9 @@ void ICDNavigationUi::reorderSystemNode(const PlaneNode::smtPlane &plane,
             continue;
         }
         if (item = items.value(system->id().c_str())) {
-            item->setText(system->name().c_str());
+            item->setText(QString::fromStdString(system->name())
+                          + QString("<font color=green size=2>[%1]</font>")
+                          .arg(QString::fromStdString(system->typeString()).toUpper()));
             item->setData(GlobalDefine::wholeState, DataChanged);
             current->insertRow(i, item);
         }
@@ -1459,18 +1442,18 @@ void ICDNavigationUi::reorderSystemNode(const PlaneNode::smtPlane &plane,
 }
 
 // 构造单个规则表节点
-QStandardItem* ICDNavigationUi::formTableNode(QStandardItem *parent,
-                                              const TableNode::smtTable &table)
+QStandardItem* ICDNavigationUi::formTableNode(QStandardItem *parent, const TableNode::smtTable &table)
 {
-    if (NULL == system) {
-        return NULL;
+    if (!parent || !table) {
+        return nullptr;
     }
+
     QStandardItem* result = new QStandardItem(QIcon(":/datastudio/image/global/circle-gray.png"),
-                                              QString::fromStdString(table->icdBase().sDescribe)
+                                              QString::fromStdString(table->name())
                                               + QString("<font color=green size=2>[%1]</font>")
                                               .arg(QString::fromStdString(table->typeString()).toUpper()));
     result->setToolTip(result->text());
-    result->setData(table->key().c_str(), UserKey);
+    result->setData(QString::fromStdString(table->key()), UserKey);
     result->setData(GlobalDefine::noneState, ItemLoaded);
     result->setData(GlobalDefine::noneState, DataChanged);
     result->setData(GlobalDefine::ntTable, LevelIndex);
@@ -1486,8 +1469,7 @@ QStandardItem* ICDNavigationUi::formTableNode(QStandardItem *parent,
 }
 
 // 重新调整规则表节点顺序
-void ICDNavigationUi::reorderTableNode(const SystemNode::smtSystem &system,
-                                       int pos)
+void ICDNavigationUi::reorderTableNode(const SystemNode::smtSystem &system, int pos)
 {
     QStandardItem *current = q_treeView->currentItem();
     if (!current || !system) {
@@ -1510,7 +1492,9 @@ void ICDNavigationUi::reorderTableNode(const SystemNode::smtSystem &system,
             continue;
         }
         if (item = items.value(table->id().c_str())) {
-            item->setText(table->name().c_str());
+            item->setText(QString::fromStdString(table->name())
+                          + QString("<font color=green size=2>[%1]</font>")
+                          .arg(QString::fromStdString(table->typeString()).toUpper()));
             item->setData(GlobalDefine::wholeState, DataChanged);
             current->insertRow(i, item);
         }
@@ -1532,12 +1516,12 @@ QStandardItem* ICDNavigationUi::formSubTableNode(QStandardItem *parent,
                                                       "%3<font color=green size=2>[%4]</font>")
                                               .arg(index, 4, 10, QChar('0'))
                                               .arg(offset, 4, 10, QChar('0'))
-                                              .arg(table->name().c_str())
+                                              .arg(QString::fromStdString(table->name()))
                                               .arg(QString::fromStdString(table->typeString()).toUpper()));
     result->setData(GlobalDefine::ntRule, LevelIndex);
     result->setData(GlobalDefine::dtComplex, RuleDefine);
-    result->setData(base.sName.c_str(), SubTable);
-    result->setData(base.sName.c_str(), UserKey);
+    result->setData(base.sID.c_str(), SubTable);
+    result->setData(base.sID.c_str(), UserKey);
     result->setData(GlobalDefine::noneState, DataChanged);
     parent->appendRow(result);
 
@@ -1547,11 +1531,9 @@ QStandardItem* ICDNavigationUi::formSubTableNode(QStandardItem *parent,
 }
 
 // 重新调整规则子表节点顺序
-void ICDNavigationUi::reorderSubTableNode(const ICDMetaData::smtMeta &meta,
-                                          int pos)
+void ICDNavigationUi::reorderSubTableNode(const ICDMetaData::smtMeta &meta, int pos)
 {
-    ICDComplexData::smtComplex complex
-            = std::dynamic_pointer_cast<ICDComplexData>(meta);
+    ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(meta);
     QStandardItem *current = q_treeView->currentItem();
     if (!current || !complex) {
         return;
@@ -1573,7 +1555,12 @@ void ICDNavigationUi::reorderSubTableNode(const ICDMetaData::smtMeta &meta,
             continue;
         }
         if (item = items.value(table->id().c_str())) {
-            item->setText(table->name().c_str());
+            item->setText(QString("<font color=green size=2>[%1:%2]</font>"
+                                  "%3<font color=green size=2>[%4]</font>")
+                          .arg(i, 4, 10, QChar('0'))
+                          .arg(complex->index(), 4, 10, QChar('0'))
+                          .arg(QString::fromStdString(table->name()))
+                          .arg(QString::fromStdString(table->typeString()).toUpper()));
             current->insertRow(i, item);
         }
     }
@@ -1584,11 +1571,10 @@ void ICDNavigationUi::reorderSubTableNode(const ICDMetaData::smtMeta &meta,
 }
 
 // 构造规则节点
-QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent, const ICDMetaData::smtMeta& meta,
-                                             int offset)
+QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent, const ICDMetaData::smtMeta& meta, int offset)
 {
-    if (NULL == meta) {
-        return NULL;
+    if (!meta) {
+        return nullptr;
     }
     QStandardItem* result = new QStandardItem(offsetString(meta, offset));
     result->setData(meta->serial(), UserKey);
@@ -1615,8 +1601,7 @@ QStandardItem* ICDNavigationUi::formRuleNode(QStandardItem *parent, const ICDMet
             }
         }
         if (GlobalDefine::dtComplex == meta->type()) {
-            result->setData(QString("%1/%2").arg(complex->serial())
-                            .arg(complex->rule().c_str()), UserKey);
+            result->setData(QString("%1/%2").arg(complex->serial()).arg(complex->rule().c_str()), UserKey);
             ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, meta);
             result->setData(complex->rule().c_str(), SubTable);
             result->setIcon(QIcon(":/icdwidget/image/tree/icon-complex.png"));
@@ -1664,8 +1649,7 @@ void ICDNavigationUi::loadRuleNode(QStandardItem *parent, const TableNode::smtTa
             return;
         }
     }
-    if (GlobalDefine::ntTable == parent->data(LevelIndex).toInt()
-            && dataMap.size() > 0) {
+    if (GlobalDefine::ntTable == parent->data(LevelIndex).toInt() && dataMap.size() > 0) {
         parent->setIcon(QIcon(":/datastudio/image/global/circle-green.png"));
     }
 }
@@ -1700,7 +1684,7 @@ void ICDNavigationUi::reLoadRuleNode(QStandardItem *item)
     }
     PlaneNode::smtPlane plane;
     // 查询内存数据
-    int planeID = parentKey(GlobalDefine::ntPlane).toInt();
+    int planeID = parentKey(GlobalDefine::ntVehicle).toInt();
 
     QVariantList args;
     args.append(qVariantFromValue((void*)&plane));
@@ -1773,7 +1757,7 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
                                       this, SLOT(slotClear()));
         }
         break;
-    case GlobalDefine::ntPlane:     // 机型
+    case GlobalDefine::ntVehicle:     // 机型
     case GlobalDefine::ntSystem:    // 分系统
         if (hasRuleTable(item)) {
             state = dataLoaded(item);
@@ -2460,7 +2444,7 @@ void ICDNavigationUi::updateMainView(QStandardItem *current)
         data = &elements;
     }
         break;
-    case GlobalDefine::ntPlane: {   // 机型节点
+    case GlobalDefine::ntVehicle: {   // 机型节点
         queryNodeData("", element);
         data = &element;
     }
@@ -2524,7 +2508,7 @@ bool ICDNavigationUi::updatePalneData(stPlane &data)
                                      QString(data.sName.c_str()) + nameSuffix);
             item->setData(data.nCode, UserKey);
             item->setData(GlobalDefine::noneState, ItemLoaded);
-            item->setData(GlobalDefine::ntPlane, LevelIndex);
+            item->setData(GlobalDefine::ntVehicle, LevelIndex);
             current->appendRow(item);
             // 更新节点状态
             updateLoadedFlag(item, optLoad);
@@ -2544,7 +2528,7 @@ bool ICDNavigationUi::updateSystemData(stSystem &data)
     bool result = false;
     QStandardItem *current = q_treeView->currentItem();
     // 保存内存
-    QString planeID = parentKey(GlobalDefine::ntPlane);
+    QString planeID = parentKey(GlobalDefine::ntVehicle);
     std::vector<void*> params;
     std::vector<stSystem> systems(1, data);
     params.push_back(&planeID);
@@ -2589,9 +2573,6 @@ bool ICDNavigationUi::updateICDData(stICDBase &data)
     if (data.sGroup.empty()) {
         data.sGroup = keys.toStdString();
     }
-    if (data.sID.empty()) {
-        data.sID = data.sName.substr(data.sName.find("_") + strlen("_"));
-    }
     std::vector<void*> params;
     std::vector<stICDBase> tables(1, data);
     params.push_back(&keys);
@@ -2605,13 +2586,13 @@ bool ICDNavigationUi::updateICDData(stICDBase &data)
     if (result) {
         const QString nameSuffix("<font color=green size=2>[TABLE]</font>");
         // 更新树节点
-        QStandardItem *item = findItem(UserKey, data.sName.c_str(), current);
+        QStandardItem *item = findItem(UserKey, data.sID.c_str(), current);
         if (item) { // 更新节点
-            item->setText(QString(data.sDescribe.c_str()) + nameSuffix);
+            item->setText(QString(data.sName.c_str()) + nameSuffix);
         } else { // 插入节点
             item = new QStandardItem(QIcon(":/icdwidget/image/tree/circle-green.png"),
-                                     QString(data.sDescribe.c_str()) + nameSuffix);
-            item->setData(data.sName.c_str(), UserKey);
+                                     QString(data.sName.c_str()) + nameSuffix);
+            item->setData(data.sID.c_str(), UserKey);
             item->setData(GlobalDefine::wholeState, ItemLoaded);
             item->setData(GlobalDefine::ntTable, LevelIndex);
             current->appendRow(item);
@@ -2621,8 +2602,6 @@ bool ICDNavigationUi::updateICDData(stICDBase &data)
         }
         // 更新数据状态标识
         updateDataState(item, StateChanged);
-        // 重新刷新界面
-        //slotCurrentChanged(current, NULL);
     }
 
     return result;
@@ -2681,33 +2660,30 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
                 return false;
             }
         }
-        ICDComplexData::smtComplex oldData
-                = SMT_CONVERT(ICDComplexData, oldTable->rule(complex->serial()));
+        ICDComplexData::smtComplex oldData = SMT_CONVERT(ICDComplexData, oldTable->rule(complex->serial()));
         if (oldData) {
-            ICDComplexData::smtComplex newData
-                    = SMT_CONVERT(ICDComplexData, oldData->clone());
+            ICDComplexData::smtComplex newData = SMT_CONVERT(ICDComplexData, oldData->clone());
             if (GlobalDefine::dtComplex == meta->type()) {
                 // 更新子表数据
                 stICDBase base;
                 TableNode::smtTable table = newData->table(newData->rule());
                 if (!table) {
-                    base.sID = QUuid::createUuid()
-                            .toString().remove(QRegExp("[{}-]")).toStdString();
-                    base.sName.append("ICDTable_").append(base.sID);
+                    base.sID = "ICDTable_" + QUuid::createUuid().toString().toStdString();
+                    base.sName = complex->name();
                     base.sCode = complex->proCode();
                     base.nLength = complex->length();
                     base.sParentName = parentName;
-                    base.sGroup = QString("%1/%2").arg(planeID)
-                            .arg(systemID).toStdString();
-                    base.sDescribe = complex->name();
+                    base.sGroup = QString("%1/%2").arg(planeID).arg(systemID).toStdString();
+                    base.sDescribe = complex->describe();
                     base.sRemark = complex->remark();
                     TableNode::smtTable table(new TableNode(base));
                     newData->addTable(table);
                 } else {
                     base = table->icdBase();
+                    base.sName = complex->name();
                     base.sCode = complex->proCode();
                     base.nLength = complex->length();
-                    base.sDescribe = complex->name();
+                    base.sDescribe = complex->describe();
                     base.sRemark = complex->remark();
                     table->setICDBase(base);
                 }
@@ -2732,15 +2708,13 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
         } else {
             if (GlobalDefine::dtComplex == meta->type()) {  // 复合数据
                 stICDBase base;
-                base.sID = QUuid::createUuid()
-                        .toString().remove(QRegExp("[{}-]")).toStdString();
-                base.sName.append("ICDTable_").append(base.sID);
+                base.sID = "ICDTable_" + QUuid::createUuid().toString().toStdString();
+                base.sName = complex->name();
                 base.sCode = complex->proCode();
                 base.nLength = complex->length();
                 base.sParentName = parentName;
-                base.sGroup = QString("%1/%2").arg(planeID)
-                        .arg(systemID).toStdString();
-                base.sDescribe = complex->name();
+                base.sGroup = QString("%1/%2").arg(planeID).arg(systemID).toStdString();
+                base.sDescribe = complex->describe();
                 base.sRemark = complex->remark();
                 TableNode::smtTable table(new TableNode(base));
                 complex->addTable(table);
@@ -2762,8 +2736,6 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
             identify.append("/").append(complex->rule().c_str());
         }
         QStandardItem *item = findItem(UserKey, identify, current);
-        //        QString text = QString("%1[<font color=green>%2</font>]")
-        //                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         QString text = offsetString(meta, offset);
         if (item) { // 更新节点
             item->setText(text);
@@ -2817,9 +2789,6 @@ bool ICDNavigationUi::updateDetailRuleData(ICDMetaData::smtMeta &data)
     jnotify->send("edit.saveRule", args);
 
     if (result != 0) {
-        // 更新树节点
-        //        QString text = QString("%1[<font color=green>%2</font>]")
-        //                .arg(meta->name().c_str()).arg(stringDataType(meta->type()));
         QString text;
         ICDElement::smtElement element;
         QString pID = keys.left(keys.lastIndexOf("/"));
@@ -2858,12 +2827,10 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
     int systemID = keyLst.takeFirst().toInt();
     keyLst.takeLast();
     if (data.sGroup.empty()) {
-        data.sGroup = QString("%1/%2")
-                .arg(planeID).arg(systemID).toStdString();
+        data.sGroup = QString("%1/%2").arg(planeID).arg(systemID).toStdString();
     }
     if (data.sID.empty()) {
-        data.sID = QUuid::createUuid()
-                .toString().remove(QRegExp("[{}-]")).toStdString();
+        data.sID = "ICDTable_" + QUuid::createUuid().toString().toStdString();
     }
     if (data.sParentName.empty()) {
         data.sParentName = keyLst.last().toStdString();
@@ -2881,7 +2848,7 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
         return result;
     }
     ICDComplexData::smtComplex smtData = SMT_CONVERT(ICDComplexData, complex->clone());
-    TableNode::smtTable table = smtData->table(data.sName);
+    TableNode::smtTable table = smtData->table(data.sID);
     data.nLength = complex->length();
     if (table) {
         table->setICDBase(data);
@@ -2890,7 +2857,6 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
         smtData->addTable(table);
     }
     keys = keys.left(keys.lastIndexOf("/"));
-    //keys.append("/").append(value.sName.c_str());
 
     std::vector<void*> params;
     params.push_back(&keys);
@@ -2902,22 +2868,23 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
     jnotify->send("edit.saveRule", args);
 
     if (result != 0) {
+        QStandardItem *item = findItem(UserKey, data.sID.c_str(), current);
+        const int itemOffset = item ? item->row() : current->rowCount();
         // 更新树节点
-        QStandardItem *item = findItem(UserKey, data.sName.c_str(), current);
+        const QString name = QString("<font color=green size=2>[%1:%2]</font>"
+                                     "%3<font color=green size=2>[%4]</font>")
+                             .arg(itemOffset + 1, 4, 10, QChar('0'))
+                             .arg(complex->index(), 4, 10, QChar('0'))
+                             .arg(data.sName.c_str())
+                             .arg(QString::fromStdString(table->typeString()).toUpper());
         if (item) { // 更新节点
-            item->setText(data.sDescribe.c_str());
+            item->setText(name);
         } else { // 插入节点
-            item = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
-                                     QString("<font color=green size=2>[%1:%2]</font>"
-                                             "%3<font color=green size=2>[%4]</font>")
-                                     .arg(current->rowCount(), 4, 10, QChar('0'))
-                                     .arg(complex->index(), 4, 10, QChar('0'))
-                                     .arg(data.sDescribe.c_str())
-                                     .arg(QString::fromStdString(table->typeString()).toUpper()));
-            item->setData(data.sName.c_str(), UserKey);
+            item = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"), name);
+            item->setData(data.sID.c_str(), UserKey);
+            item->setData(data.sID.c_str(), SubTable);
             item->setData(GlobalDefine::ntRule, LevelIndex);
             item->setData(GlobalDefine::dtComplex, RuleDefine);
-            item->setData(data.sName.c_str(), SubTable);
             current->appendRow(item);
             q_treeView->expandItem(current);
         }

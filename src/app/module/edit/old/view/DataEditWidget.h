@@ -59,12 +59,10 @@ protected:
     void updateOne(int index, const SystemNode::smtSystem &data, optType type);
     // ICD表
     void showData(const TableNode::tableVector &tables);
-    void updateOne(int index, const TableNode::smtTable &data,
-                   optType type);
+    void updateOne(int index, const TableNode::smtTable &data, optType type);
     // 规则
     void showData(const ICDMetaData::ruleMap &rules);
-    void updateOne(int index, const ICDMetaData::smtMeta &data,
-                   optType type);
+    void updateOne(int index, const ICDMetaData::smtMeta &data, optType type);
     // 规则数据项
     void showData(const ICDMetaData::smtMeta &data);
     // 子表
@@ -135,8 +133,7 @@ protected:
 
 protected slots:
     // 表当前选中项变更
-    void slotCurrentItemChanged(QStandardItem *current,
-                                QStandardItem *previous);
+    void slotCurrentItemChanged(QStandardItem *current, QStandardItem *previous);
     // 点击表数据项
     void slotItemPressed(QStandardItem *item);
     // 表自定义菜单
@@ -173,27 +170,25 @@ private:
 
 private:
     JSplitter* splitterMain_;
-    LoggingWidget   *q_loggingWidget;   // 信息录入界面
+    LoggingWidget *loggingWidget_;  // 信息录入界面
+    JXmlTable *tableView_;          // 基本信息表
+    QLabel *editStatus_;            // 状态提示
+    QAction *actionPast_;           // 右键菜单粘贴
 
-    JXmlTable       *q_table;       // 基本信息表
-    QLabel          *q_edtStatus;   // 状态提示
+    const QString vehicleName_;     // 机型表
+    const QString systemName_;      // 分系统表
+    const QString tableName_;       // icd表
+    const QString ruleName_;        // 规则表
+    const QString frameName_;       // 帧识别码
+    const QString objectName_;      // 规则定义
+    QString defaultPath_;           // 保存文件默认路径
 
-    QAction         *q_paste;       // 右键菜单粘贴
-
-    const QString   q_planeName;    // 机型表
-    const QString   q_systemName;   // 分系统表
-    const QString   q_tableName;    // icd表
-    const QString   q_ruleName;     // 规则表
-    const QString   q_frameName;  // 帧识别码
-    const QString   q_objectName;     // 规则定义
-    QString         q_defaultPath;  // 保存文件默认路径
-
-    int             q_dataType;     // 数据类型
-    int             q_subType;      // 子类型
-    int             q_newIndex;     // 记录新增数据行号
-    int             q_changePos;    // 数据变更起始值，从0开始
-    ICDElement::elementVector   q_vData;    // 当前显示信息
-    ICDElement::smtElement      q_data;     // 当前显示数据信息
+    int dataType_;                  // 数据类型
+    int subType_;                   // 子类型
+    int newIndex_;                  // 记录新增数据行号
+    int changedPos;                 // 数据变更起始值，从0开始
+    ICDElement::elementVector vData_;   // 当前显示信息
+    ICDElement::smtElement data_;       // 当前显示数据信息
 };
 
 #endif // DATAEDITWIDGET_H

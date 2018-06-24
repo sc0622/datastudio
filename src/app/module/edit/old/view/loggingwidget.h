@@ -14,11 +14,11 @@ public:
     explicit LoggingWidget(QWidget *parent = nullptr);
 
     // 初始化界面数据
-    void initUIData(int windowType, const _UIData &data);
+    bool initUIData(int windowType, const _UIData &data);
     // 获取界面数据
     void *uiData();
     // 启/停用界面控制按钮
-    void enableOptionButton(bool enable);
+    void enableCommit(bool enable);
 
 signals:
     void dataSaved(void *data, bool &result);

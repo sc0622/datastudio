@@ -39,7 +39,7 @@ GlobalDefine::NodeType ICDElement::objectType() const
     return d->objectType;
 }
 
-void ICDElement::setID(std::string id)
+void ICDElement::setId(std::string id)
 {
     d->id = id;
 }
@@ -57,6 +57,16 @@ void ICDElement::setName(const std::string& name)
 std::string ICDElement::name() const
 {
     return d->name;
+}
+
+void ICDElement::setProCode(const std::string &proCode)
+{
+    d->sign = proCode;
+}
+
+std::string ICDElement::proCode() const
+{
+    return d->sign;
 }
 
 void ICDElement::setSign(const std::string& sign)
@@ -113,7 +123,7 @@ ICDElement &ICDElement::operator =(const ICDElement &rhs)
 std::string ICDElement::typeString() const
 {
     switch (d->objectType) {
-    case GlobalDefine::ntPlane: return "vehicle";
+    case GlobalDefine::ntVehicle: return "vehicle";
     case GlobalDefine::ntSystem: return "system";
     case GlobalDefine::ntTable: return "table";
     case GlobalDefine::ntRule: return "item";

@@ -29,9 +29,9 @@ LoggingWidget::LoggingWidget(QWidget *parent)
     layoutMain->addWidget(groupType_);
 
     QFormLayout *formLayout = new QFormLayout(groupType_);
-    formLayout->setContentsMargins(6, 3, 0, 3);
+    formLayout->setContentsMargins(3, 3, 3, 3);
     boxType_ = new QComboBox(this);
-    formLayout->addRow(QStringLiteral("类   型："), boxType_);
+    formLayout->addRow(QStringLiteral("类型："), boxType_);
 
     stackedWidget_ = new QStackedWidget(this);
     layoutMain->addWidget(stackedWidget_);
@@ -39,7 +39,7 @@ LoggingWidget::LoggingWidget(QWidget *parent)
     enableConnection(true);
 }
 
-void LoggingWidget::initUIData(int windowType, const _UIData &data)
+bool LoggingWidget::initUIData(int windowType, const _UIData &data)
 {
     if (currentEdit_) {
         if (windowType != currentEdit_->windowType()) {
@@ -52,14 +52,19 @@ void LoggingWidget::initUIData(int windowType, const _UIData &data)
     if (!currentEdit_) {
         currentEdit_ = ObjectEdit::create(windowType);
         if (!currentEdit_) {
-            return;
+            return false;
         }
         stackedWidget_->addWidget(currentEdit_);
         connect(currentEdit_, &ObjectEdit::confirmed, this, &LoggingWidget::slotConfirm);
         connect(currentEdit_, &ObjectEdit::canceled, this, &LoggingWidget::slotCancel);
     }
 
-    currentEdit_->setUIData(data);
+    if (!currentEdit_->setData(data)) {
+        stackedWidget_->removeWidget(stackedWidget_);
+        delete currentEdit_;
+        currentEdit_ = nullptr;
+        return false;
+    }
 
     switch (windowType) {
     case ObjectEdit::wdItem:
@@ -81,21 +86,23 @@ void LoggingWidget::initUIData(int windowType, const _UIData &data)
         groupType_->setVisible(false);
         break;
     }
+
+    return true;
 }
 
 void *LoggingWidget::uiData()
 {
     if (currentEdit_) {
-        return currentEdit_->uiData();
+        return currentEdit_->nonData();
     } else {
         return nullptr;
     }
 }
 
-void LoggingWidget::enableOptionButton(bool enable)
+void LoggingWidget::enableCommit(bool enable)
 {
     if (currentEdit_) {
-        currentEdit_->enableOptionButton(enable);
+        currentEdit_->enableCommit(enable);
     }
 }
 
@@ -105,7 +112,7 @@ void LoggingWidget::slotConfirm(bool &result)
         return;
     }
 
-    void *data = currentEdit_->uiData();
+    void *data = currentEdit_->nonData();
     if (!data) {
         return;
     }
@@ -120,7 +127,7 @@ void LoggingWidget::slotConfirm(bool &result)
         return;
     }
 
-    data = currentEdit_->uiData();
+    data = currentEdit_->nonData();
     if (!data) {
         return;
     }
@@ -155,7 +162,7 @@ void LoggingWidget::slotTypeChanged(int index)
         return;
     }
 
-    ICDCommonData::smtCommon &smtData = *reinterpret_cast<ICDCommonData::smtCommon*>(currentEdit_->uiData());
+    ICDCommonData::smtCommon &smtData = *reinterpret_cast<ICDCommonData::smtCommon*>(currentEdit_->nonData());
     if (!smtData) {
         return;
     }
@@ -216,7 +223,7 @@ void LoggingWidget::slotTypeChanged(int index)
     // 重新刷新界面
     initUIData(windowType, data);
     if (!newData && currentEdit_) {
-        currentEdit_->changeDataType(rule.uType);
+        currentEdit_->changeType(rule.uType);
     }
 }
 

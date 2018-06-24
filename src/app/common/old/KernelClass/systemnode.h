@@ -75,7 +75,7 @@ public:
      * @param [in] name : ICD表标识
      * @return 下挂ICD表信息
      */
-    TableNode::smtTable table(const std::string& name) const;
+    TableNode::smtTable table(const std::string& id) const;
 
     /**
      * @brief 增加下挂ICD表

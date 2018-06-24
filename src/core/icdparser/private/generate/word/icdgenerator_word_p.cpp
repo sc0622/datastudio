@@ -790,11 +790,11 @@ bool WordGeneratorData::generateBitItem(const BitItemPtr &bitItem, QAxObject *ax
     QString feature = QStringLiteral("1£©Î»Óò£º[%1£¬%2]¡£")
             .arg(bitItem->bitStart())
             .arg(bitItem->bitStart() + bitItem->bitCount() - 1);
-    const std::unordered_map<icd_uint64, std::string> &specs = bitItem->specs();
+    const std::map<icd_uint64, std::string> &specs = bitItem->specs();
     if (!specs.empty()) {
         feature.append(QStringLiteral("\n3£©ÌØÕ÷Öµ£º\n"));
     }
-    std::unordered_map<icd_uint64, std::string>::const_iterator citerSpecs = specs.cbegin();
+    std::map<icd_uint64, std::string>::const_iterator citerSpecs = specs.cbegin();
     switch (bitItem->type()) {
     case Icd::ItemBitMap:
     {

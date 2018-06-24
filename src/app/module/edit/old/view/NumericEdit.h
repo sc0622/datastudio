@@ -10,11 +10,13 @@ class NumericEdit : public ItemEdit
 public:
     explicit NumericEdit(QWidget *parent = nullptr);
 
-    int windowType() const override;
-
 signals:
 
 private slots:
+
+    // ObjectEdit interface
+public:
+    int windowType() const override;
 
 private:
 };

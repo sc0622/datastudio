@@ -7,8 +7,7 @@ class TableNodePrivate;
 /**
  * @brief ICD表类
  */
-class KERNELCLASS_EXPORT TableNode
-    : public ICDElement
+class KERNELCLASS_EXPORT TableNode : public ICDElement
 {
 public:
     typedef std::shared_ptr<TableNode> smtTable;
@@ -133,7 +132,7 @@ public:
     * @brief 获取所有ICD子表
     * @return 子表名集
     */
-    std::vector<std::string> subTableNames() const;
+    std::vector<std::string> subTableIds() const;
 
     /**
     * @brief 获取所有ICD子表
@@ -158,6 +157,25 @@ public:
      * @return ICD表实例
      */
     TableNode::smtTable clone() const;
+
+    // 设置/获取ID
+    void setId(std::string id) override;
+    std::string id() const override;
+
+    // 设置/获取名称
+    void setName(const std::string& name) override;
+    std::string name() const override;
+
+    void setProCode(const std::string& proCode) override;
+    std::string proCode() const override;
+
+    // 设置/获取标识
+    void setSign(const std::string& sign) override;
+    std::string sign() const override;
+
+    // 设置/获取描述
+    void setDescribe(const std::string& describe) override;
+    std::string describe() const override;
 
 protected:
     TableNode(const TableNode &rhs);
