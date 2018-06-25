@@ -17,7 +17,6 @@ IcdTabWidget::IcdTabWidget(QWidget *parent)
 
     tabBar()->setShape(QTabBar::TriangularNorth);
     tabBar()->setExpanding(true);
-
     //
     connect(this, SIGNAL(tabCloseRequested(int)),
             this, SLOT(onTabCloseRequested(int)));
@@ -95,17 +94,14 @@ bool IcdTabWidget::addDataItem(const QString &domain, const Icd::WorkerPtr &work
     if (!worker || !object || !itemTable) {
         return false;
     }
-
     //
     const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(object);
     if (!table) {
         return false;
     }
-
     //
     const QString tableId = QString::fromStdString(table->id());
     const QString name = QString::fromStdString(object->name());
-
     //
     DataTableWidget *tableWidget = qobject_cast<DataTableWidget *>(findTab(tableId));
     if (!tableWidget) {
@@ -132,10 +128,8 @@ bool IcdTabWidget::addDataItem(const QString &domain, const Icd::WorkerPtr &work
         connect(tableWidget, SIGNAL(itemRemoved(QString)), this, SIGNAL(itemRemoved(QString)));
         connect(tableWidget, SIGNAL(heightChanged(int)), this, SIGNAL(heightChanged(int)));
     }
-
     //
     setCurrentWidget(tableWidget);
-
     //
     tableWidget->addDataItem(domain.section('/', 1), worker, object);
 
@@ -148,33 +142,27 @@ int IcdTabWidget::focusItem(const QString &domain)
     if (domain.isEmpty()) {
         return 0;
     }
-
     //
     const QString id = domain.section('/', 0, 0);
     if (id.isEmpty()) {
         return 0;
     }
-
     //
     QWidget *widget = findTab(id);
     if (!widget) {
         return 0;
     }
-
     //
     setCurrentWidget(widget);
-
     //
     const QString section = domain.section('/', 1);
     if (section.isEmpty()) {
         return 0;
     }
-
     //
     int offset = 0;
-    if (!QMetaObject::invokeMethod(
-                widget, "focusItem", Q_RETURN_ARG(int, offset),
-                Q_ARG(QString, section))) {
+    if (!QMetaObject::invokeMethod(widget, "focusItem", Q_RETURN_ARG(int, offset),
+                                   Q_ARG(QString, section))) {
         return 0;
     }
 
@@ -187,16 +175,13 @@ void IcdTabWidget::removeItem(const QString &domain)
     if (domain.isEmpty()) {
         return;
     }
-
     //
     const QString id = domain.section('/', 0, 0);
     if (id.isEmpty()) {
         return;
     }
-
     //
     const QString section = domain.section('/', 1);
-
     //
     QWidget *widget = 0;
     int count = this->count();
@@ -212,17 +197,14 @@ void IcdTabWidget::removeItem(const QString &domain)
             break;
         }
     }
-
     //
     if (!widget) {
         return;
     }
-
     //
     if (!QMetaObject::invokeMethod(widget, "removeItem", Q_ARG(QString, section))) {
         return;
     }
-
 }
 
 }

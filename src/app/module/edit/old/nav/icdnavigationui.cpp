@@ -163,7 +163,7 @@ void ICDNavigationUi::slotLoadRule()
     std::vector<int> params;
     QString condition = queryNodeKeys(current);
     PlaneNode::smtPlane plane;
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    JAutoCursor busyCursor(Qt::BusyCursor);
     // 加载规则数据
     params.push_back((int)&condition);
     params.push_back(1);
@@ -172,7 +172,6 @@ void ICDNavigationUi::slotLoadRule()
     args.append(qVariantFromValue((void*)&params));
     jnotify->send("edit.loadRules", args);
 
-    QApplication::restoreOverrideCursor();
     // 更新导航树
     updateRuleItems(plane);
     // 更新数据变更状态
@@ -195,14 +194,13 @@ void ICDNavigationUi::slotUnloadRule()
         }
     }
 
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    JAutoCursor busyCursor(Qt::BusyCursor);
     QStandardItem *current = q_treeView->currentItem();
     QString condition = queryNodeKeys(current);
     QVariantList args;
     args.append(qVariantFromValue((void*)&condition));
     jnotify->send("edit.unLoadRules", args);
 
-    QApplication::restoreOverrideCursor();
     // 更新树节点
     updateLoadedFlag(current, optUnload);
     // 更新数据状态标识
@@ -404,7 +402,7 @@ void ICDNavigationUi::loadData(const QString &name)
     }
 
     int dataSource = GlobalDefine::dsNone;
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    JAutoCursor busyCursor(Qt::BusyCursor);
     // 加载数据
     QString error;
     if (name == "database") {
@@ -1271,7 +1269,8 @@ bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err
                 return false;
             }
         }
-        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+        JAutoCursor busyCursor(Qt::BusyCursor);
 
         QVariantList args;
         args.append(qVariantFromValue((void*)&keys));
@@ -1280,7 +1279,7 @@ bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err
     } else if (GlobalDefine::dsFile == type) {
         QVector<QString> params;
 
-        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        JAutoCursor busyCursor(Qt::BusyCursor);
         params << keys << file;
 
         QVariantList args;
@@ -1288,13 +1287,12 @@ bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err
         args.append(qVariantFromValue((void*)&err));
         jnotify->send("edit.saveFile", args);
     }
-    QApplication::restoreOverrideCursor();
+
+    JAutoCursor busyCursor(Qt::BusyCursor);
 
     if (err.isEmpty()) {
         // 更新数据状态标识
         updateDataState(current, StateReset);
-        // 重新刷新界面数据
-        //slotCurrentChanged(current, NULL);
     }
 
     return true;

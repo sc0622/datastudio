@@ -54,7 +54,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Desktop/555.json",
+            "filePath" : "C:/Users/iclosure/Documents/GitHub/jkapp/config/protocol.json",
             "sourceType" : "file"
          }
       },
@@ -76,7 +76,7 @@
                "xAxisSync" : true,
                "yLabelWidth" : 10
             },
-            "flushEnabled" : false,
+            "flushEnabled" : true,
             "tree" : {
                "flushEnabled" : true,
                "loadDeep" : 2,
@@ -94,7 +94,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Desktop/555.json",
+            "filePath" : "C:/Users/iclosure/Documents/GitHub/jkapp/config/protocol.json",
             "sourceType" : "file"
          }
       },
@@ -117,7 +117,7 @@
             }
          },
          "parser" : {
-            "filePath" : "@ConfigDir@/protocol.json",
+            "filePath" : "C:/Users/iclosure/Documents/GitHub/jkapp/config/protocol.json",
             "sourceType" : "file"
          }
       }

@@ -333,7 +333,7 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
         }
     });
 
-    QApplication::setOverrideCursor(Qt::BusyCursor);
+    JAutoCursor busyCursor(Qt::BusyCursor);
 
     QFuture<bool> future = QtConcurrent::run([=]() -> bool {
         QFile sourceFile(filePath);
@@ -477,8 +477,6 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
         d_progressDialog->deleteLater();
         d_progressDialog = Q_NULLPTR;
         d_table = Icd::TablePtr(0);
-
-        QApplication::restoreOverrideCursor();
     });
     d_progressDialog->setFuture(future);
     d_progressDialog->exec();
@@ -550,7 +548,7 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
         return false;
     }
 
-    QApplication::setOverrideCursor(Qt::BusyCursor);
+    JAutoCursor busyCursor(Qt::BusyCursor);
 
     if (d_progressDialog) {
         d_progressDialog->disconnect();
@@ -663,8 +661,6 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
     d_progressDialog->setFuture(future);
     d_progressDialog->exec();
     d_progressDialog->disconnect(this);
-
-    QApplication::restoreOverrideCursor();
 
     return result;
 }

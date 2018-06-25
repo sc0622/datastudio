@@ -342,7 +342,8 @@ TablePtr FrameItem::tableByMark(const std::string &mark, bool deep) const
     return TablePtr(0);
 }
 
-ObjectPtr FrameItem::itemByDomain(const std::string &domain, DomainType domainType) const
+ObjectPtr FrameItem::itemByDomain(const std::string &domain, DomainType domainType,
+                                  bool ignoreComplex) const
 {
     if (domain.empty()) {
         return ItemPtr(0);
@@ -368,7 +369,7 @@ ObjectPtr FrameItem::itemByDomain(const std::string &domain, DomainType domainTy
             return table;
         }
 
-        const ObjectPtr childItem = table->itemByDomain(next, domainType);
+        const ObjectPtr childItem = table->itemByDomain(next, domainType, ignoreComplex);
         if (childItem) {
             return childItem;
         }

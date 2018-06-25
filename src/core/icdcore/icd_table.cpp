@@ -471,6 +471,11 @@ void Table::clearItem()
     d->clearItem();
 }
 
+bool Table::isEmpty() const
+{
+    return d->items.empty();
+}
+
 int Table::itemCount() const
 {
     return (int)d->items.size();
@@ -607,7 +612,8 @@ TablePtr Table::tableByMark(const std::string &mark, bool deep) const
     return TablePtr();
 }
 
-ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType) const
+ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType,
+                              bool ignoreComplex) const
 {
     if (domain.empty()) {
         return ObjectPtr();
@@ -635,7 +641,11 @@ ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType) 
                     if (!complex) {
                         break;
                     }
-                    return complex->table();
+                    if (ignoreComplex) {
+                        return complex->table();
+                    } else {
+                        return complex;
+                    }
                 }
                 default:
                     return item;
@@ -649,7 +659,7 @@ ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType) 
                         break;
                     }
 
-                    const ObjectPtr childItem = complexItem->table()->itemByDomain(next, domainType);
+                    const ObjectPtr childItem = complexItem->table()->itemByDomain(next, domainType, ignoreComplex);
                     if (childItem) {
                         return childItem;
                     }
@@ -662,7 +672,7 @@ ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType) 
                         break;
                     }
 
-                    const ObjectPtr childItem = frameItem->itemByDomain(next, domainType);
+                    const ObjectPtr childItem = frameItem->itemByDomain(next, domainType, ignoreComplex);
                     if (childItem) {
                         return childItem;
                     }

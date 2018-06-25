@@ -54,7 +54,7 @@ void WorkerRecv::setTable(const Icd::TablePtr &table)
         d->mutex.lock();
         d->table = table;
         if (d->tableBuffer) {
-            d->updateBind(table != Q_NULLPTR);
+            d->updateBind(table != nullptr);
         }
         d->mutex.unlock();
         emit tableChanged(d->table);

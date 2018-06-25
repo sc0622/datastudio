@@ -21,6 +21,8 @@ ChartViewPrivate::ChartViewPrivate(ChartView *q)
     , yLabelLength(10)
     , syncTrack(true)
     , chartTheme(JChart::ChartThemeDark)
+    , hexAsciiVisible(true)
+    , hexColumnCount(16)
 {
 
 }
@@ -36,16 +38,14 @@ void ChartViewPrivate::init(bool styled)
     q->setAcceptDrops(true);
     horiLayoutMain->addWidget(chartView);
 
-    //
     QObject::connect(chartView, &JChart::View::trackerChanged, this,
-            [=](JChart::Chart *chart, const QPointF &pos, bool visible){
+                     [=](JChart::Chart *chart, const QPointF &pos, bool visible){
         onTrackerChanged(chart, pos, visible);
     }, Qt::QueuedConnection);
     QObject::connect(chartView, &JChart::View::trackerMarked, this,
-            [=](JChart::Chart *chart, const QPointF &pos){
+                     [=](JChart::Chart *chart, const QPointF &pos){
         onTrackerMarked(chart, pos);
     }, Qt::QueuedConnection);
-
     //
     QTimer *timerTemp = new QTimer(q);
     timerTemp->setSingleShot(true);
@@ -63,7 +63,6 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         return false;
     }
 
-    //
     switch (dataItem->type()) {
     case Icd::ItemComplex:
     {
@@ -72,13 +71,16 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         if (!complex) {
             return false;
         }
-
         //
-        if (!addDataItem(worker, complex->table(), item, chart)) {
-            return false;
-        }
+        if (complex->isEmpty()) {
+            break;
+        } else {
+            if (!addDataItem(worker, complex->table(), item, chart)) {
+                return false;
+            }
 
-        return true;
+            return true;
+        }
     }
     case Icd::ItemFrame:
     {
@@ -87,7 +89,6 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         if (!frame) {
             return false;
         }
-
         //
         if (!addDataItem(worker, frame, item, chart)) {
             return false;
@@ -96,7 +97,6 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         return true;
     }
     case Icd::ItemArray:
-        return false;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
         chart = nullptr;
@@ -104,10 +104,8 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
     default:
         break;
     }
-
     //
     const QString domain = item->data(Icd::TreeItemDomainRole).toString();
-
     //
     if (!chart) {
         // create chart
@@ -117,31 +115,34 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
             return false;       // create failure or not supported
         }
         chart->setChartTheme(JChart::ChartTheme(chartTheme));
-        chart->setAxisVisible(JChart::yLeft, showYLabel);
-        chart->setAxisAlign(JChart::yLeft, showYAlign);
-        chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
-        chart->setXScaleDrawType(JChart::ScaleDrawTime);
-        chart->setShiftType(JChart::ShiftByTime);
-        chart->togglePlay(true);
-        chartView->appendChart(chart);
-        //
-        QObject::connect(chart, &JChart::Chart::seriesRemoved, this, [=](int index){
-            Q_UNUSED(index);
-            if (chart->seriesCount() > 1) {
-                chart->setTitle(QString());
-                chart->setLegendVisible(true);
-            } else {
-                chart->setLegendVisible(false);
-                if (chart->seriesCount() == 1) {
-                    JChart::AbstractSeries *series = chart->seriesAt(0);
-                    if (series) {
-                        chart->setTitle(series->title());
-                    } else {
-                        chart->setTitle(QString());
+        if (chart->chartType() != JChart::ChartTypeBuffer) {
+            chart->setAxisVisible(JChart::yLeft, showYLabel);
+            chart->setAxisAlign(JChart::yLeft, showYAlign);
+            chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
+            chart->setXScaleDrawType(JChart::ScaleDrawTime);
+            chart->setShiftType(JChart::ShiftByTime);
+
+            QObject::connect(chart, &JChart::Chart::seriesRemoved, this, [=](int index){
+                Q_UNUSED(index);
+                if (chart->seriesCount() > 1) {
+                    chart->setTitle(QString());
+                    chart->setLegendVisible(true);
+                } else {
+                    chart->setLegendVisible(false);
+                    if (chart->seriesCount() == 1) {
+                        JChart::AbstractSeries *series = chart->seriesAt(0);
+                        if (series) {
+                            chart->setTitle(series->title());
+                        } else {
+                            chart->setTitle(QString());
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+        chart->togglePlay(true);
+        //
+        chartView->appendChart(chart);
         //
         ChartData *chartData = new ChartData(chart);
         chartData->timer = new QTimer(chart);
@@ -151,7 +152,8 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
             updateChart(chart);
         });
         chart->setUserData(chartData);
-        if (chart->chartType() == JChart::ChartTypeBitMap) {
+        if (chart->chartType() == JChart::ChartTypeBitMap
+                || chart->chartType() == JChart::ChartTypeBuffer) {
             chartData->item = item;
             chart->setIdentity(domain);
             setChartTitle(chart, 0, item);
@@ -164,15 +166,18 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         } else {
             chart->setIdentity(QUuid::createUuid().toString());
         }
-
         //
         if (running) {
             chartData->timer->start();
         }
     }
-
     //
-    if (chart->chartType() != JChart::ChartTypeBitMap) {
+    switch (chart->chartType()) {
+    case JChart::ChartTypeBitMap:
+    case JChart::ChartTypeBuffer:
+        break;
+    default:
+    {
         const QString path = item->data(Icd::TreeItemPathRole).toString();
         JChart::AbstractSeries *series = chart->addSeries(domain, path.section('@', 0, 1));
         if (chart->seriesCount() > 1) {
@@ -181,15 +186,14 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         } else {
             setChartTitle(chart, 0, item);
         }
-
         //
         SeriesData *seriesData = new SeriesData();
         seriesData->worker = worker;
         seriesData->dataItem = dataItem;
         seriesData->item = item;
         series->setUserData(seriesData);
-    }
-
+        break;
+    }}
     //
     item->setData(true, Icd::TreeBoundRole);
 
@@ -203,26 +207,31 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const TablePtr &tabl
         return false;
     }
 
-    int i = 0;
-    const int rowCount = item->rowCount();
-    const Icd::ItemPtrArray &dataItems = table->allItem();
-    for (Icd::ItemPtrArray::const_iterator citer = dataItems.cbegin();
-         citer != dataItems.cend() && i < rowCount; ++citer, ++i) {
-        const Icd::ItemPtr &dataItem = *citer;
-        QStandardItem *itemData = item->child(i);
-        if (!itemData) {
-            continue;
+    if (table->isEmpty()) {
+        //
+    } else {
+        int i = 0;
+        const int rowCount = item->rowCount();
+        const Icd::ItemPtrArray &dataItems = table->allItem();
+        for (Icd::ItemPtrArray::const_iterator citer = dataItems.cbegin();
+             citer != dataItems.cend() && i < rowCount; ++citer, ++i) {
+            const Icd::ItemPtr &dataItem = *citer;
+            QStandardItem *itemData = item->child(i);
+            if (!itemData) {
+                continue;
+            }
+            //
+            if (!addDataItem(worker, dataItem, itemData, chart)) {
+                continue;
+            }
         }
         //
-        if (!addDataItem(worker, dataItem, itemData, chart)) {
-            continue;
+        if (rowCount > 0) {
+            item->setData(true, Icd::TreeBoundRole);
         }
     }
 
-    //
-    if (rowCount > 0) {
-        item->setData(true, Icd::TreeBoundRole);
-    }
+    item->setData(true, Icd::TreeBoundRole);
 
     return true;
 }
@@ -249,7 +258,6 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::FrameItem
             continue;
         }
     }
-
     //
     if (rowCount > 0) {
         item->setData(true, Icd::TreeBoundRole);
@@ -266,7 +274,6 @@ bool ChartViewPrivate::addDataItem(const QString &domain, const WorkerPtr &worke
     if (!worker || !dataObject || !item) {
         return false;
     }
-
     //
     switch (dataObject->objectType()) {
     case Icd::ObjectTable:
@@ -276,7 +283,6 @@ bool ChartViewPrivate::addDataItem(const QString &domain, const WorkerPtr &worke
         if (!table) {
             break;
         }
-
         //
         if (!addDataItem(worker, table, item, chart)) {
             break;
@@ -291,7 +297,6 @@ bool ChartViewPrivate::addDataItem(const QString &domain, const WorkerPtr &worke
         if (!dataItem) {
             break;
         }
-
         //
         if (!addDataItem(worker, dataItem, item, chart)) {
             break;
@@ -312,7 +317,6 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     if (!dataItem) {
         return false;
     }
-
     //
     switch (dataItem->type()) {
     case Icd::ItemHead:
@@ -324,7 +328,6 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     {
         // create
         JChart::NumericChart *chart = new JChart::NumericChart(q);
-        chart->setChartTheme(JChart::ChartThemeDark);
         // specs
         return chart;
     }
@@ -338,7 +341,6 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         }
         // create
         JChart::BitChart *chart = new JChart::BitChart(q);
-        chart->setChartTheme(JChart::ChartThemeDark);
         chart->setLegendVisible(showYAlign);
         chart->setBitsRange(itemBit->bitStart(), itemBit->bitStart() + itemBit->bitCount() - 1);
         const std::map<icd_uint64, std::string> &specs = itemBit->specs();
@@ -351,11 +353,46 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         }
         return chart;
     }
+    case Icd::ItemArray:
+    {
+        // convert
+        Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(dataItem);
+        if (!arrayItem) {
+            Q_ASSERT(false);    //
+            return nullptr;
+        }
+        if (arrayItem->count() <= 0) {
+            return nullptr;
+        }
+        // create
+        JChart::BufferChart *chart = new JChart::BufferChart(q);
+        chart->setAsciiVisible(hexAsciiVisible);
+        chart->setColumnCount(hexColumnCount);
+        // specs
+        return chart;
+    }
+    case Icd::ItemComplex:
+    {
+        // convert
+        Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem);
+        if (!complexItem) {
+            Q_ASSERT(false);    //
+            return nullptr;
+        }
+        if (!complexItem->isEmpty()) {
+            return nullptr;
+        }
+        // create
+        JChart::BufferChart *chart = new JChart::BufferChart(q);
+        chart->setAsciiVisible(hexAsciiVisible);
+        chart->setColumnCount(hexColumnCount);
+        // specs
+        return chart;
+    }
     default:
         break;
     }
 
-    //
     return nullptr;
 }
 
@@ -460,7 +497,6 @@ void ChartViewPrivate::updateXAxisSync()
     if (!xAxisSync) {
         return;
     }
-
     // reset chartview
     updateScale();
 }
@@ -471,12 +507,16 @@ void ChartViewPrivate::updateChart(JChart::Chart *chart)
         return;
     }
 
-    const int seriesCount = chart->seriesCount();
-    if (!chart->isPlay() || seriesCount == 0) {
+    if (!chart->isPlay()) {
         return;
     }
     //
-    if (chart->chartType() == JChart::ChartTypeBitMap) {
+    const int seriesCount = chart->seriesCount();
+    const int chartType = chart->chartType();
+    if (chartType == JChart::ChartTypeBitMap) {
+        if (seriesCount == 0) {
+            return;
+        }
         ChartData *chartData = dynamic_cast<ChartData *>(chart->userData());
         if (!chartData || !chartData->bitmapData) {
             return;
@@ -495,6 +535,23 @@ void ChartViewPrivate::updateChart(JChart::Chart *chart)
 
         bitChart->shiftSample(QPointF(QDateTime::currentMSecsSinceEpoch(),
                                       (((quint32)bitItem->data()) << bitItem->bitStart())));
+    } else if (chartType == JChart::ChartTypeBuffer) {
+        ChartData *chartData = dynamic_cast<ChartData *>(chart->userData());
+        if (!chartData || !chartData->bitmapData) {
+            return;
+        }
+
+        JChart::BufferChart *bufferChart = qobject_cast<JChart::BufferChart *>(chart);
+        if (!bufferChart) {
+            return;
+        }
+
+        const Icd::ItemPtr dataItem = chartData->bitmapData->dataItem;
+        if (!dataItem) {
+            return;
+        }
+
+        bufferChart->setBuffer(reinterpret_cast<uchar*>(dataItem->buffer()), int(dataItem->bufferSize()));
     } else {
         for (int i = 0; i < seriesCount; ++i) {
             JChart::AbstractSeries *series = chart->seriesAt(i);

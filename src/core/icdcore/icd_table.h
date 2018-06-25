@@ -43,15 +43,15 @@ public:
     void removeItemById(const std::string &id);
     void removeItemByMark(const std::string &mark);
     void clearItem();
+    bool isEmpty() const;
     int itemCount() const;
     ItemPtr itemAt(int index) const;
     ItemPtr itemById(const std::string &id) const;
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
-    ObjectPtr itemByDomain(const std::string &domain,
-                           Icd::DomainType domainType = Icd::DomainId) const;
-    TablePtr tableByDomain(const std::string &domain,
-                           Icd::DomainType domainType = Icd::DomainId) const;
+    ObjectPtr itemByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId,
+                           bool ignoreComplex = true) const;
+    TablePtr tableByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId) const;
 
     const std::vector<char> &headers() const;
     CounterItemPtr counterItem();

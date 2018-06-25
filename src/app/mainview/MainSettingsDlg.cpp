@@ -30,8 +30,7 @@ SettingsDlg::SettingsDlg(QWidget *parent)
     d_scrollArea->setWidgetResizable(true);
     d_splitter->addWidget(d_scrollArea);
 
-    connect(d_treeView, &JTreeView::currentItemChanged,
-            this, &SettingsDlg::onCurrentItemChanged);
+    connect(d_treeView, &JTreeView::currentItemChanged, this, &SettingsDlg::onCurrentItemChanged);
 
     init();
 }

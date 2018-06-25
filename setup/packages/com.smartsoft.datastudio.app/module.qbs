@@ -13,7 +13,7 @@ PackageApp {
         name: 'data-config'
         prefix: FileInfo.joinPaths(project.sourceDirectory, 'config') + '/'
         files: [ '**/*.*' ]
-        excludeFiles: [ '**/*.pr[io]', '**/*.qbs' ]
+        excludeFiles: [ '**/*.pr[io]', '**/*.qbs', "**/~*" ]
         qbs.install: true
         qbs.installPrefix: dataInstallPrefix
         qbs.installDir: 'config'

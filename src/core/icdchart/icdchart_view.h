@@ -41,6 +41,9 @@ public:
     void setSyncTrack(bool enabled);
     void setChartTheme(int chartTheme);
 
+    void setHexAsciiVisible(bool visible);
+    void setHexColumnCount(int count);
+
 signals:
     void xAxisSyncChanged(bool value);
     void runningChanged(bool value);

@@ -678,12 +678,12 @@
         <translation>全局设置</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainSettingsDlg.cpp" line="57"/>
+        <location filename="../../mainview/MainSettingsDlg.cpp" line="56"/>
         <source>Environment</source>
         <translation>环境</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainSettingsDlg.cpp" line="63"/>
+        <location filename="../../mainview/MainSettingsDlg.cpp" line="62"/>
         <source>General</source>
         <translation>常规</translation>
     </message>
@@ -1187,7 +1187,7 @@
 <context>
     <name>Simulate::SetView</name>
     <message>
-        <location filename="../../module/simulate/SimulateSetView.cpp" line="223"/>
+        <location filename="../../module/simulate/SimulateSetView.cpp" line="214"/>
         <source>Drag and drog left tree node to here</source>
         <translation>拖放左边树节点到这里</translation>
     </message>

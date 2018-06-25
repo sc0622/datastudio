@@ -20,6 +20,7 @@ public:
     explicit ComplexItem(const std::string &id, Object *parent = nullptr);
      ~ComplexItem();
 
+    bool isEmpty() const;
     TablePtr table() const;
 
     void setBuffer(char *buffer) override;
@@ -40,10 +41,9 @@ public:
 
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
-    ObjectPtr itemByDomain(const std::string &domain,
-                           Icd::DomainType domainType = Icd::DomainId) const;
-    TablePtr tableByDomain(const std::string &domain,
-                           Icd::DomainType domainType = Icd::DomainId) const;
+    ObjectPtr itemByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId,
+                           bool ignoreComplex = true) const;
+    TablePtr tableByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId) const;
 
     // Serializable interface
 public:

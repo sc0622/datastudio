@@ -225,6 +225,24 @@ double_t *ArrayItem::f64() const
     return reinterpret_cast<double_t*>(buffer());
 }
 
+void ArrayItem::setData(const char *buffer, int size)
+{
+    if (!buffer) {
+        return;
+    }
+
+    char *_buffer = this->buffer();
+    if (!_buffer) {
+        return;
+    }
+
+    if (size > int(bufferSize())) {
+        size = int(bufferSize());
+    }
+
+    memcpy(_buffer, buffer, size_t(size));
+}
+
 Json::Value ArrayItem::save() const
 {
     Json::Value json = Item::save();

@@ -1157,6 +1157,7 @@ QwtLegendLabel {
 
 QwtPlot QScrollArea {
     background: transparent;
+    font-size: 8px;
 }
 
 /**********************************************************/

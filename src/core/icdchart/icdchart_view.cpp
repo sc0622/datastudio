@@ -41,8 +41,8 @@ JChart::View *ChartView::chartView() const
 void ChartView::changeWorker(const QString &domain, const Icd::WorkerPtr &worker)
 {
     Q_D(ChartView);
-    int rowCount = d->chartView->rowCount();
-    int columnCount = d->chartView->columnCount();
+    const int rowCount = d->chartView->rowCount();
+    const int columnCount = d->chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *chart = d->chartView->chartAt(row, column);
@@ -67,7 +67,8 @@ void ChartView::changeWorker(const QString &domain, const Icd::WorkerPtr &worker
                 }
             };
 
-            if (chart->chartType() == JChart::ChartTypeBitMap) {
+            if (chart->chartType() == JChart::ChartTypeBitMap
+                    || chart->chartType() == JChart::ChartTypeBuffer) {
                 const QString identity = chart->identity();
                 if (identity.startsWith(domain)) {
                     ChartData *chartData = dynamic_cast<ChartData *>(chart->userData());
@@ -94,15 +95,16 @@ void ChartView::changeWorker(const QString &domain, const Icd::WorkerPtr &worker
 void ChartView::focusItem(const QString &domain)
 {
     Q_D(ChartView);
-    int rowCount = d->chartView->rowCount();
-    int columnCount = d->chartView->columnCount();
+    const int rowCount = d->chartView->rowCount();
+    const int columnCount = d->chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *chart = d->chartView->chartAt(row, column);
             if (!chart) {
                 continue;
             }
-            if (chart->chartType() == JChart::ChartTypeBitMap) {
+            if (chart->chartType() == JChart::ChartTypeBitMap
+                    || chart->chartType() == JChart::ChartTypeBuffer) {
                 if (chart->identity() == domain) {
                     d->chartView->focusChart(row, column);
                     return;
@@ -124,15 +126,16 @@ void ChartView::focusItem(const QString &domain)
 void ChartView::removeItem(const QString &domain)
 {
     Q_D(ChartView);
-    int rowCount = d->chartView->rowCount();
-    int columnCount = d->chartView->columnCount();
+    const int rowCount = d->chartView->rowCount();
+    const int columnCount = d->chartView->columnCount();
     for (int row = rowCount - 1; row >= 0; --row) {
         for (int column = columnCount - 1; column >= 0; --column) {
             JChart::Chart *chart = d->chartView->chartAt(row, column);
             if (!chart) {
                 continue;
             }
-            if (chart->chartType() == JChart::ChartTypeBitMap) {
+            if (chart->chartType() == JChart::ChartTypeBitMap
+                    || chart->chartType() == JChart::ChartTypeBuffer) {
                 if (chart->identity().startsWith(domain)) {
                     d->chartView->removeChart(row, column);
                 }
@@ -167,8 +170,8 @@ void ChartView::removeItem(const QString &domain)
 void ChartView::removeChart(const QString &domain)
 {
     Q_D(ChartView);
-    int rowCount = d->chartView->rowCount();
-    int columnCount = d->chartView->columnCount();
+    const int rowCount = d->chartView->rowCount();
+    const int columnCount = d->chartView->columnCount();
     for (int row = rowCount - 1; row >= 0; --row) {
         for (int column = columnCount - 1; column >= 0; --column) {
             JChart::Chart *chart = d->chartView->chartAt(row, column);
@@ -206,8 +209,8 @@ void ChartView::showYLabel(bool checked)
     Q_D(ChartView);
     if (checked != d->showYLabel) {
         d->showYLabel = checked;
-        int rowCount = d->chartView->rowCount();
-        int columnCount = d->chartView->columnCount();
+        const int rowCount = d->chartView->rowCount();
+        const int columnCount = d->chartView->columnCount();
         for (int row = 0; row < rowCount; ++row) {
             for (int column = 0; column < columnCount; ++column) {
                 JChart::Chart *chart = d->chartView->chartAt(row, column);
@@ -225,8 +228,8 @@ void ChartView::showYAlign(bool align)
     Q_D(ChartView);
     if (align != d->showYAlign) {
         d->showYAlign = align;
-        int rowCount = d->chartView->rowCount();
-        int columnCount = d->chartView->columnCount();
+        const int rowCount = d->chartView->rowCount();
+        const int columnCount = d->chartView->columnCount();
         for (int row = 0; row < rowCount; ++row) {
             for (int column = 0; column < columnCount; ++column) {
                 JChart::Chart *chart = d->chartView->chartAt(row, column);
@@ -247,8 +250,8 @@ void ChartView::setYLabelLength(int length)
     Q_D(ChartView);
     if (length != d->yLabelLength) {
         d->yLabelLength = length;
-        int rowCount = d->chartView->rowCount();
-        int columnCount = d->chartView->columnCount();
+        const int rowCount = d->chartView->rowCount();
+        const int columnCount = d->chartView->columnCount();
         for (int row = 0; row < rowCount; ++row) {
             for (int column = 0; column < columnCount; ++column) {
                 JChart::Chart *chart = d->chartView->chartAt(row, column);
@@ -289,8 +292,8 @@ void ChartView::setSyncTrack(bool enabled)
                 chart = d->chartView->model()->chartAt(QCursor::pos());
             }
             //
-            int rowCount = d->chartView->rowCount();
-            int columnCount = d->chartView->columnCount();
+            const int rowCount = d->chartView->rowCount();
+            const int columnCount = d->chartView->columnCount();
             for (int row = 0; row < rowCount; ++row) {
                 for (int column = 0; column < columnCount; ++column) {
                     JChart::Chart *_chart = d->chartView->chartAt(row, column);
@@ -312,6 +315,54 @@ void ChartView::setChartTheme(int chartTheme)
     Q_D(ChartView);
     d->chartTheme = chartTheme;
     d->chartView->setChartTheme((JChart::ChartTheme)chartTheme);
+}
+
+void ChartView::setHexAsciiVisible(bool visible)
+{
+    Q_D(ChartView);
+    if (visible != d->hexAsciiVisible) {
+        d->hexAsciiVisible = visible;
+        const int rowCount = d->chartView->rowCount();
+        const int columnCount = d->chartView->columnCount();
+        for (int row = 0; row < rowCount; ++row) {
+            for (int column = 0; column < columnCount; ++column) {
+                JChart::Chart *chart = d->chartView->chartAt(row, column);
+                if (!chart) {
+                    continue;
+                }
+                if (chart->chartType() == JChart::ChartTypeBuffer) {
+                    JChart::BufferChart *bufferChart = qobject_cast<JChart::BufferChart*>(chart);
+                    if (bufferChart) {
+                        bufferChart->setAsciiVisible(visible);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void ChartView::setHexColumnCount(int count)
+{
+    Q_D(ChartView);
+    if (count != d->hexColumnCount) {
+        d->hexColumnCount = count;
+        const int rowCount = d->chartView->rowCount();
+        const int columnCount = d->chartView->columnCount();
+        for (int row = 0; row < rowCount; ++row) {
+            for (int column = 0; column < columnCount; ++column) {
+                JChart::Chart *chart = d->chartView->chartAt(row, column);
+                if (!chart) {
+                    continue;
+                }
+                if (chart->chartType() == JChart::ChartTypeBuffer) {
+                    JChart::BufferChart *bufferChart = qobject_cast<JChart::BufferChart*>(chart);
+                    if (bufferChart) {
+                        bufferChart->setColumnCount(count);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void ChartView::setXAxisSync(bool value)
@@ -345,24 +396,20 @@ void ChartView::dropEvent(QDropEvent *event)
     if (!event->mimeData()->hasFormat("icd/table-drag/monitor")) {
         return;
     }
-
     //
     QStandardItem *itemTable = reinterpret_cast<QStandardItem *>
             (event->mimeData()->property("itemTable").value<void *>());
     if (!itemTable) {
         return;
     }
-
     //
     QStandardItem *item = reinterpret_cast<QStandardItem *>
             (event->mimeData()->property("item").value<void *>());
     if (!item) {
         return;
     }
-
     //
     JAutoCursor autoCursor(Qt::BusyCursor);
-
     //
     Q_D(ChartView);
     JChart::Chart *chart = nullptr;
@@ -372,7 +419,8 @@ void ChartView::dropEvent(QDropEvent *event)
         case Qt::ControlModifier:
         case Qt::ShiftModifier:
             chart = d->chartView->model()->chartAt(event->pos());
-            if (chart && chart->chartType() == JChart::ChartTypeBitMap) {
+            if (chart && chart->chartType() == JChart::ChartTypeBitMap
+                    || chart->chartType() == JChart::ChartTypeBuffer) {
                 chart = nullptr;
             }
             break;
@@ -380,7 +428,6 @@ void ChartView::dropEvent(QDropEvent *event)
             break;
         }
     }
-
     //
     QVariant varChannelId = itemTable->data(Icd::TreeChannelIdRole);
     if (varChannelId.isNull()) {
@@ -395,41 +442,34 @@ void ChartView::dropEvent(QDropEvent *event)
             return;
         }
     }
-
     //
     varChannelId = itemTable->data(Icd::TreeChannelIdRole);
     if (varChannelId.isNull()) {
         return;     //
     }
-
     //
     const QString channelId = varChannelId.toString();
     if (channelId.isEmpty()) {
         return;
     }
-
     // get worker object
     Icd::WorkerPtr worker = Icd::WorkerPool::getInstance()
             ->workerByChannelIdentity(channelId.toStdString());
-    if (worker == 0) {
+    if (!worker) {
         return;
     }
-
     //
     const Icd::TablePtr tableRecv = worker->workerRecv()->table();
-
     //
     if (!tableRecv) {
         qWarning(QStringLiteral("工作组没有绑定接收端协议表 [通道：%1]！")
                  .arg(channelId).toLocal8Bit());
         return;
     }
-
     //
     const QString domain = event->mimeData()->property("domain").toString();
-
     //
-    Icd::ObjectPtr dataObject = Icd::ObjectPtr(0);
+    Icd::ObjectPtr dataObject = Icd::ObjectPtr();
     switch (item->type()) {
     case Icd::TreeItemTypeTable:
     {
@@ -439,7 +479,8 @@ void ChartView::dropEvent(QDropEvent *event)
     case Icd::TreeItemTypeDataItem:
     {
         // get dataItem object
-        const Icd::ObjectPtr dataItem = tableRecv->itemByDomain(domain.section('/', 3).toStdString());
+        const Icd::ObjectPtr dataItem =
+                tableRecv->itemByDomain(domain.section('/', 3).toStdString(), Icd::DomainId, false);
         if (!dataItem) {
             break;
         }
@@ -461,17 +502,14 @@ void ChartView::dropEvent(QDropEvent *event)
     default:
         break;
     }
-
     //
     if (!dataObject) {
         return;
     }
-
     //
     QApplication::processEvents(QEventLoop::EventLoopExec);
 
     JAutoCursor cursor(Qt::BusyCursor);
-
     //
     if (!d->addDataItem(domain, worker, dataObject, item, chart)) {
         return;

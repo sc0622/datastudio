@@ -50,6 +50,11 @@ ComplexItem::~ComplexItem()
     delete d;
 }
 
+bool ComplexItem::isEmpty() const
+{
+    return (d->table->itemCount() == 0);
+}
+
 TablePtr ComplexItem::table() const
 {
     return d->table;
@@ -124,11 +129,11 @@ TablePtr ComplexItem::tableByMark(const std::string &mark, bool deep) const
     return d->table->tableByMark(mark, deep);
 }
 
-ObjectPtr ComplexItem::itemByDomain(const std::string &domain,
-                                    DomainType domainType) const
+ObjectPtr ComplexItem::itemByDomain(const std::string &domain, DomainType domainType,
+                                    bool ignoreComplex) const
 {
     if (domain.empty()) {
-        return ObjectPtr(0);
+        return ObjectPtr();
     }
 
     std::string::size_type index = domain.find_first_of('/');
@@ -141,13 +146,13 @@ ObjectPtr ComplexItem::itemByDomain(const std::string &domain,
     }
 
     if (d->table->domainOfType(domainType) != current) {
-        return ObjectPtr(0);
+        return ObjectPtr();
     }
 
     if (next.empty()) {
         return d->table;
     } else {
-        return d->table->itemByDomain(next, domainType);
+        return d->table->itemByDomain(next, domainType, ignoreComplex);
     }
 }
 

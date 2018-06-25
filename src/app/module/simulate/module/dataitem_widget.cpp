@@ -4,6 +4,7 @@
 #include "icdworker/icdworker.h"
 #include "icdtab_widget.h"
 #include "datatable_widget.h"
+#include "jutraledit/jutraledit_view.h"
 
 namespace Simulate {
 
@@ -12,16 +13,19 @@ namespace Simulate {
 DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     : QFrame(parent)
     , d_itemType(itemType)
-    , d_item(0)
-    , d_itemLayout(0)
-    , d_buttonSend(0)
+    , d_item(nullptr)
+    , d_itemLayout(nullptr)
+    , d_buttonSend(nullptr)
 {
     setObjectName("DataItemWidget");
     setFrameShape(QFrame::NoFrame);
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
-    vertLayoutMain->setContentsMargins(0, 0, 0, 0);
+    vertLayoutMain->setContentsMargins(6, 3, 8, 0);
     vertLayoutMain->setSpacing(0);
+
+    QHBoxLayout *layoutTop = new QHBoxLayout();
+    vertLayoutMain->addLayout(layoutTop);
 
     d_labelTitle = new QLabel(this);
     d_labelTitle->setObjectName("labelTitle");
@@ -30,7 +34,9 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     QFont font = d_labelTitle->font();
     font.setBold(true);
     d_labelTitle->setFont(font);
-    vertLayoutMain->addWidget(d_labelTitle, 0, Qt::AlignTop);
+    layoutTop->addWidget(d_labelTitle, 0, Qt::AlignTop);
+
+    layoutTop->addStretch();
 
     d_clientLayout = new QHBoxLayout();
     d_clientLayout->setContentsMargins(0, 0, 0, 0);
@@ -39,43 +45,45 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     switch (d_itemType) {
     case ItemTypeComplex:
     {
-        break;
+        const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem());
+        if (!complex) {
+            break;
+        }
+        if (complex->childCount() > 0) {
+            break;
+        }
     }
     case ItemTypeFrame:
-    {
         break;
-    }
     default:
     {
         QFrame *formButton = new QFrame(this);
         formButton->setObjectName("frameButton");
         formButton->setFixedWidth(100);
-        d_clientLayout->addWidget(formButton);
-
-        QVBoxLayout *vertLayoutButton = new QVBoxLayout(formButton);
-        vertLayoutButton->setContentsMargins(0, 8, 0, 8);
-        vertLayoutButton->setSpacing(8);
+        layoutTop->addWidget(formButton);
 
         d_buttonSend = new QPushButton(QStringLiteral("发送"), this);
-        d_buttonSend->setFixedSize(60, 30);
-        vertLayoutButton->addWidget(d_buttonSend, 0, Qt::AlignHCenter);
+        d_buttonSend->setFixedSize(60, 25);
+        layoutTop->addWidget(d_buttonSend);
+
+        layoutTop->addSpacing(10);
 
         QPushButton *buttonRestore = new QPushButton(QStringLiteral("复位"), this);
-        buttonRestore->setFixedSize(60, 30);
-        vertLayoutButton->addWidget(buttonRestore, 0, Qt::AlignHCenter);
+        buttonRestore->setFixedSize(60, 25);
+        layoutTop->addWidget(buttonRestore);
+
+        layoutTop->addSpacing(10);
 
         QPushButton *buttonRemove = new QPushButton(QStringLiteral("删除"), this);
-        buttonRemove->setFixedSize(60, 30);
-        vertLayoutButton->addWidget(buttonRemove, 0, Qt::AlignHCenter);
-
-        vertLayoutButton->addStretch();
+        buttonRemove->setFixedSize(60, 25);
+        layoutTop->addWidget(buttonRemove);
 
         QWidget *widgetClient = new QWidget(this);
         widgetClient->setObjectName("widgetClient");
         d_clientLayout->addWidget(widgetClient);
 
         QHBoxLayout *horiLayoutClient = new QHBoxLayout(widgetClient);
-        horiLayoutClient->setContentsMargins(6, 6, 6, 6);
+        horiLayoutClient->setContentsMargins(0, 6, 0, 6);
 
         d_itemLayout = new QVBoxLayout();
         horiLayoutClient->addLayout(d_itemLayout);
@@ -83,9 +91,6 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
         d_itemLayout->setSpacing(6);
         d_itemLayout->addStretch();
 
-        horiLayoutClient->addStretch();
-
-        //
         connect(buttonRemove, SIGNAL(clicked(bool)), this, SIGNAL(remove()));
         connect(d_buttonSend, SIGNAL(clicked(bool)), this, SIGNAL(send()));
         connect(buttonRestore, &QPushButton::clicked, this, [=](){
@@ -109,10 +114,9 @@ DataItemWidget::~DataItemWidget()
     }
 }
 
-DataItemWidget *DataItemWidget::createWidget(const Icd::ItemPtr &dataItem,
-                                             QWidget *parent)
+DataItemWidget *DataItemWidget::createWidget(const Icd::ItemPtr &dataItem, QWidget *parent)
 {
-    DataItemWidget *itemWidget = 0;
+    DataItemWidget *itemWidget = nullptr;
     switch (dataItem->type()) {
     case Icd::ItemHead:
         itemWidget = new ItemWidgetHead(parent);
@@ -129,6 +133,9 @@ DataItemWidget *DataItemWidget::createWidget(const Icd::ItemPtr &dataItem,
     case Icd::ItemNumeric:
         itemWidget = new ItemWidgetNumeric(parent);
         break;
+    case Icd::ItemArray:
+        itemWidget = new ItemWidgetArray(parent);
+        break;
     case Icd::ItemBitMap:
         itemWidget = new ItemWidgetBitMap(parent);
         break;
@@ -144,12 +151,11 @@ DataItemWidget *DataItemWidget::createWidget(const Icd::ItemPtr &dataItem,
     default:
         break;
     }
-
     //
     if (itemWidget) {
         if (!itemWidget->setDataItem(dataItem)) {
             itemWidget->deleteLater();
-            return 0;
+            return nullptr;
         }
     }
 
@@ -172,13 +178,11 @@ void DataItemWidget::setWorker(const Icd::WorkerPtr &worker)
     if (worker && (d_worker == worker)) {
         return;
     }
-
     //
     if (d_worker) {
         d_worker->disconnect(this);
         d_worker->workerSend()->disconnect(this);
     }
-
     //
     if (worker) {
         auto setButtonSendEnabled = [=](Icd::WorkerTrans::TimeEvent event){
@@ -285,7 +289,6 @@ void DataItemWidget::restoreUi(const Icd::ItemPtr &data)
     if (!data) {
         return;
     }
-
     //
 }
 
@@ -294,7 +297,6 @@ bool DataItemWidget::updateUi(const Icd::ItemPtr &data)
     if (!data) {
         return false;
     }
-
     //
     if (d_item) {
         const QString path = d_item->data(Icd::TreeItemPathRole).toString();
@@ -336,7 +338,6 @@ ItemWidgetHead::ItemWidgetHead(QWidget *parent)
     d_spinValue->setRadix(16);
     d_spinValue->setFixedWidth(220);
     formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
-
     //
     connect(d_spinValue, static_cast<void(JSpinBox::*)(int)>
             (&JSpinBox::valueChanged), this, [=](int value){
@@ -356,13 +357,11 @@ void ItemWidgetHead::restoreUi(const Icd::ItemPtr &data)
 {
     //
     DataItemWidget::restoreUi(data);
-
     //
     const Icd::HeaderItemPtr itemHead = JHandlePtrCast<Icd::HeaderItem, Icd::Item>(data);
     if (!itemHead) {
         return;
     }
-
     //
     d_spinValue->setValue((int)itemHead->defaultValue());
 }
@@ -397,7 +396,6 @@ ItemWidgetCounter::ItemWidgetCounter(QWidget *parent)
     d_spinValue = new QSpinBox(this);
     d_spinValue->setFixedWidth(220);
     formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
-
     //
     connect(d_spinValue, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
@@ -417,13 +415,11 @@ void ItemWidgetCounter::restoreUi(const Icd::ItemPtr &data)
 {
     //
     DataItemWidget::restoreUi(data);
-
     //
     const Icd::CounterItemPtr itemCounter = JHandlePtrCast<Icd::CounterItem, Icd::Item>(data);
     if (!itemCounter) {
         return;
     }
-
     //
     d_spinValue->setValue((int)itemCounter->defaultValue());
 }
@@ -438,7 +434,6 @@ bool ItemWidgetCounter::updateUi(const Icd::ItemPtr &data)
     if (!itemCounter) {
         return false;
     }
-
     //
     d_spinValue->setRange(0, (0x1U << int(itemCounter->bufferSize() * 8)) - 1);
     d_spinValue->setValue((int)itemCounter->data());
@@ -478,14 +473,12 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
 
     d_labelCheckLength = new QLabel(this);
     formLayout->addRow(QStringLiteral("校验长度："), d_labelCheckLength);
-
     //
     d_comboBoxCheckType->addItem(QStringLiteral("无校验"));
     d_comboBoxCheckType->addItem(QStringLiteral("8位和校验"));
     d_comboBoxCheckType->addItem(QStringLiteral("16位和校验"));
     d_comboBoxCheckType->addItem(QStringLiteral("CRC8校验"));
     d_comboBoxCheckType->addItem(QStringLiteral("CRC16校验"));
-
     //
     connect(d_spinValue, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
@@ -563,13 +556,11 @@ void ItemWidgetCheck::restoreUi(const Icd::ItemPtr &data)
 {
     //
     DataItemWidget::restoreUi(data);
-
     //
     const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(data);
     if (!itemCheck) {
         return;
     }
-
     //
     d_spinValue->setValue(itemCheck->defaultValue());
 }
@@ -579,35 +570,29 @@ bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
     if (!DataItemWidget::updateUi(data)) {
         return false;
     }
-
     //
     d_spinValue->setValue(0);
     d_comboBoxCheckType->setCurrentIndex(0);
     d_spinStartPos->setValue(0);
     d_spinEndPos->setValue(0);
     d_labelCheckLength->setText("");
-
     //
     if (!worker()) {
         return false;
     }
-
     //
     const Icd::TablePtr tableSend = worker()->workerSend()->table();
     if (!tableSend) {
         return false;
     }
-
     //
     d_spinStartPos->setRange(0, tableSend->bufferSize() - 1);
     d_spinEndPos->setRange(0, tableSend->bufferSize() - 1);
-
     //
     const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem, Icd::Item>(data);
     if (!checkItem) {
         return false;
     }
-
     // value
     d_spinValue->setValue(checkItem->data());
     // CheckType
@@ -653,7 +638,6 @@ ItemWidgetFrameCode::ItemWidgetFrameCode(QWidget *parent)
     d_comboBoxCode = new QComboBox(this);
     d_comboBoxCode->setFixedWidth(220);
     formLayout->addRow(QStringLiteral("当前帧码："), d_comboBoxCode);
-
     //
     connect(d_comboBoxCode, static_cast<void(QComboBox::*)
             (int)>(&QComboBox::currentIndexChanged), this, [=](int index){
@@ -702,13 +686,11 @@ void ItemWidgetFrameCode::restoreUi(const Icd::ItemPtr &data)
 {
     //
     DataItemWidget::restoreUi(data);
-
     //
     const Icd::FrameCodeItemPtr itemFrameCode = JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(data);
     if (!itemFrameCode) {
         return;
     }
-
     //
     d_comboBoxCode->setCurrentText(QString("0x%1").arg((int)itemFrameCode->defaultValue(),
                                                        2, 16, QChar('0')).toUpper());
@@ -722,26 +704,22 @@ bool ItemWidgetFrameCode::updateUi(const Icd::ItemPtr &data)
     if (!DataItemWidget::updateUi(data)) {
         return false;
     }
-
     //
     const Icd::FrameCodeItemPtr itemFrameCode = JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(data);
     if (!itemFrameCode) {
         return false;
     }
-
     //
     const Icd::FrameItemPtr frame = itemFrameCode->frame();
     if (!frame) {
         return true;
     }
-
     //
     const Icd::TablePtrMap &tables = frame->allTable();
     for (Icd::TablePtrMap::const_iterator citer = tables.cbegin();
          citer != tables.cend(); ++citer) {
         d_comboBoxCode->addItem(QString::fromStdString(citer->second->name()), citer->first);
     }
-
     //
     d_comboBoxCode->setCurrentText(QString("0x%1").arg((int)itemFrameCode->data(),
                                                        2, 16, QChar('0')).toUpper());
@@ -782,7 +760,6 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
 
     d_labelDesc = new QLabel(this);
     formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
-
     //
     connect(d_sliderValue, &QSlider::valueChanged, [=](int value){
         d_spinValue->setValue(value);
@@ -845,13 +822,11 @@ void ItemWidgetNumeric::restoreUi(const Icd::ItemPtr &data)
 {
     //
     DataItemWidget::restoreUi(data);
-
     //
     const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(data);
     if (!itemNumeric) {
         return;
     }
-
     //
     d_spinValue->setValue(itemNumeric->defaultValue());
 }
@@ -861,19 +836,16 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     if (!DataItemWidget::updateUi(data)) {
         return false;
     }
-
     //
     const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(data);
     if (!itemNumeric) {
         return false;
     }
-
     //
     const Icd::LimitItemPtr &limit = itemNumeric->limit();
     if (!limit) {
         return false;
     }
-
     // unit
     const QString unit = QString::fromStdString(itemNumeric->unit()).trimmed();
     if (!unit.isEmpty()) {
@@ -887,7 +859,6 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     d_spinValue->setSingleStep(itemNumeric->scale());
     range = itemNumeric->dataRange();
     d_spinData->setRange(range.first, range.second);
-
     //
     d_spinValue->setValue(itemNumeric->data());
     //
@@ -897,6 +868,87 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
                          .arg(QString::fromStdString(limit->toString()))
                          .arg(unit.isEmpty() ? "<?>" : unit)
                          .arg(itemNumeric->bufferSize()));
+
+    return true;
+}
+
+// class ItemWidgetArray
+
+ItemWidgetArray::ItemWidgetArray(QWidget *parent)
+    : DataItemWidget(ItemTypeArray, parent)
+{
+    dataView_ = new JUtralEdit::JView(this);
+    dataView_->setEditable(true);
+    dataView_->setShowType(JUtralEdit::JView::ShowAsString);
+    itemLayout()->addWidget(dataView_);
+
+    QFormLayout *formLayout = new QFormLayout();
+    formLayout->setLabelAlignment(Qt::AlignRight);
+    itemLayout()->addLayout(formLayout);
+
+    clientLayout()->setStretch(0, 0);
+
+    d_labelDesc = new QLabel(this);
+    formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
+
+    connect(dataView_, &JUtralEdit::JView::textChanged, this, [=](){
+        const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(dataItem());
+        if (!arrayItem) {
+            return;
+        }
+        //
+        switch (dataView_->showType()) {
+        case JUtralEdit::JView::ShowAsHexData:
+        {
+            const QByteArray hexData = dataView_->hexData();
+            arrayItem->setData(hexData.constData(), hexData.size());
+            break;
+        }
+        case JUtralEdit::JView::ShowAsString:
+        {
+            const QByteArray text = dataView_->text().toLocal8Bit();
+            arrayItem->setData(text.constData(), text.size());
+            break;
+        }
+        default:
+            break;
+        }
+    });
+}
+
+ItemWidgetArray::~ItemWidgetArray()
+{
+
+}
+
+void ItemWidgetArray::restoreUi(const Icd::ItemPtr &data)
+{
+    //
+    DataItemWidget::restoreUi(data);
+    //
+    const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(data);
+    if (!arrayItem) {
+        return;
+    }
+}
+
+bool ItemWidgetArray::updateUi(const Icd::ItemPtr &data)
+{
+    if (!DataItemWidget::updateUi(data)) {
+        return false;
+    }
+    //
+    const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(data);
+    if (!arrayItem) {
+        return false;
+    }
+    //
+    QString text(QStringLiteral("占用字节数："));
+    text.append(QString::number(int(arrayItem->bufferSize())));
+    const QString desc = QString::fromStdString(arrayItem->desc()).trimmed();
+    if (!desc.isEmpty()) {
+        text.append(QStringLiteral("，描述：")).append(desc);
+    }
 
     return true;
 }
@@ -918,7 +970,6 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
 
     d_labelDesc = new QLabel(this);
     d_formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
-
     //
     connect(d_spinData, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){
@@ -974,13 +1025,11 @@ void ItemWidgetBitMap::restoreUi(const Icd::ItemPtr &data)
 {
     //
     DataItemWidget::restoreUi(data);
-
     //
     const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(data);
     if (!itemBit) {
         return;
     }
-
     //
     const quint32 defaultValue = (quint32)itemBit->defaultValue();
     QMapIterator<int, QCheckBox *> citer(d_checkBoxes);
@@ -996,7 +1045,6 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
     if (!DataItemWidget::updateUi(data)) {
         return false;
     }
-
     //
     QMapIterator<int, QCheckBox *> citer(d_checkBoxes);
     while (citer.hasNext()) {
@@ -1008,16 +1056,13 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
         label->deleteLater();
         checkBox->deleteLater();
     }
-
     //
     const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(data);
     if (!itemBit) {
         return false;
     }
-
     //
     d_spinData->setRange(0, (0x1UL << itemBit->bitCount()) - 1);
-
     //
     for (int i = 0; i < itemBit->bitCount(); ++i) {
         //
@@ -1040,10 +1085,8 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
             d_spinData->setValue(value & (itemBit->mask() >> itemBit->bitStart()));
         });
     }
-
     //
     d_spinData->setValue(itemBit->data());
-
     //
     d_labelDesc->setText(QStringLiteral("起始位偏移：%1，终止位偏移：%2，位数：%3，占用字节数：%4。")
                          .arg(itemBit->bitStart())
@@ -1071,7 +1114,6 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
 
     d_labelDesc = new QLabel(this);
     formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
-
     //
     connect(d_spinData, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){

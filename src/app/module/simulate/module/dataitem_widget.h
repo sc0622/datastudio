@@ -30,6 +30,8 @@ class QSlider;
 class QCheckBox;
 class JSpinBox;
 
+namespace JUtralEdit { class JView; }
+
 // class DataItemWidget
 
 namespace Simulate {
@@ -48,96 +50,28 @@ public:
         ItemTypeCheck,
         ItemTypeFrameCode,
         ItemTypeNumeric,
+        ItemTypeArray,
         ItemTypeBitMap,
         ItemTypeBitValue,
         ItemTypeComplex,
         ItemTypeFrame
     };
 
-    /**
-     * @brief DataItemWidget
-     * @param itemType
-     * @param parent
-     */
-    explicit DataItemWidget(ItemType itemType, QWidget *parent = 0);
-
+    explicit DataItemWidget(ItemType itemType, QWidget *parent = nullptr);
     ~DataItemWidget();
 
-    /**
-     * @brief createWidget
-     * @param dataItem
-     * @param parent
-     * @return
-     */
-    static DataItemWidget *createWidget(const Icd::ItemPtr &dataItem,
-                                        QWidget *parent = 0);
+    static DataItemWidget *createWidget(const Icd::ItemPtr &dataItem, QWidget *parent = nullptr);
 
-    /**
-     * @brief itemType
-     * @return
-     */
     ItemType itemType() const;
-
-    /**
-     * @brief worker
-     * @return
-     */
     const Icd::WorkerPtr &worker() const;
-
-    /**
-     * @brief setWorker
-     * @param worker
-     */
     virtual void setWorker(const Icd::WorkerPtr &worker);
-
-    /**
-     * @brief dataItem
-     * @return
-     */
     Icd::ItemPtr dataItem() const;
-
-    /**
-     * @brief setDataItem
-     * @param worker
-     * @return
-     */
     bool setDataItem(const Icd::ItemPtr &dataItem);
-
-    /**
-     * @brief item
-     * @return
-     */
     QStandardItem *item() const;
-
-    /**
-     * @brief setItem
-     * @param item
-     */
     void setItem(QStandardItem *item);
-
-    /**
-     * @brief updateUi
-     */
     void updateUi();
-
-    /**
-     * @brief addDataItem
-     * @param domain
-     * @return
-     */
     virtual bool addDataItem(const QString &domain);
-
-    /**
-     * @brief focusItem
-     * @param domain
-     * @return
-     */
     Q_INVOKABLE virtual int focusItem(const QString &domain);
-
-    /**
-     * @brief removeItem
-     * @param domain
-     */
     Q_INVOKABLE virtual void removeItem(const QString &domain);
 
 signals:
@@ -148,35 +82,10 @@ signals:
 public slots:
 
 protected:
-    /**
-     * @brief clientLayout
-     * @return
-     */
     QHBoxLayout *clientLayout();
-
-    /**
-     * @brief itemLayout
-     * @return
-     */
     QVBoxLayout *itemLayout();
-
-    /**
-     * @brief titleBarHeight
-     * @return
-     */
     int titleBarHeight() const;
-
-    /**
-     * @brief restoreUi
-     * @param data
-     */
     virtual void restoreUi(const Icd::ItemPtr &data);
-
-    /**
-     * @brief updateUi
-     * @param data
-     * @return
-     */
     virtual bool updateUi(const Icd::ItemPtr &data);
 
 protected:
@@ -200,8 +109,7 @@ class ItemWidgetHead : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetHead(QWidget *parent = 0);
-
+    explicit ItemWidgetHead(QWidget *parent = nullptr);
     ~ItemWidgetHead();
 
 protected:
@@ -218,8 +126,7 @@ class ItemWidgetCounter : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetCounter(QWidget *parent = 0);
-
+    explicit ItemWidgetCounter(QWidget *parent = nullptr);
     ~ItemWidgetCounter();
 
 protected:
@@ -236,8 +143,7 @@ class ItemWidgetCheck : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetCheck(QWidget *parent = 0);
-
+    explicit ItemWidgetCheck(QWidget *parent = nullptr);
     ~ItemWidgetCheck();
 
 protected:
@@ -258,14 +164,9 @@ class ItemWidgetFrameCode : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetFrameCode(QWidget *parent = 0);
-
+    explicit ItemWidgetFrameCode(QWidget *parent = nullptr);
     ~ItemWidgetFrameCode();
 
-    /**
-     * @brief setWorker
-     * @param worker
-     */
     void setWorker(const Icd::WorkerPtr &worker);
 
 protected:
@@ -282,8 +183,7 @@ class ItemWidgetNumeric : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetNumeric(QWidget *parent = 0);
-
+    explicit ItemWidgetNumeric(QWidget *parent = nullptr);
     ~ItemWidgetNumeric();
 
 protected:
@@ -298,14 +198,31 @@ private:
     QCheckBox *d_checkBoxLink;
 };
 
+// class ItemWidgetArray
+
+class ItemWidgetArray : public DataItemWidget
+{
+    Q_OBJECT
+public:
+    explicit ItemWidgetArray(QWidget *parent = nullptr);
+    ~ItemWidgetArray();
+
+protected:
+    void restoreUi(const Icd::ItemPtr &data);
+    bool updateUi(const Icd::ItemPtr &data);
+
+private:
+    JUtralEdit::JView *dataView_;
+    QLabel *d_labelDesc;
+};
+
 // class ItemWidgetBitMap
 
 class ItemWidgetBitMap : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetBitMap(QWidget *parent = 0);
-
+    explicit ItemWidgetBitMap(QWidget *parent = nullptr);
     ~ItemWidgetBitMap();
 
 protected:
@@ -325,8 +242,7 @@ class ItemWidgetBitValue : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetBitValue(QWidget *parent = 0);
-
+    explicit ItemWidgetBitValue(QWidget *parent = nullptr);
     ~ItemWidgetBitValue();
 
 protected:
@@ -344,28 +260,11 @@ class ItemWidgetComplex : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetComplex(QWidget *parent = 0);
-
+    explicit ItemWidgetComplex(QWidget *parent = nullptr);
     ~ItemWidgetComplex();
 
-    /**
-     * @brief addDataItem
-     * @param domain
-     * @return
-     */
     bool addDataItem(const QString &domain);
-
-    /**
-     * @brief focusItem
-     * @param domain
-     * @return
-     */
     Q_INVOKABLE int focusItem(const QString &domain);
-
-    /**
-     * @brief removeItem
-     * @param domain
-     */
     Q_INVOKABLE void removeItem(const QString &domain);
 
 protected:
@@ -385,28 +284,11 @@ class ItemWidgetFrame : public DataItemWidget
 {
     Q_OBJECT
 public:
-    explicit ItemWidgetFrame(QWidget *parent = 0);
-
+    explicit ItemWidgetFrame(QWidget *parent = nullptr);
     ~ItemWidgetFrame();
 
-    /**
-     * @brief addDataItem
-     * @param domain
-     * @return
-     */
     bool addDataItem(const QString &domain);
-
-    /**
-     * @brief focusItem
-     * @param domain
-     * @return
-     */
     Q_INVOKABLE int focusItem(const QString &domain);
-
-    /**
-     * @brief removeItem
-     * @param domain
-     */
     Q_INVOKABLE void removeItem(const QString &domain);
 
 protected:

@@ -53,10 +53,9 @@ public:
 
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
-    ObjectPtr itemByDomain(const std::string &domain,
-                           Icd::DomainType domainType = Icd::DomainId) const;
-    TablePtr tableByDomain(const std::string &domain,
-                           Icd::DomainType domainType = Icd::DomainId) const;
+    ObjectPtr itemByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId,
+                           bool ignoreComplex = true) const;
+    TablePtr tableByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId) const;
 
     icd_uint64 updateSend(icd_uint64 code);
     void updateRecv(icd_uint64 code);

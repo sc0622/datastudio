@@ -78,22 +78,18 @@ bool DataTableWidget::addDataItem(const QString &domain, const Icd::WorkerPtr &w
     if (!worker || !object || !d_itemTable) {
         return false;
     }
-
     //
     if (object->objectType() != Icd::ObjectTable) {
         Q_ASSERT(false);
         return false;
     }
-
     //
     const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(object);
     if (!table) {
         return false;
     }
-
     //
     const QString section = domain.section('/', 1);
-
     //
     int i = 0;
     const std::string dataItemId = section.section('/', 0, 0).toStdString();
@@ -136,13 +132,11 @@ int DataTableWidget::focusItem(const QString &domain)
     if (domain.isEmpty()) {
         return 0;
     }
-
     //
     const std::string id = domain.section('/', 0, 0).toStdString();
     if (id.empty()) {
         return 0;
     }
-
     //
     int pos = 0;
     DataItemWidget *itemWidget = 0;
@@ -156,7 +150,6 @@ int DataTableWidget::focusItem(const QString &domain)
             break;
         }
     }
-
     //
     if (!itemWidget) {
         return 0;
@@ -175,16 +168,13 @@ void DataTableWidget::removeItem(const QString &domain)
     if (domain.isEmpty()) {
         return;
     }
-
     //
     const std::string id = domain.section('/', 0, 0).toStdString();
     if (id.empty()) {
         return;
     }
-
     //
     const QString section = domain.section('/', 1);
-
     //
     DataItemWidget *widget = 0;
     int rowCount = d_tableView->rowCount();
@@ -202,12 +192,10 @@ void DataTableWidget::removeItem(const QString &domain)
             break;
         }
     }
-
     //
     if (!widget) {
         return;
     }
-
     //
     if (!QMetaObject::invokeMethod(widget, "removeItem", Q_ARG(QString, section))) {
         return;
@@ -257,25 +245,21 @@ bool DataTableWidget::addDataItem(const QString &domain, const Icd::ItemPtr &dat
             return true;
         }
     }
-
     //
     DataItemWidget *itemWidget = DataItemWidget::createWidget(dataItem);
     if (!itemWidget) {
         return false;
     }
-
     //
     itemWidget->setWorker(d_worker);
     itemWidget->setItem(item);
     itemWidget->addDataItem(domain);
     itemWidget->updateUi();
-
     //
     int row = d_tableView->rowCount();
     d_tableView->insertRow(row);
     d_tableView->setCellWidget(row, 0, itemWidget);
     item->setData(true, Icd::TreeBoundRole);
-
     //
     connect(itemWidget, &DataItemWidget::send, this, [=](){
         if (d_worker) {

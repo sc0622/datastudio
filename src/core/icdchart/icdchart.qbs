@@ -4,6 +4,7 @@ CoreDyLibrary {
 
     Depends { name: 'Qt.widgets' }
     Depends { name: '3rdpart.jchart' }
+    Depends { name: '3rdpart.jutraledit' }
     Depends { name: 'icdcore' }
     Depends { name: 'icdparser' }
     Depends { name: 'icdworker' }

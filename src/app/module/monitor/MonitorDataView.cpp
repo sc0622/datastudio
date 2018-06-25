@@ -13,6 +13,7 @@ DataView::DataView(QWidget *parent)
 
     d_dataView = new JUtralEdit::JView(this);
     d_dataView->setAsciiVisible(false);
+    d_dataView->setShowTypeVisible(false);
     vertLyoutMain->addWidget(d_dataView);
 
     jnotify->on("monitor.tree.item.clicked", this, [=](JNEvent &event){

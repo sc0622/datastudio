@@ -65,7 +65,7 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
         return false;
     }
 
-    QApplication::setOverrideCursor(Qt::BusyCursor);
+    JAutoCursor busyCursor(Qt::BusyCursor);
 
     d_progressDialog = new Icd::ProgressDialog(this);
     d_progressDialog->setWindowTitle(QStringLiteral("¼ÓÔØÊý¾Ý"));
@@ -82,12 +82,7 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
         if (d_progressDialog) {
             d_progressDialog->setProgressRange(minimum, maximum);
         }
-    });/*
-    connect(this, &ConvertToDataAnalyse::progressValueChanged, this, [=](int value){
-        if (d_progressDialog) {
-            d_progressDialog->setProgressValue(value);
-        }
-    });*/
+    });
     //
     auto parseFunc = [=]() -> bool {
         if (!parser->parse(domain.section('/', 0, 0).toStdString(),
@@ -230,8 +225,6 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
         killTimer(d_timerUpdate);
         d_timerUpdate = 0;
     }
-
-    QApplication::restoreOverrideCursor();
 
     return result;
 }

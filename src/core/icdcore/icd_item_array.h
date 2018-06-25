@@ -60,6 +60,8 @@ public:
     float_t *f32() const;
     double_t *f64() const;
 
+    void setData(const char *buffer, int size);
+
     // Serializable interface
 public:
     Json::Value save() const override;

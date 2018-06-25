@@ -14,9 +14,6 @@
 
 namespace Icd {
 
-/**
- * @brief The SeriesData class
- */
 class SeriesData : public QObjectUserData
 {
 public:
@@ -41,9 +38,6 @@ public:
     SeriesData &operator =(const SeriesData &);
 };
 
-/**
- * @brief The ChartData class
- */
 class ChartData : public QObjectUserData
 {
 public:
@@ -136,6 +130,8 @@ private:
     int yLabelLength;
     bool syncTrack;
     int chartTheme;
+    bool hexAsciiVisible;
+    int hexColumnCount;
 };
 
 } // end of namespace Icd

@@ -147,7 +147,6 @@ void SetView::onDropTriggled(QStandardItem *itemTable, QStandardItem *item,
     if (!itemTable || !item) {
         return;
     }
-
     //
     QVariant varChannelId = itemTable->data(Icd::TreeChannelIdRole);
     if (varChannelId.isNull()) {
@@ -163,23 +162,18 @@ void SetView::onDropTriggled(QStandardItem *itemTable, QStandardItem *item,
             return;
         }
     }
-
     //
     varChannelId = itemTable->data(Icd::TreeChannelIdRole);
     if (varChannelId.isNull()) {
         return;     //
     }
-
     //
     const QString channelId = varChannelId.toString();
-
     // get worker object
-    Icd::WorkerPtr worker =
-            Icd::WorkerPool::getInstance()->workerByChannelIdentity(channelId.toStdString());
+    Icd::WorkerPtr worker = Icd::WorkerPool::getInstance()->workerByChannelIdentity(channelId.toStdString());
     if (!worker) {
         return;
     }
-
     //
     const Icd::TablePtr &tableSend = worker->workerSend()->table();
     if (!tableSend) {
@@ -187,7 +181,6 @@ void SetView::onDropTriggled(QStandardItem *itemTable, QStandardItem *item,
                  .arg(channelId).toLocal8Bit());
         return;
     }
-
     //
     switch (item->type()) {
     case Icd::TreeItemTypeTable:
@@ -199,10 +192,8 @@ void SetView::onDropTriggled(QStandardItem *itemTable, QStandardItem *item,
     default:
         return; // cannot drop
     }
-
     //
     QApplication::processEvents(QEventLoop::EventLoopExec);
-
     //
     if (!addDataItem(domain, worker, tableSend, itemTable)) {
         return;
