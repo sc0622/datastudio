@@ -22,6 +22,7 @@ public slots:
 private:
     void updateMenuBar(const Json::Value &config);
     void addSettingsMenu(const Json::Value &config);
+    void addFullScreenMenu(const Json::Value &config);
     void addAnalyseToolAction(const Json::Value &config);
     void addCalcToolAction(const Json::Value &config);
     void addScreenshotAction(const Json::Value &config);

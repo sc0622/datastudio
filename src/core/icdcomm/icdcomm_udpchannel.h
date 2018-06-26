@@ -42,10 +42,15 @@ public:
     explicit UdpChannel(std::string localIP, int localPort,
                         std::string remoteIP, int remotePort,
                         OpenMode openMode = ReadWrite);
-
     virtual ~UdpChannel();
 
 public:
+    /**
+     * @brief 判断通道是否已打开
+     * @return
+     */
+    bool isOpen() const;
+
     /**
      * @brief 打开数据通道
      * @return true:打开成功,false打开失败
@@ -89,12 +94,6 @@ public:
      * @brief flush
      */
     void flush();
-
-    /**
-     * @brief 判断通道是否已打开
-     * @return
-     */
-    bool isOpen() const;
 
     /**
      * @brief config

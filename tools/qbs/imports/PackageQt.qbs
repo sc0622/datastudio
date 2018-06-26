@@ -7,6 +7,8 @@ import tools.EnvUtils
 
 PackageProduct {
 
+    type: base.concat([ 'qt.conf.out' ])
+
     property bool generateQtConf: true
     property stringList module3rdpart: [
         'd3dcompiler*.dll', 'opengl32*.dll', EnvUtils.incDylibFuzzy(qbs, false, 'lib*')
@@ -56,7 +58,7 @@ PackageProduct {
         files: {
             var files = [];
             modulePlugins.forEach(function(item){
-                files.push(item + '/**/*.dll');
+                files.push(item + EnvUtils.incDylibFuzzy(qbs, true));
             });
             return files;
         }
@@ -116,11 +118,11 @@ PackageProduct {
         multiplex: true
         Artifact {
             fileTags: [ 'qt.conf.out' ]
-            filePath: FileInfo.joinPaths(product.dataInstallPrefix, 'qt.conf')
+            filePath: FileInfo.joinPaths(product.dataTargetPath, 'qt.conf')
         }
         prepare: {
             var cmd = new JavaScriptCommand;
-            cmd.description = 'generating ' + output.fileName + '...';
+            cmd.description = 'generating ' + output.filePath + '...';
             cmd.highlight = 'codegen';
             cmd.sourceCode = function() {
                 var file = new TextFile(output.filePath, TextFile.WriteOnly);

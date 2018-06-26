@@ -145,5 +145,7 @@
         <file alias="load-file.png">image/global/load-file.png</file>
         <file alias="apply.png">image/global/apply.png</file>
         <file alias="cancel.png">image/global/cancel.png</file>
+        <file alias="fullscreen.png">image/global/fullscreen.png</file>
+        <file alias="fullscreen-exit.png">image/global/fullscreen-exit.png</file>
     </qresource>
 </RCC>

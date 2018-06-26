@@ -639,6 +639,27 @@ Json::Value JsonParser::queryTable(const std::string &vehicleId, const std::stri
     return tableJson;
 }
 
+Json::Value JsonParser::queryTable(const std::string &domain, int domainType) const
+{
+    std::string key;
+    switch (domainType) {
+    case Icd::DomainId: key = "id"; break;
+    case Icd::DomainName: key = "name"; break;
+    case Icd::DomainMark: key = "mark"; break;
+    default: return Json::Value::nullSingleton();
+    }
+    const Json::Value tableJson = Json::resolve(
+                filePath(),
+                ".vehicles[" + key + '='
+                + Icd::stringSection(domain, '/', 0, 0)
+                + "].systems[" + key + '=' + Icd::stringSection(domain, '/', 1, 1)
+                + "].tables[" + key + '=' + Icd::stringSection(domain, '/', 2, 2)  + "]");
+    if (!tableJson.isObject()) {
+        return Json::Value::null;
+    }
+    return tableJson;
+}
+
 Json::Value JsonParser::queryItems(const std::string &vehicleId, const std::string &systemId,
                                    const std::string &tableId) const
 {

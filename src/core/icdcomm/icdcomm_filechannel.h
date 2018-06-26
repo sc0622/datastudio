@@ -55,6 +55,12 @@ public:
     virtual ~FileChannel();
 
     /**
+     * @brief isOpen
+     * @return
+     */
+    bool isOpen() const;
+
+    /**
      * @brief 打开数据通道
      * @return true:打开成功,false打开失败
      */
@@ -97,12 +103,6 @@ public:
      * @brief flush
      */
     void flush();
-
-    /**
-     * @brief isOpen
-     * @return
-     */
-    bool isOpen() const;
 
     /**
      * @brief config

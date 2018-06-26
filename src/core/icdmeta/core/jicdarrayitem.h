@@ -30,21 +30,22 @@ public:
     QString typeName() const override;
 
     QString text() const override;
-    QString valueString() const override;
-    QString fullValue() const override;
     QString dataString() const override;
 
-    QString toString() const;
-    int8_t *i8() const;
-    uint8_t *u8() const;
-    int16_t *i16() const;
-    uint16_t *u16() const;
-    int32_t *i32() const;
-    uint32_t *u32() const;
-    int64_t *i64() const;
-    uint64_t *u64() const;
-    float_t *f32() const;
-    double_t *f64() const;
+    qint8 *i8() const;
+    quint8 *u8() const;
+    qint16 *i16() const;
+    quint16 *u16() const;
+    qint32 *i32() const;
+    quint32 *u32() const;
+    qint64 *i64() const;
+    quint64 *u64() const;
+    float *f32() const;
+    double *f64() const;
+
+    void setData(const char *buffer, int size);
+    void setData(const QByteArray &data);
+    void setData(const QString &text);
 
 signals:
     void arrayTypeChanged();

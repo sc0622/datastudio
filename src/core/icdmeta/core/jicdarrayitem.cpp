@@ -88,24 +88,7 @@ QString JIcdArrayItem::typeName() const
 
 QString JIcdArrayItem::text() const
 {
-    //Q_D(const JIcdArrayItem);
-    QString info;
-    //TODO
-    return info;
-}
-
-QString JIcdArrayItem::valueString() const
-{
-    //Q_D(const JIcdArrayItem);
-    //TODO
-    return QString();
-}
-
-QString JIcdArrayItem::fullValue() const
-{
-    //Q_D(const JIcdArrayItem);
-    //TODO
-    return QString();
+    return dataString();
 }
 
 QString JIcdArrayItem::dataString() const
@@ -114,70 +97,81 @@ QString JIcdArrayItem::dataString() const
     return QString::fromStdString(d->data->dataString());
 }
 
-QString JIcdArrayItem::toString() const
-{
-    Q_D(const JIcdArrayItem);
-    return  QString::fromStdString(d->data->toString());
-}
-
-int8_t *JIcdArrayItem::i8() const
+qint8 *JIcdArrayItem::i8() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->i8();
 }
 
-uint8_t *JIcdArrayItem::u8() const
+quint8 *JIcdArrayItem::u8() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->u8();
 }
 
-int16_t *JIcdArrayItem::i16() const
+qint16 *JIcdArrayItem::i16() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->i16();
 }
 
-uint16_t *JIcdArrayItem::u16() const
+quint16 *JIcdArrayItem::u16() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->u16();
 }
 
-int32_t *JIcdArrayItem::i32() const
+qint32 *JIcdArrayItem::i32() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->i32();
 }
 
-uint32_t *JIcdArrayItem::u32() const
+quint32 *JIcdArrayItem::u32() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->u32();
 }
 
-int64_t *JIcdArrayItem::i64() const
+qint64 *JIcdArrayItem::i64() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->i64();
 }
 
-uint64_t *JIcdArrayItem::u64() const
+quint64 *JIcdArrayItem::u64() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->u64();
 }
 
-float_t *JIcdArrayItem::f32() const
+float *JIcdArrayItem::f32() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->f32();
 }
 
-double_t *JIcdArrayItem::f64() const
+double *JIcdArrayItem::f64() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->f64();
+}
+
+void JIcdArrayItem::setData(const char *buffer, int size)
+{
+    Q_D(JIcdArrayItem);
+    d->data->setData(buffer, size);
+}
+
+void JIcdArrayItem::setData(const QByteArray &data)
+{
+    Q_D(JIcdArrayItem);
+    d->data->setData(data.constData(), data.size());
+}
+
+void JIcdArrayItem::setData(const QString &text)
+{
+    setData(text.toLocal8Bit());
 }
 
 } // end of namespace icdmeta

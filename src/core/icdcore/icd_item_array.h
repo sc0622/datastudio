@@ -48,6 +48,7 @@ public:
     Object *clone() const override;
     ArrayItem &operator =(const ArrayItem &other);
 
+    std::string dataString() const override;
     std::string toString() const;
     int8_t *i8() const;
     uint8_t *u8() const;
@@ -60,6 +61,8 @@ public:
     float_t *f32() const;
     double_t *f64() const;
 
+    void resetData() override;
+    void clearData() override;
     void setData(const char *buffer, int size);
 
     // Serializable interface

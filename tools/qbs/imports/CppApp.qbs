@@ -19,9 +19,9 @@ CppApplication {
         if (project.workDirectory) {
             return FileInfo.joinPaths(project.workDirectory, 'bin');
         } else if (project.projectName) {
-            return FileInfo.joinPaths(qbs.inatallRoot, project.projectName, 'bin');
+            return FileInfo.joinPaths(qbs.installRoot, project.projectName, 'bin');
         } else {
-            return qbs.inatallRoot;
+            return qbs.installRoot;
         }
     }
 

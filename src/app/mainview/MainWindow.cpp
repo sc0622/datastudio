@@ -25,6 +25,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     statusBar_ = new Main::StatusBar(this);
     setStatusBar(statusBar_);
+
+    jnotify->on("menubar.fullscreen.toggled", this, [=](JNEvent &event){
+        const bool checked = event.argument().toBool();
+        static Qt::WindowStates oldStates = windowState();
+        if (checked) {
+            oldStates = windowState();
+            setWindowState(Qt::WindowFullScreen);
+        } else {
+            setWindowState(oldStates);
+        }
+    });
 }
 
 MainWindow::~MainWindow()

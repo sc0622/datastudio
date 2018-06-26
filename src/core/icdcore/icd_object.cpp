@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "icd_object.h"
 #include <algorithm>
+#include "icd_item.h"
 
 namespace Icd {
 
@@ -37,13 +38,13 @@ public:
     bool endsWith(const std::string &str, const std::string &suffix, bool caseSensitivity = true);
 
 private:
-    Object *parent;         //
-    ObjectType objectType;  //
-    std::string id;         //
-    std::string domain;     //
-    std::string name;       //
-    std::string mark;       //
-    std::string desc;       //
+    Object *parent;
+    ObjectType objectType;
+    std::string id;
+    std::string domain;
+    std::string name;
+    std::string mark;
+    std::string desc;
 };
 
 bool ObjectData::startsWith(const std::string &str, const std::string &prefix, bool caseSensitivity)
@@ -248,13 +249,20 @@ Object &Object::operator =(const Object &other)
 Json::Value Object::save() const
 {
     Json::Value json;
-    if (!d->mark.empty()) {
-        json["id"] = id();
+    // id
+    if (!d->id.empty()) {
+        switch (d->objectType) {
+        case Icd::ObjectItem: break;
+        default: json["id"] = id(); break;
+        }
     }
+    // name
     json["name"] = name();
+    // mark
     if (!d->mark.empty()) {
         json["mark"] = mark();
     }
+    // desc
     if (!d->desc.empty()) {
         json["desc"] = desc();
     }

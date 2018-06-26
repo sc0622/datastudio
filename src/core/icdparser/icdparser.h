@@ -3,6 +3,7 @@
 
 #include "icdparser_global.h"
 #include <string>
+#include "icdcore/icd_object.h"
 
 class QStandardItem;
 namespace Json { class Value; }
@@ -12,11 +13,6 @@ namespace Icd {
 //
 class Root;
 typedef std::shared_ptr<Root> RootPtr;
-
-//
-class Object;
-typedef std::shared_ptr<Object> ObjectPtr;
-typedef std::vector<ObjectPtr> ObjectPtrArray;
 
 //
 class Vehicle;
@@ -130,6 +126,8 @@ private:
 
 Json::Value ICDPARSER_EXPORT queryTable(const std::string &filePath, const std::string &vehicleId,
                                         const std::string &systemId, const std::string &tableId);
+Json::Value ICDPARSER_EXPORT queryTable(const std::string &filePath, const std::string &domain,
+                                        int domainType = Icd::DomainId);
 
 } // end of namespace Icd
 

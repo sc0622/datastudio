@@ -1034,7 +1034,7 @@ void DataEditWidget::updateOne(int index, const TableNode::smtTable &data, optTy
     tableView_->setItemData(index, column, data->key().c_str(), Qt::UserRole);
     tableView_->setItemData(index, column, base.sGroup.c_str(), Qt::UserRole + 1);
     tableView_->setItemValue(index, column, base.sName.c_str());
-    tableView_->setItemValue(index, ++column, "0x" + QString::fromStdString(base.sCode));
+    tableView_->setItemValue(index, ++column, QString::fromStdString(base.sCode));
     tableView_->setItemValue(index, ++column, base.sRemark.c_str());
     tableView_->setItemValue(index, ++column, base.sDescribe.c_str());
 }

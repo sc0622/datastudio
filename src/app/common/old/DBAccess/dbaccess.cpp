@@ -18,7 +18,7 @@
 
 // 默认子表数量
 #ifndef DEFAULTCOUNT
-#define DEFAULTCOUNT    40
+#define DEFAULTCOUNT    1000
 #endif
 
 #ifndef TABLELENGTH

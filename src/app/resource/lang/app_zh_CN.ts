@@ -635,37 +635,42 @@
 <context>
     <name>Main::MenuBar</name>
     <message>
-        <location filename="../../mainview/MainMenuBar.cpp" line="45"/>
+        <location filename="../../mainview/MainMenuBar.cpp" line="46"/>
         <source>Main menu</source>
         <translation>主菜单</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainMenuBar.cpp" line="48"/>
+        <location filename="../../mainview/MainMenuBar.cpp" line="49"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
         <location filename="../../mainview/MainMenuBar.cpp" line="61"/>
+        <source>Toggle full screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../mainview/MainMenuBar.cpp" line="78"/>
         <source>Data analyse tool</source>
         <translation>分析软件</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainMenuBar.cpp" line="74"/>
+        <location filename="../../mainview/MainMenuBar.cpp" line="91"/>
         <source>Calculate</source>
         <translation>打开计算器</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainMenuBar.cpp" line="86"/>
+        <location filename="../../mainview/MainMenuBar.cpp" line="103"/>
         <source>Screenshot</source>
         <translation>打开截屏软件</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainMenuBar.cpp" line="99"/>
+        <location filename="../../mainview/MainMenuBar.cpp" line="116"/>
         <source>Palette</source>
         <translation>打开画图软件</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainMenuBar.cpp" line="109"/>
+        <location filename="../../mainview/MainMenuBar.cpp" line="126"/>
         <source>Show toolbar</source>
         <translation>显示工具栏</translation>
     </message>
@@ -1023,23 +1028,23 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../mainview/MainWindow.cpp" line="66"/>
-        <location filename="../../mainview/MainWindow.cpp" line="69"/>
+        <location filename="../../mainview/MainWindow.cpp" line="77"/>
+        <location filename="../../mainview/MainWindow.cpp" line="80"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainWindow.cpp" line="67"/>
+        <location filename="../../mainview/MainWindow.cpp" line="78"/>
         <source>Select buttons to continue...</source>
         <translation>选择以下按钮继续……</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainWindow.cpp" line="68"/>
+        <location filename="../../mainview/MainWindow.cpp" line="79"/>
         <source>Restart</source>
         <translation>重启</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainWindow.cpp" line="70"/>
+        <location filename="../../mainview/MainWindow.cpp" line="81"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>

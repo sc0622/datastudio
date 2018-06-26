@@ -87,6 +87,7 @@ public:
     Json::Value queryTables(const std::string &vehicleId, const std::string &systemId) const;
     Json::Value queryTable(const std::string &vehicleId, const std::string &systemId,
                            const std::string &tableId) const;
+    Json::Value queryTable(const std::string &domain, int domainType) const;
     Json::Value queryItems(const std::string &vehicleId, const std::string &systemId,
                            const std::string &tableId) const;
     Json::Value queryItem(const std::string &vehicleId, const std::string &systemId,

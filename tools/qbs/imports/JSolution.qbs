@@ -18,8 +18,8 @@ Project {
     readonly property int versionPatch: parseInt(version.split('.')[2])
     readonly property string variantSuffix: qbs.buildVariant == 'debug' ? 'd' : ''
     readonly property path qtdir: FileInfo.fromWindowsSeparators(Environment.getEnv('QTDIR'))
-    readonly property path inatallRoot: qbs.installRoot
-    readonly property path workDirectory: FileInfo.joinPaths(inatallRoot, projectName);
+    readonly property path installRoot: qbs.installRoot
+    readonly property path workDirectory: FileInfo.joinPaths(installRoot, projectName);
 
     references: [
         sourceDirectory + '/setenv.qbs',

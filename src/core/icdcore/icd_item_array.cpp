@@ -170,6 +170,11 @@ ArrayItem &ArrayItem::operator =(const ArrayItem &other)
     return *this;
 }
 
+std::string ArrayItem::dataString() const
+{
+    return toString();
+}
+
 std::string ArrayItem::toString() const
 {
     return std::string(buffer(), static_cast<size_t>(bufferSize()));
@@ -225,9 +230,29 @@ double_t *ArrayItem::f64() const
     return reinterpret_cast<double_t*>(buffer());
 }
 
+void ArrayItem::resetData()
+{
+    clearData();
+}
+
+void ArrayItem::clearData()
+{
+    char *_buffer = this->buffer();
+    if (!_buffer) {
+        return;
+    }
+
+    const int bufferSize = int(this->bufferSize());
+
+    if (bufferSize > 0) {
+        memset(_buffer, 0, bufferSize);
+    }
+}
+
 void ArrayItem::setData(const char *buffer, int size)
 {
-    if (!buffer) {
+    if (!buffer || size <= 0) {
+        clearData();
         return;
     }
 
@@ -236,8 +261,11 @@ void ArrayItem::setData(const char *buffer, int size)
         return;
     }
 
-    if (size > int(bufferSize())) {
-        size = int(bufferSize());
+    const int bufferSize = int(this->bufferSize());
+    if (size > bufferSize) {
+        size = bufferSize;
+    } else {
+        memset(_buffer + size, 0, bufferSize - size);
     }
 
     memcpy(_buffer, buffer, size_t(size));

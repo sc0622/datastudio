@@ -173,9 +173,8 @@ std::string SerialChannel::config() const
 {
     std::ostringstream os;
 
-    os << " " << Channel::config();
-
-    os << "serial: --portName=" << d->serialPort->portName()
+    os << "--type=serial" << Channel::config()
+       << " --portName=" << d->serialPort->portName()
        << " --baudRate=" << (int)d->serialPort->baudRate()
        << " --dataBits=" << (int)d->serialPort->dataBits()
        << " --stopBits=";

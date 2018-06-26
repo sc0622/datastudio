@@ -57,24 +57,14 @@ ChannelPtr Channel::createInstance(Icd::ChannelType channelType)
 
 ChannelPtr Channel::createInstance(const std::string &config)
 {
-    //
     if (config.empty()) {
         return ChannelPtr();
     }
-
     // 获取通道类型
-    std::string::size_type offset = config.find_first_of(':');
-    if (offset == std::string ::npos) {
+    std::string type = parserValue(config, "type");
+    if (type.empty()) {
         return ChannelPtr();
     }
-
-    //
-    std::string type = config.substr(0, offset);
-
-    // trim
-    type.erase(0, type.find_first_not_of(' '));   // left trim
-    type.erase(type.find_last_not_of(' ') + 1);   // right trim
-
     //
     Icd::ChannelType channelType = Icd::ChannelInvalid;
     if (type == "serial") {
@@ -86,20 +76,17 @@ ChannelPtr Channel::createInstance(const std::string &config)
     } else {
         return ChannelPtr();   // not supported
     }
-
     //
     if (channelType == Icd::ChannelInvalid) {
         return ChannelPtr();
     }
-
     // create an instance
     ChannelPtr channel = Channel::createInstance(channelType);
     if (channel == 0) {
         return ChannelPtr();
     }
-
     // set config
-    if (!channel->setConfig(config.substr(offset + 1))) {
+    if (!channel->setConfig(config)) {
         return ChannelPtr();
     }
 
@@ -139,8 +126,8 @@ void Channel::setIdentity(const std::string &identity)
 std::string Channel::config() const
 {
     std::ostringstream os;
-    os << "--id=" << d->identity
-       << " --name=" << d->name << " ";
+    os << " --id=" << d->identity
+       << " --name=" << d->name;
     if (d->relayer) {
         os << " --relayer=" << d->relayer->identity();
     }
@@ -234,8 +221,7 @@ std::unordered_map<std::string, std::string> Channel::parseConfig(const std::str
         start = config.find(" --", end);
         if (start == std::string::npos) {
             value = config.substr(end);
-        }
-        else {
+        } else {
             value = config.substr(end, start - end);
         }
         // trim
@@ -250,6 +236,33 @@ std::unordered_map<std::string, std::string> Channel::parseConfig(const std::str
     }
 
     return items;
+}
+
+std::string Channel::parserValue(const std::string &config, const std::string &key)
+{
+    if (config.empty() || key.empty()) {
+        return std::string();
+    }
+
+    // key
+    std::string::size_type start = config.find("--" + key + '=', 0);
+    if (start == std::string::npos) {
+        return std::string();
+    }
+    start += 7;
+    // value
+    std::string value;
+    std::string::size_type end = config.find(" --", start);
+    if (end == std::string::npos) {
+        value = config.substr(start);
+    } else {
+        value = config.substr(start, end - start);
+    }
+    // trim
+    value.erase(0, value.find_first_not_of(' '));   // left trim
+    value.erase(value.find_last_not_of(' ') + 1);   // right trim
+
+    return value;
 }
 
 } // end of namespace Icd

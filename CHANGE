@@ -1,189 +1,191 @@
 
 -- V4.3.0
-    tools: VS2015��Qt5.11.0��Qbs>=1.9.1
+    tools: VS2015，Qt5.11.0，Qbs>=1.9.1
     depends:
         1) jframework: v2.5.0;
     fixed:
-        1) ����editģ���������ܣ�����array��numeric�������ͼ��༭����
-        2) �޸�Qt�������ķ�����ʧЧ������
-        3) Ϊ����������������toString�ӿ�
-        4) ���Ʊ༭ģ�鹦������
-        5) ����array�����ӱ�complex�������͵ļ�أ�ʮ�������ڴ�������ʾ���ַ�����ʾ��
-        6) ����array�����ӱ�complex�������͵ķ��淢�ͣ�ʮ�����ơ��ַ�����ʽ���ͣ�����
+        1) 完善edit模块新增功能，增加array、numeric数据类型及编辑功能
+        2) 修复Qt内置中文翻译问失效的问题
+        3) 为数组类型数据增加toString接口
+        4) 完善编辑模块功能升级
+        5) 增加array、无子表complex数据类型的监控（十六进制内存数据显示、字符串显示）
+        6) 增加array、无子表complex数据类型的仿真发送（十六进制、字符串形式发送）功能
+        7) 修复icdcomm保存配置文件格式错误的问题
+        8) 修复一系列array数据类型相关的问题
     next:
-        1) �Ż�����ģ������ݵ��루У�飩���������ڴ�����Ľ����ٶ�
-        2) �Ż�ͼ���Ĵ�������ʾЧ�ʣ���ɢ������Ƭ������
-        3) �޸����ģ��ͼ��ˮƽ��������
-        4) ȥ���ɵ�Э��ṹģ�飬�滻ΪcoreЭ��ṹ
-        5) ȥ���ɵı༭ģ�飬�滻Ϊ��coreΪ�����ı༭����ģ��
+        1) 优化分析模块的数据导入（校验）、数据项内存重组的解析速度
+        2) 优化图表的大数据显示效率，离散化、分片发处理
+        3) 修复监控模块图表水平放缩问题
+        4) 去除旧的协议结构模块，替换为core协议结构
+        5) 去除旧的编辑模块，替换为以core为基础的编辑处理模块
 
 -- V4.2.1
-    tools: VS2015��Qt5.11.0��Qbs>=1.9.1
+    tools: VS2015，Qt5.11.0，Qbs>=1.9.1
     depends:
         1) jframework: v2.5.0;
     fixed:
-        1) �޸�edit-old��ʾ��ˢ������
+        1) 修复edit-old显示、刷新问题
 
 -- V4.2.0
-    tools: VS2015��Qt5.11.0��Qbs>=1.9.1
+    tools: VS2015，Qt5.11.0，Qbs>=1.9.1
     depends:
         1) jframework: v2.5.0;
     fixed:
-        1) ����qbs�⣺����node��electron�ܹ�����ģ�壻���Ӵ������ģ�壻�޸�һϵ�а汾����������
-        2) ����jframework��
-        3) icdmeta������command��protocolģ�鼯��
-        4) icdplugins������qml��
-        5) �޸�һϵ��BUG���޸�icdwidgetЭ����ʾ�쳣���⣻�޸������湤����״̬ͬ������
+        1) 升级qbs库：增加node、electron架构编译模板；增加打包编译模板；修复一系列版本兼容性问题
+        2) 升级jframework库
+        3) icdmeta：增加command、protocol模块集成
+        4) icdplugins：集成qml库
+        5) 修复一系列BUG：修复icdwidget协议显示异常问题；修复主界面工具栏状态同步问题
 
 -- V4.1.0
-    tools: VS2015��Qt5.10.1��Qbs>=1.9.1
+    tools: VS2015、Qt5.10.1、Qbs>=1.9.1
     depends:
         1) jframework: v2.4.1;
     fixed:
-        1) �޸�icdmeta: ����FTPģ�ͣ��޸�ͨ�����Ժͽӿڣ�����ָ��ϵͳ�ͷ���ģ��
+        1) 修改icdmeta: 集成FTP模型，修改通道属性和接口；集成指令系统和仿真模型
 
 -- V4.0.1
-    tools: VS2015��Qt5.10.1��Qbs>=1.9.1
+    tools: VS2015、Qt5.10.1、Qbs>=1.9.1
     depends:
         1) jframework: v2.4.1;
     fixed:
-        1) ����jframework
-        2) �޸�core���ֽӿڣ��޸�icdwidget����������
+        1) 升级jframework
+        2) 修改core部分接口：修复icdwidget挂载树问题
 
 -- V4.0.0
-    tools: VS2015��Qt5.10.1��Qbs1.10.1
+    tools: VS2015、Qt5.10.1、Qbs1.10.1
     depends:
         1) jframework: v2.4.0;
     fixed:
-        1) ����jframework�⣨֧��Qbs���룩
-        2) ֧��Qbs���룬ȥ��qmake��������ļ�������
+        1) 升级jframework库（支持Qbs编译）
+        2) 支持Qbs编译，去掉qmake编译相关文件及设置
 
 -- V3.0.3
-    tools: VS2015��Qt5.10.1
+    tools: VS2015、Qt5.10.1
     depends:
         1) jframework: v2.3.2;
     fixed:
-        1) ����jframework��
-        2) �޸���ʽ��ʾ���⣨Э������
-        3) �޸�����ϵͳ���Ϸ�������������������
-        4) �޸�ͼ����ʾ����Ĭ����ɫ
-        5) �޸����ݷ���ϵͳ������ͬ�����⣨�״�׷�����ߺ󱣳�֮ǰ����״̬��
+        1) 升级jframework库
+        2) 修复样式显示问题（协议树）
+        3) 修复仿真系统，拖放引起软件崩溃的问题
+        4) 修改图表显示曲线默认颜色
+        5) 修复数据分析系统中曲线同步问题（首次追加曲线后保持之前缩放状态）
 
 -- V3.0.2
     depends:
         1) jframework: v2.3.0;
     fixed:
-        1) ����jframework��
-        2) �޸�icdmeta�ж���ע��ĺ궨��
+        1) 升级jframework库
+        2) 修改icdmeta中对象注册的宏定义
 
 -- V3.0.1
     depends:
         1) jframework: v2.2.1;
     fixed:
-        1) �޸�core���̣�֧��Qt5.5.1����
-        2) ���������������
+        1) 修改core工程，支持Qt5.5.1编译
+        2) 完善软件打包工程
 
 -- V3.0.0
     depends:
         1) jframework: v2.0.9;
     fixed:
-        1) ȫ�¸İ棺��Ribbon���Ϊ�Զ���Dockģʽ���棻������֯��ϵͳģ��
+        1) 全新改版：由Ribbon风格换为自定义Dock模式界面；重新组织各系统模块
 
 -- V2.1.2
     depends:
         1) jframework: v2.0.9;
     fixed:
-        1) icdcore: �޸�framecode��������frameid���Ե�������
-        2�� icdmeta: �޸�����icdcore��meta�ӿڹ淶
-        3) icdmeta: �޸�protocolģ����������������
-        3) icdmeta: �޸�JDataChannelMgr��search��������ȱ�ݣ�������ɺ�������removePostEvents���������²��������޸�δ֪ͨ��target��
+        1) icdcore: 修复framecode型数据项frameid属性导出问题
+        2） icdmeta: 修复部分icdcore的meta接口规范
+        3) icdmeta: 修复protocol模块数据项搜索问题
+        3) icdmeta: 修复JDataChannelMgr的search函数功能缺陷（搜索完成后错误调用removePostEvents函数，导致部分属性修改未通知到target）
 
 -- V2.1.1
     depends:
         1) jframework: v2.0.9;
     fixed:
-        1) icdmeta: ����protocolģ��
-        2) icdplugins: �����Զ�����qmltypes��Ҫ��icdmeta������
+        1) icdmeta: 新增protocol模块
+        2) icdplugins: 增加自动生成qmltypes需要的icdmeta依赖库
 
 - V2.1.0
    depends:
        1) jframework: v2.0.9;
    fixed:
-        1) icdcore: �޸����л��ͷ����л��ӿ��麯���̳�����
-        2) icdcore: �޸�json��������ת���������⣨����ת����Чʱ�Ķ�����䣩
-        3) �༭ϵͳ�����ӱ�GUID���ɿ�ݰ�ť
-        4) �޸�Frame������֡��������Э�����ؼ����޷���ʾƫ����������
-        5) ����icdcoremeta����Ϊicdmeta��������ͨ����ģ��Դ��
-        6) �޸�icdplugins���̣������Զ�����qmltypes�������
+        1) icdcore: 修复序列化和反序列化接口虚函数继承问题
+        2) icdcore: 修复json数据类型转换错误问题（屏蔽转换无效时的断言语句）
+        3) 编辑系统：增加表GUID生成快捷按钮
+        4) 修复Frame（数据帧）类型在协议树控件中无法显示偏移量的问题
+        5) 更名icdcoremeta工程为icdmeta，并集成通道等模块源码
+        6) 修改icdplugins工程，增加自动生成qmltypes编译语句
 
 -- V2.0.10
     depends:
         1) jframework: v2.0.8;
     fixed:
-        1) jchart: �޸�����shiftSample���ٵ���jchart��updateScale��������׷�Ӷ�����ݵ��ֻɾ��һ���������;
-        2) ������������ע�Ṧ�ܣ�
-        3) �޸�Э�鵼��word�ĵ�ʧ�ܵ����⣻
+        1) jchart: 修复调用shiftSample后，再调用jchart的updateScale函数导致追加多个数据点后只删除一个点的问题;
+        2) 增加软件加密注册功能；
+        3) 修复协议导出word文档失败的问题；
 
 -- V2.0.9
     depends:
         1) jframework: v2.0.7;
     fixed:
-        1) ���ݷ������޸�������ݹ��ܵ�����������������;
+        1) 数据分析：修复清除数据功能导致软件崩溃的问题;
 
 -- V2.0.8
     depends:
         1) jframework: v2.0.7;
     fixed:
-        1) icdchart: �޸������ǩ���빦��BUG;
+        1) icdchart: 修复纵轴标签对齐功能BUG;
 
 -- V2.0.7
     depends:
         1) jframework: v2.0.6;
     fixed:
-        1) icdcore���޸�frame�������ݵ�json�������⣻
-        2) icdcore������numeric��������ԭ����ֵ��ȡ�ӿڣ�
-        3) icdcore������numeric�������ͳ����ж��ӿ�;
-        3) icdcore���޸�header��������defaultValue����ͻָ�ʧЧ������;
-        4) ���ϵͳ�����ӳ��ޱ����ʾ���ܣ�
+        1) icdcore：修复frame类型数据的json导出问题；
+        2) icdcore：增加numeric数据类型原是数值获取接口；
+        3) icdcore：增加numeric数据类型超限判定接口;
+        3) icdcore：修复header数据类型defaultValue保存和恢复失效的问题;
+        4) 监控系统：增加超限标红显示功能；
 
 -- V2.0.6
     depends:
         1) jframework: v2.0.6;
     fixed:
-        1) �޸�log4cpp�����༶�ļ���ʧ�ܵ����⣻
-        2) �޸�json�����߼����⣻
+        1) 修复log4cpp创建多级文件夹失败的问题；
+        2) 修复json解析逻辑问题；
 
 -- V2.0.5
     depends:
         1) jframework: v2.0.5;
     fixed:
-        1) �޸�jchart��zoomer���⣻
+        1) 修复jchart的zoomer问题；
 
 -- V2.0.4
     depends:
         1) jframework: v2.0.4;
     fixed:
-        1) ֧��json�ļ����뵼�����ܣ�
-        2) �޸����ݱ༭ģ�����⣻
+        1) 支持json文件导入导出功能；
+        2) 修复数据编辑模块问题；
 
 -- V2.0.3
     depends:
         1) jframework: v2.0.3;
     fixed:
-        1) ����jchart�⣬�޸�zoomReset���⣻
+        1) 升级jchart库，修复zoomReset问题；
 
 -- V2.0.1
     depends:
         1) jframework: v2.0.1;
     fixed:
-        1) ���ݷ�����ͼ������ʾ���У��ɵ�����
-        2) ���ݷ�����ͼ����һ��������ɫ��Ϊ��ɫ���ɸ�Ϊ�ɵ�����ÿ��������ɫ�ɵ���
-        3) ���ݷ�����ͼ������ΪLight���
-        4) ���ݷ��������Ӷ��ͼ�������ͬ����ʾ���ܣ�
-        5) ���ݷ�����ͬһ��ѡ����Զ���Ϸŵ�������ͼ�У�
+        1) 数据分析：图表可显示多列（可调）；
+        2) 数据分析：图表第一条曲线颜色调为红色（可改为可调）、每条曲线颜色可调；
+        3) 数据分析：图表风格改为Light风格；
+        4) 数据分析：增加多个图标跟踪线同步显示功能；
+        5) 数据分析：同一个选项可以多次拖放到曲线视图中；
 
 -- V2.0.0
     depends:
         1) jframework: 2.0.1
     fixed:
-        1) �����������
+        1) 升级打包工程

@@ -1,7 +1,7 @@
 #include "json_tool.h"
-#ifdef QT_CORE_LIB
-//#include <QFile>
-//#include <QString>
+#if defined(QT_CORE_LIB) && defined(USE_QFILE)
+#include <QFile>
+#include <QString>
 #endif
 
 #ifndef JSON_MAX_PATH_LEN
@@ -76,7 +76,7 @@ bool resolve(const std::string &filePath, Value &root)
     if (!path.empty()) {
         //return false;
     }
-#if 0//def QT_CORE_LIB
+#if defined(QT_CORE_LIB) && defined(USE_QFILE)
     QFile file(QString::fromLocal8Bit(filePath.c_str()));
     if (!file.open(QIODevice::ReadOnly)) {
         return false;

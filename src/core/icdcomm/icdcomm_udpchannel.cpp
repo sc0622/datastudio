@@ -63,7 +63,7 @@ bool UdpChannelData::parseHost(const std::string &host, const std::string &type,
 
 std::string UdpChannelData::openMode() const
 {
-    return openMode("--openMode=");
+    return openMode(" --openMode=");
 }
 
 std::string UdpChannelData::openMode(const std::string &prefix) const
@@ -146,12 +146,12 @@ bool UdpChannel::isOpen() const
 std::string UdpChannel::config() const
 {
     std::ostringstream os;
-    os << " " << Channel::config()
-       << "udp: --local=" << d->d->d_localHost.toString().toStdString()
+    os << "--type=udp" << Channel::config()
+       << " --local=" << d->d->d_localHost.toString().toStdString()
        << ":" << d->d->d_localPort
        << " --remote=" << d->d->d_remoteHost.toString().toStdString()
        << ":" << d->d->d_remotePort
-       << " " << d->openMode();
+       << d->openMode();
 
     return os.str();
 }

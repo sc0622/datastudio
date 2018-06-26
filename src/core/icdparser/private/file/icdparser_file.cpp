@@ -191,4 +191,13 @@ Json::Value queryTable(const std::string &filePath, const std::string &vehicleId
     return value;
 }
 
+Json::Value queryTable(const std::string &filePath, const std::string &domain, int domainType)
+{
+    Json::Value config;
+    config["filePath"] = filePath;
+    JsonParserPtr parser = JsonParserPtr(new JsonParser(config));
+    Json::Value value = parser->queryTable(domain, domainType);
+    return value;
+}
+
 } // end of namespace Icd

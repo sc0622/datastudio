@@ -44,18 +44,20 @@ bool XmlParser::saveDocument(TiXmlDocument *document) const
  * @param object
  * @return
  */
-bool XmlParser::saveObject(TiXmlElement *emObject,
-                           const Icd::ObjectPtr &object) const
+bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object) const
 {
     //
-    if (!emObject|| object == 0) {
+    if (!emObject|| !object) {
         return false;       //
     }
 
     // id
     const std::string id = object->id();
     if (!id.empty()) {
-        emObject->SetAttribute("id", id);
+        switch (object->objectType()) {
+        case Icd::ObjectItem: break;
+        default: emObject->SetAttribute("id", id); break;
+        }
     }
 
     // name

@@ -49,6 +49,13 @@
 #else
 #  include <backward/auto_ptr.h>
 #endif
+typedef float float_t;
+typedef double double_t;
+#endif
+
+#if defined(__apple__)
+typedef float float_t;
+typedef double double_t;
 #endif
 
 // for shared_ptr, unique_ptr

@@ -31,6 +31,7 @@ void MenuBar::updateMenuBar(const Json::Value &config)
     clear();
 
     addSettingsMenu(config);
+    addFullScreenMenu(config);
     addAnalyseToolAction(config);
     addScreenshotAction(config);
     addPaletteAction(config);
@@ -51,6 +52,22 @@ void MenuBar::addSettingsMenu(const Json::Value &config)
         if (settingsDlg.exec() != QDialog::Accepted) {
             return;
         }
+    });
+}
+
+void MenuBar::addFullScreenMenu(const Json::Value &config)
+{
+    Q_UNUSED(config);
+    QAction *action = addAction(tr("Toggle full screen"));
+    action->setIcon(QIcon(":/datastudio/image/global/fullscreen.png"));
+    action->setCheckable(true);
+    connect(action, &QAction::toggled, this, [=](bool checked){
+        if (checked) {
+            action->setIcon(QIcon(":/datastudio/image/global/fullscreen-exit.png"));
+        } else {
+            action->setIcon(QIcon(":/datastudio/image/global/fullscreen.png"));
+        }
+        jnotify->send("menubar.fullscreen.toggled", checked);
     });
 }
 

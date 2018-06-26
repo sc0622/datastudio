@@ -50,7 +50,7 @@ Module {
                 content = content.replace(/@VARIANT_SUFFIX@/g, project.variantSuffix);
                 // replace @PROJECT_INSTALL_ROOT@
                 var relativeInstallRoot = '../' + FileInfo.relativePath(project.sourceDirectory + '/..',
-                                                                        project.inatallRoot);
+                                                                        project.installRoot);
                 content = content.replace(/@PROJECT_INSTALL_ROOT@/g, relativeInstallRoot);
                 // replace @PROJECT_NAME@
                 content = content.replace(/@PROJECT_NAME@/g, project.projectName);

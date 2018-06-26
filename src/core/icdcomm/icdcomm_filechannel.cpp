@@ -51,7 +51,7 @@ int FileChannelData::fileSize(std::fstream &file)
 
 std::string FileChannelData::openmode() const
 {
-    return openmode("--openMode=");
+    return openmode(" --openMode=");
 }
 
 std::string FileChannelData::openmode(const std::string &prefix) const
@@ -81,7 +81,7 @@ std::string FileChannelData::openmode(const std::string &prefix) const
 
 std::string FileChannelData::saveformat() const
 {
-    return saveformat("--saveFormat=");
+    return saveformat(" --saveFormat=");
 }
 
 std::string FileChannelData::saveformat(const std::string &prefix) const
@@ -234,13 +234,10 @@ bool FileChannel::isOpen() const
 std::string FileChannel::config() const
 {
     std::ostringstream os;
-    os << " " << Channel::config();
-    os << "file: --filePath=" << d->filePath << " ";
-    // openmode
-    os << d->openmode();
-    // saveformat
-    os << " " << d->saveformat();
-    //
+    os << "--type=file" << Channel::config()
+       << " --filePath=" << d->filePath
+       << d->openmode()     // openmode
+       << d->saveformat();  // saveformat
 
     return os.str();
 }
