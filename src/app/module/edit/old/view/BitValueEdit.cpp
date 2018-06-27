@@ -18,11 +18,13 @@ BitValueEdit::BitValueEdit(QWidget *parent)
     addFormRow(QStringLiteral("<font color=red>*</font>长度："), spinBitCount_);
 
     spinOffset_ = new DoubleSpinBox(this);
-    spinOffset_->setRange(DBL_MIN, DBL_MAX);
+    spinOffset_->setRange(-DBL_MAX, DBL_MAX);
+    spinOffset_->setDecimals(DBL_DIG);
     addFormRow(QStringLiteral("偏移量："), spinOffset_);
 
     spinScale_ = new DoubleSpinBox(this);
-    spinScale_->setRange(DBL_MIN, DBL_MAX);
+    spinScale_->setRange(-DBL_MAX, DBL_MAX);
+    spinScale_->setDecimals(DBL_DIG);
     spinScale_->setDecimals(16);
     addFormRow(QStringLiteral("比例："), spinScale_);
 
@@ -30,18 +32,20 @@ BitValueEdit::BitValueEdit(QWidget *parent)
     addFormRow(QStringLiteral("单位："), editUnit_);
 
     spinMinimum_ = new DoubleSpinBox(this);
-    spinMinimum_->setRange(DBL_MIN, DBL_MAX);
+    spinMinimum_->setRange(-DBL_MAX, DBL_MAX);
+    spinMinimum_->setDecimals(DBL_DIG);
     checkLeftInf_ = new QCheckBox(QStringLiteral("下限："), this);
     addFormRow(checkLeftInf_, spinMinimum_);
 
     spinMaximum_ = new DoubleSpinBox(this);
-    spinMaximum_->setRange(DBL_MIN, DBL_MAX);
+    spinMaximum_->setRange(-DBL_MAX, DBL_MAX);
+    spinMaximum_->setDecimals(DBL_DIG);
     checkRightInf_ = new QCheckBox(QStringLiteral("上限："), this);
     addFormRow(checkRightInf_, spinMaximum_);
 
     spinDefault_ = new DoubleSpinBox(this);
-    spinDefault_->setRange(DBL_MIN, DBL_MAX);
-    spinDefault_->setDecimals(16);
+    spinDefault_->setRange(-DBL_MAX, DBL_MAX);
+    spinDefault_->setDecimals(DBL_DIG);
     addFormRow(QStringLiteral("默认值："), spinDefault_);
 
     QGroupBox* groupSpecs = new QGroupBox(QStringLiteral("特征点信息"), this);
@@ -92,8 +96,10 @@ void BitValueEdit::onRangeStateChanged(bool enabled)
 
     const QObject *sender = this->sender();
     if (sender == checkLeftInf_) {
-        checkLeftInf_->setEnabled(enabled);
+        spinMinimum_->setEnabled(enabled);
+        spinMinimum_->clear();
         if (enabled) {
+            spinMinimum_->setFocus();
             lstRange[0] = spinMinimum_->text();
             data()->setRange(lstRange.join("~").toStdString());
         } else {
@@ -102,7 +108,9 @@ void BitValueEdit::onRangeStateChanged(bool enabled)
         }
     } else if (sender == checkRightInf_) {
         spinMaximum_->setEnabled(enabled);
+        spinMaximum_->clear();
         if (enabled) {
+            spinMaximum_->setFocus();
             lstRange[1] = spinMaximum_->text();
             data()->setRange(lstRange.join("~").toStdString());
         } else {
@@ -220,11 +228,14 @@ bool BitValueEdit::onTextChanged(const QString& text)
     const QObject *sender = this->sender();
     if (sender == editUnit_) {
         bitData->setUnit(text.trimmed().toStdString());
+        result = true;
     } else if (sender == spinBitStart_) {
         bitData->setStart(spinBitStart_->value());
         bitData->setBitLength(spinBitCount_->value());
+        result = true;
     } else if (sender == spinBitCount_) {
         bitData->setBitLength(spinBitCount_->value());
+        result = true;
     } else if (sender == spinMinimum_ || sender == spinMaximum_) {
         QString sMinimum;
         if (checkLeftInf_->isChecked()) {
@@ -238,12 +249,16 @@ bool BitValueEdit::onTextChanged(const QString& text)
             sMaximum = spinMaximum_->textFromValue(spinMaximum_->value());
         }
         bitData->setRange(QString("%1~%2").arg(sMinimum).arg(sMaximum).toStdString());
+        result = true;
     } else if (sender == spinDefault_) {
         bitData->setDefaultStr(QString::number(spinDefault_->value()).toStdString());
+        result = true;
     } else if (sender == spinScale_) {
         bitData->setScale(spinScale_->value());
+        result = true;
     } else if (sender == spinOffset_) {
         bitData->setOffset(spinOffset_->value());
+        result = true;
     } else {
         result = false;
     }
@@ -271,7 +286,7 @@ bool BitValueEdit::init()
     editUnit_->clearFocus();
     editUnit_->setText(QString::fromStdString(data()->unit()));
     // range
-    const QStringList lstRange = QString(data()->range().c_str()).split("~");
+    const QStringList lstRange = QString(data()->dataRange().c_str()).split("~");
     if (lstRange.count() >= 2) {
         const QString first = lstRange.first();
         const QString last = lstRange.last();
@@ -285,6 +300,11 @@ bool BitValueEdit::init()
         spinMaximum_->setValue(last.isEmpty() ? 0.0 : last.toDouble());
         spinMaximum_->setDisabled(last.isEmpty());
         checkRightInf_->setChecked(!last.isEmpty());
+    } else {
+        spinMinimum_->setDisabled(true);
+        spinMaximum_->setDisabled(true);
+        checkLeftInf_->setChecked(false);
+        checkRightInf_->setChecked(false);
     }
     // default value
     spinDefault_->setValue(QString(data()->defaultStr().c_str()).toDouble());

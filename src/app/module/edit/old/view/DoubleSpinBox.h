@@ -10,6 +10,7 @@ public:
     explicit DoubleSpinBox(QWidget *parent = nullptr);
 
     QString textFromValue(double value) const override;
+    QValidator::State validate(QString &input, int &pos) const override;
 };
 
 #endif // DOUBLESPINBOX_H

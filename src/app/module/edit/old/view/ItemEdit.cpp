@@ -243,6 +243,11 @@ bool ItemEdit::init()
         spinMaximum_->setValue(last.isEmpty() ? 0.0 : last.toDouble());
         spinMaximum_->setDisabled(last.isEmpty());
         checkRightInf_->setChecked(!last.isEmpty());
+    } else {
+        spinMinimum_->setDisabled(true);
+        spinMaximum_->setDisabled(true);
+        checkLeftInf_->setChecked(false);
+        checkRightInf_->setChecked(false);
     }
     // default value
     spinDefault_->setValue(QString(data()->defaultStr().c_str()).toDouble());
@@ -407,13 +412,13 @@ void ItemEdit::setupUI(int windowType)
     }
 
     spinOffset_ = new DoubleSpinBox(this);
-    spinOffset_->setRange(DBL_MIN, DBL_MAX);
-    spinOffset_->setDecimals(16);
+    spinOffset_->setRange(-DBL_MAX, DBL_MAX);
+    spinOffset_->setDecimals(DBL_DIG);
     addFormRow(QStringLiteral("偏移量："), spinOffset_);
 
     spinScale_ = new DoubleSpinBox(this);
-    spinScale_->setRange(DBL_MIN, DBL_MAX);
-    spinScale_->setDecimals(16);
+    spinScale_->setRange(-DBL_MAX, DBL_MAX);
+    spinScale_->setDecimals(DBL_DIG);
     addFormRow(QStringLiteral("比例尺："), spinScale_);
 
     editUnit_ = new LimitLineEdit(this);
@@ -421,19 +426,20 @@ void ItemEdit::setupUI(int windowType)
     addFormRow(QStringLiteral("单位："), editUnit_);
 
     spinMinimum_ = new DoubleSpinBox(this);
-    spinMinimum_->setRange(DBL_MIN, DBL_MAX);
-    spinMinimum_->setDecimals(16);
+    spinMinimum_->setRange(-DBL_MAX, DBL_MAX);
+    spinMinimum_->setDecimals(DBL_DIG);
     checkLeftInf_ = new QCheckBox(QStringLiteral("下限："), this);
     addFormRow(checkLeftInf_, spinMinimum_);
 
     spinMaximum_ = new DoubleSpinBox(this);
-    spinMaximum_->setRange(DBL_MIN, DBL_MAX);
-    spinMaximum_->setDecimals(16);
+    spinMaximum_->setRange(-DBL_MAX, DBL_MAX);
+    spinMaximum_->setDecimals(DBL_DIG);
     checkRightInf_ = new QCheckBox(QStringLiteral("上限："), this);
     addFormRow(checkRightInf_, spinMaximum_);
 
     spinDefault_ = new DoubleSpinBox(this);
-    spinDefault_->setRange(DBL_MIN, DBL_MAX);
+    spinDefault_->setRange(-DBL_MAX, DBL_MAX);
+    spinDefault_->setDecimals(DBL_DIG);
     addFormRow(QStringLiteral("默认值："), spinDefault_);
 
     QGroupBox* groupSpecs = new QGroupBox(QStringLiteral("特征点信息"), this);

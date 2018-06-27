@@ -336,7 +336,7 @@ ItemWidgetHead::ItemWidgetHead(QWidget *parent)
     d_spinValue = new JSpinBox(this);
     d_spinValue->setFillChar(QChar('0'));
     d_spinValue->setRadix(16);
-    d_spinValue->setFixedWidth(220);
+    d_spinValue->setFixedWidth(300);
     formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
     //
     connect(d_spinValue, static_cast<void(JSpinBox::*)(int)>
@@ -394,7 +394,7 @@ ItemWidgetCounter::ItemWidgetCounter(QWidget *parent)
     itemLayout()->addStretch();
 
     d_spinValue = new QSpinBox(this);
-    d_spinValue->setFixedWidth(220);
+    d_spinValue->setFixedWidth(300);
     formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
     //
     connect(d_spinValue, static_cast<void(QSpinBox::*)(int)>
@@ -452,7 +452,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
     itemLayout()->addStretch();
 
     d_spinValue = new QSpinBox(this);
-    d_spinValue->setFixedWidth(220);
+    d_spinValue->setFixedWidth(300);
     formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
 
     d_comboBoxCheckType = new QComboBox(this);
@@ -460,13 +460,13 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
     formLayout->addRow(QStringLiteral("校验类型："), d_comboBoxCheckType);
 
     d_spinStartPos = new QSpinBox(this);
-    d_spinStartPos->setFixedWidth(220);
+    d_spinStartPos->setFixedWidth(300);
     d_spinStartPos->setRange(0, 65535);
     d_spinStartPos->setSuffix(QStringLiteral(" 字节"));
     formLayout->addRow(QStringLiteral("起始位置："), d_spinStartPos);
 
     d_spinEndPos = new QSpinBox(this);
-    d_spinEndPos->setFixedWidth(220);
+    d_spinEndPos->setFixedWidth(300);
     d_spinEndPos->setRange(0, 65535);
     d_spinEndPos->setSuffix(QStringLiteral(" 字节"));
     formLayout->addRow(QStringLiteral("终止位置："), d_spinEndPos);
@@ -636,7 +636,7 @@ ItemWidgetFrameCode::ItemWidgetFrameCode(QWidget *parent)
     itemLayout()->addStretch();
 
     d_comboBoxCode = new QComboBox(this);
-    d_comboBoxCode->setFixedWidth(220);
+    d_comboBoxCode->setFixedWidth(300);
     formLayout->addRow(QStringLiteral("当前帧码："), d_comboBoxCode);
     //
     connect(d_comboBoxCode, static_cast<void(QComboBox::*)
@@ -738,23 +738,24 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     itemLayout()->addStretch();
 
     d_checkBoxLink = new QCheckBox(QStringLiteral("（原始数值与输出数值联动）"), this);
-    d_checkBoxLink->setFixedWidth(220);
+    d_checkBoxLink->setFixedWidth(300);
     d_checkBoxLink->setCheckable(false);
     d_checkBoxLink->setChecked(true);   //FIXME
     formLayout->addRow(QStringLiteral("数值关联："), d_checkBoxLink);
 
     d_sliderValue = new QSlider(this);
-    d_sliderValue->setFixedWidth(220);
+    d_sliderValue->setFixedWidth(300);
     d_sliderValue->setOrientation(Qt::Horizontal);
     formLayout->addRow(QStringLiteral("原始数值："), d_sliderValue);
 
     d_spinValue = new QDoubleSpinBox(this);
-    d_spinValue->setFixedWidth(220);
+    d_spinValue->setFixedWidth(300);
+    d_spinValue->setDecimals(DBL_DIG);
     formLayout->addRow(QStringLiteral("原始数值："), d_spinValue);
 
     d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setFixedWidth(220);
-    d_spinData->setDecimals(0);
+    d_spinData->setFixedWidth(300);
+    d_spinData->setDecimals(DBL_DIG);
     d_spinData->setEnabled(false);
     formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
 
@@ -769,11 +770,54 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         d_sliderValue->setValue((int)value);
     });
     auto setDataSuffix = [=](const Icd::NumericItemPtr &itemNumeric){
-        qulonglong data = (qulonglong)((itemNumeric->data() - itemNumeric->offset())
-                                       / itemNumeric->scale());
-        data &= (1ui64 << ((int)itemNumeric->bufferSize() << 3)) - 1;
-        QString suffix = QString(" (%1)").arg(data, int(itemNumeric->bufferSize() * 2),
-                                              16, QChar('0')).toUpper();
+        QString suffix;
+        double data = (itemNumeric->data() - itemNumeric->offset()) / itemNumeric->scale();
+        switch (itemNumeric->numericType()) {
+        case Icd::NumericI8:
+        case Icd::NumericI16:
+        case Icd::NumericI32:
+        case Icd::NumericI64:
+        {
+            qlonglong iData = qlonglong(data);
+            iData &= (1ll << ((int)itemNumeric->bufferSize() << 3)) - 1;
+            suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
+                                          16, QChar('0')).toUpper();
+            break;
+        }
+        case Icd::NumericU8:
+        case Icd::NumericU16:
+        case Icd::NumericU32:
+        case Icd::NumericU64:
+        {
+            qulonglong uData = qulonglong(data);
+            uData &= (1ull << ((int)itemNumeric->bufferSize() << 3)) - 1;
+            suffix = QString(" (%1)").arg(uData, int(itemNumeric->bufferSize() * 2),
+                                          16, QChar('0')).toUpper();
+            break;
+        }
+        case Icd::NumericF32:
+        {
+            float _data = float(data);
+            qint32 iData = *(qint32*)&_data;
+            suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
+                                          16, QChar('0')).toUpper();
+            break;
+        }
+        case Icd::NumericF64:
+        {
+            qlonglong iData = *(qlonglong*)&data;
+            suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
+                                          16, QChar('0')).toUpper();
+            break;
+        }
+        default:
+        {
+            qulonglong uData = qulonglong(data);
+            uData &= (1ui64 << ((int)itemNumeric->bufferSize() << 3)) - 1;
+            suffix = QString(" (%1)").arg(uData, int(itemNumeric->bufferSize() * 2),
+                                          16, QChar('0')).toUpper();
+            break;
+        }}
         d_spinData->setSuffix(suffix);
     };
     connect(d_spinValue, static_cast<void(QDoubleSpinBox::*)(double)>
@@ -846,6 +890,17 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     if (!limit) {
         return false;
     }
+    //
+    switch (itemNumeric->numericType()) {
+    case Icd::NumericF32:
+        d_spinValue->setDecimals(FLT_DIG);
+        d_spinData->setDecimals(FLT_DIG);
+        break;
+    default:
+        d_spinData->setDecimals(DBL_DIG);
+        d_spinValue->setDecimals(DBL_DIG);
+        break;
+    }
     // unit
     const QString unit = QString::fromStdString(itemNumeric->unit()).trimmed();
     if (!unit.isEmpty()) {
@@ -853,9 +908,8 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     }
     // range
     std::pair<double, double> range = itemNumeric->valueRange();
-    d_sliderValue->setRange((int)range.first, (int)range.second);
+    d_sliderValue->setRange(qFloor(range.first), qCeil(range.second));
     d_spinValue->setRange(range.first, range.second);
-    d_spinValue->setDecimals(6);
     d_spinValue->setSingleStep(itemNumeric->scale());
     range = itemNumeric->dataRange();
     d_spinData->setRange(range.first, range.second);
@@ -964,8 +1018,8 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
     itemLayout()->addStretch();
 
     d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setFixedWidth(220);
-    d_spinData->setDecimals(0);
+    d_spinData->setFixedWidth(300);
+    d_spinData->setDecimals(DBL_DIG);
     d_formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
 
     d_labelDesc = new QLabel(this);
@@ -1108,7 +1162,7 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
     itemLayout()->addStretch();
 
     d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setFixedWidth(220);
+    d_spinData->setFixedWidth(300);
     d_spinData->setDecimals(0);
     formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
 
@@ -1477,8 +1531,7 @@ bool ItemWidgetFrame::updateUi(const Icd::ItemPtr &data)
 void ItemWidgetFrame::fixHeight(int index)
 {
     //
-    DataTableWidget *tableWidget =
-            qobject_cast<DataTableWidget *>(d_tabWidget->widget(index));
+    DataTableWidget *tableWidget = qobject_cast<DataTableWidget *>(d_tabWidget->widget(index));
     if (!tableWidget) {
         return;
     }

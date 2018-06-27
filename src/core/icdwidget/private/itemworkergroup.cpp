@@ -433,7 +433,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
     const QString suffix("</font>");
 
     QString info;
-    int asciiCount = Icd::asciiCountOfSize(dataFormat_, dataItem->bufferSize());
+    int asciiCount = Icd::asciiCountOfSize(dataFormat_, int(dataItem->bufferSize()));
     const bool _showValue = [=]() -> bool {
         //
         if (!showValue) {
@@ -534,19 +534,50 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             }
             // data
             if (showAttris_ & CoreTreeWidget::ShowData) {
-                qulonglong data = (qulonglong)(itemNumeric->originalData());
-                data &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
-                values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
+                double originalData = itemNumeric->originalData();
+                switch (itemNumeric->numericType()) {
+                case Icd::NumericF32:
+                {
+                    float _originalData = float(originalData);
+                    qint32 data = *(qint32*)&_originalData;
+                    values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
+                    break;
+                }
+                case Icd::NumericF64:
+                {
+                    qint64 data = *(qint64*)&originalData;
+                    values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
+                    break;
+                }
+                default:
+                {
+                    qulonglong data = (qulonglong)(itemNumeric->originalData());
+                    data &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
+                    values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
+                    break;
+                }}
             }
             // value
             if (showAttris_ & CoreTreeWidget::ShowValue) {
                 QString value;
-                value.append(QString("%1").arg(itemNumeric->data(), 0, 'g', 20));
-                values.append(value);
+                switch (itemNumeric->numericType()) {
+                case Icd::NumericF32:
+                    value.append(QString("%1").arg(itemNumeric->data(), 0, 'g', FLT_DIG));
+                    break;
+                default:
+                    value.append(QString("%1").arg(itemNumeric->data(), 0, 'g', DBL_DIG));
+                    break;
+                }
+                std::string text = value.toStdString();
+                std::string::size_type pos = text.find_last_not_of("0");
+                if (std::string::npos != pos) {
+                    text = text.substr(0, ('.' == text[pos]) ? pos : pos + 1);
+                }
+                values.append(QString::fromStdString(text));
             }
             // join
             if (itemNumeric->outOfLimit()) {
-                info.append("<font face=Consolas size=3 color=red><b>").append(values.join(", "))
+                info.append("<font face=Consolas size=4 color=red><b>").append(values.join(", "))
                         .append("</b></font>");
             } else {
                 info.append(dataPrefix).append(values.join(", ")).append(suffix);

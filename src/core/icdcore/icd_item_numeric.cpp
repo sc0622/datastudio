@@ -22,6 +22,9 @@ public:
 
     }
 
+    static bool fuzzyCompare(double p1, double p2);
+    static bool fuzzyCompare(float p1, float p2);
+
 private:
     NumericType numericType;    // 数据项类型
     double scale;               // 比例尺
@@ -31,6 +34,16 @@ private:
     std::string unit;           // 单位
     std::map<double, std::string> specs;  // 特征点,画图或显示使用
 };
+
+bool NumericItemData::fuzzyCompare(double p1, double p2)
+{
+    return std::abs(p1 - p2) * 1000000000000. <= std::min(std::abs(p1), std::abs(p2));
+}
+
+bool NumericItemData::fuzzyCompare(float p1, float p2)
+{
+    return std::fabs(p1 - p2) * 100000.f <= std::min(std::fabs(p1), std::fabs(p2));
+}
 
 // class NumericItem
 
@@ -312,7 +325,7 @@ void NumericItem::clearSpec()
 std::pair<double, double> NumericItem::dataRange() const
 {
     std::pair<double, double> range = std::make_pair<double, double>
-            (-65535, 65535);
+            (-DBL_MAX, DBL_MAX);
     const int typeSize = ((int)bufferSize() << 3);
 
     if (d->limit->leftInf()) {
@@ -400,14 +413,32 @@ bool NumericItem::outOfLimit() const
 {
     double value = this->data();
     if (!d->limit->leftInf()) {
-        if (value < d->limit->minimum()) {
-            return true;
+        if (d->numericType == Icd::NumericF32) {
+            float _value = float(value);
+            float minimum = float(d->limit->minimum());
+            if (!NumericItemData::fuzzyCompare(_value, minimum) && _value < minimum) {
+                return true;
+            }
+        } else {
+            double minimum = d->limit->minimum();
+            if (!NumericItemData::fuzzyCompare(value, minimum) && value < minimum) {
+                return true;
+            }
         }
     }
 
     if (!d->limit->rightInf()) {
-        if (value > d->limit->maximum()) {
-            return true;
+        if (d->numericType == Icd::NumericF32) {
+            float _value = float(value);
+            float maximum = float(d->limit->maximum());
+            if (!NumericItemData::fuzzyCompare(_value, maximum) && _value > maximum) {
+                return true;
+            }
+        } else {
+            double maximum = d->limit->maximum();
+            if (!NumericItemData::fuzzyCompare(value, maximum) && value > maximum) {
+                return true;
+            }
         }
     }
 
