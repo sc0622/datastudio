@@ -37,85 +37,85 @@
 <context>
     <name>icdmeta::JCmdModel</name>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="440"/>
+        <location filename="../../command/JCmdModel.cpp" line="446"/>
         <source>Answer error!</source>
         <translation>应答错误！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="459"/>
+        <location filename="../../command/JCmdModel.cpp" line="465"/>
         <source>Answer arguments error! (Execute failure)</source>
         <translation>应答参数错误！（执行失败）</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="461"/>
+        <location filename="../../command/JCmdModel.cpp" line="467"/>
         <source>Arguments: </source>
         <translation>参数：</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="535"/>
+        <location filename="../../command/JCmdModel.cpp" line="541"/>
         <source>Has no valid channel!</source>
         <translation>没有有效通道！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="538"/>
+        <location filename="../../command/JCmdModel.cpp" line="544"/>
         <source>Command &quot;%1&quot; is not exists!</source>
         <translation>指令“%1”不存在！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="539"/>
-        <location filename="../../command/JCmdModel.cpp" line="564"/>
-        <location filename="../../command/JCmdModel.cpp" line="577"/>
-        <location filename="../../command/JCmdModel.cpp" line="588"/>
+        <location filename="../../command/JCmdModel.cpp" line="545"/>
+        <location filename="../../command/JCmdModel.cpp" line="570"/>
+        <location filename="../../command/JCmdModel.cpp" line="583"/>
+        <location filename="../../command/JCmdModel.cpp" line="594"/>
         <source>Current Mode: %1</source>
         <translation>当前模式：%1</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="542"/>
+        <location filename="../../command/JCmdModel.cpp" line="548"/>
         <source>Parameter object is null!</source>
         <translation>参数object为空！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="546"/>
+        <location filename="../../command/JCmdModel.cpp" line="552"/>
         <source>Command &quot;%1&quot; be sent too frequently!</source>
         <translation>指令“%1”发送太频繁！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="553"/>
+        <location filename="../../command/JCmdModel.cpp" line="559"/>
         <source>The priority of command &quot;%1&quot; is too lowly, and command &quot;%2&quot; is running!</source>
         <translation>指令“%1”权限太低，指令“%2”正在执行！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="555"/>
+        <location filename="../../command/JCmdModel.cpp" line="561"/>
         <source>The priority of command &quot;%1&quot; is equal to command &quot;%2&quot; and cannot execute!</source>
         <translation>指令“%1”权限与执行中的指令“%2”的相同，不能执行！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="562"/>
+        <location filename="../../command/JCmdModel.cpp" line="568"/>
         <source>The priority of command &quot;%1&quot; is too lowly!</source>
         <translation>The priority of command &quot;%1&quot; is too lowly!</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="569"/>
+        <location filename="../../command/JCmdModel.cpp" line="575"/>
         <source>The command system is blocked!, and command &quot;%1&quot; is running!</source>
         <translation>指令“%1”权限太低，当前指令“%2”正在执行中！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="575"/>
+        <location filename="../../command/JCmdModel.cpp" line="581"/>
         <source>The command system is blocked!, and some command is active!</source>
         <translation>指令系统已阻塞！有指令正在处理中！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="581"/>
+        <location filename="../../command/JCmdModel.cpp" line="587"/>
         <source>The command system is blocked, and command &quot;%1&quot; is running!</source>
         <translation>指令系统已阻塞，指令“%1”正在执行中！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="591"/>
+        <location filename="../../command/JCmdModel.cpp" line="597"/>
         <source>Command &quot;%1&quot; was ready fo sending failure!</source>
         <translation>指令“%1”发送准备失败！</translation>
     </message>
     <message>
-        <location filename="../../command/JCmdModel.cpp" line="594"/>
+        <location filename="../../command/JCmdModel.cpp" line="600"/>
         <source>Command &quot;%1&quot; was executed failure!</source>
         <translation>指令 “%1”执行失败！</translation>
     </message>

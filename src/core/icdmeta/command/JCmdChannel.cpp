@@ -496,7 +496,7 @@ void JCmdChannel::reset()
 
 bool JCmdChannel::ready(icdmeta::JCmdObject *object)
 {
-    if (object == Q_NULLPTR || !object->isValid()) {
+    if (!object || !object->isValid()) {
         return false;
     }
 
@@ -504,6 +504,7 @@ bool JCmdChannel::ready(icdmeta::JCmdObject *object)
     d->stopTimeout();
     d->mutex.lock();
     d->cmdObject = QSharedPointer<JCmdObject>(object, &QObject::deleteLater);
+    QQmlEngine::setObjectOwnership(d->cmdObject.data(), QQmlEngine::CppOwnership);
     d->workState = WorkStateSend;
     d->workResult = WorkResultInvalid;
     d->command = d->cmdObject->toByteArray();
@@ -530,7 +531,7 @@ void JCmdChannel::stopIdleTimer()
     Q_D(JCmdChannel);
     if (d->timerIdleRecv->isActive()) {
         d->timerIdleRecv->stop();
-        QApplication::removePostedEvents(this, QEvent::Timer);
+        QCoreApplication::removePostedEvents(this, QEvent::Timer);
         while (d->timerIdleRecv->isActive()) {
             QThread::msleep(20);
         }

@@ -42,7 +42,8 @@ void JFilterChannelPrivate::init()
 {
     Q_Q(JFilterChannel);
     //
-    worker = Icd::WorkerPtr(new Icd::Worker(q));
+    worker = Icd::WorkerPtr(new Icd::Worker());
+    QQmlEngine::setObjectOwnership(worker.get(), QQmlEngine::CppOwnership);
     worker->workerRecv()->setInterval(20);  // ? ms
     QObject::connect(worker->workerRecv().get(), &Icd::WorkerRecv::started,
                      q, [=](){
@@ -223,6 +224,8 @@ bool JFilterChannel::setCurrentChannel(JChannel *value)
     bool success = false;
     if (value != d->currentChannel) {
         //
+        d->worker->workerRecv()->stop();
+        //
         if (d->currentChannel) {
             d->currentChannel->close();
         }
@@ -232,14 +235,15 @@ bool JFilterChannel::setCurrentChannel(JChannel *value)
         }
         //
         d->currentChannel = value;
+        //
         if (!value || !value->isValid()) {
             d->worker->setChannel(nullptr);
         } else {
+            d->worker->setChannel(value->channel()->nativeChannel());
             if (value->open()) {
-                d->worker->setChannel(value->channel()->nativeChannel());
-                success = true;
-            } else {
-                success = false;
+                if (d->worker->workerRecv()->start()) {
+                    success = true;
+                }
             }
         }
         emit currentChannelChanged(value);
@@ -253,8 +257,8 @@ void JFilterChannel::appendChannel(JChannel *channel)
     Q_D(JFilterChannel);
     if (!d->channels.contains(channel)) {
         d->channels.append(channel);
+        emit channelsChanged();
     }
-    emit channelsChanged();
 }
 
 void JFilterChannel::removeChannel(const QString &identity)
@@ -328,11 +332,24 @@ void JFilterChannel::stop()
     if (d->timer->isActive()) {
         d->timer->stop();
         QCoreApplication::removePostedEvents(this, QEvent::Timer);
+        while (d->timer->isActive()) {
+            QThread::msleep(20);
+        }
+    }
+
+    foreach (auto channel , d->channels) {
+        if (channel) {
+            channel->close();
+        }
     }
 
     d->worker->workerRecv()->stop();
+
     if (d->currentChannel) {
         d->currentChannel->close();
         setCurrentChannel(nullptr);
     }
+
+    d->worker->workerRecv()->setChannel(nullptr);
+    //d->worker->workerRecv()->setTable(nullptr);
 }

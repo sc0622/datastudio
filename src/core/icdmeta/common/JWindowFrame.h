@@ -33,6 +33,9 @@ protected:
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
 
 private:
+    bool winEventFilter(void *message, long *result);
+
+private:
     Q_DISABLE_COPY(JWindowFrame)
     J_DECLARE_PRIVATE(JWindowFrame)
 };

@@ -30,8 +30,11 @@ public:
     QString typeName() const override;
 
     QString text() const override;
+    QString valueString() const override;
+    QString fullValue() const override;
     QString dataString() const override;
 
+    QString toString() const;
     qint8 *i8() const;
     quint8 *u8() const;
     qint16 *i16() const;
@@ -42,6 +45,8 @@ public:
     quint64 *u64() const;
     float *f32() const;
     double *f64() const;
+
+    Q_INVOKABLE double valueOf(int index) const;
 
     void setData(const char *buffer, int size);
     void setData(const QByteArray &data);

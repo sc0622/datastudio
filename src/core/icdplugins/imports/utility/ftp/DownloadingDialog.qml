@@ -94,7 +94,8 @@ Dialog {
             property real to: 100
             property real value: 0
             implicitWidth: 100
-            anchors.horizontalCenter: parent.horizontalCenter
+            //anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             minimumValueAngle: -180
             maximumValueAngle: 180
             progress: {

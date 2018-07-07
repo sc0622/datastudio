@@ -177,7 +177,13 @@ std::string ArrayItem::dataString() const
 
 std::string ArrayItem::toString() const
 {
-    return std::string(buffer(), static_cast<size_t>(bufferSize()));
+    std::string s = std::string(buffer(), static_cast<size_t>(bufferSize()));
+    std::string::size_type index = s.find_first_of('\0');
+    if (index == std::string::npos) {
+        return s;
+    } else {
+        return s.substr(0, index);
+    }
 }
 
 int8_t *ArrayItem::i8() const
@@ -228,6 +234,27 @@ float_t *ArrayItem::f32() const
 double_t *ArrayItem::f64() const
 {
     return reinterpret_cast<double_t*>(buffer());
+}
+
+double_t ArrayItem::valueOf(int index) const
+{
+    if (index < 0 || index >= d->count) {
+        return 0.0;
+    }
+
+    switch (d->arrayType) {
+    case Icd::ArrayI8: return static_cast<double>(i8()[index]);
+    case Icd::ArrayU8: return static_cast<double>(u8()[index]);
+    case Icd::ArrayI16: return static_cast<double>(i16()[index]);
+    case Icd::ArrayU16: return static_cast<double>(u16()[index]);
+    case Icd::ArrayI32: return static_cast<double>(i32()[index]);
+    case Icd::ArrayU32: return static_cast<double>(u32()[index]);
+    case Icd::ArrayI64: return static_cast<double>(i64()[index]);
+    case Icd::ArrayU64: return static_cast<double>(u64()[index]);
+    case Icd::ArrayF32: return static_cast<double>(f32()[index]);
+    case Icd::ArrayF64: return static_cast<double>(f64()[index]);
+    default: return 0.0;
+    }
 }
 
 void ArrayItem::resetData()

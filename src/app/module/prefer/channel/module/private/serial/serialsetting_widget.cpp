@@ -85,7 +85,22 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
         d_comboBoxPortName->addItem(portInfo.portName());
     }
     // BaudRate
-    const QList<qint32> baudRates = QSerialPortInfo::standardBaudRates();
+    QList<qint32> baudRates = QSerialPortInfo::standardBaudRates();
+    // custom
+    baudRates.append(230400);
+    baudRates.append(460800);
+    baudRates.append(500000);
+    baudRates.append(512000);
+    baudRates.append(600000);
+    baudRates.append(750000);
+    baudRates.append(921600);
+    baudRates.append(1000000);
+    baudRates.append(1500000);
+    baudRates.append(2000000);
+    baudRates.append(3000000);
+    // sort
+    qSort(baudRates);
+    // add
     QListIterator<qint32> citerBaudRates(baudRates);
     while (citerBaudRates.hasNext()) {
         const qint32 baudRate = citerBaudRates.next();

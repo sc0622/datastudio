@@ -81,7 +81,7 @@ void JFolderInfo::setIsDownloadFile(bool value)
 JDownloadObject::JDownloadObject(QObject *parent)
     : QThread(parent)
     , d_ftp(nullptr)
-    , d_JFolderInfo(new JFolderInfo(this))
+    , d_folderInfo(new JFolderInfo(this))
     , d_filePathIndex(-1)
     , d_file(nullptr)
     , d_readBytes(0)
@@ -126,7 +126,7 @@ void JDownloadObject::setFtp(QFtp *ftp)
 
 QString JDownloadObject::currentFile() const
 {
-    const QStringList &filePaths = d_JFolderInfo->filePaths();
+    const QStringList &filePaths = d_folderInfo->filePaths();
     if (d_filePathIndex < 0 || d_filePathIndex >= filePaths.count()) {
         return QString();
     } else {
@@ -136,7 +136,7 @@ QString JDownloadObject::currentFile() const
 
 int JDownloadObject::totalCount() const
 {
-    return d_JFolderInfo->count();
+    return d_folderInfo->count();
 }
 
 int JDownloadObject::currentIndex() const
@@ -151,8 +151,8 @@ bool JDownloadObject::isCanceled() const
 
 qint64 JDownloadObject::totalSize() const
 {
-    if (d_JFolderInfo->size() > 0) {
-        return d_JFolderInfo->size();
+    if (d_folderInfo->size() > 0) {
+        return d_folderInfo->size();
     } else {
         return d_totalSize;
     }
@@ -175,7 +175,7 @@ void JDownloadObject::reset()
     d_downloadPath.clear();
     d_saveDir.clear();
     d_currentFile.clear();
-    d_JFolderInfo->clear();
+    d_folderInfo->clear();
     d_rootDir.reset();
     d_currentDir.reset();
     d_eventLoop.quit();
@@ -192,7 +192,7 @@ void JDownloadObject::reset()
 
 bool JDownloadObject::result() const
 {
-    if (d_JFolderInfo->isNull()) {
+    if (d_folderInfo->isNull()) {
         return false;
     }
 
@@ -215,7 +215,7 @@ bool JDownloadObject::startDownload(const QString &downloadPath, bool isDownload
     d_isCanceled = false;
     d_downloadPath = downloadPath;
     d_saveDir = saveDir;
-    d_JFolderInfo->setIsDownloadFile(isDownloadFile);
+    d_folderInfo->setIsDownloadFile(isDownloadFile);
 
     enableFtpConnect(true);
 
@@ -289,13 +289,13 @@ void JDownloadObject::onCommandFinished(int commandId, bool error)
             const bool result = this->result();
             if (result) {
                 //
-                d_totalSize = d_JFolderInfo->size();
+                d_totalSize = d_folderInfo->size();
                 //
-                emit totalCountChanged(d_JFolderInfo->count());
+                emit totalCountChanged(d_folderInfo->count());
                 // download
                 d_readBytes = 0;
                 if (!downloadNextFile(0)) {
-                    d_JFolderInfo->clear();
+                    d_folderInfo->clear();
                     quit();
                     break;
                 }
@@ -315,7 +315,7 @@ void JDownloadObject::onCommandFinished(int commandId, bool error)
             qCritical() << "get error:" << d_ftp->errorString();
             d_file->close();
             d_file->remove();
-            d_JFolderInfo->clear();
+            d_folderInfo->clear();
             quit();
             break;
         } else {
@@ -324,14 +324,14 @@ void JDownloadObject::onCommandFinished(int commandId, bool error)
             d_file = nullptr;
             //
             int filePathIndex = d_filePathIndex + 1;
-            if (filePathIndex >= d_JFolderInfo->count()) {
+            if (filePathIndex >= d_folderInfo->count()) {
                 quit();
                 break;
             }
             //
             d_readBytes = 0;
             if (!downloadNextFile(d_filePathIndex + 1)) {
-                d_JFolderInfo->clear();
+                d_folderInfo->clear();
                 quit();
                 break;
             }
@@ -351,14 +351,14 @@ void JDownloadObject::onListInfo(const QUrlInfo &info)
         chid->parent = d_currentDir;
         d_currentDir->appendChild(chid);
     } else if (info.isFile()) {
-        d_JFolderInfo->appendFilePath(currentDir+ info.name());
-        d_JFolderInfo->setSize(d_JFolderInfo->size() + info.size());
+        d_folderInfo->appendFilePath(currentDir+ info.name());
+        d_folderInfo->setSize(d_folderInfo->size() + info.size());
     }
 }
 
 void JDownloadObject::onDataTransferProgress(qint64 readBytes, qint64 totalBytes)
 {
-    if (d_JFolderInfo->isDownloadFile()) {
+    if (d_folderInfo->isDownloadFile()) {
         d_downloadedSize = readBytes;
         d_totalSize = totalBytes;
         //emit dataTransferProgress(readBytes, totalBytes);
@@ -388,10 +388,10 @@ void JDownloadObject::timerEvent(QTimerEvent *event)
 
 void JDownloadObject::run()
 {
-    if (d_JFolderInfo->isDownloadFile()) {
-        d_JFolderInfo->appendFilePath(d_downloadPath);
+    if (d_folderInfo->isDownloadFile()) {
+        d_folderInfo->appendFilePath(d_downloadPath);
 
-        emit totalCountChanged(d_JFolderInfo->count());
+        emit totalCountChanged(d_folderInfo->count());
 
         // download
         if (!downloadNextFile(0)) {
@@ -445,7 +445,7 @@ bool JDownloadObject::downloadNextFile(int index)
     //setCurrentIndex(index);
     d_filePathIndex = index;
 
-    const QStringList &filePaths = d_JFolderInfo->filePaths();
+    const QStringList &filePaths = d_folderInfo->filePaths();
     if (index < 0 || index >= filePaths.count()) {
         return false;
     }

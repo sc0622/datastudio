@@ -801,8 +801,7 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             pairData.second = QString(dic.result.c_str());
             datas.insert(1, pairData);
         } else if (data->type() == GlobalDefine::dtFrameCode) {
-            ICDFrameCodeData::smtFrameCode frameCode
-                    = std::dynamic_pointer_cast<ICDFrameCodeData>(data);
+            ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(data);
             pairData.first = QStringLiteral("жЁТыЪ§Он");
             ICDComplexData::smtComplex complex = frameCode->data();
             if (!complex) {

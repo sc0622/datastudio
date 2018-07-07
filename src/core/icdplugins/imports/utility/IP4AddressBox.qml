@@ -39,7 +39,8 @@ Item {
             width: 3
             height: 3
             radius: 3
-            anchors.verticalCenter: parent.verticalCenter
+            //anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignVCenter
             anchors.verticalCenterOffset: 8
             color: Material.foreground
         }
@@ -65,7 +66,8 @@ Item {
             width: 3
             height: 3
             radius: 3
-            anchors.verticalCenter: parent.verticalCenter
+            //anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignVCenter
             anchors.verticalCenterOffset: 8
             color: Material.foreground
         }
@@ -91,7 +93,8 @@ Item {
             width: 3
             height: 3
             radius: 3
-            anchors.verticalCenter: parent.verticalCenter
+            //anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignVCenter
             anchors.verticalCenterOffset: 8
             color: Material.foreground
         }

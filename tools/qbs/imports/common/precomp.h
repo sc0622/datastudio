@@ -10,7 +10,7 @@
 
 #ifdef _AFXDLL
 #include <afxwin.h>
-#elif (defined(WIN32) && defined(DEBUG))
+#elif defined(_WIN32) && defined(INCLUDE_WINDOWS)
 #include <Windows.h>
 #endif
 

@@ -491,7 +491,7 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         return nullptr;
     }
 
-    JChart::Chart *chart = nullptr;
+    JChart::Chart *newChart = nullptr;
 
     //
     switch (dataItem->type()) {
@@ -506,7 +506,8 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         JChart::FileNumericChart *numericChart = new JChart::FileNumericChart(q);
         // init
         // specs
-        chart = numericChart;
+
+        newChart = numericChart;
         break;
     }
     case Icd::ItemBitMap:
@@ -530,15 +531,15 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
             }
         }
         // init
-        chart = bitChart;
+
+        newChart = bitChart;
         break;
     }
     default:
         break;
     }
 
-    //
-    return chart;
+    return newChart;
 }
 
 JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, GroupSeries *seriesData,

@@ -59,8 +59,8 @@ public slots:
 
     // Serializable interface
 public:
-    Json::Value save() const;
-    bool restore(const Json::Value &json, int /*deep*/ = -1);
+    Json::Value save() const override;
+    bool restore(const Json::Value &json, int /*deep*/ = -1) override;
 
 private:
     Q_DISABLE_COPY(JChannel)

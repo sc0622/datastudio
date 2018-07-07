@@ -27,8 +27,8 @@ public:
         : J_QPTR(q)
         , shadowSize(8)
         , resizable(true)
-        , window(0)
-        , header(0)
+        , window(nullptr)
+        , header(nullptr)
     {
 
     }
@@ -167,10 +167,17 @@ void JWindowFrame::setResizable(bool value)
     }
 }
 
-bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
-                                     void *message, long *result)
+bool JWindowFrame::nativeEventFilter(const QByteArray &eventType, void *message, long *result)
 {
-    Q_UNUSED(eventType);
+    if (eventType == "windows_generic_MSG") {
+        return winEventFilter(message, result);
+    }
+
+    return false;
+}
+
+bool JWindowFrame::winEventFilter(void *message, long *result)
+{
 #ifdef _WIN32
     Q_D(JWindowFrame);
     if (!d->window) {
@@ -181,7 +188,13 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
         return false;
     }
 
-    switch (msg->message) {/*
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+#else
+#endif
+    qDebug() << msg->message << msg->wParam << msg->lParam;
+
+    switch (msg->message) {
+#if 0
     case WM_GETMINMAXINFO:
     {
         const QPoint pos = QPoint(msg->pt.x, msg->pt.y) / d->window->effectiveDevicePixelRatio();
@@ -193,7 +206,8 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
         info->ptMaxSize.x = rect.width() + d->shadowSize * 2;
         info->ptMaxSize.y = rect.height() + d->shadowSize * 2;
         return true;
-    }*/
+    }
+#endif
     case WM_NCHITTEST:
     {
         if (d->window->windowState() & Qt::WindowFullScreen) {
@@ -202,30 +216,34 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
 
         const QPoint pos = QPoint(msg->pt.x, msg->pt.y) / d->window->effectiveDevicePixelRatio()
                 - d->window->position();
-        *result = d->hitFromRegion(d->testHit(pos));
+        int _result = d->hitFromRegion(d->testHit(pos));
+        if (result) {
+            *result = _result;
+        }
         //qDebug() << "WM_NCHITTEST:" << pos;
-        switch (*result) {
+        switch (_result) {
         case HTCAPTION:
         {
             QQuickItem *focusItem = d->window->activeFocusItem();
-            /*if (focusItem) {
-                QObject *parentO = focusItem->parent();
-                QQuickItem *parentIt = focusItem->parentItem();
-                qDebug() << "parentO:" << parentO << ", " << "parentItem:" << parentIt;
-            }*/
-            if (focusItem && focusItem->inherits("QQuickPopupItem")) {
-                break;
-            } else {
-                QVariant acceptCaption = true;
-                if (QMetaObject::invokeMethod(d->window, "caption",
-                                              Q_RETURN_ARG(QVariant, acceptCaption),
-                                              Q_ARG(QVariant, pos))) {
-                    if (acceptCaption.toBool()) {
-                        return true;
-                    }
-                } else {
+            if (focusItem) {
+                //QObject *parentO = focusItem->parent();
+                //QQuickItem *parentIt = focusItem->parentItem();
+                //qDebug() << "parentO:" << parentO << ", " << "parentItem:" << parentIt;
+                //const QString className = focusItem->metaObject()->className();
+                if (focusItem->inherits("QQuickPopupItem")) {
+                    break;
+                }
+            }
+
+            QVariant acceptCaption = true;
+            if (QMetaObject::invokeMethod(d->window, "caption",
+                                          Q_RETURN_ARG(QVariant, acceptCaption),
+                                          Q_ARG(QVariant, pos))) {
+                if (acceptCaption.toBool()) {
                     return true;
                 }
+            } else {
+                return true;
             }
             break;
         }
@@ -244,19 +262,23 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
             break;
         }
         break;
-    }/*
+    }
+#if 0
     case WM_NCPAINT:
     {
         //qDebug() << "WM_NCPAINT";
         break;
     }
+#endif
+#if 0
     case WM_NCCALCSIZE:
     {
         int xFrame = 1;
         int yFrame = 1;
         int nTHeight = 1;
-        RECT *rc, ar, br, bcr;
+        RECT *rc;
 #if 0
+        RECT ar, br, bcr;
         if (msg->wParam == TRUE) {
             NCCALCSIZE_PARAMS *params = reinterpret_cast<NCCALCSIZE_PARAMS *>(msg->lParam);
 
@@ -295,7 +317,8 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
         }
 #endif
         return true;
-    }*/
+    }
+#endif
     case WM_KEYDOWN:
     {
         switch (msg->wParam) {
@@ -335,6 +358,7 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType,
 #else
     //
 #endif
+
     return false;
 }
 

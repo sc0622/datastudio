@@ -29,56 +29,49 @@ Page {
     }
 
     contentItem: ColumnLayout {
-        Label {
-            id: labelTitle
-            anchors {
-                left: parent.left
-                top: parent.top
-                leftMargin: 10
-                topMargin: 2
+        spacing: 3
+        RowLayout {
+            Label {
+                id: labelTitle
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                leftPadding: 10
+                topPadding: 0
+                font.weight: Font.Normal
+                renderType: Text.QtRendering
+                opacity: 0.8
+                text: title
+                Label {
+                    id: labelValue
+                    Layout.alignment: Qt.AlignTop
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    font.pointSize: 18
+                    font.weight: Font.Normal
+                    //font.family: Flat.FlatStyle.fontFamily
+                    renderType: Text.QtRendering
+                    Material.foreground: Material.accent
+                    horizontalAlignment: Text.AlignHCenter
+                    text: value.toFixed(decimals) + suffix
+                }
             }
-            Layout.fillWidth: true
-            font.weight: Font.Normal
-            renderType: Text.QtRendering
-            opacity: 0.8
-            horizontalAlignment: Text.AlignLeft
-            text: title
         }
-
-        QCharts.QChart {
-            id: canvas
-            anchors {
-                left: parent.left
-                right: parent.right
-                top: labelTitle.bottom
-                bottom: parent.bottom
-                leftMargin: 5
-                rightMargin: 5
-                topMargin: 6
-                bottomMargin: 0
-            }
-            clip: true
-            antialiasing: true
-            chartType: Charts.ChartType.LINE
-            chartData: QChartGallery.ChartLineData
-            chartOptions: QChartGallery.ChartLineOptions
-        }
-
-        Label {
-            id: labelValue
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                top: parent.top
-                topMargin: 2
-            }
+        Pane {
             Layout.fillWidth: true
-            font.pointSize: 18
-            font.weight: Font.Normal
-            //font.family: Flat.FlatStyle.fontFamily
-            renderType: Text.QtRendering
-            Material.foreground: Material.accent
-            horizontalAlignment: Text.AlignHCenter
-            text: value.toFixed(decimals) + suffix
+            Layout.fillHeight: true
+            padding: 0
+            background: null
+            contentItem: QCharts.QChart {
+                id: canvas
+                anchors.fill: parent
+                anchors.leftMargin: 3
+                anchors.rightMargin: 3
+                clip: true
+                antialiasing: true
+                chartType: Charts.ChartType.LINE
+                chartData: QChartGallery.ChartLineData
+                chartOptions: QChartGallery.ChartLineOptions
+            }
         }
     }
 

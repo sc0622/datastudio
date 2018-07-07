@@ -13,6 +13,7 @@ Project {
     property string projectName: 'app'
     property string projectDisplayName: 'App'
     property string version: probeVersion.version
+    property bool buildQuote: false
     readonly property int versionMajor: parseInt(version.split('.')[0])
     readonly property int versionMinor: parseInt(version.split('.')[1])
     readonly property int versionPatch: parseInt(version.split('.')[2])

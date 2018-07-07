@@ -39,7 +39,6 @@ Page {
         }
         itemDelegate: RowLayout {
             id: rowLayout
-            Layout.fillWidth: true
             clip: true
             Item { width: 5 }
             Image {
@@ -67,24 +66,22 @@ Page {
             }
             ProgressBar {
                 id: progressBar
+                Layout.alignment: Qt.AlignBottom
+                Layout.fillWidth: true
                 height: 20
                 visible: {
                     if (!image.visible) {
                         return false
                     }
-                    /*if (rootModel && rootModel.ftpTableModel.data(styleData.row,
-                                                     JFtpTableModel.IsDirRole)) {
-                        return false
-                    }*/
-                    if (styleData.row === 0/* && !rootModel.rootDir*/) {
+                    if (styleData.row === 0) {
                         return false
                     }
                     return (rootModel.downloadingRow === styleData.row)
                 }
                 anchors {
-                    left: parent.left
+                    left: image.left
+                    leftMargin: 10
                     right: parent.right
-                    bottom: parent.bottom
                 }
             }
             Label {
@@ -110,17 +107,14 @@ Page {
                     if (styleData.row === 0 && !rootModel.rootDir) {
                         return false;
                     } else if (rootModel) {
-                        /*if (rootModel.ftpTableModel.data(styleData.row,
-                                                         JFtpTableModel.IsDirRole)) {
-                            return false;
-                        }*/
+                        //
                     }
                     return true;
                 }
-
                 onClicked: {
                     tableView.currentRow = styleData.row
-                    menuRight.open()
+                    //menuRight.open()
+                    menuRight.popup(mouseX, mouseY)
                 }
             }
 
@@ -296,7 +290,7 @@ Page {
     Component.onCompleted: {
         var columns = [
                     { title: qsTr("名称"), role: "name", width: 400 },
-                    { title: qsTr("大小"), role: "size", width: 100 },
+                    { title: qsTr("大小"), role: "size", width: 150 },
                     { title: qsTr("修改日期"), role: "lastModified", width: 200 },
                     //{ title: qsTr("访问日期"), role: "lastRead" },
                     { title: qsTr("拥有者"), role: "owner", width: 150 },

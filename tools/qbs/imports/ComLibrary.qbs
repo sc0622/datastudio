@@ -12,10 +12,15 @@ CppDyLibrary {
     type: base.concat([ 'config' ])
 
     Depends { name: 'cpp' }
-    Depends { name: '3rdpart.qtribbon' }
-    Depends { name: 'core.jframe_facade' }
-    Depends { name: 'core.jframe_factory' }
-    Depends { name: 'core.jframe_kernel' }
+    Depends { name: 'qtribbon'; required: false }
+    Depends { name: 'jframe_facade'; required: false }
+    Depends { name: 'jframe_factory'; required: false }
+    Depends { name: 'jframe_kernel'; required: false }
+
+    Depends { name: '3rdpart.qtribbon'; required: false }
+    Depends { name: 'core.jframe_facade'; required: false }
+    Depends { name: 'core.jframe_factory'; required: false }
+    Depends { name: 'core.jframe_kernel'; required: false }
 
     Group {
         name: 'Config'

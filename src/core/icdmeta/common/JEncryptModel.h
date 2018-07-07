@@ -16,7 +16,7 @@ class ICDMETA_EXPORT JEncryptModel : public QObject
     Q_PROPERTY(QString serialNumber READ serialNumber WRITE setSerialNumber NOTIFY serialNumberChanged)
     Q_PROPERTY(bool active READ isActive WRITE setActive NOTIFY activeChanged)
 public:
-    explicit JEncryptModel(QObject *parent = 0);
+    explicit JEncryptModel(QObject *parent = nullptr);
     ~JEncryptModel();
 
     static void registerQmlType();

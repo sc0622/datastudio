@@ -75,17 +75,18 @@ bool FrameCodeEdit::init()
     args.append(qVariantFromValue((void*)&command));
     jnotify->send("edit.queryFrameData", args);
     // 将已绑定数据加入备选
-    ICDFrameCodeData *frameCodeData = data();
-    if (frameCodeData) {
-        frame[frameCodeData->serial()] = QString::fromStdString(frameCodeData->name());
+    ICDComplexData::smtComplex complex = data()->data();
+    if (complex) {
+        frame[complex->serial()] = QString::fromStdString(complex->name());
     }
+    comboData_->addItem(QStringLiteral("不绑定"), -1);
     QMapIterator<int, QString> it = frame;
     while (it.hasNext()) {
         it.next();
         comboData_->addItem(QStringLiteral("绑定<%1>").arg(it.value()), it.key());
     }
-    comboData_->insertItem(0, QStringLiteral("不绑定"), -1);
-    const QString code = QString::fromStdString(frameCodeData->defaultStr());
+    //
+    const QString code = QString::fromStdString(data()->defaultStr());
     if (code.isEmpty()) {
         comboData_->setCurrentIndex(0);
     } else {

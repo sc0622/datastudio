@@ -138,7 +138,7 @@ private:
 
 private:
     QFtp *d_ftp;
-    JFolderInfo *d_JFolderInfo;
+    JFolderInfo *d_folderInfo;
     JDirLinkPtr d_rootDir;
     JDirLinkPtr d_currentDir;
     QEventLoop d_eventLoop;

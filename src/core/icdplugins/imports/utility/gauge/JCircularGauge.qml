@@ -45,8 +45,9 @@ Page {
         Item { Layout.fillHeight: true }
         CircularGauge {
             id: gauge
-            anchors.horizontalCenter: parent.horizontalCenter
             implicitWidth: root.implicitWidth - 3
+            //anchors.horizontalCenter: parent.horizontalCenter
+            Layout.alignment: Qt.AlignHCenter
             implicitHeight: implicitWidth
             Behavior on value { NumberAnimation { } }
             style: CircularGaugeStyle {
@@ -141,21 +142,21 @@ Page {
                 renderType: Text.QtRendering
                 Material.foreground: Material.accent
                 text: value.toFixed(decimals).toString()
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            Label {
-                id: labelSuffix
-                font.pointSize: fontSize / 2
-                font.weight: Font.Light
-                renderType: Text.QtRendering
-                Material.foreground: Material.accent
-                anchors {
-                    left: labelValue.right
-                    top: labelValue.top
-                    leftMargin: 2
+                Label {
+                    id: labelSuffix
+                    font.pointSize: fontSize / 2
+                    font.weight: Font.Light
+                    font.family: 'Noto Sans S Chinese Bold'
+                    renderType: Text.QtRendering
+                    Material.foreground: Material.accent
+                    anchors {
+                        left: parent.right
+                        top: parent.top
+                        leftMargin: 2
+                    }
+                    textFormat: Text.RichText
+                    text: suffix
                 }
-                textFormat: Text.RichText
-                text: suffix
             }
             Item { Layout.fillWidth: true }
         }

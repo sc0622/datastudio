@@ -15,7 +15,7 @@ class ICDMETA_EXPORT JChannelPool : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<icdmeta::JChannel> channels READ channels NOTIFY channelsChanged)
 public:
-    explicit JChannelPool(QObject *parent = 0);
+    explicit JChannelPool(QObject *parent = nullptr);
     ~JChannelPool();
 
     static void registerQmlType();

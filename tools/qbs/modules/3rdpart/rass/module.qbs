@@ -3,7 +3,5 @@ import '../3rdpart.qbs' as _3rdpart
 
 _3rdpart {
     moduleName: 'rass'
-    cpp.dynamicLibraries: [
-        libraryPaths + '/rass/' + moduleName + variantSuffix + '_md'
-    ]
+    cpp.dynamicLibraries: [ 'rass/' + moduleName + variantSuffix + '_md' ]
 }

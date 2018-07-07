@@ -83,8 +83,11 @@ QStringList JSuperChannel::channelTypes() const
 void JSuperChannel::setChannel(const Icd::ChannelPtr &channel)
 {
     Q_D(JSuperChannel);
-    if (channel == Q_NULLPTR) {
-        d->channel = Q_NULLPTR;
+    if (d->channel) {
+        d->channel->close();
+    }
+    if (channel == nullptr) {
+        d->channel = nullptr;
         return;
     }
     if (channelType() != (ChannelType)channel->channelType()) {
@@ -162,6 +165,9 @@ bool JSuperChannel::open()
 void JSuperChannel::close()
 {
     Q_D(JSuperChannel);
+    if (!d->channel) {
+        return;
+    }
     d->channel->close();
     emit isOpenChanged(false);
 }
@@ -186,7 +192,7 @@ void JSuperChannel::release(QObject *object)
 void JSuperChannel::setName(const QString &name)
 {
     Q_D(JSuperChannel);
-    if (d->channel == Q_NULLPTR) {
+    if (!d->channel) {
         return;
     }
     const std::string d_name = d->channel->name();
@@ -249,6 +255,10 @@ Json::Value JSuperChannel::save() const
     Q_D(const JSuperChannel);
 
     Json::Value json;
+
+    if (!d->channel) {
+        return json;
+    }
 
     switch (d->channel->channelType()) {
     case JSuperChannel::ChannelSerial:

@@ -44,13 +44,12 @@ Page {
             text: root.title
         }
         Item { Layout.fillHeight: true }
-        RowLayout {
-            spacing: 0
+        ColumnLayout {
             JSpinBox {
                 id: spinBox
                 Layout.fillWidth: true
                 Layout.minimumWidth: 80
-                anchors.verticalCenter: parent.verticalCenter
+                Layout.alignment: Qt.AlignHCenter
                 from: 0
                 to: 3
                 decimals: 2
@@ -59,7 +58,7 @@ Page {
             JCmdButton {
                 id: buttonCmd
                 //Layout.fillWidth: true
-                anchors.verticalCenter: parent.verticalCenter
+                Layout.alignment: Qt.AlignHCenter
                 Layout.minimumWidth: 150
                 text: qsTr("--")
                 onClicked: {

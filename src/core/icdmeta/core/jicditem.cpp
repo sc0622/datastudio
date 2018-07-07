@@ -170,7 +170,7 @@ IcdCore::ItemType JIcdItem::stringType(const QString &str)
 JIcdItem *JIcdItem::create(const Icd::ItemPtr &data, QObject *parent)
 {
     if (!data) {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     switch (data->type()) {
@@ -201,7 +201,7 @@ JIcdItem *JIcdItem::create(const Icd::ItemPtr &data, QObject *parent)
         break;
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void JIcdItem::updateData()

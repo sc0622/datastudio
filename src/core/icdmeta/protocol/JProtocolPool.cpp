@@ -2,6 +2,9 @@
 #include "JProtocolPool.h"
 #include "JProtocol.h"
 #include "../core/jicdtable.h"
+#include "JDataChannel.h"
+#include "JDataChannelMgr.h"
+#include "JFilterChannel.h"
 
 namespace icdmeta {
 
@@ -69,6 +72,8 @@ void JProtocolPool::registerQmlType()
     IcdMetaRegisterSingletonType3(JProtocolPool);
 
     JProtocol::registerQmlType();
+    JDataChannelMgr::registerQmlType();
+    JFilterChannel::registerQmlType();
 }
 
 QQmlListProperty<JProtocol> JProtocolPool::protocols()
@@ -98,8 +103,9 @@ bool JProtocolPool::loadConfig(const QString &filePath, const QString &nodePath)
             continue;
         }
         QSharedPointer<JProtocol> newObject =
-                QSharedPointer<JProtocol>(new JProtocol(QString::fromStdString(id), this),
+                QSharedPointer<JProtocol>(new JProtocol(QString::fromStdString(id)),
                                           jdelete_qobject);
+        QQmlEngine::setObjectOwnership(newObject.data(), QQmlEngine::CppOwnership);
         newObject->restore(itemJson);
         d->protocols.append(newObject);
     }
@@ -157,5 +163,7 @@ JProtocol *JProtocolPool::tableIdOf(const QString &identity) const
 void JProtocolPool::reset()
 {
     Q_D(JProtocolPool);
+    JDataChannelMgr::instance()->reset();
+    JFilterChannel::instance()->reset();
     d->protocols.clear();
 }

@@ -317,7 +317,9 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     if (!dataItem) {
         return false;
     }
-    //
+
+    JChart::Chart *newChart = nullptr;
+
     switch (dataItem->type()) {
     case Icd::ItemHead:
     case Icd::ItemCounter:
@@ -329,7 +331,9 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         // create
         JChart::NumericChart *chart = new JChart::NumericChart(q);
         // specs
-        return chart;
+
+        newChart = chart;
+        break;
     }
     case Icd::ItemBitMap:
     {
@@ -351,7 +355,8 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
                 series->setTitle(QString::fromStdString(Icd::BitItem::nameOf(citer->second)));
             }
         }
-        return chart;
+        newChart = chart;
+        break;
     }
     case Icd::ItemArray:
     {
@@ -369,7 +374,9 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         chart->setAsciiVisible(hexAsciiVisible);
         chart->setColumnCount(hexColumnCount);
         // specs
-        return chart;
+
+        newChart = chart;
+        break;
     }
     case Icd::ItemComplex:
     {
@@ -387,13 +394,15 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         chart->setAsciiVisible(hexAsciiVisible);
         chart->setColumnCount(hexColumnCount);
         // specs
-        return chart;
+
+        newChart = chart;
+        break;
     }
     default:
         break;
     }
 
-    return nullptr;
+    return newChart;
 }
 
 bool ChartViewPrivate::findChart(JChart::Chart *chart)

@@ -23,116 +23,6 @@ Page {
             Layout.fillHeight: false
             contentItem: ColumnLayout {
                 RowLayout {
-                    visible: false
-                    Label {
-                        horizontalAlignment: Text.AlignRight
-                        text: qsTr("主机（FTP）：")
-                    }
-                    TextField {
-                        id: fieldHost
-                        property string prefix: ""
-                        Layout.fillWidth: true
-                        selectByMouse: true
-                        Material.foreground: Material.accent
-                        ToolTip.delay: 800
-                        ToolTip.timeout: 5000
-                        ToolTip.visible: hovered
-                        ToolTip.text: text
-                        Component.onCompleted: {
-                            text = FtpJs.values.host
-                            prefix = text
-                        }
-                        Component.onDestruction: {
-                            FtpJs.values.host = text
-                        }
-                    }
-                    Item { width: 30}
-                    Label {
-                        horizontalAlignment: Text.AlignRight
-                        text: qsTr("端口：")
-                    }
-                    JSpinBox {
-                        id: spinPort
-                        indicatorVisible: false
-                        from: 0
-                        to: 65535
-                        value: 21
-                        Component.onCompleted: {
-                            value = FtpJs.values.port
-                        }
-                        Component.onDestruction: {
-                            FtpJs.values.port = value
-                        }
-                    }
-                }
-                RowLayout {
-                    visible: false
-                    Label {
-                        horizontalAlignment: Text.AlignRight
-                        text: qsTr("用户名：")
-                    }
-                    TextField {
-                        id: fieldUser
-                        Layout.fillWidth: true
-                        selectByMouse: true
-                        Component.onCompleted: {
-                            text = FtpJs.values.userName
-                        }
-                        Component.onDestruction: {
-                            FtpJs.values.userName = text
-                        }
-                    }
-                    Item { width: 30}
-                    Label {
-                        horizontalAlignment: Text.AlignRight
-                        text: qsTr("密码：")
-                    }
-                    TextField {
-                        id: fieldPassword
-                        Layout.fillWidth: true
-                        selectByMouse: true
-                        echoMode: TextInput.Password
-                        Component.onCompleted: {
-                            text = FtpJs.values.password
-                        }
-                        Component.onDestruction: {
-                            FtpJs.values.password = text
-                        }
-                    }
-                    Item { width: 30 }
-                    Button {
-                        id: buttonLogin
-                        property bool isConnected: false
-                        Material.background: Qt.darker(Material.accent)
-                        implicitWidth: 120
-                        text: isConnected ? qsTr("断开连接") : qsTr("连接")
-                        onClicked: {
-                            var execCallback = function(success) {
-                                if (success) {
-                                    isConnected = !isConnected
-                                }
-                            }
-                            if (isConnected) {
-                                rootModel.disconnectFromHost(execCallback)
-                            } else {
-                                var text = fieldHost.text
-                                text = text.replace(/[^:]\/+/g, function(word){
-                                    if (word.length === 0) {
-                                        return ""
-                                    }
-                                    return word.charAt(0) + "/"
-                                })
-                                text = text.replace(/\\/g, '/')
-                                fieldHost.text = text
-                                fieldHost.prefix = fieldHost.text
-                                rootModel.connectToHost(fieldHost.text, spinPort.value,
-                                                        fieldUser.text, fieldPassword.text,
-                                                        execCallback)
-                            }
-                        }
-                    }
-                }
-                RowLayout {
                     Label {
                         horizontalAlignment: Text.AlignRight
                         text: qsTr("下载保存位置：")
@@ -153,7 +43,7 @@ Page {
                         }
                         onTextChanged: {
                             if (rootModel) {
-                            rootModel.saveAsDir = text
+                                rootModel.saveAsDir = text
                             }
                         }
                     }
@@ -180,38 +70,5 @@ Page {
                 root.currentRowChanged(row)
             }
         }
-    }
-
-    Connections {
-        target: rootModel
-        onCurrentPathChanged: {
-            var text = fieldHost.prefix + rootModel.currentPath
-            fieldHost.text = text.replace(/[^:]\/+/g, function(word){
-                if (word.length === 0) {
-                    return ""
-                }
-                return word.charAt(0) + "/"
-            })
-        }
-/*
-        onStateChanged: {
-            switch (state) {
-            case FtpModel.Unconnected:
-                break
-            case FtpModel.HostLookup:
-                break
-            case FtpModel.Connecting:
-                break
-            case FtpModel.Connected:
-                break
-            case FtpModel.LoggedIn:
-                break
-            case FtpModel.Closing:
-                break
-            default:
-                break
-            }
-            console.log(state)
-        }*/
     }
 }

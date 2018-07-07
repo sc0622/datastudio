@@ -21,7 +21,7 @@ class ICDMETA_EXPORT JDataChannel : public QObject
     Q_PROPERTY(icdmeta::JProtocol* protocolSend READ protocolSend NOTIFY protocolSendChanged)
     Q_PROPERTY(icdmeta::JProtocol* protocolRecv READ protocolRecv NOTIFY protocolRecvChanged)
 public:
-    explicit JDataChannel(const QString &identity, QObject *parent = 0);
+    explicit JDataChannel(const QString &identity, QObject *parent = nullptr);
     ~JDataChannel();
 
     static void registerQmlType();
@@ -40,6 +40,7 @@ signals:
 public slots:
     bool binding(icdmeta::JChannel *channel, icdmeta::JProtocol *protocolSend,
                  icdmeta::JProtocol *protocolRecv);
+    bool bindingRecv(icdmeta::JChannel *channel, JProtocol *protocol);
     void unbinding();
     void unbindingSend();
     void unbindingRecv();

@@ -88,13 +88,36 @@ QString JIcdArrayItem::typeName() const
 
 QString JIcdArrayItem::text() const
 {
-    return dataString();
+    //Q_D(const JIcdArrayItem);
+    QString info;
+    //TODO
+    return info;
+}
+
+QString JIcdArrayItem::valueString() const
+{
+    //Q_D(const JIcdArrayItem);
+    //TODO
+    return QString();
+}
+
+QString JIcdArrayItem::fullValue() const
+{
+    //Q_D(const JIcdArrayItem);
+    //TODO
+    return QString();
 }
 
 QString JIcdArrayItem::dataString() const
 {
     Q_D(const JIcdArrayItem);
     return QString::fromStdString(d->data->dataString());
+}
+
+QString JIcdArrayItem::toString() const
+{
+    Q_D(const JIcdArrayItem);
+    return  QString::fromStdString(d->data->toString());
 }
 
 qint8 *JIcdArrayItem::i8() const
@@ -155,6 +178,12 @@ double *JIcdArrayItem::f64() const
 {
     Q_D(const JIcdArrayItem);
     return  d->data->f64();
+}
+
+double JIcdArrayItem::valueOf(int index) const
+{
+    Q_D(const JIcdArrayItem);
+    return d->data->valueOf(index);
 }
 
 void JIcdArrayItem::setData(const char *buffer, int size)

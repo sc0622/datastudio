@@ -45,7 +45,7 @@ Page {
             text: root.title
         }
         RowLayout {
-            anchors.horizontalCenter: parent.horizontalCenter
+            Item { Layout.fillWidth: true }
             Dial {
                 id: dial
                 implicitHeight: 65
@@ -63,20 +63,22 @@ Page {
                 Material.foreground: Material.accent
                 horizontalAlignment: Text.AlignHCenter
                 text: dial.value.toFixed(decimals)
-            }
-            Label {
-                id: labelSuffix
-                font.pointSize: fontSize / 2
-                font.weight: Font.Normal
-                renderType: Text.QtRendering
-                Material.foreground: Material.accent
-                anchors {
-                    left: labelValue.right
-                    top: labelValue.top
-                    leftMargin: 2
+                Label {
+                    id: labelSuffix
+                    font.pointSize: fontSize / 2
+                    font.weight: Font.Normal
+                    font.family: 'Noto Sans S Chinese Bold'
+                    renderType: Text.QtRendering
+                    Material.foreground: Material.accent
+                    anchors {
+                        left: parent.right
+                        top: parent.top
+                        leftMargin: 2
+                    }
+                    text: suffix
                 }
-                text: suffix
             }
+            Item { Layout.fillWidth: true }
         }
     }
 }

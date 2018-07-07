@@ -257,6 +257,7 @@ bool JChannel::restore(const Json::Value &json, int)
             setChannel(nullptr);
             return false;
         }
+        QQmlEngine::setObjectOwnership(newChannel, QQmlEngine::CppOwnership);
         newChannel->setParent(this);
     } else {
         newChannel = d->channel;

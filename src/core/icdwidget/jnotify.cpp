@@ -354,6 +354,32 @@ void JNotify::un(QObject *receiver)
     d->mutex.unlock();
 }
 
+void JNotify::un(QObject *receiver, const QString &channel)
+{
+    if (!receiver) {
+        return;
+    }
+    Q_D(JNotify);
+    d->mutex.lock();
+    auto iterCallback = d->callbacks.find(channel);
+    if (iterCallback != d->callbacks.end()) {
+        QMap<QObject*,JNotifyDataPtrArray> &receivers = iterCallback.value();
+        QMutableMapIterator<QObject*,JNotifyDataPtrArray> iterReceivers(receivers);
+        while (iterReceivers.hasNext()) {
+            iterReceivers.next();
+            if (iterReceivers.key() == receiver) {
+                receiver->disconnect(this);
+                iterReceivers.remove();
+                break;
+            }
+        }
+        if (receivers.isEmpty()) {
+            d->callbacks.erase(iterCallback);
+        }
+    }
+    d->mutex.unlock();
+}
+
 void JNotify::clear()
 {
     QCoreApplication::removePostedEvents(this, Evt_PostMsg);

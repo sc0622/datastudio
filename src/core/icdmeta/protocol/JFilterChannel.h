@@ -50,7 +50,7 @@ public slots:
     void stop();
 
 private:
-    explicit JFilterChannel(QObject *parent = 0);
+    explicit JFilterChannel(QObject *parent = nullptr);
     ~JFilterChannel();
 
 private:

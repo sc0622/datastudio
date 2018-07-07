@@ -59,8 +59,11 @@ void JDataChannelPrivate::setChannel(JChannel *channel)
 void JDataChannelPrivate::setProtocolSend(JProtocol *protocol)
 {
     Q_Q(JDataChannel);
-    if (protocol != this->protocolSend) {
-        this->protocolSend = protocol;
+    if (protocol != protocolSend) {
+        if (protocolSend) {
+            protocolSend->cancelWatcher();
+        }
+        protocolSend = protocol;
         emit q->protocolSendChanged();
     }
 }
@@ -68,8 +71,11 @@ void JDataChannelPrivate::setProtocolSend(JProtocol *protocol)
 void JDataChannelPrivate::setProtocolRecv(JProtocol *protocol)
 {
     Q_Q(JDataChannel);
-    if (protocol != this->protocolRecv) {
-        this->protocolRecv = protocol;
+    if (protocol != protocolRecv) {
+        if (protocolRecv) {
+            protocolRecv->cancelWatcher();
+        }
+        protocolRecv = protocol;
         emit q->protocolRecvChanged();
     }
 }
@@ -168,7 +174,8 @@ bool JDataChannel::binding(JChannel *channel, JProtocol *protocolSend, JProtocol
 
     // worker
     if (!d->worker) {
-        Icd::WorkerPtr worker(new Icd::Worker(channel->channel()->nativeChannel(), this));
+        Icd::WorkerPtr worker(new Icd::Worker(channel->channel()->nativeChannel()));
+        QQmlEngine::setObjectOwnership(worker.get(), QQmlEngine::CppOwnership);
         connect(worker.get(), &Icd::Worker::toggled,
                 channel->channel(), &JSuperChannel::isOpenChanged);
         d->setWorker(worker);
@@ -176,6 +183,48 @@ bool JDataChannel::binding(JChannel *channel, JProtocol *protocolSend, JProtocol
 
     d->worker->workerSend()->setTable(tableSend->metaData());
     d->worker->workerRecv()->setTable(tableRecv->metaData());
+
+    return true;
+}
+
+bool JDataChannel::bindingRecv(JChannel *channel, JProtocol *protocol)
+{
+    if (!channel || !protocol) {
+        return false;
+    }
+
+    if (!channel->channel()) {
+        Q_ASSERT(false);
+        return false;
+    }
+
+    if (!protocol->isValid()) {
+        return false;
+    }
+
+    icdmeta::JIcdTable *table = protocol->table();
+    if (!table) {
+        return false;
+    }
+
+    Q_D(JDataChannel);
+    if (d->worker) {
+        return false;
+    }
+
+    d->setChannel(channel);
+    d->setProtocolRecv(protocol);
+
+    // worker
+    if (!d->worker) {
+        Icd::WorkerPtr worker(new Icd::Worker(channel->channel()->nativeChannel()));
+        QQmlEngine::setObjectOwnership(worker.get(), QQmlEngine::CppOwnership);
+        connect(worker.get(), &Icd::Worker::toggled,
+                channel->channel(), &JSuperChannel::isOpenChanged);
+        d->setWorker(worker);
+    }
+
+    d->worker->workerRecv()->setTable(table->metaData());
 
     return true;
 }
@@ -192,12 +241,16 @@ void JDataChannel::unbinding()
 void JDataChannel::unbindingSend()
 {
     Q_D(JDataChannel);
+    d->setWorker(nullptr);
+    d->setChannel(nullptr);
     d->setProtocolSend(nullptr);
 }
 
 void JDataChannel::unbindingRecv()
 {
     Q_D(JDataChannel);
+    d->setWorker(nullptr);
+    d->setChannel(nullptr);
     d->setProtocolRecv(nullptr);
 }
 

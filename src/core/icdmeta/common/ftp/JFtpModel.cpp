@@ -674,7 +674,7 @@ bool JFtpModel::downloadPath(int row, bool isDownloadFile, const QString &dir, Q
 
     QString path = dir;
     if (path.isEmpty()) {
-        path = QApplication::applicationDirPath().append("/data");
+        path = QCoreApplication::applicationDirPath().append("/data");
     }
 
     QDir _dir(path);
@@ -831,7 +831,7 @@ void JFtpModel::onCommandStarted(int commandId)
         if (d->timerIdNoop > 0) {
             killTimer(d->timerIdNoop);
             d->timerIdNoop = 0;
-            QApplication::removePostedEvents(this, QEvent::Timer);
+            QCoreApplication::removePostedEvents(this, QEvent::Timer);
         }
     }
 }
@@ -963,9 +963,9 @@ void JFtpModel::setWait(bool value)
     if (d->wait != value) {
 #ifndef QT_NO_CURSOR
         if (value) {
-            QApplication::setOverrideCursor(Qt::WaitCursor);
+            QGuiApplication::setOverrideCursor(Qt::WaitCursor);
         } else {
-            QApplication::restoreOverrideCursor();
+            QGuiApplication::restoreOverrideCursor();
         }
 #endif
         d->wait = value;

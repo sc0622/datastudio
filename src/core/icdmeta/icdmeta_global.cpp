@@ -2,8 +2,6 @@
 #include "icdmeta_global.h"
 #include "core/jicdtable.h"
 #include "channel/JChannelPool.h"
-#include "protocol/JDataChannelMgr.h"
-#include "protocol/JFilterChannel.h"
 #include "protocol/JProtocolPool.h"
 #include "common/JLangModel.h"
 #include "common/JLogModel.h"
@@ -34,10 +32,13 @@ JCallbackEvent::JCallbackEvent(QJSValue callback, const QJSValueList &arguments)
 {
     data->callback = callback;
     data->arguments = arguments;
+
+    Q_INIT_RESOURCE(resource);
 }
 
 JCallbackEvent::~JCallbackEvent()
 {
+    Q_CLEANUP_RESOURCE(resource);
     delete data;
 }
 
@@ -135,8 +136,6 @@ void IcdCore::registerQmlType()
     icdmeta::JIcdTable::registerQmlType();
     icdmeta::JChannelPool::registerQmlType();
     icdmeta::JProtocolPool::registerQmlType();
-    icdmeta::JDataChannelMgr::registerQmlType();
-    icdmeta::JFilterChannel::registerQmlType();
     icdmeta::JCmdModel::registerQmlType();
 }
 
@@ -416,10 +415,12 @@ void IcdCore::setFontSize(int size)
 void IcdCore::reset()
 {
     icdmeta::JCmdModel::instance()->reset();
-    icdmeta::JDataChannelMgr::instance()->reset();
-    icdmeta::JFilterChannel::instance()->reset();
     icdmeta::JProtocolPool::instance()->reset();
     icdmeta::JChannelPool::instance()->reset();
+
+    icdmeta::JCmdModel::releaseInstance();
+    icdmeta::JProtocolPool::releaseInstance();
+    icdmeta::JChannelPool::releaseInstance();
 }
 
 void IcdCore::customEvent(QEvent *event)

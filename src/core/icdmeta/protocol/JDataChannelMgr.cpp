@@ -73,7 +73,8 @@ bool JDataChannelMgrPrivate::searchItem(icdmeta::JIcdTable *table, QObject *targ
     }
 
     QSharedPointer<JSearchWatcher> newWatcher = QSharedPointer<JSearchWatcher>
-            (new JSearchWatcher(callback, target, q), jdelete_qobject);
+            (new JSearchWatcher(callback, target, nullptr), jdelete_qobject);
+    QQmlEngine::setObjectOwnership(newWatcher.data(), QQmlEngine::CppOwnership);
     watchers.push_back(newWatcher);
 
     QFuture<QString> future = QtConcurrent::filtered(
@@ -170,9 +171,34 @@ JDataChannel *JDataChannelMgr::binding(JChannel *channel, JProtocol *protocolSen
 
     Q_D(JDataChannelMgr);
     QSharedPointer<JDataChannel> newChannel =
-            QSharedPointer<JDataChannel>(new JDataChannel(channel->identity(), this),
+            QSharedPointer<JDataChannel>(new JDataChannel(channel->identity()),
                                          jdelete_qobject);
+    QQmlEngine::setObjectOwnership(newChannel.data(), QQmlEngine::CppOwnership);
     bool result = newChannel->binding(channel, protocolSend, protocolRecv);
+    if (!result) {
+        return nullptr;
+    }
+
+    d->channels.append(newChannel);
+
+    emit channelsChanged();
+    emit channelBound(newChannel->identity());
+
+    return newChannel.data();
+}
+
+JDataChannel *JDataChannelMgr::bindingRecv(JChannel *channel, JProtocol *protocol)
+{
+    if (!channel || !protocol) {
+        return nullptr;
+    }
+
+    Q_D(JDataChannelMgr);
+    QSharedPointer<JDataChannel> newChannel =
+            QSharedPointer<JDataChannel>(new JDataChannel(channel->identity()),
+                                         jdelete_qobject);
+    QQmlEngine::setObjectOwnership(newChannel.data(), QQmlEngine::CppOwnership);
+    bool result = newChannel->bindingRecv(channel, protocol);
     if (!result) {
         return nullptr;
     }

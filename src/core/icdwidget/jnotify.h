@@ -84,6 +84,7 @@ public:
     Q_INVOKABLE bool has(const QString &channel) const;
     Q_INVOKABLE void un(const QString &channel);
     Q_INVOKABLE void un(QObject *receiver);
+    Q_INVOKABLE void un(QObject *receiver, const QString &channel);
     Q_INVOKABLE void clear();
 
 signals:

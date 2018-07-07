@@ -47,7 +47,8 @@ void JIcdTablePrivate::init()
     frameCodes.clear();
     QList<QSharedPointer<JIcdFrameItem> > frames;
     for (auto &item : data->allItem()) {
-        auto newItem = QSharedPointer<JIcdItem>(JIcdItem::create(item, q));
+        auto newItem = QSharedPointer<JIcdItem>(JIcdItem::create(item), jdelete_qobject);
+        QQmlEngine::setObjectOwnership(newItem.data(), QQmlEngine::CppOwnership);
         if (newItem) {
             items.append(newItem);
             saveItem(newItem);

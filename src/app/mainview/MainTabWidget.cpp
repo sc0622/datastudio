@@ -22,7 +22,10 @@ TabWidget::TabWidget(QWidget *parent)
     connect(this, &TabWidget::currentChanged, this, [=](int index){
         jnotify->send("main.tab.changed", index);
     });
-    connect(this, &TabWidget::tabBarDoubleClicked, this, [=](){
+    connect(this, &TabWidget::tabBarDoubleClicked, this, [=](int index){
+        if (index == 0) {
+            return;
+        }
         jnotify->send("main.toolbar.show.toggle", menuBar_);
     });
 

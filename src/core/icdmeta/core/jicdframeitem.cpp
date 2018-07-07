@@ -32,7 +32,10 @@ void JIcdFrameItemPrivate::init()
     Q_Q(JIcdFrameItem);
     tables.clear();
     for (auto &table : data->allTable()) {
-        tables.append(QSharedPointer<JIcdTable>(new JIcdTable(table.second, q)));
+        auto newTable = QSharedPointer<JIcdTable>(new JIcdTable(table.second),
+                                                  jdelete_qobject);
+        tables.append(newTable);
+        QQmlEngine::setObjectOwnership(newTable.data(), QQmlEngine::CppOwnership);
     }
     emit q->countChanged();
 }

@@ -12,6 +12,8 @@ Page {
     property alias fontSize: labelValue.font.pointSize
     property alias backgroundColor: bk.color
     property alias backgroundOpacity: bk.opacity
+    property bool highlighting: false
+    property bool highlightingFont: true
     title: qsTr("--")
 
     leftPadding: 8
@@ -50,22 +52,23 @@ Page {
                 font.weight: Font.Normal
                 //font.family: Flat.FlatStyle.fontFamily
                 renderType: Text.QtRendering
-                Material.foreground: Material.accent
+                Material.foreground: (highlightingFont && highlighting)
+                                     ? "red" : Material.accent
                 text: value.toFixed(decimals).toString()
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            Label {
-                id: labelSuffix
-                font.pointSize: fontSize * 2 / 3
-                font.weight: Font.Normal
-                renderType: Text.QtRendering
-                Material.foreground: Material.accent
-                anchors {
-                    left: labelValue.right
-                    top: labelValue.top
-                    leftMargin: 2
+                Label {
+                    id: labelSuffix
+                    font.pointSize: fontSize * 2 / 3
+                    font.weight: Font.Normal
+                    font.family: 'Noto Sans S Chinese Bold'
+                    renderType: Text.QtRendering
+                    Material.foreground: Material.accent
+                    anchors {
+                        left: parent.right
+                        top: parent.top
+                        leftMargin: 2
+                    }
+                    text: suffix
                 }
-                text: suffix
             }
             Item { Layout.fillWidth: true }
         }

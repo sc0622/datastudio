@@ -200,8 +200,9 @@ QByteArray JCmdObject::toByteArray() const
     if (!d->arguments.isEmpty()) {
         data.append(' ').append(d->arguments);
     }
+    // space
+    data.append(' ');
     // suffix
-    data.append(" ");   //TODO
     data.append(d->suffix);
 
     return data;

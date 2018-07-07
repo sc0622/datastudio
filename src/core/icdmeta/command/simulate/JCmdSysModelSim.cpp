@@ -164,7 +164,8 @@ void JCmdSysModelSim::setCurrentWorkMode(int value)
 void JCmdSysModelSim::appendChannel(icdmeta::JChannel *channel)
 {
     Q_D(JCmdSysModelSim);
-    JCmdChannelSim *newChannel = new JCmdChannelSim(channel->identity(), this);
+    JCmdChannelSim *newChannel = new JCmdChannelSim(channel->identity());
+    QQmlEngine::setObjectOwnership(newChannel, QQmlEngine::CppOwnership);
     newChannel->binding(channel);
     d->channels.append(QSharedPointer<JCmdChannelSim>(newChannel, &QObject::deleteLater));
     emit channelsChanged();

@@ -156,7 +156,9 @@ bool JCmdChannelSimPrivate::loadConfig()
     }
 
     // suffix
-    suffix = QString::fromStdString(commandJson["suffix"].asString());
+    std::string _suffix = commandJson["suffix"].asString();
+    Icd::replaceString(_suffix, "<br/>", "\r\n");
+    suffix = QString::fromStdString(_suffix);
 
     return true;
 }
@@ -543,6 +545,12 @@ bool JCmdChannelSimPrivate::process(const QString &_answer)
         }
         // ---- taskpc ----
         else if (command == "Taskcomputer") {
+            readySending(command, "#"
+                         + args.section(' ', 0, 0));
+            return true;
+        }
+        // ---- iff ----
+        else if (command == "Emerback_en") {
             readySending(command, "#"
                          + args.section(' ', 0, 0));
             return true;

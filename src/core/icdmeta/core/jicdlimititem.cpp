@@ -11,7 +11,7 @@ class JIcdLimitItemPrivate
 public:
     JIcdLimitItemPrivate(JIcdLimitItem *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
+        , data(nullptr)
     {
 
     }

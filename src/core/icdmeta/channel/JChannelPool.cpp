@@ -113,9 +113,10 @@ bool JChannelPool::loadConfig(const QString &filePath, const QString &nodePath)
         if (id.empty()) {
             continue;
         }
-        JChannelPtr newChannel = JChannelPtr(
-                    new JChannel(QString::fromStdString(id), this), jdelete_qobject);
+        JChannelPtr newChannel = JChannelPtr(new JChannel(QString::fromStdString(id)),
+                                             jdelete_qobject);
         newChannel->restore(itemJson);
+        QQmlEngine::setObjectOwnership(newChannel.data(), QQmlEngine::CppOwnership);
         d->channels.append(newChannel);
         // relayer
         if (itemJson.isMember("relayer")) {

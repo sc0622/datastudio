@@ -95,8 +95,9 @@ bool JProtocolPrivate::load(QJSValue callback)
     }
 
     QSharedPointer<JWatcher<Icd::TablePtr> > newWatcher =
-            QSharedPointer<JWatcher<Icd::TablePtr> >(new JWatcher<Icd::TablePtr>(callback, q),
-                                                     jdelete_qobject);
+            QSharedPointer<JWatcher<Icd::TablePtr> >(new JWatcher<Icd::TablePtr>(callback, q, nullptr),
+                                                     &QObject::deleteLater);
+    QQmlEngine::setObjectOwnership(newWatcher.data(), QQmlEngine::CppOwnership);
     watchers.push_back(newWatcher);
 
     QFuture<Icd::TablePtr> future = QtConcurrent::run([=]() -> Icd::TablePtr {
@@ -123,8 +124,9 @@ bool JProtocolPrivate::load(QJSValue callback)
     auto reduce = [=](){
         const Icd::TablePtr _table = newWatcher->future().result();
         if (_table) {
-            table = QSharedPointer<icdmeta::JIcdTable>(
-                        new icdmeta::JIcdTable(_table, q), jdelete_qobject);
+            table = QSharedPointer<icdmeta::JIcdTable>(new icdmeta::JIcdTable(_table),
+                                                       &QObject::deleteLater);
+            QQmlEngine::setObjectOwnership(table.data(), QQmlEngine::CppOwnership);
         }
         emit q->validChanged(table != nullptr);
         emit q->tableChanged(table.data());
@@ -185,10 +187,7 @@ JProtocol::~JProtocol()
 
 void JProtocol::registerQmlType()
 {
-    //
     IcdMetaRegisterUncreatableType2(JProtocol);
-
-    //
 }
 
 QString JProtocol::identity() const

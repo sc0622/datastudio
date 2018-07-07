@@ -90,7 +90,8 @@ bool JCmdModelPrivate::loadConfig()
     }
 
     // suffix
-    const std::string suffix = commandJson["suffix"].asString();
+    std::string suffix = commandJson["suffix"].asString();
+    Icd::replaceString(suffix, "<br/>", "\r\n");
 
     const Json::Value defaultJson = commandJson["default"];
 
@@ -145,7 +146,8 @@ bool JCmdModelPrivate::loadConfig()
             // acceptCount
             replaceValue<int>(itemJson, "acceptCount", defaultAcceptCount);
             //
-            QSharedPointer<JCmdObject> newObject(new JCmdObject(q), jdelete_qobject);
+            QSharedPointer<JCmdObject> newObject(new JCmdObject(), &QObject::deleteLater);
+            QQmlEngine::setObjectOwnership(newObject.data(), QQmlEngine::CppOwnership);
             newObject->setSuffix(QString::fromStdString(suffix));
             newObject->restore(itemJson);
             objects.append(newObject);
@@ -199,7 +201,9 @@ QSharedPointer<JCmdObject> JCmdModelPrivate::findCommand(const QString &command)
         for (const auto &objects : commands) {
             for (const auto &object : objects) {
                 if (object->name() == command) {
-                    return QSharedPointer<JCmdObject>(object->clone(), &QObject::deleteLater);
+                    auto newCmdObject = QSharedPointer<JCmdObject>(object->clone(), &QObject::deleteLater);
+                    QQmlEngine::setObjectOwnership(newCmdObject.data(), QQmlEngine::CppOwnership);
+                    return newCmdObject;
                 }
             }
         }
@@ -229,7 +233,9 @@ QSharedPointer<JCmdObject> JCmdModelPrivate::findCommand(const QString &command,
                 const auto &objects = citer.value();
                 for (const auto &object : objects) {
                     if (object->name() == command) {
-                        return QSharedPointer<JCmdObject>(object->clone(), &QObject::deleteLater);
+                        auto newCmdObject = QSharedPointer<JCmdObject>(object->clone(), &QObject::deleteLater);
+                        QQmlEngine::setObjectOwnership(newCmdObject.data(), QQmlEngine::CppOwnership);
+                        return newCmdObject;
                     }
                 }
             }
@@ -255,12 +261,12 @@ QSharedPointer<JCmdObject> JCmdModelPrivate::findCommand(const QString &command,
 bool JCmdModelPrivate::send(const QSharedPointer<JCmdObject> &object, QJSValue callback, bool force)
 {
     if (channels.isEmpty()) {
-        showNotifyError(QString(), callback, JCmdModel::SendNoValidChannel, Q_NULLPTR);
+        showNotifyError(QString(), callback, JCmdModel::SendNoValidChannel, nullptr);
         return false;
     }
 
     if (!object) {
-        showNotifyError(QString(), callback, JCmdModel::SendInvalidParam, Q_NULLPTR);
+        showNotifyError(QString(), callback, JCmdModel::SendInvalidParam, nullptr);
         return false;
     }
 
@@ -915,7 +921,8 @@ void JCmdModel::setBlocking(bool value)
 void JCmdModel::appendChannel(icdmeta::JChannel *channel)
 {
     Q_D(JCmdModel);
-    JCmdChannel *newChannel = new JCmdChannel(channel->identity(), this);
+    JCmdChannel *newChannel = new JCmdChannel(channel->identity());
+    QQmlEngine::setObjectOwnership(newChannel, QQmlEngine::CppOwnership);
     newChannel->binding(channel);
     d->channels.append(QSharedPointer<JCmdChannel>(newChannel, &QObject::deleteLater));
     emit channelsChanged();

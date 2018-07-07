@@ -35,6 +35,7 @@ signals:
 public slots:
     icdmeta::JDataChannel *binding(icdmeta::JChannel *channel, icdmeta::JProtocol *protocolSend,
                                    icdmeta::JProtocol *protocolRecv);
+    icdmeta::JDataChannel *bindingRecv(icdmeta::JChannel *channel, icdmeta::JProtocol *protocol);
     void unbinding(const QString &channelId);
     icdmeta::JDataChannel *channelIdOf(const QString &channelId) const;
     void cancelWatcher();

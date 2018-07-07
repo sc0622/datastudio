@@ -61,6 +61,8 @@ public:
     float_t *f32() const;
     double_t *f64() const;
 
+    double_t valueOf(int index) const;
+
     void resetData() override;
     void clearData() override;
     void setData(const char *buffer, int size);

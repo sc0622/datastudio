@@ -10,9 +10,14 @@ var warningDict = [
             qsTr("过压"),
             qsTr("过大"),
             qsTr("失效"),
+            qsTr("接地"),
             qsTr("不平衡"),
             qsTr("未点火"),
             qsTr("未投网"),
+            qsTr("未接通"),
+            qsTr("未到位"),
+            qsTr("不允许"),
+            qsTr("非工作"),
             // for landing-brake
             qsTr("模型监控故障"),
             qsTr("开环故障"),
@@ -116,6 +121,10 @@ function loadProtocol(protocol, callback) {
         execCallback(false)
         notify(qsTr("协议基本信息错误，加载失败！"))
     }
+}
+
+function removeUrlPrefix(url) {
+    return url.replace(/file:[\/]{0,3}/, '')
 }
 
 function textOfValid(isValid) {
@@ -593,3 +602,45 @@ function bindingLabelNoFilter(label, value, index, highlight) {
         })
     }
 }
+
+function safetyNotify(button, callback, message) {
+    notifyDialog.show(qsTr('即将执行“') + '<font color=#51dd52>' + button.text + '</font>'
+                      + qsTr('”指令') + (message ? qsTr('。') + message : ''),
+                      qsTr('点击“确定”执行，否则取消执行。'), callback, true)
+}
+
+// new binding function
+
+function bindingBitMapDesc(target, value, bit, highlighting) {
+    target.title = Qt.binding(function() {
+        var data = value.data
+        var text = value.nameAt(bit)
+        if (text.length === 0) {
+            text = qsTr("--")
+        }
+        return text
+    })
+    bindingBitMapDescNoTitle(target, value, bit, highlighting)
+}
+
+function bindingBitMapDescNoTitle(target, value, bit, highlighting) {
+    target.value = Qt.binding(function() {
+        var data = value.data
+        var text = value.descAt(bit)
+        if (text.length === 0) {
+            text = qsTr("--")
+        }
+        return text
+    })
+    if (highlighting) {
+        target.highlighting = Qt.binding(function() {
+            var data = value.data
+            return value.testBit(bit)
+        })
+    } else {
+        target.highlighting = Qt.binding(function(){
+            return isWarning(target.value)
+        });
+    }
+}
+
