@@ -43,6 +43,7 @@ public:
     char *buffer() const;
     virtual double bufferSize() const;
     virtual double bufferOffset() const;
+    virtual double localOffset() const;
 
     virtual double data() const { return 0.0; }
     virtual void setData(double d) { (void)d; }

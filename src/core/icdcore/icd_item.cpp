@@ -90,6 +90,25 @@ double Item::bufferOffset() const
     return d->bufferOffset;
 }
 
+double Item::localOffset() const
+{
+    Object *parent = this->parent();
+    if (!parent) {
+        return bufferOffset();
+    }
+
+    if (parent->objectType() != Icd::ObjectTable) {
+        return bufferOffset();
+    }
+
+    const Icd::Table *table = dynamic_cast<Icd::Table *>(parent);
+    if (!table || !table->parent()) {
+        return bufferOffset();
+    }
+
+    return bufferOffset() - table->bufferOffset();
+}
+
 double Item::defaultValue() const
 {
     return d->defaultValue;

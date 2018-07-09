@@ -91,6 +91,8 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
         d_itemLayout->setSpacing(6);
         d_itemLayout->addStretch();
 
+        horiLayoutClient->addStretch();
+
         connect(buttonRemove, SIGNAL(clicked(bool)), this, SIGNAL(remove()));
         connect(d_buttonSend, SIGNAL(clicked(bool)), this, SIGNAL(send()));
         connect(buttonRestore, &QPushButton::clicked, this, [=](){
@@ -738,23 +740,23 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     itemLayout()->addStretch();
 
     d_checkBoxLink = new QCheckBox(QStringLiteral("（原始数值与输出数值联动）"), this);
-    d_checkBoxLink->setFixedWidth(300);
+    d_checkBoxLink->setMinimumWidth(300);
     d_checkBoxLink->setCheckable(false);
     d_checkBoxLink->setChecked(true);   //FIXME
     formLayout->addRow(QStringLiteral("数值关联："), d_checkBoxLink);
 
     d_sliderValue = new QSlider(this);
-    d_sliderValue->setFixedWidth(300);
+    d_sliderValue->setMinimumWidth(300);
     d_sliderValue->setOrientation(Qt::Horizontal);
     formLayout->addRow(QStringLiteral("原始数值："), d_sliderValue);
 
     d_spinValue = new QDoubleSpinBox(this);
-    d_spinValue->setFixedWidth(300);
+    d_spinValue->setMinimumWidth(300);
     d_spinValue->setDecimals(DBL_DIG);
     formLayout->addRow(QStringLiteral("原始数值："), d_spinValue);
 
     d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setFixedWidth(300);
+    d_spinData->setMinimumWidth(300);
     d_spinData->setDecimals(DBL_DIG);
     d_spinData->setEnabled(false);
     formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
@@ -908,9 +910,18 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     }
     // range
     std::pair<double, double> range = itemNumeric->valueRange();
-    d_sliderValue->setRange(qFloor(range.first), qCeil(range.second));
+    //
     d_spinValue->setRange(range.first, range.second);
     d_spinValue->setSingleStep(itemNumeric->scale());
+    //
+    if (range.first < INT_MIN) {
+        range.first = INT_MIN;
+    }
+    if (range.second > INT_MAX) {
+        range.second = INT_MAX;
+    }
+    d_sliderValue->setRange(qFloor(range.first), qCeil(range.second));
+    //
     range = itemNumeric->dataRange();
     d_spinData->setRange(range.first, range.second);
     //

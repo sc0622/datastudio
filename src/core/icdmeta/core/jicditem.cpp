@@ -112,6 +112,12 @@ qreal JIcdItem::bufferOffset() const
     return d->data->bufferOffset();
 }
 
+qreal JIcdItem::localOffset() const
+{
+    Q_D(const JIcdItem);
+    return d->data->localOffset();
+}
+
 qreal JIcdItem::data() const
 {
     Q_D(const JIcdItem);
