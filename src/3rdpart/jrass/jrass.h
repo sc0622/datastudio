@@ -859,7 +859,7 @@ inline int JRass::getAllVarsList(std::vector<std::string> &vars)
     char **_vars = nullptr;
     int count = 0;
     int result = d.getAllVarsList(_vars, count);
-    if (result && _vars && count > 0) {
+    if (result == 0 && _vars && count > 0) {
         for (int i = 0; i < count; ++i) {
             vars.push_back(std::string(_vars[i]));
         }
@@ -1326,7 +1326,7 @@ inline int JRass::getLogVarList(std::vector<std::string> &logVars, int waitTime)
     char **_logVars = nullptr;
     int count = 0;
     int result = d.getLogVarList(_logVars, count, waitTime);
-    if (result && _logVars && count > 0) {
+    if (result == 0 && _logVars && count > 0) {
         for (int i = 0; i < count; ++i) {
             logVars.push_back(std::string(_logVars[i]));
         }
@@ -1523,7 +1523,7 @@ inline int JRass::getAllCMonDes(std::vector<MonitorGroupDesc> &groupDescs, int w
     MonitorGroupDescNative *_groupDescs = nullptr;
     int count = 0;
     int result = d.getAllCMonDes(_groupDescs, count, waitTime);
-    if (result && _groupDescs && count > 0) {
+    if (result == 0 && _groupDescs && count > 0) {
         for (int i = 0; i < count; ++i) {
             const MonitorGroupDescNative &_groupDesc = _groupDescs[i];
             groupDescs.push_back(MonitorGroupDesc());
@@ -1689,7 +1689,7 @@ inline int JRass::ftpPwd(std::string &path, int waitTime)
     char _path[512];
     memset(_path, 0, 512);
     int result = d.ftpPwd(_path, path.size(), waitTime);
-    if (result) {
+    if (result == 0) {
         path = std::string(_path);
     }
     return result;

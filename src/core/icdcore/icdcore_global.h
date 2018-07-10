@@ -112,6 +112,9 @@ typedef double icd_double;
 typedef float icd_float32;
 typedef double icd_float64;
 
+typedef float float32_t;
+typedef double float64_t;
+
 #endif // DEF_ICD_TYPE
 
 //

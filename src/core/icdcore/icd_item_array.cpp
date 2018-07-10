@@ -226,14 +226,14 @@ uint64_t *ArrayItem::u64() const
     return reinterpret_cast<uint64_t*>(buffer());
 }
 
-float_t *ArrayItem::f32() const
+float32_t *ArrayItem::f32() const
 {
-    return reinterpret_cast<float_t*>(buffer());
+    return reinterpret_cast<float32_t*>(buffer());
 }
 
-double_t *ArrayItem::f64() const
+float64_t *ArrayItem::f64() const
 {
-    return reinterpret_cast<double_t*>(buffer());
+    return reinterpret_cast<float64_t*>(buffer());
 }
 
 double_t ArrayItem::valueOf(int index) const

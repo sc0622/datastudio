@@ -58,8 +58,8 @@ public:
     uint32_t *u32() const;
     int64_t *i64() const;
     uint64_t *u64() const;
-    float_t *f32() const;
-    double_t *f64() const;
+    float32_t *f32() const;
+    float64_t *f64() const;
 
     double_t valueOf(int index) const;
 
