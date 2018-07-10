@@ -91,7 +91,7 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
         d_itemLayout->setSpacing(6);
         d_itemLayout->addStretch();
 
-        horiLayoutClient->addStretch();
+        //horiLayoutClient->addStretch();
 
         connect(buttonRemove, SIGNAL(clicked(bool)), this, SIGNAL(remove()));
         connect(d_buttonSend, SIGNAL(clicked(bool)), this, SIGNAL(send()));
@@ -740,23 +740,23 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     itemLayout()->addStretch();
 
     d_checkBoxLink = new QCheckBox(QStringLiteral("（原始数值与输出数值联动）"), this);
-    d_checkBoxLink->setMinimumWidth(300);
+    d_checkBoxLink->setFixedWidth(300);
     d_checkBoxLink->setCheckable(false);
     d_checkBoxLink->setChecked(true);   //FIXME
     formLayout->addRow(QStringLiteral("数值关联："), d_checkBoxLink);
 
     d_sliderValue = new QSlider(this);
-    d_sliderValue->setMinimumWidth(300);
+    d_sliderValue->setFixedWidth(300);
     d_sliderValue->setOrientation(Qt::Horizontal);
     formLayout->addRow(QStringLiteral("原始数值："), d_sliderValue);
 
     d_spinValue = new QDoubleSpinBox(this);
-    d_spinValue->setMinimumWidth(300);
+    d_spinValue->setFixedWidth(300);
     d_spinValue->setDecimals(DBL_DIG);
     formLayout->addRow(QStringLiteral("原始数值："), d_spinValue);
 
     d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setMinimumWidth(300);
+    d_spinData->setFixedWidth(300);
     d_spinData->setDecimals(DBL_DIG);
     d_spinData->setEnabled(false);
     formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
