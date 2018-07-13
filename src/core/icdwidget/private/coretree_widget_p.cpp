@@ -95,14 +95,14 @@ void TreeItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     QStyleOptionViewItem viewOption = option;
     initStyleOption(&viewOption, index);
 
-    const QString simplifiedText = simplified(viewOption.text.trimmed());
-    const int textWidth = viewOption.fontMetrics.width(simplifiedText);
+    const QSize size = sizeHint(viewOption, index);
 
     TableItemWidget *itemWidget = qobject_cast<TableItemWidget*>(d->treeView->itemWidget(tableItem));
     if (!itemWidget) {
         return;
     }
-    itemWidget->setFixedWidth(textWidth + itemWidget->buttonWidth());
+
+    itemWidget->setSpacing(size.width() + 5);
 }
 
 QStandardItem *TreeItemDelegate::tableItem(const QModelIndex &index)
@@ -137,13 +137,16 @@ TableItemWidget::TableItemWidget(CoreTreeWidget::BindTableTypes bindingTypes,
     QHBoxLayout *layoutMain = new QHBoxLayout(this);
     layoutMain->setContentsMargins(0, 0, 0, 0);
 
-    layoutMain->addStretch();
+    spacer_ = new QSpacerItem(10, sizeHint().height());
+    layoutMain->addSpacerItem(spacer_);
 
     buttonRun_ = new QPushButton(this);
     buttonRun_->setObjectName("buttonRun");
     buttonRun_->setFixedSize(40, 20);
     buttonRun_->setCheckable(true);
     layoutMain->addWidget(buttonRun_);
+
+    layoutMain->addStretch();
 
     connect(buttonRun_, &QPushButton::toggled, this, [=](bool checked){
         if (toggle(checked)) {
@@ -255,9 +258,10 @@ bool TableItemWidget::isRunning() const
     return buttonRun_->isChecked();
 }
 
-int TableItemWidget::buttonWidth() const
+void TableItemWidget::setSpacing(int spacing)
 {
-    return buttonRun_->width();
+    spacer_->changeSize(spacing, height());
+    layout()->invalidate();
 }
 
 void TableItemWidget::updateButtonIcon(bool checked)
@@ -1766,7 +1770,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     Icd::TablePtr table = Icd::TablePtr(0);
     auto funcParseTable = [=,&table]() -> bool {
         if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
-                             sections.at(2).toStdString(), table, Icd::ObjectItem)) {
+                            sections.at(2).toStdString(), table, Icd::ObjectItem)) {
             return false; // parse failure
         }
         return true;
@@ -1876,7 +1880,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     // find table object
     Icd::TablePtr table;
     if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
-                         sections.at(2).toStdString(), table, Icd::ObjectItem)) {
+                        sections.at(2).toStdString(), table, Icd::ObjectItem)) {
         return bindChannel(itemTable, worker, nullptr);
     }
 
@@ -2249,7 +2253,7 @@ bool CoreTreeWidgetPrivate::loadTable(QStandardItem *itemSystem, int deep)
     // get systems informations
     Icd::TablePtrArray tables;
     if (!parser_->parse(vehicleId.toStdString(),
-                         systemId.toStdString(), tables, deep)) {
+                        systemId.toStdString(), tables, deep)) {
         Q_ASSERT(false);
         return false;
     }
@@ -2348,7 +2352,7 @@ bool CoreTreeWidgetPrivate::loadItem(QStandardItem *itemTable, int deep)
     // get systems informations
     Icd::ItemPtrArray dataItems;
     if (!parser_->parse(vehicleId.toStdString(), systemId.toStdString(),
-                         tableId.toStdString(), dataItems, Icd::ObjectItem)) {
+                        tableId.toStdString(), dataItems, Icd::ObjectItem)) {
         Q_ASSERT(false);
         return false;
     }
@@ -2751,7 +2755,7 @@ void CoreTreeWidgetPrivate::updateItemData(QStandardItem *item)
             // find table object
             Icd::TablePtr table;
             if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
-                                 sections.at(2).toStdString(), table, Icd::ObjectItem)) {
+                                sections.at(2).toStdString(), table, Icd::ObjectItem)) {
                 return;
             }
             //
@@ -3177,8 +3181,8 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
     //
     QFuture<bool> future = QtConcurrent::run([=](){
         return parser_->saveAs(item, exportAll,
-                                (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv),
-                                filePath.toStdString());
+                               (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv),
+                               filePath.toStdString());
     });
 
     //
@@ -3365,9 +3369,9 @@ BindingData CoreTreeWidgetPrivate::bindingMapTask(BindingData data)
     }
     // find table object
     if (!data.d->parser_->parse(sections.at(0).toStdString(),
-                                 sections.at(1).toStdString(),
-                                 sections.at(2).toStdString(),
-                                 data.table, Icd::ObjectItem)) {
+                                sections.at(1).toStdString(),
+                                sections.at(2).toStdString(),
+                                data.table, Icd::ObjectItem)) {
         return data;
     }
 

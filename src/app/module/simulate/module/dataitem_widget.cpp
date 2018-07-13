@@ -1030,7 +1030,7 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
 
     d_spinData = new QDoubleSpinBox(this);
     d_spinData->setFixedWidth(300);
-    d_spinData->setDecimals(DBL_DIG);
+    d_spinData->setDecimals(0);
     d_formLayout->addRow(QStringLiteral("Êä³öÊýÖµ£º"), d_spinData);
 
     d_labelDesc = new QLabel(this);
@@ -1127,7 +1127,7 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    d_spinData->setRange(0, (0x1UL << itemBit->bitCount()) - 1);
+    d_spinData->setRange(0, (0x1ULL << itemBit->bitCount()) - 1);
     //
     for (int i = 0; i < itemBit->bitCount(); ++i) {
         //
@@ -1141,7 +1141,7 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
         checkBox->setChecked(itemBit->testBit(i));
         d_checkBoxes[i] = checkBox;
         connect(checkBox, &QCheckBox::toggled, this, [=](bool checked){
-            unsigned int value = (uint)d_spinData->value();
+            quint32 value = (quint32)d_spinData->value();
             if (checked) {
                 value |= (0x1UL << i);
             } else {

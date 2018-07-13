@@ -10,6 +10,7 @@
 #include <QFutureWatcher>
 
 class QLabel;
+class QSpacerItem;
 class QPushButton;
 class QStandardItemModel;
 
@@ -56,16 +57,18 @@ public:
     bool toggle(bool checked);
     bool isRunning() const;
 
-    int buttonWidth() const;
-
 signals:
     void clicked();
     void toggled(bool checked);
+
+public slots:
+    void setSpacing(int spacing);
 
 private:
     void updateButtonIcon(bool checked);
 
 private:
+    QSpacerItem *spacer_;
     QPushButton *buttonRun_;
     Icd::WorkerPtr worker_;
     CoreTreeWidget::BindTableTypes bindTableTypes_;

@@ -176,7 +176,9 @@ enum CustomEvent {
     Event_Callback = QEvent::User + 100,
     Event_StateMachine,
     Event_SetProperty,
-    Event_ProtocolFeedback
+    Event_ProtocolFeedback,
+
+    Event_User = QEvent::User + 500
 };
 
 // class JCallbackEvent
