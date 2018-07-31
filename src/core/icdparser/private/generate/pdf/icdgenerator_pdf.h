@@ -15,24 +15,8 @@ public:
     explicit PdfGenerator(Icd::Parser *parser);
     ~PdfGenerator();
 
-    /**
-     * @brief generate
-     * @param item
-     * @param exportAll
-     * @param rt
-     * @param filePath
-     * @return
-     */
     bool generate(const QStandardItem *item, bool exportAll, bool rt,
                   const std::string &filePath);
-
-    /**
-     * @brief generate
-     * @param table
-     * @param filePath
-     * @param saveAsType : default: 0, doc
-     * @return
-     */
     bool generate(const TablePtr &table, const std::string &filePath);
 
 private:

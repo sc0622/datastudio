@@ -400,7 +400,7 @@ std::string NumericItem::typeName() const
     case NumericF64: ss << "float"; break;
     default: return "?";
     }
-    ss << ((int)bufferSize() << 3);
+    ss << (static_cast<int>(bufferSize()) << 3);
     return ss.str();
 }
 

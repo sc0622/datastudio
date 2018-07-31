@@ -55,7 +55,7 @@ std::string Generator::fileType(const std::string &filePath)
         return std::string();
     }
 
-    std::string suffix = filePath.substr(index);
+    std::string suffix = filePath.substr(index + 1);
     if (suffix.empty()) {
         return std::string();
     }

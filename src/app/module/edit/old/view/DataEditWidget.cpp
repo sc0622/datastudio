@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "DataEditWidget.h"
-#include "LoggingWidget.h"
+#include "loggingwidget.h"
 #include "jwt/jxmltable.h"
 #include "jwt/jsplitter.h"
 #include "ObjectEdit.h"
@@ -25,7 +25,7 @@ DataEditWidget::DataEditWidget(QWidget *parent)
     , subType_(-1)
     , newIndex_(-1)
     , changedPos(-1)
-    , data_(0)
+    , data_(nullptr)
 {
     defaultPath_ = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 

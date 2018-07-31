@@ -8,6 +8,11 @@ DynamicLibrary {
 
     type: base.concat([ 'translation' ])
 
+    Depends { name: 'cpp' }
+    Depends { name: 'Qt.core' }
+    Depends { name: 'desc'; cpp.link: false }
+    Depends { name: 'setenv'; required: false; cpp.link: false }
+
     // module
     property string module: ''
     readonly property path includePath: project.sourceDirectory + '/include/'
@@ -35,11 +40,6 @@ DynamicLibrary {
 
     // export
     property bool defaultExport: true
-
-    Depends { name: 'cpp' }
-    Depends { name: 'desc'; cpp.link: false }
-    Depends { name: 'Qt.core'; cpp.link: false }
-    Depends { name: 'setenv'; required: false; cpp.link: false }
 
     targetName: name + (qbs.buildVariant == 'debug' ? 'd' : '')
     desc.condition: true

@@ -106,8 +106,8 @@ bool CppGeneratorData::generateTable(const TablePtr &table,
 
     //
     J_QPTR->parser()->setMessage(QStringLiteral("生成表文档\n表：%1")
-                                .arg(QString::fromStdString(table->name()))
-                                .toStdString());
+                                 .arg(QString::fromStdString(table->name()))
+                                 .toStdString());
 
     QString member;
     QTextStream memberStream(&member);
@@ -124,8 +124,8 @@ bool CppGeneratorData::generateTable(const TablePtr &table,
     int tableSize = 0;
     Icd::Item *parentItem = dynamic_cast<Icd::Item *>(table->parent());
     if (parentItem) {
-        tableSize = (int)std::ceil(parentItem->bufferSize());
-        int unusedSize = tableSize - ((int)std::ceil(table->bufferSize()));
+        tableSize = static_cast<int>(std::ceil(parentItem->bufferSize()));
+        int unusedSize = tableSize - static_cast<int>(std::ceil(table->bufferSize()));
         if (unusedSize > 0) {
             QString line;
             QTextStream lineStream(&line);
@@ -140,7 +140,7 @@ bool CppGeneratorData::generateTable(const TablePtr &table,
             memberStream << "/* unused */" << endl;
         }
     } else {
-        tableSize = (int)std::ceil(table->bufferSize());
+        tableSize = static_cast<int>(std::ceil(table->bufferSize()));
     }
 
     const QString tableName = QString::fromStdString(table->typeName());
@@ -194,6 +194,12 @@ bool CppGeneratorData::generateDataItem(const ItemPtr &item,
                                    tableStream, itemsStream);
     case Icd::ItemFrame:
         return generateFrameItem(JHandlePtrCast<Icd::FrameItem, Icd::Item>(item),
+                                 tableStream, itemsStream);
+    case Icd::ItemDateTime:
+        return generateDateTimeItem(JHandlePtrCast<Icd::DateTimeItem, Icd::Item>(item),
+                                    tableStream, itemsStream);
+    case Icd::ItemArray:
+        return generateArrayItem(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item),
                                  tableStream, itemsStream);
     default:
         return false;
@@ -409,6 +415,10 @@ bool CppGeneratorData::generateFrameItem(const Icd::FrameItemPtr &frameItem,
                                          QTextStream &tableStream,
                                          QTextStream &itemsStream)
 {
+    if (!frameItem) {
+        return false;
+    }
+
     QString member;
     QTextStream memberStream(&member);
     const Icd::TablePtrMap &tables = frameItem->allTable();
@@ -452,6 +462,46 @@ bool CppGeneratorData::generateFrameItem(const Icd::FrameItemPtr &frameItem,
     itemsStream << "/* " << QString::fromStdString(frameItem->name());
     if (!frameItem->desc().empty()) {
         itemsStream << " (" << QString::fromStdString(frameItem->desc()) << ")";
+    }
+    itemsStream << " */" << endl;
+
+    return true;
+}
+
+bool CppGeneratorData::generateDateTimeItem(const DateTimeItemPtr &dateTimeItem,
+                                            QTextStream &tableStream, QTextStream &itemsStream)
+{
+    Q_UNUSED(dateTimeItem);
+    Q_UNUSED(tableStream);
+    Q_UNUSED(itemsStream);
+    Q_ASSERT(false);        //TODO [not supported]
+    return false;
+}
+
+bool CppGeneratorData::generateArrayItem(const ArrayItemPtr &arrayItem,
+                                         QTextStream &tableStream, QTextStream &itemsStream)
+{
+    Q_UNUSED(tableStream);
+    if (!arrayItem) {
+        return false;
+    }
+
+    // format -> [    type id[size];    /* name (desc) */]
+    QString line;
+    QTextStream lineStream(&line);
+    lineStream << QString::fromStdString(arrayItem->typeName())
+               << " " << QString::fromStdString(arrayItem->codeName())
+               << "[" << arrayItem->count() << "];";
+    itemsStream << "    ";
+    itemsStream.setFieldWidth(30);
+    itemsStream << left << line;
+    itemsStream.reset();
+    if (line.size() >= 30) {
+        itemsStream << "  ";
+    }
+    itemsStream << "/* " << QString::fromStdString(arrayItem->name());
+    if (!arrayItem->desc().empty()) {
+        itemsStream << " (" << QString::fromStdString(arrayItem->desc()) << ")";
     }
     itemsStream << " */" << endl;
 

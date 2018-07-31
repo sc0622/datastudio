@@ -109,8 +109,8 @@ public:
     std::string message() const;
     void setMessage(const std::string &message);
 
-    qreal progressValue() const;
-    void setProgressValue(qreal value);
+    double progressValue() const;
+    void setProgressValue(double value);
 
     bool canceledSaveAs() const;
     void cancelSaveAs(bool cancel = true);

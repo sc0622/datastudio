@@ -270,13 +270,13 @@ void Parser::setMessage(const std::string &message)
     d->message = message;
 }
 
-qreal Parser::progressValue() const
+double Parser::progressValue() const
 {
     QMutexLocker locker(&d->mutex);
     return d->progressValue;
 }
 
-void Parser::setProgressValue(qreal value)
+void Parser::setProgressValue(double value)
 {
     QMutexLocker locker(&d->mutex);
     d->progressValue = value;

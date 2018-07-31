@@ -112,9 +112,7 @@ bool JCmdModelPrivate::loadConfig()
     // default - acceptCount
     const int defaultAcceptCount = defaultJson["acceptCount"].asInt();
 
-    Q_Q(JCmdModel);
-
-    auto parseCommand = [=,this](const Json::Value &commandJson, int workMode) {
+    auto parseCommand = [=](const Json::Value &commandJson, int workMode) {
         if (commandJson.isNull()) {
             return;
         }
@@ -326,7 +324,7 @@ bool JCmdModelPrivate::send(const QSharedPointer<JCmdObject> &object, QJSValue c
 
     Q_Q(JCmdModel);
 
-    auto reduce = [=,this](){
+    auto reduce = [=](){
         if (!currentCommand) {
             return;
         }
@@ -414,29 +412,29 @@ bool JCmdModelPrivate::send(const QSharedPointer<JCmdObject> &object, QJSValue c
         // answer
         const QString answer = [=]() -> QString {
             if (isCancel) {
-                return false;
+                return QString();
             }
-            QString answer;
-            for (const auto channel : channels) {
+            QString _answer;
+            for (const auto &channel : channels) {
                 if (channel->workState() != JCmdChannel::WorkStateFinish) {
                     continue;
                 }
                 QString _answer = channel->answer();
                 if (success) {
                     if (channel->workResult() == JCmdChannel::WorkResultSuccess) {
-                        answer.append(_answer.mid(1));    // remove channel name
+                        _answer.append(_answer.mid(1));    // remove channel name
                         break;
                     }
                 } else {
                     if (!_answer.isEmpty()) {
-                        answer.append("<font size=4 color=#51dd52>")
+                        _answer.append("<font size=4 color=#51dd52>")
                                 .append(channel->nativeChannel()->mark()).append(": </font><br/>")
                                 .append(_answer.replace(suffix, "<br/>").replace("\r", "<br/>"))
                                 .append("<br/>");
                     }
                 }
             }
-            return answer;
+            return _answer;
         }();
         // notify
         if (!isCancel && !success) {
@@ -602,9 +600,6 @@ void JCmdModelPrivate::showNotifyError(const QString &command, QJSValue callback
             //
         }
         break;
-    default:
-        Q_ASSERT(false);
-        return;
     }
 
     emit q->showNotify(message, detail, guid);
@@ -639,7 +634,7 @@ void JCmdModelPrivate::finishWatcher(bool flush)
     }
 
     //
-    if (!callback.isUndefined()) {
+    if (callback.isCallable()) {
         QJSValueList args;
         // success
         args.append(false);
@@ -718,7 +713,7 @@ int JCmdModel::workMode() const
 
 QQmlListProperty<icdmeta::JCmdChannel> JCmdModel::channels()
 {
-    return QQmlListProperty<icdmeta::JCmdChannel>(this, 0,
+    return QQmlListProperty<icdmeta::JCmdChannel>(this, nullptr,
                                                   &JCmdModelPrivate::channelsCount,
                                                   &JCmdModelPrivate::channelsAt);
 }
@@ -992,7 +987,7 @@ void JCmdModel::reset()
 
 void JCmdModel::customEvent(QEvent *event)
 {
-    switch (event->type()) {
+    switch (static_cast<int>(event->type())) {
     case Event_Callback:
     {
         JCallbackEvent *cbEvent = reinterpret_cast<JCallbackEvent *>(event);

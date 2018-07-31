@@ -15,34 +15,10 @@ public:
     explicit CppGenerator(Icd::Parser *parser);
     ~CppGenerator();
 
-    /**
-     * @brief generate
-     * @param item
-     * @param exportAll
-     * @param rt
-     * @param filePath
-     * @return
-     */
     bool generate(const QStandardItem *item, bool exportAll, bool rt,
                   const std::string &filePath);
-
-    /**
-     * @brief generate
-     * @param table
-     * @param filePath
-     * @return
-     */
     bool generate(const TablePtr &table, const std::string &filePath);
-
-    /**
-     * @brief startup
-     * @return
-     */
     bool startup();
-
-    /**
-     * @brief shutdown
-     */
     void shutdown();
 
 private:

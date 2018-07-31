@@ -9,7 +9,6 @@
 #include "jicdbititem.h"
 #include "jicdcomplexitem.h"
 #include "jicdframeitem.h"
-#include "jicdstringitem.h"
 #include "jicddatetimeitem.h"
 #include "jicdarrayitem.h"
 
@@ -63,7 +62,6 @@ void JIcdItem::registerQmlType()
     JIcdBitItem::registerQmlType();
     JIcdComplexItem::registerQmlType();
     JIcdFrameItem::registerQmlType();
-    JIcdStringItem::registerQmlType();
     JIcdDateTimeItem::registerQmlType();
     JIcdArrayItem::registerQmlType();
 }
@@ -87,7 +85,6 @@ IcdCore::ItemType JIcdItem::itemType() const
     case Icd::ItemBitValue: return IcdCore::ItemBitValue;
     case Icd::ItemComplex: return IcdCore::ItemComplex;
     case Icd::ItemFrame: return IcdCore::ItemFrame;
-    case Icd::ItemString: return IcdCore::ItemString;
     case Icd::ItemDateTime: return IcdCore::ItemDateTime;
     case Icd::ItemArray: return IcdCore::ItemArray;
     default: return IcdCore::ItemInvalid;
@@ -197,8 +194,6 @@ JIcdItem *JIcdItem::create(const Icd::ItemPtr &data, QObject *parent)
         return new JIcdComplexItem(JHandlePtrCast<Icd::ComplexItem, Icd::Item>(data), parent);
     case Icd::ItemFrame:
         return new JIcdFrameItem(JHandlePtrCast<Icd::FrameItem, Icd::Item>(data), parent);
-    case Icd::ItemString:
-        return new JIcdStringItem(JHandlePtrCast<Icd::StringItem, Icd::Item>(data), parent);
     case Icd::ItemDateTime:
         return new JIcdDateTimeItem(JHandlePtrCast<Icd::DateTimeItem, Icd::Item>(data), parent);
     case Icd::ItemArray:

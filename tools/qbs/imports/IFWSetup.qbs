@@ -19,6 +19,5 @@ Project {
     Product {
         Depends { name: 'pack.genproj'; condition: !project.projectInstallRoot }
         Depends { name: 'pack.build'; condition: !!project.projectInstallRoot }
-        pack.build.productName: project.setupName ? project.setupName : original
     }
 }

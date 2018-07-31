@@ -12,7 +12,6 @@
 #include "icd_item_framecode.h"
 #include "icd_item_header.h"
 #include "icd_item_numeric.h"
-#include "icd_item_string.h"
 #include "icd_item_datetime.h"
 #include "icd_item_array.h"
 #include "icd_table.h"

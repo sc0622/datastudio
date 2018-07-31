@@ -7,13 +7,14 @@ import qbs.ModUtils
 Project {
 
     WidgetApp {
-        targetName: project.projectName + (qbs.buildVariant == 'debug' ? 'd' : '')
+        targetName: project.projectName + project.variantSuffix
         version: project.version
 
         translations: [ 'app_zh_CN.ts' ]
         defaultTranslation: true
         desc.iconName: sourceDirectory + '/resource/image/app.ico'
         desc.fileDesc: project.projectDisplayName
+        Qt.core.resourceFileBaseName: project.projectName
 
         readonly property bool useOldEdit: true
 
@@ -47,8 +48,14 @@ Project {
 
         Group {
             name: 'Resources'
-            files: [ 'resource/*.qrc' ]
+            prefix: 'resource/'
+            excludeFiles: [ '**/*.ts', '**/*.psd' ]
+            files: [ '**/*' ]
+            fileTags: [ 'qt.core.resource_data' ]
+            Qt.core.resourcePrefix: '/' + project.projectName
+            Qt.core.resourceSourceBase: 'resource'
         }
+
         cpp.defines: {
             var defines = base.concat(['PROJECT_APP']);
             if (qbs.buildVariant == 'debug') {

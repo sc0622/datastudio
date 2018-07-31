@@ -280,35 +280,35 @@ QMenu::indicator {
 }
 /*
 QMenu::indicator:non-exclusive:unchecked {
-    image: url(:/datastudio/image/system/checkbox_unchecked.png);
+    image: url(:/datastudio/image/system/checkbox/checkbox_unchecked.png);
 }
 
 QMenu::indicator:non-exclusive:unchecked:selected {
-    image: url(:/datastudio/image/system/checkbox_unchecked_hover.png);
+    image: url(:/datastudio/image/system/checkbox/checkbox_unchecked_hover.png);
 }
 
 QMenu::indicator:non-exclusive:checked {
-    image: url(:/datastudio/image/system/checkbox_checked.png);
+    image: url(:/datastudio/image/system/checkbox/checkbox_checked.png);
 }
 
 QMenu::indicator:non-exclusive:checked:selected {
-    image: url(:/datastudio/image/system/checkbox_checked_hover.png);
+    image: url(:/datastudio/image/system/checkbox/checkbox_checked_hover.png);
 }
 
 QMenu::indicator:exclusive:unchecked {
-    image: url(:/datastudio/image/system/radiobutton_unchecked.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobutton_unchecked.png);
 }
 
 QMenu::indicator:exclusive:unchecked:selected {
-    image: url(:/datastudio/image/system/radiobutton_unchecked_hover.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobutton_unchecked_hover.png);
 }
 
 QMenu::indicator:exclusive:checked {
-    image: url(:/datastudio/image/system/radiobutton_checked.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobutton_checked.png);
 }
 
 QMenu::indicator:exclusive:checked:selected {
-    image: url(:/datastudio/image/system/radiobutton_checked_hover.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobutton_checked_hover.png);
 }
 */
 
@@ -401,25 +401,25 @@ QTreeView::item:selected:!focus {
 }
 
 QTreeView::branch:has-siblings:!adjoins-item {
-    border-image: url(:/datastudio/image/system/vline.png) 0;
+    border-image: url(:/datastudio/image/system/treeview/vline.png) 0;
 }
 
 QTreeView::branch:has-siblings:adjoins-item {
-    border-image: url(:/datastudio/image/system/branch-more.png) 0;
+    border-image: url(:/datastudio/image/system/treeview/branch-more.png) 0;
 }
 
 QTreeView::branch:!has-siblings:adjoins-item {
-    border-image: url(:/datastudio/image/system/branch-end.png) 0;
+    border-image: url(:/datastudio/image/system/treeview/branch-end.png) 0;
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
-    image: url(:/datastudio/image/system/branch-closed.png);
+    image: url(:/datastudio/image/system/treeview/branch-closed.png);
 }
 
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings  {
-    image: url(:/datastudio/image/system/branch-open.png);
+    image: url(:/datastudio/image/system/treeview/branch-open.png);
 }
 
 /** QTableView **/
@@ -746,7 +746,7 @@ QTimeEdit:focus:!read-only,QDateEdit:focus:!read-only,QDateTimeEdit:focus:!read-
 }
 
 QComboBox::down-arrow {
-    image: url(:/datastudio/image/system/arrow_down.png);
+    image: url(:/datastudio/image/system/arrow/arrow_down.png);
 }
 
 QComboBox::drop-down,QSpinBox::drop-down,QDoubleSpinBox::drop-down,
@@ -799,7 +799,7 @@ QDateTimeEdit::up-button:pressed {
 
 QSpinBox::up-arrow,QDoubleSpinBox::up-arrow,
 QTimeEdit::up-arrow,QDateEdit::up-arrow,QDateTimeEdit::up-arrow {
-    image: url(:/datastudio/image/system/up_arrow.png);
+    image: url(:/datastudio/image/system/spinbox/up_arrow.png);
     width: 7px;
     height: 7px;
 }
@@ -807,7 +807,7 @@ QTimeEdit::up-arrow,QDateEdit::up-arrow,QDateTimeEdit::up-arrow {
 QSpinBox::up-arrow:disabled,QDoubleSpinBox::up-arrow:disabled,
 QTimeEdit::up-arrow:disabled,QDateEdit::up-arrow:disabled,
 QDateTimeEdit::up-arrow:disabled {
-    image: url(:/datastudio/image/system/up_arrow_disabled.png);
+    image: url(:/datastudio/image/system/spinbox/up_arrow_disabled.png);
 }
 
 QSpinBox::down-button,QDoubleSpinBox::down-button,
@@ -835,7 +835,7 @@ QDateTimeEdit::down-button:pressed {
 
 QSpinBox::down-arrow,QDoubleSpinBox::down-arrow,
 QTimeEdit::down-arrow,QDateEdit::down-arrow,QDateTimeEdit::down-arrow {
-    image: url(:/datastudio/image/system/down_arrow.png);
+    image: url(:/datastudio/image/system/spinbox/down_arrow.png);
     margin-top: 2px;
     width: 7px;
     height: 7px;
@@ -844,7 +844,7 @@ QTimeEdit::down-arrow,QDateEdit::down-arrow,QDateTimeEdit::down-arrow {
 QSpinBox::down-arrow:disabled,QDoubleSpinBox::down-arrow:disabled,
 QTimeEdit::down-arrow:disabled,QDateEdit::down-arrow:disabled,
 QDateTimeEdit::down-arrow:disabled {
-    image: url(:/datastudio/image/system/down_arrow_disabled.png);
+    image: url(:/datastudio/image/system/spinbox/down_arrow_disabled.png);
 }
 
 /** QListView **/
@@ -897,51 +897,51 @@ QCheckBox {
 }
 
 QCheckBox::indicator:unchecked {
-    image: url(:/datastudio/image/system/chkbox-uchkd-normal.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-normal.png);
 }
 
 QCheckBox::indicator:unchecked:hover {
-    image: url(:/datastudio/image/system/chkbox-uchkd-hover.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-hover.png);
 }
 
 QCheckBox::indicator:unchecked:pressed {
-    image: url(:/datastudio/image/system/chkbox-uchkd-pressed.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-pressed.png);
 }
 
 QCheckBox::indicator:unchecked:disabled {
-    image: url(:/datastudio/image/system/chkbox-uchkd-disabled.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-disabled.png);
 }
 
 QCheckBox::indicator:indeterminate {
-    image: url(:/datastudio/image/system/chkbox-part-normal.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-part-normal.png);
 }
 
 QCheckBox::indicator:indeterminate:hover {
-    image: url(:/datastudio/image/system/chkbox-part-hover.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-part-hover.png);
 }
 
 QCheckBox::indicator:indeterminate:pressed {
-    image: url(:/datastudio/image/system/chkbox-part-pressed.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-part-pressed.png);
 }
 
 QCheckBox::indicator:indeterminate:disabled {
-    image: url(:/datastudio/image/system/chkbox-part-disabled.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-part-disabled.png);
 }
 
 QCheckBox::indicator:checked {
-    image: url(:/datastudio/image/system/chkbox-chkd-normal.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-chkd-normal.png);
 }
 
 QCheckBox::indicator:checked:hover {
-    image: url(:/datastudio/image/system/chkbox-chkd-hover.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-chkd-hover.png);
 }
 
 QCheckBox::indicator:checked:pressed {
-    image: url(:/datastudio/image/system/chkbox-chkd-pressed.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-chkd-pressed.png);
 }
 
 QCheckBox::indicator:checked:disabled {
-    image: url(:/datastudio/image/system/chkbox-chkd-disabled.png);
+    image: url(:/datastudio/image/system/checkbox/chkbox-chkd-disabled.png);
 }
 
 /** QRadioButton **/
@@ -957,31 +957,31 @@ QRadioButton::indicator {
 }
 
 QRadioButton::indicator:unchecked {
-    image: url(:/datastudio/image/system/radiobtn-uchkd-normal.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobtn-uchkd-normal.png);
 }
 
 QRadioButton::indicator:unchecked:hover {
-    image: url(:/datastudio/image/system/radiobtn-uchkd-hover.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobtn-uchkd-hover.png);
 }
 
 QRadioButton::indicator:unchecked:pressed {
-    image: url(:/datastudio/image/system/radiobtn-uchkd-pressed.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobtn-uchkd-pressed.png);
 }
 
 QRadioButton::indicator:unchecked:disabled {
-    image: url(:/datastudio/image/system/radiobtn-uchkd-disabled.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobtn-uchkd-disabled.png);
 }
 
 QRadioButton::indicator:checked {
-    image: url(:/datastudio/image/system/radiobtn-chkd-normal.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobtn-chkd-normal.png);
 }
 
 QRadioButton::indicator:checked:hover {
-    image: url(:/datastudio/image/system/radiobtn-chkd-hover.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobtn-chkd-hover.png);
 }
 
 QRadioButton::indicator:checked:disabled {
-    image: url(:/datastudio/image/system/radiobtn-chkd-disabled.png);
+    image: url(:/datastudio/image/system/radiobutton/radiobtn-chkd-disabled.png);
 }
 
 /** QScrollBar **/

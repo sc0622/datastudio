@@ -106,8 +106,12 @@ void UdpChannelPrivate::flush()
 
 bool UdpChannelPrivate::isOnline() const
 {
+#if 0
     QNetworkConfigurationManager mgr;
     return mgr.isOnline();
+#else
+    return true;
+#endif
 }
 
 bool UdpChannelPrivate::isOpen() const

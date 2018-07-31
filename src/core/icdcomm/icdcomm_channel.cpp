@@ -17,7 +17,7 @@ public:
         , identity(QUuid::createUuid().toString().toStdString())
         , name("")
         , desc("****")
-        , relayer(0)
+        , relayer(nullptr)
     {
 
     }
@@ -81,16 +81,16 @@ ChannelPtr Channel::createInstance(const std::string &config)
         return ChannelPtr();
     }
     // create an instance
-    ChannelPtr channel = Channel::createInstance(channelType);
-    if (channel == 0) {
+    ChannelPtr newChannel = Channel::createInstance(channelType);
+    if (!newChannel) {
         return ChannelPtr();
     }
     // set config
-    if (!channel->setConfig(config)) {
+    if (!newChannel->setConfig(config)) {
         return ChannelPtr();
     }
 
-    return channel;
+    return newChannel;
 }
 
 int Channel::sizeOfIn() const

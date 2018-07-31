@@ -147,7 +147,6 @@ std::string Item::typeString(ItemType type)
     case ItemCheck: return "check";
     case ItemFrameCode: return "framecode";
     case ItemFrame: return "frame";
-    case ItemString: return "string";
     case ItemDateTime: return "datetime";
     case ItemArray: return "array";
     default: return "invalid";
@@ -167,7 +166,6 @@ ItemType Item::stringType(const std::string &str)
         map_strtype::value_type("check", ItemCheck),
         map_strtype::value_type("framecode", ItemFrameCode),
         map_strtype::value_type("frame", ItemFrame),
-        map_strtype::value_type("string", ItemString),
         map_strtype::value_type("datetime", ItemDateTime),
         map_strtype::value_type("array", ItemArray)
     };
@@ -221,7 +219,6 @@ ItemPtr Item::create(const std::string &id, ItemType type)
     case Icd::ItemCheck: return Icd::ItemPtr(new Icd::CheckItem(id));
     case Icd::ItemFrameCode: return Icd::ItemPtr(new Icd::FrameCodeItem(id));
     case Icd::ItemFrame: return Icd::ItemPtr(new Icd::FrameItem(id));
-    case Icd::ItemString: return Icd::ItemPtr(new Icd::StringItem(id));
     case Icd::ItemDateTime: return Icd::ItemPtr(new Icd::DateTimeItem(id));
     case Icd::ItemArray: return Icd::ItemPtr(new Icd::ArrayItem(id));
     default:

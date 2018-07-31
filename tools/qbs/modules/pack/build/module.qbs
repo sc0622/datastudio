@@ -8,7 +8,7 @@ import tools.EnvUtils
 Module {
     additionalProductTypes: [ 'pack.out' ]
 
-    property string productName: project.projectName
+    property string productName: project.setupName ? project.setupName : project.projectName
 
     Depends { productTypes: [ 'setup.config', 'setup.package' ]; limitToSubProject: true }
 

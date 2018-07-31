@@ -236,7 +236,6 @@ public:
         ItemBitValue,
         ItemComplex,
         ItemFrame,
-        ItemString,
         ItemDateTime,
         ItemArray,
         ItemTotal

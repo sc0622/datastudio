@@ -97,15 +97,6 @@
         <file alias="checkbox_unchecked_hover.png">image/system/menu/checkbox_unchecked_hover.png</file>
         <file alias="checkbox_unchecked_pressed.png">image/system/menu/checkbox_unchecked_pressed.png</file>
     </qresource>
-    <qresource prefix="/datastudio/image/chart">
-        <file alias="align-left.png">image/chart/align-left.png</file>
-        <file alias="clear.png">image/chart/clear.png</file>
-        <file alias="xlabel_sync.png">image/chart/xlabel_sync.png</file>
-        <file alias="ylabel.png">image/chart/ylabel.png</file>
-        <file alias="colwidth-same.png">image/chart/colwidth-same.png</file>
-        <file alias="sync-track.png">image/chart/sync-track.png</file>
-    </qresource>
-    <qresource prefix="/datastudio/image/tools"/>
     <qresource prefix="/datastudio/image/system/dark">
         <file alias="branch-closed.png">image/system/treeview/dark/branch-closed.png</file>
         <file alias="branch-end.png">image/system/treeview/dark/branch-end.png</file>

@@ -128,7 +128,21 @@ void ArrayItem::setCount(int count)
 std::string ArrayItem::typeName() const
 {
     std::stringstream ss;
-    ss << "icd_" << arrayTypeString();
+    ss << "icd_";
+    switch (d->arrayType) {
+    case ArrayI8:
+    case ArrayI16:
+    case ArrayI32:
+    case ArrayI64: ss << "int"; break;
+    case ArrayU8:
+    case ArrayU16:
+    case ArrayU32:
+    case ArrayU64: ss << "uint"; break;
+    case ArrayF32:
+    case ArrayF64: ss << "float"; break;
+    default: return "?";
+    }
+    ss << ((static_cast<int>(bufferSize()) / d->count) << 3);
     return ss.str();
 }
 
