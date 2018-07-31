@@ -24,17 +24,7 @@ public:
 
     }
 
-    /**
-     * @brief clearBuffer
-     */
     void clearBuffer();
-
-    /**
-     * @brief updateSend
-     * @param frame
-     * @param table
-     * @param period
-     */
     void updateSend(FrameItem *frame, const TablePtr &table, bool period);
 
 private:
@@ -51,7 +41,7 @@ void FrameItemData::clearBuffer()
     for (; citer != tables.end(); ++citer) {
         char* buffer = citer->second->buffer();
         if (buffer) {
-            citer->second->setBuffer(0);
+            citer->second->setBuffer(nullptr);
             delete[] buffer;
         }
     }
@@ -66,12 +56,12 @@ void FrameItemData::updateSend(FrameItem *frame, const TablePtr &table, bool per
     char* frameBuffer = frame->buffer();
     char* tableBuffer = table->buffer();
     if (frameBuffer && tableBuffer) {
-        int frameSize = (int)std::ceil(frame->bufferSize());
-        int tableSize = (int)std::ceil(table->bufferSize());
+        int frameSize = static_cast<int>(std::ceil(frame->bufferSize()));
+        int tableSize = static_cast<int>(std::ceil(table->bufferSize()));
         int size = std::min(frameSize, tableSize);
-        memcpy(frameBuffer, tableBuffer, size);
+        memcpy(frameBuffer, tableBuffer, static_cast<size_t>(size));
         if (frameSize > tableSize) {
-            memset(frameBuffer + tableSize, 0, (frameSize - tableSize));
+            memset(frameBuffer + tableSize, 0, static_cast<size_t>(frameSize - tableSize));
         }
     }
 }
@@ -147,7 +137,7 @@ void FrameItem::removeTable(icd_uint64 code)
         }
         d->tables.erase(citer);
         //
-        const TableSeqPair tableSeqs = d->tableSeq.equal_range(table->sequence());
+        const TableSeqPair tableSeqs = d->tableSeq.equal_range(static_cast<size_t>(table->sequence()));
         TableSeq::const_iterator citerSeq = tableSeqs.first;
         for (; citerSeq != tableSeqs.second; ++citerSeq) {
             if (citerSeq->second == table) {
@@ -196,7 +186,7 @@ const TablePtrMap &FrameItem::allTable() const
 
 int FrameItem::tableCount() const
 {
-    return (int)d->tables.size();
+    return static_cast<int>(d->tables.size());
 }
 
 TablePtr FrameItem::tableAt(icd_uint64 code)
@@ -205,7 +195,7 @@ TablePtr FrameItem::tableAt(icd_uint64 code)
     if (citer != d->tables.end()) {
         return citer->second;
     } else {
-        return 0;
+        return TablePtr();
     }
 }
 
@@ -222,7 +212,7 @@ void FrameItem::setBuffer(char *buffer)
         TablePtrMap::iterator iter = d->tables.begin();
         for (; iter != d->tables.end(); ++iter) {
             TablePtr &table = iter->second;
-            int tableSize = (int)std::ceil(table->bufferSize());
+            size_t tableSize = static_cast<size_t>(std::ceil(table->bufferSize()));
             if (!table->buffer() && tableSize > 0) {
                 char *tableBuffer = new char[tableSize];
                 memset(tableBuffer, 0, tableSize);
@@ -321,7 +311,7 @@ ObjectPtr FrameItem::itemByMark(const std::string &mark, bool deep) const
         }
     }
 
-    return ObjectPtr(0);
+    return ObjectPtr();
 }
 
 TablePtr FrameItem::tableByMark(const std::string &mark, bool deep) const
@@ -339,14 +329,14 @@ TablePtr FrameItem::tableByMark(const std::string &mark, bool deep) const
         }
     }
 
-    return TablePtr(0);
+    return TablePtr();
 }
 
 ObjectPtr FrameItem::itemByDomain(const std::string &domain, DomainType domainType,
                                   bool ignoreComplex) const
 {
     if (domain.empty()) {
-        return ItemPtr(0);
+        return ItemPtr();
     }
 
     std::string::size_type index = domain.find_first_of('/');
@@ -377,14 +367,14 @@ ObjectPtr FrameItem::itemByDomain(const std::string &domain, DomainType domainTy
         break;
     }
 
-    return Icd::ItemPtr(0);
+    return Icd::ItemPtr();
 }
 
 TablePtr FrameItem::tableByDomain(const std::string &domain, DomainType domainType) const
 {
     ObjectPtr item = itemByDomain(domain, domainType);
     if (!item || item->objectType() != ObjectTable) {
-        return 0;
+        return TablePtr();
     }
 
     return JHandlePtrCast<Table, Object>(item);
@@ -409,7 +399,7 @@ icd_uint64 FrameItem::updateSend(icd_uint64 code)
             }
         }
     } else {
-        TableSeqPair tableSeqs = d->tableSeq.equal_range(d->currentSequence);
+        TableSeqPair tableSeqs = d->tableSeq.equal_range(static_cast<size_t>(d->currentSequence));
         if (tableSeqs.first != tableSeqs.second) {	// not at end
             TableSeq::const_iterator citer = tableSeqs.first;
             Icd::TablePtr table = citer->second;
@@ -428,7 +418,7 @@ icd_uint64 FrameItem::updateSend(icd_uint64 code)
 
             if (table) {
                 d->updateSend(this, table, true);
-                code = (icd_uint64)Icd::strtou64(table->mark().c_str(), 16);
+                code = static_cast<icd_uint64>(Icd::strtou64(table->mark().c_str(), 16));
             }
         }
 
@@ -454,10 +444,10 @@ void FrameItem::updateRecv(icd_uint64 code)
         char* frameBuffer = buffer();
         char* tableBuffer = table->buffer();
         if (frameBuffer && tableBuffer) {
-            int frameSize = (int)std::ceil(bufferSize());
-            int tableSize = (int)std::ceil(table->bufferSize());
+            int frameSize = static_cast<int>(std::ceil(bufferSize()));
+            int tableSize = static_cast<int>(std::ceil(table->bufferSize()));
             int size = std::min(frameSize, tableSize);
-            memcpy(tableBuffer, frameBuffer, size);
+            memcpy(tableBuffer, frameBuffer, static_cast<size_t>(size));
         }
         //
         table->updateRecv();

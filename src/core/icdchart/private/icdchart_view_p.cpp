@@ -37,15 +37,10 @@ void ChartViewPrivate::init(bool styled)
     chartView = new JChart::View(styled, q);
     q->setAcceptDrops(true);
     horiLayoutMain->addWidget(chartView);
-
-    QObject::connect(chartView, &JChart::View::trackerChanged, this,
-                     [=](JChart::Chart *chart, const QPointF &pos, bool visible){
-        onTrackerChanged(chart, pos, visible);
-    }, Qt::QueuedConnection);
-    QObject::connect(chartView, &JChart::View::trackerMarked, this,
-                     [=](JChart::Chart *chart, const QPointF &pos){
-        onTrackerMarked(chart, pos);
-    }, Qt::QueuedConnection);
+    //
+    enableTrackerChangedNotify(true);
+    enableTrackerMakedNotify(true);
+    enableTrackerMarkerClearedNotify(true);
     //
     QTimer *timerTemp = new QTimer(q);
     timerTemp->setSingleShot(true);
@@ -146,7 +141,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
         //
         ChartData *chartData = new ChartData(chart);
         chartData->timer = new QTimer(chart);
-        chartData->timer->setInterval(timerInterval);
+        chartData->timer->setInterval(static_cast<int>(timerInterval));
         //chartData->timer->setTimerType(Qt::PreciseTimer);
         QObject::connect(chartData->timer, &QTimer::timeout, this, [=](){
             updateChart(chart);
@@ -315,7 +310,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
 {
     Q_Q(ChartView);
     if (!dataItem) {
-        return false;
+        return nullptr;
     }
 
     JChart::Chart *newChart = nullptr;
@@ -350,7 +345,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         const std::map<icd_uint64, std::string> &specs = itemBit->specs();
         for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
              citer != specs.cend(); ++citer) {
-            JChart::AbstractSeries *series = chart->seriesAt(citer->first);
+            JChart::AbstractSeries *series = chart->seriesAt(static_cast<int>(citer->first));
             if (series) {
                 series->setTitle(QString::fromStdString(Icd::BitItem::nameOf(citer->second)));
             }
@@ -543,7 +538,7 @@ void ChartViewPrivate::updateChart(JChart::Chart *chart)
         }
 
         bitChart->shiftSample(QPointF(QDateTime::currentMSecsSinceEpoch(),
-                                      (((quint32)bitItem->data()) << bitItem->bitStart())));
+                                      (static_cast<quint32>(bitItem->data()) << bitItem->bitStart())));
     } else if (chartType == JChart::ChartTypeBuffer) {
         ChartData *chartData = dynamic_cast<ChartData *>(chart->userData());
         if (!chartData || !chartData->bitmapData) {
@@ -593,6 +588,8 @@ void ChartViewPrivate::onTrackerChanged(JChart::Chart *chart, const QPointF &pos
         return;
     }
 
+    enableTrackerChangedNotify(false);
+
     const int rowCount = chartView->rowCount();
     const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
@@ -606,6 +603,8 @@ void ChartViewPrivate::onTrackerChanged(JChart::Chart *chart, const QPointF &pos
             }
         }
     }
+
+    enableTrackerChangedNotify(true);
 }
 
 void ChartViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &pos)
@@ -613,6 +612,8 @@ void ChartViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &pos)
     if (!chart || !syncTrack) {
         return;
     }
+
+    enableTrackerMakedNotify(false);
 
     const int rowCount = chartView->rowCount();
     const int columnCount = chartView->columnCount();
@@ -627,6 +628,33 @@ void ChartViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &pos)
             }
         }
     }
+
+    enableTrackerMakedNotify(true);
+}
+
+void ChartViewPrivate::onTrackerMarkerCleared(JChart::Chart *chart)
+{
+    if (!chart || !syncTrack) {
+        return;
+    }
+
+    enableTrackerMarkerClearedNotify(false);
+
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
+    for (int row = 0; row < rowCount; ++row) {
+        for (int column = 0; column < columnCount; ++column) {
+            JChart::Chart *_chart = chartView->chartAt(row, column);
+            if (!_chart) {
+                continue;
+            }
+            if (_chart != chart) {
+                _chart->clearMarker();
+            }
+        }
+    }
+
+    enableTrackerMarkerClearedNotify(true);
 }
 
 void ChartViewPrivate::updateScale()
@@ -642,6 +670,36 @@ void ChartViewPrivate::updateScale()
             chart->updateScale(JChart::xBottom);
             chart->updateScale(JChart::yLeft);
         }
+    }
+}
+
+void ChartViewPrivate::enableTrackerChangedNotify(bool enabled)
+{
+    QObject::disconnect(chartView, &JChart::View::trackerChanged,
+                        this, &ChartViewPrivate::onTrackerChanged);
+    if (enabled) {
+        QObject::connect(chartView, &JChart::View::trackerChanged,
+                         this, &ChartViewPrivate::onTrackerChanged, Qt::QueuedConnection);
+    }
+}
+
+void ChartViewPrivate::enableTrackerMakedNotify(bool enabled)
+{
+    QObject::disconnect(chartView, &JChart::View::trackerMarked,
+                        this, &ChartViewPrivate::onTrackerMarked);
+    if (enabled) {
+        QObject::connect(chartView, &JChart::View::trackerMarked,
+                         this, &ChartViewPrivate::onTrackerMarked, Qt::QueuedConnection);
+    }
+}
+
+void ChartViewPrivate::enableTrackerMarkerClearedNotify(bool enabled)
+{
+    QObject::disconnect(chartView, &JChart::View::trackerMarkerCleared,
+                        this, &ChartViewPrivate::onTrackerMarkerCleared);
+    if (enabled) {
+        QObject::connect(chartView, &JChart::View::trackerMarkerCleared,
+                         this, &ChartViewPrivate::onTrackerMarkerCleared, Qt::QueuedConnection);
     }
 }
 

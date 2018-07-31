@@ -237,6 +237,7 @@ Object &Object::operator =(const Object &other)
         return *this;
     }
 
+    d->parent = nullptr;
     d->objectType  = other.d->objectType;
     d->id  = other.d->id;
     d->name = other.d->name;

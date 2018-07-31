@@ -301,7 +301,7 @@ void ChartFileView::setChartTheme(int chartTheme)
 {
     Q_D(ChartFileView);
     d->chartTheme = chartTheme;
-    d->chartView->setChartTheme((JChart::ChartTheme)chartTheme);
+    d->chartView->setChartTheme(static_cast<JChart::ChartTheme>(chartTheme));
 }
 
 void ChartFileView::setXAxisSync(bool value)
@@ -411,7 +411,7 @@ void ChartFileView::dropEvent(QDropEvent *event)
         case Qt::ShiftModifier:
             chart = d->chartView->model()->chartAt(event->pos());
             if (chart && chart->chartType() == JChart::ChartTypeFileBitMap) {
-                chart = 0;  // not supported multi-chart for bit-chart
+                chart = nullptr;  // not supported multi-chart for bit-chart
             }
             break;
         default:

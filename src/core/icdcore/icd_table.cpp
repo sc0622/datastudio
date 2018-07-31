@@ -25,11 +25,11 @@ public:
         , itemOffset(1)
         , bufferSize(0.0)
         , bufferOffset(0.0)
-        , buffer(0)
+        , buffer(nullptr)
         , isFrameTable(false)
         , period(0)
-        , itemCounter(0)
-        , itemCheck(0)
+        , itemCounter(nullptr)
+        , itemCheck(nullptr)
     {
 
     }
@@ -112,12 +112,12 @@ void TableData::removeItem(const ItemPtr &item)
     switch (item->type()) {
     case Icd::ItemCounter:
     {
-        itemCounter = Icd::CounterItemPtr(0);
+        itemCounter = Icd::CounterItemPtr();
         break;
     }
     case Icd::ItemCheck:
     {
-        itemCheck = Icd::CheckItemPtr(0);
+        itemCheck = Icd::CheckItemPtr();
         break;
     }
     case Icd::ItemComplex:
@@ -161,8 +161,8 @@ void TableData::removeItem(const ItemPtr &item)
 
 void TableData::clearItem()
 {
-    itemCounter = Icd::CounterItemPtr(0);
-    itemCheck = Icd::CheckItemPtr(0);
+    itemCounter = Icd::CounterItemPtr();
+    itemCheck = Icd::CheckItemPtr();
     frameCodes.clear();
     complexes.clear();
     headers.clear();
@@ -309,15 +309,15 @@ void Table::setBuffer(char *buffer)
 
     ItemPtrArray::const_iterator citer = d->items.cbegin();
     if (buffer) {
-        char *_buffer = buffer - (int)d->bufferOffset;
+        char *_buffer = buffer - static_cast<int>(d->bufferOffset);
         for (; citer != d->items.cend(); ++citer) {
             const ItemPtr &item = *citer;
-            item->setBuffer(_buffer + (int)item->bufferOffset());
+            item->setBuffer(_buffer + static_cast<int>(item->bufferOffset()));
         }
     } else {
         for (; citer != d->items.cend(); ++citer) {
             const ItemPtr &item = *citer;
-            item->setBuffer(0);
+            item->setBuffer(nullptr);
         }
         d->period = 0;
     }
@@ -353,7 +353,7 @@ void Table::appendItem(const ItemPtr &item)
             break;
         }
         default:
-            item->setBufferOffset((int)std::ceil(offset));
+            item->setBufferOffset(static_cast<int>(std::ceil(offset)));
             break;
         }
         d->items.push_back(item);
@@ -368,8 +368,7 @@ void Table::appendItem(const ItemPtr &item)
 
 void Table::insertItem(int index, const ItemPtr &item)
 {
-    if (index < 0 || index >= (int)d->items.size()) {
-        assert(false);
+    if (index < 0 || index >= static_cast<int>(d->items.size())) {
         return;
     }
 
@@ -404,7 +403,7 @@ void Table::insertItem(int index, const ItemPtr &item)
 
 void Table::removeItem(int index)
 {
-    if (index < 0 || index >= (int)d->items.size()) {
+    if (index < 0 || index >= static_cast<int>(d->items.size())) {
         return;     // overflow
     }
 
@@ -478,17 +477,16 @@ bool Table::isEmpty() const
 
 int Table::itemCount() const
 {
-    return (int)d->items.size();
+    return static_cast<int>(d->items.size());
 }
 
 ItemPtr Table::itemAt(int index) const
 {
-    if (index < 0 || index >= (int)d->items.size()) {
-        assert(false);
-        return ItemPtr(0);
+    if (index < 0 || index >= static_cast<int>(d->items.size())) {
+        return ItemPtr();
     }
 
-    return d->items.at(index);
+    return d->items.at(static_cast<size_t>(index));
 }
 
 ItemPtr Table::itemById(const std::string &id) const
@@ -501,7 +499,7 @@ ItemPtr Table::itemById(const std::string &id) const
         }
     }
 
-    return ItemPtr(0);
+    return ItemPtr();
 }
 
 ObjectPtr Table::itemByMark(const std::string &mark, bool deep) const
@@ -555,7 +553,7 @@ ObjectPtr Table::itemByMark(const std::string &mark, bool deep) const
         }
     }
 
-    return ObjectPtr(0);
+    return ObjectPtr();
 }
 
 TablePtr Table::tableByMark(const std::string &mark, bool deep) const
@@ -719,7 +717,7 @@ TablePtr Table::tableByDomain(const std::string &domain, Icd::DomainType domainT
                     return complex->table();
                 }
                 default:
-                    return TablePtr(0);
+                    return TablePtr();
                 }
             } else {
                 switch (itemType) {
@@ -756,7 +754,7 @@ TablePtr Table::tableByDomain(const std::string &domain, Icd::DomainType domainT
         }
     }
 
-    return TablePtr(0);
+    return TablePtr();
 }
 
 const std::vector<char> &Table::headers() const
@@ -862,7 +860,6 @@ void Table::resetSend()
 void Table::bindBuffer(void *buffer)
 {
     (void)(buffer);
-    assert(false);
 }
 
 int Table::sequence() const
@@ -877,7 +874,7 @@ void Table::setSequence(int sequence)
 
 int Table::period() const
 {
-    return (int)d->period;
+    return static_cast<int>(d->period);
 }
 
 bool Table::isFrameTable() const
@@ -888,12 +885,12 @@ bool Table::isFrameTable() const
 std::string Table::typeName() const
 {
     std::string prefix;
-    Icd::Item *parentItem = parent() ? dynamic_cast<Icd::Item *>(parent()) : 0;
+    Icd::Item *parentItem = parent() ? dynamic_cast<Icd::Item *>(parent()) : nullptr;
     if (parentItem) {
         if (parentItem->type() == Icd::ItemComplex) {
             prefix = "Complex_";
         } else {
-            prefix = parentItem->typeName() + "_";
+            prefix = "Table_";//parentItem->typeName() + "_";
         }
     } else {
         prefix = "Table_";
@@ -904,7 +901,7 @@ std::string Table::typeName() const
 
 std::string Table::codeName() const
 {
-    Icd::Item *parentItem = parent() ? dynamic_cast<Icd::Item *>(parent()) : 0;
+    Icd::Item *parentItem = parent() ? dynamic_cast<Icd::Item *>(parent()) : nullptr;
     if (parentItem) {
         if (parentItem->type() == Icd::ItemComplex) {
             return mark();
@@ -954,7 +951,7 @@ void Table::resetData()
 void Table::clearData()
 {
     if (d->buffer) {
-        memset(d->buffer, 0, (int)bufferSize());
+        memset(d->buffer, 0, static_cast<size_t>(bufferSize()));
     }
 
     for (FrameCodeItemPtrArray::const_iterator citer = d->frameCodes.cbegin();
@@ -983,7 +980,7 @@ Table &Table::operator =(const Table &other)
     d->isFrameTable = other.d->isFrameTable;
 
     d->bufferSize = 0;
-    d->buffer = 0;
+    d->buffer = nullptr;
     d->items.clear();
     const ItemPtrArray &items = other.d->items;
     for (ItemPtrArray::const_iterator citer = items.cbegin();
@@ -1032,8 +1029,6 @@ bool Table::restore(const Json::Value &json, int deep)
     setBufferOffset(0);
     setBuffer(nullptr);
     d->period = 0;
-
-    assert(deep <= Icd::ObjectItem);
 
     if (deep <= Icd::ObjectTable) {
         return true;

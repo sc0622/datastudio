@@ -42,14 +42,10 @@ void ChartFileViewPrivate::init(bool styled)
     horiLayoutMain->addWidget(chartView);
 
     //
-    QObject::connect(chartView, &JChart::View::trackerChanged, this,
-                     [=](JChart::Chart *chart, const QPointF &pos, bool visible){
-        onTrackerChanged(chart, pos, visible);
-    }, Qt::QueuedConnection);
-    QObject::connect(chartView, &JChart::View::trackerMarked, this,
-                     [=](JChart::Chart *chart, const QPointF &pos){
-        onTrackerMarked(chart, pos);
-    }, Qt::QueuedConnection);
+    enableTrackerChangedNotify(true);
+    enableTrackerMakedNotify(true);
+    enableTrackerMarkerClearedNotify(true);
+    //
     QObject::connect(timerReplay, &QTimer::timeout, this, [=](){
         //
         const qint64 minimum = currentXTime.toMSecsSinceEpoch();
@@ -136,7 +132,7 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
         return false;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
-        chart = 0;
+        chart = nullptr;
         break;
     default:
         break;
@@ -155,7 +151,7 @@ bool ChartFileViewPrivate::addDataItem(const FileBaseInfo &baseInfo, const ItemP
             return false;       // create failure or not supported
         }
         isNewChart = true;
-        chart->setChartTheme((JChart::ChartTheme)chartTheme);
+        chart->setChartTheme(static_cast<JChart::ChartTheme>(chartTheme));
         chart->setAxisVisible(JChart::yLeft, showYLabel);
         chart->setAxisAlign(JChart::yLeft, showYAlign);
         chart->setAxisLabelLength(JChart::yLeft, yLabelLength);
@@ -367,7 +363,7 @@ GroupSeries *ChartFileViewPrivate::createGroupSeries(int chartType, const FileBa
             }
             seriesInfo->bitStart = bitItem->bitStart();
             seriesInfo->bitCount = bitItem->bitCount();
-            seriesInfo->ySize = (uchar)std::ceil(dataItem->bufferSize());
+            seriesInfo->ySize = static_cast<uchar>(std::ceil(dataItem->bufferSize()));
             break;
         }
         case Icd::ItemNumeric:
@@ -379,12 +375,12 @@ GroupSeries *ChartFileViewPrivate::createGroupSeries(int chartType, const FileBa
             seriesInfo->valueScale = numericItem->scale();
             seriesInfo->valueOffset = numericItem->offset();
             seriesInfo->numericTypeY = numericItem->numericType();
-            seriesInfo->ySize = (uchar)std::ceil(dataItem->bufferSize());
+            seriesInfo->ySize = static_cast<uchar>(std::ceil(dataItem->bufferSize()));
             break;
         }
         default:
         {
-            seriesInfo->ySize = (uchar)std::ceil(dataItem->bufferSize());
+            seriesInfo->ySize = static_cast<uchar>(std::ceil(dataItem->bufferSize()));
             break;
         }}
 
@@ -398,7 +394,7 @@ GroupSeries *ChartFileViewPrivate::createGroupSeries(int chartType, const FileBa
         case Icd::ItemBitMap:
         {
             Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
-            seriesInfo->ySize = (uchar)itemBit->typeSize();
+            seriesInfo->ySize = static_cast<uchar>(itemBit->typeSize());
             break;
         }
         default:
@@ -446,24 +442,24 @@ bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData, QFile &fi
     const SeriesInfoPtr seriesInfo = seriesData->seriesInfo;
     const FileBaseInfo &baseInfo = seriesInfo->baseInfo;
 
-    int tableStep = (int)std::ceil(baseInfo.table->bufferSize());
+    int tableStep = static_cast<int>(std::ceil(baseInfo.table->bufferSize()));
     if (baseInfo.hasTimeFormat) {
         tableStep += 8;
     }
 
     //
-    int count = (int)(file.size() / tableStep);
+    int count = static_cast<uchar>(file.size() / tableStep);
     if (count <= 0) {
         return false;
     }
 
     seriesInfo->bufferSize = seriesInfo->step * count;
-    seriesInfo->buffer = BufferPtr(new uchar[seriesInfo->bufferSize],
+    seriesInfo->buffer = BufferPtr(new uchar[static_cast<unsigned int>(seriesInfo->bufferSize)],
             [](uchar *ptr){
         delete[] ptr;
     });
 
-    int yOffset = seriesInfo->xSize + (int)seriesData->dataItem->bufferOffset();
+    int yOffset = seriesInfo->xSize + static_cast<int>(seriesData->dataItem->bufferOffset());
     uchar *fileBuffer, *buffer = seriesInfo->buffer.data();
     for (int i = 0; i < count; ++i, buffer += seriesInfo->step) {
         fileBuffer = file.map(baseInfo.headerSize + i * tableStep, tableStep);
@@ -525,7 +521,7 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
         const std::map<icd_uint64, std::string> &specs = itemBit->specs();
         for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
              citer != specs.cend(); ++citer) {
-            JChart::AbstractSeries *series = bitChart->seriesAt(citer->first);
+            JChart::AbstractSeries *series = bitChart->seriesAt(static_cast<int>(citer->first));
             if (series) {
                 series->setTitle(QString::fromStdString(Icd::BitItem::nameOf(citer->second)));
             }
@@ -581,7 +577,7 @@ JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, Gr
         }
         // buffser
         fileSeries->setBuffer(seriesInfo->buffer.data(),
-                              seriesInfo->bufferSize,
+                              static_cast<size_t>(seriesInfo->bufferSize),
                               seriesInfo->step);
         // attributes
         fileSeries->setAttributes(seriesInfo->xSize, seriesInfo->ySize,
@@ -599,7 +595,8 @@ JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, Gr
             break;
         }
         // buffser
-        bitChart->setBuffer(seriesInfo->buffer.data(), seriesInfo->bufferSize, seriesInfo->step);
+        bitChart->setBuffer(seriesInfo->buffer.data(), static_cast<size_t>(seriesInfo->bufferSize),
+                            seriesInfo->step);
         // attributes
         bitChart->setAttributes(seriesInfo->xSize, seriesInfo->ySize,
                                 seriesInfo->xOffset, seriesInfo->yOffset);
@@ -610,7 +607,7 @@ JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, Gr
     }
 
     // sync scale
-    if (lastChart && xAxisSync || seriesCount > 0) {
+    if ((lastChart && xAxisSync) || seriesCount > 0) {
         chart->setAxisScale(JChart::xBottom, axisXInterval.first, axisXInterval.second, 0);
     } else {
         chart->updateScale(JChart::xBottom);
@@ -712,7 +709,8 @@ void ChartFileViewPrivate::updateData()
                 }
                 // buffser
                 const SeriesInfoPtr seriesInfo = chartData->bitmapData->seriesInfo;
-                bitChart->setBuffer(seriesInfo->buffer.data(), seriesInfo->bufferSize, seriesInfo->step);
+                bitChart->setBuffer(seriesInfo->buffer.data(), static_cast<size_t>(seriesInfo->bufferSize),
+                                    seriesInfo->step);
 
                 break;
             }
@@ -737,7 +735,7 @@ void ChartFileViewPrivate::updateData()
                     //
                     const SeriesInfoPtr seriesInfo = seriesData->seriesInfo;
                     numericSeries->setBuffer(seriesInfo->buffer.data(),
-                                             seriesInfo->bufferSize, seriesInfo->step);
+                                             static_cast<size_t>(seriesInfo->bufferSize), seriesInfo->step);
                 }
                 break;
             }
@@ -811,8 +809,10 @@ void ChartFileViewPrivate::onTrackerChanged(JChart::Chart *chart, const QPointF 
         return;
     }
 
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    enableTrackerChangedNotify(false);
+
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *_chart = chartView->chartAt(row, column);
@@ -824,6 +824,8 @@ void ChartFileViewPrivate::onTrackerChanged(JChart::Chart *chart, const QPointF 
             }
         }
     }
+
+    enableTrackerChangedNotify(true);
 }
 
 void ChartFileViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &pos)
@@ -832,8 +834,10 @@ void ChartFileViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &
         return;
     }
 
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    enableTrackerMakedNotify(false);
+
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *_chart = chartView->chartAt(row, column);
@@ -845,6 +849,33 @@ void ChartFileViewPrivate::onTrackerMarked(JChart::Chart *chart, const QPointF &
             }
         }
     }
+
+    enableTrackerMakedNotify(true);
+}
+
+void ChartFileViewPrivate::onTrackerMarkerCleared(JChart::Chart *chart)
+{
+    if (!chart || !syncTrack) {
+        return;
+    }
+
+    enableTrackerMarkerClearedNotify(false);
+
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
+    for (int row = 0; row < rowCount; ++row) {
+        for (int column = 0; column < columnCount; ++column) {
+            JChart::Chart *_chart = chartView->chartAt(row, column);
+            if (!_chart) {
+                continue;
+            }
+            if (_chart != chart) {
+                _chart->clearMarker();
+            }
+        }
+    }
+
+    enableTrackerMarkerClearedNotify(true);
 }
 
 void ChartFileViewPrivate::onScaleDivChanged(int axisId, qreal minimum, qreal maximum)
@@ -862,8 +893,8 @@ void ChartFileViewPrivate::onScaleDivChanged(int axisId, qreal minimum, qreal ma
 
 void ChartFileViewPrivate::updateScale()
 {
-    int rowCount = chartView->rowCount();
-    int columnCount = chartView->columnCount();
+    const int rowCount = chartView->rowCount();
+    const int columnCount = chartView->columnCount();
     for (int row = 0; row < rowCount; ++row) {
         for (int column = 0; column < columnCount; ++column) {
             JChart::Chart *chart = chartView->chartAt(row, column);
@@ -955,6 +986,36 @@ void ChartFileViewPrivate::enableSyncScale(JChart::Chart *chart, bool enabled)
     if (enabled) {
         QObject::connect(chart, &JChart::Chart::scaleDivChanged,
                          this, &ChartFileViewPrivate::onScaleDivChanged);
+    }
+}
+
+void ChartFileViewPrivate::enableTrackerChangedNotify(bool enabled)
+{
+    QObject::disconnect(chartView, &JChart::View::trackerChanged,
+                        this, &ChartFileViewPrivate::onTrackerChanged);
+    if (enabled) {
+        QObject::connect(chartView, &JChart::View::trackerChanged,
+                         this, &ChartFileViewPrivate::onTrackerChanged, Qt::QueuedConnection);
+    }
+}
+
+void ChartFileViewPrivate::enableTrackerMakedNotify(bool enabled)
+{
+    QObject::disconnect(chartView, &JChart::View::trackerMarked,
+                        this, &ChartFileViewPrivate::onTrackerMarked);
+    if (enabled) {
+        QObject::connect(chartView, &JChart::View::trackerMarked,
+                         this, &ChartFileViewPrivate::onTrackerMarked, Qt::QueuedConnection);
+    }
+}
+
+void ChartFileViewPrivate::enableTrackerMarkerClearedNotify(bool enabled)
+{
+    QObject::disconnect(chartView, &JChart::View::trackerMarkerCleared,
+                        this, &ChartFileViewPrivate::onTrackerMarkerCleared);
+    if (enabled) {
+        QObject::connect(chartView, &JChart::View::trackerMarkerCleared,
+                         this, &ChartFileViewPrivate::onTrackerMarkerCleared, Qt::QueuedConnection);
     }
 }
 

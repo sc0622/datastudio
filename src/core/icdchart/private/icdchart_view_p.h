@@ -114,9 +114,14 @@ public slots:
     void updateChart(JChart::Chart *chart);
     void onTrackerChanged(JChart::Chart *chart, const QPointF &pos, bool visible);
     void onTrackerMarked(JChart::Chart *chart, const QPointF &pos);
+    void onTrackerMarkerCleared(JChart::Chart *chart);
 
 private:
     void updateScale();
+
+    void enableTrackerChangedNotify(bool enabled);
+    void enableTrackerMakedNotify(bool enabled);
+    void enableTrackerMarkerClearedNotify(bool enabled);
 
 private:
     J_DECLARE_PUBLIC(ChartView)

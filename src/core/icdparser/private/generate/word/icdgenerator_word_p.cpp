@@ -51,7 +51,7 @@ bool WordGeneratorData::startup()
     }
 
     //
-    word_->setProperty("Visible", true);//TEST
+    word_->setProperty("Visible", false);
     word_->setProperty("WindowState", 0);
     word_->setProperty("DisplatAlerts", 0);
 
@@ -162,10 +162,14 @@ bool WordGeneratorData::generateDocument(const QStandardItem *item, bool exportA
         result = generateSystem(item, exportAll, rt, 1);
         break;
     case TreeItemTypeTable:
+    case TreeItemTypeItemTable:
         result = generateTable(item, exportAll, rt, 1);
         break;
-    default:
+    case TreeItemTypeDataItem:
+        result = generateDataItem(item, exportAll, rt, 1);
         break;
+    default:
+        return false;
     }
 
     if (!result) {
@@ -299,9 +303,9 @@ bool WordGeneratorData::generateVehicle(const VehiclePtr &vehicle, bool exportAl
     selection_->dynamicCall("EndKey(int)", 6);
 
     // 标题
-    generateHeading(QString("%1 / %2")
+    generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(vehicle->name()))
-                    .arg(QString::fromStdString(vehicle->objectTypeString())), level);
+                    .arg(QString::fromStdString(vehicle->objectTypeString()).toUpper()), level);
 
     // 正文1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
@@ -397,9 +401,9 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
     selection_->dynamicCall("EndKey(int)", 6);
 
     // 标题
-    generateHeading(QString("%1 / %2")
+    generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(system->name()))
-                    .arg(QString::fromStdString(system->objectTypeString())), level);
+                    .arg(QString::fromStdString(system->objectTypeString()).toUpper()), level);
 
     // 正文1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
@@ -465,23 +469,32 @@ bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool expor
         }
     }
 #endif
+    const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
     if (!table) {
         //
         J_QPTR->parser()->setMessage(QStringLiteral("获取表数据\n表：%1")
                                     .arg(itemTable->text().remove(QRegExp("<([^>]*)>")))
                                     .toStdString());
         //
-        const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
         if (!J_QPTR->parser()->parse(domain.section('/', 0, 0).toStdString(),
                                     domain.section('/', 1, 1).toStdString(),
-                                    domain.section('/', 2).toStdString(),
-                                    table, Icd::ObjectItem)) {
+                                    domain.section('/', 2, 2).toStdString(),
+                                    table, Icd::ObjectItem) || !table) {
             return false;
         }
     }
 
     //
-    if (!generateTable(table, level)) {
+    Icd::TablePtr targetTable = table;
+    if (itemTable->type() == Icd::TreeItemTypeItemTable) {
+        targetTable = table->tableByDomain(domain.section('/', 3).toStdString());
+        if (!targetTable) {
+            return false;
+        }
+    }
+
+    //
+    if (!generateTable(targetTable, level)) {
         return false;
     }
 
@@ -503,9 +516,10 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
     selection_->dynamicCall("EndKey(int)", 6);
 
     // 标题
-    generateHeading(QString("%1 / %2")
+    generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(table->name()))
-                    .arg(QString::fromStdString(table->typeName()).section('_', 0, 0)), level);
+                    .arg(QString::fromStdString(table->typeName()).section('_', 0, 0).toUpper()),
+                    level);
 
     // 正文1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
@@ -527,6 +541,7 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
     QAxObject *axTable = tables_->querySubObject(
                 "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                 ->asVariant(), 1 + table->itemCount(), 5, 1, 2);
+    axTable->setProperty("Style", QStringLiteral("网格表 1 浅色"));
     int tableSize = qCeil(table->bufferSize());
 #if 1
     if (table->itemCount() == 0) {
@@ -548,7 +563,7 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
                          .append(QStringLiteral(" B）")), axTable);
     axTable->querySubObject("Columns(int)", 1)->setProperty("Width", 50);   // offset
     axTable->querySubObject("Columns(int)", 2)->setProperty("Width", 80);   // name
-    axTable->querySubObject("Columns(int)", 3)->setProperty("Width", 48);   // type
+    axTable->querySubObject("Columns(int)", 3)->setProperty("Width", 50);   // type
     axTable->querySubObject("Columns(int)", 4)->setProperty("Width", 100);  // desc
     axTable->dynamicCall("AutoFitBehavior(int)", 2);
 
@@ -564,11 +579,11 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
     selection_->querySubObject("Cells")->setProperty("VerticalAlignment", 1);
     axTable->querySubObject("Rows(int)", 1)->querySubObject("Range")->dynamicCall("Select()");
     selection_->querySubObject("ParagraphFormat")->setProperty("Alignment", 1);
-    setCellText(axTable, 1, 1, QStringLiteral("字节"));         // offset
-    setCellText(axTable, 1, 2, QStringLiteral("信号名称"));     // name
-    setCellText(axTable, 1, 3, QStringLiteral("数据类型"));     // type
-    setCellText(axTable, 1, 4, QStringLiteral("特性"));         // feature
-    setCellText(axTable, 1, 5, QStringLiteral("说明"));         // desc
+    setCellText(axTable, 1, 1, QStringLiteral("字节"));           // offset
+    setCellText(axTable, 1, 2, QStringLiteral("名称"));           // name
+    setCellText(axTable, 1, 3, QStringLiteral("类型"));           // type
+    setCellText(axTable, 1, 4, QStringLiteral("特性"));           // feature
+    setCellText(axTable, 1, 5, QStringLiteral("说明"));           // desc
 
     //
     ++level;
@@ -581,6 +596,165 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
         if (!generateItem(item, axTable, (citer - items.cbegin()) + 2, level)) {
             return false;
         }
+    }
+
+    return true;
+}
+
+bool WordGeneratorData::generateDataItem(const QStandardItem *itemData, bool exportAll,
+                                         bool rt, int level)
+{
+    if (!itemData) {
+        return false;
+    }
+
+    if (!exportAll && itemData->rowCount() == 0) {
+        return true;
+    }
+
+    const QStandardItem *_itemTable = itemData;
+    while (_itemTable) {
+        if (_itemTable->type() <= Icd::TreeItemTypeTable) {
+            break;
+        }
+        _itemTable = _itemTable->parent();
+    }
+    //
+    Icd::TablePtr table;
+#if defined(ICDWORKER_LIB)
+    if (_itemTable && _itemTable->type() == Icd::TreeItemTypeTable) {
+        const QVariant varChannelId = _itemTable->data(Icd::TreeChannelIdRole);
+        if (varChannelId.isValid()) {
+            Icd::WorkerPtr worker = Icd::WorkerPool::getInstance()
+                    ->workerByChannelIdentity(varChannelId.toString().toStdString());
+            if (worker) {
+                if (rt) {
+                    table = worker->workerRecv()->table();
+                } else {
+                    table = worker->workerSend()->table();
+                }
+            }
+        }
+    }
+#endif
+    const QString domain = itemData->data(Icd::TreeItemDomainRole).toString();
+    if (!table) {
+        //
+        QString tableName;
+        if (_itemTable && _itemTable->type() == Icd::TreeItemTypeTable) {
+            tableName = _itemTable->text().remove(QRegExp("<([^>]*)>"));
+        } else {
+            tableName = QStringLiteral("<?>");
+        }
+        //
+        J_QPTR->parser()->setMessage(QStringLiteral("获取表数据\n表：%1").arg(tableName)
+                                    .toStdString());
+        //
+        if (!J_QPTR->parser()->parse(domain.section('/', 0, 0).toStdString(),
+                                    domain.section('/', 1, 1).toStdString(),
+                                    domain.section('/', 2, 2).toStdString(),
+                                    table, Icd::ObjectItem) || !table) {
+            return false;
+        }
+    }
+
+    //
+    Icd::ObjectPtr targetObject = table->itemByDomain(domain.section('/', 3).toStdString());
+    if (!targetObject || targetObject->objectType() != Icd::ObjectItem) {
+        return false;
+    }
+
+    const Icd::ItemPtr item = JHandlePtrCast<Icd::Item, Icd::Object>(targetObject);
+    if (!item) {
+        return false;
+    }
+
+    //
+    if (!generateDataItem(item, level)) {
+        return false;
+    }
+
+    return true;
+}
+
+bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, int level)
+{
+    if (!item) {
+        return false;
+    }
+
+    if (J_QPTR->parser()->canceledSaveAs()) {
+        return false;
+    }
+
+    //
+    QString domain = QString::fromStdString(item->name());
+    J_QPTR->parser()->setMessage(QStringLiteral("生成数据文档\n数据项：%1")
+                                .arg(domain).toStdString());
+
+    //
+    selection_->dynamicCall("EndKey(int)", 6);
+
+    // 标题
+    generateHeading(QString("%1 [%2]")
+                    .arg(QString::fromStdString(item->name()))
+                    .arg(QString::fromStdString(item->typeName()).section('_', 0, 0).toUpper()), level);
+
+    // 正文1
+    QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
+    paragraphs->setProperty("OutlineLevel", 10);
+    QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
+    paragraphFormat->setProperty("CharacterUnitFirstLineIndent", 2);
+    QString itemDesc = QString::fromStdString(item->desc());
+    if (!itemDesc.isEmpty() && !itemDesc.endsWith(QStringLiteral("。"))) {
+        itemDesc.append(QStringLiteral("。"));
+    }
+    if (!itemDesc.isEmpty()) {
+        selection_->dynamicCall("TypeText(QString)", itemDesc);
+        selection_->dynamicCall("TypeParagraph()");
+    }
+    // 正文2 - [1]
+    selection_->dynamicCall("TypeText(QString)", QStringLiteral("具体信息见"));
+
+    // 表单
+    QAxObject *axTable = tables_->querySubObject(
+                "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
+                ->asVariant(), 2, 5, 1, 2);
+    int itemSize = qCeil(item->bufferSize());
+    generateTableCaption(QStringLiteral(" %1").arg(QString::fromStdString(item->name()))
+                         .append(QStringLiteral("（"))
+                         .append(QString::number(itemSize))
+                         .append(QStringLiteral(" B）")), axTable);
+    axTable->querySubObject("Columns(int)", 1)->setProperty("Width", 50);   // offset
+    axTable->querySubObject("Columns(int)", 2)->setProperty("Width", 80);   // name
+    axTable->querySubObject("Columns(int)", 3)->setProperty("Width", 50);   // type
+    axTable->querySubObject("Columns(int)", 4)->setProperty("Width", 100);  // desc
+    axTable->dynamicCall("AutoFitBehavior(int)", 2);
+
+    // 正文2 - [2]
+    selection_->dynamicCall("MoveUp(int,int)", 5, 1);
+    selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
+                           QStringLiteral("表"), 3, tables_->property("Count").toInt(),
+                           true, false, false, " ");
+    selection_->dynamicCall("TypeText(QString)", QStringLiteral("所示。"));
+
+    //
+    axTable->querySubObject("Range")->dynamicCall("Select()");
+    selection_->querySubObject("Cells")->setProperty("VerticalAlignment", 1);
+    axTable->querySubObject("Rows(int)", 1)->querySubObject("Range")->dynamicCall("Select()");
+    selection_->querySubObject("ParagraphFormat")->setProperty("Alignment", 1);
+    setCellText(axTable, 1, 1, QStringLiteral("字节"));       // offset
+    setCellText(axTable, 1, 2, QStringLiteral("名称"));       // name
+    setCellText(axTable, 1, 3, QStringLiteral("类型"));       // type
+    setCellText(axTable, 1, 4, QStringLiteral("特性"));       // feature
+    setCellText(axTable, 1, 5, QStringLiteral("说明"));       // desc
+
+    //
+    ++level;
+
+    // 数据项信息
+    if (!generateItem(item, axTable, 2, level)) {
+        return false;
     }
 
     return true;
@@ -900,26 +1074,86 @@ bool WordGeneratorData::generateComplexItem(const ComplexItemPtr &complexItem, Q
 bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObject *axTable,
                                           int row, int level)
 {
-    // 标题
     selection_->dynamicCall("EndKey(int)", 6);
-    generateHeading(QString::fromStdString(frameItem->name())
-                    + QStringLiteral("帧数据定义"), level++);
 
-
+    // 标题
+    generateHeading(QString("%1 [%2]")
+                    .arg(QString::fromStdString(frameItem->name()))
+                    .arg(QString::fromStdString(frameItem->typeName()).section('_', 0, 0).toUpper()),
+                    level);
     //
     QVariant headings = document_->dynamicCall("GetCrossReferenceItems(int)", 1);
     if (headings.isNull() || headings.type() != QVariant::StringList) {
         return false;
     }
+
     int headingLength = headings.toStringList().count();
 
-    //
-    const Icd::TablePtrMap &tables = frameItem->allTable();
-    Icd::TablePtrMap::const_iterator citer = tables.cbegin();
-    for (; citer != tables.cend(); ++citer) {
-        const Icd::TablePtr &table = citer->second;
-        if (!generateTable(table, level)) {
-            return false;
+    // sub-table
+    {
+        const Icd::TablePtrMap &tables = frameItem->allTable();
+
+        // 正文1
+        QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
+        paragraphs->setProperty("OutlineLevel", 10);
+        QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
+        paragraphFormat->setProperty("CharacterUnitFirstLineIndent", 2);
+        QString frameDesc = QString::fromStdString(frameItem->desc());
+        if (!frameDesc.isEmpty() && !frameDesc.endsWith(QStringLiteral("。"))) {
+            frameDesc.append(QStringLiteral("。"));
+        }
+        if (!frameDesc.isEmpty()) {
+            selection_->dynamicCall("TypeText(QString)", frameDesc);
+            selection_->dynamicCall("TypeParagraph()");
+        }
+        // 正文2 - [1]
+        selection_->dynamicCall("TypeText(QString)", QStringLiteral("具体信息见"));
+
+        // 表单
+        QAxObject *axSubTable = tables_->querySubObject(
+                    "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
+                    ->asVariant(), 1 + tables.size(), 5, 1, 2);
+        axSubTable->setProperty("Style", QStringLiteral("网格表 1 浅色"));
+        int frameSize = qCeil(frameItem->bufferSize());
+        generateTableCaption(QStringLiteral(" %1").arg(QString::fromStdString(frameItem->name()))
+                             .append(QStringLiteral("（"))
+                             .append(QString::number(frameSize))
+                             .append(QStringLiteral(" B）")), axSubTable);
+        axSubTable->querySubObject("Columns(int)", 1)->setProperty("Width", 50);    // code
+        axSubTable->querySubObject("Columns(int)", 2)->setProperty("Width", 120);   // name
+        axSubTable->querySubObject("Columns(int)", 3)->setProperty("Width", 50);    // size
+        axSubTable->querySubObject("Columns(int)", 4)->setProperty("Width", 50);    // sequence
+        axSubTable->querySubObject("Columns(int)", 5)->setProperty("Width", 100);   // desc
+        axSubTable->dynamicCall("AutoFitBehavior(int)", 2);
+
+        // 正文2 - [2]
+        selection_->dynamicCall("MoveUp(int,int)", 5, 1);
+        selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
+                               QStringLiteral("表"), 3, tables_->property("Count").toInt(),
+                               true, false, false, " ");
+        selection_->dynamicCall("TypeText(QString)", QStringLiteral("所示。"));
+
+        //
+        axSubTable->querySubObject("Range")->dynamicCall("Select()");
+        selection_->querySubObject("Cells")->setProperty("VerticalAlignment", 1);
+        axSubTable->querySubObject("Rows(int)", 1)->querySubObject("Range")->dynamicCall("Select()");
+        selection_->querySubObject("ParagraphFormat")->setProperty("Alignment", 1);
+        setCellText(axSubTable, 1, 1, QStringLiteral("帧码"));        // code
+        setCellText(axSubTable, 1, 2, QStringLiteral("名称"));        // name
+        setCellText(axSubTable, 1, 3, QStringLiteral("大小"));        // size
+        setCellText(axSubTable, 1, 4, QStringLiteral("时序"));        // sequence
+        setCellText(axSubTable, 1, 5, QStringLiteral("说明"));        // desc
+
+        //
+        ++level;
+
+        int row = 2;
+        Icd::TablePtrMap::const_iterator citer = tables.cbegin();
+        for (; citer != tables.cend(); ++citer, ++row) {
+            const Icd::TablePtr &table = citer->second;
+            if (!generateSubTable(table, axSubTable, row, level)) {
+                return false;
+            }
         }
     }
 
@@ -948,6 +1182,48 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
     selection_->dynamicCall("TypeText(QString)", QStringLiteral("（见"));
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean)",
                            QStringLiteral("标题"), -2, headingLength, true);
+    selection_->dynamicCall("TypeText(QString)", QStringLiteral("）"));
+
+    return true;
+}
+
+bool WordGeneratorData::generateSubTable(const TablePtr &table, QAxObject *axTable,
+                                         int row, int level)
+{
+    if (!table || !axTable) {
+        return false;
+    }
+    //
+    QVariant headings = document_->dynamicCall("GetCrossReferenceItems(int)", 1);
+    if (headings.isNull() || headings.type() != QVariant::StringList) {
+        return false;
+    }
+
+    int headingLength = headings.toStringList().count();
+
+    if (!generateTable(table, level)) {
+        return false;
+    }
+
+    // column 1 - code
+    setCellText(axTable, row, 1, QString::fromStdString(table->mark()));
+    // column 2 - name
+    setCellText(axTable, row, 2, QString::fromStdString(table->name()));
+    // column 3 - size
+    setCellText(axTable, row, 3, QStringLiteral("%1B").arg(table->bufferSize()));
+    // column 4 - sequence
+    setCellText(axTable, row, 4, QStringLiteral("%1").arg(table->sequence()));
+    // column 5 - desc
+    QString desc = QString::fromStdString(table->desc());
+    if (!desc.isEmpty() && !desc.endsWith(QStringLiteral("。"))) {
+        desc.append(QStringLiteral("。"));
+    }
+    setCellText(axTable, row, 5, desc);
+    // reference
+    axTable->querySubObject("Cell(int,int", row, 5)->dynamicCall("Select()");
+    selection_->dynamicCall("TypeText(QString)", QStringLiteral("（见"));
+    selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean)",
+                           QStringLiteral("标题"), -2, headingLength + 1, true);
     selection_->dynamicCall("TypeText(QString)", QStringLiteral("）"));
 
     return true;

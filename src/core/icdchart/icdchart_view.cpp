@@ -314,7 +314,7 @@ void ChartView::setChartTheme(int chartTheme)
 {
     Q_D(ChartView);
     d->chartTheme = chartTheme;
-    d->chartView->setChartTheme((JChart::ChartTheme)chartTheme);
+    d->chartView->setChartTheme(static_cast<JChart::ChartTheme>(chartTheme));
 }
 
 void ChartView::setHexAsciiVisible(bool visible)
@@ -419,8 +419,8 @@ void ChartView::dropEvent(QDropEvent *event)
         case Qt::ControlModifier:
         case Qt::ShiftModifier:
             chart = d->chartView->model()->chartAt(event->pos());
-            if (chart && chart->chartType() == JChart::ChartTypeBitMap
-                    || chart->chartType() == JChart::ChartTypeBuffer) {
+            if (chart && (chart->chartType() == JChart::ChartTypeBitMap
+                    || chart->chartType() == JChart::ChartTypeBuffer)) {
                 chart = nullptr;
             }
             break;

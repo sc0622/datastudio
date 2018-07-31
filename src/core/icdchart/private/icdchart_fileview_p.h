@@ -234,6 +234,7 @@ public:
 public slots:
     void onTrackerChanged(JChart::Chart *chart, const QPointF &pos, bool visible);
     void onTrackerMarked(JChart::Chart *chart, const QPointF &pos);
+    void onTrackerMarkerCleared(JChart::Chart *chart);
     void onScaleDivChanged(int axisId, qreal minimum, qreal maximum);
 
 private:
@@ -241,6 +242,10 @@ private:
     bool syncNewChartScaleX(JChart::Chart *chart);
     bool updateSyncScale(JChart::Chart *chart, int axisId, qreal minimum, qreal maximum);
     void enableSyncScale(JChart::Chart *chart, bool enabled);
+
+    void enableTrackerChangedNotify(bool enabled);
+    void enableTrackerMakedNotify(bool enabled);
+    void enableTrackerMarkerClearedNotify(bool enabled);
 
 private:
     J_DECLARE_PUBLIC(ChartFileView)

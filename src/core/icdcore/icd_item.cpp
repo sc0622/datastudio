@@ -15,7 +15,7 @@ public:
     ItemData()
         : type(ItemInvalid)
         , itemOffset(1)
-        , buffer(0)
+        , buffer(nullptr)
         , bufferSize(0.0)
         , bufferOffset(0.0)
         , defaultValue(0.0)
@@ -62,7 +62,7 @@ Item::~Item()
 
 ItemType Item::type() const
 {
-    return d->type;
+    return static_cast<ItemType>(d->type);
 }
 
 int Item::itemOffset() const
@@ -222,7 +222,6 @@ ItemPtr Item::create(const std::string &id, ItemType type)
     case Icd::ItemDateTime: return Icd::ItemPtr(new Icd::DateTimeItem(id));
     case Icd::ItemArray: return Icd::ItemPtr(new Icd::ArrayItem(id));
     default:
-        assert(false);
         return Icd::ItemPtr();  // not supported data type
     }
 }

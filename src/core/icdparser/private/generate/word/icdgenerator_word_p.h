@@ -32,6 +32,8 @@ private:
     bool generateSystem(const std::string &vehicleId, const Icd::SystemPtr &system, bool exportAll, int level);
     bool generateTable(const QStandardItem *itemTable, bool exportAll, bool rt, int level);
     bool generateTable(const TablePtr &table, int level);
+    bool generateDataItem(const QStandardItem *itemData, bool exportAll, bool rt, int level);
+    bool generateDataItem(const Icd::ItemPtr &item, int level);
 
 private:
     bool generateContents();
@@ -46,6 +48,7 @@ private:
     bool generateBitItem(const Icd::BitItemPtr &bitItem, QAxObject *axTable, int row);
     bool generateComplexItem(const Icd::ComplexItemPtr &complexItem, QAxObject *axTable, int row, int level);
     bool generateFrameItem(const Icd::FrameItemPtr &frameItem, QAxObject *axTable, int row, int level);
+    bool generateSubTable(const TablePtr &table, QAxObject *axTable, int row, int level);
     bool generateDateTimeItem(const Icd::DateTimeItemPtr &dateTimeItem, QAxObject *axTable, int row);
     bool generateArrayItem(const Icd::ArrayItemPtr &arrayItem, QAxObject *axTable, int row);
 

@@ -22,7 +22,7 @@ CoreDyLibrary {
         name: 'Headers_private'
         files: [ '**/private/**/*.h', '**/*_p.h' ]
         excludeFiles: [
-            '**/jexcel.h'
+            '**/excel/**/*.h'
         ]
     }
 
@@ -30,7 +30,7 @@ CoreDyLibrary {
         name: 'Sources'
         files: [ '**/*.cpp' ]
         excludeFiles: [
-            '**/jexcel.cpp'
+            '**/excel/**/*.cpp'
         ]
     }
 
