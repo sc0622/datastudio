@@ -690,6 +690,13 @@ QString JMain::frameCodeTypeString(int frameCodeType)
     return tr("Unknown");
 }
 
+QStringList JMain::modules()
+{
+    QStringList _modules;
+    _modules << "edit" << "monitor" << "simulate" << "analyse";
+    return _modules;
+}
+
 void JMain::setTheme(const QString &value)
 {
     const QString previous = theme();

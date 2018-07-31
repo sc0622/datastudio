@@ -7,6 +7,7 @@ class QComboBox;
 class QLineEdit;
 class QTabWidget;
 class QPushButton;
+class QCheckBox;
 
 enum DataSourceType {
     DataSourceInvalid = -1,
@@ -93,13 +94,14 @@ private:
     bool restoreConfig();
 
 private:
-    QString d_module;
-    QObject *d_receiver;
-    QTabWidget *d_tabWidget;
-    FileSourceWidget *d_fileSourceWidget;
-    SqlSourceWidget *d_sqlSourceWidget;
-    QPushButton *d_buttonConnect;
-    QPushButton *d_buttonOk;
+    QString module_;
+    QObject *receiver_;
+    QTabWidget *tabWidget_;
+    FileSourceWidget *fileSourceWidget_;
+    SqlSourceWidget *sqlSourceWidget_;
+    QCheckBox *checkApplyToAll_;
+    QPushButton *buttonConnect_;
+    QPushButton *buttonOk_;
 };
 
 #endif // DATASOURCECONFIGDLG_H

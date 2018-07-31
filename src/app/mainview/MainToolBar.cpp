@@ -150,7 +150,7 @@ void ToolBar::addEditViewAction(const Json::Value &option)
         if (showOffset) {
             actionOffset->setChecked(showOffset);
         } else {
-            jnotify->send("edit.toolbar.tree.showOffset", false);
+            jnotify->send("edit.toolbar.tree.showOffset", QVariant(false));
         }
     } else {
         actionOffset->setChecked(true);
@@ -167,7 +167,7 @@ void ToolBar::addEditViewAction(const Json::Value &option)
         if (showType) {
             actionType->setChecked(showType);
         } else {
-            jnotify->send("edit.toolbar.tree.showType", false);
+            jnotify->send("edit.toolbar.tree.showType", QVariant(false));
         }
     } else {
         actionType->setChecked(true);
@@ -414,7 +414,7 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
         if (showOffset) {
             actionOffset->setChecked(showOffset);
         } else {
-            jnotify->send("monitor.toolbar.tree.showOffset", false);
+            jnotify->send("monitor.toolbar.tree.showOffset", QVariant(false));
         }
     } else {
         actionOffset->setChecked(true);
@@ -431,7 +431,7 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
         if (showType) {
             actionType->setChecked(showType);
         } else {
-            jnotify->send("monitor.toolbar.tree.showType", false);
+            jnotify->send("monitor.toolbar.tree.showType", QVariant(false));
         }
     } else {
         actionType->setChecked(true);
@@ -452,7 +452,7 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
         if (showReal) {
             actionReal->setChecked(showReal);
         } else {
-            jnotify->send("monitor.toolbar.tree.showReal", false);
+            jnotify->send("monitor.toolbar.tree.showReal", QVariant(false));
         }
     } else {
         actionReal->setChecked(true);
@@ -469,7 +469,7 @@ void ToolBar::addMonitorViewAction(const Json::Value &option)
         if (showDesc) {
             actionDesc->setChecked(showDesc);
         } else {
-            jnotify->send("monitor.toolbar.tree.showDesc", false);
+            jnotify->send("monitor.toolbar.tree.showDesc", QVariant(false));
         }
     } else {
         actionDesc->setChecked(true);
@@ -567,7 +567,7 @@ QAction *ToolBar::addMonitorOrigValueRadixAction(QAction *action, const Json::Va
             actionNoOrigValue->setChecked(true);
         } else {
             actionNoOrigValue->setChecked(false);
-            jnotify->send("monitor.toolbar.tree.showData", false);
+            jnotify->send("monitor.toolbar.tree.showData", QVariant(false));
             switch (radix) {
             case 16: actionHexadecimal->setChecked(true); break;
             case 2: actionBinary->setChecked(true); break;
@@ -619,7 +619,7 @@ void ToolBar::addMonitorFlushSwitchAction(const Json::Value &option)
         const bool checked = option["flushEnabled"].asBool();
         setFlushStatus(checked);
         if (!checked) {
-            jnotify->send("monitor.toolbar.flushToggle", false);
+            jnotify->send("monitor.toolbar.flushToggle", QVariant(false));
         }
     } else {
         setFlushStatus(true);
@@ -686,7 +686,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
         if (xAxisSync) {
             actionXAxisSync->setChecked(xAxisSync);
         } else {
-            jnotify->send("monitor.toolbar.chart.xAxisSync", false);
+            jnotify->send("monitor.toolbar.chart.xAxisSync", QVariant(false));
         }
     } else {
         actionXAxisSync->setChecked(true);
@@ -705,7 +705,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
         if (showYLabel) {
             actionYLabel->setChecked(showYLabel);
         } else {
-            jnotify->send("monitor.toolbar.chart.showYLabel", false);
+            jnotify->send("monitor.toolbar.chart.showYLabel", QVariant(false));
         }
     } else {
         actionYLabel->setChecked(true);
@@ -724,7 +724,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
         if (showYAlign) {
             actionYAlign->setChecked(showYAlign);
         } else {
-            jnotify->send("monitor.toolbar.chart.showYAlign", false);
+            jnotify->send("monitor.toolbar.chart.showYAlign", QVariant(false));
         }
     } else {
         actionYAlign->setChecked(true);
@@ -743,7 +743,7 @@ void ToolBar::addMonitorChartAction(const Json::Value &option)
         if (syncTrack) {
             actionSyncTrack->setChecked(syncTrack);
         } else {
-            jnotify->send("monitor.toolbar.chart.syncTrack", false);
+            jnotify->send("monitor.toolbar.chart.syncTrack", QVariant(false));
         }
     } else {
         actionSyncTrack->setChecked(true);
@@ -871,7 +871,7 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
         if (showOffset) {
             actionOffset->setChecked(showOffset);
         } else {
-            jnotify->send("simulate.toolbar.tree.showOffset", false);
+            jnotify->send("simulate.toolbar.tree.showOffset", QVariant(false));
         }
     } else {
         actionOffset->setChecked(true);
@@ -888,7 +888,7 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
         if (showType) {
             actionType->setChecked(showType);
         } else {
-            jnotify->send("simulate.toolbar.tree.showType", false);
+            jnotify->send("simulate.toolbar.tree.showType", QVariant(false));
         }
     } else {
         actionType->setChecked(true);
@@ -909,7 +909,7 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
         if (showReal) {
             actionReal->setChecked(showReal);
         } else {
-            jnotify->send("simulate.toolbar.tree.showReal", false);
+            jnotify->send("simulate.toolbar.tree.showReal", QVariant(false));
         }
     } else {
         actionReal->setChecked(true);
@@ -926,7 +926,7 @@ void ToolBar::addSimulateViewAction(const Json::Value &option)
         if (showDesc) {
             actionDesc->setChecked(showDesc);
         } else {
-            jnotify->send("simulate.toolbar.tree.showDesc", false);
+            jnotify->send("simulate.toolbar.tree.showDesc", QVariant(false));
         }
     } else {
         actionDesc->setChecked(true);
@@ -1024,7 +1024,7 @@ QAction *ToolBar::addSimulateOrigValueRadixAction(QAction *action, const Json::V
             actionNoOrigValue->setChecked(true);
         } else {
             actionNoOrigValue->setChecked(false);
-            jnotify->send("simulate.toolbar.tree.showData", false);
+            jnotify->send("simulate.toolbar.tree.showData", QVariant(false));
             switch (radix) {
             case 16: actionHexadecimal->setChecked(true); break;
             case 2: actionBinary->setChecked(true); break;
@@ -1077,7 +1077,7 @@ void ToolBar::addSimulateFlushSwitchAction(const Json::Value &option)
         const bool checked = option["flushEnabled"].asBool();
         setFlushStatus(checked);
         if (!checked) {
-            jnotify->send("simulate.toolbar.flushToggle", false);
+            jnotify->send("simulate.toolbar.flushToggle", QVariant(false));
         }
     } else {
         setFlushStatus(true);
@@ -1228,7 +1228,7 @@ void ToolBar::addAnalyseViewAction(const Json::Value &option)
         if (showOffset) {
             actionOffset->setChecked(showOffset);
         } else {
-            jnotify->send("analyse.toolbar.tree.showOffset", false);
+            jnotify->send("analyse.toolbar.tree.showOffset", QVariant(false));
         }
     } else {
         actionOffset->setChecked(true);
@@ -1245,7 +1245,7 @@ void ToolBar::addAnalyseViewAction(const Json::Value &option)
         if (showType) {
             actionType->setChecked(showType);
         } else {
-            jnotify->send("analyse.toolbar.tree.showType", false);
+            jnotify->send("analyse.toolbar.tree.showType", QVariant(false));
         }
     } else {
         actionType->setChecked(true);
@@ -1322,7 +1322,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
         if (xAxisSync) {
             actionXAxisSync->setChecked(xAxisSync);
         } else {
-            jnotify->send("analyse.toolbar.chart.xAxisSync", false);
+            jnotify->send("analyse.toolbar.chart.xAxisSync", QVariant(false));
         }
     } else {
         actionXAxisSync->setChecked(true);
@@ -1341,7 +1341,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
         if (showYLabel) {
             actionYLabel->setChecked(showYLabel);
         } else {
-            jnotify->send("analyse.toolbar.chart.showYLabel", false);
+            jnotify->send("analyse.toolbar.chart.showYLabel", QVariant(false));
         }
     } else {
         actionYLabel->setChecked(true);
@@ -1360,7 +1360,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
         if (showYAlign) {
             actionYAlign->setChecked(showYAlign);
         } else {
-            jnotify->send("analyse.toolbar.chart.showYAlign", false);
+            jnotify->send("analyse.toolbar.chart.showYAlign", QVariant(false));
         }
     } else {
         actionYAlign->setChecked(true);
@@ -1379,7 +1379,7 @@ void ToolBar::addAnalyseChartAction(const Json::Value &option)
         if (syncTrack) {
             actionSyncTrack->setChecked(syncTrack);
         } else {
-            jnotify->send("analyse.toolbar.chart.syncTrack", false);
+            jnotify->send("analyse.toolbar.chart.syncTrack", QVariant(false));
         }
     } else {
         actionSyncTrack->setChecked(true);

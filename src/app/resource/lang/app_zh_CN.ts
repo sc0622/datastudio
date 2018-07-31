@@ -161,62 +161,69 @@
     </message>
     <message>
         <location filename="../../module/common/DataSourceConfigDlg.cpp" line="215"/>
+        <source>Apply to all</source>
+        <translation>应用其他系统</translation>
+    </message>
+    <message>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="220"/>
         <source>Connect</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="221"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="226"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="226"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="231"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="299"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="315"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="323"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="331"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="339"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="347"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="359"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="313"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="329"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="337"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="345"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="353"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="361"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="375"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="381"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="300"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="314"/>
         <source>File &quot;%1&quot; is not exists!</source>
         <translation>文件“%1”不存在！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="315"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="329"/>
         <source>SQL type cannot be empty!</source>
         <translation>数据库类型不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="323"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="337"/>
         <source>Server&apos;s name cannot be empty!</source>
         <translation>服务器名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="331"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="345"/>
         <source>Database&apos;s name cannot be empty!</source>
         <translation>数据库名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="339"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="353"/>
         <source>User&apos;s name cannot be empty!</source>
         <translation>用户名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="347"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="361"/>
         <source>User&apos;s password cannot be empty!</source>
         <translation>用户密码不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="359"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="375"/>
+        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="381"/>
         <source>Save config failure!</source>
         <translation>保存配置信息失败！</translation>
     </message>
@@ -647,7 +654,7 @@
     <message>
         <location filename="../../mainview/MainMenuBar.cpp" line="61"/>
         <source>Toggle full screen</source>
-        <translation type="unfinished"></translation>
+        <translation>切换全屏模式</translation>
     </message>
     <message>
         <location filename="../../mainview/MainMenuBar.cpp" line="78"/>

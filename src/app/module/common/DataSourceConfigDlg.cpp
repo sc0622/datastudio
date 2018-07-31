@@ -188,23 +188,23 @@ void SqlSourceWidget::setPassword(const QString &password)
 DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receiver,
                                          QWidget *parent)
     : QDialog(parent)
-    , d_module(module)
-    , d_receiver(receiver)
+    , module_(module)
+    , receiver_(receiver)
 {
     setWindowTitle(tr("Data source configuration"));
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    d_tabWidget = new QTabWidget(this);
-    vertLayoutMain->addWidget(d_tabWidget);
+    tabWidget_ = new QTabWidget(this);
+    vertLayoutMain->addWidget(tabWidget_);
 
-    d_fileSourceWidget = new FileSourceWidget(this);
-    d_tabWidget->addTab(d_fileSourceWidget,
+    fileSourceWidget_ = new FileSourceWidget(this);
+    tabWidget_->addTab(fileSourceWidget_,
                         QIcon(":/datastudio/image/global/file.png"), tr("File source"));
 
-    d_sqlSourceWidget = new SqlSourceWidget(this);
-    d_tabWidget->addTab(d_sqlSourceWidget,
+    sqlSourceWidget_ = new SqlSourceWidget(this);
+    tabWidget_->addTab(sqlSourceWidget_,
                         QIcon(":/datastudio/image/global/sql.png"), tr("SQL source"));
 
     QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
@@ -212,16 +212,21 @@ DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receive
 
     horiLayoutBottom->addStretch();
 
-    d_buttonConnect = new QPushButton(tr("Connect"), this);
-    d_buttonConnect->setMinimumWidth(80);
-    horiLayoutBottom->addWidget(d_buttonConnect);
+    checkApplyToAll_ = new QCheckBox(tr("Apply to all"), this);
+    horiLayoutBottom->addWidget(checkApplyToAll_);
 
     horiLayoutBottom->addSpacing(20);
 
-    d_buttonOk = new QPushButton(tr("Ok"), this);
-    d_buttonOk->setMinimumWidth(80);
-    d_buttonOk->setDefault(true);
-    horiLayoutBottom->addWidget(d_buttonOk);
+    buttonConnect_ = new QPushButton(tr("Connect"), this);
+    buttonConnect_->setMinimumWidth(80);
+    horiLayoutBottom->addWidget(buttonConnect_);
+
+    horiLayoutBottom->addSpacing(20);
+
+    buttonOk_ = new QPushButton(tr("Ok"), this);
+    buttonOk_->setMinimumWidth(80);
+    buttonOk_->setDefault(true);
+    horiLayoutBottom->addWidget(buttonOk_);
 
     QPushButton *buttonCancel = new QPushButton(tr("Cancel"), this);
     buttonCancel->setMinimumWidth(80);
@@ -231,31 +236,40 @@ DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receive
 
     vertLayoutMain->addSpacing(10);
 
-    connect(d_tabWidget, &QTabWidget::currentChanged, this, [=](int index){
+    connect(tabWidget_, &QTabWidget::currentChanged, this, [=](int index){
         updateTab(index);
-        d_buttonOk->setEnabled(true);
+        buttonOk_->setEnabled(true);
     });
-    connect(d_fileSourceWidget, &FileSourceWidget::contentChanged, this, [=](){
-        d_buttonOk->setEnabled(true);
+    connect(fileSourceWidget_, &FileSourceWidget::contentChanged, this, [=](){
+        buttonOk_->setEnabled(true);
     });
-    connect(d_sqlSourceWidget, &SqlSourceWidget::contentChanged, this, [=](){
-        d_buttonOk->setEnabled(true);
+    connect(sqlSourceWidget_, &SqlSourceWidget::contentChanged, this, [=](){
+        buttonOk_->setEnabled(true);
     });
-    connect(d_buttonOk, &QPushButton::clicked, this, [=](){
+    connect(checkApplyToAll_, &QCheckBox::stateChanged, this, [=](){
+        buttonOk_->setEnabled(true);
+    });
+    connect(buttonOk_, &QPushButton::clicked, this, [=](){
         if (!saveConfig()) {
             return;
         }
         this->accept();
         // notify
-        jnotify->post(d_module + ".parser.changed", d_receiver);
+        if (checkApplyToAll_->isChecked()) {
+            foreach (auto &module, JMain::modules()) {
+                jnotify->post(module + ".parser.changed");
+            }
+        } else {
+            jnotify->post(module_ + ".parser.changed", receiver_);
+        }
     });
     connect(buttonCancel, &QPushButton::clicked, this, [=](){
         reject();
     });
 
     resize(600, sizeHint().height());
-    updateTab(d_tabWidget->currentIndex());
-    d_buttonOk->setDisabled(true);
+    updateTab(tabWidget_->currentIndex());
+    buttonOk_->setDisabled(true);
 
     if (!restoreConfig()) {
         //
@@ -267,12 +281,12 @@ void DataSourceConfigDlg::updateTab(int index)
     switch (index) {
     case DataSourceFile:
     {
-        d_buttonConnect->hide();
+        buttonConnect_->hide();
         break;
     }
     case DataSourceSql:
     {
-        d_buttonConnect->show();
+        buttonConnect_->show();
         break;
     }
     default:
@@ -284,21 +298,21 @@ bool DataSourceConfigDlg::saveConfig()
 {
     Json::Value config;
 
-    switch (d_tabWidget->currentIndex()) {
+    switch (tabWidget_->currentIndex()) {
     case DataSourceFile:
     {
         // source type
         config["sourceType"] = "file";
         // file path
-        const QString filePath = d_fileSourceWidget->filePath();
+        const QString filePath = fileSourceWidget_->filePath();
         if (filePath.isEmpty()) {
-            d_fileSourceWidget->focusFilePath();
+            fileSourceWidget_->focusFilePath();
             return false;
         }
         if (!QFile::exists(filePath)) {
             QMessageBox::warning(this, tr("Warning"),
                                  tr("File \"%1\" is not exists!").arg(filePath));
-            d_fileSourceWidget->focusFilePath();
+            fileSourceWidget_->focusFilePath();
             return false;
         }
         config["filePath"] = filePath.toStdString();
@@ -310,42 +324,42 @@ bool DataSourceConfigDlg::saveConfig()
         // source type
         config["sourceType"] = "sql";
         // sql type
-        const QString sqlType = d_sqlSourceWidget->sqlType();
+        const QString sqlType = sqlSourceWidget_->sqlType();
         if (sqlType.isEmpty()) {
             QMessageBox::warning(this, tr("Warning"), tr("SQL type cannot be empty!"));
-            d_sqlSourceWidget->focusSqlType();
+            sqlSourceWidget_->focusSqlType();
             return false;
         }
         config["sqlType"] = sqlType.toStdString();
         // server's name
-        const QString serverName = d_sqlSourceWidget->serverName();
+        const QString serverName = sqlSourceWidget_->serverName();
         if (serverName.isEmpty()) {
             QMessageBox::warning(this, tr("Warning"), tr("Server's name cannot be empty!"));
-            d_sqlSourceWidget->focusServerName();
+            sqlSourceWidget_->focusServerName();
             return false;
         }
         config["serverName"] = serverName.toStdString();
         // database's name
-        const QString databaseName = d_sqlSourceWidget->databaseName();
+        const QString databaseName = sqlSourceWidget_->databaseName();
         if (databaseName.isEmpty()) {
             QMessageBox::warning(this, tr("Warning"), tr("Database's name cannot be empty!"));
-            d_sqlSourceWidget->focusDatabaseName();
+            sqlSourceWidget_->focusDatabaseName();
             return false;
         }
         config["databaseName"] = databaseName.toStdString();
         // user's name
-        const QString userName = d_sqlSourceWidget->userName();
+        const QString userName = sqlSourceWidget_->userName();
         if (userName.isEmpty()) {
             QMessageBox::warning(this, tr("Warning"), tr("User's name cannot be empty!"));
-            d_sqlSourceWidget->focusUserName();
+            sqlSourceWidget_->focusUserName();
             return false;
         }
         config["userName"] = userName.toStdString();
         // user's password
-        const QString password = d_sqlSourceWidget->password();
+        const QString password = sqlSourceWidget_->password();
         if (password.isEmpty()) {
             QMessageBox::warning(this, tr("Warning"), tr("User's password cannot be empty!"));
-            d_sqlSourceWidget->focusPassword();
+            sqlSourceWidget_->focusPassword();
             return false;
         }
         config["password"] = password.toStdString();
@@ -355,9 +369,18 @@ bool DataSourceConfigDlg::saveConfig()
         break;
     }
 
-    if (!JMain::instance()->setOption(d_module, "parser", config)) {
-        QMessageBox::warning(this, tr("Warning"), tr("Save config failure!"));
-        return false;
+    if (checkApplyToAll_->isChecked()) {
+        foreach (auto &module, JMain::modules()) {
+            if (!JMain::instance()->setOption(module, "parser", config)) {
+                QMessageBox::warning(this, tr("Warning"), tr("Save config failure!"));
+                return false;
+            }
+        }
+    } else {
+        if (!JMain::instance()->setOption(module_, "parser", config)) {
+            QMessageBox::warning(this, tr("Warning"), tr("Save config failure!"));
+            return false;
+        }
     }
 
     return true;
@@ -365,7 +388,7 @@ bool DataSourceConfigDlg::saveConfig()
 
 bool DataSourceConfigDlg::restoreConfig()
 {
-    Json::Value config = JMain::instance()->option(d_module, "parser");
+    Json::Value config = JMain::instance()->option(module_, "parser");
     if (config.isNull()) {
         return false;
     }
@@ -376,37 +399,37 @@ bool DataSourceConfigDlg::restoreConfig()
 
     const std::string sourceType = config["sourceType"].asString();
     if (sourceType == "file") {
-        d_tabWidget->setCurrentIndex(DataSourceFile);
+        tabWidget_->setCurrentIndex(DataSourceFile);
         // file path
         if (config.isMember("filePath")) {
-            d_fileSourceWidget->setFilePath(
+            fileSourceWidget_->setFilePath(
                         QString::fromStdString(config["filePath"].asString()));
         }
     } else if (sourceType == "sql") {
-        d_tabWidget->setCurrentIndex(DataSourceSql);
+        tabWidget_->setCurrentIndex(DataSourceSql);
         // sql type
         if (config.isMember("sqlType")) {
-            d_sqlSourceWidget->setSqlType(QString::fromStdString(config["sqlType"].asString()));
+            sqlSourceWidget_->setSqlType(QString::fromStdString(config["sqlType"].asString()));
         }
         // server's name
         if (config.isMember("serverName")) {
-            d_sqlSourceWidget->setServrerName(QString::fromStdString(config["serverName"].asString()));
+            sqlSourceWidget_->setServrerName(QString::fromStdString(config["serverName"].asString()));
         }
         // database's name
         if (config.isMember("databaseName")) {
-            d_sqlSourceWidget->setDatabaseName(QString::fromStdString(config["databaseName"].asString()));
+            sqlSourceWidget_->setDatabaseName(QString::fromStdString(config["databaseName"].asString()));
         }
         // user's name
         if (config.isMember("userName")) {
-            d_sqlSourceWidget->setUserName(QString::fromStdString(config["userName"].asString()));
+            sqlSourceWidget_->setUserName(QString::fromStdString(config["userName"].asString()));
         }
         // user's password
         if (config.isMember("password")) {
-            d_sqlSourceWidget->setPassword(QString::fromStdString(config["password"].asString()));
+            sqlSourceWidget_->setPassword(QString::fromStdString(config["password"].asString()));
         }
     }
 
-    d_buttonOk->setDisabled(true);
+    buttonOk_->setDisabled(true);
 
     return true;
 }

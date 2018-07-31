@@ -16,27 +16,27 @@ TreeView::TreeView(QWidget *parent)
 
     jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
         QVariantList args;
-        args << "edit" << qVariantFromValue((void*)this);
+        args << "edit" << qVariantFromValue(static_cast<void*>(this));
         jnotify->send("database.config", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
-        jnotify->send("edit.tree.item.pressed", qVariantFromValue((void*)item));
+        jnotify->send("edit.tree.item.pressed", qVariantFromValue(static_cast<void*>(item)));
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
-        jnotify->send("edit.tree.item.clicked", qVariantFromValue((void*)item));
+        jnotify->send("edit.tree.item.clicked", qVariantFromValue(static_cast<void*>(item)));
     });
     connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
-        args.append(qVariantFromValue((void*)current));
-        args.append(qVariantFromValue((void*)previous));
+        args.append(qVariantFromValue(static_cast<void*>(current)));
+        args.append(qVariantFromValue(static_cast<void*>(previous)));
         jnotify->send("edit.tree.item.currentchanged", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
-        args.append(qVariantFromValue((void*)tableItem));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
+        args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("edit.tree.item.unloaded", args);
     });
 
@@ -113,7 +113,7 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    treeView_->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
+    treeView_->setShowAttribute(static_cast<Icd::CoreTreeWidget::ShowAttribute>(attr), on);
 }
 
 bool TreeView::updateParser()

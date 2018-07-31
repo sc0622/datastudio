@@ -17,55 +17,55 @@ TreeView::TreeView(QWidget *parent)
 
     jnotify->on("monitor.toolbar.database.config", this, [=](JNEvent &){
         QVariantList args;
-        args << "monitor" << qVariantFromValue((void*)this);
+        args << "monitor" << qVariantFromValue(static_cast<void*>(this));
         jnotify->send("database.config", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
-        jnotify->send("monitor.tree.item.pressed", qVariantFromValue((void*)item));
+        jnotify->send("monitor.tree.item.pressed", qVariantFromValue(static_cast<void*>(item)));
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
-        jnotify->send("monitor.tree.item.clicked", qVariantFromValue((void*)item));
+        jnotify->send("monitor.tree.item.clicked", qVariantFromValue(static_cast<void*>(item)));
     });
     connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
-        args.append(qVariantFromValue((void*)current));
-        args.append(qVariantFromValue((void*)previous));
+        args.append(qVariantFromValue(static_cast<void*>(current)));
+        args.append(qVariantFromValue(static_cast<void*>(previous)));
         jnotify->send("monitor.tree.item.currentchanged", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
-        args.append(qVariantFromValue((void*)tableItem));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
+        args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("monitor.tree.item.unloaded", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::channelBound, this,
             [=](QStandardItem *item, const QString &channelId){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(channelId);
         jnotify->send("monitor.tree.channel.bound", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::channelUnbound, this,
             [=](QStandardItem *item, const QString &channelId){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(channelId);
         jnotify->send("monitor.tree.channel.unbound", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::channelChanged, this,
             [=](QStandardItem *item, const QString &channelId){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(channelId);
         jnotify->send("monitor.tree.channel.changed", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::unbindItem, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
-        args.append(qVariantFromValue((void*)tableItem));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
+        args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("monitor.tree.item.unbind", args);
     });
 
@@ -88,7 +88,7 @@ TreeView::TreeView(QWidget *parent)
         // module
         args.append("monitor");
         // receiver
-        args.append(qVariantFromValue((void*)this));
+        args.append(qVariantFromValue(static_cast<void*>(this)));
         jnotify->send("database.config", args);
     });
     jnotify->on("monitor.toolbar.tree.loadDeep", this, [=](JNEvent &event){
@@ -139,7 +139,7 @@ TreeView::TreeView(QWidget *parent)
         inputDlg.setIntRange(5, 1000000000);
         inputDlg.setIntValue(treeView_->intervalUpdate());
         inputDlg.resize(300, inputDlg.sizeHint().height());
-        if (!inputDlg.exec() == QDialog::Accepted) {
+        if (inputDlg.exec() != QDialog::Accepted) {
             return;
         }
         treeView_->setIntervalUpdate(inputDlg.intValue());
@@ -209,7 +209,7 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    treeView_->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
+    treeView_->setShowAttribute(static_cast<Icd::CoreTreeWidget::ShowAttribute>(attr), on);
 }
 
 void TreeView::setOrigValueRadix(int radix)

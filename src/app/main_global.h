@@ -93,6 +93,8 @@ public:
     static QString frameCodeTypeString(int frameCodeType);
     // }} for icdcore
 
+    static QStringList modules();
+
 signals:
     void themeChanged(const QString &currnt, const QString &previous);
 
