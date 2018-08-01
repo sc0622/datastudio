@@ -45,8 +45,8 @@ Page {
         Item { Layout.fillHeight: true }
         CircularGauge {
             id: gauge
-            implicitWidth: root.implicitWidth - 3
-            //anchors.horizontalCenter: parent.horizontalCenter
+            //implicitWidth: root.implicitWidth - 3
+            width: root.implicitWidth - 3
             Layout.alignment: Qt.AlignHCenter
             implicitHeight: implicitWidth
             Behavior on value { NumberAnimation { } }

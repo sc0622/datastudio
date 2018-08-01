@@ -50,7 +50,7 @@ bool TabWidget::init()
     menuBar_->init();
 
     if (currentIndex() == 0) {
-        jnotify->send("main.tab.changed", 0);
+        jnotify->send("main.tab.changed", QVariant(0));
     }
 
     return result;
