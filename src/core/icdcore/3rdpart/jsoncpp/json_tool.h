@@ -58,7 +58,7 @@ static char getDecimalPoint() {
 }
 
 /// Converts a unicode code-point to UTF-8.
-static inline JSONCPP_STRING codePointToUTF8(unsigned int cp) {
+inline JSONCPP_STRING codePointToUTF8(unsigned int cp) {
     JSONCPP_STRING result;
 
     // based on description from http://en.wikipedia.org/wiki/UTF-8
@@ -100,7 +100,7 @@ typedef char UIntToStringBuffer[uintToStringBufferSize];
  * @param current Input/Output string buffer.
  *        Must have at least uintToStringBufferSize chars free.
  */
-static inline void uintToString(LargestUInt value, char*& current) {
+inline void uintToString(LargestUInt value, char*& current) {
     *--current = 0;
     do {
         *--current = static_cast<char>(value % 10U + static_cast<unsigned>('0'));
@@ -113,7 +113,7 @@ static inline void uintToString(LargestUInt value, char*& current) {
  * We had a sophisticated way, but it did not work in WinCE.
  * @see https://github.com/open-source-parsers/jsoncpp/pull/9
  */
-static inline void fixNumericLocale(char* begin, char* end) {
+inline void fixNumericLocale(char* begin, char* end) {
     while (begin < end) {
         if (*begin == ',') {
             *begin = '.';
@@ -122,7 +122,7 @@ static inline void fixNumericLocale(char* begin, char* end) {
     }
 }
 
-static inline void fixNumericLocaleInput(char* begin, char* end) {
+inline void fixNumericLocaleInput(char* begin, char* end) {
     char decimalPoint = getDecimalPoint();
     if (decimalPoint != '\0' && decimalPoint != '.') {
         while (begin < end) {

@@ -63,9 +63,9 @@ int atoi(const std::string &str)
 icd_uint64 strtou64(const std::string &str, int radix)
 {
 #if defined(_MSC_VER)
-    return _strtoui64(str.c_str(), 0, radix);
+    return _strtoui64(str.c_str(), nullptr, radix);
 #else
-    return strtoull(str.c_str(), 0, radix);
+    return strtoull(str.c_str(), nullptr, radix);
 #endif
 }
 
