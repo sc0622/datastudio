@@ -161,7 +161,7 @@ TablePtr ComplexItem::tableByDomain(const std::string &domain,
 {
     ObjectPtr item = itemByDomain(domain, domainType);
     if (!item || item->objectType() != ObjectTable) {
-        return 0;
+        return nullptr;
     }
 
     return JHandlePtrCast<Table, Object>(item);

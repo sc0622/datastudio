@@ -12,7 +12,7 @@ class FileDetailWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FileDetailWidget(QWidget *parent = 0);
+    explicit FileDetailWidget(QWidget *parent = nullptr);
     ~FileDetailWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

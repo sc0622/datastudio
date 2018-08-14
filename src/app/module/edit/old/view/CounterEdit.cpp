@@ -1,13 +1,13 @@
 #include "precomp.h"
 #include "CounterEdit.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 CounterEdit::CounterEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     comboCounterType_ = new QComboBox(this);
-    addFormRow(QStringLiteral("计数类型："), comboCounterType_);
+    addFormRow(tr("Counter type:"), comboCounterType_);
 
     enableConnect(true);
 }
@@ -46,12 +46,12 @@ bool CounterEdit::init()
     comboCounterType_->clear();
     std::vector<stDictionary> names;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&names));
+    args.append(qVariantFromValue(static_cast<void*>(&names)));
     args.append(int(GlobalDefine::dicCounterType));
     jnotify->send("edit.queryDictionaryTable", args);
 
-    const int count = names.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = names.size();
+    for (size_t i = 0; i < count; ++i) {
         const stDictionary &dic = names.at(i);
         comboCounterType_->addItem(dic.sDec.c_str(), dic.nCode);
     }

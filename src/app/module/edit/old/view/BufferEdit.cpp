@@ -1,15 +1,15 @@
 #include "precomp.h"
 #include "BufferEdit.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 BufferEdit::BufferEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     spinLength_ = new QSpinBox(this);
     spinLength_->setRange(1, 1e6);
-    spinLength_->setSuffix(QStringLiteral(" ×Ö½Ú"));
-    addFormRow(QStringLiteral("³¤¶È£º"), spinLength_);
+    spinLength_->setSuffix(tr(" B"));
+    addFormRow(QStringLiteral("Length:"), spinLength_);
 
     enableConnect(true);
 }

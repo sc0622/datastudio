@@ -4,10 +4,6 @@
 
 namespace Icd {
 
-/**
- * @brief XmlParser::createDocument
- * @return
- */
 TiXmlDocument *XmlParser::createDocument() const
 {
     //
@@ -24,11 +20,6 @@ TiXmlDocument *XmlParser::createDocument() const
     return document;
 }
 
-/**
- * @brief XmlParser::saveDocument
- * @param document
- * @return
- */
 bool XmlParser::saveDocument(TiXmlDocument *document) const
 {
     if (!document) {
@@ -38,12 +29,6 @@ bool XmlParser::saveDocument(TiXmlDocument *document) const
     return document->SaveFile(QString::fromStdString(filePath()).toLocal8Bit());
 }
 
-/**
- * @brief XmlParser::saveObject
- * @param emObject
- * @param object
- * @return
- */
 bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object) const
 {
     //
@@ -78,16 +63,10 @@ bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object)
     return true;
 }
 
-/**
- * @brief XmlParser::saveItem
- * @param emItem
- * @param item
- * @return
- */
 bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
 {
     //
-    if (!emItem || item == 0) {
+    if (!emItem || item == nullptr) {
         return false;       //
     }
 
@@ -158,23 +137,17 @@ bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
     return true;
 }
 
-/**
- * @brief XmlParser::saveItemHead
- * @param emItem
- * @param head
- * @return
- */
 bool XmlParser::saveItemHead(TiXmlElement *emItem,
                              const Icd::HeaderItemPtr &head) const
 {
     //
-    if (!emItem || head == 0) {
+    if (!emItem || head == nullptr) {
         return false;       //
     }
 
     // defaultValue
     emItem->SetAttribute("defaultValue", QString("0x%1")
-                         .arg((uint)head->defaultValue(), 2, 16, QChar('0')).toStdString());
+                         .arg(static_cast<uint>(head->defaultValue()), 2, 16, QChar('0')).toStdString());
 
     return true;
 }
@@ -183,7 +156,7 @@ bool XmlParser::saveItemCounter(TiXmlElement *emItem,
                                 const Icd::CounterItemPtr &counter) const
 {
     //
-    if (!emItem || counter == 0) {
+    if (!emItem || counter == nullptr) {
         return false;
     }
 
@@ -193,16 +166,10 @@ bool XmlParser::saveItemCounter(TiXmlElement *emItem,
     return true;
 }
 
-/**
- * @brief XmlParser::saveItemCheck
- * @param emItem
- * @param check
- * @return
- */
 bool XmlParser::saveItemCheck(TiXmlElement *emItem, const Icd::CheckItemPtr &check) const
 {
     //
-    if (!emItem || check == 0) {
+    if (!emItem || check == nullptr) {
         return false;       //
     }
 
@@ -216,17 +183,11 @@ bool XmlParser::saveItemCheck(TiXmlElement *emItem, const Icd::CheckItemPtr &che
     return true;
 }
 
-/**
- * @brief XmlParser::saveItemFrameCode
- * @param emItem
- * @param frameCode
- * @return
- */
 bool XmlParser::saveItemFrameCode(TiXmlElement *emItem,
                                   const Icd::FrameCodeItemPtr &frameCode) const
 {
     //
-    if (!emItem || frameCode == 0) {
+    if (!emItem || frameCode == nullptr) {
         return false;       //
     }
 
@@ -242,17 +203,11 @@ bool XmlParser::saveItemFrameCode(TiXmlElement *emItem,
     return true;
 }
 
-/**
- * @brief XmlParser::saveItemNumeric
- * @param emItem
- * @param numeric
- * @return
- */
 bool XmlParser::saveItemNumeric(TiXmlElement *emItem,
                                 const Icd::NumericItemPtr &numeric) const
 {
     //
-    if (!emItem || numeric == 0) {
+    if (!emItem || numeric == nullptr) {
         return false;       //
     }
 
@@ -294,7 +249,7 @@ bool XmlParser::saveItemNumeric(TiXmlElement *emItem,
         TiXmlElement *emSpec = new TiXmlElement("spec");
         emItem->LinkEndChild(emSpec);
         // key
-        emSpec->SetAttribute("key", citer->first);
+        emSpec->SetDoubleAttribute("key", citer->first);
         // info
         emSpec->SetAttribute("info", citer->second);
     }
@@ -316,17 +271,11 @@ bool XmlParser::saveItemArray(TiXmlElement *emItem, const ArrayItemPtr &array) c
     return true;
 }
 
-/**
- * @brief XmlParser::saveItemBit
- * @param emItem
- * @param bit
- * @return
- */
 bool XmlParser::saveItemBit(TiXmlElement *emItem,
                             const Icd::BitItemPtr &bit) const
 {
     //
-    if (!emItem || bit == 0) {
+    if (!emItem || bit == nullptr) {
         return false;       //
     }
 
@@ -355,17 +304,11 @@ bool XmlParser::saveItemBit(TiXmlElement *emItem,
     return true;
 }
 
-/**
- * @brief XmlParser::saveItemComplex
- * @param emItem
- * @param complex
- * @return
- */
 bool XmlParser::saveItemComplex(TiXmlElement *emItem,
                                 const Icd::ComplexItemPtr &complex) const
 {
     //
-    if (!emItem || complex == 0) {
+    if (!emItem || complex == nullptr) {
         return false;       //
     }
 
@@ -382,17 +325,11 @@ bool XmlParser::saveItemComplex(TiXmlElement *emItem,
     return true;
 }
 
-/**
- * @brief XmlParser::saveItemFrame
- * @param emItem
- * @param frame
- * @return
- */
 bool XmlParser::saveItemFrame(TiXmlElement *emItem,
                               const Icd::FrameItemPtr &frame) const
 {
     //
-    if (!emItem || frame == 0) {
+    if (!emItem || frame == nullptr) {
         return false;       //
     }
 
@@ -424,17 +361,11 @@ bool XmlParser::saveItemFrame(TiXmlElement *emItem,
     return true;
 }
 
-/**
- * @brief XmlParser::saveTable
- * @param emTable
- * @param table
- * @return
- */
 bool XmlParser::saveTable(TiXmlElement *emTable,
                           const Icd::TablePtr &table) const
 {
     //
-    if (!emTable || table == 0) {
+    if (!emTable || table == nullptr) {
         return false;       //
     }
 
@@ -461,17 +392,11 @@ bool XmlParser::saveTable(TiXmlElement *emTable,
     return true;
 }
 
-/**
- * @brief XmlParser::saveSystem
- * @param emSystem
- * @param system
- * @return
- */
 bool XmlParser::saveSystem(TiXmlElement *emSystem,
                            const Icd::SystemPtr &system) const
 {
     //
-    if (!emSystem || system == 0) {
+    if (!emSystem || system == nullptr) {
         return false;       //
     }
 
@@ -495,17 +420,11 @@ bool XmlParser::saveSystem(TiXmlElement *emSystem,
     return true;
 }
 
-/**
- * @brief XmlParser::saveVehicle
- * @param emVehicle
- * @param vehicle
- * @return
- */
 bool XmlParser::saveVehicle(TiXmlElement *emVehicle,
                             const Icd::VehiclePtr &vehicle) const
 {
     //
-    if (!emVehicle || vehicle == 0) {
+    if (!emVehicle || vehicle == nullptr) {
         return false;   //
     }
 

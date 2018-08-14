@@ -3,7 +3,7 @@
 
 #ifdef _MSC_VER
 
-JPreciTimer::JPreciTimer() : q_freq(0), q_ocount(0)
+JPreciTimer::JPreciTimer() : q_freq(0), q_count(0)
 {
     LARGE_INTEGER lcount;
     if (QueryPerformanceFrequency(&lcount)) {
@@ -21,10 +21,10 @@ void JPreciTimer::reset()
 {
     LARGE_INTEGER lcount;
     if (QueryPerformanceCounter(&lcount)) {
-        q_ocount = lcount.QuadPart;
+        q_count = lcount.QuadPart;
     }
     else {
-        q_ocount = 0;
+        q_count = 0;
     }
 }
 

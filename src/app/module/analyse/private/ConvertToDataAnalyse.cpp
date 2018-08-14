@@ -12,12 +12,12 @@
 ConvertToDataAnalyse::ConvertToDataAnalyse(QWidget *parent)
     : QWidget(parent)
     , d_listWidget(nullptr)
+    , d_checkSplitBit(nullptr)
     , d_table(nullptr)
     , d_objectItem(nullptr)
     , d_hasTimeFormat(false)
     , d_headerSize(0)
     , d_progressDialog(nullptr)
-    , d_checkSplitBit(nullptr)
     , d_progressValue(0)
     , d_timerUpdate(0)
 {
@@ -31,14 +31,14 @@ ConvertToDataAnalyse::ConvertToDataAnalyse(const QString &filePath,
                                            int bitOffset, QWidget *parent)
     : QWidget(parent)
     , d_listWidget(nullptr)
-    , d_table(table)
+    , d_checkSplitBit(nullptr)
     , d_filePath(filePath)
+    , d_table(table)
     , d_objectItem(objectItem)
     , d_hasTimeFormat(hasTimeFormat)
     , d_headerSize(headerSize)
     , d_bitOffset(bitOffset)
-    , d_progressDialog(Q_NULLPTR)
-    , d_checkSplitBit(nullptr)
+    , d_progressDialog(nullptr)
     , d_progressValue(0)
     , d_timerUpdate(0)
 {
@@ -68,7 +68,7 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
     JAutoCursor busyCursor(Qt::BusyCursor);
 
     d_progressDialog = new Icd::ProgressDialog(this);
-    d_progressDialog->setWindowTitle(QStringLiteral("加载数据"));
+    d_progressDialog->setWindowTitle(tr("Load data"));
     d_progressDialog->setCancelVisible(false);
     d_progressDialog->setInvertedAppearance(false);
     connect(this, &ConvertToDataAnalyse::progressMessageChanged,
@@ -176,41 +176,41 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
     //
     bool parseTable = (!d_objectItem);
     if (parseTable) {
-        d_progressDialog->setMessage(QStringLiteral("正在解析数据文件……"));
+        d_progressDialog->setMessage(tr("Parsing data file..."));
         d_progressDialog->setFuture(QtConcurrent::run(parseFunc));
     } else {
-        d_progressDialog->setMessage(QStringLiteral("正在转换数据文件……"));
+        d_progressDialog->setMessage(tr("Converting data file..."));
         d_progressDialog->setFuture(QtConcurrent::run(convertFunc));
     }
 
-    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,this,&parseTable](){
+    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
         if (d_progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;
-                d_progressDialog->setWindowTitle(QStringLiteral("转换数据"));
-                d_progressDialog->setMessage(QStringLiteral("正在转换数据文件……"));
+                d_progressDialog->setWindowTitle(tr("Convert data"));
+                d_progressDialog->setMessage(tr("Converting data file..."));
                 d_progressDialog->setFuture(QtConcurrent::run(convertFunc));
             } else {
                 d_progressDialog->hide();
                 d_progressDialog->disconnect(this);
-                QString message = QStringLiteral("转换成功！");
-                QMessageBox::information(this, QStringLiteral("转换结果"), message);
+                QString message = tr("Convert success!");
+                QMessageBox::information(this, tr("Result of converting"), message);
                 d_progressDialog->deleteLater();
                 d_progressDialog = Q_NULLPTR;
                 if (!d_objectItem) {
-                    d_table = Icd::TablePtr(0);
+                    d_table = Icd::TablePtr();
                 }
             }
         } else {
             d_progressDialog->hide();
             d_progressDialog->disconnect(this);
-            const QString title = parseTable ? QStringLiteral("解析结果") : QStringLiteral("转换结果");
-            const QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
+            const QString title = parseTable ? tr("Result of parsing") : tr("Result of converting");
+            const QString message = parseTable ? tr("Parse failure!") : tr("Convert failure!");
             QMessageBox::information(this, title, message);
             d_progressDialog->deleteLater();
             d_progressDialog = Q_NULLPTR;
             if (!d_objectItem) {
-                d_table = Icd::TablePtr(0);
+                d_table = Icd::TablePtr();
             }
         }
     });
@@ -289,12 +289,12 @@ bool ConvertToDataAnalyse::convertToATX(QFile *sourceFile, QSaveFile *targetFile
     // data
     const double pkgCntScale = d_spinPkgCntScale->value();
     const qint64 dataSize = sourceFile->size() - headerSize;
-    const int tableSize = (int)table->bufferSize();
+    const int tableSize = int(table->bufferSize());
     const int bufferSize = tableSize + (hasTimeFormat ? 8 : 0);
     const qint64 bufferCount = dataSize / bufferSize;
     uchar *buffer = Q_NULLPTR;
 
-    emit progressRangeChanged(0, bufferCount - 1);
+    emit progressRangeChanged(0, int(bufferCount - 1));
     //emit progressValueChanged(0);
     d_progressValue = 0;
 
@@ -308,14 +308,14 @@ bool ConvertToDataAnalyse::convertToATX(QFile *sourceFile, QSaveFile *targetFile
         }
         if (hasTimeFormat) {
             // datetime
-            ts << *(qint64 *)buffer << ' ';
+            ts << *reinterpret_cast<qint64*>(buffer) << ' ';
             // values
-            table->setBuffer((char *)(buffer + 8));
+            table->setBuffer(reinterpret_cast<char*>(buffer + 8));
         } else {
             // package-count
             ts << (i + 1) * pkgCntScale << ' ';
             //
-            table->setBuffer((char *)buffer);
+            table->setBuffer(reinterpret_cast<char*>(buffer));
         }
         table->updateRecv();
         if (d_objectItem) {
@@ -335,7 +335,7 @@ bool ConvertToDataAnalyse::convertToATX(QFile *sourceFile, QSaveFile *targetFile
         ts << endl;
         //
         //emit progressValueChanged(i);
-        d_progressValue = i;
+        d_progressValue = int(i);
     }
 
     return true;
@@ -434,7 +434,7 @@ bool ConvertToDataAnalyse::appendVariable(QTextStream &ts, const Icd::BitItemPtr
         const int bitStart = bitItem->bitStart();
         const int bitEnd = bitStart + bitItem->bitCount();
         for (int i = bitStart; i < bitEnd; ++i) {
-            bitSpec = QString::fromStdString(bitItem->specAt(i));
+            bitSpec = QString::fromStdString(bitItem->specAt(Icd::icd_uint64(i)));
             if (bitSpec.isEmpty()) {
                 bitSpec = "<?>";
             } else {
@@ -629,7 +629,7 @@ bool ConvertToDataAnalyse::parseValue(QTextStream &ts, const Icd::ItemPtr &item)
             Q_ASSERT(false);
             return false;
         }
-        if (numericItem->scale() != 1) {
+        if (!qFuzzyCompare(numericItem->scale(), 1)) {
             ts << QString("%1").arg(item->data(), 0, 'g', 10) << ' ';
             return true;
         }
@@ -786,55 +786,55 @@ void ConvertToDataAnalyse::init()
         vertLayoutRight->setContentsMargins(3, 3, 3, 3);
     }
 
-    QGroupBox *groupBoxDataType = new QGroupBox(QStringLiteral("生成文件类型"));
+    QGroupBox *groupBoxDataType = new QGroupBox(tr("Type of generated file"));
     vertLayoutRight->addWidget(groupBoxDataType);
 
     QFormLayout *formLayoutDataType = new QFormLayout(groupBoxDataType);
     formLayoutDataType->setLabelAlignment(Qt::AlignRight);
 
-    d_radioATX = new QRadioButton(QStringLiteral("文本格式数据（ATX，ATXEX）"));
-    d_radioGBR = new QRadioButton(QStringLiteral("通用二进制格式数据（GBR）"));
-    d_radioRAW = new QRadioButton(QStringLiteral("通用原始数据格式（RAW）"));
-    d_radioMRD = new QRadioButton(QStringLiteral("RASS实时仿真系统数据（MRD）"));
+    d_radioATX = new QRadioButton(tr("Text data (ATX, ATXEX)"));
+    d_radioGBR = new QRadioButton(tr("Universal binary data (BGR)"));
+    d_radioRAW = new QRadioButton(tr("Universal original data (RAW)"));
+    d_radioMRD = new QRadioButton(tr("RASS reatime data (MRD)"));
     formLayoutDataType->addRow(" ", d_radioATX);
     formLayoutDataType->addRow(" ", d_radioGBR);
     formLayoutDataType->addRow(" ", d_radioRAW);
     formLayoutDataType->addRow(" ", d_radioMRD);
 
-    QGroupBox *groupBoxFilePath = new QGroupBox(QStringLiteral("文件路径"));
+    QGroupBox *groupBoxFilePath = new QGroupBox(tr("File path"));
     vertLayoutRight->addWidget(groupBoxFilePath);
 
     QFormLayout *formLayoutFilePath = new QFormLayout(groupBoxFilePath);
     formLayoutFilePath->setLabelAlignment(Qt::AlignRight);
 
     d_editHeader = new QLineEdit();
-    QPushButton *buttonHeaderView = new QPushButton(QStringLiteral("…"));
+    QPushButton *buttonHeaderView = new QPushButton("...");
     buttonHeaderView->setFixedWidth(60);
     QHBoxLayout *horiLayoutHeader = new QHBoxLayout();
     horiLayoutHeader->setContentsMargins(0, 0, 0, 0);
     horiLayoutHeader->addWidget(d_editHeader);
     horiLayoutHeader->addWidget(buttonHeaderView);
-    formLayoutFilePath->addRow(QStringLiteral("头文件："), horiLayoutHeader);
+    formLayoutFilePath->addRow(tr("Header file:"), horiLayoutHeader);
 
     d_editSource = new QLineEdit();
-    QPushButton *buttonSourceView = new QPushButton(QStringLiteral("…"));
+    QPushButton *buttonSourceView = new QPushButton("...");
     buttonSourceView->setFixedWidth(60);
     QHBoxLayout *horiLayoutSource = new QHBoxLayout();
     horiLayoutSource->setContentsMargins(0, 0, 0, 0);
     horiLayoutSource->addWidget(d_editSource);
     horiLayoutSource->addWidget(buttonSourceView);
-    formLayoutFilePath->addRow(QStringLiteral("原始文件："), horiLayoutSource);
+    formLayoutFilePath->addRow(tr("Source file:"), horiLayoutSource);
 
     d_editTarget = new QLineEdit();
-    QPushButton *buttonTargetView = new QPushButton(QStringLiteral("…"));
+    QPushButton *buttonTargetView = new QPushButton("...");
     buttonTargetView->setFixedWidth(60);
     QHBoxLayout *horiLayoutTarget = new QHBoxLayout();
     horiLayoutTarget->setContentsMargins(0, 0, 0, 0);
     horiLayoutTarget->addWidget(d_editTarget);
     horiLayoutTarget->addWidget(buttonTargetView);
-    formLayoutFilePath->addRow(QStringLiteral("目标文件："), horiLayoutTarget);
+    formLayoutFilePath->addRow(tr("Target file:"), horiLayoutTarget);
 
-    QGroupBox *groupOther = new QGroupBox(QStringLiteral("其他"), this);
+    QGroupBox *groupOther = new QGroupBox(tr("Other"), this);
     vertLayoutRight->addWidget(groupOther);
 
     QFormLayout *formLayoutExt = new QFormLayout(groupOther);
@@ -844,18 +844,18 @@ void ConvertToDataAnalyse::init()
     d_spinPkgCntScale->setDecimals(3);
     d_spinPkgCntScale->setRange(0, 100000000000);
     d_spinPkgCntScale->setValue(0.02);
-    formLayoutExt->addRow(QStringLiteral("包计数比例尺："), d_spinPkgCntScale);
+    formLayoutExt->addRow(tr("Scale of package counter:"), d_spinPkgCntScale);
 
     d_checkSplitBit = new QCheckBox(" ", groupOther);
-    formLayoutExt->addRow(QStringLiteral("拆分比特位："), d_checkSplitBit);
+    formLayoutExt->addRow(tr("Bit of splitting:"), d_checkSplitBit);
 
     vertLayoutRight->addStretch();
 
     QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
     vertLayoutRight->addLayout(horiLayoutBottom);
 
-    d_buttonConvert = new QPushButton(QStringLiteral("转换"), this);
-    d_buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    d_buttonConvert = new QPushButton(tr("Start converting"), this);
+    d_buttonCancel = new QPushButton(tr("Cancel"), this);
     d_buttonConvert->setFixedWidth(120);
     d_buttonCancel->setFixedWidth(120);
     d_buttonConvert->setDefault(true);
@@ -863,9 +863,9 @@ void ConvertToDataAnalyse::init()
     horiLayoutBottom->addWidget(d_buttonCancel);
 
     connect(buttonHeaderView, &QPushButton::clicked, this, [=](){
-        QString selectedFilter = QStringLiteral("Any file (*.*)");
+        QString selectedFilter = tr("Any file (*.*)");
         const QString filePath = QFileDialog::getOpenFileName(
-                    this, QStringLiteral("选择头文件"), d_editHeader->text(),
+                    this, tr("Select header file"), d_editHeader->text(),
                     "Any file (*.*);;"
                     "Data file (*.dat);;"
                     "Text file (*.txt)", &selectedFilter);
@@ -877,9 +877,9 @@ void ConvertToDataAnalyse::init()
         d_editHeader->setToolTip(filePath);
     });
     connect(buttonSourceView, &QPushButton::clicked, this, [=](){
-        QString selectedFilter = QStringLiteral("Any file (*.*)");
+        QString selectedFilter = tr("Any file (*.*)");
         const QString filePath = QFileDialog::getOpenFileName(
-                    this, QStringLiteral("选择原始文件"), d_editSource->text(),
+                    this, tr("Select source file"), d_editSource->text(),
                     "Any file (*.*);;"
                     "Data file (*.dat);;"
                     "Text file (*.txt)", &selectedFilter);
@@ -900,10 +900,10 @@ void ConvertToDataAnalyse::init()
     });
     connect(buttonTargetView, &QPushButton::clicked, this, [=](){
         const QString suffix = queryFileTypeSuffix();
-        QString selectedFilter = QStringLiteral("Data file (*%1)");
+        QString selectedFilter = tr("Data file (*%1)");
         selectedFilter = selectedFilter.arg(suffix);
         const QString filePath = QFileDialog::getSaveFileName(
-                    this, QStringLiteral("选择原始文件"), d_editTarget->text(),
+                    this, tr("Select target file"), d_editTarget->text(),
                     QString("Any file (*.*);;"
                             "Data file (*%1)").arg(suffix), &selectedFilter);
         if (filePath.isEmpty() || !QFile::exists(filePath)) {
@@ -935,7 +935,7 @@ void ConvertToDataAnalyse::init()
             bool hasTimeFormat = false;
             QString domain;
 
-            // 判断文件类型
+            // 鍒ゆ柇鏂囦欢绫诲瀷
             const QString header = QString(sourceFile.read(4));
             if (header == "ICD") {
                 headerSize += 4;

@@ -41,8 +41,8 @@ void ProgressDialogPrivate::init()
     labelMsg = new QLabel(q);
     vertLayoutMain->addWidget(labelMsg);
     //
-    buttonAccept = new QPushButton(QStringLiteral("确定"), q);
-    buttonCancel = new QPushButton(QStringLiteral("取消"), q);
+    buttonAccept = new QPushButton(ProgressDialog::tr("Ok"), q);
+    buttonCancel = new QPushButton(ProgressDialog::tr("Cancel"), q);
     buttonAccept->setVisible(false);
     buttonAccept->setMinimumWidth(80);
     buttonCancel->setMinimumWidth(80);

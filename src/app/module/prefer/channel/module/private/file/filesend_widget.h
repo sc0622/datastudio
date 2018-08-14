@@ -13,7 +13,7 @@ class FileSendWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FileSendWidget(QWidget *parent = 0);
+    explicit FileSendWidget(QWidget *parent = nullptr);
     ~FileSendWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

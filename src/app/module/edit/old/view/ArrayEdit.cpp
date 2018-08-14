@@ -1,17 +1,17 @@
 #include "precomp.h"
 #include "ArrayEdit.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 ArrayEdit::ArrayEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     comboArrayType_ = new QComboBox(this);
-    addFormRow(QStringLiteral("数组类型："), comboArrayType_);
+    addFormRow(tr("Array type:"), comboArrayType_);
 
     spinCount_ = new QSpinBox(this);
     spinCount_->setRange(1, INT_MAX);
-    addFormRow(QStringLiteral("长度："), spinCount_);
+    addFormRow(tr("Length:"), spinCount_);
 
     enableConnect(true);
 }

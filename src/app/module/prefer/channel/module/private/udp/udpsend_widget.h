@@ -13,7 +13,7 @@ class UdpSendWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UdpSendWidget(QWidget *parent = 0);
+    explicit UdpSendWidget(QWidget *parent = nullptr);
     ~UdpSendWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

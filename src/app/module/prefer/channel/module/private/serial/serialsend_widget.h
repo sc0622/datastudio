@@ -13,7 +13,7 @@ class SerialSendWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SerialSendWidget(QWidget *parent = 0);
+    explicit SerialSendWidget(QWidget *parent = nullptr);
     ~SerialSendWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

@@ -1,16 +1,16 @@
 #include "precomp.h"
 #include "ComplexEdit.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 ComplexEdit::ComplexEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     spinLength_ = new QSpinBox(this);
     spinLength_->setRange(0, 1e6);
-    spinLength_->setSuffix(QStringLiteral(" ×Ö½Ú"));
+    spinLength_->setSuffix(tr(" B"));
     spinLength_->setEnabled(false);
-    addFormRow(QStringLiteral("³¤¶È£º"), spinLength_);
+    addFormRow(tr("Length:"), spinLength_);
 
     enableConnect(true);
 }

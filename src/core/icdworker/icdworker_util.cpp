@@ -35,14 +35,14 @@ const unsigned short table_crc16[256] = {
 };
 
 //
-unsigned short Icd::gCalcCrc16(unsigned char *data, unsigned int size)
+unsigned short gCalcCrc16(const unsigned char *data, unsigned int size)
 {
     unsigned short crc_var;
     unsigned char crc_high8;
     crc_var = 0;
     while (size > 0) {
-        crc_high8 = (unsigned char)((crc_var & 0xff00) >> 8);
-        crc_var = crc_var << 8;
+        crc_high8 = static_cast<unsigned char>((crc_var & 0xff00) >> 8);
+        crc_var = static_cast<unsigned short>(crc_var << 8);
         crc_var ^= table_crc16[crc_high8 ^ (*data)];
         data++;
         size--;
@@ -64,7 +64,7 @@ bool doCheck(const Icd::TablePtr &table, const char *buffer)
 
     //
     const Icd::CheckItemPtr checkItem = table->checkItem();
-    int bufferOfffset = (int)checkItem->bufferOffset();
+    int bufferOfffset = int(checkItem->bufferOffset());
 
     //
     switch (checkItem->checkType()) {
@@ -73,41 +73,39 @@ bool doCheck(const Icd::TablePtr &table, const char *buffer)
         //
         Icd::icd_uint8 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum += *((Icd::icd_uint8 *)buffer + i);
+            sum += *reinterpret_cast<const Icd::icd_uint8*>(buffer + i);
         }
 
         //
-        Icd::icd_uint8 data = *(Icd::icd_uint8 *)(buffer + bufferOfffset);
+        Icd::icd_uint8 data = *reinterpret_cast<const Icd::icd_uint8*>(buffer + bufferOfffset);
         if (sum == data) {
             return true;
         } else {
             return false;
         }
-        break;
     }
     case Icd::CheckSum16:
     {
         //
         Icd::icd_uint16 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum += *((Icd::icd_uint16 *)buffer + i);
+            sum += *reinterpret_cast<const Icd::icd_uint16*>(buffer + i);
         }
 
         //
-        Icd::icd_uint16 data = *(Icd::icd_uint16 *)(buffer + bufferOfffset);
+        Icd::icd_uint16 data = *reinterpret_cast<const Icd::icd_uint16*>(buffer + bufferOfffset);
         if (sum == data) {
             return true;
         } else {
             return false;
         }
-        break;
     }
     case Icd::CheckCrc8:
     {/*
         Icd::icd_uint8 result =
-                Icd::gCalcCrc8((unsigned char *)buffer + checkItem->startPos(),
+                Icd::gCalcCrc8(reinterpret_cast<const unsigned char*>(buffer + checkItem->startPos(),
                          checkItem->checkLength());
-        Icd::icd_uint8 data = *(Icd::icd_uint8 *)(buffer + bufferOfffset);
+        Icd::icd_uint8 data = *reinterpret_cast<const Icd::icd_uint8*>(buffer + bufferOfffset);
         if (result == data) {
         } else {
             return false;
@@ -117,9 +115,9 @@ bool doCheck(const Icd::TablePtr &table, const char *buffer)
     case Icd::CheckCrc16:
     {
         Icd::icd_uint16 result =
-                Icd::gCalcCrc16((unsigned char *)buffer + checkItem->startPos(),
-                                checkItem->checkLength());
-        Icd::icd_uint16 data = *(Icd::icd_uint16 *)(buffer + bufferOfffset);
+                Icd::gCalcCrc16(reinterpret_cast<const unsigned char*>(buffer + checkItem->startPos()),
+                                static_cast<unsigned int>(checkItem->checkLength()));
+        Icd::icd_uint16 data = *reinterpret_cast<const Icd::icd_uint16*>(buffer + bufferOfffset);
         if (result == data) {
         } else {
             return false;
@@ -131,11 +129,11 @@ bool doCheck(const Icd::TablePtr &table, const char *buffer)
         //
         Icd::icd_uint8 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum ^= *((Icd::icd_uint8 *)buffer + i);
+            sum ^= *reinterpret_cast<const Icd::icd_uint8*>(buffer + i);
         }
 
         //
-        Icd::icd_uint8 data = *(Icd::icd_uint8 *)(buffer + bufferOfffset);
+        Icd::icd_uint8 data = *reinterpret_cast<const Icd::icd_uint8*>(buffer + bufferOfffset);
         if (sum == data) {
             return true;
         } else {
@@ -147,11 +145,11 @@ bool doCheck(const Icd::TablePtr &table, const char *buffer)
         //
         Icd::icd_uint16 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
-            sum ^= *((Icd::icd_uint16 *)buffer + i);
+            sum ^= *reinterpret_cast<const Icd::icd_uint16*>(buffer + i);
         }
 
         //
-        Icd::icd_uint16 data = *(Icd::icd_uint16 *)(buffer + bufferOfffset);
+        Icd::icd_uint16 data = *reinterpret_cast<const Icd::icd_uint16*>(buffer + bufferOfffset);
         if (sum == data) {
             return true;
         } else {
@@ -178,13 +176,13 @@ bool checkData(const TablePtr &table, int fileHeaderSize, QFileDevice *source,
         return false;
     }
 
-    int currentIndex = 0, tableSize = (int)table->bufferSize();
+    int currentIndex = 0, tableSize = int(table->bufferSize());
     const std::vector<char> &headers = table->headers();
-    const int headerSize = headers.size();
+    const int headerSize = int(headers.size());
     qint64 bufferSize = 0, mapOffset = fileHeaderSize;
     int mapSize = 1024 * 1024 * 50;     // 50 MB
-    uchar *buffer = Q_NULLPTR;
-    char *parseBuffer = new char[tableSize];
+    uchar *buffer = nullptr;
+    char *parseBuffer = new char[size_t(tableSize)];
     bool result = true;
 
     do {
@@ -197,15 +195,15 @@ bool checkData(const TablePtr &table, int fileHeaderSize, QFileDevice *source,
         mapOffset += bufferSize;
         for (int i = 0, section = 0; i < bufferSize; ++i) {
             if (currentIndex < headerSize) {
-                if (buffer[i] == uchar(headers[currentIndex])) {
-                    parseBuffer[currentIndex++] = buffer[i];
+                if (buffer[i] == uchar(headers[size_t(currentIndex)])) {
+                    parseBuffer[currentIndex++] = *reinterpret_cast<const char*>(buffer[i]);
                 } else {
                     currentIndex = 0;
                     continue;
                 }
             } else if (currentIndex < tableSize) {
-                section = qMin<qint64>(tableSize - currentIndex, bufferSize - i);
-                memcpy(parseBuffer + currentIndex, buffer + i, section);
+                section = qMin<int>(tableSize - currentIndex, int(bufferSize - i));
+                memcpy(parseBuffer + currentIndex, buffer + i, size_t(section));
                 currentIndex += section;
                 i += section - 1;
             }

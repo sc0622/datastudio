@@ -18,7 +18,7 @@ public:
     virtual ~ICDCommonData();
 
     // ICDMetaData interface
-    ICDMetaData::smtMeta clone() const;
+    ICDMetaData::smtMeta clone() const override;
 
     // …Ë÷√/ªÒ»°±‡¬Î
     virtual void setProCode(const std::string& proCode) override;

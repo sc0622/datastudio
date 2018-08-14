@@ -20,10 +20,7 @@ public:
         officeType(officeType)
     {
         //
-        HRESULT r = OleInitialize(nullptr);
-        if (r != S_OK && r != S_FALSE) {
-            //qWarning(QStringLiteral("Qt:初始化Ole失败（error %x）"), (unsigned int)r);
-        }
+        ::OleInitialize(nullptr);
 
         application = new QAxObject("Excel.Application");
 

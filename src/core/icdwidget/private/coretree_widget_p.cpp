@@ -333,7 +333,7 @@ void CoreTreeWidgetPrivate::init()
     setDragDropMode(QAbstractItemView::DragOnly);
     header()->setDefaultAlignment(Qt::AlignCenter);
     header()->hide();
-    setHeaderLabel(QStringLiteral("Êý¾ÝÐ­ÒéÐÅÏ¢"));
+    setHeaderLabel(tr("Protocol information"));
 
     //
     connect(searchEdit_, &SearchEdit::textChanged, this, [=](const QString &text){
@@ -404,7 +404,7 @@ bool CoreTreeWidgetPrivate::loadData()
     clearData();
     //
 #if 1
-    JTreeViewItem *itemRoot = new JTreeViewItem(QStringLiteral("Ð­Òé"),
+    JTreeViewItem *itemRoot = new JTreeViewItem(tr("Protocol"),
                                                 Icd::TreeItemTypeRoot);
     invisibleRootItem()->appendRow(itemRoot);
 #else
@@ -550,10 +550,8 @@ void CoreTreeWidgetPrivate::setShowAttribute(CoreTreeWidget::ShowAttribute attr,
                 citer.next();
                 citer.value()->updateItemData(showAttris_, dataFormat_);
             }
-        }
-        default:
             break;
-        }
+        }}
     }
 }
 
@@ -637,8 +635,7 @@ void CoreTreeWidgetPrivate::bindingChannels(const QString &filePath)
         if (enabled) {
             setEnabled(true);
             QApplication::restoreOverrideCursor();
-            QMessageBox::information(this, QStringLiteral("°ó¶¨½á¹û"),
-                                     QStringLiteral("°ó¶¨Íê³É"));
+            QMessageBox::information(this, tr("Binding result"), tr("Binding success"));
         } else {
             setEnabled(false);
             QApplication::setOverrideCursor(Qt::BusyCursor);
@@ -762,8 +759,7 @@ void CoreTreeWidgetPrivate::exportBindingStatus(const QString &filePath)
     document.save(ts, QDomNode::EncodingFromTextStream);
 
     //
-    QMessageBox::information(this, QStringLiteral("µ¼³öÍê³É"),
-                             QStringLiteral("µ¼³ö³É¹¦£¡"));
+    QMessageBox::information(this, tr("Export finish"), tr("Export success!"));
 }
 
 void CoreTreeWidgetPrivate::exportTableData(QStandardItem *item)
@@ -860,9 +856,6 @@ void CoreTreeWidgetPrivate::onTreeItemPressed(QStandardItem *item)
         return;
     }
 
-    // get type of treeWidgetItem
-    const Icd::TreeItemType itemType = (Icd::TreeItemType)item->type();
-
     //
     Qt::MouseButtons mouseButtons = QApplication::mouseButtons();
     switch (mouseButtons) {
@@ -910,7 +903,7 @@ void CoreTreeWidgetPrivate::onTreeItemPressed(QStandardItem *item)
         // get deep status
 
         // dispatch
-        switch (itemType) {
+        switch (item->type()) {
         case Icd::TreeItemTypeRoot:
             itemRootRightClicked(item, Icd::ObjectTable);
             break;
@@ -1034,12 +1027,12 @@ QMimeData *CoreTreeWidgetPrivate::mimeData(const QList<QStandardItem *> &items) 
         mData->setData("icd/table-drag/tablesel", QByteArray("1"));
     }
     mData->setProperty("domain", item->data(Icd::TreeItemDomainRole));
-    mData->setProperty("item", QVariant::fromValue((void *)item));
+    mData->setProperty("item", QVariant::fromValue(static_cast<void*>(item)));
     //
     switch (item->type()) {
     case Icd::TreeItemTypeTable:
     {
-        mData->setProperty("itemTable", QVariant::fromValue((void *)item));
+        mData->setProperty("itemTable", QVariant::fromValue(static_cast<void*>(item)));
         break;
     }
     case Icd::TreeItemTypeItemTable:
@@ -1052,7 +1045,7 @@ QMimeData *CoreTreeWidgetPrivate::mimeData(const QList<QStandardItem *> &items) 
             return nullptr;
         }
 
-        mData->setProperty("itemTable", QVariant::fromValue((void *)itemTable));
+        mData->setProperty("itemTable", QVariant::fromValue(static_cast<void*>(itemTable)));
         break;
     }
     default:
@@ -1076,14 +1069,14 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
         if (isItemSelected(item)) {
             // collapse all
             QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                     QStringLiteral("È«²¿ÊÕÆð"));
+                                                     tr("Collapse all"));
             connect(actionCollapse, &QAction::triggered, this, [=](){
                 expandItem(item, false, -1);
             });
         }
         // expand all
         QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                  QStringLiteral("È«²¿Õ¹¿ª"));
+                                                  tr("Expand all"));
         connect(actionExpandAll, &QAction::triggered, this, [=](){
             expandItem(item, true, -1);
         });
@@ -1104,48 +1097,48 @@ void CoreTreeWidgetPrivate::itemRootRightClicked(QStandardItem *item, int deep)
         if (item->hasChildren()) {
             // update vehicle
             QAction *actionUpdateVehicle = menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
-                                                          QStringLiteral("¸üÐÂ·Ö»úÏî"));
+                                                          tr("Update vehicle"));
             connect(actionUpdateVehicle, &QAction::triggered, this, [=](){
                 unloadVehicleFunc();
                 loadVehicleFunc();
             });
             // unload vehicle
             QAction *actionUnloadVehicle = menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
-                                                          QStringLiteral("Ð¶ÔØ·Ö»úÏî"));
+                                                          tr("Unload vehicle"));
             connect(actionUnloadVehicle, &QAction::triggered, this, [=](){
                 unloadVehicleFunc();
             });
             if (isItemSelected(item)) {
                 // collapse all
                 QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                         QStringLiteral("È«²¿ÊÕÆð"));
+                                                         tr("Collapse all"));
                 connect(actionCollapse, &QAction::triggered, this, [=](){
                     expandItem(item, false, -1);
                 });
             }
             // expand all
             QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                      QStringLiteral("È«²¿Õ¹¿ª"));
+                                                      tr("Expand all"));
             connect(actionExpandAll, &QAction::triggered, this, [=](){
                 expandItem(item, true, -1);
             });
         } else {
             // load vehicle
             QAction *actionUpdateVehicle = menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
-                                                          QStringLiteral("¼ÓÔØ·Ö»úÏî"));
+                                                          tr("Load vehicle"));
             connect(actionUpdateVehicle, &QAction::triggered, this, [=](){
                 loadVehicleFunc();
             });
         }
         // exprot all
         QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  QStringLiteral("µ¼³öÈ«²¿Ð­Òé"));
+                                                  tr("Export all protocol"));
         connect(actionExportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("µ¼³öÒÑ¼ÓÔØÐ­Òé"));
+                                                     tr("Export loaded protocol"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1168,14 +1161,14 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
         if (isItemSelected(item)) {
             // collapse all
             QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                     QStringLiteral("È«²¿ÊÕÆð"));
+                                                     tr("Collapse all"));
             connect(actionCollapse, &QAction::triggered, this, [=](){
                 expandItem(item, false, -1);
             });
         }
         // expand all
         QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                  QStringLiteral("È«²¿Õ¹¿ª"));
+                                                  tr("Expand all"));
         connect(actionExpandAll, &QAction::triggered, this, [=](){
             expandItem(item, true, -1);
         });
@@ -1196,48 +1189,48 @@ void CoreTreeWidgetPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
         if (item->hasChildren()) {
             // upload system
             QAction *actionUpdateSystem = menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
-                                                         QStringLiteral("¸üÐÂÏµÍ³Ïî"));
+                                                         tr("Update system"));
             connect(actionUpdateSystem, &QAction::triggered, this, [=](){
                 unloadSystemFunc();
                 loadSystemFunc();
             });
             // unload system
             QAction *actionUnloadSystem = menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
-                                                         QStringLiteral("Ð¶ÔØÏµÍ³Ïî"));
+                                                         tr("Unload system"));
             connect(actionUnloadSystem, &QAction::triggered, this, [=](){
                 unloadSystemFunc();
             });
             if (isItemSelected(item)) {
                 // collapse all
                 QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                         QStringLiteral("È«²¿ÊÕÆð"));
+                                                         tr("Collapse all"));
                 connect(actionCollapse, &QAction::triggered, this, [=](){
                     expandItem(item, false, -1);
                 });
             }
             // expand all
             QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                      QStringLiteral("È«²¿Õ¹¿ª"));
+                                                      tr("Expand all"));
             connect(actionExpandAll, &QAction::triggered, this, [=](){
                 expandItem(item, true, -1);
             });
         } else {
             // load system
             QAction *actionLoadSystem = menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
-                                                       QStringLiteral("¼ÓÔØÏµÍ³Ïî"));
+                                                       tr("Load system"));
             connect(actionLoadSystem, &QAction::triggered, this, [=](){
                 loadSystemFunc();
             });
         }
         // export all
         QAction *exportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                            QStringLiteral("µ¼³öÈ«²¿Ð­Òé"));
+                                            tr("Export all protocol"));
         connect(exportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("µ¼³öÒÑ¼ÓÔØÐ­Òé"));
+                                                     tr("Export loaded protocol"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1260,14 +1253,14 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
         if (isItemSelected(item)) {
             // collapse all
             QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                     QStringLiteral("È«²¿ÊÕÆð"));
+                                                     tr("Collapse all"));
             connect(actionCollapse, &QAction::triggered, this, [=](){
                 expandItem(item, false, -1);
             });
         }
         // expand all
         QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                  QStringLiteral("È«²¿Õ¹¿ª"));
+                                                  tr("Expand all"));
         connect(actionExpandAll, &QAction::triggered, this, [=](){
             expandItem(item, true, -1);
         });
@@ -1288,47 +1281,47 @@ void CoreTreeWidgetPrivate::itemSystemRightClicked(QStandardItem *item, int deep
         if (item->hasChildren()) {
             // update table
             QAction *actionUpdateTable = menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
-                                                        QStringLiteral("¸üÐÂ±íÏî"));
+                                                        tr("Update table"));
             connect(actionUpdateTable, &QAction::triggered, this, [=](){
                 unloadTableFunc();
                 loadTableFunc();
             });
             // unload table
             QAction *actionUnloadTable = menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
-                                                        QStringLiteral("Ð¶ÔØ±íÏî"));
+                                                        tr("Unload table"));
             connect(actionUnloadTable, &QAction::triggered, this, [=](){
                 unloadTableFunc();
             });
             if (isItemSelected(item)) {
                 // collapse all
                 QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                         QStringLiteral("È«²¿ÊÕÆð"));
+                                                         tr("Collapse all"));
                 connect(actionCollapse, &QAction::triggered, this, [=](){
                     expandItem(item, false, -1);
                 });
             }
             // expand all
             QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                      QStringLiteral("È«²¿Õ¹¿ª"));
+                                                      tr("Expand all"));
             connect(actionExpandAll, &QAction::triggered, this, [=](){
                 expandItem(item, true, -1);
             });
         } else {
             QAction *actionLoadTable = menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
-                                                      QStringLiteral("¼ÓÔØ±íÏî"));
+                                                      tr("Load table"));
             connect(actionLoadTable, &QAction::triggered, this, [=](){
                 loadTableFunc();
             });
         }
         // export all
         QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  QStringLiteral("µ¼³öÈ«²¿Ð­Òé"));
+                                                  tr("Export all protocol"));
         connect(actionExportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("µ¼³öÒÑ¼ÓÔØÐ­Òé"));
+                                                     tr("Export loaded protocol"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1351,14 +1344,14 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
         if (item->hasChildren()) {
             // delete item
             QAction *actionDeleteItem = menu.addAction(QIcon(":/icdwidget/image/tree/remove.png"),
-                                                       QStringLiteral("É¾³ýÊý¾ÝÏî"));
+                                                       tr("Remove item"));
             connect(actionDeleteItem, &QAction::triggered, this, [=](){
                 removeTableItem(item);
             });
             // delete all view
             if (hasItemBound(item)) {
                 QAction *actionDeleteAllView = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
-                                                              QStringLiteral("É¾³ýËùÓÐÊÓÍ¼"));
+                                                              tr("Remove all view"));
                 connect(actionDeleteAllView, &QAction::triggered, this, [=](){
                     clearItemBoundRole(item, true);
                 });
@@ -1366,14 +1359,14 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             if (isItemSelected(item)) {
                 // collapse all
                 QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                         QStringLiteral("È«²¿ÊÕÆð"));
+                                                         tr("Collapse all"));
                 connect(actionCollapse, &QAction::triggered, this, [=](){
                     expandItem(item, false, -1);
                 });
             }
             // expand all
             QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                      QStringLiteral("È«²¿Õ¹¿ª"));
+                                                      tr("Expand all"));
             connect(actionExpandAll, &QAction::triggered, this, [=](){
                 expandItem(item, true, -1);
             });
@@ -1399,14 +1392,14 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
         if (item->hasChildren()) {
             // update item
             QAction *actionUpdateItem = menu.addAction(QIcon(":/icdwidget/image/tree/update.png"),
-                                                       QStringLiteral("¸üÐÂÊý¾ÝÏî"));
+                                                       tr("Update item"));
             connect(actionUpdateItem, &QAction::triggered, this, [=](){
                 unloadItemFunc();
                 loadItemFunc();
             });
             // unload item
             QAction *actionUnloadItem = menu.addAction(QIcon(":/icdwidget/image/tree/unload.png"),
-                                                       QStringLiteral("Ð¶ÔØÊý¾ÝÏî"));
+                                                       tr("Unload item"));
             connect(actionUnloadItem, &QAction::triggered, this, [=](){
                 unloadItemFunc();
             });
@@ -1414,13 +1407,13 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             if (item->data(Icd::TreeChannelIdRole).isValid()) {
                 // change channel binding
                 QAction *actionChangeBinding = menu.addAction(QIcon(":/icdwidget/image/tree/channel.png"),
-                                                              QStringLiteral("¸ü¸ÄÍ¨µÀ°ó¶¨"));
+                                                              tr("Change channel binding"));
                 connect(actionChangeBinding, &QAction::triggered, this, [=](){
                     changeChannel(item);
                 });
                 // unbinding channel
                 QAction *actionUnbinding = menu.addAction(QIcon(":/icdwidget/image/tree/disconnect.png"),
-                                                          QStringLiteral("½â³ýÍ¨µÀ°ó¶¨"));
+                                                          tr("Unbinding channel"));
                 connect(actionUnbinding, &QAction::triggered, this, [=](){
                     unbindChannel(item);
                 });
@@ -1431,7 +1424,7 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
                         if (worker->workerRecv()->isRecording()) {
                             // stop record
                             QAction *actionStopRecord = menu.addAction(QIcon(":/icdwidget/image/tree/record_stop.png"),
-                                                                       QStringLiteral("Í£Ö¹Êý¾Ý¼ÇÂ¼"));
+                                                                       tr("Stop recording"));
                             connect(actionStopRecord, &QAction::triggered, this, [=](){
                                 const Icd::WorkerPtr worker = queryWorker(item);
                                 if (worker) {
@@ -1441,7 +1434,7 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
                         } else {
                             // start record
                             QAction *actionStartRecord = menu.addAction(QIcon(":/icdwidget/image/tree/record_start.png"),
-                                                                        QStringLiteral("¿ªÊ¼¼ÇÂ¼Êý¾Ý"));
+                                                                        tr("Start recording"));
                             connect(actionStartRecord, &QAction::triggered, this, [=](){
                                 const Icd::WorkerPtr worker = queryWorker(item);
                                 if (worker) {
@@ -1454,7 +1447,7 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             } else {
                 // binding channel
                 QAction *actionBinding = menu.addAction(QIcon(":/icdwidget/image/tree/connect.png"),
-                                                        QStringLiteral("°ó¶¨Êý¾ÝÍ¨µÀ"));
+                                                        tr("Binding channel"));
                 connect(actionBinding, &QAction::triggered, this, [=](){
                     bindChannel(item);
                 });
@@ -1462,7 +1455,7 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             // delete all view
             if (hasItemBound(item)) {
                 QAction *actionDeleteAllView = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
-                                                              QStringLiteral("É¾³ýËùÓÐÊÓÍ¼"));
+                                                              tr("Remove all view"));
                 connect(actionDeleteAllView, &QAction::triggered, this, [=](){
                     clearItemBoundRole(item, true);
                 });
@@ -1470,34 +1463,34 @@ void CoreTreeWidgetPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             if (isItemSelected(item)) {
                 // collapse all
                 QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                         QStringLiteral("È«²¿ÊÕÆð"));
+                                                         tr("Collapse all"));
                 connect(actionCollapse, &QAction::triggered, this, [=](){
                     expandItem(item, false, -1);
                 });
             }
             // expand all
             QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                      QStringLiteral("È«²¿Õ¹¿ª"));
+                                                      tr("Expand all"));
             connect(actionExpandAll, &QAction::triggered, this, [=](){
                 expandItem(item, true, -1);
             });
         } else {
             // load item
             QAction *actionLoadItem = menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
-                                                     QStringLiteral("¼ÓÔØÊý¾ÝÏî"));
+                                                     tr("Load item"));
             connect(actionLoadItem, &QAction::triggered, this, [=](){
                 loadItemFunc();
             });
         }
         // export all
         QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  QStringLiteral("µ¼³öÈ«²¿Ð­Òé"));
+                                                  tr("Export all protocol"));
         connect(actionExportAll, &QAction::triggered, this, [=](){
             exportData(item, true);
         });
         // export exists
         QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     QStringLiteral("µ¼³öÒÑ¼ÓÔØÐ­Òé"));
+                                                     tr("Export loaded protocol"));
         connect(actionExportExists, &QAction::triggered, this, [=](){
             exportData(item, false);
         });
@@ -1516,11 +1509,11 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
 
     QMenu menu(this);
 
-    // »ñÈ¡Êý¾ÝÏîÀàÐÍ
-    Icd::ItemType dataType = Icd::ItemInvalid;
+    // èŽ·å–æ•°æ®é¡¹ç±»åž‹
+    int dataType = Icd::ItemInvalid;
     const QVariant dataTypeVar = item->data(Icd::TreeDataTypeRole);
     if (dataTypeVar.isValid()) {
-        dataType = (Icd::ItemType)dataTypeVar.toUInt();
+        dataType = dataTypeVar.toInt();
     }
 
     // bound
@@ -1530,7 +1523,7 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
         bound = varBound.toBool();
     }
 
-    // ¸ù¾ÝÊý¾ÝÏîÀàÐÍ½øÐÐÏàÓ¦µÄ´¦Àí
+    // æ ¹æ®æ•°æ®é¡¹ç±»åž‹è¿›è¡Œç›¸åº”çš„å¤„ç†
     switch (dataType) {
     case Icd::ItemHead:
     case Icd::ItemCounter:
@@ -1549,8 +1542,8 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
             if (bound) {
                 // delete view
                 QAction *actionDeleteView = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
-                                                           QStringLiteral("É¾³ýÊÓÍ¼"));
-                actionDeleteView->setToolTip(QStringLiteral("´ÓÊÓÍ¼´°¿ÚÖÐÉ¾³ý¶ÔÓ¦Êý¾ÝÏîÊÓÍ¼"));
+                                                           tr("Remove view"));
+                actionDeleteView->setToolTip(tr("Remove chart from view with identity"));
                 connect(actionDeleteView, &QAction::triggered, this, [=](){
                     QStandardItem *itemTable = findItemTable(item);
                     emit unbindItem(item, itemTable);
@@ -1559,7 +1552,7 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
             if (treeModes_ == CoreTreeWidget::TreeModeAnalyse) {
                 // export
                 QAction *actionExport = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                       QStringLiteral("µ¼³öÊý¾Ý"));
+                                                       tr("Export data"));
                 connect(actionExport, &QAction::triggered, this, [=](){
                     exportTableData(item);
                 });
@@ -1576,14 +1569,14 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
         if (isItemSelected(item)) {
             // collapse all
             QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                     QStringLiteral("È«²¿ÊÕÆð"));
+                                                     tr("Collapse all"));
             connect(actionCollapse, &QAction::triggered, this, [=](){
                 expandItem(item, false, -1);
             });
         }
         // expand all
         QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                  QStringLiteral("È«²¿Õ¹¿ª"));
+                                                  tr("Expand all"));
         connect(actionExpandAll, &QAction::triggered, this, [=](){
             expandItem(item, true, -1);
         });
@@ -1598,13 +1591,13 @@ void CoreTreeWidgetPrivate::itemDataItemRightClicked(QStandardItem *item, int de
     }
     // export all
     QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                              QStringLiteral("µ¼³öÈ«²¿Ð­Òé"));
+                                              tr("Export all protocol"));
     connect(actionExportAll, &QAction::triggered, this, [=](){
         exportData(item, true);
     });
     // export exists
     QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                 QStringLiteral("µ¼³öÒÑ¼ÓÔØÐ­Òé"));
+                                                 tr("Export loaded protocol"));
     connect(actionExportExists, &QAction::triggered, this, [=](){
         exportData(item, false);
     });
@@ -1634,8 +1627,8 @@ void CoreTreeWidgetPrivate::itemItemTableRightClicked(QStandardItem *item, int d
         if (bound || item->hasChildren()) {
             // delete view
             QAction *actionDeleteView = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
-                                                       QStringLiteral("É¾³ýÊÓÍ¼"));
-            actionDeleteView->setToolTip(QStringLiteral("´ÓÊÓÍ¼´°¿ÚÖÐÉ¾³ý¶ÔÓ¦Êý¾ÝÏîÊÓÍ¼"));
+                                                       tr("Remove view"));
+            actionDeleteView->setToolTip(tr("Remove chart from view with identity"));
             connect(actionDeleteView, &QAction::triggered, this, [=](){
                 QStandardItem *itemTable = findItemTable(item);
                 emit unbindItem(item, itemTable);
@@ -1643,7 +1636,7 @@ void CoreTreeWidgetPrivate::itemItemTableRightClicked(QStandardItem *item, int d
         }
         if (treeModes_ == CoreTreeWidget::TreeModeAnalyse) {
             QAction *actionExport = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                   QStringLiteral("µ¼³öÊý¾Ý"));
+                                                   tr("Export data"));
             connect(actionExport, &QAction::triggered, this, [=](){
                 exportTableData(item);
             });
@@ -1656,27 +1649,27 @@ void CoreTreeWidgetPrivate::itemItemTableRightClicked(QStandardItem *item, int d
         if (isItemSelected(item)) {
             // collapse all
             QAction *actionCollapse = menu.addAction(QIcon(":/icdwidget/image/tree/collapse.png"),
-                                                     QStringLiteral("È«²¿ÊÕÆð"));
+                                                     tr("Collapse all"));
             connect(actionCollapse, &QAction::triggered, this, [=](){
                 expandItem(item, false, -1);
             });
         }
         // expand all
         QAction *actionExpandAll = menu.addAction(QIcon(":/icdwidget/image/tree/expand.png"),
-                                                  QStringLiteral("È«²¿Õ¹¿ª"));
+                                                  tr("Expand all"));
         connect(actionExpandAll, &QAction::triggered, this, [=](){
             expandItem(item, true, -1);
         });
     }
     // export all
     QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                              QStringLiteral("µ¼³öÈ«²¿Ð­Òé"));
+                                              tr("Export all protocol"));
     connect(actionExportAll, &QAction::triggered, this, [=](){
         exportData(item, true);
     });
     // export exists
     QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                 QStringLiteral("µ¼³öÒÑ¼ÓÔØÐ­Òé"));
+                                                 tr("Export loaded protocol"));
     connect(actionExportExists, &QAction::triggered, this, [=](){
         exportData(item, false);
     });
@@ -1701,7 +1694,7 @@ void CoreTreeWidgetPrivate::itemItemBitMapRightClicked(QStandardItem *item, int 
 
     //
     QMenu menu(this);
-    menu.setProperty("item", qVariantFromValue((void*)item));
+    menu.setProperty("item", qVariantFromValue(static_cast<void*>(item)));
     menu.setProperty("deep", deep);
 
     //
@@ -1710,7 +1703,7 @@ void CoreTreeWidgetPrivate::itemItemBitMapRightClicked(QStandardItem *item, int 
     default:
         if (treeModes_ == CoreTreeWidget::TreeModeAnalyse) {
             QAction *actionExport = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                   QStringLiteral("µ¼³öÊý¾Ý"), this, SLOT(onActionExportTableData()));
+                                                   tr("Export data"), this, SLOT(onActionExportTableData()));
             connect(actionExport, &QAction::triggered, this, [=](){
                 exportTableData(item);
             });
@@ -1762,7 +1755,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
         oldTable = oldWorker->workerRecv()->table();
     }
-    // ÏÈ»Ö¸´×´Ì¬
+    // å…ˆæ¢å¤çŠ¶æ€
     if (oldTable) {
         restoreChannelItem(itemTable, oldTable);
     }
@@ -1779,7 +1772,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     }
 
     // find table object
-    Icd::TablePtr table = Icd::TablePtr(0);
+    Icd::TablePtr table = Icd::TablePtr();
     auto funcParseTable = [=,&table]() -> bool {
         if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
                             sections.at(2).toStdString(), table, Icd::ObjectItem)) {
@@ -1788,7 +1781,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
         return true;
     };
 
-    // ÉèÖÃ±íÏî
+    // è®¾ç½®è¡¨é¡¹
     if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
         table = oldWorker->workerSend()->table();
         if (!table) {
@@ -1796,7 +1789,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
                 return false;
             }
         }
-        oldWorker->workerSend()->setTable(Icd::TablePtr(0));
+        oldWorker->workerSend()->setTable(Icd::TablePtr());
         selectedWorker->workerSend()->setTable(table);
     } else if (bindTableTypes_ == CoreTreeWidget::BindOnlyRecv) {
         table = oldWorker->workerRecv()->table();
@@ -1805,7 +1798,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
                 return false;
             }
         }
-        oldWorker->workerRecv()->setTable(Icd::TablePtr(0));
+        oldWorker->workerRecv()->setTable(Icd::TablePtr());
         selectedWorker->workerRecv()->setTable(table);
     } else if (bindTableTypes_ == CoreTreeWidget::BindAllTable) {
         table = oldWorker->workerSend()->table();
@@ -1817,8 +1810,8 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
                 }
             }
         }
-        oldWorker->workerSend()->setTable(Icd::TablePtr(0));
-        oldWorker->workerRecv()->setTable(Icd::TablePtr(0));
+        oldWorker->workerSend()->setTable(Icd::TablePtr());
+        oldWorker->workerRecv()->setTable(Icd::TablePtr());
         selectedWorker->workerSend()->setTable(table);
         selectedWorker->workerRecv()->setTable(Icd::TablePtr(reinterpret_cast<Table *>(table->clone())));
     }
@@ -1829,7 +1822,7 @@ bool CoreTreeWidgetPrivate::changeChannel(QStandardItem *itemTable)
     //
     itemTable->setData(channelId, Icd::TreeChannelIdRole);
     itemTable->setText(itemTable->text()
-                       + QStringLiteral(" <font color=steelblue size=3>[")
+                       + QString(" <font color=steelblue size=3>[")
                        + QString::fromStdString(selectedWorker->channel()->name()) + "]</font>");
     if (itemWidget) {
         itemWidget->setWorker(selectedWorker);
@@ -1912,7 +1905,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     }
     //
     TableItemWidget *itemWidget = qobject_cast<TableItemWidget *>(this->itemWidget(itemTable));
-    // ÏÈ»Ö¸´×´Ì¬
+    // å…ˆæ¢å¤çŠ¶æ€
     if (table) {
         restoreChannelItem(itemTable, table);
     }
@@ -1924,7 +1917,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     if (!table) {
         return false;
     }
-    // ÉèÖÃ±íÏî
+    // è®¾ç½®è¡¨é¡¹
     if (bindTableTypes_ == CoreTreeWidget::BindOnlySend) {
         worker->workerSend()->setTable(table);
         if (treeModes_ & CoreTreeWidget::TreeModeSimulator) {
@@ -1945,7 +1938,7 @@ bool CoreTreeWidgetPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     //
     itemTable->setData(channelId, Icd::TreeChannelIdRole);
     itemTable->setText(itemTable->text()
-                       + QStringLiteral(" <font color=steelblue size=3>[")
+                       + QString(" <font color=steelblue size=3>[")
                        + QString::fromStdString(worker->channel()->name()) + "]</font>");
     if (itemWidget) {
         itemWidget->setWorker(worker);
@@ -3137,7 +3130,7 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
         return false;
     }
 
-    // »ñÈ¡Êý¾ÝÏîÀàÐÍ
+    // èŽ·å–æ•°æ®é¡¹ç±»åž‹
     QStringList filters;
 
     // common
@@ -3177,14 +3170,14 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
 
     Q_Q(CoreTreeWidget);
     const QString filePath = QFileDialog::getSaveFileName(
-                q, QStringLiteral("µ¼³öÎÄ¼þÂ·¾¶Ñ¡Ôñ"), QApplication::applicationDirPath(), filters.join(";;"));
+                q, tr("Select export file path"), QApplication::applicationDirPath(), filters.join(";;"));
     if (filePath.isEmpty()) {
         return false;
     }
 
     //
     Icd::ProgressDialog *progressDialog = new Icd::ProgressDialog(this);
-    progressDialog->setWindowTitle(QStringLiteral("µ¼³öÊý¾Ý½á¹¹ÎÄµµ"));
+    progressDialog->setWindowTitle(tr("Export protocol as document"));
     progressDialog->setProgressValue(100);
     //progressDialog->show();
 
@@ -3227,14 +3220,14 @@ bool CoreTreeWidgetPrivate::exportData(const QStandardItem *item, bool exportAll
         QApplication::removePostedEvents(this, QEvent::Timer);
         if (progressDialog->futureResult()) {
             progressDialog->setProgressVisible(false);
-            const QString message = QStringLiteral("ÎÄµµµ¼³ö³É¹¦£¬ÊÇ·ñÏÖÔÚ´ò¿ªÎÄµµ£¿\n%1");
+            const QString message = tr("Export success, open it now?\n%1");
             progressDialog->setMessage(message.arg(filePath));
-            progressDialog->setAcceptText(QStringLiteral("ÊÇ"));
-            progressDialog->setCancelText(QStringLiteral("·ñ"));
+            progressDialog->setAcceptText(tr("Yes"));
+            progressDialog->setCancelText(tr("No"));
             progressDialog->setAcceptVisible(true);
         } else {
             progressDialog->hide();
-            QMessageBox::information(q, QStringLiteral("Ö´ÐÐ½á¹û"), QStringLiteral("µ¼³öÊ§°Ü£¡"));
+            QMessageBox::information(q, tr("Process result"), tr("Export failure!"));
             deleteRes();
         }
     });

@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "ItemEdit.h"
 #include "DoubleSpinBox.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 #include "KernelClass/icdnumericdata.h"
 #include "jwt/jxmltable.h"
 #include "jwt/jsplitter.h"
@@ -84,9 +84,9 @@ void ItemEdit::onNew()
 
 void ItemEdit::onDelete()
 {
-    const int result = QMessageBox::question(tableView_,
-                                             QStringLiteral("É¾³ıÈ·ÈÏ"),
-                                             QStringLiteral("È·ÈÏÉ¾³ıµ±Ç°Ñ¡ÖĞÊı¾İ£¿"));
+    const int result = QMessageBox::warning(tableView_,
+                                             tr("Warning"),
+                                             tr("Confirm to remove selected item?"));
     if (result == QMessageBox::No) {
         return;
     }
@@ -111,9 +111,9 @@ void ItemEdit::onDelete()
 
 void ItemEdit::onClear()
 {
-    const int result = QMessageBox::question(tableView_,
-                                             QStringLiteral("É¾³ıÈ·ÈÏ"),
-                                             QStringLiteral("È·ÈÏÇå¿ÕËùÓĞÊı¾İ£¿"));
+    const int result = QMessageBox::warning(tableView_,
+                                             tr("Warning"),
+                                             tr("Confirm to clear data?"));
     if (result == QMessageBox::No) {
         return;
     }
@@ -206,11 +206,11 @@ bool ItemEdit::init()
         comboNumericType_->clear();
         std::vector<stDictionary> names;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&names));
+        args.append(qVariantFromValue(static_cast<void*>(&names)));
         args.append(int(GlobalDefine::dicNumericType));
         jnotify->send("edit.queryDictionaryTable", args);
-        const int count = names.size();
-        for (int i = 0; i < count; ++i) {
+        const size_t count = names.size();
+        for (size_t i = 0; i < count; ++i) {
             const stDictionary &dic = names.at(i);
             comboNumericType_->addItem(dic.sDec.c_str(), dic.nCode);
         }
@@ -324,54 +324,54 @@ bool ItemEdit::confirm()
 
 bool ItemEdit::validate()
 {
-    // Ğ£ÑéÉÏÏÂÏŞÒÔ¼°Ä¬ÈÏÖµ
+    // æ ¡éªŒä¸Šä¸‹é™ä»¥åŠé»˜è®¤å€¼
     if (checkLeftInf_->isChecked()) {
         if (checkRightInf_->isChecked()) {
             if (spinMinimum_->value() > spinMaximum_->value()) {
                 spinMinimum_->setFocus();
                 spinMinimum_->setProperty("highlight", true);
-                setStatus(QStringLiteral("·¶Î§ÏÂÏŞ²»ÄÜ´óÓÚÉÏÏŞ£¡"));
+                setStatus(tr("Minimum cannot be greater than upper limit!"));
                 return false;
             } else {
                 spinMinimum_->setProperty("highlight", false);
             }
-            // Ğ£ÑéÄ¬ÈÏÖµ
+            // æ ¡éªŒé»˜è®¤å€¼
             if (spinDefault_->value() < spinMinimum_->value()
                     || spinDefault_->value() > spinMaximum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
-                setStatus(QStringLiteral("Ä¬ÈÏÖµ³¬³ö·¶Î§£¡"));
+                setStatus(tr("Default value is overflow!"));
                 return false;
             } else {
                 spinDefault_->setProperty("highlight", false);
             }
         } else {
             spinMinimum_->setProperty("highlight", false);
-            // Ğ£ÑéÄ¬ÈÏÖµ
+            // æ ¡éªŒé»˜è®¤å€¼
             if (spinDefault_->value() < spinMinimum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
-                setStatus(QStringLiteral("Ä¬ÈÏÖµ³¬³ö·¶Î§£¡"));
+                setStatus(QStringLiteral("Default value is overflow!"));
                 return false;
             } else {
                 spinDefault_->setProperty("highlight", false);
             }
         }
-    } else {    // Î´ÆôÓÃÏÂÏŞ
+    } else {    // æœªå¯ç”¨ä¸‹é™
         spinMinimum_->setProperty("highlight", false);
-        if (checkRightInf_->isChecked()) {    // ÆôÓÃÉÏÏŞ
-            // Ğ£ÑéÄ¬ÈÏÖµ
+        if (checkRightInf_->isChecked()) {    // å¯ç”¨ä¸Šé™
+            // æ ¡éªŒé»˜è®¤å€¼
             if (spinDefault_->value() > spinMaximum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
-                setStatus(QStringLiteral("Ä¬ÈÏÖµ³¬³ö·¶Î§£¡"));
+                setStatus(QStringLiteral("Default value is overflow!"));
                 return false;
             } else {
                 spinDefault_->setProperty("highlight", false);
             }
         }
     }
-    // ÌØÕ÷Öµ
+    // ç‰¹å¾å€¼
     QString value;
     QString desc;
     std::map<double, std::string> values;
@@ -383,7 +383,7 @@ bool ItemEdit::validate()
             continue;
         }
         if (!data()->dataInRange(value.toDouble())) {
-            setStatus(QStringLiteral("ÌØÕ÷Öµ³¬³öÏŞ¶¨·¶Î§£¡"));
+            setStatus(QStringLiteral("Spec value is overflow!"));
             tableView_->setCurrentItem(tableView_->item(i, 0));
             return false;
         }
@@ -408,41 +408,41 @@ void ItemEdit::setupUI(int windowType)
 {
     if (windowType == wdNumeric) {
         comboNumericType_ = new QComboBox(this);
-        addFormRow(QStringLiteral("ÖµÀàĞÍ£º"), comboNumericType_);
+        addFormRow(tr("Numeric type:"), comboNumericType_);
     }
 
     spinOffset_ = new DoubleSpinBox(this);
     spinOffset_->setRange(-DBL_MAX, DBL_MAX);
     spinOffset_->setDecimals(DBL_DIG);
-    addFormRow(QStringLiteral("Æ«ÒÆÁ¿£º"), spinOffset_);
+    addFormRow(tr("Offset:"), spinOffset_);
 
     spinScale_ = new DoubleSpinBox(this);
     spinScale_->setRange(-DBL_MAX, DBL_MAX);
     spinScale_->setDecimals(DBL_DIG);
-    addFormRow(QStringLiteral("±ÈÀı³ß£º"), spinScale_);
+    addFormRow(tr("Scale:"), spinScale_);
 
     editUnit_ = new LimitLineEdit(this);
     editUnit_->setMaxLength(20);
-    addFormRow(QStringLiteral("µ¥Î»£º"), editUnit_);
+    addFormRow(tr("Unit:"), editUnit_);
 
     spinMinimum_ = new DoubleSpinBox(this);
     spinMinimum_->setRange(-DBL_MAX, DBL_MAX);
     spinMinimum_->setDecimals(DBL_DIG);
-    checkLeftInf_ = new QCheckBox(QStringLiteral("ÏÂÏŞ£º"), this);
+    checkLeftInf_ = new QCheckBox(tr("Minimum:"), this);
     addFormRow(checkLeftInf_, spinMinimum_);
 
     spinMaximum_ = new DoubleSpinBox(this);
     spinMaximum_->setRange(-DBL_MAX, DBL_MAX);
     spinMaximum_->setDecimals(DBL_DIG);
-    checkRightInf_ = new QCheckBox(QStringLiteral("ÉÏÏŞ£º"), this);
+    checkRightInf_ = new QCheckBox(tr("Maximum:"), this);
     addFormRow(checkRightInf_, spinMaximum_);
 
     spinDefault_ = new DoubleSpinBox(this);
     spinDefault_->setRange(-DBL_MAX, DBL_MAX);
     spinDefault_->setDecimals(DBL_DIG);
-    addFormRow(QStringLiteral("Ä¬ÈÏÖµ£º"), spinDefault_);
+    addFormRow(tr("Default:"), spinDefault_);
 
-    QGroupBox* groupSpecs = new QGroupBox(QStringLiteral("ÌØÕ÷µãĞÅÏ¢"), this);
+    QGroupBox* groupSpecs = new QGroupBox(tr("Spec"), this);
     splitterBase()->addWidget(groupSpecs);
 
     QVBoxLayout* layoutSpecs = new QVBoxLayout(groupSpecs);
@@ -461,11 +461,11 @@ void ItemEdit::setupUI(int windowType)
 
     tableView_->setContextMenuPolicy(Qt::ActionsContextMenu);
     QList<QAction *> lstAction;
-    actionNew_ = new QAction(QStringLiteral("ĞÂÔö"), tableView_);
+    actionNew_ = new QAction(tr("Add"), tableView_);
     tableView_->addAction(actionNew_);
     actionNew_->setObjectName("new");
     lstAction << actionNew_;
-    actionClear_ = new QAction(QStringLiteral("Çå¿Õ"), tableView_);
+    actionClear_ = new QAction(tr("Clear"), tableView_);
     tableView_->addAction(actionClear_);
     actionClear_->setObjectName("clear");
     lstAction << actionClear_;
@@ -486,9 +486,9 @@ void ItemEdit::setupUI(int windowType)
 void ItemEdit::showMenu()
 {
     QMenu menu(this);
-    menu.addAction(QStringLiteral("ĞÂÔö"), this, SLOT(onNew()));
-    menu.addAction(QStringLiteral("É¾³ı"), this, SLOT(onDelete()));
-    menu.addAction(QStringLiteral("Çå¿Õ"), this, SLOT(onClear()));
+    menu.addAction(tr("Add"), this, SLOT(onNew()));
+    menu.addAction(tr("Remove"), this, SLOT(onDelete()));
+    menu.addAction(tr("Clear"), this, SLOT(onClear()));
     menu.exec(QCursor::pos());
 }
 

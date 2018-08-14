@@ -297,11 +297,11 @@ void ItemWorkerGroup::setDirty()
         worker_->disconnect(this);
         if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
             worker_->workerSend()->disconnect(this);
-            worker_->workerSend()->setTable(Icd::TablePtr(0));
+            worker_->workerSend()->setTable(Icd::TablePtr());
         }
         if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
             worker_->workerRecv()->disconnect(this);
-            worker_->workerRecv()->setTable(Icd::TablePtr(0));
+            worker_->workerRecv()->setTable(Icd::TablePtr());
         }
     }
 }
@@ -333,12 +333,12 @@ QString ItemWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
         if (itemOffset >= 0) {
             text.append(QString("<font color=green size=2>[%1:%2:%3]</font> ")
                         .arg(table->itemOffset(), 4, 10, QChar('0'))
-                        .arg((int)table->bufferOffset(), 4, 10, QChar('0'))
-                        .arg((int)(table->bufferOffset() - itemOffset), 4, 10, QChar('0')));
+                        .arg(int(table->bufferOffset()), 4, 10, QChar('0'))
+                        .arg(int(table->bufferOffset() - itemOffset), 4, 10, QChar('0')));
         } else {
             text.append(QString("<font color=green size=2>[%1:%2]</font> ")
                         .arg(table->itemOffset(), 4, 10, QChar('0'))
-                        .arg((int)table->bufferOffset(), 4, 10, QChar('0')));
+                        .arg(int(table->bufferOffset()), 4, 10, QChar('0')));
         }
 
         break;
@@ -378,14 +378,14 @@ QString ItemWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
             default:
                 text.append(QString("<font color=green size=2>[%1:%2:%3]</font> ")
                             .arg(item->itemOffset(), 4, 10, QChar('0'))
-                            .arg((int)item->bufferOffset(), 4, 10, QChar('0'))
-                            .arg((int)(item->bufferOffset() - tableOffset), 4, 10, QChar('0')));
+                            .arg(int(item->bufferOffset()), 4, 10, QChar('0'))
+                            .arg(int(item->bufferOffset() - tableOffset), 4, 10, QChar('0')));
                 break;
             }
         } else {
             text.append(QString("<font color=green size=2>[%1:%2]</font> ")
                         .arg(item->itemOffset(), 4, 10, QChar('0'))
-                        .arg((int)item->bufferOffset(), 4, 10, QChar('0')));
+                        .arg(int(item->bufferOffset()), 4, 10, QChar('0')));
         }
         break;
     }
@@ -466,12 +466,12 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             // data
             if (showAttris_ & CoreTreeWidget::ShowData) {
                 values.append(QString("%1")
-                              .arg((uint)dataItem->data(), asciiCount, dataFormat_, QChar('0'))
+                              .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
             if (showAttris_ & CoreTreeWidget::ShowValue) {
-                values.append(QString("%1").arg((qulonglong)dataItem->data(), 0, 10));
+                values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             break;
@@ -482,12 +482,12 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             // data
             if (showAttris_ & CoreTreeWidget::ShowData) {
                 values.append(QString("%1")
-                              .arg((uint)dataItem->data(), asciiCount, dataFormat_, QChar('0'))
+                              .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
             if (showAttris_ & CoreTreeWidget::ShowValue) {
-                values.append(QString("%1").arg((qulonglong)dataItem->data(), 0, 10));
+                values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             break;
@@ -498,12 +498,12 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             // data
             if (showAttris_ & CoreTreeWidget::ShowData) {
                 values.append(QString("%1")
-                              .arg((uint)dataItem->data(), asciiCount, dataFormat_, QChar('0'))
+                              .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
             if (showAttris_ & CoreTreeWidget::ShowValue) {
-                values.append(QString("%1").arg((qulonglong)dataItem->data(), 0, 10));
+                values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             break;
@@ -514,12 +514,12 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             // data
             if (showAttris_ & CoreTreeWidget::ShowData) {
                 values.append(QString("%1")
-                              .arg((uint)dataItem->data(), asciiCount, dataFormat_, QChar('0'))
+                              .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
             if (showAttris_ & CoreTreeWidget::ShowValue) {
-                values.append(QString("%1").arg((qulonglong)dataItem->data(), 0, 10));
+                values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             break;
@@ -551,7 +551,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
                 }
                 default:
                 {
-                    qulonglong data = (qulonglong)(itemNumeric->originalData());
+                    qulonglong data = qulonglong(itemNumeric->originalData());
                     data &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
                     values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
                     break;
@@ -595,12 +595,12 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             // data
             if (showAttris_ & CoreTreeWidget::ShowData) {
                 values.append(QString("%1")
-                              .arg((uint)dataItem->data(), asciiCount, dataFormat_, QChar('0')).toUpper()
+                              .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0')).toUpper()
                               .toUpper());
             }
             // value
             if (showAttris_ & CoreTreeWidget::ShowValue) {
-                values.append(QString("%1").arg((uint)dataItem->data(),
+                values.append(QString("%1").arg(uint(dataItem->data()),
                                                 int(dataItem->bufferSize() * 8), 2, QChar('0')));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
@@ -612,12 +612,12 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             // data
             if (showAttris_ & CoreTreeWidget::ShowData) {
                 values.append(QString("%1")
-                              .arg((uint)dataItem->data(), asciiCount, dataFormat_, QChar('0')).toUpper()
+                              .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0')).toUpper()
                               .toUpper());
             }
             // value
             if (showAttris_ & CoreTreeWidget::ShowValue) {
-                values.append(QString("%1").arg((uint)dataItem->data(),
+                values.append(QString("%1").arg(uint(dataItem->data()),
                                                 int(dataItem->bufferSize() * 8), 2, QChar('0')));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
@@ -625,7 +625,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             if (showAttris_ & CoreTreeWidget::ShowSpec) {
                 const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
                 if (bitItem) {
-                    std::string spec = bitItem->specAt((Icd::icd_int64)dataItem->data());
+                    std::string spec = bitItem->specAt(Icd::icd_uint64(dataItem->data()));
                     if (spec.empty()) {
                         spec = "--";
                     }
@@ -648,11 +648,11 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             Icd::TablePtr table = itemComplex->table();
             if (table->itemCount() == 0) {
                 const char *buffer = itemComplex->buffer();
-                int bufferSize = (int)itemComplex->bufferSize();
+                int bufferSize = int(itemComplex->bufferSize());
                 if (bufferSize <= 16) {
                     info.append(dataPrefix);
                     for (int i = 0; i < bufferSize; ++i) {
-                        info.append(QString("%1").arg((ushort)(*(buffer + i)),
+                        info.append(QString("%1").arg(ushort(*(buffer + i)),
                                                       2, 16, QChar('0')).toUpper());
                     }
                     info.append(suffix);
@@ -839,7 +839,7 @@ void ItemWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &tabl
         }
         // channel
         if (!table->parent() && item->data(Icd::TreeChannelIdRole).isValid()) {
-            text.append(QStringLiteral(" <font color=#1296c3 size=3>[")
+            text.append(QString(" <font color=#1296c3 size=3>[")
                         + QString::fromStdString(worker_->channel()->name()) + "]</font>");
         }
         //

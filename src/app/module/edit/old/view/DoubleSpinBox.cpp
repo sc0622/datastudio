@@ -51,7 +51,7 @@ QValidator::State DoubleSpinBox::validate(QString &input, int &pos) const
     int _dotPos = input.indexOf(".");
     Q_ASSERT(-1 != _dotPos);
     QString _integer = input.left(_dotPos);
-    QString _decimals = input.mid(_dotPos + strlen("."));
+    QString _decimals = input.mid(_dotPos + int(strlen(".")));
     int _bound = this->decimals();
     if (_decimals.length() > _bound) {  //
         _decimals.truncate(_bound);

@@ -4,12 +4,12 @@
 
 FileSendWidget::FileSendWidget(QWidget *parent)
     : QWidget(parent)
-    , d_worker(Icd::WorkerPtr(0))
+    , d_worker(Icd::WorkerPtr())
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox *groupBox = new QGroupBox(QStringLiteral("发送设置"), this);
+    QGroupBox *groupBox = new QGroupBox(tr("Sending settings"), this);
     vertLayoutMain->addWidget(groupBox);
 
     QVBoxLayout *vertLayoutGroupBox = new QVBoxLayout(groupBox);
@@ -17,13 +17,13 @@ FileSendWidget::FileSendWidget(QWidget *parent)
     d_formLayout = new QFormLayout();
     vertLayoutGroupBox->addLayout(d_formLayout);
 
-    d_checkBoxPeriodic = new QCheckBox(QStringLiteral(""), this);
-    d_formLayout->addRow(QStringLiteral("自动发送："), d_checkBoxPeriodic);
+    d_checkBoxPeriodic = new QCheckBox(" ", this);
+    d_formLayout->addRow(tr("Auto-sending:"), d_checkBoxPeriodic);
 
     d_spinBoxInterval = new QSpinBox(this);
     d_spinBoxInterval->setRange(1, INT_MAX);
     d_spinBoxInterval->setSuffix(" ms");
-    d_formLayout->addRow(QStringLiteral("发送周期："), d_spinBoxInterval);
+    d_formLayout->addRow(tr("Peroid of sending:"), d_spinBoxInterval);
 
     vertLayoutGroupBox->addSpacing(20);
 
@@ -32,19 +32,19 @@ FileSendWidget::FileSendWidget(QWidget *parent)
 
     horiLayoutButtons->addStretch();
 
-    d_buttonSwitch = new QPushButton(QStringLiteral("启动"), this);
+    d_buttonSwitch = new QPushButton(tr("Start"), this);
     d_buttonSwitch->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonSwitch);
 
     horiLayoutButtons->addSpacing(10);
 
-    d_buttonRestore = new QPushButton(QStringLiteral("恢复"), this);
+    d_buttonRestore = new QPushButton(tr("Restore"), this);
     d_buttonRestore->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonRestore);
 
     horiLayoutButtons->addSpacing(10);
 
-    d_buttonApply = new QPushButton(QStringLiteral("应用"), this);
+    d_buttonApply = new QPushButton(tr("Apply"), this);
     d_buttonApply->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonApply);
 
@@ -129,7 +129,7 @@ void FileSendWidget::updateUi(const Icd::WorkerPtr &worker)
     d_spinBoxInterval->hide();
     d_formLayout->labelForField(d_spinBoxInterval)->hide();
     d_buttonSwitch->hide();
-    d_buttonSwitch->setText(QStringLiteral("启动"));
+    d_buttonSwitch->setText(tr("Start"));
 
     //
     d_worker = worker;
@@ -141,11 +141,11 @@ void FileSendWidget::updateUi(const Icd::WorkerPtr &worker)
     //
     Icd::WorkerTrans::TimeEvent timeEvent = d_worker->workerSend()->timeEvent();
     d_checkBoxPeriodic->setChecked(timeEvent == Icd::WorkerTrans::TimePeriodic);
-    d_spinBoxInterval->setValue((int)d_worker->workerSend()->interval());
+    d_spinBoxInterval->setValue(int(d_worker->workerSend()->interval()));
     if (d_worker->workerSend()->isRunning()) {
-        d_buttonSwitch->setText(QStringLiteral("停止"));
+        d_buttonSwitch->setText(tr("Stop"));
     } else {
-        d_buttonSwitch->setText(QStringLiteral("启动"));
+        d_buttonSwitch->setText(tr("Start"));
     }
 
     //
@@ -164,17 +164,17 @@ void FileSendWidget::updateUi(const Icd::WorkerPtr &worker)
 
 void FileSendWidget::onWorkerClosed()
 {
-    d_buttonSwitch->setText(QStringLiteral("启动"));
+    d_buttonSwitch->setText(tr("Start"));
 }
 
 void FileSendWidget::onWorkerStarted()
 {
-    d_buttonSwitch->setText(QStringLiteral("停止"));
+    d_buttonSwitch->setText(tr("Stop"));
 }
 
 void FileSendWidget::onWorkerStopped()
 {
-    d_buttonSwitch->setText(QStringLiteral("启动"));
+    d_buttonSwitch->setText(tr("Start"));
 }
 
 void FileSendWidget::onButtonSwitchClicked()

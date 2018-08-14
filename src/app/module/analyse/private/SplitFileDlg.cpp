@@ -19,54 +19,54 @@ SplitFileDlg::SplitFileDlg(QWidget *parent)
     formLayoutTop->setLabelAlignment(Qt::AlignRight);
 
     d_comboFileType = new QComboBox(this);
-    d_comboFileType->addItem(QStringLiteral("纯数据文件"));
-    d_comboFileType->addItem(QStringLiteral("ICD数据文件"));
-    d_comboFileType->addItem(QStringLiteral("文本格式数据（ATX，ATXEX）"));
-    d_comboFileType->addItem(QStringLiteral("通用二进制格式数据（GBR）"));
-    d_comboFileType->addItem(QStringLiteral("通用原始数据格式（RAW）"));
-    d_comboFileType->addItem(QStringLiteral("RASS实时仿真系统数据（MRD）"));
-    formLayoutTop->addRow(QStringLiteral("文件类型："), d_comboFileType);
+    d_comboFileType->addItem(tr("Pure data file"));
+    d_comboFileType->addItem(tr("ICD data file"));
+    d_comboFileType->addItem(tr("Text file (ATX,ATXEX)"));
+    d_comboFileType->addItem(tr("Universal binary file (GBR)"));
+    d_comboFileType->addItem(tr("Universal original data file (RAW)"));
+    d_comboFileType->addItem(tr("RASS realtime data file (MRD)"));
+    formLayoutTop->addRow(tr("File type:"), d_comboFileType);
 
     d_comboSplitSize = new QComboBox(this);
-    d_comboSplitSize->addItem(QStringLiteral("50 MB"), 50);
-    d_comboSplitSize->addItem(QStringLiteral("100 MB"), 100);
-    d_comboSplitSize->addItem(QStringLiteral("200 MB"), 200);
-    d_comboSplitSize->addItem(QStringLiteral("256 MB"), 256);
-    d_comboSplitSize->addItem(QStringLiteral("400 MB"), 400);
-    d_comboSplitSize->addItem(QStringLiteral("512 MB"), 512);
-    d_comboSplitSize->addItem(QStringLiteral("700 MB"), 700);
-    d_comboSplitSize->addItem(QStringLiteral("1024 MB"), 1024);
-    formLayoutTop->addRow(QStringLiteral("分卷大小："), d_comboSplitSize);
+    d_comboSplitSize->addItem("50 MB", 50);
+    d_comboSplitSize->addItem("100 MB", 100);
+    d_comboSplitSize->addItem("200 MB", 200);
+    d_comboSplitSize->addItem("256 MB", 256);
+    d_comboSplitSize->addItem("400 MB", 400);
+    d_comboSplitSize->addItem("512 MB", 512);
+    d_comboSplitSize->addItem("700 MB", 700);
+    d_comboSplitSize->addItem("1024 MB", 1024);
+    formLayoutTop->addRow(tr("Volume size:"), d_comboSplitSize);
 
     d_editSource = new QLineEdit();
-    QPushButton *buttonSourceView = new QPushButton(QStringLiteral("…"));
+    QPushButton *buttonSourceView = new QPushButton("...");
     buttonSourceView->setFixedWidth(60);
     QHBoxLayout *horiLayoutSource = new QHBoxLayout();
     horiLayoutSource->setContentsMargins(0, 0, 0, 0);
     horiLayoutSource->addWidget(d_editSource);
     horiLayoutSource->addWidget(buttonSourceView);
-    formLayoutTop->addRow(QStringLiteral("原始文件："), horiLayoutSource);
+    formLayoutTop->addRow(tr("Source file:"), horiLayoutSource);
 
     d_editTarget = new QLineEdit();
-    QPushButton *buttonTargetView = new QPushButton(QStringLiteral("…"));
+    QPushButton *buttonTargetView = new QPushButton("...");
     buttonTargetView->setFixedWidth(60);
     QHBoxLayout *horiLayoutTarget = new QHBoxLayout();
     horiLayoutTarget->setContentsMargins(0, 0, 0, 0);
     horiLayoutTarget->addWidget(d_editTarget);
     horiLayoutTarget->addWidget(buttonTargetView);
-    formLayoutTop->addRow(QStringLiteral("保存位置："), horiLayoutTarget);
+    formLayoutTop->addRow(tr("Target file:"), horiLayoutTarget);
 
-    d_checkAsFTI = new QCheckBox(QStringLiteral("系统计数器为零时拆分文件"), this);
+    d_checkAsFTI = new QCheckBox(tr("Split file when system counter is equal to zero"), this);
     //d_checkAsFTI->setChecked(false);
-    formLayoutTop->addRow(QStringLiteral("按FTI协议拆分："), d_checkAsFTI);
+    formLayoutTop->addRow(tr("Split file with FTI protocol:"), d_checkAsFTI);
 
     vertLayoutMain->addStretch();
 
     QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
     vertLayoutMain->addLayout(horiLayoutBottom);
 
-    d_buttonSplit = new QPushButton(QStringLiteral("拆分"), this);
-    d_buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    d_buttonSplit = new QPushButton(tr("Start split"), this);
+    d_buttonCancel = new QPushButton(tr("Cancel"), this);
     d_buttonSplit->setFixedWidth(120);
     d_buttonCancel->setFixedWidth(120);
     d_buttonSplit->setDefault(true);
@@ -93,7 +93,7 @@ SplitFileDlg::SplitFileDlg(QWidget *parent)
                 << "Text file (*.icd)" << "Text file (*.atx)";
         QString selectedFilter = filters.first();
         const QString filePath = QFileDialog::getOpenFileName(
-                    this, QStringLiteral("选择原始文件"), d_editSource->text(),
+                    this, tr("Select source file"), d_editSource->text(),
                     filters.join(";;"), &selectedFilter);
         if (filePath.isEmpty() || !QFile::exists(filePath)) {
             return;
@@ -142,7 +142,7 @@ SplitFileDlg::SplitFileDlg(QWidget *parent)
     });
     connect(buttonTargetView, &QPushButton::clicked, this, [=](){
         const QString filePath = QFileDialog::getExistingDirectory(
-                    this, QStringLiteral("选择原始文件"), d_editTarget->text());
+                    this, tr("Select target file"), d_editTarget->text());
         if (filePath.isEmpty() || !QFile::exists(filePath)) {
             return;
         }
@@ -158,8 +158,8 @@ SplitFileDlg::SplitFileDlg(QWidget *parent)
             return;
         }
         if (QFileInfo(filePath).size() <= d_comboSplitSize->itemData(0).toInt() * 1024L * 1024L) {
-            QMessageBox::warning(this, QStringLiteral("提示"),
-                                 QStringLiteral("原文件小于50MB，不需要拆分！"));
+            QMessageBox::warning(this, tr("Warning"),
+                                 tr("Size of source file is less than 50MB, not need to split!"));
             return;
         }
         const QString targetDir = d_editTarget->text().trimmed();
@@ -206,7 +206,7 @@ SplitFileDlg::SplitFileDlg(QWidget *parent)
     d_comboSplitSize->setCurrentIndex(3);   // default: 256 MB
 }
 
-bool SplitFileDlg::splitDataFile(const QString &filePath, const QString targetDir,
+bool SplitFileDlg::splitDataFile(const QString &filePath, const QString &targetDir,
                                  qint64 splitSize)
 {
     //
@@ -243,7 +243,7 @@ bool SplitFileDlg::splitDataFile(const QString &filePath, const QString targetDi
     return true;
 }
 
-bool SplitFileDlg::splitIcdFile(const QString &filePath, const QString targetDir,
+bool SplitFileDlg::splitIcdFile(const QString &filePath, const QString &targetDir,
                                 qint64 splitSize)
 {
     //
@@ -265,7 +265,7 @@ bool SplitFileDlg::splitIcdFile(const QString &filePath, const QString targetDir
     bool hasTimeFormat = false;
     QString domain;
 
-    // 判断文件类型
+    // 鍒ゆ柇鏂囦欢绫诲瀷
     const QString header = QString(sourceFile.read(4));
     if (header == "ICD") {
         headerSize += 4;
@@ -299,9 +299,10 @@ bool SplitFileDlg::splitIcdFile(const QString &filePath, const QString targetDir
     return true;
 }
 
-bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir,
+bool SplitFileDlg::splitATXFile(const QString &filePath, const QString &targetDir,
                                 qint64 splitSize)
 {
+    Q_UNUSED(targetDir);
     bool result = true;
 
     if (d_progressDialog) {
@@ -313,8 +314,8 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
     d_progressDialog = new Icd::ProgressDialog(this);
     d_progressDialog->setCancelVisible(false);
     d_progressDialog->setInvertedAppearance(false);
-    d_progressDialog->setWindowTitle(QStringLiteral("拆分文件"));
-    d_progressDialog->setMessage(QStringLiteral("正在拆分文件……"));
+    d_progressDialog->setWindowTitle(tr("Split file"));
+    d_progressDialog->setMessage(tr("Splitting file..."));
     connect(this, &SplitFileDlg::progressMessageChanged,
             this, [=](const QString &message){
         if (d_progressDialog) {
@@ -378,13 +379,13 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
             //
             splitLine = line.split(' ');
             line.clear();
-            const QString msg = QStringLiteral("系统计数器");
+            const QString msg = tr("System counter");
             indexOfCounter = splitLine.indexOf(msg.toLocal8Bit());
         } else {
             headerContents.append(sourceFile.readLine());
         }
 
-        emit progressRangeChanged(0, (int)(sourceFile.size() / 1024));
+        emit progressRangeChanged(0, int(sourceFile.size() / 1024));
         emit progressValueChanged(0);
 
         const QString baseName = fileInfo.completeBaseName();
@@ -427,7 +428,7 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
                 }
                 ++packageCount;
                 targetFile.write(line);
-                emit progressValueChanged((int)(sourceFile.pos() / 1024));
+                emit progressValueChanged(int(sourceFile.pos() / 1024));
             } while (!sourceFile.atEnd() && targetFile.size() < splitSize);
 
             if (!result) {
@@ -454,7 +455,7 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
             ++fileIndex;
 
             //
-            emit progressValueChanged((int)(sourceFile.pos() / 1024));
+            emit progressValueChanged(int((sourceFile.pos() / 1024)));
         }
 
         if (!result) {
@@ -471,12 +472,12 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
         d_progressDialog->hide();
         d_progressDialog->disconnect(this);
         QString message =  d_progressDialog->futureResult()
-                ? QStringLiteral("拆分成功！")
-                : QStringLiteral("拆分失败！");
-        QMessageBox::information(this,  QStringLiteral("拆分结果"), message);
+                ? tr("Split success!")
+                : tr("Split failure!");
+        QMessageBox::information(this,  tr("Result of split"), message);
         d_progressDialog->deleteLater();
         d_progressDialog = Q_NULLPTR;
-        d_table = Icd::TablePtr(0);
+        d_table = Icd::TablePtr();
     });
     d_progressDialog->setFuture(future);
     d_progressDialog->exec();
@@ -485,7 +486,7 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString targetDir
     return result;
 }
 
-bool SplitFileDlg::splitGBRFile(const QString &filePath, const QString targetDir,
+bool SplitFileDlg::splitGBRFile(const QString &filePath, const QString &targetDir,
                                 qint64 splitSize)
 {
     //
@@ -502,7 +503,7 @@ bool SplitFileDlg::splitGBRFile(const QString &filePath, const QString targetDir
     return false;
 }
 
-bool SplitFileDlg::splitRAWFile(const QString &filePath, const QString targetDir,
+bool SplitFileDlg::splitRAWFile(const QString &filePath, const QString &targetDir,
                                 qint64 splitSize)
 {
     //
@@ -519,7 +520,7 @@ bool SplitFileDlg::splitRAWFile(const QString &filePath, const QString targetDir
     return false;
 }
 
-bool SplitFileDlg::splitMRDFile(const QString &filePath, const QString targetDir,
+bool SplitFileDlg::splitMRDFile(const QString &filePath, const QString &targetDir,
                                 qint64 splitSize)
 {
     //
@@ -536,7 +537,7 @@ bool SplitFileDlg::splitMRDFile(const QString &filePath, const QString targetDir
     return false;
 }
 
-bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
+bool SplitFileDlg::loadTable(const QString &filePath, const QString &targetDir,
                              qint64 splitSize, const QString &domain, int headerSize,
                              bool hasTimeFormat)
 {
@@ -557,10 +558,10 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
     }
 
     d_progressDialog = new Icd::ProgressDialog(this);
-    d_progressDialog->setWindowTitle(QStringLiteral("加载数据"));
+    d_progressDialog->setWindowTitle(tr("Load data"));
     d_progressDialog->setCancelVisible(false);
     d_progressDialog->setInvertedAppearance(false);
-    d_progressDialog->setMessage(QStringLiteral("正在解析数据文件……"));
+    d_progressDialog->setMessage(tr("Parsing file..."));
     connect(this, &SplitFileDlg::progressMessageChanged,
             this, [=](const QString &message){
         if (d_progressDialog) {
@@ -620,7 +621,7 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
                 return false;
             }
             //
-            if (!splitFile(sourceFile, targetDir, splitSize, (int)d_table->bufferSize(),
+            if (!splitFile(sourceFile, targetDir, splitSize, int(d_table->bufferSize()),
                            headerSize, hasTimeFormat)) {
                 delete sourceFile;
                 return false;
@@ -631,31 +632,31 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
             return true;
         });
     };
-    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,this,&parseTable](){
+    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
         if (d_progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;
-                d_progressDialog->setWindowTitle(QStringLiteral("拆分文件"));
-                d_progressDialog->setMessage(QStringLiteral("正在拆分文件……"));
+                d_progressDialog->setWindowTitle(tr("Split file"));
+                d_progressDialog->setMessage(tr("Splitting file..."));
                 d_progressDialog->setFuture(runAgainFuture());
             } else {
                 d_progressDialog->hide();
                 d_progressDialog->disconnect(this);
-                QString message = QStringLiteral("拆分成功！");
-                QMessageBox::information(this, QStringLiteral("拆分结果"), message);
+                QString message = tr("Split success!");
+                QMessageBox::information(this, tr("Result of split"), message);
                 d_progressDialog->deleteLater();
-                d_progressDialog = Q_NULLPTR;
-                d_table = Icd::TablePtr(0);
+                d_progressDialog = nullptr;
+                d_table = Icd::TablePtr();
             }
         } else {
             d_progressDialog->hide();
             d_progressDialog->disconnect(this);
-            const QString title = parseTable ? QStringLiteral("解析结果") : QStringLiteral("拆分结果");
-            const QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("拆分失败！");
+            const QString title = parseTable ? tr("Result of parsing") : tr("Result of splitting");
+            const QString message = parseTable ? tr("Parse failure!") : tr("Split failure!");
             QMessageBox::information(this, title, message);
             d_progressDialog->deleteLater();
-            d_progressDialog = Q_NULLPTR;
-            d_table = Icd::TablePtr(0);
+            d_progressDialog = nullptr;
+            d_table = Icd::TablePtr();
         }
     });
     d_progressDialog->setFuture(future);
@@ -665,10 +666,11 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString targetDir,
     return result;
 }
 
-bool SplitFileDlg::splitFile(QFile *sourceFile, const QString targetDir,
+bool SplitFileDlg::splitFile(QFile *sourceFile, const QString &targetDir,
                              qint64 splitSize, int tableSize, int headerSize,
                              bool hasTimeFormat)
 {
+    Q_UNUSED(targetDir);
     if (!sourceFile) {
         return false;
     }
@@ -688,7 +690,7 @@ bool SplitFileDlg::splitFile(QFile *sourceFile, const QString targetDir,
         headerContents = sourceFile->read(headerSize);
     }
 
-    emit progressRangeChanged(0, bufferCount - 1);
+    emit progressRangeChanged(0, int(bufferCount - 1));
     emit progressValueChanged(0);
 
     const QString baseName = fileInfo.completeBaseName();
@@ -730,11 +732,11 @@ bool SplitFileDlg::splitFile(QFile *sourceFile, const QString targetDir,
                 result = false;
                 break;
             }
-            targetFile.write((const char*)buffer, bufferSize);
+            targetFile.write(reinterpret_cast<const char*>(buffer), bufferSize);
             sourceFile->unmap(buffer);
             ++i;
             //
-            emit progressValueChanged(i);
+            emit progressValueChanged(int(i));
         } while (i < bufferCount && targetFile.size() < splitSize);
 
         if (!result) {
@@ -749,7 +751,7 @@ bool SplitFileDlg::splitFile(QFile *sourceFile, const QString targetDir,
         ++fileIndex;
 
         //
-        emit progressValueChanged(i);
+        emit progressValueChanged(int(i));
     }
 
     if (!result) {

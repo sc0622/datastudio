@@ -9,24 +9,13 @@
 class ComMgrWidgetPrivate;
 class QListWidgetItem;
 
-/**
- * @brief The ComMgrWidget class
- */
 class ComMgrWidget : public QWidget
 {
     Q_OBJECT
 public:
-    /**
-     * @brief ComMgrWidget
-     * @param parent
-     */
-    explicit ComMgrWidget(QWidget *parent = 0);
-
+    explicit ComMgrWidget(QWidget *parent = nullptr);
     ~ComMgrWidget();
 
-    /**
-     * @brief updateUi
-     */
     bool init();
 
 signals:

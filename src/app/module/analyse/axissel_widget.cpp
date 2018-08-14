@@ -119,7 +119,7 @@ AxisSelWidget::AxisSelWidget(QWidget *parent)
     : QDialog(parent)
     , d_hasTimeFormat(false)
 {
-    setWindowTitle(QStringLiteral("坐标设置"));
+    setWindowTitle(tr("Axis settings"));
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
 
@@ -128,19 +128,19 @@ AxisSelWidget::AxisSelWidget(QWidget *parent)
     vertLayoutMain->addLayout(formLayout);
 
     QHBoxLayout *horiLayoutAxisX = new QHBoxLayout();
-    formLayout->addRow(QStringLiteral("横坐标(X)："), horiLayoutAxisX);
+    formLayout->addRow(tr("Horizontal coordinate (X):"), horiLayoutAxisX);
 
     d_editAxisX = new AxisXDropLineEdit(this);
-    d_editAxisX->setPlaceholderText(QStringLiteral("拖放数据项到此处"));
+    d_editAxisX->setPlaceholderText(tr("Drag data item to here"));
     horiLayoutAxisX->addWidget(d_editAxisX);
 
     d_comboBoxAxisX = new QComboBox(this);
     d_comboBoxAxisX->setMinimumWidth(80);
-    d_comboBoxAxisX->addItem(QStringLiteral("时间"));
-    d_comboBoxAxisX->addItem(QStringLiteral("自定义"));
+    d_comboBoxAxisX->addItem(tr("Time"));
+    d_comboBoxAxisX->addItem(tr("Custom"));
     horiLayoutAxisX->addWidget(d_comboBoxAxisX);
 
-    QGroupBox *groupBoxAxisY = new QGroupBox(QStringLiteral("纵坐标(Y)"), this);
+    QGroupBox *groupBoxAxisY = new QGroupBox(tr("Vertical coordinate(Y)"), this);
     vertLayoutMain->addWidget(groupBoxAxisY);
 
     QHBoxLayout *horiLayoutAxisY = new QHBoxLayout(groupBoxAxisY);
@@ -153,8 +153,8 @@ AxisSelWidget::AxisSelWidget(QWidget *parent)
 
     horiLayoutButtons->addStretch();
 
-    QPushButton *buttonOk = new QPushButton(QStringLiteral("确定"), this);
-    QPushButton *buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    QPushButton *buttonOk = new QPushButton(tr("Ok"), this);
+    QPushButton *buttonCancel = new QPushButton(tr("Cancel"), this);
     buttonOk->setFixedSize(120, 30);
     buttonCancel->setFixedSize(120, 30);
     horiLayoutButtons->addWidget(buttonOk);

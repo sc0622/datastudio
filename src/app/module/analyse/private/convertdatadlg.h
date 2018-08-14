@@ -12,6 +12,7 @@ class SplitFileDlg;
 
 class ConvertDataDlg : public QDialog
 {
+    Q_OBJECT
 public:
     explicit ConvertDataDlg(QWidget *parent = nullptr);
     ~ConvertDataDlg();

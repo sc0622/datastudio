@@ -1,14 +1,14 @@
 #include "precomp.h"
 #include "FrameEdit.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 FrameEdit::FrameEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     spinSequence_ = new QSpinBox(this);
     spinSequence_->setRange(1, 1e6);
-    addFormRow(QStringLiteral("Ê±Ðò£º"), spinSequence_);
+    addFormRow(tr("Sequence:"), spinSequence_);
 
     enableConnect(true);
 }

@@ -9,7 +9,7 @@
 ConvertDataDlg::ConvertDataDlg(QWidget *parent)
     : QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint)
 {
-    setWindowTitle(QStringLiteral("数据转换"));
+    setWindowTitle(tr("Data conversion"));
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -24,11 +24,11 @@ ConvertDataDlg::ConvertDataDlg(QWidget *parent)
     //convToIcdWidget_ = new ConvertToIcdWidget(this);
     splitFileDlg_ = new SplitFileDlg(this);
 
-    tabWidget_->addTab(convFromIcdWidget_, QStringLiteral("去ICD数据化"));
-    tabWidget_->addTab(parityDataDlg_, QStringLiteral("校验数据并转换"));
-    tabWidget_->addTab(convtToDA_, QStringLiteral("转换为分析软件数据"));
-//    d_tabWidget->addTab(convToIcdWidget_, QStringLiteral("转换为ICD数据"));
-    tabWidget_->addTab(splitFileDlg_, QStringLiteral("拆分数据文件"));
+    tabWidget_->addTab(convFromIcdWidget_, tr("Remove ICD feature"));
+    tabWidget_->addTab(parityDataDlg_, tr("Verfy data and convert"));
+    tabWidget_->addTab(convtToDA_, tr("Convert to DataAnalyse"));
+//    d_tabWidget->addTab(convToIcdWidget_, tr("Convert to ICD"));
+    tabWidget_->addTab(splitFileDlg_, tr("Split data file"));
 
     adjustSize();
 

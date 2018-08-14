@@ -18,7 +18,7 @@ ExportDataDlg::ExportDataDlg(const QString &filePath,
     , exportOrgDataWidget_(nullptr)
     , convertToDataAnalyse_(nullptr)
 {
-    setWindowTitle(QStringLiteral("导出数据"));
+    setWindowTitle(tr("Export data"));
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -29,7 +29,7 @@ ExportDataDlg::ExportDataDlg(const QString &filePath,
     //
     convertToDataAnalyse_ = new ConvertToDataAnalyse(
                 filePath, table, objectItem, hasTimeFormat, headerSize, bitOffset, this);
-    tabWidget_->addTab(convertToDataAnalyse_, QStringLiteral("导出为分析软件数据"));
+    tabWidget_->addTab(convertToDataAnalyse_, tr("Export as DataAnalyse"));
     connect(convertToDataAnalyse_, &ConvertToDataAnalyse::rejected, this, [=](){
         reject();
     });
@@ -37,7 +37,7 @@ ExportDataDlg::ExportDataDlg(const QString &filePath,
     if (bitOffset == -1) {
         exportOrgDataWidget_ = new ExportOrgDataWidget(
                     filePath, table, objectItem, hasTimeFormat, headerSize, bitOffset, this);
-        tabWidget_->addTab(exportOrgDataWidget_, QStringLiteral("导出原始数据"));
+        tabWidget_->addTab(exportOrgDataWidget_, tr("Export original data"));
         connect(exportOrgDataWidget_, &ExportOrgDataWidget::rejected, this, [=](){
             reject();
         });

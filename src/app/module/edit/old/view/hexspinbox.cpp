@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "HexSpinBox.h"
+#include "hexspinbox.h"
 
 HexSpinBox::HexSpinBox(QWidget *parent)
     : QSpinBox(parent)

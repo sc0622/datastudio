@@ -14,8 +14,8 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     : QFrame(parent)
     , d_itemType(itemType)
     , d_item(nullptr)
-    , d_itemLayout(nullptr)
     , d_buttonSend(nullptr)
+    , d_itemLayout(nullptr)
 {
     setObjectName("DataItemWidget");
     setFrameShape(QFrame::NoFrame);
@@ -62,19 +62,19 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
         formButton->setFixedWidth(100);
         layoutTop->addWidget(formButton);
 
-        d_buttonSend = new QPushButton(QStringLiteral("发送"), this);
+        d_buttonSend = new QPushButton(tr("Send"), this);
         d_buttonSend->setFixedSize(60, 25);
         layoutTop->addWidget(d_buttonSend);
 
         layoutTop->addSpacing(10);
 
-        QPushButton *buttonRestore = new QPushButton(QStringLiteral("复位"), this);
+        QPushButton *buttonRestore = new QPushButton(tr("Reset"), this);
         buttonRestore->setFixedSize(60, 25);
         layoutTop->addWidget(buttonRestore);
 
         layoutTop->addSpacing(10);
 
-        QPushButton *buttonRemove = new QPushButton(QStringLiteral("删除"), this);
+        QPushButton *buttonRemove = new QPushButton(tr("Remove"), this);
         buttonRemove->setFixedSize(60, 25);
         layoutTop->addWidget(buttonRemove);
 
@@ -195,8 +195,6 @@ void DataItemWidget::setWorker(const Icd::WorkerPtr &worker)
                     break;
                 case Icd::WorkerTrans::TimePeriodic:
                     d_buttonSend->setEnabled(false);
-                    break;
-                default:
                     break;
                 }
             }
@@ -339,7 +337,7 @@ ItemWidgetHead::ItemWidgetHead(QWidget *parent)
     d_spinValue->setFillChar(QChar('0'));
     d_spinValue->setRadix(16);
     d_spinValue->setFixedWidth(300);
-    formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
+    formLayout->addRow(tr("Current value:"), d_spinValue);
     //
     connect(d_spinValue, static_cast<void(JSpinBox::*)(int)>
             (&JSpinBox::valueChanged), this, [=](int value){
@@ -365,7 +363,7 @@ void ItemWidgetHead::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_spinValue->setValue((int)itemHead->defaultValue());
+    d_spinValue->setValue(int(itemHead->defaultValue()));
 }
 
 bool ItemWidgetHead::updateUi(const Icd::ItemPtr &data)
@@ -379,8 +377,8 @@ bool ItemWidgetHead::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    d_spinValue->setRange(0, (0x1U << (int)itemHead->bufferSize() * 8) - 1);
-    d_spinValue->setValue((int)itemHead->data());
+    d_spinValue->setRange(0, int((0x1U << (int(itemHead->bufferSize()) * 8)) - 1));
+    d_spinValue->setValue(int(itemHead->data()));
 
     return true;
 }
@@ -397,7 +395,7 @@ ItemWidgetCounter::ItemWidgetCounter(QWidget *parent)
 
     d_spinValue = new QSpinBox(this);
     d_spinValue->setFixedWidth(300);
-    formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
+    formLayout->addRow(tr("Current value:"), d_spinValue);
     //
     connect(d_spinValue, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
@@ -423,7 +421,7 @@ void ItemWidgetCounter::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_spinValue->setValue((int)itemCounter->defaultValue());
+    d_spinValue->setValue(int(itemCounter->defaultValue()));
 }
 
 bool ItemWidgetCounter::updateUi(const Icd::ItemPtr &data)
@@ -437,8 +435,8 @@ bool ItemWidgetCounter::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    d_spinValue->setRange(0, (0x1U << int(itemCounter->bufferSize() * 8)) - 1);
-    d_spinValue->setValue((int)itemCounter->data());
+    d_spinValue->setRange(0, int((0x1U << (int(itemCounter->bufferSize()) * 8)) - 1));
+    d_spinValue->setValue(int(itemCounter->data()));
 
     return true;
 }
@@ -455,32 +453,34 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
 
     d_spinValue = new QSpinBox(this);
     d_spinValue->setFixedWidth(300);
-    formLayout->addRow(QStringLiteral("当前数值："), d_spinValue);
+    formLayout->addRow(tr("Current value:"), d_spinValue);
 
     d_comboBoxCheckType = new QComboBox(this);
     d_comboBoxCheckType->setMinimumWidth(220);
-    formLayout->addRow(QStringLiteral("校验类型："), d_comboBoxCheckType);
+    formLayout->addRow(tr("Parity:"), d_comboBoxCheckType);
 
     d_spinStartPos = new QSpinBox(this);
     d_spinStartPos->setFixedWidth(300);
     d_spinStartPos->setRange(0, 65535);
-    d_spinStartPos->setSuffix(QStringLiteral(" 字节"));
-    formLayout->addRow(QStringLiteral("起始位置："), d_spinStartPos);
+    d_spinStartPos->setSuffix(tr(" B"));
+    formLayout->addRow(tr("Start offset:"), d_spinStartPos);
 
     d_spinEndPos = new QSpinBox(this);
     d_spinEndPos->setFixedWidth(300);
     d_spinEndPos->setRange(0, 65535);
-    d_spinEndPos->setSuffix(QStringLiteral(" 字节"));
-    formLayout->addRow(QStringLiteral("终止位置："), d_spinEndPos);
+    d_spinEndPos->setSuffix(tr(" B"));
+    formLayout->addRow(tr("Stop offset:"), d_spinEndPos);
 
     d_labelCheckLength = new QLabel(this);
-    formLayout->addRow(QStringLiteral("校验长度："), d_labelCheckLength);
+    formLayout->addRow(tr("Length:"), d_labelCheckLength);
     //
-    d_comboBoxCheckType->addItem(QStringLiteral("无校验"));
-    d_comboBoxCheckType->addItem(QStringLiteral("8位和校验"));
-    d_comboBoxCheckType->addItem(QStringLiteral("16位和校验"));
-    d_comboBoxCheckType->addItem(QStringLiteral("CRC8校验"));
-    d_comboBoxCheckType->addItem(QStringLiteral("CRC16校验"));
+    d_comboBoxCheckType->addItem(tr("No parity"));
+    d_comboBoxCheckType->addItem(tr("8 bits sum-parity"));
+    d_comboBoxCheckType->addItem(tr("16 bits sum-parity"));
+    d_comboBoxCheckType->addItem(tr("8 bits xor-parity"));
+    d_comboBoxCheckType->addItem(tr("16 bits xor-parity"));
+    d_comboBoxCheckType->addItem(tr("CRC8 parity"));
+    d_comboBoxCheckType->addItem(tr("CRC16 parity"));
     //
     connect(d_spinValue, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
@@ -516,7 +516,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
             break;
         }
     });
-    const QString sByteUnit = QStringLiteral(" 字节");
+    const QString sByteUnit = tr(" B");
     connect(d_spinStartPos, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
         //
@@ -564,7 +564,7 @@ void ItemWidgetCheck::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_spinValue->setValue(itemCheck->defaultValue());
+    d_spinValue->setValue(int(itemCheck->defaultValue()));
 }
 
 bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
@@ -588,15 +588,15 @@ bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    d_spinStartPos->setRange(0, tableSend->bufferSize() - 1);
-    d_spinEndPos->setRange(0, tableSend->bufferSize() - 1);
+    d_spinStartPos->setRange(0, qCeil(tableSend->bufferSize()) - 1);
+    d_spinEndPos->setRange(0, qCeil(tableSend->bufferSize()) - 1);
     //
     const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem, Icd::Item>(data);
     if (!checkItem) {
         return false;
     }
     // value
-    d_spinValue->setValue(checkItem->data());
+    d_spinValue->setValue(int(checkItem->data()));
     // CheckType
     switch (checkItem->checkType()) {
     case Icd::CheckNone:
@@ -622,7 +622,7 @@ bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
     d_spinStartPos->setValue(checkItem->startPos());
     // CheckLength
     d_labelCheckLength->setText(QString::number(checkItem->checkLength())
-                                + QStringLiteral(" 字节"));
+                                + tr(" B"));
 
     return true;
 }
@@ -639,7 +639,7 @@ ItemWidgetFrameCode::ItemWidgetFrameCode(QWidget *parent)
 
     d_comboBoxCode = new QComboBox(this);
     d_comboBoxCode->setFixedWidth(300);
-    formLayout->addRow(QStringLiteral("当前帧码："), d_comboBoxCode);
+    formLayout->addRow(tr("Current frame code:"), d_comboBoxCode);
     //
     connect(d_comboBoxCode, static_cast<void(QComboBox::*)
             (int)>(&QComboBox::currentIndexChanged), this, [=](int index){
@@ -677,8 +677,6 @@ void ItemWidgetFrameCode::setWorker(const Icd::WorkerPtr &worker)
             case Icd::WorkerTrans::TimePeriodic:
                 d_comboBoxCode->setEnabled(false);
                 break;
-            default:
-                break;
             }
         });
     }
@@ -694,7 +692,7 @@ void ItemWidgetFrameCode::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_comboBoxCode->setCurrentText(QString("0x%1").arg((int)itemFrameCode->defaultValue(),
+    d_comboBoxCode->setCurrentText(QString("0x%1").arg(int(itemFrameCode->defaultValue()),
                                                        2, 16, QChar('0')).toUpper());
 }
 
@@ -723,7 +721,7 @@ bool ItemWidgetFrameCode::updateUi(const Icd::ItemPtr &data)
         d_comboBoxCode->addItem(QString::fromStdString(citer->second->name()), citer->first);
     }
     //
-    d_comboBoxCode->setCurrentText(QString("0x%1").arg((int)itemFrameCode->data(),
+    d_comboBoxCode->setCurrentText(QString("0x%1").arg(int(itemFrameCode->data()),
                                                        2, 16, QChar('0')).toUpper());
 
     return true;
@@ -739,37 +737,37 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
-    d_checkBoxLink = new QCheckBox(QStringLiteral("（原始数值与输出数值联动）"), this);
+    d_checkBoxLink = new QCheckBox(tr("(Linkage original and value)"), this);
     d_checkBoxLink->setFixedWidth(300);
     d_checkBoxLink->setCheckable(false);
     d_checkBoxLink->setChecked(true);   //FIXME
-    formLayout->addRow(QStringLiteral("数值关联："), d_checkBoxLink);
+    formLayout->addRow(tr("Relative data:"), d_checkBoxLink);
 
     d_sliderValue = new QSlider(this);
     d_sliderValue->setFixedWidth(300);
     d_sliderValue->setOrientation(Qt::Horizontal);
-    formLayout->addRow(QStringLiteral("原始数值："), d_sliderValue);
+    formLayout->addRow(tr("Original data:"), d_sliderValue);
 
     d_spinValue = new QDoubleSpinBox(this);
     d_spinValue->setFixedWidth(300);
     d_spinValue->setDecimals(DBL_DIG);
-    formLayout->addRow(QStringLiteral("原始数值："), d_spinValue);
+    formLayout->addRow(tr("Original data:"), d_spinValue);
 
     d_spinData = new QDoubleSpinBox(this);
     d_spinData->setFixedWidth(300);
     d_spinData->setDecimals(DBL_DIG);
     d_spinData->setEnabled(false);
-    formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
+    formLayout->addRow(tr("Output data:"), d_spinData);
 
     d_labelDesc = new QLabel(this);
-    formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
+    formLayout->addRow(tr("Describe:"), d_labelDesc);
     //
     connect(d_sliderValue, &QSlider::valueChanged, [=](int value){
         d_spinValue->setValue(value);
     });
     connect(d_spinValue, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             [=](double value){
-        d_sliderValue->setValue((int)value);
+        d_sliderValue->setValue(int(value));
     });
     auto setDataSuffix = [=](const Icd::NumericItemPtr &itemNumeric){
         QString suffix;
@@ -781,7 +779,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         case Icd::NumericI64:
         {
             qlonglong iData = qlonglong(data);
-            iData &= (1ll << ((int)itemNumeric->bufferSize() << 3)) - 1;
+            iData &= (1ll << (int(itemNumeric->bufferSize()) << 3)) - 1;
             suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
                                           16, QChar('0')).toUpper();
             break;
@@ -792,7 +790,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         case Icd::NumericU64:
         {
             qulonglong uData = qulonglong(data);
-            uData &= (1ull << ((int)itemNumeric->bufferSize() << 3)) - 1;
+            uData &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
             suffix = QString(" (%1)").arg(uData, int(itemNumeric->bufferSize() * 2),
                                           16, QChar('0')).toUpper();
             break;
@@ -815,7 +813,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         default:
         {
             qulonglong uData = qulonglong(data);
-            uData &= (1ui64 << ((int)itemNumeric->bufferSize() << 3)) - 1;
+            uData &= (1ui64 << (int(itemNumeric->bufferSize()) << 3)) - 1;
             suffix = QString(" (%1)").arg(uData, int(itemNumeric->bufferSize() * 2),
                                           16, QChar('0')).toUpper();
             break;
@@ -927,7 +925,7 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     //
     d_spinValue->setValue(itemNumeric->data());
     //
-    d_labelDesc->setText(QStringLiteral("比例：%1，偏移：%2，范围：%3，单位：%4，占用字节数：%5。")
+    d_labelDesc->setText(tr("Scale: %1, Offset: %2, Range: %3, Unit: %4, size: %5.")
                          .arg(itemNumeric->scale(), 0, 'g', 20)
                          .arg(itemNumeric->offset(), 0, 'g', 20)
                          .arg(QString::fromStdString(limit->toString()))
@@ -954,7 +952,7 @@ ItemWidgetArray::ItemWidgetArray(QWidget *parent)
     clientLayout()->setStretch(0, 0);
 
     d_labelDesc = new QLabel(this);
-    formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
+    formLayout->addRow(tr("Describe:"), d_labelDesc);
 
     connect(dataView_, &JUtralEdit::JView::textChanged, this, [=](){
         const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(dataItem());
@@ -1008,11 +1006,11 @@ bool ItemWidgetArray::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    QString text(QStringLiteral("占用字节数："));
+    QString text(tr("Size: "));
     text.append(QString::number(int(arrayItem->bufferSize())));
     const QString desc = QString::fromStdString(arrayItem->desc()).trimmed();
     if (!desc.isEmpty()) {
-        text.append(QStringLiteral("，描述：")).append(desc);
+        text.append(tr(", Describe: ")).append(desc);
     }
 
     return true;
@@ -1031,10 +1029,10 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
     d_spinData = new QDoubleSpinBox(this);
     d_spinData->setFixedWidth(300);
     d_spinData->setDecimals(0);
-    d_formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
+    d_formLayout->addRow(tr("Output data:"), d_spinData);
 
     d_labelDesc = new QLabel(this);
-    d_formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
+    d_formLayout->addRow(tr("Describe:"), d_labelDesc);
     //
     connect(d_spinData, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){
@@ -1044,8 +1042,8 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
             return;
         }
         //
-        const unsigned int data = (unsigned int)value & (itemBit->mask() >> itemBit->bitStart());
-        if (data != (unsigned int)value) {
+        const unsigned int data = static_cast<unsigned int>(value) & (itemBit->mask() >> itemBit->bitStart());
+        if (data != static_cast<unsigned int>(value)) {
             d_spinData->setValue(data);
             return;
         }
@@ -1062,20 +1060,20 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
         QString suffix;
         if (itemBit->bitCount() <= 8) {
             suffix = QString(" (%1, %2)")
-                    .arg((ushort)(unsigned char)data, 2, 16, QChar('0'))
-                    .arg((ushort)(unsigned char)data, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(ushort(static_cast<unsigned char>(data)), 2, 16, QChar('0'))
+                    .arg(ushort(static_cast<unsigned char>(data)), itemBit->bitCount(), 2, QChar('0'));
         } else if (itemBit->bitCount() <= 16) {
             suffix = QString(" (%1, %2)")
-                    .arg((ushort)data, 4, 16, QChar('0'))
-                    .arg((ushort)data, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(ushort(data), 4, 16, QChar('0'))
+                    .arg(ushort(data), itemBit->bitCount(), 2, QChar('0'));
         } else if (itemBit->bitCount() <= 32) {
             suffix = QString(" (%1, %2)")
-                    .arg((uint)value, 8, 16, QChar('0'))
-                    .arg((uint)value, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(uint(value), 8, 16, QChar('0'))
+                    .arg(uint(value), itemBit->bitCount(), 2, QChar('0'));
         } else {
             suffix = QString(" (%1, %2)")
-                    .arg((qulonglong)data, 16, 16, QChar('0'))
-                    .arg((qulonglong)data, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(qulonglong(data), 16, 16, QChar('0'))
+                    .arg(qulonglong(data), itemBit->bitCount(), 2, QChar('0'));
         }
         d_spinData->setSuffix(suffix.toUpper());
     });
@@ -1096,7 +1094,7 @@ void ItemWidgetBitMap::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    const quint32 defaultValue = (quint32)itemBit->defaultValue();
+    const quint32 defaultValue = quint32(itemBit->defaultValue());
     QMapIterator<int, QCheckBox *> citer(d_checkBoxes);
     while (citer.hasNext()) {
         citer.next();
@@ -1136,12 +1134,12 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
             continue;
         }
         QCheckBox *checkBox = new QCheckBox((name.isEmpty() ? "<?>" : name), this);
-        d_formLayout->insertRow(1, QStringLiteral("BIT%1：")
+        d_formLayout->insertRow(1, tr("BIT%1: ")
                                 .arg(i + itemBit->bitStart(), 2, 10, QChar('0')), checkBox);
         checkBox->setChecked(itemBit->testBit(i));
         d_checkBoxes[i] = checkBox;
         connect(checkBox, &QCheckBox::toggled, this, [=](bool checked){
-            quint32 value = (quint32)d_spinData->value();
+            quint32 value = quint32(d_spinData->value());
             if (checked) {
                 value |= (0x1UL << i);
             } else {
@@ -1153,7 +1151,7 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
     //
     d_spinData->setValue(itemBit->data());
     //
-    d_labelDesc->setText(QStringLiteral("起始位偏移：%1，终止位偏移：%2，位数：%3，占用字节数：%4。")
+    d_labelDesc->setText(tr("Start bit: %1, stop bit: %2, bits: %3, size: %4.")
                          .arg(itemBit->bitStart())
                          .arg(itemBit->bitStart() + itemBit->bitCount() - 1)
                          .arg(itemBit->bitCount())
@@ -1175,10 +1173,10 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
     d_spinData = new QDoubleSpinBox(this);
     d_spinData->setFixedWidth(300);
     d_spinData->setDecimals(0);
-    formLayout->addRow(QStringLiteral("输出数值："), d_spinData);
+    formLayout->addRow(tr("Output data:"), d_spinData);
 
     d_labelDesc = new QLabel(this);
-    formLayout->addRow(QStringLiteral("描述信息："), d_labelDesc);
+    formLayout->addRow(tr("Describe:"), d_labelDesc);
     //
     connect(d_spinData, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){
@@ -1193,20 +1191,20 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
         QString suffix;
         if (itemBit->bitCount() <= 8) {
             suffix = QString(" (%1, %2)")
-                    .arg((ushort)(unsigned char)value, 2, 16, QChar('0'))
-                    .arg((ushort)(unsigned char)value, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(ushort(static_cast<unsigned char>(value)), 2, 16, QChar('0'))
+                    .arg(ushort(static_cast<unsigned char>(value)), itemBit->bitCount(), 2, QChar('0'));
         } else if (itemBit->bitCount() <= 16) {
             suffix = QString(" (%1, %2)")
-                    .arg((ushort)value, 4, 16, QChar('0'))
-                    .arg((ushort)value, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(ushort(value), 4, 16, QChar('0'))
+                    .arg(ushort(value), itemBit->bitCount(), 2, QChar('0'));
         } else if (itemBit->bitCount() <= 32) {
             suffix = QString(" (%1, %2)")
-                    .arg((uint)value, 8, 16, QChar('0'))
-                    .arg((uint)value, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(uint(value), 8, 16, QChar('0'))
+                    .arg(uint(value), itemBit->bitCount(), 2, QChar('0'));
         } else {
             suffix = QString(" (%1, %2)")
-                    .arg((qulonglong)value, 16, 16, QChar('0'))
-                    .arg((qulonglong)value, itemBit->bitCount(), 2, QChar('0'));
+                    .arg(qulonglong(value), 16, 16, QChar('0'))
+                    .arg(qulonglong(value), itemBit->bitCount(), 2, QChar('0'));
         }
         d_spinData->setSuffix(suffix.toUpper());
     });
@@ -1250,7 +1248,7 @@ bool ItemWidgetBitValue::updateUi(const Icd::ItemPtr &data)
     d_spinData->setValue(itemBit->data());
 
     //
-    d_labelDesc->setText(QStringLiteral("起始位偏移：%1，终止位偏移：%2，位数：%3，占用字节数：%4。")
+    d_labelDesc->setText(tr("Start bit: %1, stop bit: %2, bits: %3, size: %4.")
                          .arg(itemBit->bitStart())
                          .arg(itemBit->bitStart() + itemBit->bitCount() - 1)
                          .arg(itemBit->bitCount())
@@ -1263,7 +1261,7 @@ bool ItemWidgetBitValue::updateUi(const Icd::ItemPtr &data)
 
 ItemWidgetComplex::ItemWidgetComplex(QWidget *parent)
     : DataItemWidget(ItemTypeComplex, parent)
-    , d_tableWidget(0)
+    , d_tableWidget(nullptr)
 {
 
 }

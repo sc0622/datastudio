@@ -157,16 +157,16 @@ double NumericItem::originalData() const
 
     double value = 0.0;
     switch (d->numericType) {
-    case NumericI8: value = *(icd_int8 *)buffer; break;
-    case NumericU8: value = *(icd_uint8 *)buffer; break;
-    case NumericI16: value = *(icd_int16 *)buffer; break;
-    case NumericU16: value = *(icd_uint16 *)buffer; break;
-    case NumericI32: value = *(icd_int32 *)buffer; break;
-    case NumericU32: value = *(icd_uint32 *)buffer; break;
-    case NumericI64: value = double(*(icd_int64 *)buffer); break;
-    case NumericU64: value = double(*(icd_uint64 *)buffer); break;
-    case NumericF32: value = *(icd_float32 *)buffer; break;
-    case NumericF64: value = *(icd_float64 *)buffer; break;
+    case NumericI8: value = *reinterpret_cast<const icd_int8*>(buffer); break;
+    case NumericU8: value = *reinterpret_cast<const icd_uint8*>(buffer); break;
+    case NumericI16: value = *reinterpret_cast<const icd_int16*>(buffer); break;
+    case NumericU16: value = *reinterpret_cast<const icd_uint16*>(buffer); break;
+    case NumericI32: value = *reinterpret_cast<const icd_int32*>(buffer); break;
+    case NumericU32: value = *reinterpret_cast<const icd_uint32*>(buffer); break;
+    case NumericI64: value = static_cast<double>(*reinterpret_cast<const icd_int64*>(buffer)); break;
+    case NumericU64: value = static_cast<double>(*reinterpret_cast<const icd_uint64*>(buffer)); break;
+    case NumericF32: value = static_cast<double>(*reinterpret_cast<const icd_float32*>(buffer)); break;
+    case NumericF64: value = *reinterpret_cast<const icd_float64*>(buffer); break;
     default: return 0.0;
     }
 
@@ -216,17 +216,17 @@ void NumericItem::setData(double data)
     value = (value - d->offset) / d->scale;
 
     switch (d->numericType) {
-    case NumericI8: *(icd_int8 *)buffer = (icd_int8)value; break;
-    case NumericU8: *(icd_uint8 *)buffer = (icd_uint8)value; break;
-    case NumericI16: *(icd_int16 *)buffer = (icd_int16)value; break;
-    case NumericU16: *(icd_uint16 *)buffer = (icd_uint16)value; break;
-    case NumericI32: *(icd_int32 *)buffer = (icd_int32)value; break;
-    case NumericU32: *(icd_uint32 *)buffer = (icd_uint32)value; break;
-    case NumericI64: *(icd_int64 *)buffer = (icd_int64)value; break;
-    case NumericU64: *(icd_uint64 *)buffer = (icd_uint64)value; break;
-    case NumericF32: *(icd_float32 *)buffer = (icd_float32)value; break;
-    case NumericF64: *(icd_float64 *)buffer = (icd_float64)value; break;
-    default: return;
+    case NumericI8: *reinterpret_cast<icd_int8*>(buffer) = static_cast<icd_int8>(value); break;
+    case NumericU8: *reinterpret_cast<icd_uint8*>(buffer)= static_cast<icd_uint8>(value); break;
+    case NumericI16: *reinterpret_cast<icd_int16*>(buffer) = static_cast<icd_int16>(value); break;
+    case NumericU16: *reinterpret_cast<icd_uint16*>(buffer) = static_cast<icd_uint16>(value); break;
+    case NumericI32: *reinterpret_cast<icd_int32*>(buffer) = static_cast<icd_int32>(value); break;
+    case NumericU32: *reinterpret_cast<icd_uint32*>(buffer) = static_cast<icd_uint32>(value); break;
+    case NumericI64: *reinterpret_cast<icd_int64*>(buffer) = static_cast<icd_int64>(value); break;
+    case NumericU64: *reinterpret_cast<icd_uint64*>(buffer) = static_cast<icd_uint64>(value); break;
+    case NumericF32: *reinterpret_cast<icd_float32*>(buffer) = static_cast<icd_float32>(value); break;
+    case NumericF64: *reinterpret_cast<icd_float64*>(buffer) = static_cast<icd_float64>(value); break;
+    default: break;
     }
 }
 
@@ -326,7 +326,7 @@ std::pair<double, double> NumericItem::dataRange() const
 {
     std::pair<double, double> range = std::make_pair<double, double>
             (-DBL_MAX, DBL_MAX);
-    const int typeSize = ((int)bufferSize() << 3);
+    const int typeSize = (static_cast<int>(bufferSize()) << 3);
 
     if (d->limit->leftInf()) {
         switch (d->numericType) {

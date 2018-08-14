@@ -2,4 +2,7 @@
     <qresource prefix="/icdparser/css">
         <file alias="generate_html.css">css/generate_html.css</file>
     </qresource>
+    <qresource prefix="/icdparser/lang">
+        <file alias="zh_CN.qm">lang/zh_CN.qm</file>
+    </qresource>
 </RCC>

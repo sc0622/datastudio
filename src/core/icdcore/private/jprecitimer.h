@@ -40,7 +40,7 @@ public:
     {
         LARGE_INTEGER lcount;
         QueryPerformanceCounter(&lcount);
-        return (lcount.QuadPart - q_ocount) * 1000000UL / q_freq;
+        return (lcount.QuadPart - q_count) * 1000000UL / q_freq;
     }
 
     // 返回从初始化到现在的时间间隔(ms)
@@ -48,12 +48,12 @@ public:
     {
         LARGE_INTEGER lcount;
         QueryPerformanceCounter(&lcount);
-        return (lcount.QuadPart - q_ocount) * 1000UL / q_freq;
+        return (lcount.QuadPart - q_count) * 1000UL / q_freq;
     }
 
 private:
     LONGLONG	q_freq;		// CPU频率
-    LONGLONG	q_ocount;	// 对象初始化时的时间
+    LONGLONG	q_count;	// 对象初始化时的时间
 };
 #else
 

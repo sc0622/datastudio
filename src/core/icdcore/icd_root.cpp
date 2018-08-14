@@ -68,7 +68,7 @@ void Root::insertVehicle(int index, const VehiclePtr &vehicle)
 
 void Root::removeVehicle(int index)
 {
-    if (index < 0 || index >= (int)d->vehicles.size()) {
+    if (index < 0 || index >= static_cast<int>(d->vehicles.size())) {
         return;     // overflow
     }
 
@@ -95,16 +95,16 @@ void Root::clearVehicle()
 
 int Root::vehicleCount() const
 {
-    return (int)d->vehicles.size();
+    return static_cast<int>(d->vehicles.size());
 }
 
 VehiclePtr Root::vehicleAt(int index) const
 {
     if (index < 0 || index >= int(d->vehicles.size())) {
-        return 0;
+        return VehiclePtr();
     }
 
-    return d->vehicles.at(index);
+    return d->vehicles.at(static_cast<size_t>(index));
 }
 
 VehiclePtr Root::vehicleByMark(const std::string &mark) const
@@ -117,7 +117,7 @@ VehiclePtr Root::vehicleByMark(const std::string &mark) const
         }
     }
 
-    return 0;
+    return VehiclePtr();
 }
 
 int Root::childCount() const
@@ -192,8 +192,6 @@ bool Root::restore(const Json::Value &json, int deep)
     if (!Object::restore(json, deep)) {
         return false;
     }
-
-    assert(deep <= Icd::ObjectItem);
 
     if (deep <= ObjectRoot) {
         return true;

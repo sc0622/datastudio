@@ -27,12 +27,12 @@ Icd::WorkerPtr ChannelWidget::selectedWorker() const
     Q_D(const ChannelWidget);
     int row = d->tableView->currentRow();
     if (row == -1) {
-        return 0;
+        return Icd::WorkerPtr();
     }
 
     WorkerLabel *label = qobject_cast<WorkerLabel *>(d->tableView->cellWidget(row, 0));
     if (!label) {
-        return Icd::WorkerPtr(0);
+        return Icd::WorkerPtr();
     }
 
     return label->worker();
@@ -136,7 +136,7 @@ bool ChannelWidget::eventFilter(QObject *watcher, QEvent *event)
                 return true;
             }
 
-            QDropEvent *dropEvent = ((QDropEvent *)event);
+            QDropEvent *dropEvent = static_cast<QDropEvent*>(event);
             const QMimeData *mime = dropEvent->mimeData();
             QByteArray encodeData = mime->data("application/x-qabstractitemmodeldatalist");
             if (encodeData.isEmpty()) {

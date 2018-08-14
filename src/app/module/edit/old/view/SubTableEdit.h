@@ -24,7 +24,7 @@ protected:
     bool init() override;
     void enableConnect(bool enabled) override;
     bool confirm() override;
-    bool validate();
+    bool validate() override;
     void *nonData() override;
     void *nonOldData() override;
     bool setData(const _UIData &data) override;

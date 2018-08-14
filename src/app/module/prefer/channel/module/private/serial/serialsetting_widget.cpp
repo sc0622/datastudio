@@ -12,7 +12,7 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox *groupBox = new QGroupBox(QStringLiteral("串口设置"), this);
+    QGroupBox *groupBox = new QGroupBox(tr("Serial settings"), this);
     vertLayoutMain->addWidget(groupBox);
 
     QVBoxLayout *vertLayoutGroupBox = new QVBoxLayout(groupBox);
@@ -24,34 +24,34 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
     d_comboBoxPortName = new QComboBox(this);
     d_comboBoxPortName->setEditable(true);
     d_comboBoxPortName->lineEdit()->setValidator(new QRegExpValidator(QRegExp("COM[\\d]{1,3}")));
-    formLayout->addRow(QStringLiteral("端口名："), d_comboBoxPortName);
+    formLayout->addRow(tr("Port name:"), d_comboBoxPortName);
 
     d_comboBoxBaudRate = new QComboBox(this);
     d_comboBoxBaudRate->setEditable(true);
     d_comboBoxBaudRate->setAutoCompletion(false);
     d_comboBoxBaudRate->setValidator(new QIntValidator(d_comboBoxBaudRate));
-    formLayout->addRow(QStringLiteral("波特率："), d_comboBoxBaudRate);
+    formLayout->addRow(tr("Baud rate:"), d_comboBoxBaudRate);
 
     d_comboBoxDataBits = new QComboBox(this);
-    formLayout->addRow(QStringLiteral("数据位："), d_comboBoxDataBits);
+    formLayout->addRow(tr("Data bits:"), d_comboBoxDataBits);
 
     d_comboBoxStopBits = new QComboBox(this);
-    formLayout->addRow(QStringLiteral("停止位："), d_comboBoxStopBits);
+    formLayout->addRow(tr("Stop bits:"), d_comboBoxStopBits);
 
     d_comboBoxParity = new QComboBox(this);
-    formLayout->addRow(QStringLiteral("校验位："), d_comboBoxParity);
+    formLayout->addRow(tr("Parity:"), d_comboBoxParity);
 
     d_editName = new QLineEdit(this);
-    formLayout->addRow(QStringLiteral("通道名称："), d_editName);
+    formLayout->addRow(tr("Name of channel:"), d_editName);
 
     QHBoxLayout *horiLayoutRelayer = new QHBoxLayout();
     horiLayoutRelayer->setSpacing(0);
-    formLayout->addRow(QStringLiteral("转发通道："), horiLayoutRelayer);
+    formLayout->addRow(tr("Relayer channel:"), horiLayoutRelayer);
 
     d_editRelayer = new QLineEdit(this);
     horiLayoutRelayer->addWidget(d_editRelayer);
 
-    QPushButton *buttonRelayer = new QPushButton(QStringLiteral("..."), this);
+    QPushButton *buttonRelayer = new QPushButton("...", this);
     buttonRelayer->setFixedSize(d_editRelayer->sizeHint().height() + 5, d_editRelayer->sizeHint().height());
     buttonRelayer->setStyleSheet("border-radius: 1px;");
     horiLayoutRelayer->addWidget(buttonRelayer);
@@ -63,13 +63,13 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
 
     horiLayoutButtons->addStretch();
 
-    d_buttonRestore = new QPushButton(QStringLiteral("恢复"), this);
+    d_buttonRestore = new QPushButton(tr("Restore"), this);
     d_buttonRestore->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonRestore);
 
     horiLayoutButtons->addSpacing(10);
 
-    d_buttonApply = new QPushButton(QStringLiteral("应用"), this);
+    d_buttonApply = new QPushButton(tr("Apply"), this);
     d_buttonApply->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonApply);
 
@@ -115,11 +115,11 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
     d_comboBoxStopBits->addItem("1.5");
     d_comboBoxStopBits->addItem("2");
     // Parity
-    d_comboBoxParity->addItem(QStringLiteral("无"));
-    d_comboBoxParity->addItem(QStringLiteral("Odd（奇校验）"));
-    d_comboBoxParity->addItem(QStringLiteral("Even（偶校验）"));
-    d_comboBoxParity->addItem(QStringLiteral("Space"));
-    d_comboBoxParity->addItem(QStringLiteral("Mark"));
+    d_comboBoxParity->addItem(tr("None"));
+    d_comboBoxParity->addItem(tr("Odd"));
+    d_comboBoxParity->addItem(tr("Even"));
+    d_comboBoxParity->addItem(tr("Space"));
+    d_comboBoxParity->addItem(tr("Mark"));
 
     //
     auto enableButtons = [=](bool enabled){
@@ -181,8 +181,8 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
         }
         //
         if (channel->isOpen()) {
-            const QString message = QStringLiteral("[%1]通道已打开，不能修改属性！");
-            QMessageBox::warning(this, QStringLiteral("警告"),
+            const QString message = tr("Channel \"%1\" has been opened, can't modify!");
+            QMessageBox::warning(this, tr("Warning"),
                                  message.arg(QString::fromStdString(channel->name())));
             return;
         }
@@ -249,7 +249,7 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
         Icd::WorkerPtr relayer = d_worker->relayer();
         const QString relayerName = d_editRelayer->text();
         if (relayerName.isEmpty()) {
-            relayer = Icd::WorkerPtr(0);
+            relayer = Icd::WorkerPtr();
         } else {
             QString relayerIdentity = d_editRelayer->property("relayer").toString();
             if (relayerIdentity.isEmpty()) {
@@ -266,7 +266,7 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
                 if (worker && worker != d_worker) {
                     relayer = worker;
                 } else {
-                    relayer = Icd::WorkerPtr(0);
+                    relayer = Icd::WorkerPtr();
                 }
             }
         }

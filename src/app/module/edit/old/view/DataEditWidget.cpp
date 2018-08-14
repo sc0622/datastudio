@@ -44,7 +44,7 @@ DataEditWidget::DataEditWidget(QWidget *parent)
                            vehicleName_);
     tableView_->setSortingEnabled(false);
     tableView_->setContextMenuPolicy(Qt::CustomContextMenu);
-    actionPast_ = new QAction(QStringLiteral("Õ³Ìù"), tableView_);
+    actionPast_ = new QAction(tr("Past"), tableView_);
     tableView_->addAction(actionPast_);
     splitterMain_->addWidget(tableView_);
 
@@ -65,7 +65,7 @@ DataEditWidget::DataEditWidget(QWidget *parent)
 
     enableConnection(true);
 
-    // Ä¬ÈÏÒş²Ø
+    // é»˜è®¤éšè—
     loggingWidget_->setVisible(false);
 
     //
@@ -114,20 +114,20 @@ bool DataEditWidget::init()
     return true;
 }
 
-// ³õÊ¼»¯½çÃæ
+// åˆå§‹åŒ–ç•Œé¢
 void DataEditWidget::initUI(int type, void *data)
 {
     if (!data) {
         return;
     }
 
-    // É¾³ıÉÏ´ÎÊı¾İ
+    // åˆ é™¤ä¸Šæ¬¡æ•°æ®
     if (GlobalDefine::ntUnknown == dataType_) {
         data_.reset();
     } else {
         vData_.clear();
     }
-    // ÖØÖÃ±ä¸üÏî
+    // é‡ç½®å˜æ›´é¡¹
     changedPos = -1;
 
     dataType_ = type;
@@ -140,27 +140,27 @@ void DataEditWidget::initUI(int type, void *data)
     setActionEnabled("up", false);
     setActionEnabled("down", false);
     setActionEnabled("file", true);
-    // ²éÑ¯Êı¾İÊÇ·ñÓĞ±ä¸ü
+    // æŸ¥è¯¢æ•°æ®æ˜¯å¦æœ‰å˜æ›´
     int dataState = 0;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&dataState));
+    args.append(qVariantFromValue(static_cast<void*>(&dataState)));
     QString command("nodeState");
-    args.append(qVariantFromValue((void*)&command));
+    args.append(qVariantFromValue(static_cast<void*>(&command)));
     jnotify->send("edit.queryNodeFlag", args);
 
     setActionEnabled("db", dataState);
 
-    tableView_->verticalHeader()->setSectionsMovable(true);    // Ä¬ÈÏ¿ÉÒÔ½»»»Êı¾İÏîÎ»ÖÃ
-    //q_table->setSortingEnabled(true);   // Ä¬ÈÏÆôÓÃÅÅĞò¹¦ÄÜ
-    tableView_->setProperty("copyData", -1);   // ÖØÖÃ¿½±´Êı¾İÊôĞÔ
+    tableView_->verticalHeader()->setSectionsMovable(true);    // é»˜è®¤å¯ä»¥äº¤æ¢æ•°æ®é¡¹ä½ç½®
+    //q_table->setSortingEnabled(true);   // é»˜è®¤å¯ç”¨æ’åºåŠŸèƒ½
+    tableView_->setProperty("copyData", -1);   // é‡ç½®æ‹·è´æ•°æ®å±æ€§
 
-    // ³õÊ¼»¯Êı¾İ¹ı³ÌÖĞ¶Ï¿ª±íĞÅºÅ²Û
+    // åˆå§‹åŒ–æ•°æ®è¿‡ç¨‹ä¸­æ–­å¼€è¡¨ä¿¡å·æ§½
     enableConnection(false);
     if (GlobalDefine::ntUnknown == type) {
         vData_ = *reinterpret_cast<std::vector<ICDElement::smtElement> *>(data);
-        const int count = vData_.size();
+        const size_t count = vData_.size();
         std::vector<PlaneNode::smtPlane> planes;
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             planes.push_back(std::dynamic_pointer_cast<PlaneNode>(vData_[i])->clone());
         }
         showData(planes);
@@ -168,7 +168,7 @@ void DataEditWidget::initUI(int type, void *data)
     } else if (type == GlobalDefine::ntVehicle) {
         ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
         PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(element);
-        auto &systems = plane->allSystem();
+        const auto &systems = plane->allSystem();
         foreach (const auto &system, systems) {
             vData_.push_back(system);
         }
@@ -214,25 +214,25 @@ void DataEditWidget::initUI(int type, void *data)
                 }
             }
         }
-        // µ¥¶ÀµÄ¹æÔò½çÃæ£¬½ûÓÃ±£´æ
+        // å•ç‹¬çš„è§„åˆ™ç•Œé¢ï¼Œç¦ç”¨ä¿å­˜
         setActionEnabled("db", false);
         setActionEnabled("file", false);
     }
-    // ³õÊ¼Íê³ÉÖØĞÂÆôÓÃ±íĞÅºÅ²Û
+    // åˆå§‹å®Œæˆé‡æ–°å¯ç”¨è¡¨ä¿¡å·æ§½
     enableConnection(true);
-    // ³õÊ¼»¯Íê³É£¬¸üĞÂ½çÃæÌáÊ¾ĞÅÏ¢
+    // åˆå§‹åŒ–å®Œæˆï¼Œæ›´æ–°ç•Œé¢æç¤ºä¿¡æ¯
     if (type == GlobalDefine::ntTable) {
         int loaded = 0;
         args.clear();
-        args.append(qVariantFromValue((void*)&loaded));
+        args.append(qVariantFromValue(static_cast<void*>(&loaded)));
         command = "loadedState";
-        args.append(qVariantFromValue((void*)&command));
+        args.append(qVariantFromValue(static_cast<void*>(&command)));
         jnotify->send("edit.queryNodeFlag", args);
 
         if (Qt::Unchecked == loaded) {
-            editStatus_->setText(QStringLiteral("ÉĞÎ´¼ÓÔØÊı¾İ£¬²»ÄÜ½øĞĞ²Ù×÷"));
+            editStatus_->setText(tr("Not loaded yet and cannot unable to operate"));
             editStatus_->setHidden(loaded);
-            // ¸üĞÂ°´Å¥×´Ì¬
+            // æ›´æ–°æŒ‰é’®çŠ¶æ€
             setActionEnabled("add", loaded);
             setActionEnabled("insert", loaded);
         } else {
@@ -243,34 +243,34 @@ void DataEditWidget::initUI(int type, void *data)
     }
 }
 
-// Ö÷¶¯³õÊ¼»¯
+// ä¸»åŠ¨åˆå§‹åŒ–
 void DataEditWidget::reInit()
 {
     void *data = nullptr;
     std::vector<int> rule;
     ICDElement::smtElement element;
     std::vector<ICDElement::smtElement> elements;
-    // ²éÑ¯Ô­Ê¼Êı¾İÖØĞÂ³õÊ¼»¯±í
+    // æŸ¥è¯¢åŸå§‹æ•°æ®é‡æ–°åˆå§‹åŒ–è¡¨
     if (GlobalDefine::ntUnknown == dataType_) {
         PlaneNode::planeVector planes;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&planes));
+        args.append(qVariantFromValue(static_cast<void*>(&planes)));
         jnotify->send("edit.queryAllPlane", args);
 
-        const int count = planes.size();
-        for (int i = 0; i < count; ++i) {
+        const size_t count = planes.size();
+        for (size_t i = 0; i < count; ++i) {
             elements.push_back(planes[i]);
         }
         data = &elements;
     } else {
         QVariantList args;
-        args.append(qVariantFromValue((void*)&element));
+        args.append(qVariantFromValue(static_cast<void*>(&element)));
         QString lParam;
-        args.append(qVariantFromValue((void*)&lParam));
+        args.append(qVariantFromValue(static_cast<void*>(&lParam)));
         jnotify->send("edit.queryNodeData", args);
         if (GlobalDefine::ntRule == dataType_) {
             rule.push_back(subType_);
-            rule.push_back((int)&element);
+            rule.push_back(int(&element));
             data = &rule;
         } else {
             data = &element;
@@ -279,12 +279,12 @@ void DataEditWidget::reInit()
     initUI(dataType_, data);
 }
 
-// ²éÑ¯µ±Ç°ÏÔÊ¾±íÊı¾İĞÅÏ¢
+// æŸ¥è¯¢å½“å‰æ˜¾ç¤ºè¡¨æ•°æ®ä¿¡æ¯
 int DataEditWidget::queryTableInformation(const QString &type) const
 {
     int result = 0;
     ICDElement::smtElement element;
-    // ²éÑ¯¶¥²ã±í
+    // æŸ¥è¯¢é¡¶å±‚è¡¨
     QString key;
     QString cmd = "queryNodeData@ICDNavigation";
     //    if (GlobalDefine::ntTable == q_dataType
@@ -298,8 +298,8 @@ int DataEditWidget::queryTableInformation(const QString &type) const
         }
     }
     QVariantList args;
-    args.append(qVariantFromValue((void*)&element));
-    args.append(qVariantFromValue((void*)&key));
+    args.append(qVariantFromValue(static_cast<void*>(&element)));
+    args.append(qVariantFromValue(static_cast<void*>(&key)));
     jnotify->send("edit." + cmd, args);
 
     TableNode::smtTable table = SMT_CONVERT(TableNode, element);
@@ -307,20 +307,20 @@ int DataEditWidget::queryTableInformation(const QString &type) const
         return result;
     }
 
-    if (type == "total") {  // ×Ü³¤¶È
+    if (type == "total") {  // æ€»é•¿åº¦
         if (table->lengthCheck()) {
             result = table->icdBase().nLength;
         } else {
             result = table->length();
         }
-    } else if (type == "used") {    // ÒÑÊ¹ÓÃ
+    } else if (type == "used") {    // å·²ä½¿ç”¨
         result = table->length();
-    } else if (type == "remains") { // Ê£Óà
+    } else if (type == "remains") { // å‰©ä½™
         if (table->lengthCheck()) {
             result = table->icdBase().nLength;
             result -= table->length();
         }
-    } else if (type == "lengthCheck") { // Ê£Óà
+    } else if (type == "lengthCheck") { // å‰©ä½™
         result = table->lengthCheck();
     } else {
     }
@@ -328,25 +328,25 @@ int DataEditWidget::queryTableInformation(const QString &type) const
     return result;
 }
 
-// ²éÑ¯ÒÑ´æÔÚ±íÖĞµÄÊı¾İ
+// æŸ¥è¯¢å·²å­˜åœ¨è¡¨ä¸­çš„æ•°æ®
 QMap<QString, QString> DataEditWidget::queryExistedData(const QString &section) const
 {
     QMap<QString, QString> result;
     if (GlobalDefine::ntRule == dataType_
             && !(GlobalDefine::dtComplex == subType_
                  || GlobalDefine::dtFrame == subType_)) {
-        // ·Ç¸´ºÏ/Ö¡¹æÔòÊı¾İ£¬²éÑ¯¸¸±í
+        // éå¤åˆ/å¸§è§„åˆ™æ•°æ®ï¼ŒæŸ¥è¯¢çˆ¶è¡¨
         QString keys;
         ICDElement::smtElement element;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&keys));
+        args.append(qVariantFromValue(static_cast<void*>(&keys)));
         jnotify->send("edit.queryNodeKeys", args);
-        // ¹Ø¼üÂë¼¯ÖĞ°üº¬¸Ãµ±Ç°¹æÔòÊı¾İid£¬²éÑ¯¸¸±íĞè½«ÆäÉ¾³ı
+        // å…³é”®ç é›†ä¸­åŒ…å«è¯¥å½“å‰è§„åˆ™æ•°æ®idï¼ŒæŸ¥è¯¢çˆ¶è¡¨éœ€å°†å…¶åˆ é™¤
         keys.truncate(keys.lastIndexOf("/"));
 
         args.clear();
-        args.append(qVariantFromValue((void*)&element));
-        args.append(qVariantFromValue((void*)&keys));
+        args.append(qVariantFromValue(static_cast<void*>(&element)));
+        args.append(qVariantFromValue(static_cast<void*>(&keys)));
         jnotify->send("edit.querySingleElement", args);
 
         TableNode::smtTable table = SMT_CONVERT(TableNode, element);
@@ -354,7 +354,7 @@ QMap<QString, QString> DataEditWidget::queryExistedData(const QString &section) 
             return result;
         }
         QString value;
-        ICDMetaData::smtMeta meta = 0;
+        ICDMetaData::smtMeta meta = nullptr;
         ICDMetaData::ruleMap rules = table->allRule();
         ICDMetaData::ruleMap::const_iterator it = rules.begin();
         for (; it != rules.end(); ++it) {
@@ -394,7 +394,7 @@ QMap<QString, QString> DataEditWidget::queryExistedData(const QString &section) 
     return result;
 }
 
-// ²éÑ¯Ö¡Êı¾İ
+// æŸ¥è¯¢å¸§æ•°æ®
 QMap<int, QString> DataEditWidget::queryFrameData(const QString &type) const
 {
     QMap<int, QString> result;
@@ -402,9 +402,9 @@ QMap<int, QString> DataEditWidget::queryFrameData(const QString &type) const
     if (!table) {
         return result;
     }
-    QVector<int> used;  // ÒÑ¾­Ê¹ÓÃ
-    ICDMetaData::smtMeta meta = 0;
-    ICDFrameCodeData::smtFrameCode frameCode = 0;
+    QVector<int> used;  // å·²ç»ä½¿ç”¨
+    ICDMetaData::smtMeta meta = nullptr;
+    ICDFrameCodeData::smtFrameCode frameCode = nullptr;
     ICDMetaData::ruleMap rules = table->allRule();
     ICDMetaData::ruleMap::const_iterator it = rules.begin();
     for (; it != rules.end(); ++it) {
@@ -412,17 +412,18 @@ QMap<int, QString> DataEditWidget::queryFrameData(const QString &type) const
             continue;
         }
         if (GlobalDefine::dtFrame == meta->type()) {
-            // Ö¡Êı¾İ
+            // å¸§æ•°æ®
             result[meta->serial()] = QString::fromStdString(meta->name());
         } else if (GlobalDefine::dtFrameCode == meta->type()) {
-            // Ö¡Ê¶±ğÂë
-            if (frameCode = SMT_CONVERT(ICDFrameCodeData, meta)) {
+            // å¸§è¯†åˆ«ç 
+            frameCode = SMT_CONVERT(ICDFrameCodeData, meta);
+            if (frameCode) {
                 used.push_back(frameCode->bindingSerial());
             }
         }
     }
 
-    if (type == "idle") {   // ²éÑ¯Ê£Óà¿ÉÓÃµÄ£¬É¾³ıÒÑÊ¹ÓÃµÄ
+    if (type == "idle") {   // æŸ¥è¯¢å‰©ä½™å¯ç”¨çš„ï¼Œåˆ é™¤å·²ä½¿ç”¨çš„
         QVectorIterator<int> it = used;
         while (it.hasNext()) {
             result.remove(it.next());
@@ -432,7 +433,7 @@ QMap<int, QString> DataEditWidget::queryFrameData(const QString &type) const
     return result;
 }
 
-// Ìî³äbitÀàĞÍÊı¾İµÄÆğÊ¼×Ö½ÚºÅ
+// å¡«å……bitç±»å‹æ•°æ®çš„èµ·å§‹å­—èŠ‚å·
 void DataEditWidget::fillBitIndex(ICDMetaData::smtMeta &meta)
 {
     TableNode::smtTable table = parentTable();
@@ -443,35 +444,35 @@ void DataEditWidget::fillBitIndex(ICDMetaData::smtMeta &meta)
     ICDMetaData::smtMeta metaPre = table->rule(meta->serial() - 1);
     ICDBitData::smtBit bitOriginal = SMT_CONVERT(ICDBitData, meta);
     if (metaPre) {
-        if (!bitOriginal) { // ÓÉbit¸ÄÎª·ÇbitĞÍÊı¾İ
-            // ²éÑ¯¹æÔò±í£¬È·¶¨×Ö½ÚĞòºÅ
+        if (!bitOriginal) { // ç”±bitæ”¹ä¸ºébitå‹æ•°æ®
+            // æŸ¥è¯¢è§„åˆ™è¡¨ï¼Œç¡®å®šå­—èŠ‚åºå·
             index = metaPre->index() + metaPre->byteLength();
-        } else {    // ÅĞ¶¨ÊÇ·ñÄÜ¹»ºÏ²¢
-            // ²éÑ¯Ç°Ò»ÏîÊı¾İ
+        } else {    // åˆ¤å®šæ˜¯å¦èƒ½å¤Ÿåˆå¹¶
+            // æŸ¥è¯¢å‰ä¸€é¡¹æ•°æ®
             ICDBitData::smtBit bitPre = SMT_CONVERT(ICDBitData, metaPre);
-            if (bitPre) {   // ÅĞ¶¨ÄÜ·ñÏòÇ°ºÏ²¢
-                // µ±Ç°Êı¾İµÄÆğÊ¼Î»ÔÚÇ°ÏîÊı¾İµÄ½áÊøÎ»Ö®ºó
+            if (bitPre) {   // åˆ¤å®šèƒ½å¦å‘å‰åˆå¹¶
+                // å½“å‰æ•°æ®çš„èµ·å§‹ä½åœ¨å‰é¡¹æ•°æ®çš„ç»“æŸä½ä¹‹å
                 if (bitPre->end() < bitOriginal->start()) {
-                    // ¿ÉÒÔÏòÇ°ºÏ²¢
+                    // å¯ä»¥å‘å‰åˆå¹¶
                     index = bitPre->index() - bitPre->start() / 8 + bitOriginal->start() / 8;
-                } else {    // ²»ÄÜºÏ²¢
+                } else {    // ä¸èƒ½åˆå¹¶
                     index = bitPre->index() + bitPre->byteLength();
-                    index += bitOriginal->start() / 8;  // Æ«ÒÆ×Ö½Ú
+                    index += bitOriginal->start() / 8;  // åç§»å­—èŠ‚
                 }
-            } else {    // ²»ÄÜºÏ²¢
+            } else {    // ä¸èƒ½åˆå¹¶
                 index = metaPre->index() + metaPre->byteLength();
-                index += bitOriginal->start() / 8;  // Æ«ÒÆ×Ö½Ú
+                index += bitOriginal->start() / 8;  // åç§»å­—èŠ‚
             }
         }
-    } else {    // µÚÒ»ÏîÊı¾İ
+    } else {    // ç¬¬ä¸€é¡¹æ•°æ®
         if (bitOriginal) {
-            index = bitOriginal->start() / 8;   // Æ«ÒÆ×Ö½Ú
+            index = bitOriginal->start() / 8;   // åç§»å­—èŠ‚
         }
     }
     meta->setIndex(index);
 }
 
-// ²éÑ¯Êı¾İ³¤¶ÈÆ«ÒÆÁ¿
+// æŸ¥è¯¢æ•°æ®é•¿åº¦åç§»é‡
 int DataEditWidget::queryOffset(const ICDMetaData::smtMeta &meta) const
 {
     int result = 0;
@@ -482,44 +483,44 @@ int DataEditWidget::queryOffset(const ICDMetaData::smtMeta &meta) const
     if (!table) {
         return result;
     }
-    // ¼ÆËãÔ­Ê¼³¤¶ÈºÍ±à¼­Êı¾İ³¤¶È²î
+    // è®¡ç®—åŸå§‹é•¿åº¦å’Œç¼–è¾‘æ•°æ®é•¿åº¦å·®
     if (!canMerged(meta)) {
         if (-1 != newIndex_ && tableView_->currentRow() == newIndex_) {
-            // ĞÂÔö
+            // æ–°å¢
             ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, meta);
             if (bit) {
                 result = bit->rangeLength();
             } else {
                 result = meta->byteLength();
             }
-        } else {    // ±à¼­
+        } else {    // ç¼–è¾‘
             result = meta->index() + meta->byteLength();
             ICDMetaData::smtMeta next = table->rule(meta->serial() + 1);
-            if (next) { // ÖĞ¼äÊı¾İ
-                // ¼ÆËãµ½ÏÂÒ»Êı¾İµÄ²î
+            if (next) { // ä¸­é—´æ•°æ®
+                // è®¡ç®—åˆ°ä¸‹ä¸€æ•°æ®çš„å·®
                 result -= next->index();
-            } else { // ×îºóÒ»ÏîÊı¾İ
+            } else { // æœ€åä¸€é¡¹æ•°æ®
                 ICDMetaData::smtMeta old = table->rule(meta->serial());
                 if (old) {
-                    // ¼ÆËãÊı¾İ³¤¶È²î
+                    // è®¡ç®—æ•°æ®é•¿åº¦å·®
                     result -= (old->index() + old->byteLength());
                 }
             }
         }
     } else {
-        if (-1 == newIndex_) { // ±à¼­
+        if (-1 == newIndex_) { // ç¼–è¾‘
             result = meta->index();
             ICDMetaData::smtMeta old = table->rule(meta->serial());
             ICDMetaData::smtMeta next = table->rule(meta->serial() + 1);
             if (old) {
-                if (next) { // ÖĞ¼äÊı¾İ
-                    // ¼ÆËãµ½ÏÂÒ»Êı¾İµÄ²î
+                if (next) { // ä¸­é—´æ•°æ®
+                    // è®¡ç®—åˆ°ä¸‹ä¸€æ•°æ®çš„å·®
                     result -= next->index();
-                } else { // ×îºóÒ»ÏîÊı¾İ
+                } else { // æœ€åä¸€é¡¹æ•°æ®
                     result -= old->index();
                 }
             }
-        } else {    // ĞÂÔö
+        } else {    // æ–°å¢
             result = meta->byteLength() - 1;
         }
     }
@@ -527,7 +528,7 @@ int DataEditWidget::queryOffset(const ICDMetaData::smtMeta &meta) const
     return result;
 }
 
-// ²éÑ¯½çÃæ¿Ø¼ş×´Ì¬
+// æŸ¥è¯¢ç•Œé¢æ§ä»¶çŠ¶æ€
 bool DataEditWidget::queryWidgetState(const QString &name) const
 {
     bool result = false;
@@ -540,7 +541,7 @@ bool DataEditWidget::queryWidgetState(const QString &name) const
     return result;
 }
 
-// ´¦ÀíÀ´×ÔÆäËûÄ£¿éµÄÃüÁî
+// å¤„ç†æ¥è‡ªå…¶ä»–æ¨¡å—çš„å‘½ä»¤
 void DataEditWidget::dealCommand(int command, const QVariant &param)
 {
     switch (command) {
@@ -555,74 +556,74 @@ void DataEditWidget::dealCommand(int command, const QVariant &param)
     }
 }
 
-// ¼ÓÔØÏÔÊ¾»úĞÍ
+// åŠ è½½æ˜¾ç¤ºæœºå‹
 void DataEditWidget::showData(const PlaneNode::planeVector &planes)
 {
-    if (NULL == tableView_) {
+    if (nullptr == tableView_) {
         return;
     }
     if (tableView_->tableName() != vehicleName_) {
         tableView_->setTableName(vehicleName_);
     }
     tableView_->clearContents();
-    const int count = planes.size();
-    for (int row = 0; row < count; ++row) {
-        updateOne(row, planes[row], optNew);
+    const size_t count = planes.size();
+    for (size_t row = 0; row < count; ++row) {
+        updateOne(int(row), planes[row], optNew);
     }
     setActionEnabled("clean", count > 0);
 }
 
-// ¼ÓÔØÏÔÊ¾ÏµÍ³
+// åŠ è½½æ˜¾ç¤ºç³»ç»Ÿ
 void DataEditWidget::showData(const SystemNode::systemVector &systems)
 {
-    if (NULL == tableView_) {
+    if (nullptr == tableView_) {
         return;
     }
     if (tableView_->tableName() != systemName_) {
         tableView_->setTableName(systemName_);
     }
     tableView_->clearContents();
-    const int count = systems.size();
-    for (int i = 0; i < count; ++i) {
-        updateOne(i, systems[i], optNew);
+    const size_t count = systems.size();
+    for (size_t i = 0; i < count; ++i) {
+        updateOne(int(i), systems[i], optNew);
     }
     setActionEnabled("clean", count > 0);
 }
 
-// ¼ÓÔØÏÔÊ¾ICD±í
+// åŠ è½½æ˜¾ç¤ºICDè¡¨
 void DataEditWidget::showData(const TableNode::tableVector &tables)
 {
-    if (NULL == tableView_) {
+    if (nullptr == tableView_) {
         return;
     }
     if (tableView_->tableName() != tableName_) {
         tableView_->setTableName(tableName_);
     }
     tableView_->clearContents();
-    const int count = tables.size();
-    TableNode::smtTable item = 0;
-    for (int i = 0, row = 0; i < count; ++i) {
+    const size_t count = tables.size();
+    TableNode::smtTable item = nullptr;
+    for (size_t i = 0, row = 0; i < count; ++i) {
         if (!(item = tables[i])) {
             continue;
         }
-        updateOne(row++, item, optNew);
+        updateOne(int(row++), item, optNew);
     }
     setActionEnabled("clean", tables.size() > 0);
 }
 
-// ¼ÓÔØÏÔÊ¾¹æÔò
+// åŠ è½½æ˜¾ç¤ºè§„åˆ™
 void DataEditWidget::showData(const ICDMetaData::ruleMap &rules)
 {
-    if (NULL == tableView_) {
+    if (nullptr == tableView_) {
         return;
     }
     if (tableView_->tableName() != ruleName_) {
         tableView_->setTableName(ruleName_);
     }
     tableView_->clearContents();
-    // JXmlTableÄÚ²¿ÉĞÎ´ÊµÏÖmapToSource¹¦ÄÜ£¬ÔİÊ±½ûÓÃÅÅĞò
+    // JXmlTableå†…éƒ¨å°šæœªå®ç°mapToSourceåŠŸèƒ½ï¼Œæš‚æ—¶ç¦ç”¨æ’åº
     //q_table->setSortingEnabled(false);
-    // Çå¿ÕÊı¾İÊ±£¬Òş²ØÌáÊ¾
+    // æ¸…ç©ºæ•°æ®æ—¶ï¼Œéšè—æç¤º
     setTipsVisible(false);
     ICDMetaData::ruleMap::const_iterator it = rules.begin();
     for (int row = 0; it != rules.end(); ++it) {
@@ -633,42 +634,42 @@ void DataEditWidget::showData(const ICDMetaData::ruleMap &rules)
         updateOne(row++, item, optNew);
     }
     setActionEnabled("clean", rules.size() > 0);
-    // ÏÔÊ¾ÌáÊ¾ĞÅÏ¢
+    // æ˜¾ç¤ºæç¤ºä¿¡æ¯
     if (rules.empty()) {
         setTipsVisible(true);
     }
 }
 
-// ¹æÔòÊı¾İÏî
+// è§„åˆ™æ•°æ®é¡¹
 void DataEditWidget::showData(const ICDMetaData::smtMeta &data)
 {
     setTipsVisible(false);
-    if (GlobalDefine::dtFrame == data->type()) {  // Ö¡Êı¾İ
+    if (GlobalDefine::dtFrame == data->type()) {  // å¸§æ•°æ®
         if (tableView_->tableName() != frameName_) {
             tableView_->setTableName(frameName_);
         }
         tableView_->clearContents();
         ICDComplexData::smtComplex complex = std::dynamic_pointer_cast<ICDComplexData>(data);
-        // °´ÂëÅÅĞò
+        // æŒ‰ç æ’åº
         TableNode::tableVector subTable = complex->allTable();
-        const int count = subTable.size();
-        TableNode::smtTable subData = 0;
-        for (int i = 0; i < count; ++i) {
+        const size_t count = subTable.size();
+        TableNode::smtTable subData = nullptr;
+        for (size_t i = 0; i < count; ++i) {
             if (!(subData = subTable[i])) {
                 continue;
             }
             stICDBase base = subData->icdBase();
-            updateSubOne(i, base, optNew);
+            updateSubOne(int(i), base, optNew);
         }
         setActionEnabled("clean", subTable.size() > 0);
     } else {
-        // ¾ßÌå¹æÔòÏî²»ÔÊĞíÍÏ×§
+        // å…·ä½“è§„åˆ™é¡¹ä¸å…è®¸æ‹–æ‹½
         tableView_->verticalHeader()->setSectionsMovable(false);
         if (tableView_->tableName() != objectName_) {
             tableView_->setTableName(objectName_);
         }
         updateMetaOne(data);
-        // Òş²Ø²Ù×÷°´Å¥
+        // éšè—æ“ä½œæŒ‰é’®
         setActionEnabled("add", false);
         setActionEnabled("insert", false);
         setActionEnabled("up", false);
@@ -680,13 +681,13 @@ void DataEditWidget::showData(const ICDMetaData::smtMeta &data)
     }
 }
 
-// ×Ó±í
+// å­è¡¨
 void DataEditWidget::updateSubOne(int index, const stICDBase &data, optType type)
 {
-    int column(0);
+    int column = 0;
     switch (type) {
     case optNew:
-        // ²åÈë¿Õ°×ĞĞ
+        // æ’å…¥ç©ºç™½è¡Œ
         tableView_->insertRow(index);
         break;
     case optEdit:
@@ -697,9 +698,8 @@ void DataEditWidget::updateSubOne(int index, const stICDBase &data, optType type
     case optCopy:
         tableView_->insertRow(index);
         tableView_->setProperty("copyData", index);
-    default:break;
     }
-    // ²åÈëÊı¾İ
+    // æ’å…¥æ•°æ®
     tableView_->setItemData(index, column, data.sID.c_str(), Qt::UserRole);
     tableView_->setItemData(index, column, data.sGroup.c_str(), Qt::UserRole + 1);
     tableView_->setItemValue(index, column, data.sName.c_str());
@@ -708,7 +708,7 @@ void DataEditWidget::updateSubOne(int index, const stICDBase &data, optType type
     tableView_->setItemValue(index, ++column, data.sDescribe.c_str());
 }
 
-// ¹æÔòÊôĞÔ
+// è§„åˆ™å±æ€§
 void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
 {
     ICDCommonData::smtCommon common = SMT_CONVERT(ICDCommonData, data);
@@ -717,34 +717,34 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
     }
     int resizeRow = -1;
     stQueryDic dic;
-    QList<QPair<QString, QString>> datas;   // ÏÔÊ¾ÒªËØ
+    QList<QPair<QString, QString>> datas;   // æ˜¾ç¤ºè¦ç´ 
     QPair<QString, QString> pairData;
-    // ²éÑ¯×ÖµäÊı¾İ
+    // æŸ¥è¯¢å­—å…¸æ•°æ®
     dic.dic = GlobalDefine::dicDataType;
     dic.dicType = GlobalDefine::dictDec;
     dic.condition = QString::number(common->type()).toStdString();
 
     QVariantList args;
-    args.append(qVariantFromValue((void*)&dic));
+    args.append(qVariantFromValue(static_cast<void*>(&dic)));
     jnotify->send("edit.queryDictionary", args);
 
-    // ¹¹ÔìÏÔÊ¾Êı¾İ
-    pairData.first = QStringLiteral("Êı¾İÀàĞÍ");
-    pairData.second = dic.result.empty() ? QStringLiteral("ÎŞĞ§") : QString(dic.result.c_str());
+    // æ„é€ æ˜¾ç¤ºæ•°æ®
+    pairData.first = tr("Data Type");
+    pairData.second = dic.result.empty() ? tr("Invalid") : QString(dic.result.c_str());
     datas.append(pairData);
-    pairData.first = QStringLiteral("Êı¾İÃû³Æ");
+    pairData.first = tr("Data Name");
     pairData.second = QString(common->name().c_str());
     datas.append(pairData);
-    pairData.first = QStringLiteral("Êı¾İ±êÊ¶");
+    pairData.first = tr("Data Identity");
     pairData.second = QString(common->proCode().c_str());
     datas.append(pairData);
-    pairData.first = QStringLiteral("ÆğÊ¼×ÖºÅ");
+    pairData.first = tr("Data Offset");
     pairData.second = QString::number(common->index());
     datas.append(pairData);
-    pairData.first = QStringLiteral("Êı¾İ³¤¶È");
-    pairData.second = QStringLiteral("%1 ×Ö½Ú").arg(common->length());
+    pairData.first = tr("Data Length");
+    pairData.second = tr("%1 B").arg(common->length());
     datas.append(pairData);
-    pairData.first = QStringLiteral("Ä¬ÈÏÖµ");
+    pairData.first = tr("Default");
     pairData.second = QString(common->defaultStr().c_str());
     datas.append(pairData);
 
@@ -760,10 +760,10 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
                     .toStdString();
 
             args.clear();
-            args.append(qVariantFromValue((void*)&dic));
+            args.append(qVariantFromValue(static_cast<void*>(&dic)));
             jnotify->send("edit.queryDictionary", args);
 
-            pairData.first = QStringLiteral("¼ÆÊıÆ÷ÀàĞÍ");
+            pairData.first = tr("Counter Type");
             pairData.second = QString(dic.result.c_str());
             datas.insert(1, pairData);
         } else if (data->type() == GlobalDefine::dtArray) {
@@ -774,18 +774,18 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             dic.condition = QString::number(array->arrayType()).toStdString();
 
             args.clear();
-            args.append(qVariantFromValue((void*)&dic));
+            args.append(qVariantFromValue(static_cast<void*>(&dic)));
             jnotify->send("edit.queryDictionary", args);
 
-            pairData.first = QStringLiteral("Êı×éÀàĞÍ");
+            pairData.first = tr("Array Type");
             pairData.second = QString(dic.result.c_str());
             datas.insert(1, pairData);
         } else if (data->type() == GlobalDefine::dtCheck) {
             ICDCheckData::smtCheck check = std::dynamic_pointer_cast<ICDCheckData>(data);
             QPair<QString, QString> &ref = datas[5];
-            ref.first = QStringLiteral("ÆğÊ¼Æ«ÒÆ");
+            ref.first = tr("Start Offset");
             ref.second = QString::number(check->start());
-            pairData.first = QStringLiteral("ÖÕÖ¹Æ«ÒÆ");
+            pairData.first = tr("End Offset");
             pairData.second = QString::number(check->end());
             datas.insert(6, pairData);
             dic.dic = GlobalDefine::dicCheckType;
@@ -794,20 +794,20 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
                     .toStdString();
 
             args.clear();
-            args.append(qVariantFromValue((void*)&dic));
+            args.append(qVariantFromValue(static_cast<void*>(&dic)));
             jnotify->send("edit.queryDictionary", args);
 
-            pairData.first = QStringLiteral("Ğ£ÑéÀàĞÍ");
+            pairData.first = tr("Parity Type");
             pairData.second = QString(dic.result.c_str());
             datas.insert(1, pairData);
         } else if (data->type() == GlobalDefine::dtFrameCode) {
             ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(data);
-            pairData.first = QStringLiteral("Ö¡ÂëÊı¾İ");
+            pairData.first = tr("FrameCode Data");
             ICDComplexData::smtComplex complex = frameCode->data();
             if (!complex) {
-                pairData.second = QStringLiteral("²»°ó¶¨");
+                pairData.second = tr("Not binding");
             } else {
-                pairData.second = QStringLiteral("°ó¶¨<%1>").arg(complex->name().c_str());
+                pairData.second = tr("Binding<%1>").arg(complex->name().c_str());
             }
             datas.insert(3, pairData);
         } else {
@@ -819,10 +819,10 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
                 dic.condition = QString::number(numeric->numericType()).toStdString();
 
                 args.clear();
-                args.append(qVariantFromValue((void*)&dic));
+                args.append(qVariantFromValue(static_cast<void*>(&dic)));
                 jnotify->send("edit.queryDictionary", args);
 
-                pairData.first = QStringLiteral("ÊıÖµÀàĞÍ");
+                pairData.first = tr("Numeric Type");
                 pairData.second = QString(dic.result.c_str());
                 datas.insert(1, pairData);
                 ++rowOffset;
@@ -840,30 +840,30 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
             }
 
             // specs
-            pairData.first = QStringLiteral("ÌØÕ÷ÖµÃèÊö");
+            pairData.first = tr("Spec");
             pairData.second.clear();
             std::map<double, std::string> items = common->values();
             std::map<double, std::string>::iterator it = items.begin();
             for (; it != items.end(); ++it) {
-                pairData.second += QString("%1: %2\r\n").arg(it->first).arg(it->second.c_str());
+                pairData.second += QString("%1: %2\n").arg(it->first).arg(it->second.c_str());
             }
             pairData.second = pairData.second.trimmed();
             datas.insert(rowOffset + 2, pairData);
             // range
-            pairData.first = QStringLiteral("Êı¾İ·¶Î§");
+            pairData.first = tr("Data Range");
             pairData.second = QString().append(lstRange.first())
                     .append(" ~ ").append(lstRange.last());
             datas.insert(rowOffset, pairData);
             // unit
-            pairData.first = QStringLiteral("µ¥Î»");
+            pairData.first = tr("Unit");
             pairData.second = QString(common->unit().c_str());
             datas.insert(rowOffset + 2, pairData);
             // offset
-            pairData.first = QStringLiteral("Æ«ÖÃ");
+            pairData.first = tr("Offset");
             pairData.second = QString::number(common->offset(), 'g', 16);
             datas.insert(rowOffset + 2, pairData);
             // scale
-            pairData.first = QStringLiteral("±ÈÀı³ß");
+            pairData.first = tr("Scale");
             pairData.second = QString::number(common->scale(), 'g', 16);
             datas.insert(rowOffset + 2, pairData);
             resizeRow = rowOffset + 5;
@@ -871,14 +871,14 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
     } else if (data->metaType() == IcdDefine::icdBit) {
         ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, data);
         QPair<QString, QString> &ref = datas[4];
-        ref.second = QStringLiteral("%1 ×Ö½Ú").arg(bit->lengthOfByte().c_str());
+        ref.second = tr("%1 B").arg(bit->lengthOfByte().c_str());
         std::map<double, std::string> items = bit->values();
         std::map<double, std::string>::iterator it = items.begin();
         pairData.second.clear();
         if (data->type() == GlobalDefine::dtBitMap) {
             for (; it != items.end(); ++it) {
                 if (it->second.empty()) {
-                    continue;   // Òş²ØÃèÊöÎª¿ÕµÄÊı¾İ
+                    continue;   // éšè—æè¿°ä¸ºç©ºçš„æ•°æ®
                 }
                 QString content;
                 QStringList lst = QString(it->second.c_str()).split(":");
@@ -894,48 +894,48 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
                     content.clear();
                 }
                 QString(it->second.c_str()).split(":").last();
-                QString value = QString::number((int)it->first);
+                QString value = QString::number(int(it->first));
                 if (content.isEmpty()) {
-                    pairData.second += QString("%1: %2\r\n").arg(value, 2, QChar('0')).arg(lst.first());
+                    pairData.second += QString("%1: %2\n").arg(value, 2, QChar('0')).arg(lst.first());
                 } else {
-                    pairData.second += QString("%1: %2 [%3]\r\n")
+                    pairData.second += QString("%1: %2 [%3]\n")
                             .arg(value, 2, QChar('0')).arg(lst.first()).arg(content);
                 }
             }
         } else if (data->type() == GlobalDefine::dtBitValue) {
             // unit
-            pairData.first = QStringLiteral("µ¥Î»");
+            pairData.first = tr("Unit");
             pairData.second = QString(bit->unit().c_str());
             datas.insert(6, pairData);
             // scale
-            pairData.first = QStringLiteral("±ÈÀı³ß");
+            pairData.first = tr("Scale");
             pairData.second = QString::number(bit->scale(), 'g', 16);
             datas.insert(6, pairData);
             // offset
-            pairData.first = QStringLiteral("Æ«ÖÃ");
+            pairData.first = tr("Offset");
             pairData.second = QString::number(bit->offset(), 'g', 16);
             datas.insert(6, pairData);
             pairData.second.clear();
             for (; it != items.end(); ++it) {
                 if (it->second.empty()) {
-                    continue;   // Òş²ØÃèÊöÎª¿ÕµÄÊı¾İ
+                    continue;   // éšè—æè¿°ä¸ºç©ºçš„æ•°æ®
                 }
-                pairData.second += QString("%1: %2\r\n").arg((int)it->first) .arg(it->second.c_str());
+                pairData.second += QString("%1: %2\n").arg(int(it->first)) .arg(it->second.c_str());
             }
         }
-        pairData.first = QStringLiteral("ÌØÕ÷ÖµÃèÊö");
+        pairData.first = tr("Spec");
         pairData.second = pairData.second.trimmed();
         resizeRow = 7;
         datas.insert(6, pairData);
-        pairData.first = QStringLiteral("±ÈÌØÎ»");
+        pairData.first = tr("Bits");
         pairData.second = QString("%1~%2").arg(bit->start()).arg(bit->start() + bit->length() - 1);
         datas.insert(5, pairData);
     }
 
-    pairData.first = QStringLiteral("ÃèÊö");
+    pairData.first = tr("Describe");
     pairData.second = QString(common->remark().c_str());
     datas.append(pairData);
-    // ¸üĞÂ±í
+    // æ›´æ–°è¡¨
     QListIterator<QPair<QString, QString>> it = datas;
     int row = 0;
     tableView_->setRowCount(datas.size());
@@ -949,13 +949,13 @@ void DataEditWidget::updateMetaOne(const ICDMetaData::smtMeta &data)
     }
 }
 
-// »úĞÍ
+// æœºå‹
 void DataEditWidget::updateOne(int index, const PlaneNode::smtPlane &data, optType type)
 {
     int column(0);
     switch (type) {
     case optNew:
-        // ²åÈë¿Õ°×ĞĞ
+        // æ’å…¥ç©ºç™½è¡Œ
         tableView_->insertRow(index);
         break;
     case optEdit:
@@ -966,12 +966,11 @@ void DataEditWidget::updateOne(int index, const PlaneNode::smtPlane &data, optTy
     case optCopy:
         tableView_->insertRow(index);
         tableView_->setProperty("copyData", index);
-    default:break;
     }
     if (!data) {
         return;
     }
-    // ²åÈëÊı¾İ
+    // æ’å…¥æ•°æ®
     tableView_->setItemData(index, column, data->id().c_str(), Qt::UserRole);
     tableView_->setItemValue(index, column, data->name().c_str());
     tableView_->setItemValue(index, ++column, data->sign().c_str());
@@ -983,7 +982,7 @@ void DataEditWidget::updateOne(int index, const SystemNode::smtSystem &data, opt
     int column(0);
     switch (type) {
     case optNew:
-        // ²åÈë¿Õ°×ĞĞ
+        // æ’å…¥ç©ºç™½è¡Œ
         tableView_->insertRow(index);
         break;
     case optEdit:
@@ -994,12 +993,12 @@ void DataEditWidget::updateOne(int index, const SystemNode::smtSystem &data, opt
     case optCopy:
         tableView_->insertRow(index);
         tableView_->setProperty("copyData", index);
-    default:break;
+        break;
     }
     if (!data) {
         return;
     }
-    // ²åÈëÊı¾İ
+    // æ’å…¥æ•°æ®
     tableView_->setItemData(index, column, data->numeralId(), Qt::UserRole);
     tableView_->setItemValue(index, column, data->name().c_str());
     tableView_->setItemValue(index, ++column, data->sign().c_str());
@@ -1012,7 +1011,7 @@ void DataEditWidget::updateOne(int index, const TableNode::smtTable &data, optTy
     int column(0);
     switch (type) {
     case optNew:
-        // ²åÈë¿Õ°×ĞĞ
+        // æ’å…¥ç©ºç™½è¡Œ
         tableView_->insertRow(index);
         break;
     case optEdit:
@@ -1023,13 +1022,12 @@ void DataEditWidget::updateOne(int index, const TableNode::smtTable &data, optTy
     case optCopy:
         tableView_->insertRow(index);
         tableView_->setProperty("copyData", index);
-    default:
         break;
     }
     if (!data) {
         return;
     }
-    // ²åÈëÊı¾İ
+    // æ’å…¥æ•°æ®
     tableView_->setItemData(index, column, data->key().c_str(), Qt::UserRole);
     tableView_->setItemData(index, column, base.sGroup.c_str(), Qt::UserRole + 1);
     tableView_->setItemValue(index, column, base.sName.c_str());
@@ -1045,12 +1043,12 @@ void DataEditWidget::updateOne(int index, const ICDMetaData::smtMeta &data, optT
     }
     stQueryDic dic;
     int column = 0;
-    // ²éÑ¯×ÖµäÊı¾İ
+    // æŸ¥è¯¢å­—å…¸æ•°æ®
     dic.dic = GlobalDefine::dicDataType;
     dic.dicType = GlobalDefine::dictDec;
     switch (type) {
     case optNew:
-        // ²åÈë¿Õ°×ĞĞ
+        // æ’å…¥ç©ºç™½è¡Œ
         tableView_->insertRow(index);
         break;
     case optEdit:
@@ -1061,16 +1059,16 @@ void DataEditWidget::updateOne(int index, const ICDMetaData::smtMeta &data, optT
     case optCopy:
         tableView_->insertRow(index);
         tableView_->setProperty("copyData", index);
-    default:break;
+        break;
     }
     const ICDCommonData::smtCommon common = std::dynamic_pointer_cast<ICDCommonData>(data);
     const ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(data);
     QString indentify = QString::number(common->serial());
     if (GlobalDefine::dtComplex == common->type()) {
-        // ¸´ºÏÊı¾İ¼ÇÂ¼×Ó±íID
+        // å¤åˆæ•°æ®è®°å½•å­è¡¨ID
         tableView_->setItemData(index, column, common->rule().c_str(), ComplexTable);
     }
-    // ²åÈëÊı¾İ
+    // æ’å…¥æ•°æ®
     tableView_->setItemData(index, column, indentify, Qt::UserRole);
     tableView_->setItemValue(index, column, common->name().c_str());
     tableView_->setItemValue(index, ++column, common->proCode().c_str());
@@ -1078,7 +1076,7 @@ void DataEditWidget::updateOne(int index, const ICDMetaData::smtMeta &data, optT
         tableView_->setItemData(index, column, frameCode->bindingSerial(), Qt::UserRole);
     }
     if (optCopy == type) {
-        // ¸´ÖÆµÄÊı¾İ£¬¸ù¾İÇ°Ò»ÏîµÄÊı¾İÖØĞÂÉèÖÃÆğÊ¼×ÖºÅ
+        // å¤åˆ¶çš„æ•°æ®ï¼Œæ ¹æ®å‰ä¸€é¡¹çš„æ•°æ®é‡æ–°è®¾ç½®èµ·å§‹å­—å·
         int code = 0;
         if (index > 0) {
             code = tableView_->itemValue(index - 1, 2).toInt();
@@ -1095,17 +1093,17 @@ void DataEditWidget::updateOne(int index, const ICDMetaData::smtMeta &data, optT
     tableView_->setItemData(index, column, common->subType(), Qt::UserRole + 1);
 
     QVariantList args;
-    args.append(qVariantFromValue((void*)&dic));
+    args.append(qVariantFromValue(static_cast<void*>(&dic)));
     jnotify->send("edit.queryDictionary", args);
 
     tableView_->setItemValue(index, column,
                              dic.result.empty()
-                             ? QStringLiteral("ÎŞĞ§") : dic.result.c_str());
+                             ? tr("Invalid") : dic.result.c_str());
     tableView_->setItemValue(index, ++column, data->remark().c_str());
     tableView_->setItemData(index, column, data->byteLength(), Qt::UserRole);
 }
 
-// »ñÈ¡µ±Ç°Ñ¡ÖĞÏîÊı¾İ
+// è·å–å½“å‰é€‰ä¸­é¡¹æ•°æ®
 ICDElement::smtElement DataEditWidget::currentData() const
 {
     ICDElement::smtElement result;
@@ -1117,33 +1115,33 @@ ICDElement::smtElement DataEditWidget::currentData() const
     if (row < 0) {
         return result;
     }
-    if (row == newIndex_) {    // ĞÂÔöÊı¾İ
+    if (row == newIndex_) {    // æ–°å¢æ•°æ®
         if (tableView_->property("copyData").toInt() == newIndex_) {
-            // Èç¹ûµ±Ç°Ñ¡ÖĞÊı¾İÊÇ¿½±´Êı¾İ£¬Ö±½Ó´ÓÄÚ´æ»ñÈ¡
+            // å¦‚æœå½“å‰é€‰ä¸­æ•°æ®æ˜¯æ‹·è´æ•°æ®ï¼Œç›´æ¥ä»å†…å­˜è·å–
             QString keys = tableView_->property("source").toString();
-            keys = keys.mid(keys.indexOf("##") + strlen("##"));
+            keys = keys.mid(int(keys.indexOf("##")) + int(strlen("##")));
             if (keys.isEmpty()) {
                 return result;
             }
             QVariantList args;
-            args.append(qVariantFromValue((void*)&result));
-            args.append(qVariantFromValue((void*)&keys));
+            args.append(qVariantFromValue(static_cast<void*>(&result)));
+            args.append(qVariantFromValue(static_cast<void*>(&keys)));
             jnotify->send("edit.querySingleElement", args);
-        } else {    // ²åÈë»òÕßĞÂÔö
+        } else {    // æ’å…¥æˆ–è€…æ–°å¢
         }
-    } else {    // ±à¼­Êı¾İ
+    } else {    // ç¼–è¾‘æ•°æ®
         QString key = tableView_->itemData(row, column, Qt::UserRole).toString();
-        // ²éÑ¯¿½±´Êı¾İ
+        // æŸ¥è¯¢æ‹·è´æ•°æ®
         if (GlobalDefine::ntUnknown == dataType_) {
-            const int count = vData_.size();
-            for (int i = 0; i < count; ++i) {
+            const size_t count = vData_.size();
+            for (size_t i = 0; i < count; ++i) {
                 if (vData_[i]->id() == key.toStdString()) {
                     result = vData_[i];
                 }
             }
         } else if (GlobalDefine::ntVehicle == dataType_) {
-            const int count = vData_.size();
-            for (int i = 0; i < count; ++i) {
+            const size_t count = vData_.size();
+            for (size_t i = 0; i < count; ++i) {
                 if (vData_[i]->id() == key.toStdString()) {
                     result = vData_[i];
                 }
@@ -1176,7 +1174,7 @@ ICDElement::smtElement DataEditWidget::currentData() const
     return result;
 }
 
-// Æô/Í£ÓÃĞÅºÅ²Û
+// å¯/åœç”¨ä¿¡å·æ§½
 void DataEditWidget::enableConnection(bool enable)
 {
     disconnect(tableView_, SIGNAL(currentItemChanged(QStandardItem *, QStandardItem *)),
@@ -1203,7 +1201,7 @@ void DataEditWidget::enableConnection(bool enable)
     }
 }
 
-// ĞÂÔö»úĞÍ
+// æ–°å¢æœºå‹
 void DataEditWidget::newPlane()
 {
     if (!tableView_) {
@@ -1212,27 +1210,27 @@ void DataEditWidget::newPlane()
     QString id;
     stPlane plane;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&id));
+    args.append(qVariantFromValue(static_cast<void*>(&id)));
     args.append(int(GlobalDefine::ntVehicle));
     jnotify->send("edit.queryId", args);
 
     plane.nCode = id.toInt();
-    plane.sName = QStringLiteral("»úĞÍ%1").arg(plane.nCode).toStdString();
+    plane.sName = tr("Vehicle %1").arg(plane.nCode).toStdString();
     plane.sSign = QString("plane_%1").arg(plane.nCode).toStdString();
     PlaneNode::smtPlane smtData(new PlaneNode(plane));
-    // ¸üĞÂ±í
+    // æ›´æ–°è¡¨
     newIndex_ = tableView_->rowCount();
     updateOne(newIndex_, smtData, optNew);
     tableView_->selectRow(newIndex_);
 }
 
-// ¸üĞÂ»úĞÍ±à¼­Êı¾İ½çÃæ
+// æ›´æ–°æœºå‹ç¼–è¾‘æ•°æ®ç•Œé¢
 void DataEditWidget::updatePlaneUI(GlobalDefine::OptionType option)
 {
     stPlane base;
     PlaneNode::smtPlane plane
             = std::dynamic_pointer_cast<PlaneNode>(currentData());
-    // ²éÑ¯µ±Ç°Ñ¡ÖĞÊı¾İ
+    // æŸ¥è¯¢å½“å‰é€‰ä¸­æ•°æ®
     if (!plane) {
         int column = 0;
         int row = tableView_->currentRow();
@@ -1241,7 +1239,7 @@ void DataEditWidget::updatePlaneUI(GlobalDefine::OptionType option)
         }
         QString id;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&id));
+        args.append(qVariantFromValue(static_cast<void*>(&id)));
         args.append(int(GlobalDefine::ntVehicle));
         jnotify->send("edit.queryId", args);
 
@@ -1259,7 +1257,7 @@ void DataEditWidget::updatePlaneUI(GlobalDefine::OptionType option)
     loggingWidget_->setVisible(true);
 }
 
-// ĞÂÔöÏµÍ³
+// æ–°å¢ç³»ç»Ÿ
 void DataEditWidget::newSystem()
 {
     if (!tableView_) {
@@ -1268,25 +1266,25 @@ void DataEditWidget::newSystem()
     QString id;
     stSystem system;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&id));
+    args.append(qVariantFromValue(static_cast<void*>(&id)));
     args.append(int(GlobalDefine::ntSystem));
     jnotify->send("edit.queryId", args);
 
     system.nCode = id.toInt();
-    system.sName = QStringLiteral("ÏµÍ³%1").arg(system.nCode).toStdString();
+    system.sName = tr("System %1").arg(system.nCode).toStdString();
     system.sSign = QString("system_%1").arg(system.nCode).toStdString();
     SystemNode::smtSystem smtData(new SystemNode(system));
-    // ¸üĞÂ±í
+    // æ›´æ–°è¡¨
     newIndex_ = tableView_->rowCount();
     updateOne(newIndex_, smtData, optNew);
     tableView_->selectRow(newIndex_);
 }
 
-// ¸üĞÂÏµÍ³±à¼­Êı¾İ½çÃæ
+// æ›´æ–°ç³»ç»Ÿç¼–è¾‘æ•°æ®ç•Œé¢
 void DataEditWidget::updateSystemUI(GlobalDefine::OptionType option)
 {
     stSystem base;
-    // ²éÑ¯µ±Ç°Ñ¡ÖĞÊı¾İ
+    // æŸ¥è¯¢å½“å‰é€‰ä¸­æ•°æ®
     SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(currentData());
     if (!system) {
         int column = 0;
@@ -1296,7 +1294,7 @@ void DataEditWidget::updateSystemUI(GlobalDefine::OptionType option)
         }
         QString id;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&id));
+        args.append(qVariantFromValue(static_cast<void*>(&id)));
         args.append(int(GlobalDefine::ntSystem));
         jnotify->send("edit.queryId", args);
         base.nCode = id.toInt();
@@ -1313,7 +1311,7 @@ void DataEditWidget::updateSystemUI(GlobalDefine::OptionType option)
     loggingWidget_->setVisible(true);
 }
 
-// ĞÂÔöICD±í
+// æ–°å¢ICDè¡¨
 void DataEditWidget::newICDTable()
 {
     if (!tableView_) {
@@ -1324,32 +1322,32 @@ void DataEditWidget::newICDTable()
     stICDBase table;
 
     QVariantList args;
-    args.append(qVariantFromValue((void*)&keys));
+    args.append(qVariantFromValue(static_cast<void*>(&keys)));
     jnotify->send("edit.queryNodeKeys", args);
 
     args.clear();
-    args.append(qVariantFromValue((void*)&id));
+    args.append(qVariantFromValue(static_cast<void*>(&id)));
     args.append(int(GlobalDefine::ntTable));
     jnotify->send("edit.queryId", args);
 
     table.check = false;
     table.sID = id.toStdString();
-    table.sName = QStringLiteral("±í%1").arg(tableView_->rowCount() + 1).toStdString();
+    table.sName = tr("Table %1").arg(tableView_->rowCount() + 1).toStdString();
     table.sCode = QString("table_%1").arg(tableView_->rowCount() + 1).toStdString();
     table.nLength = 0;
     table.sGroup = keys.toStdString();
     TableNode::smtTable smtData(new TableNode(table));
-    // ¸üĞÂ±í
+    // æ›´æ–°è¡¨
     newIndex_ = tableView_->rowCount();
     updateOne(newIndex_, smtData, optNew);
     tableView_->selectRow(newIndex_);
 }
 
-// ¸üĞÂICD±í±à¼­Êı¾İ½çÃæ
+// æ›´æ–°ICDè¡¨ç¼–è¾‘æ•°æ®ç•Œé¢
 void DataEditWidget::updateICDTableUI(GlobalDefine::OptionType option)
 {
     stICDBase base;
-    // ²éÑ¯µ±Ç°Ñ¡ÖĞÊı¾İ
+    // æŸ¥è¯¢å½“å‰é€‰ä¸­æ•°æ®
     TableNode::smtTable table = SMT_CONVERT(TableNode, currentData());
     if (!table) {
         int column = 0;
@@ -1374,7 +1372,7 @@ void DataEditWidget::updateICDTableUI(GlobalDefine::OptionType option)
     loggingWidget_->setVisible(true);
 }
 
-// ĞÂÔö¹æÔò
+// æ–°å¢è§„åˆ™
 void DataEditWidget::newICDRule(int type)
 {
     if (!tableView_) {
@@ -1395,7 +1393,7 @@ void DataEditWidget::newICDRule(int type)
     if (type > GlobalDefine::dtBuffer || type < GlobalDefine::dtHead) {
         rule.uType = GlobalDefine::dtNumeric;
     } else {
-        rule.uType = type;
+        rule.uType = static_cast<unsigned short>(type);
     }
     // subType
     switch (rule.uType) {
@@ -1406,38 +1404,38 @@ void DataEditWidget::newICDRule(int type)
     //
     rule.sPrgCode = QString("code_%1").arg(newIndex_).toStdString();
     ICDMetaData::smtMeta smtData = ICDFactory::instance().CreatObject(rule);
-    // ¸üĞÂ±í
+    // æ›´æ–°è¡¨
     updateOne(newIndex_, smtData, optNew);
     tableView_->selectRow(newIndex_);
 
-    // ½«»¹Î´±£´æµÄÊı¾İ³¤¶ÈÉèÎª0£¬Ê¹³¤¶ÈĞ£ÑéÕıÈ·ÌáÊ¾
+    // å°†è¿˜æœªä¿å­˜çš„æ•°æ®é•¿åº¦è®¾ä¸º0ï¼Œä½¿é•¿åº¦æ ¡éªŒæ­£ç¡®æç¤º
     tableView_->setItemData(newIndex_, tableView_->columnCount() - 1, 0, Qt::UserRole);
 }
 
-// ¸üĞÂ¹æÔò±à¼­Êı¾İ½çÃæ
+// æ›´æ–°è§„åˆ™ç¼–è¾‘æ•°æ®ç•Œé¢
 void DataEditWidget::updateICDRuleUI(GlobalDefine::OptionType option)
 {
     ICDMetaData::smtMeta meta = std::dynamic_pointer_cast<ICDMetaData>(currentData());
-    if (GlobalDefine::optNew == option) {    // ĞÂÔö
+    if (GlobalDefine::optNew == option) {    // æ–°å¢
         if (!meta) {
             int column = 0;
             stTableRules rule;
-            // ²éÑ¯½çÃæÊı¾İ
+            // æŸ¥è¯¢ç•Œé¢æ•°æ®
             rule.sName = tableView_->itemValue(newIndex_, column).toString().toStdString();
             rule.nSerial = tableView_->itemData(newIndex_, column, Qt::UserRole).toInt();
             rule.sPrgCode = tableView_->itemValue(newIndex_, ++column).toString().toStdString();
             rule.nCode = tableView_->itemValue(newIndex_, ++column).toInt();
-            rule.uLength = tableView_->itemValue(newIndex_, ++column).toInt();
-            rule.uType = tableView_->itemData(newIndex_, ++column, Qt::UserRole).toInt();
-            rule.subType = tableView_->itemData(newIndex_, column, Qt::UserRole + 1).toInt();
+            rule.uLength = static_cast<unsigned short>(tableView_->itemValue(newIndex_, ++column).toInt());
+            rule.uType = static_cast<unsigned short>(tableView_->itemData(newIndex_, ++column, Qt::UserRole).toInt());
+            rule.subType = static_cast<unsigned short>(tableView_->itemData(newIndex_, column, Qt::UserRole + 1).toInt());
             rule.sRemark = tableView_->itemValue(newIndex_, ++column).toString().toStdString();
             meta = ICDFactory::instance().CreatObject(rule);
         } else {
-            // ¸üĞÂ×Ö½ÚĞòºÅºÍË³ĞòºÅ
+            // æ›´æ–°å­—èŠ‚åºå·å’Œé¡ºåºå·
             meta = meta->clone();
             meta->setIndex(tableView_->itemValue(newIndex_, 2).toInt());
             meta->setSerial(tableView_->rowCount());
-            // Ö¡Ê¶±ğÂë£¬ÖØÖÃ°ó¶¨ĞÅÏ¢
+            // å¸§è¯†åˆ«ç ï¼Œé‡ç½®ç»‘å®šä¿¡æ¯
             ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(meta);
             if (frameCode) {
                 frameCode->bindData(nullptr);
@@ -1454,7 +1452,7 @@ void DataEditWidget::updateICDRuleUI(GlobalDefine::OptionType option)
     updateDetailUI(data);
 }
 
-// ¸üĞÂÊı¾İÂ¼Èë½çÃæ
+// æ›´æ–°æ•°æ®å½•å…¥ç•Œé¢
 void DataEditWidget::updateDetailUI(const _UIData &data)
 {
     ICDMetaData::smtMeta meta
@@ -1498,7 +1496,7 @@ void DataEditWidget::updateDetailUI(const _UIData &data)
     loggingWidget_->setVisible(true);
 }
 
-// ĞÂÔö×Ó±í
+// æ–°å¢å­è¡¨
 void DataEditWidget::newSubTable()
 {
     if (!tableView_) {
@@ -1506,12 +1504,12 @@ void DataEditWidget::newSubTable()
     }
     int maxCount = 0;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&maxCount));
+    args.append(qVariantFromValue(static_cast<void*>(&maxCount)));
     jnotify->send("edit.queryMaxTableCount", args);
     if (tableView_->rowCount() >= maxCount) {
 
-        QMessageBox::information(this, QStringLiteral("ĞÂÔö"),
-                                 QStringLiteral("×Ó±íÒÑ´ïÉÏÏŞ£¬ÎŞ·¨ĞÂÔö£¡ÈçĞèÌáÉıÉÏÏŞ£¬ÇëÁªÏµ¹ÜÀíÔ±£¡"));
+        QMessageBox::information(this, tr("New"),
+                                 tr("Count of Sub-Table has been reach the upper limit!"));
         return;
     }
 
@@ -1519,7 +1517,7 @@ void DataEditWidget::newSubTable()
     QString keys;
     stICDBase base;
     args.clear();
-    args.append(qVariantFromValue((void*)&keys));
+    args.append(qVariantFromValue(static_cast<void*>(&keys)));
     jnotify->send("edit.queryNodeKeys", args);
 
     QStringList keyLst = keys.split("/", QString::SkipEmptyParts);
@@ -1527,26 +1525,26 @@ void DataEditWidget::newSubTable()
         return;
     }
     args.clear();
-    args.append(qVariantFromValue((void*)&id));
+    args.append(qVariantFromValue(static_cast<void*>(&id)));
     args.append(int(GlobalDefine::ntTable));
     jnotify->send("edit.queryId", args);
 
     base.sID = id.toStdString();
-    base.sName = QStringLiteral("±í%1").arg(tableView_->rowCount() + 1).toUpper().toStdString();
+    base.sName = tr("Table %1").arg(tableView_->rowCount() + 1).toUpper().toStdString();
     base.sCode = QString("0x%1").arg(tableView_->rowCount() + 1, 2, 16, QChar('0')).toStdString();
     base.sGroup = QString("%1/%2").arg(keyLst.at(0)).arg(keyLst.at(1)).toStdString();
     base.sRemark = "1";
-    // ¸üĞÂ±í
+    // æ›´æ–°è¡¨
     newIndex_ = tableView_->rowCount();
     updateSubOne(newIndex_, base, optNew);
     tableView_->selectRow(newIndex_);
 }
 
-// ¸üĞÂ×Ó±í±à¼­Êı¾İ½çÃæ
+// æ›´æ–°å­è¡¨ç¼–è¾‘æ•°æ®ç•Œé¢
 void DataEditWidget::updateSubTableUI(GlobalDefine::OptionType option)
 {
     stICDBase base;
-    // ²éÑ¯µ±Ç°Ñ¡ÖĞÊı¾İ
+    // æŸ¥è¯¢å½“å‰é€‰ä¸­æ•°æ®
     TableNode::smtTable table
             = std::dynamic_pointer_cast<TableNode>(currentData());
     if (!table) {
@@ -1571,7 +1569,7 @@ void DataEditWidget::updateSubTableUI(GlobalDefine::OptionType option)
     loggingWidget_->setVisible(true);
 }
 
-// ÏÔ/Òş×´Ì¬ÌáÊ¾
+// æ˜¾/éšçŠ¶æ€æç¤º
 void DataEditWidget::setTipsVisible(bool visible)
 {
     if (!editStatus_) {
@@ -1585,17 +1583,15 @@ void DataEditWidget::setTipsVisible(bool visible)
         }
         int total = table->icdBase().nLength;
         int use = table->length();
-        QString tips = QStringLiteral("Êı¾İÏî×Ü³¤£º%1 ×Ö½Ú£¬").arg(total)
-                + QStringLiteral("ÒÑ¶¨Òå£º %1 ×Ö½Ú£¬").arg(table->length())
-                + QStringLiteral("Êµ¼Ê¹æ»®£º %1 ×Ö½Ú")
-                .arg(table->realLength());
+        QString tips = tr("Data Item lengthï¼š%1 B, Defined: %2 B, real: %3 B")
+                .arg(total).arg(table->length()).arg(table->realLength());
         editStatus_->setText(tips);
         if (-1 == newIndex_) {
             setActionEnabled("add", true);
             setActionEnabled("insert", true);
         }
         if (table->lengthCheck()) {
-            // ĞèÒª½øĞĞ³¤¶È¼ì²éÊ±²Å±ä¸ü²Ù×÷°´Å¥×´Ì¬
+            // éœ€è¦è¿›è¡Œé•¿åº¦æ£€æŸ¥æ—¶æ‰å˜æ›´æ“ä½œæŒ‰é’®çŠ¶æ€
             if (use > total) {
                 setActionEnabled("add", false);
                 setActionEnabled("insert", false);
@@ -1604,7 +1600,7 @@ void DataEditWidget::setTipsVisible(bool visible)
     }
 }
 
-// ²éÑ¯µ±Ç°Ñ¡ÖĞĞĞËù´¦bitÎ»µÄµÚÒ»ÏîÊı¾İĞòºÅ
+// æŸ¥è¯¢å½“å‰é€‰ä¸­è¡Œæ‰€å¤„bitä½çš„ç¬¬ä¸€é¡¹æ•°æ®åºå·
 int DataEditWidget::queryFirstBitSerial(int bitIndex)
 {
     int result = -1;
@@ -1617,7 +1613,7 @@ int DataEditWidget::queryFirstBitSerial(int bitIndex)
     }
     int column = 2; // index
     int value = 0;
-    // ²éÑ¯
+    // æŸ¥è¯¢
     for (int i = row - 1; i > -1; --i) {
         value = tableView_->itemValue(i, column).toInt();
         if (bitIndex == value) {
@@ -1630,7 +1626,7 @@ int DataEditWidget::queryFirstBitSerial(int bitIndex)
     return result;
 }
 
-// ²éÑ¯ÄÜ·ñ½«µ±Ç°Êı¾İºÏ²¢µ½Ç°Ò»Ïî»òÕßºóÒ»ÏîÊı¾İ
+// æŸ¥è¯¢èƒ½å¦å°†å½“å‰æ•°æ®åˆå¹¶åˆ°å‰ä¸€é¡¹æˆ–è€…åä¸€é¡¹æ•°æ®
 bool DataEditWidget::canMerged(const ICDMetaData::smtMeta &meta) const
 {
     bool result = false;
@@ -1640,129 +1636,129 @@ bool DataEditWidget::canMerged(const ICDMetaData::smtMeta &meta) const
         return result;
     }
     ICDMetaData::smtMeta metaPre = table->rule(meta->serial() - 1);
-    ICDMetaData::smtMeta metaNext = 0;
+    ICDMetaData::smtMeta metaNext = nullptr;
 
     if (GlobalDefine::ntRule == dataType_
             && !(GlobalDefine::dtComplex == subType_
                  || GlobalDefine::dtFrame == subType_)) {
-        // ·Ç¸´ºÏ/Ö¡¹æÔòÊı¾İ£¬µ±Ç°Êı¾İÎªÒÑÓĞÊı¾İ
+        // éå¤åˆ/å¸§è§„åˆ™æ•°æ®ï¼Œå½“å‰æ•°æ®ä¸ºå·²æœ‰æ•°æ®
         metaNext = table->rule(meta->serial() + 1);
     } else {
         if (tableView_->currentRow() == newIndex_ && -1 != newIndex_) {
-            // µ±Ç°Êı¾İÎªÎ´±£´æµÄĞÂÔöÊı¾İ
+            // å½“å‰æ•°æ®ä¸ºæœªä¿å­˜çš„æ–°å¢æ•°æ®
             metaNext = table->rule(meta->serial());
         } else {
-            // µ±Ç°Êı¾İÎªÒÑÓĞÊı¾İ
+            // å½“å‰æ•°æ®ä¸ºå·²æœ‰æ•°æ®
             metaNext = table->rule(meta->serial() + 1);
         }
     }
     ICDBitData::smtBit bitPre = SMT_CONVERT(ICDBitData, metaPre);
     ICDBitData::smtBit bitNext = SMT_CONVERT(ICDBitData, metaNext);
     if (bitPre) {
-        // ÅĞ¶ÏÄÜ·ñÏòÇ°ºÏ²¢
+        // åˆ¤æ–­èƒ½å¦å‘å‰åˆå¹¶
         if (bitPre->end() < bitOriginal->start()) {
-            result = true;  // ¿ÉÒÔºÏ²¢
+            result = true;  // å¯ä»¥åˆå¹¶
         }
-        // ºóÒ»ÏîÎªbitĞÍ£¬·ÖÁ½ÖÖÇé¿ö
+        // åä¸€é¡¹ä¸ºbitå‹ï¼Œåˆ†ä¸¤ç§æƒ…å†µ
         if (bitNext) {
-            // 1¡¢Á½¸öÍ¬Ò»ÀàĞÍµÄbitÖ®¼ä
+            // 1ã€ä¸¤ä¸ªåŒä¸€ç±»å‹çš„bitä¹‹é—´
             if (bitPre->index() == bitNext->index()) {
-                if (result) { // ¿ÉÒÔÏòÇ°ºÏ²¢
+                if (result) { // å¯ä»¥å‘å‰åˆå¹¶
                     if (bitOriginal->end() >= bitNext->start()) {
-                        result = false; // ÎŞ·¨ºÏ²¢
+                        result = false; // æ— æ³•åˆå¹¶
                     }
                 }
-            } else {    // 2¡¢²»Í¬ÀàĞÍµÄbitÖ®¼ä
-                if (!result) {  // ²»ÄÜÏòÇ°ºÏ²¢
+            } else {    // 2ã€ä¸åŒç±»å‹çš„bitä¹‹é—´
+                if (!result) {  // ä¸èƒ½å‘å‰åˆå¹¶
                     if (bitOriginal->end() < bitNext->start()) {
-                        result = true;  // ¿ÉÒÔÏòºóºÏ²¢
+                        result = true;  // å¯ä»¥å‘ååˆå¹¶
                     }
                 }
             }
         }
     } else {
-        // ÅĞ¶ÏÄÜ·ñÏòºóºÏ²¢
+        // åˆ¤æ–­èƒ½å¦å‘ååˆå¹¶
         if (bitNext && bitOriginal->end() < bitNext->start()) {
-            result = true;  // ¿ÉÒÔºÏ²¢
+            result = true;  // å¯ä»¥åˆå¹¶
         }
     }
 
     return result;
 }
 
-// ÏÔÊ¾ÓÒ¼ü²Ëµ¥
+// æ˜¾ç¤ºå³é”®èœå•
 void DataEditWidget::showMenu()
 {
     QMenu menu(tableView_);
     if (newIndex_ != tableView_->currentRow()) {
-        menu.addAction(QStringLiteral("¸´ÖÆ"), this, SLOT(slotCopy()));
+        menu.addAction(tr("Copy"), this, SLOT(slotCopy()));
     }
-    QAction *act = menu.addAction(QStringLiteral("Õ³Ìù"), this,
+    QAction *act = menu.addAction(tr("Past"), this,
                                   SLOT(slotPaste()));
-    // ¸ù¾İÔ´Êı¾İºÍÄ¿µÄÊı¾İ²ã´Î£¬¾ö¶¨Õ³ÌùÑ¡Ïî¿ÉÓÃ×´Ì¬
+    // æ ¹æ®æºæ•°æ®å’Œç›®çš„æ•°æ®å±‚æ¬¡ï¼Œå†³å®šç²˜è´´é€‰é¡¹å¯ç”¨çŠ¶æ€
     act->setEnabled(canPasted());
     menu.exec(QCursor::pos());
 }
 
-// µ±Ç°±íÊÇ·ñÔÊĞíÕ³Ìù¸´ÖÆµÄÊı¾İ
+// å½“å‰è¡¨æ˜¯å¦å…è®¸ç²˜è´´å¤åˆ¶çš„æ•°æ®
 bool DataEditWidget::canPasted() const
 {
     bool result = true;
     QString keys = tableView_->property("source").toString();
     if (keys.isEmpty() || -1 != newIndex_) {
-        // Ã»ÓĞÔ´Êı¾İ»òÕß±íÖĞÓĞÎ´±£´æÊı¾İ
+        // æ²¡æœ‰æºæ•°æ®æˆ–è€…è¡¨ä¸­æœ‰æœªä¿å­˜æ•°æ®
         result = false;
     } else {    //
         QStringList typeList = keys.mid(0, keys.indexOf("##")).split("_");
         const int level = typeList.first().toInt();
-        if (level == dataType_) {  // Ô´Êı¾İºÍÄ¿±êÊı¾İ²ã¼¶ÏàÍ¬
+        if (level == dataType_) {  // æºæ•°æ®å’Œç›®æ ‡æ•°æ®å±‚çº§ç›¸åŒ
             if (GlobalDefine::ntTable < dataType_) {
-                // ¹æÔòÊı¾İ²ã
+                // è§„åˆ™æ•°æ®å±‚
                 const int subType = typeList.last().toInt();
                 if (GlobalDefine::dtComplex == subType_) {
-                    // Ä¿±ê×ÓÀàĞÍÎª¸´ºÏÊı¾İ£¬ÔòÔÊĞíÕ³Ìù³ı×Ó±íÊı¾İÖ®ÍâµÄËùÓĞÊı¾İ
+                    // ç›®æ ‡å­ç±»å‹ä¸ºå¤åˆæ•°æ®ï¼Œåˆ™å…è®¸ç²˜è´´é™¤å­è¡¨æ•°æ®ä¹‹å¤–çš„æ‰€æœ‰æ•°æ®
                     result = (GlobalDefine::dtFrame != subType);
                 } else if (GlobalDefine::dtFrame == subType_) {
-                    // Ä¿±ê×ÓÀàĞÍÎª×Ó±íÊı¾İ£¬ÔòÖ»ÔÊĞíÕ³Ìù×Ó±íÊı¾İ
+                    // ç›®æ ‡å­ç±»å‹ä¸ºå­è¡¨æ•°æ®ï¼Œåˆ™åªå…è®¸ç²˜è´´å­è¡¨æ•°æ®
                     result = (GlobalDefine::dtFrame == subType);
                 } else {
-                    // Ä¿±ê²ã¼¶²»ÔÊĞíÕ³ÌùÔ´Êı¾İ
+                    // ç›®æ ‡å±‚çº§ä¸å…è®¸ç²˜è´´æºæ•°æ®
                     result = false;
                 }
             }
-        } else {    // Ô´Êı¾İºÍÄ¿±êÊı¾İ²ã¼¶²»Í¬
+        } else {    // æºæ•°æ®å’Œç›®æ ‡æ•°æ®å±‚çº§ä¸åŒ
             const int subType = typeList.last().toInt();
             if (GlobalDefine::ntTable > dataType_) {
-                // Ä¿±ê²ã¼¶ÔÚ±í²ã´ÎÒÔÉÏ£¬²»ÔÊĞíÕ³ÌùÔ´Êı¾İ
+                // ç›®æ ‡å±‚çº§åœ¨è¡¨å±‚æ¬¡ä»¥ä¸Šï¼Œä¸å…è®¸ç²˜è´´æºæ•°æ®
                 result = false;
             } else {
                 if (GlobalDefine::ntTable == dataType_) {
-                    // ±í²ã´Î                // ²éÑ¯µ±Ç°½ÚµãÊÇ·ñ¼ÓÔØÊı¾İ
+                    // è¡¨å±‚æ¬¡                // æŸ¥è¯¢å½“å‰èŠ‚ç‚¹æ˜¯å¦åŠ è½½æ•°æ®
                     int loadState = 0;
                     QVariantList args;
-                    args.append(qVariantFromValue((void*)&loadState));
+                    args.append(qVariantFromValue(static_cast<void*>(&loadState)));
                     QString command("loadedState");
-                    args.append(qVariantFromValue((void*)&command));
+                    args.append(qVariantFromValue(static_cast<void*>(&command)));
                     jnotify->send("edit.queryNodeFlag", args);
 
                     if (Qt::Unchecked == loadState) {
-                        result = false; // Î´¼ÓÔØ¹æÔòÊı¾İ£¬²»ÔÊĞí¸´ÖÆ
+                        result = false; // æœªåŠ è½½è§„åˆ™æ•°æ®ï¼Œä¸å…è®¸å¤åˆ¶
                     } else {
                         if (GlobalDefine::ntRule == level) {
-                            // Ô´Êı¾İÎª¹æÔòÊı¾İ²ã£¬²»ÔÊĞíÕ³Ìù×Ó±íÊı¾İ
+                            // æºæ•°æ®ä¸ºè§„åˆ™æ•°æ®å±‚ï¼Œä¸å…è®¸ç²˜è´´å­è¡¨æ•°æ®
                             result = (GlobalDefine::dtFrame != subType);
                         } else {
-                            // Ä¿±ê²ã¼¶²»ÔÊĞíÕ³ÌùÔ´Êı¾İ
+                            // ç›®æ ‡å±‚çº§ä¸å…è®¸ç²˜è´´æºæ•°æ®
                             result = false;
                         }
                     }
                 } else {
-                    // ¹æÔòÊı¾İ²ã
+                    // è§„åˆ™æ•°æ®å±‚
                     if (GlobalDefine::dtComplex == subType_) {
-                        // Ä¿±ê×ÓÀàĞÍÎª¸´ºÏÊı¾İ£¬ÔòÔÊĞíÕ³Ìù¹æÔòÊı¾İ
+                        // ç›®æ ‡å­ç±»å‹ä¸ºå¤åˆæ•°æ®ï¼Œåˆ™å…è®¸ç²˜è´´è§„åˆ™æ•°æ®
                         result = (GlobalDefine::ntTable == level);
                     } else {
-                        // Ä¿±ê²ã¼¶²»ÔÊĞíÕ³ÌùÔ´Êı¾İ
+                        // ç›®æ ‡å±‚çº§ä¸å…è®¸ç²˜è´´æºæ•°æ®
                         result = false;
                     }
                 }
@@ -1773,7 +1769,7 @@ bool DataEditWidget::canPasted() const
     return result;
 }
 
-// É¾³ıÊı¾İ
+// åˆ é™¤æ•°æ®
 void DataEditWidget::deleteRule(int pos)
 {
     TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
@@ -1781,9 +1777,9 @@ void DataEditWidget::deleteRule(int pos)
     if (rules.empty()) {
         return;
     }
-    // ½«ºóÒ»ÏîÊı¾İÍùÇ°Å²£¬×îºóÒ»ÏîÊı¾İ¼´ÎªĞèÒªÉ¾³ıµÄÏî
+    // å°†åä¸€é¡¹æ•°æ®å¾€å‰æŒªï¼Œæœ€åä¸€é¡¹æ•°æ®å³ä¸ºéœ€è¦åˆ é™¤çš„é¡¹
     int index = 0;
-    ICDBitData::smtBit bit = 0;
+    ICDBitData::smtBit bit = nullptr;
     ICDMetaData::smtMeta metaPre = table->rule(pos - 1);
     ICDBitData::smtBit bitPre = SMT_CONVERT(ICDBitData, metaPre);
     ICDMetaData::ruleMap::iterator it = rules.find(pos);
@@ -1796,14 +1792,14 @@ void DataEditWidget::deleteRule(int pos)
         bit = SMT_CONVERT(ICDBitData, meta);
         if (bitPre && bit
                 && bitPre->end() < bit->start()) {
-            index = bitPre->index() - bitPre->start() / 8 + bit->start() / 8; // Æ«ÒÆ×Ö½Ú
+            index = bitPre->index() - bitPre->start() / 8 + bit->start() / 8; // åç§»å­—èŠ‚
         }
         else {
             if (metaPre) {
                 index = metaPre->index() + metaPre->byteLength();
             }
             if (bit) {
-                index += bit->start() / 8;   // Æ«ÒÆ×Ö½Ú
+                index += bit->start() / 8;   // åç§»å­—èŠ‚
             }
         }
         meta->setSerial(meta->serial() - 1);
@@ -1813,11 +1809,11 @@ void DataEditWidget::deleteRule(int pos)
         bitPre = bit;
         it = itNext;
     }
-    // É¾³ı×îºóÒ»ÏîÊı¾İ
+    // åˆ é™¤æœ€åä¸€é¡¹æ•°æ®
     if (it != rules.end()) {
         rules.erase(it);
     }
-    // ¸üĞÂÄÚ´æ
+    // æ›´æ–°å†…å­˜
     table->setRule(rules);
 }
 
@@ -1830,40 +1826,40 @@ void DataEditWidget::insertRule(const ICDMetaData::smtMeta &meta, int pos)
     if (!table) {
         return;
     }
-    // ÉèÖÃÊı¾İĞÂĞòºÅ
+    // è®¾ç½®æ•°æ®æ–°åºå·
     meta->setSerial(pos);
     ICDBitData::smtBit bitOriginal = SMT_CONVERT(ICDBitData, meta);
-    // 1¡¢È·¶¨Êı¾İ×Ö½ÚĞòºÅºÍÆ«ÒÆÁ¿
+    // 1ã€ç¡®å®šæ•°æ®å­—èŠ‚åºå·å’Œåç§»é‡
     bool mergerd = false;
     ICDMetaData::ruleMap rules = table->allRule();
     ICDMetaData::smtMeta metaPre = table->rule(pos - 1);
     ICDBitData::smtBit bitPre = SMT_CONVERT(ICDBitData, metaPre);
     if (bitOriginal) {
         if (bitPre) {
-            // ÅĞ¶ÏÄÜ·ñÏòÇ°ºÏ²¢
+            // åˆ¤æ–­èƒ½å¦å‘å‰åˆå¹¶
             if (bitPre->end() < bitOriginal->start()) {
-                mergerd = true;  // ¿ÉÒÔºÏ²¢
+                mergerd = true;  // å¯ä»¥åˆå¹¶
                 meta->setIndex(bitPre->index() - bitPre->start() / 8 + bitOriginal->start() / 8);
             }
         }
     }
     if (!mergerd) {
-        // ²»ÄÜºÏ²¢
+        // ä¸èƒ½åˆå¹¶
         if (metaPre) {
             meta->setIndex(metaPre->index() + metaPre->byteLength());
         } else {
             meta->setIndex(0);
         }
         if (bitOriginal) {
-            // Æ«ÒÆ×Ö½Ú
+            // åç§»å­—èŠ‚
             meta->setIndex(meta->index() + bitOriginal->start() / 8);
         }
     }
 
-    // 2¡¢ÕûÀí¹æÔòÊı¾İ
-    // ´ÓÄ¿±êÊı¾İ¿ªÊ¼£¬µ÷Õû×Ö½ÚĞòºÅ
+    // 2ã€æ•´ç†è§„åˆ™æ•°æ®
+    // ä»ç›®æ ‡æ•°æ®å¼€å§‹ï¼Œè°ƒæ•´å­—èŠ‚åºå·
     int index = 0;
-    ICDBitData::smtBit bit = 0;
+    ICDBitData::smtBit bit = nullptr;
     ICDMetaData::smtMeta newData = meta;
     bitPre = SMT_CONVERT(ICDBitData, meta);
     ICDMetaData::ruleMap::iterator it = rules.find(pos);
@@ -1876,12 +1872,12 @@ void DataEditWidget::insertRule(const ICDMetaData::smtMeta &meta, int pos)
         bit = SMT_CONVERT(ICDBitData, next);
         if (bitPre && bit
                 && bitPre->end() < bit->start()) {
-            // µ±Ç°ÏîÄÜ¹»ÏòÇ°Ò»ÏîºÏ²¢
+            // å½“å‰é¡¹èƒ½å¤Ÿå‘å‰ä¸€é¡¹åˆå¹¶
             index = bitPre->index() - bitPre->start() / 8 + bit->start() / 8;
         } else {
             index = newData->index() + newData->byteLength();
             if (bit) {
-                index += bit->start() / 8;  // Æ«ÒÆ×Ö½Ú
+                index += bit->start() / 8;  // åç§»å­—èŠ‚
             }
         }
         next->setSerial(newData->serial() + 1);
@@ -1889,39 +1885,39 @@ void DataEditWidget::insertRule(const ICDMetaData::smtMeta &meta, int pos)
         bitPre = bit;
         newData = next;
     }
-    // ±£´æÔ­Ê¼µÄ×îºóÒ»ÏîÊı¾İ
+    // ä¿å­˜åŸå§‹çš„æœ€åä¸€é¡¹æ•°æ®
     rules[newData->serial()] = newData;
-    // ±£´æÄÚ´æ
+    // ä¿å­˜å†…å­˜
     table->setRule(rules);
 }
 
-// ±ä¸ü»úĞÍÎ»ÖÃ
+// å˜æ›´æœºå‹ä½ç½®
 void DataEditWidget::movePlane(int from, int to)
 {
-    const int count = vData_.size();
-    if (from < 0 || to >= count) {
+    const size_t count = vData_.size();
+    if (from < 0 || size_t(to) >= count) {
         return;
     }
-    ICDElement::smtElement element = vData_[from];
-    if (from < to) {    // ´ÓÇ°ÏòºóÒÆ
-        for (int i = from; i < to; ++i) {
+    ICDElement::smtElement element = vData_[size_t(from)];
+    if (from < to) {    // ä»å‰å‘åç§»
+        for (size_t i = size_t(from); i < size_t(to); ++i) {
             vData_[i] = vData_[i + 1];
         }
-    } else {    // ´ÓºóÏòÇ°ÒÆ
-        for (int i = from; i > to; --i) {
+    } else {    // ä»åå‘å‰ç§»
+        for (size_t i = size_t(from); i > size_t(to); --i) {
             vData_[i] = vData_[i - 1];
         }
     }
-    vData_[to] = element;
+    vData_[size_t(to)] = element;
     std::vector<PlaneNode::smtPlane> planes;
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         planes.push_back(SMT_CONVERT(PlaneNode, vData_[i])->clone());
     }
     showData(planes);
     tableView_->selectRow(to);
 }
 
-// ±ä¸üÏµÍ³Î»ÖÃ
+// å˜æ›´ç³»ç»Ÿä½ç½®
 void DataEditWidget::moveSystem(int from, int to)
 {
     PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, data_);
@@ -1929,27 +1925,27 @@ void DataEditWidget::moveSystem(int from, int to)
         return;
     }
     SystemNode::systemVector systems = plane->allSystem();
-    const int count = systems.size();
-    if (from < 0 || to >= count) {
+    const size_t count = systems.size();
+    if (from < 0 || size_t(to) >= count) {
         return;
     }
-    SystemNode::smtSystem system = systems[from];
-    if (from < to) {    // ´ÓÇ°ÏòºóÒÆ
-        for (int i = from; i < to; ++i) {
+    SystemNode::smtSystem system = systems[size_t(from)];
+    if (from < to) {    // ä»å‰å‘åç§»
+        for (size_t i = size_t(from); i < size_t(to); ++i) {
             systems[i] = systems[i + 1];
         }
-    } else {    // ´ÓºóÏòÇ°ÒÆ
-        for (int i = from; i > to; --i) {
+    } else {    // ä»åå‘å‰ç§»
+        for (size_t i = size_t(from); i > size_t(to); --i) {
             systems[i] = systems[i - 1];
         }
     }
-    systems[to] = system;
+    systems[size_t(to)] = system;
     plane->setSystem(systems);
     showData(systems);
     tableView_->selectRow(to);
 }
 
-// ±ä¸ü±íÎ»ÖÃ
+// å˜æ›´è¡¨ä½ç½®
 void DataEditWidget::moveTable(int from, int to)
 {
     SystemNode::smtSystem system = SMT_CONVERT(SystemNode, data_);
@@ -1957,27 +1953,27 @@ void DataEditWidget::moveTable(int from, int to)
         return;
     }
     TableNode::tableVector tables = system->allTable();
-    const int count = tables.size();
-    if (from < 0 || to >= count) {
+    const size_t count = tables.size();
+    if (from < 0 || size_t(to) >= count) {
         return;
     }
-    TableNode::smtTable table = tables[from];
-    if (from < to) {    // ´ÓÇ°ÏòºóÒÆ
-        for (int i = from; i < to; ++i) {
+    TableNode::smtTable table = tables[size_t(from)];
+    if (from < to) {    // ä»å‰å‘åç§»
+        for (size_t i = size_t(from); i < size_t(to); ++i) {
             tables[i] = tables[i + 1];
         }
-    } else {    // ´ÓºóÏòÇ°ÒÆ
-        for (int i = from; i > to; --i) {
+    } else {    // ä»åå‘å‰ç§»
+        for (size_t i = size_t(from); i > size_t(to); --i) {
             tables[i] = tables[i - 1];
         }
     }
-    tables[to] = table;
+    tables[size_t(to)] = table;
     system->setTable(tables);
     showData(tables);
     tableView_->selectRow(to);
 }
 
-// ±ä¸ü¹æÔòÎ»ÖÃ
+// å˜æ›´è§„åˆ™ä½ç½®
 void DataEditWidget::moveRule(int from, int to)
 {
     TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
@@ -1988,14 +1984,14 @@ void DataEditWidget::moveRule(int from, int to)
     if (!meta) {
         return;
     }
-    // ½«ÖÆ¶¨Î»ÖÃµÄ¹æÔòÊı¾İÒÆ¶¯µ½Ä¿±êÎ»ÖÃ£¬·ÖÉ¾³ıºÍ²åÈëÁ½²½Íê³É
+    // å°†åˆ¶å®šä½ç½®çš„è§„åˆ™æ•°æ®ç§»åŠ¨åˆ°ç›®æ ‡ä½ç½®ï¼Œåˆ†åˆ é™¤å’Œæ’å…¥ä¸¤æ­¥å®Œæˆ
     deleteRule(from);
     insertRule(meta, to);
     showData(table->allRule());
     tableView_->selectRow(to - 1);
 }
 
-// ±ä¸ü×Ó±íÎ»ÖÃ
+// å˜æ›´å­è¡¨ä½ç½®
 void DataEditWidget::moveSubTable(int from, int to)
 {
     ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, data_);
@@ -2003,21 +1999,21 @@ void DataEditWidget::moveSubTable(int from, int to)
         return;
     }
     TableNode::tableVector tables = complex->allTable();
-    const int count = tables.size();
-    if (from < 0 || to >= count) {
+    const size_t count = tables.size();
+    if (from < 0 || size_t(to) >= count) {
         return;
     }
-    TableNode::smtTable table = tables[from];
-    if (from < to) {    // ´ÓÇ°ÏòºóÒÆ
-        for (int i = from; i < to; ++i) {
+    TableNode::smtTable table = tables[size_t(from)];
+    if (from < to) {    // ä»å‰å‘åç§»
+        for (size_t i = size_t(from); i < size_t(to); ++i) {
             tables[i] = tables[i + 1];
         }
-    } else {    // ´ÓºóÏòÇ°ÒÆ
-        for (int i = from; i > to; --i) {
+    } else {    // ä»åå‘å‰ç§»
+        for (size_t i = size_t(from); i > size_t(to); --i) {
             tables[i] = tables[i - 1];
         }
     }
-    tables[to] = table;
+    tables[size_t(to)] = table;
     complex->setTable(tables);
     showData(complex);
     tableView_->selectRow(to);
@@ -2028,8 +2024,8 @@ void DataEditWidget::saveEditData(void *data)
     if (GlobalDefine::ntUnknown == dataType_) {
         PlaneNode::smtPlane plane;
         const stPlane &_plane = *reinterpret_cast<stPlane *>(data);
-        const int count = vData_.size();
-        for (int i = 0; i < count; ++i) {
+        const size_t count = vData_.size();
+        for (size_t i = 0; i < count; ++i) {
             if (atoi(vData_[i]->id().c_str()) == _plane.nCode) {
                 plane = std::dynamic_pointer_cast<PlaneNode>(vData_[i]);
                 plane->setPlane(_plane);
@@ -2054,8 +2050,8 @@ void DataEditWidget::saveEditData(void *data)
         ICDMetaData::smtMeta meta = *reinterpret_cast<ICDMetaData::smtMeta *>(data);
         TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
         ICDMetaData::smtMeta old = table->rule(meta->serial());
-        // Èç¹ûÊı¾İ³¤¶È±ä¸ü£¬ÔòÖØĞÂ¼ÆËã±íÊı¾İÏî×Ö½ÚºÅ
-        bool reorder = false;   // ÖØĞÂÕûÀíÊı¾İ±êÖ¾
+        // å¦‚æœæ•°æ®é•¿åº¦å˜æ›´ï¼Œåˆ™é‡æ–°è®¡ç®—è¡¨æ•°æ®é¡¹å­—èŠ‚å·
+        bool reorder = false;   // é‡æ–°æ•´ç†æ•°æ®æ ‡å¿—
         if (meta->byteLength() != old->byteLength()
                 || meta->length() != old->length()
                 || meta->metaType() != old->metaType()) {
@@ -2078,8 +2074,8 @@ void DataEditWidget::saveEditData(void *data)
             ICDMetaData::smtMeta meta = *reinterpret_cast<ICDMetaData::smtMeta *>(data);
             TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
             ICDMetaData::smtMeta old = table->rule(meta->serial());
-            // Èç¹ûÊı¾İ³¤¶È±ä¸ü£¬ÔòÖØĞÂ¼ÆËã±íÊı¾İÏî×Ö½ÚºÅ
-            bool reorder = false;   // ÖØĞÂÕûÀíÊı¾İ±êÖ¾
+            // å¦‚æœæ•°æ®é•¿åº¦å˜æ›´ï¼Œåˆ™é‡æ–°è®¡ç®—è¡¨æ•°æ®é¡¹å­—èŠ‚å·
+            bool reorder = false;   // é‡æ–°æ•´ç†æ•°æ®æ ‡å¿—
             if (meta->byteLength() != old->byteLength()
                     || meta->length() != old->length()
                     || meta->metaType() != old->metaType()) {
@@ -2106,16 +2102,16 @@ void DataEditWidget::saveEditData(void *data)
     }
 }
 
-// ÖØĞÂ¼ÆËã¹æÔòÊı¾İ×Ö½ÚĞòºÅ
+// é‡æ–°è®¡ç®—è§„åˆ™æ•°æ®å­—èŠ‚åºå·
 void DataEditWidget::reorderTable(TableNode::smtTable &table, int from)
 {
     ICDMetaData::ruleMap rules = table->allRule();
     if (rules.empty()) {
         return;
     }
-    // ´ÓÄ¿±êÎ»ÖÃ¿ªÊ¼£¬ÖØĞÂ¼ÆËã×Ö½ÚĞòºÅ
+    // ä»ç›®æ ‡ä½ç½®å¼€å§‹ï¼Œé‡æ–°è®¡ç®—å­—èŠ‚åºå·
     int index = 0;
-    ICDBitData::smtBit bit = 0;
+    ICDBitData::smtBit bit = nullptr;
     ICDMetaData::smtMeta metaPre = table->rule(from - 1);
     ICDBitData::smtBit bitPre = SMT_CONVERT(ICDBitData, metaPre);
     ICDMetaData::ruleMap::iterator it = rules.find(from);
@@ -2133,49 +2129,49 @@ void DataEditWidget::reorderTable(TableNode::smtTable &table, int from)
                 index = metaPre->index() + metaPre->byteLength();
             }
             if (bit) {
-                index += bit->start() / 8;  // Æ«ÒÆ×Ö½Ú
+                index += bit->start() / 8;  // åç§»å­—èŠ‚
             }
         }
         meta->setIndex(index);
         metaPre = meta;
         bitPre = bit;
     }
-    // ¸üĞÂÄÚ´æ
+    // æ›´æ–°å†…å­˜
     table->setRule(rules);
 }
 
-// ²éÑ¯µ±Ç°¹æÔòÊı¾İ¸¸±í
+// æŸ¥è¯¢å½“å‰è§„åˆ™æ•°æ®çˆ¶è¡¨
 TableNode::smtTable DataEditWidget::parentTable() const
 {
-    TableNode::smtTable table = 0;
-    // ·Ö±íÏÂÃæµÄ½ÚµãºÍ¹æÔò½ÚµãÁ½Àà£¬±íÏÂÃæµÄ½Úµã£¬²éÑ¯q_data¸±±¾Êı¾İ
+    TableNode::smtTable table = nullptr;
+    // åˆ†è¡¨ä¸‹é¢çš„èŠ‚ç‚¹å’Œè§„åˆ™èŠ‚ç‚¹ä¸¤ç±»ï¼Œè¡¨ä¸‹é¢çš„èŠ‚ç‚¹ï¼ŒæŸ¥è¯¢q_dataå‰¯æœ¬æ•°æ®
     if (GlobalDefine::ntRule == dataType_
             && !(GlobalDefine::dtComplex == subType_
                  || GlobalDefine::dtFrame == subType_)) {
-        // ·Ç¸´ºÏ/Ö¡¹æÔòÊı¾İ£¬²éÑ¯¸¸±í
+        // éå¤åˆ/å¸§è§„åˆ™æ•°æ®ï¼ŒæŸ¥è¯¢çˆ¶è¡¨
         QString keys;
         ICDElement::smtElement element;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&keys));
+        args.append(qVariantFromValue(static_cast<void*>(&keys)));
         jnotify->send("edit.queryNodeKeys", args);
 
-        // ¹Ø¼üÂë¼¯ÖĞ°üº¬¸Ãµ±Ç°¹æÔòÊı¾İid£¬²éÑ¯¸¸±íĞè½«ÆäÉ¾³ı
+        // å…³é”®ç é›†ä¸­åŒ…å«è¯¥å½“å‰è§„åˆ™æ•°æ®idï¼ŒæŸ¥è¯¢çˆ¶è¡¨éœ€å°†å…¶åˆ é™¤
         keys.truncate(keys.lastIndexOf("/"));
         args.clear();
-        args.append(qVariantFromValue((void*)&element));
-        args.append(qVariantFromValue((void*)&keys));
+        args.append(qVariantFromValue(static_cast<void*>(&element)));
+        args.append(qVariantFromValue(static_cast<void*>(&keys)));
         jnotify->send("edit.querySingleElement", args);
 
         table = SMT_CONVERT(TableNode, element);
     } else {
-        // ¹æÔò½Úµã£¬ÔÚ¿½±´Êı¾İÖĞ²éÑ¯¸¸±í
+        // è§„åˆ™èŠ‚ç‚¹ï¼Œåœ¨æ‹·è´æ•°æ®ä¸­æŸ¥è¯¢çˆ¶è¡¨
         table = SMT_CONVERT(TableNode, data_);
     }
 
     return table;
 }
 
-// ¸üĞÂ±à¼­Êı¾İ½çÃæ
+// æ›´æ–°ç¼–è¾‘æ•°æ®ç•Œé¢
 void DataEditWidget::updateLoggingUI(GlobalDefine::OptionType option)
 {
     if (GlobalDefine::ntUnknown == dataType_) {
@@ -2192,8 +2188,8 @@ void DataEditWidget::updateLoggingUI(GlobalDefine::OptionType option)
                 QString condition = QString("childloadedState@%1")
                         .arg(element->id().c_str());
                 QVariantList args;
-                args.append(qVariantFromValue((void*)&loaded));
-                args.append(qVariantFromValue((void*)&condition));
+                args.append(qVariantFromValue(static_cast<void*>(&loaded)));
+                args.append(qVariantFromValue(static_cast<void*>(&condition)));
                 jnotify->send("edit.queryNodeFlag", args);
                 if (loaded > 0) {
                     updateICDTableUI(option);
@@ -2211,54 +2207,54 @@ void DataEditWidget::updateLoggingUI(GlobalDefine::OptionType option)
             updateSubTableUI(option);
         }
     }
-    // ¸ù¾İÊÇ·ñÓĞÎ»ÖÃ±ä¶¯£¬ÅĞ¶¨ÊÇ·ñÆôÓÃ±£´æ°´Å¥
+    // æ ¹æ®æ˜¯å¦æœ‰ä½ç½®å˜åŠ¨ï¼Œåˆ¤å®šæ˜¯å¦å¯ç”¨ä¿å­˜æŒ‰é’®
     if (changedPos >= 0) {
         loggingWidget_->enableCommit(true);
     }
 }
 
-// ±íµ±Ç°Ñ¡ÖĞÏî±ä¸ü
+// è¡¨å½“å‰é€‰ä¸­é¡¹å˜æ›´
 void DataEditWidget::slotCurrentItemChanged(QStandardItem *current,
                                             QStandardItem *previous)
 {
     if (!current) {
-        // Òş²ØÊı¾İÂ¼Èë´°¿Ú
+        // éšè—æ•°æ®å½•å…¥çª—å£
         loggingWidget_->setVisible(false);
         setActionEnabled("up", false);
         setActionEnabled("down", false);
         setActionEnabled("remove", false);
     } else {
         if (previous && current->row() == previous->row()) {
-            // Î´±ä¸üÑ¡ÖĞĞĞ
+            // æœªå˜æ›´é€‰ä¸­è¡Œ
             return;
         } else {
             if (newIndex_ < 0 || newIndex_ != current->row()) {
                 updateLoggingUI(GlobalDefine::optEdit);
-            } else {     // ĞÂÔöÊı¾İ²¢Î´±£´æÓÃ»§¾ÍÇĞ»»Ñ¡ÖĞ±íÖĞÆäËûÊı¾İ
+            } else {     // æ–°å¢æ•°æ®å¹¶æœªä¿å­˜ç”¨æˆ·å°±åˆ‡æ¢é€‰ä¸­è¡¨ä¸­å…¶ä»–æ•°æ®
                 updateLoggingUI(GlobalDefine::optNew);
             }
         }
         int count = tableView_->rowCount();
-        // ³ıÁË¾ßÌå¹æÔò½Úµã£¬ÆäËû½Úµã¾ùÔÊĞí±ä¸üÎ»ÖÃ
-        if (count > 1 && GlobalDefine::ntRule != dataType_
+        // é™¤äº†å…·ä½“è§„åˆ™èŠ‚ç‚¹ï¼Œå…¶ä»–èŠ‚ç‚¹å‡å…è®¸å˜æ›´ä½ç½®
+        if ((count > 1 && (GlobalDefine::ntRule != dataType_))
                 || GlobalDefine::dtFrame == subType_
                 || GlobalDefine::dtComplex == subType_) {
             setActionEnabled("up", 0 != current->row());
             setActionEnabled("down", count - 1 != current->row());
-            // ±ä¸üÊı¾İË³ĞòºóÎ´±£´æ£¬²»ÔÊĞíÉ¾³ı
+            // å˜æ›´æ•°æ®é¡ºåºåæœªä¿å­˜ï¼Œä¸å…è®¸åˆ é™¤
             setActionEnabled("remove", changedPos < 0 ? true :false);
         } else if (1 == count) {
             setActionEnabled("remove", true);
         }
     }
-    // ÇĞ»»½Úµãºó£¬¸ù¾İÁĞ±íÖĞÊÇ·ñÓĞĞÂÔöÊı¾İ£¬¾ö¶¨ĞÂÔö°´Å¥ÊÇ·ñ¿ÉÓÃ
+    // åˆ‡æ¢èŠ‚ç‚¹åï¼Œæ ¹æ®åˆ—è¡¨ä¸­æ˜¯å¦æœ‰æ–°å¢æ•°æ®ï¼Œå†³å®šæ–°å¢æŒ‰é’®æ˜¯å¦å¯ç”¨
     if (-1 != newIndex_) {
         setActionEnabled("add", false);
         setActionEnabled("insert", false);
         setActionEnabled("up", false);
         setActionEnabled("down", false);
     } else {
-        // ±ä¸üÊı¾İÎ»ÖÃºó£¬Î´±£´æÊı¾İ£¬²»ÔÊĞíĞÂÔö¡¢²åÈë
+        // å˜æ›´æ•°æ®ä½ç½®åï¼Œæœªä¿å­˜æ•°æ®ï¼Œä¸å…è®¸æ–°å¢ã€æ’å…¥
         if (changedPos >= 0) {
             setActionEnabled("add", false);
             setActionEnabled("insert", false);
@@ -2266,46 +2262,44 @@ void DataEditWidget::slotCurrentItemChanged(QStandardItem *current,
     }
 }
 
-// µã»÷±íÊı¾İÏî
+// ç‚¹å‡»è¡¨æ•°æ®é¡¹
 void DataEditWidget::slotItemPressed(QStandardItem *item)
 {
     Q_UNUSED(item);
     if (Qt::RightButton == QApplication::mouseButtons()) {
-        // ¾ßÌå¹æÔò¶¨ÒåÊ±£¬²»ÏÔÊ¾ÓÒ¼ü²Ëµ¥
+        // å…·ä½“è§„åˆ™å®šä¹‰æ—¶ï¼Œä¸æ˜¾ç¤ºå³é”®èœå•
         if (objectName_ != tableView_->tableName()) {
             showMenu();
         }
     }
 }
 
-// ±í×Ô¶¨Òå²Ëµ¥
+// è¡¨è‡ªå®šä¹‰èœå•
 void DataEditWidget::slotCustomContextMenu(const QPoint &pos)
 {
-    // ¾ßÌå¹æÔò¶¨ÒåÊ±£¬²»ÏÔÊ¾ÓÒ¼ü²Ëµ¥
+    // å…·ä½“è§„åˆ™å®šä¹‰æ—¶ï¼Œä¸æ˜¾ç¤ºå³é”®èœå•
     if (objectName_ != tableView_->tableName()) {
         QMenu menu(tableView_);
         int row = tableView_->currentRow();
         if (row > -1 && newIndex_ != row) {
-            menu.addAction(QStringLiteral("¸´ÖÆ"), this, SLOT(slotCopy()));
+            menu.addAction(tr("Copy"), this, SLOT(slotCopy()));
         }
-        QAction *act = menu.addAction(QStringLiteral("Õ³Ìù"), this,
+        QAction *act = menu.addAction(tr("Past"), this,
                                       SLOT(slotPaste()));
-        // ¸ù¾İÔ´Êı¾İºÍÄ¿µÄÊı¾İ²ã´Î£¬¾ö¶¨Õ³ÌùÑ¡Ïî¿ÉÓÃ×´Ì¬
+        // æ ¹æ®æºæ•°æ®å’Œç›®çš„æ•°æ®å±‚æ¬¡ï¼Œå†³å®šç²˜è´´é€‰é¡¹å¯ç”¨çŠ¶æ€
         act->setEnabled(canPasted());
         menu.exec(tableView_->viewport()->mapToGlobal(pos));
     }
 }
 
-// ±íÊı¾İ±ä¸ü
+// è¡¨æ•°æ®å˜æ›´
 void DataEditWidget::slotContentChanged()
 {
-    // ½öÔÚ¹æÔò±íÊı¾İÊ±ÏÔÊ¾ÌáÊ¾
+    // ä»…åœ¨è§„åˆ™è¡¨æ•°æ®æ—¶æ˜¾ç¤ºæç¤º
     setTipsVisible(ruleName_ == tableView_->tableName());
 }
 
-void DataEditWidget::slotDataPosChanged(int logical,
-                                        int oldIndex,
-                                        int newIndex)
+void DataEditWidget::slotDataPosChanged(int logical, int oldIndex, int newIndex)
 {
     Q_UNUSED(logical);
     if (changedPos < 0) {
@@ -2320,11 +2314,11 @@ void DataEditWidget::slotDataPosChanged(int logical,
     } else if (GlobalDefine::ntSystem == dataType_) {
         moveTable(oldIndex, newIndex);
     } else if (GlobalDefine::ntTable == dataType_) {
-        // ¹æÔòĞòºÅ´Ó1¿ªÊ¼
+        // è§„åˆ™åºå·ä»1å¼€å§‹
         moveRule(oldIndex + 1, newIndex + 1);
     } else if (GlobalDefine::ntRule == dataType_) {
         if (GlobalDefine::dtComplex == subType_) {
-            // ¹æÔòĞòºÅ´Ó1¿ªÊ¼
+            // è§„åˆ™åºå·ä»1å¼€å§‹
             moveRule(oldIndex + 1, newIndex + 1);
         } else if (GlobalDefine::dtFrame == subType_) {
             moveSubTable(oldIndex, newIndex);
@@ -2333,68 +2327,68 @@ void DataEditWidget::slotDataPosChanged(int logical,
     loggingWidget_->enableCommit(true);
 }
 
-// ±£´æÊı¾İ
+// ä¿å­˜æ•°æ®
 void DataEditWidget::slotSave2Memory(void *data, bool &result)
 {
     if (!data) {
         return;
     }
 
-    // ±£´æÊı¾İµ½ÄÚ´æ£¬·Ö¿½±´¡¢²åÈë¡¢ĞÂÔöºÍ±à¼­£¬¿½±´¡¢²åÈë¡¢ĞÂÔöÖ±½Ó±£´æµ½ÄÚ´æ
-    // ±à¼­ÓÉÓÚÉæ¼°µ½Êı¾İµÄÎ»ÖÃ¸ü»»£¬ËùÓĞÏÈ±£´æµ½¸±±¾Êı¾İ£¬ÔÙÒ»´ÎĞÔ¸üĞÂÄÚ´æÊı¾İ
+    // ä¿å­˜æ•°æ®åˆ°å†…å­˜ï¼Œåˆ†æ‹·è´ã€æ’å…¥ã€æ–°å¢å’Œç¼–è¾‘ï¼Œæ‹·è´ã€æ’å…¥ã€æ–°å¢ç›´æ¥ä¿å­˜åˆ°å†…å­˜
+    // ç¼–è¾‘ç”±äºæ¶‰åŠåˆ°æ•°æ®çš„ä½ç½®æ›´æ¢ï¼Œæ‰€æœ‰å…ˆä¿å­˜åˆ°å‰¯æœ¬æ•°æ®ï¼Œå†ä¸€æ¬¡æ€§æ›´æ–°å†…å­˜æ•°æ®
     if (tableView_->property("copyData").toInt() == newIndex_
-            && -1 != newIndex_) {  // ±£´æ¿½±´Êı¾İ
+            && -1 != newIndex_) {  // ä¿å­˜æ‹·è´æ•°æ®
         QVector<int> params;
         ICDElement::smtElement element;
         QString keys = tableView_->property("source").toString();
-        keys = keys.mid(keys.indexOf("##") + strlen("##"));
-        params << (int)&keys << (int)data;
+        keys = keys.mid(int(keys.indexOf("##")) + int(strlen("##")));
+        params << int(&keys) << int(data);
 
         QVariantList args;
-        args.append(qVariantFromValue((void*)&params));
-        args.append(qVariantFromValue((void*)&element));
+        args.append(qVariantFromValue(static_cast<void*>(&params)));
+        args.append(qVariantFromValue(static_cast<void*>(&element)));
         jnotify->send("edit.savePastedData", args);
 
         result = true;
     } else if (-1 != newIndex_
                && (tableView_->rowCount() - 1) != newIndex_
-               && tableView_->currentRow() == newIndex_) {   // ²åÈëÊı¾İ
+               && tableView_->currentRow() == newIndex_) {   // æ’å…¥æ•°æ®
         std::vector<int> params;
         params.push_back(tableView_->currentRow());
-        params.push_back((int)data);
+        params.push_back(int(data));
 
         QVariantList args;
-        args.append(qVariantFromValue((void*)&params));
-        args.append(qVariantFromValue((void*)&result));
+        args.append(qVariantFromValue(static_cast<void*>(&params)));
+        args.append(qVariantFromValue(static_cast<void*>(&result)));
         jnotify->send("edit.insertNodeData", args);
 
-    } else {    // ĞÂÔö£¨²åÈëÊı¾İµ½×îºóÒ»ÏîËã×÷ĞÂÔö£©/±à¼­
-        if (-1 != changedPos) {    // ¸Ä±äÁËÊı¾İÏîµÄÎ»ÖÃ
-            // ±£´æÊı¾İµ½¸±±¾
+    } else {    // æ–°å¢ï¼ˆæ’å…¥æ•°æ®åˆ°æœ€åä¸€é¡¹ç®—ä½œæ–°å¢ï¼‰/ç¼–è¾‘
+        if (-1 != changedPos) {    // æ”¹å˜äº†æ•°æ®é¡¹çš„ä½ç½®
+            // ä¿å­˜æ•°æ®åˆ°å‰¯æœ¬
             saveEditData(data);
             std::vector<int> params;
             if (GlobalDefine::ntUnknown == dataType_) {
-                params.push_back((int)&vData_);
+                params.push_back(int(&vData_));
             } else {
-                params.push_back((int)&data_);
+                params.push_back(int(&data_));
             }
             params.push_back(changedPos);
 
             QVariantList args;
-            args.append(qVariantFromValue((void*)&params));
-            args.append(qVariantFromValue((void*)&result));
+            args.append(qVariantFromValue(static_cast<void*>(&params)));
+            args.append(qVariantFromValue(static_cast<void*>(&result)));
             jnotify->send("edit.reorderNodeData", args);
-            // ±£´æµ½ÄÚ´æ
-        } else { // ĞÂÔö»òÕß½ö±à¼­ÁËÊı¾İ
+            // ä¿å­˜åˆ°å†…å­˜
+        } else { // æ–°å¢æˆ–è€…ä»…ç¼–è¾‘äº†æ•°æ®
             QVariantList args;
-            args.append(qVariantFromValue((void*)data));
-            args.append(qVariantFromValue((void*)&result));
+            args.append(qVariantFromValue(static_cast<void*>(data)));
+            args.append(qVariantFromValue(static_cast<void*>(&result)));
             jnotify->send("edit.updateNodeData", args);
         }
     }
 
     if (result) {
-        // ÖØĞÂ³õÊ¼»¯½çÃæ
+        // é‡æ–°åˆå§‹åŒ–ç•Œé¢
         int row = tableView_->currentRow();
         reInit();
         tableView_->selectRow(row);
@@ -2407,10 +2401,10 @@ void DataEditWidget::slotSave2Memory(void *data, bool &result)
 void DataEditWidget::slotCanceled()
 {
     if (-1 != changedPos) {
-        return;  // Ö»ÓĞÍÏ¶¯Êı¾İÎ»ÖÃÊ±²ÅÖØĞÂ³õÊ¼»¯
+        return;  // åªæœ‰æ‹–åŠ¨æ•°æ®ä½ç½®æ—¶æ‰é‡æ–°åˆå§‹åŒ–
     }
 
-    // ÖØĞÂ³õÊ¼»¯½çÃæ
+    // é‡æ–°åˆå§‹åŒ–ç•Œé¢
     int row = tableView_->currentRow();
     reInit();
     tableView_->selectRow(row);
@@ -2418,14 +2412,14 @@ void DataEditWidget::slotCanceled()
     //q_loggingWidget->setVisible(false);
 }
 
-// ĞÂÔö
+// æ–°å¢
 void DataEditWidget::slotNew(const QVariant &param)
 {
-    if (GlobalDefine::ntUnknown == dataType_) {   // »úĞÍ
+    if (GlobalDefine::ntUnknown == dataType_) {   // æœºå‹
         newPlane();
-    } else if (GlobalDefine::ntVehicle == dataType_) {  // ÏµÍ³
+    } else if (GlobalDefine::ntVehicle == dataType_) {  // ç³»ç»Ÿ
         newSystem();
-    } else if (GlobalDefine::ntSystem == dataType_) { // ±í
+    } else if (GlobalDefine::ntSystem == dataType_) { // è¡¨
         newICDTable();
     } else if (GlobalDefine::ntTable == dataType_) {
         newICDRule(param.toInt());
@@ -2436,13 +2430,13 @@ void DataEditWidget::slotNew(const QVariant &param)
             newSubTable();
         }
     }
-    // ±ä¸üÊı¾İÏîÒÔºó£¬±ØĞë±£´æÊı¾İÖ®ºó²ÅÄÜ¼ÌĞøÒÆ¶¯
+    // å˜æ›´æ•°æ®é¡¹ä»¥åï¼Œå¿…é¡»ä¿å­˜æ•°æ®ä¹‹åæ‰èƒ½ç»§ç»­ç§»åŠ¨
     if (-1 != newIndex_) {
         tableView_->verticalHeader()->setSectionsMovable(false);
     }
 }
 
-// ²åÈë
+// æ’å…¥
 void DataEditWidget::slotInsert()
 {
     if (GlobalDefine::ntTable == dataType_
@@ -2453,7 +2447,7 @@ void DataEditWidget::slotInsert()
         }
         stTableRules rule;
         int index = tableView_->currentRow();
-        if (index < 0) {    // Î´Ñ¡ÖĞÊı¾İ£¬²åÈëµ½Ä©Î²£¬×öĞÂÔö´¦Àí
+        if (index < 0) {    // æœªé€‰ä¸­æ•°æ®ï¼Œæ’å…¥åˆ°æœ«å°¾ï¼Œåšæ–°å¢å¤„ç†
             newICDRule(GlobalDefine::dtNumeric);
         } else {
             newIndex_ = index;
@@ -2473,18 +2467,18 @@ void DataEditWidget::slotInsert()
             rule.sPrgCode = QString("code_%1").arg(index).toStdString();
             ICDMetaData::smtMeta smtData
                     = ICDFactory::instance().CreatObject(rule);
-            // ¸üĞÂ±í
+            // æ›´æ–°è¡¨
             updateOne(newIndex_, smtData, optNew);
             tableView_->selectRow(newIndex_);
         }
-        // ±ä¸üÊı¾İÏîÒÔºó£¬±ØĞë±£´æÊı¾İÖ®ºó²ÅÄÜ¼ÌĞøÒÆ¶¯
+        // å˜æ›´æ•°æ®é¡¹ä»¥åï¼Œå¿…é¡»ä¿å­˜æ•°æ®ä¹‹åæ‰èƒ½ç»§ç»­ç§»åŠ¨
         if (-1 != newIndex_) {
             tableView_->verticalHeader()->setSectionsMovable(false);
         }
     }
 }
 
-// ÉÏÒÆ
+// ä¸Šç§»
 void DataEditWidget::slotMoveUp()
 {
     int row = tableView_->currentRow();
@@ -2500,11 +2494,11 @@ void DataEditWidget::slotMoveUp()
     } else if (GlobalDefine::ntSystem == dataType_) {
         moveTable(row, row - 1);
     } else if (GlobalDefine::ntTable == dataType_) {
-        // ¹æÔòĞòºÅ´Ó1¿ªÊ¼
+        // è§„åˆ™åºå·ä»1å¼€å§‹
         moveRule(row + 1, row);
     } else if (GlobalDefine::ntRule == dataType_) {
         if (GlobalDefine::dtComplex == subType_) {
-            // ¹æÔòĞòºÅ´Ó1¿ªÊ¼
+            // è§„åˆ™åºå·ä»1å¼€å§‹
             moveRule(row + 1, row);
         } else if (GlobalDefine::dtFrame == subType_) {
             moveTable(row, row - 1);
@@ -2513,7 +2507,7 @@ void DataEditWidget::slotMoveUp()
     loggingWidget_->enableCommit(true);
 }
 
-// ÏÂÒÆ
+// ä¸‹ç§»
 void DataEditWidget::slotMoveDown()
 {
     int row = tableView_->currentRow();
@@ -2529,11 +2523,11 @@ void DataEditWidget::slotMoveDown()
     } else if (GlobalDefine::ntSystem == dataType_) {
         moveTable(row, row + 1);
     } else if (GlobalDefine::ntTable == dataType_) {
-        // ¹æÔòĞòºÅ´Ó1¿ªÊ¼
+        // è§„åˆ™åºå·ä»1å¼€å§‹
         moveRule(row + 1, row + 2);
     } else if (GlobalDefine::ntRule == dataType_) {
         if (GlobalDefine::dtComplex == subType_) {
-            // ¹æÔòĞòºÅ´Ó1¿ªÊ¼
+            // è§„åˆ™åºå·ä»1å¼€å§‹
             moveRule(row + 1, row + 2);
         } else if (GlobalDefine::dtFrame == subType_) {
             moveTable(row, row + 1);
@@ -2542,39 +2536,41 @@ void DataEditWidget::slotMoveDown()
     loggingWidget_->enableCommit(true);
 }
 
-// É¾³ı
+// åˆ é™¤
 void DataEditWidget::slotDelete()
 {
     bool result = false;
     bool showTip = false;
     if (GlobalDefine::ntUnknown == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ı»úĞÍ¼°ËùÓĞÏÂÊôÊı¾İ\r\nÈ·ÈÏÉ¾³ı£¿"),
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                     tr("Warning"),
+                                                     tr("Will remove sub-data under vehicle"
+                                                        "\nConfirm deletion?"),
                                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntVehicle == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ı·ÖÏµÍ³¼°ËùÓĞÏÂÊôÊı¾İ\r\nÈ·ÈÏÉ¾³ı£¿"),
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                     tr("Warning"),
+                                                     tr("Will remove sub-data under system"
+                                                        "\nConfirm deletion?"),
                                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntSystem == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ıICD±í¼°ËùÓĞÏÂÊôÊı¾İ")
-                                                     + QStringLiteral("\r\nÈ·ÈÏÉ¾³ı¸ÃICD±íÊı¾İ£¿"),
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                     tr("Warning"),
+                                                     tr("Will remove item under table"
+                                                        "\nConfirm deletion?"),
                                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntTable == dataType_
                || GlobalDefine::ntRule == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ıÊı¾İ¶¨Òå¼°ËùÓĞÏÂÊôÊı¾İ")
-                                                     + QStringLiteral("\r\nÈ·ÈÏÉ¾³ı¸ÃÏîÊı¾İ£¿"),
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                     tr("Warning"),
+                                                     tr("Will remove data")
+                                                     + tr("\nConfirm deletion?"),
                                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
@@ -2582,27 +2578,27 @@ void DataEditWidget::slotDelete()
     } else {
         return;
     }
-    tableView_->setProperty("copyData", -1);   // ÖØÖÃ¿½±´Êı¾İÊôĞÔ
-    // É¾³ı
+    tableView_->setProperty("copyData", -1);   // é‡ç½®æ‹·è´æ•°æ®å±æ€§
+    // åˆ é™¤
     int current = tableView_->currentRow();
-    if (current == newIndex_ && -1 != newIndex_) {    // É¾³ıÉĞÎ´±£´æµÄÊı¾İ
+    if (current == newIndex_ && -1 != newIndex_) {    // åˆ é™¤å°šæœªä¿å­˜çš„æ•°æ®
         newIndex_ = -1;
         tableView_->removeRow(current);
         setActionEnabled("add", true);
         setActionEnabled("insert", dataType_ > GlobalDefine::ntSystem);
         tableView_->verticalHeader()->setSectionsMovable(true);
-    } else {    // É¾³ıÄÚ´æÊı¾İ
+    } else {    // åˆ é™¤å†…å­˜æ•°æ®
         QVariant data = tableView_->itemData(current, 0, Qt::UserRole);
         QVariant subTable = tableView_->itemData(current, 0, ComplexTable);
         QString key = data.toString();
-        // ¸´ºÏ±íĞèÒª½«×Ó±í¼ÓÈë¹æÔòid£¬Óëµ¼º½Ê÷Í¬²½
+        // å¤åˆè¡¨éœ€è¦å°†å­è¡¨åŠ å…¥è§„åˆ™idï¼Œä¸å¯¼èˆªæ ‘åŒæ­¥
         if (subTable.isValid()) {
             key.append("/").append(subTable.toString());
         }
         std::vector<QString> keys(1, key);
         QVariantList args;
-        args.append(qVariantFromValue((void*)&keys));
-        args.append(qVariantFromValue((void*)&result));
+        args.append(qVariantFromValue(static_cast<void*>(&keys)));
+        args.append(qVariantFromValue(static_cast<void*>(&result)));
         jnotify->send("edit.deleteNode", args);
         if (result) {
             if (tableView_->currentRow() == newIndex_) {
@@ -2610,7 +2606,7 @@ void DataEditWidget::slotDelete()
             }
             tableView_->removeRow(tableView_->currentRow());
             setTipsVisible(showTip);
-            // ÖØĞÂ³õÊ¼»¯
+            // é‡æ–°åˆå§‹åŒ–
             int row = tableView_->currentRow();
             reInit();
             tableView_->selectRow(row);
@@ -2618,37 +2614,37 @@ void DataEditWidget::slotDelete()
     }
 }
 
-// Çå¿Õ
+// æ¸…ç©º
 void DataEditWidget::slotClear()
 {
     bool result = false;
     if (GlobalDefine::ntUnknown == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ıËùÓĞ»úĞÍ£¬°üÀ¨ËùÓĞÏÂÊôÊı¾İ")
-                                                     + QStringLiteral("\r\nÈ·ÈÏÉ¾³ı£¿"))) {
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                    tr("Warning"),
+                                                    tr("Will remove all vehicles, include all sub-data")
+                                                    + tr("\nConfirm deletion?"))) {
             return;
         }
     } else if (GlobalDefine::ntVehicle == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ıµ±Ç°»úĞÍµÄËùÓĞÏµÍ³£¬°üÀ¨ËùÓĞÏÂÊôÊı¾İ")
-                                                     + QStringLiteral("\r\nÈ·ÈÏÉ¾³ı£¿"))) {
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                    tr("Warning"),
+                                                    tr("Will remove all systems in current vehicle, include all sub-data")
+                                                    + tr("\nConfirm deletion?"))) {
             return;
         }
     } else if (GlobalDefine::ntSystem == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ıµ±Ç°ÏµÍ³µÄËùÓĞĞ­Òé±í£¬°üÀ¨ËùÓĞÏÂÊôÊı¾İ")
-                                                     + QStringLiteral("\r\nÈ·ÈÏÉ¾³ı£¿"))) {
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                    tr("Warning"),
+                                                    tr("Will remove all tables in current system, include all sub-data")
+                                                    + tr("\nConfirm deletion?"))) {
             return;
         }
     } else if (GlobalDefine::ntTable == dataType_
                || GlobalDefine::ntRule == dataType_) {
-        if (QMessageBox::No == QMessageBox::question(this,
-                                                     QStringLiteral("È·ÈÏÌáÊ¾"),
-                                                     QStringLiteral("¼´½«É¾³ıµ±Ç°±íµÄËùÓĞÊı¾İ¶¨Òå£¬°üÀ¨ËùÓĞÏÂÊôÊı¾İ")
-                                                     + QStringLiteral("\r\nÈ·ÈÏÉ¾³ı£¿"))) {
+        if (QMessageBox::No == QMessageBox::warning(this,
+                                                    tr("Warning"),
+                                                    tr("Will remove all items in current table, include all sub-data")
+                                                    + tr("\nConfirm deletion?"))) {
             return;
         }
     } else {
@@ -2662,8 +2658,8 @@ void DataEditWidget::slotClear()
         keys.push_back(data.toString());
     }
     QVariantList args;
-    args.append(qVariantFromValue((void*)&keys));
-    args.append(qVariantFromValue((void*)&result));
+    args.append(qVariantFromValue(static_cast<void*>(&keys)));
+    args.append(qVariantFromValue(static_cast<void*>(&result)));
     jnotify->send("edit.deleteNode", args);
 
     if (result) {
@@ -2671,22 +2667,22 @@ void DataEditWidget::slotClear()
     }
 }
 
-// ±£´æ
+// ä¿å­˜
 void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
 {
     int loaded = 0;
-    // ²éÑ¯ÊÇ·ñÓĞÎ´¼ÓÔØÊı¾İ
+    // æŸ¥è¯¢æ˜¯å¦æœ‰æœªåŠ è½½æ•°æ®
     QVariantList args;
-    args.append(qVariantFromValue((void*)&loaded));
+    args.append(qVariantFromValue(static_cast<void*>(&loaded)));
     QString command("loadedState");
-    args.append(qVariantFromValue((void*)&command));
+    args.append(qVariantFromValue(static_cast<void*>(&command)));
     jnotify->send("edit.queryNodeFlag", args);
 
     if (GlobalDefine::wholeState != loaded) {
         if (QMessageBox::No == QMessageBox::warning(this,
-                                                    QStringLiteral("±£´æÌáÊ¾"),
-                                                    QStringLiteral("µ±Ç°Ñ¡ÖĞÏîÓĞÎ´¼ÓÔØÊı¾İ£¬\r\n")
-                                                    + QStringLiteral("¼ÌĞø±£´æ½«¶ªÊ§Õâ²¿·ÖÊı¾İ£¬ÊÇ·ñ¼ÌĞø£¿"),
+                                                    tr("Warning"),
+                                                    tr("Current item has non-loaded sub-item\n"
+                                                       "Continue to save will lost part data, still continue?"),
                                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
 
             return;
@@ -2696,20 +2692,20 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
     QString err;
     QString actionName;
     QVector<int> params;
-    if (GlobalDefine::dsDatabase == type) {   // ±£´æÊı¾İ¿â
+    if (GlobalDefine::dsDatabase == type) {   // ä¿å­˜æ•°æ®åº“
         actionName = "db";
         setActionEnabled(actionName, false);
-        params << (int)&err << (int)&defaultPath_;
+        params << int(&err) << int(&defaultPath_);
         args.clear();
-        args.append(qVariantFromValue((void*)&params));
+        args.append(qVariantFromValue(static_cast<void*>(&params)));
         args.append(int(GlobalDefine::dsDatabase));
         jnotify->send("edit.saveMemoryData", args);
 
-        tip = QStringLiteral("±£´æÊı¾İµ½Êı¾İ¿â");
-    } else if (GlobalDefine::dsFile == type) {  // ±£´æÎÄ¼ş
+        tip = tr("Save protocol to database");
+    } else if (GlobalDefine::dsFile == type) {  // ä¿å­˜æ–‡ä»¶
         actionName = "file";
         setActionEnabled(actionName, false);
-        QString file = QFileDialog::getSaveFileName(this, QStringLiteral("±£´æĞ­ÒéÊı¾İ"), defaultPath_,
+        QString file = QFileDialog::getSaveFileName(this, tr("Save protocol"), defaultPath_,
                                                     "JSON files (*.json);;"
                                                     "XML files (*.xml)");
         if (file.isEmpty()) {
@@ -2717,39 +2713,39 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
             return;
         }
         defaultPath_ = file;
-        params << (int)&err << (int)&defaultPath_;
+        params << int(&err) << int(&defaultPath_);
         args.clear();
-        args.append(qVariantFromValue((void*)&params));
+        args.append(qVariantFromValue(static_cast<void*>(&params)));
         args.append(int(GlobalDefine::dsFile));
         jnotify->send("edit.saveMemoryData", args);
 
-        tip = QStringLiteral("±£´æÊı¾İµ½ÎÄ¼ş[%1]").arg(defaultPath_);
+        tip = tr("Save protocol to file [%1]").arg(defaultPath_);
     }
 
     if (!err.isEmpty()) {
-        tip.append(QStringLiteral("Ê§°Ü£¡\n[%1]").arg(err));
+        tip.append(tr("Failure!\n[%1]").arg(err));
         setActionEnabled(actionName, true);
     } else {
-        tip.append(QStringLiteral("³É¹¦£¡"));
+        tip.append(tr("Success!"));
         if ("file" == actionName) {
             setActionEnabled(actionName, true);
         }
     }
 
-    QMessageBox::information(this, QStringLiteral("±£´æÊı¾İ"), tip);
+    QMessageBox::information(this, tr("Save protocol"), tip);
 }
 
-// ¸´ÖÆ
+// å¤åˆ¶
 void DataEditWidget::slotCopy()
 {
     QString keys;
     QString id = tableView_->itemData(tableView_->currentRow(),
                                       0, Qt::UserRole).toString();
     QVariantList args;
-    args.append(qVariantFromValue((void*)&keys));
+    args.append(qVariantFromValue(static_cast<void*>(&keys)));
     jnotify->send("edit.queryNodeKeys", args);
 
-    // ½«Ô´Êı¾İĞÅÏ¢´æ´¢ÆğÀ´[Êı¾İ²ã¼¶-×ÓÀàĞÍ²ã¼¶##id]
+    // å°†æºæ•°æ®ä¿¡æ¯å­˜å‚¨èµ·æ¥[æ•°æ®å±‚çº§-å­ç±»å‹å±‚çº§##id]
     if (keys.isEmpty()) {
         keys = id;
     } else {
@@ -2759,86 +2755,86 @@ void DataEditWidget::slotCopy()
     tableView_->setProperty("source", keys);
 }
 
-// Õ³Ìù
+// ç²˜è´´
 void DataEditWidget::slotPaste()
 {
     QString keys = tableView_->property("source").toString();
-    keys = keys.mid(keys.indexOf("##") + strlen("##"));
+    keys = keys.mid(int(keys.indexOf("##")) + int(strlen("##")));
     if (keys.isEmpty()) {
         return;
     }
-    // ²éÑ¯Ô´Êı¾İ
+    // æŸ¥è¯¢æºæ•°æ®
     ICDElement::smtElement element;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&element));
-    args.append(qVariantFromValue((void*)&keys));
+    args.append(qVariantFromValue(static_cast<void*>(&element)));
+    args.append(qVariantFromValue(static_cast<void*>(&keys)));
     jnotify->send("edit.querySingleElement", args);
     if (!element) {
-        QMessageBox::information(this, QStringLiteral("Õ³Ìù"),
-                                 QStringLiteral("Õ³ÌùÊ§°Ü£¡£¬Êı¾İÔ´ÎŞĞ§£¡"));
+        QMessageBox::information(this, tr("Past"),
+                                 tr("Past failure, source is invalid!"));
         return;
     }
-    if (GlobalDefine::ntUnknown == dataType_) {   // ¸ù½Úµã
+    if (GlobalDefine::ntUnknown == dataType_) {   // æ ¹èŠ‚ç‚¹
         PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, element);
-        // ¸üĞÂ»úĞÍ
+        // æ›´æ–°æœºå‹
         if (plane) {
             newIndex_ = tableView_->rowCount();
             updateOne(newIndex_, plane, optCopy);
             tableView_->selectRow(newIndex_);
         }
-    } else if (GlobalDefine::ntVehicle == dataType_) {   // »úĞÍ
+    } else if (GlobalDefine::ntVehicle == dataType_) {   // æœºå‹
         SystemNode::smtSystem system = SMT_CONVERT(SystemNode, element);
-        // ¸üĞÂÏµÍ³
+        // æ›´æ–°ç³»ç»Ÿ
         if (system) {
             newIndex_ = tableView_->rowCount();
             updateOne(newIndex_, system, optCopy);
             tableView_->selectRow(newIndex_);
         }
-    } else if (GlobalDefine::ntSystem == dataType_) {  // ÏµÍ³
-        // ¸üĞÂ±í
+    } else if (GlobalDefine::ntSystem == dataType_) {  // ç³»ç»Ÿ
+        // æ›´æ–°è¡¨
         newIndex_ = tableView_->rowCount();
         updateOne(newIndex_, SMT_CONVERT(TableNode, element), optCopy);
         tableView_->selectRow(newIndex_);
-    } else if (GlobalDefine::ntTable == dataType_) {   // ±í
-        // ¸üĞÂ¹æÔò
+    } else if (GlobalDefine::ntTable == dataType_) {   // è¡¨
+        // æ›´æ–°è§„åˆ™
         newIndex_ = tableView_->rowCount();
         updateOne(newIndex_, SMT_CONVERT(ICDMetaData, element), optCopy);
         tableView_->selectRow(newIndex_);
-        // ½«»¹Î´±£´æµÄÊı¾İ³¤¶ÈÉèÎª0£¬Ê¹³¤¶ÈĞ£ÑéÕıÈ·ÌáÊ¾
+        // å°†è¿˜æœªä¿å­˜çš„æ•°æ®é•¿åº¦è®¾ä¸º0ï¼Œä½¿é•¿åº¦æ ¡éªŒæ­£ç¡®æç¤º
         tableView_->setItemData(newIndex_, tableView_->columnCount() - 1,
                                 0, Qt::UserRole);
-    } else if (GlobalDefine::ntRule == dataType_) {    // ¹æÔò
+    } else if (GlobalDefine::ntRule == dataType_) {    // è§„åˆ™
         if (GlobalDefine::dtComplex == subType_) {
-            // ¸üĞÂ±í
+            // æ›´æ–°è¡¨
             newIndex_ = tableView_->rowCount();
             updateOne(newIndex_,
                       SMT_CONVERT(ICDMetaData, element),
                       optCopy);
             tableView_->selectRow(newIndex_);
-            // ½«»¹Î´±£´æµÄÊı¾İ³¤¶ÈÉèÎª0£¬Ê¹³¤¶ÈĞ£ÑéÕıÈ·ÌáÊ¾
+            // å°†è¿˜æœªä¿å­˜çš„æ•°æ®é•¿åº¦è®¾ä¸º0ï¼Œä½¿é•¿åº¦æ ¡éªŒæ­£ç¡®æç¤º
             tableView_->setItemData(newIndex_, tableView_->columnCount() - 1,
                                     0, Qt::UserRole);
         } else if (GlobalDefine::dtFrame == subType_) {
             int maxCount = 0;
             args.clear();
-            args.append(qVariantFromValue((void*)&maxCount));
+            args.append(qVariantFromValue(static_cast<void*>(&maxCount)));
             jnotify->send("edit.queryMaxTableCount", args);
             if (tableView_->rowCount() >= maxCount) {
 
-                QMessageBox::information(this, QStringLiteral("Õ³Ìù"),
-                                         QStringLiteral("×Ó±íÒÑ´ïÉÏÏŞ£¬ÎŞ·¨Õ³Ìù£¡ÈçĞèÌáÉıÉÏÏŞ£¬ÇëÁªÏµ¹ÜÀíÔ±£¡"));
+                QMessageBox::information(this, tr("Past"),
+                                         tr("Count of Sub-Table has been reach upper limit!"));
                 return;
             }
             TableNode::smtTable table = SMT_CONVERT(TableNode, element);
             if (table) {
-                // ¸üĞÂ±í
+                // æ›´æ–°è¡¨
                 newIndex_ = tableView_->rowCount();
                 updateSubOne(newIndex_, table->icdBase(), optCopy);
                 tableView_->selectRow(newIndex_);
             }
         }
     }
-    // ±ä¸üÊı¾İÏîÒÔºó£¬±ØĞë±£´æÊı¾İÖ®ºó²ÅÄÜ¼ÌĞøÒÆ¶¯
+    // å˜æ›´æ•°æ®é¡¹ä»¥åï¼Œå¿…é¡»ä¿å­˜æ•°æ®ä¹‹åæ‰èƒ½ç»§ç»­ç§»åŠ¨
     if (-1 != newIndex_) {
         tableView_->verticalHeader()->setSectionsMovable(false);
     }

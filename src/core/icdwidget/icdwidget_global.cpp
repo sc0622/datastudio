@@ -8,6 +8,7 @@ class IcdWidgetPrivate
 public:
     IcdWidgetPrivate(IcdWidget *q)
         : J_QPTR(q)
+        , translator(nullptr)
     {
 
     }
@@ -16,14 +17,20 @@ public:
 
 private:
     J_DECLARE_PUBLIC(IcdWidget)
+    QTranslator *translator;
     QList<SingletonReleaseCallback> callbacks;
 };
 
 void IcdWidgetPrivate::init()
 {
-
+    if (qApp) {
+        translator = new QTranslator();
+        bool result = translator->load(":/icdwidget/lang/zh_CN.qm");
+        if (result) {
+            qApp->installTranslator(translator);
+        }
+    }
 }
-
 
 // class IcdCore
 
@@ -60,6 +67,11 @@ IcdWidget::IcdWidget(QObject *parent)
 IcdWidget::~IcdWidget()
 {
     Q_D(IcdWidget);
+
+    if (d->translator) {
+        qApp->removeTranslator(d->translator);
+        delete d->translator;
+    }
 
     foreach (auto &callback, d->callbacks) {
         if (callback) {

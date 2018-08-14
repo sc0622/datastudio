@@ -41,13 +41,13 @@ void ComMgrWidgetPrivate::init()
     vertLayoutArea->addLayout(horiLayoutButtons);
 
     horiLayoutButtons->addStretch();
-    buttonAdd = new QPushButton(QStringLiteral("增加通道"), widgetArea);
+    buttonAdd = new QPushButton(tr("Add channel"), widgetArea);
     buttonAdd->setFixedSize(120, 30);
     horiLayoutButtons->addWidget(buttonAdd);
 
     horiLayoutButtons->addSpacing(10);
 
-    buttonClear = new QPushButton(QStringLiteral("清空通道"), widgetArea);
+    buttonClear = new QPushButton(tr("Clear channel"), widgetArea);
     buttonClear->setFixedSize(120, 30);
     horiLayoutButtons->addWidget(buttonClear);
 
@@ -81,18 +81,18 @@ void ComMgrWidgetPrivate::init()
         QFormLayout *formLayout = new QFormLayout();
         vertLayoutMain->addLayout(formLayout);
         QComboBox *comboBox = new QComboBox(&dialog);
-        formLayout->addRow(QStringLiteral("通道类型："), comboBox);
+        formLayout->addRow(tr("Type of channel:"), comboBox);
         QDialogButtonBox *buttonBox = new QDialogButtonBox(&dialog);
         buttonBox->setStyleSheet("QPushButton{min-width:80px;min-height:24px;}");
-        buttonBox->addButton(QStringLiteral("确定"), QDialogButtonBox::AcceptRole);
-        buttonBox->addButton(QStringLiteral("取消"), QDialogButtonBox::RejectRole);
+        buttonBox->addButton(tr("Ok"), QDialogButtonBox::AcceptRole);
+        buttonBox->addButton(tr("Cancel"), QDialogButtonBox::RejectRole);
         vertLayoutMain->addWidget(buttonBox, 0, Qt::AlignRight);
         QObject::connect(buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
         QObject::connect(buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
         // init
-        comboBox->addItem(QStringLiteral("串口"));
-        comboBox->addItem(QStringLiteral("UDP"));
-        comboBox->addItem(QStringLiteral("文件"));
+        comboBox->addItem(tr("Serial Channel"));
+        comboBox->addItem(tr("UDP Channel"));
+        comboBox->addItem(tr("File Channel"));
         // exec
         dialog.resize(350, 100);
         if (dialog.exec() != QDialog::Accepted) {
@@ -126,8 +126,8 @@ void ComMgrWidgetPrivate::init()
         channelWidget->setCurrentRow(channelWidget->rowCount() - 1);
     });
     connect(buttonClear, &QPushButton::clicked, q, [=](){
-        int result = QMessageBox::warning(q, QStringLiteral("警告"),
-                                          QStringLiteral("清空通道配置将不可恢复原有配置，是否继续？"),
+        int result = QMessageBox::warning(q, tr("Warning"),
+                                          tr("Clear channel config could not be restore, continue?"),
                                           QMessageBox::Yes | QMessageBox::No);
         if (result != QMessageBox::Yes) {
             return;

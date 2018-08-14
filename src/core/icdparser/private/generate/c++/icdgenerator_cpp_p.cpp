@@ -105,7 +105,7 @@ bool CppGeneratorData::generateTable(const TablePtr &table,
     }
 
     //
-    J_QPTR->parser()->setMessage(QStringLiteral("生成表文档\n表：%1")
+    J_QPTR->parser()->setMessage(QObject::tr("Generate table document\nTable: %1")
                                  .arg(QString::fromStdString(table->name()))
                                  .toStdString());
 

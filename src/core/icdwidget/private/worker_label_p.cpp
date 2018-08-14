@@ -62,7 +62,7 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
     vertLayoutCenter->addWidget(labelDetail);
 
     if (attrs & ChannelWidget::OperateOpen) {
-        buttonOpen = new QPushButton(QStringLiteral("打开"), q);
+        buttonOpen = new QPushButton(WorkerLabel::tr("Open"), q);
         buttonOpen->setProperty("_flat_", true);
         buttonOpen->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonOpen);
@@ -78,13 +78,13 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
         });
         QObject::connect(worker.get(), &Icd::Worker::opened, q, [=](){
             if (buttonOpen) {
-                buttonOpen->setText(QStringLiteral("关闭"));
+                buttonOpen->setText(WorkerLabel::tr("Close"));
             }
         });
     }
 
     if (attrs & ChannelWidget::OperateSwitchRecv) {
-        buttonSwitchRecv = new QPushButton(QStringLiteral("启动接收"), q);
+        buttonSwitchRecv = new QPushButton(WorkerLabel::tr("Start Receiving"), q);
         buttonSwitchRecv->setProperty("_flat_", true);
         buttonSwitchRecv->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonSwitchRecv);
@@ -104,24 +104,24 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
         QObject::connect(worker->workerRecv().get(), &Icd::WorkerRecv::toggled, q, [=](bool checked){
             if (buttonSwitchRecv) {
                 if (checked) {
-                    buttonSwitchRecv->setText(QStringLiteral("停止接收"));
+                    buttonSwitchRecv->setText(WorkerLabel::tr("Stop Receiving"));
                 } else {
-                    buttonSwitchRecv->setText(QStringLiteral("启动接收"));
+                    buttonSwitchRecv->setText(WorkerLabel::tr("Start Receiving"));
                 }
             }
         });
     }
 
     if (attrs & ChannelWidget::OperateRemove) {
-        buttonRemove = new QPushButton(QStringLiteral("删除"), q);
+        buttonRemove = new QPushButton(WorkerLabel::tr("Remove"), q);
         buttonRemove->setProperty("_flat_", true);
         buttonRemove->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonRemove);
         //
         QObject::connect(buttonRemove, &QPushButton::clicked, q, [=](){
             if (worker) {
-                int result = QMessageBox::warning(q, QStringLiteral("警告"),
-                                                  QStringLiteral("删除通道配置将不可恢复原有配置，是否继续？"),
+                int result = QMessageBox::warning(q, WorkerLabel::tr("Warning"),
+                                                  WorkerLabel::tr("Removing channel configuration won't restore, continue?"),
                                                   QMessageBox::Yes | QMessageBox::No);
                 if (result != QMessageBox::Yes) {
                     return;
@@ -152,10 +152,10 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
     });
     QObject::connect(worker.get(), &Icd::Worker::closed, q, [=](){
         if (buttonOpen) {
-            buttonOpen->setText(QStringLiteral("打开"));
+            buttonOpen->setText(WorkerLabel::tr("Open"));
         }
         if (buttonSwitchRecv) {
-            buttonSwitchRecv->setText(QStringLiteral("启动接收"));
+            buttonSwitchRecv->setText(WorkerLabel::tr("Start Receiving"));
         }
     });
 }
@@ -166,15 +166,15 @@ void WorkerLabelPrivate::updateUi()
     switch (worker->channel()->channelType()) {
     case Icd::ChannelSerial:
         labelChannelIcon->setPixmap(QPixmap(":/icdwidget/image/serial.png"));
-        labelChannelType->setText(QStringLiteral("串口"));
+        labelChannelType->setText(WorkerLabel::tr("Serial Channel"));
         break;
     case Icd::ChannelUdp:
         labelChannelIcon->setPixmap(QPixmap(":/icdwidget/image/udp.png"));
-        labelChannelType->setText(QStringLiteral("UDP"));
+        labelChannelType->setText(WorkerLabel::tr("UDP Channel"));
         break;
     case Icd::ChannelFile:
         labelChannelIcon->setPixmap(QPixmap(":/icdwidget/image/file.png"));
-        labelChannelType->setText(QStringLiteral("文件"));
+        labelChannelType->setText(WorkerLabel::tr("File Channel"));
         break;
     default:
         break;
@@ -187,8 +187,8 @@ void WorkerLabelPrivate::updateUi()
     // switchRecv
     if (buttonSwitchRecv) {
         buttonSwitchRecv->setText(worker->workerRecv()->isRunning()
-                                  ? QStringLiteral("停止接收")
-                                  : QStringLiteral("启动接收"));
+                                  ? WorkerLabel::tr("Stop Receiving")
+                                  : WorkerLabel::tr("Start Receiving"));
     }
     //
     updateDetailText();

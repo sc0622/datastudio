@@ -82,7 +82,7 @@ void UdpChannelPrivate::close()
 int UdpChannelPrivate::read(char *buffer, int size)
 {
     if (d_buffer) {
-        return d_buffer->read(buffer, size);
+        return static_cast<int>(d_buffer->read(buffer, static_cast<size_t>(size)));
     } else {
         return 0;
     }
@@ -91,7 +91,8 @@ int UdpChannelPrivate::read(char *buffer, int size)
 int UdpChannelPrivate::write(const char *buffer, int size)
 {
     if (d_socket) {
-        return d_socket->writeDatagram(buffer, size, d_remoteHost, d_remotePort);
+        return static_cast<int>(d_socket->writeDatagram(buffer, static_cast<qint64>(size),
+                                                        d_remoteHost, d_remotePort));
     } else {
         return -1;
     }
@@ -189,7 +190,7 @@ int UdpChannelPrivate::localPort() const
 
 void UdpChannelPrivate::setLocalPort(int port)
 {
-    d_localPort = (quint16)port;
+    d_localPort = static_cast<quint16>(port);
 }
 
 std::string UdpChannelPrivate::remoteIP() const
@@ -209,13 +210,13 @@ int UdpChannelPrivate::remotePort() const
 
 void UdpChannelPrivate::setRemotePort(int port)
 {
-    d_remotePort = (quint16)port;
+    d_remotePort = static_cast<quint16>(port);
 }
 
 int UdpChannelPrivate::lastErrorCode() const
 {
     if (d_socket) {
-        return (int)d_socket->error();
+        return static_cast<int>(d_socket->error());
     } else {
         return QUdpSocket::UnknownSocketError;
     }
@@ -233,7 +234,7 @@ std::string UdpChannelPrivate::lastError() const
 int UdpChannelPrivate::sizeOfIn() const
 {
     if (d_buffer) {
-        return d_buffer->size();
+        return static_cast<int>(d_buffer->size());
     } else {
         return 0;
     }
@@ -242,7 +243,7 @@ int UdpChannelPrivate::sizeOfIn() const
 int UdpChannelPrivate::sizeOfOut() const
 {
     if (d_socket) {
-        return d_socket->bytesToWrite();
+        return static_cast<int>(d_socket->bytesToWrite());
     } else {
         return 0;
     }
@@ -258,7 +259,8 @@ bool UdpChannelPrivate::setConfig(const std::string &localIP, int localPort,
         localHost.setAddress(QHostAddress::LocalHost);
     }
     remoteHost.setAddress(QString::fromStdString(remoteIP));
-    return setConfig(localHost, (quint16)localPort, remoteHost, (quint16)remotePort);
+    return setConfig(localHost, static_cast<quint16>(localPort),
+                     remoteHost, static_cast<quint16>(remotePort));
 }
 
 bool UdpChannelPrivate::setConfig(const QHostAddress &localHost, quint16 localPort,
@@ -289,16 +291,16 @@ void UdpChannelPrivate::onReadyRead()
 
     do {
         QByteArray datagram;
-        datagram.resize(d_socket->pendingDatagramSize());
+        datagram.resize(static_cast<int>(d_socket->pendingDatagramSize()));
         d_socket->readDatagram(datagram.data(), datagram.size());
         // write
         int index = 0, size = datagram.size();
         const char *buffer = datagram.constData();
         do {
-            index += d_buffer->write(buffer + index, size - index);
+            index += d_buffer->write(buffer + index, static_cast<size_t>(size - index));
             if (index < size) {
                 qDebug() << "[1] ringbuffer overflow!!!";
-                index += d_buffer->write(buffer + index, size - index);
+                index += d_buffer->write(buffer + index, static_cast<size_t>(size - index));
                 if (index < size) {
                     qDebug() << "[2] ringbuffer overflow!!!";
                     break;  // no loop

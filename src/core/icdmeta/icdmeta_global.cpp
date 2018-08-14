@@ -8,7 +8,7 @@
 #include "common/JEncryptModel.h"
 #include "common/JLoginModel.h"
 #include "command/JCmdModel.h"
-#include "command/simulate/JCmdSysModelSim.h"
+#include "command/simulate/JCmdModelSim.h"
 #include "common/ftp/JFtpModel.h"
 #include <QQuickStyle>
 #include <QFontDatabase>

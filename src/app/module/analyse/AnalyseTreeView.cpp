@@ -19,38 +19,38 @@ TreeView::TreeView(QWidget *parent)
 
     jnotify->on("analyse.toolbar.database.config", this, [=](JNEvent &){
         QVariantList args;
-        args << "analyse" << qVariantFromValue((void*)this);
+        args << "analyse" << qVariantFromValue(static_cast<void*>(this));
         jnotify->send("database.config", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
-        jnotify->send("analyse.tree.item.pressed", qVariantFromValue((void*)item));
+        jnotify->send("analyse.tree.item.pressed", qVariantFromValue(static_cast<void*>(item)));
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
         QStandardItem *itemTable = treeView_->findItemTable(item);
-        args.append(qVariantFromValue((void*)itemTable));
+        args.append(qVariantFromValue(static_cast<void*>(itemTable)));
         jnotify->send("analyse.tree.item.clicked", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
-        args.append(qVariantFromValue((void*)current));
-        args.append(qVariantFromValue((void*)previous));
+        args.append(qVariantFromValue(static_cast<void*>(current)));
+        args.append(qVariantFromValue(static_cast<void*>(previous)));
         jnotify->send("analyse.tree.item.currentchanged", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
-        args.append(qVariantFromValue((void*)tableItem));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
+        args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("analyse.tree.item.unloaded", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::unbindItem, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
-        args.append(qVariantFromValue((void*)item));
-        args.append(qVariantFromValue((void*)tableItem));
+        args.append(qVariantFromValue(static_cast<void*>(item)));
+        args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("analyse.tree.item.unbind", args);
     });
     connect(treeView_, &Icd::CoreTreeWidget::exportAnalyseData, this,
@@ -78,7 +78,7 @@ TreeView::TreeView(QWidget *parent)
         // module
         args.append("analyse");
         // receiver
-        args.append(qVariantFromValue((void*)this));
+        args.append(qVariantFromValue(static_cast<void*>(this)));
         jnotify->send("database.config", args);
     });
     jnotify->on("analyse.toolbar.tree.loadDeep", this, [=](JNEvent &event){
@@ -127,7 +127,7 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    treeView_->setShowAttribute((Icd::CoreTreeWidget::ShowAttribute)attr, on);
+    treeView_->setShowAttribute(static_cast<Icd::CoreTreeWidget::ShowAttribute>(attr), on);
 }
 
 void TreeView::loadRecordData()
@@ -307,7 +307,7 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
                     data.table = table_;
                     QVariantList args;
                     args.append(newFilePath);
-                    args.append(qVariantFromValue((void*)&data));
+                    args.append(qVariantFromValue(static_cast<void*>(&data)));
                     jnotify->send("analyse.tableLoaded", args);
                 }
                 table_ = Icd::TablePtr();
@@ -361,7 +361,7 @@ void TreeView::exportData(const QStandardItem *item, const QString &filePath,
         return;
     }
 
-    auto &citer = fileTables_.find(filePath);
+    const auto &citer = fileTables_.find(filePath);
     if (citer == fileTables_.cend()) {
         return;
     }
@@ -382,7 +382,7 @@ void TreeView::exportData(const QStandardItem *item, const QString &filePath,
         if (!bitItem) {
             return;
         }
-        bitName = QString("%1[bit%2]").arg(QString::fromStdString(bitItem->specAt(bitOffset)))
+        bitName = QString("%1[bit%2]").arg(QString::fromStdString(bitItem->specAt(Icd::icd_uint64(bitOffset))))
                 .arg(bitOffset);
     }
 

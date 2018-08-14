@@ -11,7 +11,7 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox *groupBox = new QGroupBox(QStringLiteral("UDP设置"), this);
+    QGroupBox *groupBox = new QGroupBox(tr("Network settings"), this);
     vertLayoutMain->addWidget(groupBox);
 
     QVBoxLayout *vertLayoutGroupBox = new QVBoxLayout(groupBox);
@@ -21,38 +21,38 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
     vertLayoutGroupBox->addLayout(formLayout);
 
     d_editLocalIP = new JIPAddressEdit(this);
-    formLayout->addRow(QStringLiteral("本地地址："), d_editLocalIP);
+    formLayout->addRow(tr("Local address:"), d_editLocalIP);
 
     d_spinBoxLocalPort = new QSpinBox(this);
     d_spinBoxLocalPort->setRange(1, 65535);
-    formLayout->addRow(QStringLiteral("本地端口："), d_spinBoxLocalPort);
+    formLayout->addRow(tr("Local port:"), d_spinBoxLocalPort);
 
     d_editRemoteIP = new JIPAddressEdit(this);
-    formLayout->addRow(QStringLiteral("远端地址："), d_editRemoteIP);
+    formLayout->addRow(tr("Remove address:"), d_editRemoteIP);
 
     d_spinBoxRemotePort = new QSpinBox(this);
     d_spinBoxRemotePort->setRange(1, 65535);
-    formLayout->addRow(QStringLiteral("远端端口："), d_spinBoxRemotePort);
+    formLayout->addRow(tr("Remote port:"), d_spinBoxRemotePort);
 
-    d_checkBoxReadOnly = new QCheckBox(QStringLiteral("只接收"), this);
+    d_checkBoxReadOnly = new QCheckBox(tr("Read Only"), this);
     d_checkBoxReadOnly->setChecked(true);
-    formLayout->addRow(QStringLiteral("打开模式："), d_checkBoxReadOnly);
+    formLayout->addRow(tr("Open Mode:"), d_checkBoxReadOnly);
 
-    d_checkBoxWriteOnly = new QCheckBox(QStringLiteral("只发送"), this);
+    d_checkBoxWriteOnly = new QCheckBox(tr("Write Only"), this);
     d_checkBoxWriteOnly->setChecked(true);
-    formLayout->addRow(QStringLiteral(" "), d_checkBoxWriteOnly);
+    formLayout->addRow(" ", d_checkBoxWriteOnly);
 
     d_editName = new QLineEdit(this);
-    formLayout->addRow(QStringLiteral("通道名称："), d_editName);
+    formLayout->addRow(tr("Name of channel:"), d_editName);
 
     QHBoxLayout *horiLayoutRelayer = new QHBoxLayout();
     horiLayoutRelayer->setSpacing(0);
-    formLayout->addRow(QStringLiteral("转发通道："), horiLayoutRelayer);
+    formLayout->addRow(tr("Relayer channel:"), horiLayoutRelayer);
 
     d_editRelayer = new QLineEdit(this);
     horiLayoutRelayer->addWidget(d_editRelayer);
 
-    QPushButton *buttonRelayer = new QPushButton(QStringLiteral("..."), this);
+    QPushButton *buttonRelayer = new QPushButton("...", this);
     buttonRelayer->setFixedSize(d_editRelayer->sizeHint().height() + 5, d_editRelayer->sizeHint().height());
     buttonRelayer->setStyleSheet("border-radius: 1px;");
     horiLayoutRelayer->addWidget(buttonRelayer);
@@ -64,13 +64,13 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
 
     horiLayoutButtons->addStretch();
 
-    d_buttonRestore = new QPushButton(QStringLiteral("恢复"), this);
+    d_buttonRestore = new QPushButton(tr("Restore"), this);
     d_buttonRestore->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonRestore);
 
     horiLayoutButtons->addSpacing(10);
 
-    d_buttonApply = new QPushButton(QStringLiteral("应用"), this);
+    d_buttonApply = new QPushButton(tr("Apply"), this);
     d_buttonApply->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonApply);
 
@@ -150,8 +150,8 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
         }
         //
         if (channel->isOpen()) {
-            const QString message = QStringLiteral("[%1]通道已打开，不能修改属性！");
-            QMessageBox::warning(this, QStringLiteral("警告"),
+            const QString message = tr("Channel \"%1\" has been opened and cannot modify!");
+            QMessageBox::warning(this, tr("Warning"),
                                  message.arg(QString::fromStdString(channel->name())));
             return;
         }
@@ -176,14 +176,14 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
         if (d_checkBoxWriteOnly->isChecked()) {
             openMode |= Icd::UdpChannel::WriteOnly;
         }
-        channel->setOpenMode((Icd::UdpChannel::OpenMode)openMode);
+        channel->setOpenMode(static_cast<Icd::UdpChannel::OpenMode>(openMode));
         // name
         channel->setName(d_editName->text().toStdString());
         // relayer
         Icd::WorkerPtr relayer = d_worker->relayer();
         const QString relayerName = d_editRelayer->text();
         if (relayerName.isEmpty()) {
-            relayer = Icd::WorkerPtr(0);
+            relayer = Icd::WorkerPtr();
         } else {
             QString relayerIdentity = d_editRelayer->property("relayer").toString();
             if (relayerIdentity.isEmpty()) {
@@ -200,7 +200,7 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
                 if (worker && worker != d_worker) {
                     relayer = worker;
                 } else {
-                    relayer = Icd::WorkerPtr(0);
+                    relayer = Icd::WorkerPtr();
                 }
             }
         }

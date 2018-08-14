@@ -1,16 +1,16 @@
 #include "precomp.h"
 #include "FrameCodeEdit.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 FrameCodeEdit::FrameCodeEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     comboLength = new QComboBox(this);
-    addFormRow(QStringLiteral("³¤¶È£º"), comboLength);
+    addFormRow(tr("Length:"), comboLength);
 
     comboData_ = new QComboBox(this);
-    addFormRow(QStringLiteral("Ö¡Êý¾Ý£º"), comboData_);
+    addFormRow(tr("Frame data:"), comboData_);
 
     enableConnect(true);
 }
@@ -58,9 +58,9 @@ bool FrameCodeEdit::init()
 {
     // length
     comboLength->clear();
-    comboLength->addItem(QStringLiteral("1×Ö½Ú"), GlobalDefine::frame8);
-    comboLength->addItem(QStringLiteral("2×Ö½Ú"), GlobalDefine::frame16);
-    comboLength->addItem(QStringLiteral("4×Ö½Ú"), GlobalDefine::frame32);
+    comboLength->addItem(tr("1 byte"), GlobalDefine::frame8);
+    comboLength->addItem(tr("2 bytes"), GlobalDefine::frame16);
+    comboLength->addItem(tr("4 bytes"), GlobalDefine::frame32);
     int index = comboLength->findData(data()->frameType());
     if (-1 == index) {
         index = 0;
@@ -70,20 +70,20 @@ bool FrameCodeEdit::init()
     comboData_->clear();
     QMap<int, QString> frame;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&frame));
+    args.append(qVariantFromValue(static_cast<void*>(&frame)));
     QString command("idle");
-    args.append(qVariantFromValue((void*)&command));
+    args.append(qVariantFromValue(static_cast<void*>(&command)));
     jnotify->send("edit.queryFrameData", args);
-    // ½«ÒÑ°ó¶¨Êý¾Ý¼ÓÈë±¸Ñ¡
+    // å°†å·²ç»‘å®šæ•°æ®åŠ å…¥å¤‡é€‰
     ICDComplexData::smtComplex complex = data()->data();
     if (complex) {
         frame[complex->serial()] = QString::fromStdString(complex->name());
     }
-    comboData_->addItem(QStringLiteral("²»°ó¶¨"), -1);
+    comboData_->addItem(tr("Not binding"), -1);
     QMapIterator<int, QString> it = frame;
     while (it.hasNext()) {
         it.next();
-        comboData_->addItem(QStringLiteral("°ó¶¨<%1>").arg(it.value()), it.key());
+        comboData_->addItem(tr("Binding<%1>").arg(it.value()), it.key());
     }
     //
     const QString code = QString::fromStdString(data()->defaultStr());

@@ -20,6 +20,7 @@ public:
         , canceledSaveAs(true)
         , isBeginModify(false)
         , mutex(QMutex::Recursive)
+        , translator(nullptr)
     {
 
     }
@@ -30,17 +31,32 @@ private:
     bool canceledSaveAs;
     bool isBeginModify;
     QMutex mutex;
+    QTranslator *translator;
 };
 
 Parser::Parser(const Json::Value &config)
     : d(new ParserData())
 {
     Q_UNUSED(config);
+    Q_INIT_RESOURCE(resource);
+    //
+    if (qApp) {
+        d->translator = new QTranslator();
+        bool result = d->translator->load(":/icdparser/lang/zh_CN.qm");
+        if (result) {
+            qApp->installTranslator(d->translator);
+        }
+    }
 }
 
 Parser::~Parser()
 {
     endModify();
+    if (d->translator) {
+        qApp->removeTranslator(d->translator);
+        delete d->translator;
+    }
+    Q_CLEANUP_RESOURCE(resource);
     delete d;
 }
 

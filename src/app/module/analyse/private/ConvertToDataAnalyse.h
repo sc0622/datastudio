@@ -47,12 +47,12 @@ class ConvertToDataAnalyse : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ConvertToDataAnalyse(QWidget *parent = 0);
+    explicit ConvertToDataAnalyse(QWidget *parent = nullptr);
     ConvertToDataAnalyse(const QString &filePath,
                                   const Icd::TablePtr &table,
                                   const Icd::ObjectPtr &objectItem,
                                   bool hasTimeFormat, int headerSize,
-                                  int bitOffset, QWidget *parent = 0);
+                                  int bitOffset, QWidget *parent = nullptr);
 
 signals:
     void rejected();

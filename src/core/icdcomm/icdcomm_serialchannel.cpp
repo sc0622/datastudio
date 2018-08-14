@@ -41,9 +41,9 @@ SerialChannel::SerialChannel(const std::string &portName, int baudRate, DataBits
 {
     d->serialPort = JSerialPortPtr(new JSerialPort(portName));
     d->serialPort->setBaudRate(baudRate);
-    d->serialPort->setDataBits((JSerialPort::DataBits)dataBits);
-    d->serialPort->setStopBits((JSerialPort::StopBits)stopBits);
-    d->serialPort->setParity((JSerialPort::Parity)parity);
+    d->serialPort->setDataBits(static_cast<JSerialPort::DataBits>(dataBits));
+    d->serialPort->setStopBits(static_cast<JSerialPort::StopBits>(stopBits));
+    d->serialPort->setParity(static_cast<JSerialPort::Parity>(parity));
 }
 
 SerialChannel::~SerialChannel()
@@ -73,32 +73,32 @@ void SerialChannel::setBaudRate(int baudRate)
 
 SerialChannel::DataBits SerialChannel::dataBits() const
 {
-    return (SerialChannel::DataBits)d->serialPort->dataBits();
+    return static_cast<SerialChannel::DataBits>(d->serialPort->dataBits());
 }
 
 void SerialChannel::setDataBits(DataBits dataBits)
 {
-    d->serialPort->setDataBits((JSerialPort::DataBits)dataBits);
+    d->serialPort->setDataBits(static_cast<JSerialPort::DataBits>(dataBits));
 }
 
 SerialChannel::StopBits SerialChannel::stopBits() const
 {
-    return (SerialChannel::StopBits)d->serialPort->stopBits();
+    return static_cast<SerialChannel::StopBits>(d->serialPort->stopBits());
 }
 
 void SerialChannel::setStopBits(SerialChannel::StopBits stopBits)
 {
-    d->serialPort->setStopBits((JSerialPort::StopBits)stopBits);
+    d->serialPort->setStopBits(static_cast<JSerialPort::StopBits>(stopBits));
 }
 
 SerialChannel::Parity SerialChannel::parity() const
 {
-    return (SerialChannel::Parity)d->serialPort->parity();
+    return static_cast<SerialChannel::Parity>(d->serialPort->parity());
 }
 
 void SerialChannel::setParity(SerialChannel::Parity parity)
 {
-    d->serialPort->setParity((JSerialPort::Parity)parity);
+    d->serialPort->setParity(static_cast<JSerialPort::Parity>(parity));
 }
 
 int SerialChannel::lastErrorCode() const
@@ -175,8 +175,8 @@ std::string SerialChannel::config() const
 
     os << "--type=serial" << Channel::config()
        << " --portName=" << d->serialPort->portName()
-       << " --baudRate=" << (int)d->serialPort->baudRate()
-       << " --dataBits=" << (int)d->serialPort->dataBits()
+       << " --baudRate=" << static_cast<int>(d->serialPort->baudRate())
+       << " --dataBits=" << static_cast<int>(d->serialPort->dataBits())
        << " --stopBits=";
 
     // StopBits
@@ -248,12 +248,12 @@ bool SerialChannel::setConfig(const std::string &config)
     // dataBits
     citer = items.find("dataBits");
     if (citer != items.cend()) {
-        setDataBits((DataBits)atoi(citer->second.c_str()));
+        setDataBits(static_cast<DataBits>(atoi(citer->second.c_str())));
     }
     // stopBits
     citer = items.find("stopBits");
     if (citer != items.cend()) {
-        int nStopBots = (int)(atof(citer->second.c_str()) * 10);
+        int nStopBots = static_cast<int>((atof(citer->second.c_str()) * 10));
         switch (nStopBots) {
         case 10:
             d->serialPort->setStopBits(JSerialPort::OneStop);
@@ -265,7 +265,6 @@ bool SerialChannel::setConfig(const std::string &config)
             d->serialPort->setStopBits(JSerialPort::TwoStop);
             break;
         default:
-            assert(false);
             break;
         }
     }
@@ -284,7 +283,6 @@ bool SerialChannel::setConfig(const std::string &config)
         } else if (parity == "mark") {
             d->serialPort->setParity(JSerialPort::MarkParity);
         } else {
-            assert(false);
             return false;
         }
     }
@@ -298,8 +296,8 @@ std::string SerialChannel::desc() const
     std::string portName = d->serialPort->portName();
     std::transform(portName.begin(), portName.begin(), portName.end(), toupper);
     os << portName
-       << '-' << (int)d->serialPort->baudRate()
-       << '-' << (int)d->serialPort->dataBits()
+       << '-' << static_cast<int>(d->serialPort->baudRate())
+       << '-' << static_cast<int>(d->serialPort->dataBits())
        << '-';
     // StopBits
     switch (d->serialPort->stopBits()) {
@@ -341,9 +339,9 @@ bool SerialChannel::setConfig(const std::string &portName, int baudRate,
 
     d->serialPort->setPortName(portName);
     d->serialPort->setBaudRate(baudRate);
-    d->serialPort->setDataBits((JSerialPort::DataBits)dataBits);
-    d->serialPort->setStopBits((JSerialPort::StopBits)stopBits);
-    d->serialPort->setParity((JSerialPort::Parity)parity);
+    d->serialPort->setDataBits(static_cast<JSerialPort::DataBits>(dataBits));
+    d->serialPort->setStopBits(static_cast<JSerialPort::StopBits>(stopBits));
+    d->serialPort->setParity(static_cast<JSerialPort::Parity>(parity));
 
     return true;
 }

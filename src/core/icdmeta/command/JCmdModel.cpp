@@ -4,7 +4,7 @@
 #include "JCmdChannel.h"
 #include "../channel/JChannel.h"
 #include "../channel/JSuperChannel.h"
-#include "simulate/JCmdSysModelSim.h"
+#include "simulate/JCmdModelSim.h"
 
 #define DEF_ENABLED_TIMER_FREQ  1
 
@@ -702,7 +702,7 @@ void JCmdModel::registerQmlType()
 
     //
     JCmdChannel::registerQmlType();
-    JCmdSysModelSim::registerQmlType();
+    JCmdModelSim::registerQmlType();
 }
 
 int JCmdModel::workMode() const

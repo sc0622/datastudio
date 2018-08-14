@@ -1,21 +1,21 @@
 #include "precomp.h"
 #include "CheckEdit.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 CheckEdit::CheckEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     comboCheckType_ = new QComboBox(this);
-    addFormRow(QStringLiteral("校验类型："), comboCheckType_);
+    addFormRow(tr("Parity type:"), comboCheckType_);
 
     spinStart_ = new QSpinBox(this);
     spinStart_->setRange(0, 1e4);
-    addFormRow(QStringLiteral("起始偏移："), spinStart_);
+    addFormRow(tr("Start bit:"), spinStart_);
 
     spinEnd_ = new QSpinBox(this);
     spinEnd_->setRange(0, 1e4);
-    addFormRow(QStringLiteral("终止偏移："), spinEnd_);
+    addFormRow(tr("Stop bit:"), spinEnd_);
 
     enableConnect(true);
 }
@@ -75,7 +75,7 @@ bool CheckEdit::onTextChanged(const QString& text)
     } else if (sender == spinStart_) {
         checkData->setStart(spinStart_->value());
         result = true;
-    } else if (sender = spinEnd_) {
+    } else if (sender == spinEnd_) {
         checkData->setEnd(spinEnd_->value());
         result = true;
     }
@@ -92,12 +92,12 @@ bool CheckEdit::init()
     comboCheckType_->clear();
     std::vector<stDictionary> names;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&names));
+    args.append(qVariantFromValue(static_cast<void*>(&names)));
     args.append(int(GlobalDefine::dicCheckType));
     jnotify->send("edit.queryDictionaryTable", args);
 
-    const int count = names.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = names.size();
+    for (size_t i = 0; i < count; ++i) {
         const stDictionary &dic = names.at(i);
         comboCheckType_->addItem(dic.sDec.c_str(), dic.nCode);
     }
@@ -106,9 +106,9 @@ bool CheckEdit::init()
 
     int bound = 0;
     args.clear();
-    args.append(qVariantFromValue((void*)&bound));
+    args.append(qVariantFromValue(static_cast<void*>(&bound)));
     QString command("total");
-    args.append(qVariantFromValue((void*)&command));
+    args.append(qVariantFromValue(static_cast<void*>(&command)));
     jnotify->send("edit.queryTableInformation", args);
 
     if (bound > 0) {

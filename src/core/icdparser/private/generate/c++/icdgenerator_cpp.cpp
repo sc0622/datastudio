@@ -35,7 +35,7 @@ bool CppGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
     }
 
     //
-    parser()->setMessage(QStringLiteral("获取表数据\n表：%1")
+    parser()->setMessage(QObject::tr("Query Table\nTable: %1")
                          .arg(item->text())
                          .toStdString());
 

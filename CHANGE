@@ -1,10 +1,11 @@
 
 -- V4.5.1
-    tools: VS2015，Qt5.11.0，Qbs>=1.9.1
+    tools: VS2015，Qt5.11.1，Qbs>=1.9.1
     depends:
-        1) jframework: v2.7.0;
+        1) jframework: v2.7.1
     fixed:
         1) 增加数据源配置同步应用到其他系统的功能
+        2) 去除源码中的中文字符串，改为多语言翻译版
     next:
         <inherit to v4.5.0>
 

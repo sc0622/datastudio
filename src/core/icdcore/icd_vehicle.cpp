@@ -61,8 +61,7 @@ void Vehicle::appendSystem(const SystemPtr &system)
 
 void Vehicle::insertSystem(int index, const SystemPtr &system)
 {
-    if (index < 0 || index >= (int)d->systems.size()) {
-        assert(false);
+    if (index < 0 || index >= static_cast<int>(d->systems.size())) {
         return;
     }
 
@@ -72,7 +71,7 @@ void Vehicle::insertSystem(int index, const SystemPtr &system)
 
 void Vehicle::removeSystem(int index)
 {
-    if (index < 0 || index >= (int)d->systems.size()) {
+    if (index < 0 || index >= static_cast<int>(d->systems.size())) {
         return;     // overflow
     }
 
@@ -99,17 +98,16 @@ void Vehicle::clearSystem()
 
 int Vehicle::systemCount() const
 {
-    return (int)d->systems.size();
+    return static_cast<int>(d->systems.size());
 }
 
 SystemPtr Vehicle::systemAt(int index) const
 {
-    if (index < 0 || index >= (int)d->systems.size()) {
-        assert(false);
-        return 0;
+    if (index < 0 || index >= static_cast<int>(d->systems.size())) {
+        return SystemPtr();
     }
 
-    return d->systems.at(index);
+    return d->systems.at(static_cast<size_t>(index));
 }
 
 SystemPtr Vehicle::systemByMark(const std::string &mark) const
@@ -122,7 +120,7 @@ SystemPtr Vehicle::systemByMark(const std::string &mark) const
         }
     }
 
-    return 0;
+    return SystemPtr();
 }
 
 int Vehicle::childCount() const
@@ -197,8 +195,6 @@ bool Vehicle::restore(const Json::Value &json, int deep)
     if (!Object::restore(json, deep)) {
         return false;
     }
-
-    assert(deep <= Icd::ObjectItem);
 
     if (deep <= ObjectVehicle) {
         return true;

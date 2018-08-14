@@ -26,7 +26,7 @@ IcdListWidget::IcdListWidget(const Icd::TablePtr &table, const Icd::ObjectPtr &f
     d_listWidget->installEventFilter(this);
     vertLayoutMain->addWidget(d_listWidget);
 
-    QAction *actionRemove = new QAction(QStringLiteral("删除选中项"), this);
+    QAction *actionRemove = new QAction(tr("Remove selected item"), this);
     d_listWidget->addAction(actionRemove);
 
     //
@@ -77,10 +77,10 @@ QString IcdListWidget::generateItemNamePath(const Icd::ItemPtr &item, int bitOff
             Icd::BitItem *bitItem = dynamic_cast<Icd::BitItem *>(tempObject);
             if (!bitItem) {
                 Q_ASSERT(false);
-                return QStringLiteral("<?>");
+                return QString("<?>");
             }
             title = (QString("%1*[#%2]")
-                     .arg(QString::fromStdString(bitItem->specAt(_bitOffset)))
+                     .arg(QString::fromStdString(bitItem->specAt(Icd::icd_uint64(_bitOffset))))
                      .arg(_bitOffset));
             _bitOffset = -1;
         }
@@ -92,7 +92,7 @@ QString IcdListWidget::generateItemNamePath(const Icd::ItemPtr &item, int bitOff
     }
 
     if (title.isEmpty()) {
-        return QStringLiteral("<?>");
+        return QString("<?>");
     }
 
     title.replace(' ', '*');
@@ -146,7 +146,7 @@ bool IcdListWidget::eventFilter(QObject *watched, QEvent *event)
             painter.setFont(font);
             painter.setPen(QPen(QColor(64, 64, 64, 80)));
             QTextOption textOption(Qt::AlignCenter);
-            painter.drawText(rect(), QStringLiteral("<拖动左边树节点到此视图>"), textOption);
+            painter.drawText(rect(), tr("<Drag left tree node to right view>"), textOption);
 
             painter.restore();
 
@@ -184,7 +184,7 @@ void IcdListWidget::onDropEvent(QDropEvent *event)
     }
 
     if (!d_table) {
-        qWarning(QStringLiteral("工作组没有绑定接收端协议表！").toLocal8Bit());
+        qWarning(tr("Worker didn't binding protocol").toLocal8Bit());
         return;
     }
 
@@ -210,7 +210,7 @@ void IcdListWidget::onDropEvent(QDropEvent *event)
     const QString itemDomain = event->mimeData()->property("domain").toString();
 
     //
-    Icd::ObjectPtr dataObject = Icd::ObjectPtr(0);
+    Icd::ObjectPtr dataObject = Icd::ObjectPtr();
     switch (item->type()) {
     case Icd::TreeItemTypeTable:
     {

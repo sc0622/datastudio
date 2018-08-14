@@ -57,8 +57,8 @@ private:
 
 void JSerialPortData::setOptions()
 {
-    int hw = false ? 0x03 : 0;  // bit0 and bit1
-    int sw = false ? 0x0c : 0;  // bit2 and bit3
+    int hw = 0;//false ? 0x03 : 0;  // bit0 and bit1
+    int sw = 0;//false ? 0x0c : 0;  // bit2 and bit3
     bool dtr = true;
     bool rts = true;
 
@@ -93,7 +93,7 @@ void JSerialPortData::setOptions()
         timeout = 100;
     }
     //
-    errorCode = sio_SetWriteTimeouts(portNumber, timeout);
+    errorCode = sio_SetWriteTimeouts(portNumber, static_cast<DWORD>(timeout));
 }
 
 void JSerialPortData::setIoCtrl()
@@ -289,7 +289,7 @@ JSerialPort::StopBits JSerialPort::stopBits() const
 void JSerialPort::setStopBits(JSerialPort::StopBits value)
 {
 #ifdef SERIAL_USE_PCOMM
-    switch (value) {
+    switch (static_cast<int>(value)) {
     default:
     case SerialChannel::OneStop: d->stopBits = STOP_1; break;
     case SerialChannel::TwoStop: d->stopBits = STOP_2; break;

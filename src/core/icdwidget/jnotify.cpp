@@ -47,7 +47,8 @@ public:
     void execute()
     {
         if (callback) {
-            callback(JNEvent(channel, argument));
+            JNEvent event(channel, argument);
+            callback(event);
         }
     }
 
@@ -224,7 +225,8 @@ void JNotify::on(const QString &channel, QObject *receiver, JNotifyCallback call
             const QVariant argument = event->argument();
             d->mutex.unlock();
             if (sync) {
-                callback(JNEvent(channel, argument));
+                JNEvent event(channel, argument);
+                callback(event);
             } else {
                 QCoreApplication::postEvent(this, new JPostMsgEvent(callback, channel, argument));
             }
@@ -392,7 +394,7 @@ void JNotify::clear()
 
 void JNotify::customEvent(QEvent *event)
 {
-    switch (event->type()) {
+    switch (static_cast<int>(event->type())) {
     case Evt_PostMsg:
     {
         JPostMsgEvent *pmEvent = reinterpret_cast<JPostMsgEvent *>(event);

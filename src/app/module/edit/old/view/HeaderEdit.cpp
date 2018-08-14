@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "HeaderEdit.h"
 #include "KernelClass/icdfactory.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 #include "HexSpinBox.h"
 
 HeaderEdit::HeaderEdit(QWidget *parent)
@@ -10,7 +10,7 @@ HeaderEdit::HeaderEdit(QWidget *parent)
 {
     spinDefault_ = new HexSpinBox(this);
     spinDefault_->setRange(0, 0xff);
-    addFormRow(QStringLiteral("Ä¬ÈÏÖµ£º"), spinDefault_);
+    addFormRow(tr("Default:"), spinDefault_);
 
     enableConnect(true);
 }

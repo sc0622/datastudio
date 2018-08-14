@@ -56,8 +56,8 @@ private:
 private:
     Q_DISABLE_COPY(JCmdChannelSim)
     J_DECLARE_PRIVATE(JCmdChannelSim)
-    friend class JCmdSysModelSim;
-    friend class JCmdSysModelSimPrivate;
+    friend class JCmdModelSim;
+    friend class JCmdModelSimPrivate;
 };
 
 }

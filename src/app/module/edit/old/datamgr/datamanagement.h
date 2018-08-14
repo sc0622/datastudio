@@ -5,14 +5,15 @@
 #include "DBAccess/dbaccess.h"
 #include "KernelClass/planenode.h"
 #include "icdwidget/jnotify.h"
+#include "icdcore/icd_object.h"
 
 #define DEF_IGNORE_EMPTY_TABLE 0    // add by iclosue [2017-11-11]
 
 //
 #ifdef _MSC_VER
-typedef unsigned __int64 JWPARAM;
-typedef __int64 JLPARAM;
-typedef __int64 JLRESULT;
+typedef uint64_t JWPARAM;
+typedef int64_t JLPARAM;
+typedef int64_t JLRESULT;
 typedef bool jbool;
 typedef char jchar;
 typedef unsigned char juchar;
@@ -20,8 +21,8 @@ typedef short jshort;
 typedef unsigned short jushort;
 typedef int jint;
 typedef unsigned juint;
-typedef __int64 jlonglong;
-typedef unsigned __int64 julonglong;
+typedef int64_t jlonglong;
+typedef uint64_t julonglong;
 #else
 typedef unsigned long long JWPARAM;
 typedef long long JLPARAM;
@@ -60,7 +61,7 @@ private:
      * @param [in] deep
      * @return 执行结果，true：成功；false：失败
      */
-    bool loadBaseData(std::string &error = std::string(), int deep = Icd::ObjectTable);
+    bool loadBaseData(std::string &error, int deep = Icd::ObjectTable);
 
     /**
     * @brief 加载基础数据
@@ -335,7 +336,7 @@ protected:
     // 拷贝机数据（重新定义子规则表标识）
     bool copyTableData(TableNode::smtTable &table, const stICDBase &icdBase);
     // 拷贝规则数据（重新定义子规则表标识）
-    bool copyRuleData(ICDMetaData::smtMeta &meta, const stICDBase &icdBase);
+    bool copyRuleData(const ICDMetaData::smtMeta &meta, const stICDBase &icdBase);
     // 加载xml文件信息
     std::string readXmlFile();
 

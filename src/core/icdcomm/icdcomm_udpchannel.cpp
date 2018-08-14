@@ -56,7 +56,7 @@ bool UdpChannelData::parseHost(const std::string &host, const std::string &type,
     if (nPort <= 0) {
         return false;
     }
-    hostPort = (quint16)nPort;
+    hostPort = static_cast<quint16>(nPort);
 
     return true;
 }
@@ -211,7 +211,7 @@ bool UdpChannel::setConfig(const std::string &config)
         if (openMode.find('w') != std::string::npos) {
             eOpenMode |= UdpChannel::WriteOnly;
         }
-        setOpenMode((OpenMode)eOpenMode);
+        setOpenMode(static_cast<OpenMode>(eOpenMode));
     }
 
     //

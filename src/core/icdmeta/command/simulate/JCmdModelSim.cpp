@@ -1,17 +1,17 @@
 #include "precomp.h"
-#include "JCmdSysModelSim.h"
+#include "JCmdModelSim.h"
 #include "JCmdChannelSim.h"
 #include "../JCmdChannel.h"
 #include "../../channel/JChannel.h"
 
 namespace icdmeta {
 
-// class JCmdSysModelSimPrivate
+// class JCmdModelSimPrivate
 
-class JCmdSysModelSimPrivate
+class JCmdModelSimPrivate
 {
 public:
-    JCmdSysModelSimPrivate(JCmdSysModelSim *q)
+    JCmdModelSimPrivate(JCmdModelSim *q)
         : J_QPTR(q)
         , workMode(JCmdChannel::WorkModeHome)
         , currentWorkMode(JCmdChannel::WorkModeHome)
@@ -30,7 +30,7 @@ public:
     void stopTime();
 
 private:
-    J_DECLARE_PUBLIC(JCmdSysModelSim)
+    J_DECLARE_PUBLIC(JCmdModelSim)
     int workMode;
     int currentWorkMode;
     QList<QSharedPointer<JCmdChannelSim> > channels;
@@ -38,9 +38,9 @@ private:
     QTimer *timer;
 };
 
-void JCmdSysModelSimPrivate::init()
+void JCmdModelSimPrivate::init()
 {
-    Q_Q(JCmdSysModelSim);
+    Q_Q(JCmdModelSim);
     timer = new QTimer(q);
     timer->setSingleShot(true);
     timer->setTimerType(Qt::PreciseTimer);
@@ -49,85 +49,85 @@ void JCmdSysModelSimPrivate::init()
     });
 }
 
-int JCmdSysModelSimPrivate::channelsCount(QQmlListProperty<JCmdChannelSim> *property)
+int JCmdModelSimPrivate::channelsCount(QQmlListProperty<JCmdChannelSim> *property)
 {
-    JCmdSysModelSim *q = qobject_cast<JCmdSysModelSim *>(property->object);
+    JCmdModelSim *q = qobject_cast<JCmdModelSim *>(property->object);
     return q->J_DPTR->channels.count();
 }
 
-JCmdChannelSim *JCmdSysModelSimPrivate::channelsAt(QQmlListProperty<JCmdChannelSim> *property, int index)
+JCmdChannelSim *JCmdModelSimPrivate::channelsAt(QQmlListProperty<JCmdChannelSim> *property, int index)
 {
-    JCmdSysModelSim *q = qobject_cast<JCmdSysModelSim *>(property->object);
+    JCmdModelSim *q = qobject_cast<JCmdModelSim *>(property->object);
     return q->J_DPTR->channels[index].data();
 }
 
-QSharedPointer<JCmdChannelSim> JCmdSysModelSimPrivate::mapTask(const QSharedPointer<JCmdChannelSim> &channel)
+QSharedPointer<JCmdChannelSim> JCmdModelSimPrivate::mapTask(const QSharedPointer<JCmdChannelSim> &channel)
 {
     channel->run();
     return channel;
 }
 
-bool JCmdSysModelSimPrivate::startTime(int msecs)
+bool JCmdModelSimPrivate::startTime(int msecs)
 {
     return QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection,
                                      Q_ARG(int, msecs));
 }
 
-void JCmdSysModelSimPrivate::stopTime()
+void JCmdModelSimPrivate::stopTime()
 {
     QMetaObject::invokeMethod(timer, "stop", Qt::QueuedConnection);
 }
 
-// class JCmdSysModelSim
+// class JCmdModelSim
 
-J_QML_IMPLEMENT_SINGLE_INSTANCE(JCmdSysModelSim, QQmlEngine::CppOwnership, IcdCore)
+J_QML_IMPLEMENT_SINGLE_INSTANCE(JCmdModelSim, QQmlEngine::CppOwnership, IcdCore)
 
-JCmdSysModelSim::JCmdSysModelSim(QObject *parent)
+JCmdModelSim::JCmdModelSim(QObject *parent)
     : QObject(parent)
-    , J_DPTR(new JCmdSysModelSimPrivate(this))
+    , J_DPTR(new JCmdModelSimPrivate(this))
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     d->init();
 }
 
-JCmdSysModelSim::~JCmdSysModelSim()
+JCmdModelSim::~JCmdModelSim()
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     close();
     delete d;
 }
 
-void JCmdSysModelSim::registerQmlType()
+void JCmdModelSim::registerQmlType()
 {
     //
-    IcdMetaRegisterSingletonType2(JCmdSysModelSim, "JCmdModelSim");
+    IcdMetaRegisterSingletonType2(JCmdModelSim, "JCmdModelSim");
 
     //
     JCmdChannelSim::registerQmlType();
 }
 
-int JCmdSysModelSim::workMode() const
+int JCmdModelSim::workMode() const
 {
-    Q_D(const JCmdSysModelSim);
+    Q_D(const JCmdModelSim);
     return d->workMode;
 }
 
-int JCmdSysModelSim::currentWorkMode() const
+int JCmdModelSim::currentWorkMode() const
 {
-    Q_D(const JCmdSysModelSim);
+    Q_D(const JCmdModelSim);
     return d->currentWorkMode;
 }
 
-QQmlListProperty<icdmeta::JCmdChannelSim> JCmdSysModelSim::channels()
+QQmlListProperty<icdmeta::JCmdChannelSim> JCmdModelSim::channels()
 {
     return QQmlListProperty<icdmeta::JCmdChannelSim>(this, 0,
-                                                     &JCmdSysModelSimPrivate::channelsCount,
-                                                     &JCmdSysModelSimPrivate::channelsAt);
+                                                     &JCmdModelSimPrivate::channelsCount,
+                                                     &JCmdModelSimPrivate::channelsAt);
 }
 
-icdmeta::JCmdChannelSim *JCmdSysModelSim::findItem(const QString &identity) const
+icdmeta::JCmdChannelSim *JCmdModelSim::findItem(const QString &identity) const
 {
-    Q_D(const JCmdSysModelSim);
+    Q_D(const JCmdModelSim);
     for (auto &channel : d->channels) {
         if (channel->identity() == identity) {
             return channel.data();
@@ -137,9 +137,9 @@ icdmeta::JCmdChannelSim *JCmdSysModelSim::findItem(const QString &identity) cons
     return Q_NULLPTR;
 }
 
-void JCmdSysModelSim::setWorkMode(int value)
+void JCmdModelSim::setWorkMode(int value)
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     if (value != d->workMode) {
         d->workMode = value;
         for (auto &channel : d->channels) {
@@ -149,9 +149,9 @@ void JCmdSysModelSim::setWorkMode(int value)
     }
 }
 
-void JCmdSysModelSim::setCurrentWorkMode(int value)
+void JCmdModelSim::setCurrentWorkMode(int value)
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     if (value != d->currentWorkMode) {
         d->currentWorkMode = value;
         for (auto &channel : d->channels) {
@@ -161,9 +161,9 @@ void JCmdSysModelSim::setCurrentWorkMode(int value)
     }
 }
 
-void JCmdSysModelSim::appendChannel(icdmeta::JChannel *channel)
+void JCmdModelSim::appendChannel(icdmeta::JChannel *channel)
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     JCmdChannelSim *newChannel = new JCmdChannelSim(channel->identity());
     QQmlEngine::setObjectOwnership(newChannel, QQmlEngine::CppOwnership);
     newChannel->binding(channel);
@@ -171,9 +171,9 @@ void JCmdSysModelSim::appendChannel(icdmeta::JChannel *channel)
     emit channelsChanged();
 }
 
-void JCmdSysModelSim::clearChannel()
+void JCmdModelSim::clearChannel()
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     close();
     if (!d->channels.isEmpty()) {
         d->channels.clear();
@@ -181,9 +181,9 @@ void JCmdSysModelSim::clearChannel()
     }
 }
 
-bool JCmdSysModelSim::open()
+bool JCmdModelSim::open()
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     for (auto &channel : d->channels) {
         channel->cancel();
     }
@@ -209,9 +209,9 @@ bool JCmdSysModelSim::open()
     return true;
 }
 
-void JCmdSysModelSim::close()
+void JCmdModelSim::close()
 {
-    Q_D(JCmdSysModelSim);
+    Q_D(JCmdModelSim);
     for (auto &channel : d->channels) {
         channel->reset();
     }
@@ -225,7 +225,7 @@ void JCmdSysModelSim::close()
     }
 }
 
-void JCmdSysModelSim::reset()
+void JCmdModelSim::reset()
 {
     clearChannel();
 }

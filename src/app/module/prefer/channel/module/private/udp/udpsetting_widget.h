@@ -14,7 +14,7 @@ class UdpSettingWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UdpSettingWidget(QWidget *parent = 0);
+    explicit UdpSettingWidget(QWidget *parent = nullptr);
     ~UdpSettingWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

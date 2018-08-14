@@ -9,7 +9,7 @@
 
 ParityDataDlg::ParityDataDlg(QWidget *parent)
     : QWidget(parent)
-    , d_table(Q_NULLPTR)
+    , d_table(nullptr)
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
 
@@ -17,22 +17,22 @@ ParityDataDlg::ParityDataDlg(QWidget *parent)
     vertLayoutMain->addLayout(formLayoutTop);
 
     d_editSource = new QLineEdit(this);
-    QPushButton *buttonSourceView = new QPushButton(QStringLiteral("…"));
+    QPushButton *buttonSourceView = new QPushButton("...");
     buttonSourceView->setFixedWidth(60);
     QHBoxLayout *horiLayoutSource = new QHBoxLayout();
     horiLayoutSource->setContentsMargins(0, 0, 0, 0);
     horiLayoutSource->addWidget(d_editSource);
     horiLayoutSource->addWidget(buttonSourceView);
-    formLayoutTop->addRow(QStringLiteral("原始文件："), horiLayoutSource);
+    formLayoutTop->addRow(tr("Source file:"), horiLayoutSource);
 
     d_editTarget = new QLineEdit(this);
-    QPushButton *buttonTargetView = new QPushButton(QStringLiteral("…"));
+    QPushButton *buttonTargetView = new QPushButton("...");
     buttonTargetView->setFixedWidth(60);
     QHBoxLayout *horiLayoutTarget = new QHBoxLayout();
     horiLayoutTarget->setContentsMargins(0, 0, 0, 0);
     horiLayoutTarget->addWidget(d_editTarget);
     horiLayoutTarget->addWidget(buttonTargetView);
-    formLayoutTop->addRow(QStringLiteral("目标文件："), horiLayoutTarget);
+    formLayoutTop->addRow(tr("Target file:"), horiLayoutTarget);
 
     d_progressBar = new QProgressBar(this);
     d_progressBar->setRange(0, 100);
@@ -43,8 +43,8 @@ ParityDataDlg::ParityDataDlg(QWidget *parent)
     QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
     vertLayoutMain->addLayout(horiLayoutBottom);
 
-    d_buttonConvert = new QPushButton(QStringLiteral("转换"), this);
-    d_buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    d_buttonConvert = new QPushButton(tr("Start converting"), this);
+    d_buttonCancel = new QPushButton(tr("Cancel"), this);
     d_buttonConvert->setFixedWidth(120);
     d_buttonCancel->setFixedWidth(120);
     d_buttonConvert->setDefault(true);
@@ -52,9 +52,9 @@ ParityDataDlg::ParityDataDlg(QWidget *parent)
     horiLayoutBottom->addWidget(d_buttonCancel);
 
     connect(buttonSourceView, &QPushButton::clicked, this, [=](){
-        QString selectedFilter = QStringLiteral("Any file (*.*)");
+        QString selectedFilter = QString("Any file (*.*)");
         const QString filePath = QFileDialog::getOpenFileName(
-                    this, QStringLiteral("查找原始文件"), d_editSource->text(),
+                    this, tr("Select source file"), d_editSource->text(),
                     "Any file (*.*);;"
                     "Data file (*.dat);;"
                     "Text file (*.txt)", &selectedFilter);
@@ -73,9 +73,9 @@ ParityDataDlg::ParityDataDlg(QWidget *parent)
         }
     });
     connect(buttonTargetView, &QPushButton::clicked, this, [=](){
-        QString selectedFilter = QStringLiteral("Dat file (*.dat)");
+        QString selectedFilter = QString("Dat file (*.dat)");
         const QString filePath = QFileDialog::getSaveFileName(
-                    this, QStringLiteral("查找原始文件"), d_editTarget->text(),
+                    this, tr("Select target file"), d_editTarget->text(),
                     "Any file (*.*);;"
                     "Data file (*.dat)", &selectedFilter);
         if (filePath.isEmpty() || !QFile::exists(filePath)) {
@@ -100,7 +100,7 @@ ParityDataDlg::ParityDataDlg(QWidget *parent)
         bool hasTimeFormat = false;
         QString domain;
 
-        // 判断文件类型
+        // 鍒ゆ柇鏂囦欢绫诲瀷
         const QString header = QString(sourceFile.read(4));
         if (header == "ICD") {
             headerSize += 4;
@@ -162,10 +162,10 @@ bool ParityDataDlg::loadData(const QString &domain, int headerSize,
     }
 
     Icd::ProgressDialog *progressDialog = new Icd::ProgressDialog(this);
-    progressDialog->setWindowTitle(QStringLiteral("加载数据"));
+    progressDialog->setWindowTitle(tr("Load data"));
     progressDialog->setProgressValue(100);
     progressDialog->setCancelVisible(false);
-    progressDialog->setMessage(QStringLiteral("正在解析数据文件……"));
+    progressDialog->setMessage(tr("Parsing data file..."));
     QFuture<bool> future = QtConcurrent::run([=]() -> bool {
         if (!parser->parse(domain.section('/', 0, 0).toStdString(),
                            domain.section('/', 1, 1).toStdString(),
@@ -215,29 +215,29 @@ bool ParityDataDlg::loadData(const QString &domain, int headerSize,
             return true;
         });
     };
-    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=,this,&parseTable](){
+    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
         if (progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;
-                progressDialog->setMessage(QStringLiteral("正在转换数据文件……"));
+                progressDialog->setMessage(tr("Converting data file..."));
                 progressDialog->setFuture(runAgainFuture());
             } else {
                 progressDialog->hide();
                 progressDialog->disconnect(this);
-                QString message = QStringLiteral("转换成功！");
-                QMessageBox::information(this, QStringLiteral("转换结果"), message);
+                QString message = tr("Convert success!");
+                QMessageBox::information(this, tr("Result of converting"), message);
                 progressDialog->deleteLater();
-                d_table = Icd::TablePtr(0);
+                d_table = Icd::TablePtr();
                 setEnabled(true);
             }
         } else {
             progressDialog->hide();
             progressDialog->disconnect(this);
-            const QString title = parseTable ? QStringLiteral("解析结果") : QStringLiteral("转换结果");
-            const QString message = parseTable ? QStringLiteral("解析失败！") : QStringLiteral("转换失败！");
+            const QString title = parseTable ? tr("Result of parsing") : tr("Result of converting");
+            const QString message = parseTable ? tr("Parse failure!") : tr("Convert failure!");
             QMessageBox::information(this, title, message);
             progressDialog->deleteLater();
-            d_table = Icd::TablePtr(0);
+            d_table = Icd::TablePtr();
         }
     });
     progressDialog->setFuture(future);

@@ -63,7 +63,7 @@ void FrameCodeItem::setFrameCodeType(FrameCodeType type)
     case FrameCodeU16: setBufferSize(2); break;
     case FrameCodeU32: setBufferSize(4); break;
     case FrameCodeU64: setBufferSize(8); break;
-    default: assert(false); break;
+    default: break;
     }
 }
 
@@ -109,8 +109,8 @@ double FrameCodeItem::data() const
     }
 
     icd_uint64 value = 0;
-    memcpy(&value, buffer, std::min<int>(sizeof(value), int(bufferSize())));
-    return (double)value;
+    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
+    return static_cast<double>(value);
 }
 
 void FrameCodeItem::setData(double data)
@@ -120,14 +120,14 @@ void FrameCodeItem::setData(double data)
         return;
     }
 
-    icd_uint64 value = (icd_uint64)data;
-    memcpy(buffer, &value, std::min<int>(sizeof(value), int(bufferSize())));
+    icd_uint64 value = static_cast<icd_uint64>(data);
+    memcpy(buffer, &value, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
 }
 
 std::string FrameCodeItem::dataString() const
 {
     std::stringstream str;
-    str << std::hex << (icd_uint64)data();
+    str << std::hex << static_cast<icd_uint64>(data());
     return str.str();
 }
 
@@ -161,10 +161,10 @@ void FrameCodeItem::updateSend(bool period)
     if (period) {
         icd_uint64 code = d->frame->updateSend(0);
         if (code > 0) {
-            setData((double)code);
+            setData(static_cast<double>(code));
         }
     } else {
-        d->frame->updateSend((icd_uint64)data());
+        d->frame->updateSend(static_cast<icd_uint64>(data()));
     }
 }
 
@@ -174,7 +174,7 @@ void FrameCodeItem::updateRecv()
         return;
     }
 
-    d->frame->updateRecv((icd_uint64)data());
+    d->frame->updateRecv(static_cast<icd_uint64>(data()));
 }
 
 void FrameCodeItem::resetSend()
@@ -203,7 +203,7 @@ void FrameCodeItem::clearData()
 std::string FrameCodeItem::typeName() const
 {
     std::stringstream ss;
-    ss << "icd_uint" << ((int)bufferSize() << 3);
+    ss << "icd_uint" << (static_cast<int>(bufferSize()) << 3);
     return ss.str();
 }
 
@@ -250,7 +250,6 @@ bool FrameCodeItem::restore(const Json::Value &json, int deep)
 
     FrameCodeType frameCodeType = stringFrameCodeType(json["frameCodeType"].asString());
     if (frameCodeType == Icd::FrameCodeInvalid) {
-        assert(false);
         return false;
     }
     setFrameCodeType(frameCodeType);

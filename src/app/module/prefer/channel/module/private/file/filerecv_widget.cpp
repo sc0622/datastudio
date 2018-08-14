@@ -3,12 +3,12 @@
 
 FileRecvWidget::FileRecvWidget(QWidget *parent)
     : QWidget(parent)
-    , d_worker(Icd::WorkerPtr(0))
+    , d_worker(Icd::WorkerPtr())
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox *groupBoxSettings = new QGroupBox(QStringLiteral("接收设置"), this);
+    QGroupBox *groupBoxSettings = new QGroupBox(tr("Receiving settings"), this);
     vertLayoutMain->addWidget(groupBoxSettings);
 
     QVBoxLayout *vertLayoutSettings = new QVBoxLayout(groupBoxSettings);
@@ -20,22 +20,22 @@ FileRecvWidget::FileRecvWidget(QWidget *parent)
     d_spinBoxInterval = new QSpinBox(this);
     d_spinBoxInterval->setRange(1, INT_MAX);
     d_spinBoxInterval->setSuffix(" ms");
-    formLayoutSettings->addRow(QStringLiteral("接收周期："), d_spinBoxInterval);
+    formLayoutSettings->addRow(tr("Period of receiving"), d_spinBoxInterval);
 
     QHBoxLayout *horiLayoutButtons = new QHBoxLayout();
     vertLayoutSettings->addLayout(horiLayoutButtons);
 
-    d_buttonRestore = new QPushButton(QStringLiteral("恢复"), this);
+    d_buttonRestore = new QPushButton(tr("Restore"), this);
     d_buttonRestore->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonRestore);
 
     horiLayoutButtons->addSpacing(10);
 
-    d_buttonApply = new QPushButton(QStringLiteral("应用"), this);
+    d_buttonApply = new QPushButton(tr("Apply"), this);
     d_buttonApply->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonApply);
 
-    QGroupBox *groupBoxStatus = new QGroupBox(QStringLiteral("接收状态"), this);
+    QGroupBox *groupBoxStatus = new QGroupBox(tr("Status of receiving"), this);
     vertLayoutMain->addWidget(groupBoxStatus);
 
     QVBoxLayout *vertLayoutStatus = new QVBoxLayout(groupBoxStatus);
@@ -46,7 +46,7 @@ FileRecvWidget::FileRecvWidget(QWidget *parent)
 
     d_editSequence = new QLineEdit(this);
     d_editSequence->setReadOnly(true);
-    formLayoutStatus->addRow(QStringLiteral("接收时序："), d_editSequence);
+    formLayoutStatus->addRow(tr("Sequence of receiving"), d_editSequence);
 
     //
     auto enableButtons = [=](bool enabled){

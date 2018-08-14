@@ -10,11 +10,6 @@
 
 namespace Icd {
 
-/**
- * @brief _updateRelayer
- * @param channel
- * @param table
- */
 extern void _updateRelayer(Icd::ChannelPtr &channel, const Icd::TablePtr &table);
 
 WorkerRecvPrivate::WorkerRecvPrivate(Icd::WorkerRecv *q)

@@ -14,7 +14,7 @@ class CommDetailWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CommDetailWidget(QWidget *parent = 0);
+    explicit CommDetailWidget(QWidget *parent = nullptr);
 
     void updateUi(const Icd::WorkerPtr &worker);
 

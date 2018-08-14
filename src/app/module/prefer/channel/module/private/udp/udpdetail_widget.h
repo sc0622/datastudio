@@ -12,7 +12,7 @@ class UdpDetailWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UdpDetailWidget(QWidget *parent = 0);
+    explicit UdpDetailWidget(QWidget *parent = nullptr);
     ~UdpDetailWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

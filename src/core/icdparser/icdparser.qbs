@@ -2,6 +2,8 @@ import qbs
 import qbs.FileInfo
 
 CoreDyLibrary {
+    translations: [ 'zh_CN.ts' ]
+    defaultTranslation: true
 
     Depends { name: 'Qt.printsupport' }
     Depends {

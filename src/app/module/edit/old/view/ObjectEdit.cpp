@@ -16,7 +16,7 @@
 #include "TableEdit.h"
 #include "SystemEdit.h"
 #include "VehicleEdit.h"
-#include "LimitTextEdit.h"
+#include "limittextedit.h"
 
 ObjectEdit::ObjectEdit(QWidget *parent)
     : QWidget(parent)
@@ -31,7 +31,7 @@ ObjectEdit::ObjectEdit(QWidget *parent)
     splitterBase_->setHandleWidth(3);
     layoutMain_->addWidget(splitterBase_);
 
-    groupBoxBase_ = new QGroupBox(QStringLiteral("»ù±¾ĞÅÏ¢"), this);
+    groupBoxBase_ = new QGroupBox(tr("Base information"), this);
     splitterBase_->addWidget(groupBoxBase_);
 
     layoutBase_ = new QFormLayout(groupBoxBase_);
@@ -40,19 +40,19 @@ ObjectEdit::ObjectEdit(QWidget *parent)
 
     editName_ = new QLineEdit(this);
     editName_->setMaxLength(255);
-    editName_->setToolTip(QStringLiteral("×î¶à255¸ö×Ö·û"));
-    layoutBase_->addRow(QStringLiteral("<font color=red>*</font>Ãû³Æ£º"), editName_);
+    editName_->setToolTip(tr("At most 255 bytes"));
+    layoutBase_->addRow(tr("<font color=red>*</font>Name:"), editName_);
 
     editMark_ = new QLineEdit(this);
     editMark_->setMaxLength(255);
-    editMark_->setToolTip(QStringLiteral("×î¶à255¸ö×Ö·û"));
+    editMark_->setToolTip(QStringLiteral("At most 255 bytes"));
     editMark_->setValidator(new QRegExpValidator(QRegExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,254}")));
-    layoutBase_->addRow(QStringLiteral("<font color=red>*</font>±êÊ¶£º"), editMark_);
+    layoutBase_->addRow(tr("<font color=red>*</font>Identity:"), editMark_);
 
     editDesc_ = new LimitTextEdit(this);
     editDesc_->setMaxLength(255);
-    editDesc_->setToolTip(QStringLiteral("×î¶à255¸ö×Ö·û£¡"));
-    layoutBase_->addRow(QStringLiteral("ÃèÊö£º"), editDesc_);
+    editDesc_->setToolTip(tr("At most 255 bytes"));
+    layoutBase_->addRow(tr("Describe:"), editDesc_);
 
     QHBoxLayout *layoutButton = new QHBoxLayout();
     layoutMain_->addLayout(layoutButton);
@@ -60,12 +60,12 @@ ObjectEdit::ObjectEdit(QWidget *parent)
     layoutButton->addStretch();
     // apply
     buttonConfirm_ = new QPushButton(QIcon(":/datastudio/image/global/apply.png"),
-                                     QStringLiteral("Ìá½»"), this);
+                                     tr("Commit"), this);
     buttonConfirm_->setFixedWidth(100);
     layoutButton->addWidget(buttonConfirm_);
     // cancel
     buttonCancel_ = new QPushButton(QIcon(":/datastudio/image/global/cancel.png"),
-                                    QStringLiteral("È¡Ïû"), this);
+                                    tr("Cancel"), this);
     buttonCancel_->setFixedWidth(100);
     layoutButton->addSpacing(30);
     layoutButton->addWidget(buttonCancel_);
@@ -80,7 +80,7 @@ ObjectEdit::ObjectEdit(QWidget *parent)
     connect(buttonConfirm_, &QPushButton::clicked, this, [=](){
         if (data_) {
             QVariantList args;
-            args.append(qVariantFromValue((void*)&data_));
+            args.append(qVariantFromValue(static_cast<void*>(&data_)));
             jnotify->send("edit.fillBitSerial", args);
         }
 
@@ -97,7 +97,7 @@ ObjectEdit::ObjectEdit(QWidget *parent)
         if (result) {
             enableCommit(false);
         } else {
-            setStatus(QStringLiteral("±£´æÊı¾İÊ§°Ü£¡"));
+            setStatus(tr("Save data failure!"));
         }
     });
     connect(buttonCancel_, &QPushButton::clicked, this, [=](){
@@ -427,19 +427,19 @@ bool ObjectEdit::_validate()
     if (name().isEmpty()) {
         editName_->setFocus();
         editName_->setProperty("highlight", true);
-        setStatus(QStringLiteral("Ãû³Æ²»ÄÜÎª¿Õ£¡"));
+        setStatus(tr("Name cannot be empty!"));
         return false;
     } else {
         QString section = "name";
         QMap<QString, QString> existed;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&existed));
-        args.append(qVariantFromValue((void*)&section));
+        args.append(qVariantFromValue(static_cast<void*>(&existed)));
+        args.append(qVariantFromValue(static_cast<void*>(&section)));
         jnotify->send("edit.queryExistedData", args);
         if (existed.contains(name())) {
             editName_->setFocus();
             editName_->setProperty("highlight", true);
-            setStatus(QStringLiteral("ÒÑ´æÔÚÍ¬ÃûÏî£¡"));
+            setStatus(tr("Already exists the same name \"%1\"").arg(name()));
             return false;
         } else {
             editName_->setProperty("highlight", false);
@@ -451,19 +451,19 @@ bool ObjectEdit::_validate()
     if (mark.isEmpty()) {
         editMark_->setFocus();
         editMark_->setProperty("highlight", true);
-        setStatus(QStringLiteral("±êÊ¶²»ÄÜÎª¿Õ£¡"));
+        setStatus(tr("Identity cannot be empty!"));
         return false;
     } else {
         QString section = "code";
         QMap<QString, QString> existed;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&existed));
-        args.append(qVariantFromValue((void*)&section));
+        args.append(qVariantFromValue(static_cast<void*>(&existed)));
+        args.append(qVariantFromValue(static_cast<void*>(&section)));
         jnotify->send("edit.queryExistedData", args);
         if (existed.contains(mark)) {
             editMark_->setFocus();
             editMark_->setProperty("highlight", true);
-            setStatus(QStringLiteral("ÒÑ´æÔÚÍ¬ÃûÏî£¡"));
+            setStatus(tr("Already exists the same mark \"%1\"").arg(mark));
             return false;
         } else {
             editMark_->setProperty("highlight", false);
@@ -479,37 +479,37 @@ bool ObjectEdit::_validate()
         //
         int lengthCheck = 0;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&lengthCheck));
+        args.append(qVariantFromValue(static_cast<void*>(&lengthCheck)));
         QString command("lengthCheck");
-        args.append(qVariantFromValue((void*)&command));
+        args.append(qVariantFromValue(static_cast<void*>(&command)));
         jnotify->send("edit.queryTableInformation", args);
         if (0 == lengthCheck) {
-            return true;    // ²»½øĞĞ³¤¶ÈĞ£Ñé
+            return true;    // ä¸è¿›è¡Œé•¿åº¦æ ¡éªŒ
         }
 
         const bool newItem = (property("option").toInt() == GlobalDefine::optNew);
-        // ³¤¶È
+        // é•¿åº¦
         int remains = 0;
         int offset = 0;
-        // Ê£Óà¿ÉÓÃ³¤¶È
+        // å‰©ä½™å¯ç”¨é•¿åº¦
         args.clear();
-        args.append(qVariantFromValue((void*)&remains));
+        args.append(qVariantFromValue(static_cast<void*>(&remains)));
         command = "remains";
-        args.append(qVariantFromValue((void*)&command));
+        args.append(qVariantFromValue(static_cast<void*>(&command)));
         jnotify->send("edit.queryTableInformation", args);
 
-        // ³¤¶ÈÆ«ÒÆÁ¿
+        // é•¿åº¦åç§»é‡
         args.clear();
-        args.append(qVariantFromValue((void*)&data_));
-        args.append(qVariantFromValue((void*)&offset));
+        args.append(qVariantFromValue(static_cast<void*>(&data_)));
+        args.append(qVariantFromValue(static_cast<void*>(&offset)));
         jnotify->send("edit.queryLengthOffset", args);
         if (remains >= offset) {
-            if (newItem && remains < 0) {   // Èç¹ûÊÇĞÂÔö£¬ĞèÒªÅĞ¶¨Ê£Óà³¤¶È
-                setStatus(QStringLiteral("¹æ»®Êı¾İ³¬¹ıÔ¤¶¨×Ü³¤¶È£¡"));
+            if (newItem && remains < 0) {   // å¦‚æœæ˜¯æ–°å¢ï¼Œéœ€è¦åˆ¤å®šå‰©ä½™é•¿åº¦
+                setStatus(tr("Length of planned data is overflow!"));
                 return false;
             }
         } else {
-            setStatus(QStringLiteral("¹æ»®Êı¾İ³¬¹ıÔ¤¶¨×Ü³¤¶È£¡"));
+            setStatus(tr("Length of planned data is overflow!"));
             return false;
         }
     }

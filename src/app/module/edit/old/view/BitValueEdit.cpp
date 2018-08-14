@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "BitValueEdit.h"
 #include "DoubleSpinBox.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 #include "jwt/jxmltable.h"
 #include "jwt/jsplitter.h"
 
@@ -11,44 +11,44 @@ BitValueEdit::BitValueEdit(QWidget *parent)
 {
     spinBitStart_ = new QSpinBox(this);
     spinBitStart_->setRange(0, MAX_BIT_COUNT - 1);
-    addFormRow(QStringLiteral("<font color=red>*</font>∆ ºŒª£∫"), spinBitStart_);
+    addFormRow(tr("<font color=red>*</font>Start bit:"), spinBitStart_);
 
     spinBitCount_ = new QSpinBox(this);
     spinBitCount_->setRange(1, MAX_BIT_COUNT);
-    addFormRow(QStringLiteral("<font color=red>*</font>≥§∂»£∫"), spinBitCount_);
+    addFormRow(tr("<font color=red>*</font>Length:"), spinBitCount_);
 
     spinOffset_ = new DoubleSpinBox(this);
     spinOffset_->setRange(-DBL_MAX, DBL_MAX);
     spinOffset_->setDecimals(DBL_DIG);
-    addFormRow(QStringLiteral("∆´“∆¡ø£∫"), spinOffset_);
+    addFormRow(tr("Offset:"), spinOffset_);
 
     spinScale_ = new DoubleSpinBox(this);
     spinScale_->setRange(-DBL_MAX, DBL_MAX);
     spinScale_->setDecimals(DBL_DIG);
     spinScale_->setDecimals(16);
-    addFormRow(QStringLiteral("±»¿˝£∫"), spinScale_);
+    addFormRow(tr("Scale:"), spinScale_);
 
     editUnit_ = new LimitLineEdit(this);
-    addFormRow(QStringLiteral("µ•Œª£∫"), editUnit_);
+    addFormRow(tr("Unit:"), editUnit_);
 
     spinMinimum_ = new DoubleSpinBox(this);
     spinMinimum_->setRange(-DBL_MAX, DBL_MAX);
     spinMinimum_->setDecimals(DBL_DIG);
-    checkLeftInf_ = new QCheckBox(QStringLiteral("œ¬œﬁ£∫"), this);
+    checkLeftInf_ = new QCheckBox(tr("Minimum:"), this);
     addFormRow(checkLeftInf_, spinMinimum_);
 
     spinMaximum_ = new DoubleSpinBox(this);
     spinMaximum_->setRange(-DBL_MAX, DBL_MAX);
     spinMaximum_->setDecimals(DBL_DIG);
-    checkRightInf_ = new QCheckBox(QStringLiteral("…œœﬁ£∫"), this);
+    checkRightInf_ = new QCheckBox(tr("Maximum:"), this);
     addFormRow(checkRightInf_, spinMaximum_);
 
     spinDefault_ = new DoubleSpinBox(this);
     spinDefault_->setRange(-DBL_MAX, DBL_MAX);
     spinDefault_->setDecimals(DBL_DIG);
-    addFormRow(QStringLiteral("ƒ¨»œ÷µ£∫"), spinDefault_);
+    addFormRow(tr("Default:"), spinDefault_);
 
-    QGroupBox* groupSpecs = new QGroupBox(QStringLiteral("Ãÿ’˜µ„–≈œ¢"), this);
+    QGroupBox* groupSpecs = new QGroupBox(tr("Spec"), this);
     splitterBase()->addWidget(groupSpecs);
 
     QVBoxLayout* layoutSpecs = new QVBoxLayout(groupSpecs);
@@ -67,11 +67,11 @@ BitValueEdit::BitValueEdit(QWidget *parent)
 
     tableView_->setContextMenuPolicy(Qt::ActionsContextMenu);
     QList<QAction *> lstAction;
-    actionNew_ = new QAction(QStringLiteral("–¬‘ˆ"), tableView_);
+    actionNew_ = new QAction(tr("Add"), tableView_);
     tableView_->addAction(actionNew_);
     actionNew_->setObjectName("new");
     lstAction << actionNew_;
-    actionClear = new QAction(QStringLiteral("«Âø’"), tableView_);
+    actionClear = new QAction(tr("Clear"), tableView_);
     tableView_->addAction(actionClear);
     actionClear->setObjectName("clear");
     lstAction << actionClear;
@@ -145,9 +145,9 @@ void BitValueEdit::onNew()
 
 void BitValueEdit::onDelete()
 {
-    const int result = QMessageBox::question(tableView_,
-                                             QStringLiteral("…æ≥˝»∑»œ"),
-                                             QStringLiteral("»∑»œ…æ≥˝µ±«∞—°÷– ˝æ›£ø"));
+    const int result = QMessageBox::warning(tableView_,
+                                             tr("Warning"),
+                                             tr("Confirm to remove selected item?"));
     if (result == QMessageBox::No) {
         return;
     }
@@ -172,9 +172,9 @@ void BitValueEdit::onDelete()
 
 void BitValueEdit::onClear()
 {
-    const int result = QMessageBox::question(tableView_,
-                                             QStringLiteral("…æ≥˝»∑»œ"),
-                                             QStringLiteral("»∑»œ«Âø’À˘”– ˝æ›£ø"));
+    const int result = QMessageBox::warning(tableView_,
+                                             tr("Warning"),
+                                             tr("Confirm to clear data?"));
     if (result == QMessageBox::No) {
         return;
     }
@@ -230,11 +230,11 @@ bool BitValueEdit::onTextChanged(const QString& text)
         bitData->setUnit(text.trimmed().toStdString());
         result = true;
     } else if (sender == spinBitStart_) {
-        bitData->setStart(spinBitStart_->value());
-        bitData->setBitLength(spinBitCount_->value());
+        bitData->setStart(static_cast<unsigned short>(spinBitStart_->value()));
+        bitData->setBitLength(static_cast<unsigned short>(spinBitCount_->value()));
         result = true;
     } else if (sender == spinBitCount_) {
-        bitData->setBitLength(spinBitCount_->value());
+        bitData->setBitLength(static_cast<unsigned short>(spinBitCount_->value()));
         result = true;
     } else if (sender == spinMinimum_ || sender == spinMaximum_) {
         QString sMinimum;
@@ -384,54 +384,54 @@ void BitValueEdit::enableConnect(bool enabled)
 
 bool BitValueEdit::validate()
 {
-    // –£—È…œœ¬œﬁ“‘º∞ƒ¨»œ÷µ
+    // Ê†°È™å‰∏ä‰∏ãÈôê‰ª•ÂèäÈªòËÆ§ÂÄº
     if (checkLeftInf_->isChecked()) {
         if (checkRightInf_->isChecked()) {
             if (spinMinimum_->value() > spinMaximum_->value()) {
                 spinMinimum_->setFocus();
                 spinMinimum_->setProperty("highlight", true);
-                setStatus(QStringLiteral("∑∂Œßœ¬œﬁ≤ªƒ‹¥Û”⁄…œœﬁ£°"));
+                setStatus(tr("Minimum cannot be greater than upper limit!"));
                 return false;
             } else {
                 spinMinimum_->setProperty("highlight", false);
             }
-            // –£—Èƒ¨»œ÷µ
+            // Ê†°È™åÈªòËÆ§ÂÄº
             if (spinDefault_->value() < spinMinimum_->value()
                     || spinDefault_->value() > spinMaximum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
-                setStatus(QStringLiteral("ƒ¨»œ÷µ≥¨≥ˆ∑∂Œß£°"));
+                setStatus(tr("Default value is overflow!"));
                 return false;
             } else {
                 spinDefault_->setProperty("highlight", false);
             }
         } else {
             spinMinimum_->setProperty("highlight", false);
-            // –£—Èƒ¨»œ÷µ
+            // Ê†°È™åÈªòËÆ§ÂÄº
             if (spinDefault_->value() < spinMinimum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
-                setStatus(QStringLiteral("ƒ¨»œ÷µ≥¨≥ˆ∑∂Œß£°"));
+                setStatus(QStringLiteral("Default value is overflow!"));
                 return false;
             } else {
                 spinDefault_->setProperty("highlight", false);
             }
         }
-    } else {    // Œ¥∆Ù”√œ¬œﬁ
+    } else {    // Êú™ÂêØÁî®‰∏ãÈôê
         spinMinimum_->setProperty("highlight", false);
-        if (checkRightInf_->isChecked()) {    // ∆Ù”√…œœﬁ
-            // –£—Èƒ¨»œ÷µ
+        if (checkRightInf_->isChecked()) {    // ÂêØÁî®‰∏äÈôê
+            // Ê†°È™åÈªòËÆ§ÂÄº
             if (spinDefault_->value() > spinMaximum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
-                setStatus(QStringLiteral("ƒ¨»œ÷µ≥¨≥ˆ∑∂Œß£°"));
+                setStatus(QStringLiteral("Default value is overflow!"));
                 return false;
             } else {
                 spinDefault_->setProperty("highlight", false);
             }
         }
     }
-    // Ãÿ’˜÷µ
+    // ÁâπÂæÅÂÄº
     QString value;
     QString desc;
     std::map<double, std::string> values;
@@ -443,7 +443,7 @@ bool BitValueEdit::validate()
             continue;
         }
         if (!data()->dataInRange(value.toDouble())) {
-            setStatus(QStringLiteral("Ãÿ’˜÷µ≥¨≥ˆœﬁ∂®∑∂Œß£°"));
+            setStatus(QStringLiteral("Spec value is overflow!"));
             tableView_->setCurrentItem(tableView_->item(i, 0));
             return false;
         }
@@ -467,9 +467,9 @@ ICDBitData *BitValueEdit::oldData()
 void BitValueEdit::showMenu()
 {
     QMenu menu(this);
-    menu.addAction(QStringLiteral("–¬‘ˆ"), this, SLOT(onNew()));
-    menu.addAction(QStringLiteral("…æ≥˝"), this, SLOT(onDelete()));
-    menu.addAction(QStringLiteral("«Âø’"), this, SLOT(onClear()));
+    menu.addAction(tr("Add"), this, SLOT(onNew()));
+    menu.addAction(tr("Remove"), this, SLOT(onDelete()));
+    menu.addAction(tr("Clear"), this, SLOT(onClear()));
     menu.exec(QCursor::pos());
 }
 

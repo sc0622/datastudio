@@ -10,7 +10,7 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox *groupBox = new QGroupBox(QStringLiteral("文件流设置"), this);
+    QGroupBox *groupBox = new QGroupBox(tr("File settings"), this);
     vertLayoutMain->addWidget(groupBox);
 
     QVBoxLayout *vertLayoutGroupBox = new QVBoxLayout(groupBox);
@@ -23,47 +23,47 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
 
     QHBoxLayout *horiLayoutFilePath = new QHBoxLayout();
     horiLayoutFilePath->setSpacing(0);
-    formLayout->addRow(QStringLiteral("文件路径："), horiLayoutFilePath);
+    formLayout->addRow(tr("File path:"), horiLayoutFilePath);
 
     horiLayoutFilePath->addWidget(d_editFilePath);
 
-    QPushButton *buttonView = new QPushButton(QStringLiteral("..."), this);
+    QPushButton *buttonView = new QPushButton("...", this);
     buttonView->setFixedSize(d_editFilePath->sizeHint().height() + 6, d_editFilePath->sizeHint().height());
     buttonView->setStyleSheet("border-radius: 1px;");
     horiLayoutFilePath->addWidget(buttonView);
 
-    d_checkBoxReadOnly = new QCheckBox(QStringLiteral("只读"), this);
-    formLayout->addRow(QStringLiteral("打开模式："), d_checkBoxReadOnly);
+    d_checkBoxReadOnly = new QCheckBox(tr("Read Only"), this);
+    formLayout->addRow(tr("Open Mode:"), d_checkBoxReadOnly);
 
-    d_checkBoxWriteOnly = new QCheckBox(QStringLiteral("只写"), this);
-    formLayout->addRow(QStringLiteral(" "), d_checkBoxWriteOnly);
+    d_checkBoxWriteOnly = new QCheckBox(tr("Write Only"), this);
+    formLayout->addRow(" ", d_checkBoxWriteOnly);
 
-    d_checkBoxAppend = new QCheckBox(QStringLiteral("追加写入"), this);
-    formLayout->addRow(QStringLiteral(" "), d_checkBoxAppend);
+    d_checkBoxAppend = new QCheckBox(tr("Append"), this);
+    formLayout->addRow(" ", d_checkBoxAppend);
 
-    d_checkBoxTruncate = new QCheckBox(QStringLiteral("删除已存在文件"), this);
-    formLayout->addRow(QStringLiteral(" "), d_checkBoxTruncate);
+    d_checkBoxTruncate = new QCheckBox(tr("Truncate"), this);
+    formLayout->addRow(" ", d_checkBoxTruncate);
 
-    d_checkBoxText = new QCheckBox(QStringLiteral("文本存储模式"), this);
-    formLayout->addRow(QStringLiteral(" "), d_checkBoxText);
+    d_checkBoxText = new QCheckBox(tr("Text"), this);
+    formLayout->addRow(" ", d_checkBoxText);
 
     d_editName = new QLineEdit(this);
-    formLayout->addRow(QStringLiteral("通道名称："), d_editName);
+    formLayout->addRow(tr("Name of channel:"), d_editName);
 
-    d_checkBoxDomain = new QCheckBox(QStringLiteral("表域名（表协议查询ID）"), this);
-    formLayout->addRow(QStringLiteral("存储格式："), d_checkBoxDomain);
+    d_checkBoxDomain = new QCheckBox(tr("Domain of table (Query Id)"), this);
+    formLayout->addRow(tr("Save format:"), d_checkBoxDomain);
 
-    d_checkBoxTimestamp = new QCheckBox(QStringLiteral("时间戳"), this);
-    formLayout->addRow(QStringLiteral(""), d_checkBoxTimestamp);
+    d_checkBoxTimestamp = new QCheckBox(tr("Timestamp"), this);
+    formLayout->addRow(" ", d_checkBoxTimestamp);
 
     QHBoxLayout *horiLayoutRelayer = new QHBoxLayout();
     horiLayoutRelayer->setSpacing(0);
-    formLayout->addRow(QStringLiteral("转发通道："), horiLayoutRelayer);
+    formLayout->addRow(tr("Relayer channel:"), horiLayoutRelayer);
 
     d_editRelayer = new QLineEdit(this);
     horiLayoutRelayer->addWidget(d_editRelayer);
 
-    QPushButton *buttonRelayer = new QPushButton(QStringLiteral("..."), this);
+    QPushButton *buttonRelayer = new QPushButton("...", this);
     buttonRelayer->setFixedSize(d_editRelayer->sizeHint().height() + 6, d_editRelayer->sizeHint().height());
     buttonRelayer->setStyleSheet("border-radius: 1px;");
     horiLayoutRelayer->addWidget(buttonRelayer);
@@ -75,13 +75,13 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
 
     horiLayoutButtons->addStretch();
 
-    d_buttonRestore = new QPushButton(QStringLiteral("恢复"), this);
+    d_buttonRestore = new QPushButton(tr("Restore"), this);
     d_buttonRestore->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonRestore);
 
     horiLayoutButtons->addSpacing(10);
 
-    d_buttonApply = new QPushButton(QStringLiteral("应用"), this);
+    d_buttonApply = new QPushButton(tr("Apply"), this);
     d_buttonApply->setFixedSize(70, 30);
     horiLayoutButtons->addWidget(d_buttonApply);
 
@@ -108,7 +108,7 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
     });
     connect(buttonView, &QPushButton::clicked, this, [=](){
         const QString filePath = QFileDialog::getExistingDirectory(
-                    this, QStringLiteral("文件名称选择"), QApplication::applicationDirPath());
+                    this, tr("Select file"), QApplication::applicationDirPath());
         if (filePath.isEmpty()) {
             return;
         }
@@ -180,8 +180,8 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
         }
         //
         if (channel->isOpen()) {
-            const QString message = QStringLiteral("[%1]通道已打开，不能修改属性！");
-            QMessageBox::warning(this, QStringLiteral("警告"),
+            const QString message = tr("Channel \"%1\" has been opened, can't modify!");
+            QMessageBox::warning(this, tr("Warning"),
                                  message.arg(QString::fromStdString(channel->name())));
             return;
         }
@@ -211,7 +211,7 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
         if (d_checkBoxText->isChecked()) {
             openMode |= Icd::FileChannel::Text;
         }
-        channel->setOpenMode((Icd::FileChannel::OpenMode)openMode);
+        channel->setOpenMode(Icd::FileChannel::OpenMode(openMode));
         // name
         channel->setName(d_editName->text().toStdString());
         // SaveFormat
@@ -222,12 +222,12 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
         if (d_checkBoxTimestamp->isChecked()) {
             saveFormat |= Icd::FileChannel::SaveFormatTimestamp;
         }
-        channel->setSaveFormat((Icd::FileChannel::SaveFormat)saveFormat);
+        channel->setSaveFormat(Icd::FileChannel::SaveFormat(saveFormat));
         // relayer
         Icd::WorkerPtr relayer = d_worker->relayer();
         const QString relayerName = d_editRelayer->text();
         if (relayerName.isEmpty()) {
-            relayer = Icd::WorkerPtr(0);
+            relayer = Icd::WorkerPtr();
         } else {
             QString relayerIdentity = d_editRelayer->property("relayer").toString();
             if (relayerIdentity.isEmpty()) {
@@ -244,7 +244,7 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
                 if (worker && worker != d_worker) {
                     relayer = worker;
                 } else {
-                    relayer = Icd::WorkerPtr(0);
+                    relayer = Icd::WorkerPtr();
                 }
             }
         }

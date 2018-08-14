@@ -7,10 +7,6 @@
 
 namespace Icd {
 
-/**
- * @brief _setChannelFilePath
- * @param table
- */
 void _updateRelayer(Icd::ChannelPtr &channel, const Icd::TablePtr &table)
 {
     if (!channel || !table) {

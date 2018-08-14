@@ -75,7 +75,7 @@ bool ICDNavigation::init()
     return true;
 }
 
-// ²éÑ¯½ÚµãÊı¾İ
+// æŸ¥è¯¢èŠ‚ç‚¹æ•°æ®
 JLRESULT ICDNavigation::queryNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -97,7 +97,7 @@ JLRESULT ICDNavigation::queryNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// ²éÑ¯µ±Ç°½Úµã¼°Ö±Êô¸¸½ÚµãµÄ¹Ø¼üÂë¼¯
+// æŸ¥è¯¢å½“å‰èŠ‚ç‚¹åŠç›´å±çˆ¶èŠ‚ç‚¹çš„å…³é”®ç é›†
 JLRESULT ICDNavigation::queryNodeKeys(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -115,7 +115,7 @@ JLRESULT ICDNavigation::queryNodeKeys(const Icd::JNEvent &event)
     return 0;
 }
 
-// ²éÑ¯½Úµã¼ÓÔØ×´Ì¬
+// æŸ¥è¯¢èŠ‚ç‚¹åŠ è½½çŠ¶æ€
 JLRESULT ICDNavigation::queryNodeFlag(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -137,7 +137,7 @@ JLRESULT ICDNavigation::queryNodeFlag(const Icd::JNEvent &event)
     return 0;
 }
 
-// ²éÑ¯½Úµã¶¥²ã±í
+// æŸ¥è¯¢èŠ‚ç‚¹é¡¶å±‚è¡¨
 JLRESULT ICDNavigation::queryTopTable(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -155,7 +155,7 @@ JLRESULT ICDNavigation::queryTopTable(const Icd::JNEvent &event)
     return 0;
 }
 
-// ²éÑ¯·Ö×éID
+// æŸ¥è¯¢åˆ†ç»„ID
 JLRESULT ICDNavigation::queryID(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -173,7 +173,7 @@ JLRESULT ICDNavigation::queryID(const Icd::JNEvent &event)
     return 0;
 }
 
-// ¸üĞÂ½ÚµãÊı¾İ
+// æ›´æ–°èŠ‚ç‚¹æ•°æ®
 JLRESULT ICDNavigation::updateNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -195,7 +195,7 @@ JLRESULT ICDNavigation::updateNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// ²åÈë½ÚµãÊı¾İ
+// æ’å…¥èŠ‚ç‚¹æ•°æ®
 JLRESULT ICDNavigation::insertNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -217,7 +217,7 @@ JLRESULT ICDNavigation::insertNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// É¾³ı½Úµã
+// åˆ é™¤èŠ‚ç‚¹
 JLRESULT ICDNavigation::deleteNode(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -239,7 +239,7 @@ JLRESULT ICDNavigation::deleteNode(const Icd::JNEvent &event)
     return 0;
 }
 
-// ÖØĞÂµ÷Õû½ÚµãË³Ğò
+// é‡æ–°è°ƒæ•´èŠ‚ç‚¹é¡ºåº
 JLRESULT ICDNavigation::reorderNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -262,7 +262,7 @@ JLRESULT ICDNavigation::reorderNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// ±£´æÕ³ÌùÊı¾İ
+// ä¿å­˜ç²˜è´´æ•°æ®
 JLRESULT ICDNavigation::savePastedData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -285,7 +285,7 @@ JLRESULT ICDNavigation::savePastedData(const Icd::JNEvent &event)
     return 0;
 }
 
-// ±£´æÊı¾İµ½Êı¾İÔ´
+// ä¿å­˜æ•°æ®åˆ°æ•°æ®æº
 JLRESULT ICDNavigation::saveMemoryData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -313,7 +313,7 @@ JLRESULT ICDNavigation::saveMemoryData(const Icd::JNEvent &event)
     return 0;
 }
 
-// ÖØĞÂ¼ÓÔØ½çÃæÊı¾İ
+// é‡æ–°åŠ è½½ç•Œé¢æ•°æ®
 JLRESULT ICDNavigation::reloadUiData(const Icd::JNEvent &event)
 {
     Q_UNUSED(event);
@@ -321,21 +321,21 @@ JLRESULT ICDNavigation::reloadUiData(const Icd::JNEvent &event)
     PlaneNode::planeVector data;
 
     QVariantList args;
-    args.append(qVariantFromValue((void*)&data));
+    args.append(qVariantFromValue(static_cast<void*>(&data)));
     jnotify->send("edit.queryAllPlane", args);
     q_ui->loadData(data, q_ui->queryDataSource());
 
     return 0;
 }
 
-// Ä£Ê½ÇĞ»»
+// æ¨¡å¼åˆ‡æ¢
 JLRESULT ICDNavigation::onModuleChanged(const Icd::JNEvent &event)
 {
     Q_UNUSED(event);
     return 0;
 }
 
-// ÍË³öÏµÍ³
+// é€€å‡ºç³»ç»Ÿ
 JLRESULT ICDNavigation::onSystemQuit(const Icd::JNEvent &event)
 {
     Q_UNUSED(event);
@@ -348,24 +348,24 @@ JLRESULT ICDNavigation::onSystemQuit(const Icd::JNEvent &event)
         return -1;
     }
 
-    // Êı¾İ±ä¸üÉĞÎ´±£´æ
+    // æ•°æ®å˜æ›´å°šæœªä¿å­˜
     int option = QMessageBox::warning(
         this,
-        QStringLiteral("ÍË³öÈí¼ş"),
-        QStringLiteral("ÓĞÊı¾İÉĞÎ´±£´æ£¬¼ÌĞø²Ù×÷½«¶ªÊ§Õâ²¿·ÖÊı¾İ£¡"),
-        QStringLiteral("×¢Ïú£¨ÖØÆô£©"),
-        QStringLiteral("ÍË³ö"),
-        QStringLiteral("È¡Ïû"), 1);
+        tr("Quit"),
+        tr("There are some data to save, continue will lost data. Continue?"),
+        tr("Sign out (Restart)"),
+        tr("Exit"),
+        tr("Cancel"), 1);
     int result = -1;
     switch (option) {
-    case 0:     // ×¢Ïú£¨ÖØÆô£©
+    case 0:     // æ³¨é”€ï¼ˆé‡å¯ï¼‰
         result = -1;
         break;
-    case 1:     // ÍË³ö
+    case 1:     // é€€å‡º
         result = -1;
         break;
-    case 2:     // È¡Ïû
-    default:    // ºöÂÔ
+    case 2:     // å–æ¶ˆ
+    default:    // å¿½ç•¥
         result = -1;
         break;
     }

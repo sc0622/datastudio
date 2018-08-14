@@ -24,16 +24,16 @@ private:
 };
 
 QMutex WorkerPoolData::instanceMutex;
-WorkerPoolPtr WorkerPoolData::instance = WorkerPoolPtr(0);
+WorkerPoolPtr WorkerPoolData::instance = nullptr;
 
 // clas WorkerPool
 
 WorkerPoolPtr WorkerPool::getInstance()
 {
     // 双重检测（防止多线程竞争）
-    if (WorkerPoolData::instance == 0) {
+    if (WorkerPoolData::instance == nullptr) {
         WorkerPoolData::instanceMutex.lock();
-        if (WorkerPoolData::instance == 0) {
+        if (WorkerPoolData::instance == nullptr) {
             WorkerPoolPtr tempInstance = WorkerPoolPtr(new WorkerPool());
             WorkerPoolData::instance = tempInstance;
         }
@@ -46,11 +46,11 @@ WorkerPoolPtr WorkerPool::getInstance()
 void WorkerPool::releaseInstance()
 {
     // 双重检测（防止多线程竞争）
-    if (WorkerPoolData::instance != 0) {
+    if (WorkerPoolData::instance != nullptr) {
         WorkerPoolData::instanceMutex.lock();
-        if (WorkerPoolData::instance != 0) {
+        if (WorkerPoolData::instance != nullptr) {
             WorkerPoolData::instanceMutex.unlock();
-            WorkerPoolData::instance = 0;
+            WorkerPoolData::instance = nullptr;
             WorkerPoolData::instanceMutex.lock();
         }
         WorkerPoolData::instanceMutex.unlock();
@@ -129,7 +129,7 @@ void WorkerPool::removeWorker(const ChannelPtr &channel)
 
 void WorkerPool::removeWorker(int index)
 {
-    if (index < 0 || index >= (int)d->workers.size()) {
+    if (index < 0 || index >= int(d->workers.size())) {
         return;
     }
 
@@ -183,11 +183,11 @@ void WorkerPool::swapWorker(const WorkerPtr &worker1, const WorkerPtr &worker2)
 
 WorkerPtr WorkerPool::workerAt(int index)
 {
-    if (index < 0 || index >= (int)d->workers.size()) {
-        return WorkerPtr(0);
+    if (index < 0 || index >= int(d->workers.size())) {
+        return WorkerPtr();
     }
 
-    return d->workers.at(index);
+    return d->workers.at(size_t(index));
 }
 
 WorkerPtr WorkerPool::workerByChannel(const ChannelPtr &channel) const
@@ -200,7 +200,7 @@ WorkerPtr WorkerPool::workerByChannel(const ChannelPtr &channel) const
         }
     }
 
-    return WorkerPtr(0);
+    return WorkerPtr();
 }
 
 WorkerPtr WorkerPool::workerByChannelIdentity(const std::string &identity) const
@@ -213,7 +213,7 @@ WorkerPtr WorkerPool::workerByChannelIdentity(const std::string &identity) const
         }
     }
 
-    return WorkerPtr(0);
+    return WorkerPtr();
 }
 
 WorkerPtr WorkerPool::workerByChannelName(const std::string &name) const
@@ -226,7 +226,7 @@ WorkerPtr WorkerPool::workerByChannelName(const std::string &name) const
         }
     }
 
-    return WorkerPtr(0);
+    return WorkerPtr();
 }
 
 std::string WorkerPool::configFile() const
@@ -276,7 +276,7 @@ bool WorkerPool::loadConfig()
         }
         //
         ChannelPtr newChannel = Icd::Channel::createInstance(config);
-        if (newChannel == 0) {
+        if (newChannel == nullptr) {
             continue;
         }
         // parse
@@ -297,7 +297,7 @@ bool WorkerPool::loadConfig()
     //
     fin.close();
     delete[] line;
-    line = 0;
+    line = nullptr;
 
     // relayers
     std::unordered_map<std::string, Icd::WorkerPtr>::iterator iterRelayers = relayers.begin();

@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "LoggingWidget.h"
+#include "loggingwidget.h"
 #include "KernelClass/icdfactory.h"
 #include "KernelClass/icdbitdata.h"
 #include "BitMapEdit.h"
@@ -24,14 +24,14 @@ LoggingWidget::LoggingWidget(QWidget *parent)
     layoutMain->setContentsMargins(0, 0, 0, 0);
     layoutMain->setSpacing(1);
 
-    groupType_ = new QGroupBox(QStringLiteral("ÀàĞÍĞÅÏ¢"), this);
+    groupType_ = new QGroupBox(tr("Type information"), this);
     groupType_->setVisible(false);
     layoutMain->addWidget(groupType_);
 
     QFormLayout *formLayout = new QFormLayout(groupType_);
     formLayout->setContentsMargins(3, 3, 3, 3);
     boxType_ = new QComboBox(this);
-    formLayout->addRow(QStringLiteral("ÀàĞÍ£º"), boxType_);
+    formLayout->addRow(tr("Type:"), boxType_);
 
     stackedWidget_ = new QStackedWidget(this);
     layoutMain->addWidget(stackedWidget_);
@@ -122,7 +122,7 @@ void LoggingWidget::slotConfirm(bool &result)
         return;
     }
 
-    // Èç¹ûÊÇ¹æÔòÊı¾İ£¬ÔòÖØĞÂ³õÊ¼»¯Êı¾İÀàĞÍÏÂÀ­¿ò
+    // å¦‚æœæ˜¯è§„åˆ™æ•°æ®ï¼Œåˆ™é‡æ–°åˆå§‹åŒ–æ•°æ®ç±»å‹ä¸‹æ‹‰æ¡†
     if (!currentEdit_) {
         return;
     }
@@ -157,7 +157,7 @@ void LoggingWidget::slotCancel()
 void LoggingWidget::slotTypeChanged(int index)
 {
     Q_UNUSED(index);
-    // Ô­Ê¼Êı¾İ
+    // åŸå§‹æ•°æ®
     if (!currentEdit_) {
         return;
     }
@@ -170,8 +170,9 @@ void LoggingWidget::slotTypeChanged(int index)
     bool newData = ((GlobalDefine::dtTotal - GlobalDefine::dtHead) == boxType_->count());
     stTableRules rule = ICDFactory::instance().convert2Rule(smtData);
     int windowType = ObjectEdit::wdItem;
-    // »ñÈ¡Ô­Ê¼Êı¾İ
-    switch (rule.uType = boxType_->currentData().toInt()) {
+    // è·å–åŸå§‹æ•°æ®
+    rule.uType = static_cast<unsigned short>(boxType_->currentData().toInt());
+    switch (rule.uType) {
     case GlobalDefine::dtHead:
         windowType = ObjectEdit::wdHeader;
         break;
@@ -208,7 +209,7 @@ void LoggingWidget::slotTypeChanged(int index)
         break;
     case GlobalDefine::dtBuffer:
         windowType = ObjectEdit::wdBuffer;
-		break;
+        break;
     default:
         break;
     }
@@ -220,7 +221,7 @@ void LoggingWidget::slotTypeChanged(int index)
         data.type = GlobalDefine::optNew;
     }
 
-    // ÖØĞÂË¢ĞÂ½çÃæ
+    // é‡æ–°åˆ·æ–°ç•Œé¢
     initUIData(windowType, data);
     if (!newData && currentEdit_) {
         currentEdit_->changeType(rule.uType);
@@ -235,11 +236,11 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
 
     std::vector<stDictionary> dics;
     QVariantList args;
-    args.append(qVariantFromValue((void*)&dics));
+    args.append(qVariantFromValue(static_cast<void*>(&dics)));
     args.append(int(GlobalDefine::dicDataType));
     jnotify->send("edit.queryDictionaryTable", args);
 
-    const int count = dics.size();
+    const size_t count = dics.size();
     int lowerBound = GlobalDefine::dtHead;
     int upperBound = GlobalDefine::dtBuffer;
     const ICDMetaData::smtMeta &meta = *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
@@ -277,9 +278,9 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
     }
     enableConnection(false);
 
-    // ³õÊ¼»¯ÏÂÀ­¿ò
+    // åˆå§‹åŒ–ä¸‹æ‹‰æ¡†
     boxType_->clear();
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         const stDictionary &dic = dics.at(i);
         if (dic.nCode < lowerBound) {
             continue;

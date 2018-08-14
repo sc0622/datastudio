@@ -2,28 +2,28 @@
 #include "BitMapEdit.h"
 #include "jwt/jxmltable.h"
 #include "jwt/jsplitter.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 BitMapEdit::BitMapEdit(QWidget *parent)
     : ObjectEdit(parent)
 {
     spinBitStart_ = new QSpinBox(this);
     spinBitStart_->setRange(0, MAX_BIT_COUNT - 1);
-    addFormRow(QStringLiteral("<font color=red>*</font>ÆğÊ¼Î»£º"), spinBitStart_);
+    addFormRow(tr("<font color=red>*</font>Start bit:"), spinBitStart_);
 
     spinBitCount_ = new QSpinBox(this);
     spinBitCount_->setRange(1, MAX_BIT_COUNT);
-    addFormRow(QStringLiteral("<font color=red>*</font>³¤¶È£º"), spinBitCount_);
+    addFormRow(tr("<font color=red>*</font>Length:"), spinBitCount_);
 
     editDefault_ = new QLineEdit(this);
     editDefault_->setValidator(new QRegExpValidator(QRegExp("[0-1]{,64}")));
     editDefault_->setMaxLength(MAX_BIT_COUNT);
-    editDefault_->setPlaceholderText(QStringLiteral("¶ş½øÖÆ"));
-    editDefault_->setToolTip(QStringLiteral("¶ş½øÖÆ£¡"));
-    addFormRow(QStringLiteral("Ä¬ÈÏÖµ£º"), editDefault_);
+    editDefault_->setPlaceholderText(tr("Binary radix"));
+    editDefault_->setToolTip(tr("Binary radix!"));
+    addFormRow(tr("Default:"), editDefault_);
 
-    QGroupBox* groupSpecs = new QGroupBox(QStringLiteral("ÌØÕ÷µãĞÅÏ¢"), this);
+    QGroupBox* groupSpecs = new QGroupBox(QStringLiteral("Spec"), this);
     splitterBase()->addWidget(groupSpecs);
 
     QVBoxLayout* layoutSpecs = new QVBoxLayout(groupSpecs);
@@ -87,14 +87,14 @@ bool BitMapEdit::onTextChanged(const QString &text)
     ICDBitData *bitData = data();
     const QObject *sender = this->sender();
     if (sender == editDefault_) {
-        bitData->setDefaultStr(QString::number(text.toLongLong(0, 2)).toStdString());
+        bitData->setDefaultStr(QString::number(text.toLongLong(nullptr, 2)).toStdString());
         result = true;
     } else if (sender == spinBitStart_) {
-        bitData->setStart(text.toInt());
-        bitData->setBitLength(spinBitCount_->value());
+        bitData->setStart(static_cast<unsigned short>(text.toInt()));
+        bitData->setBitLength(static_cast<unsigned short>(spinBitCount_->value()));
         result = true;
     } else if (sender == spinBitCount_) {
-        bitData->setBitLength(spinBitCount_->value());
+        bitData->setBitLength(static_cast<unsigned short>(spinBitCount_->value()));
         result = true;
     }
 
@@ -130,7 +130,7 @@ bool BitMapEdit::init()
     for (int start = data()->start(); iter != items.end(); ++iter) {
         _data.value = iter->first;
         _data.describe = iter->second.c_str();
-        updateMapOne(_data.value - start, _data,  GlobalDefine::optEdit);
+        updateMapOne(int(_data.value - start), _data,  GlobalDefine::optEdit);
     }
 
     return true;
@@ -176,16 +176,16 @@ bool BitMapEdit::confirm()
 
 bool BitMapEdit::validate()
 {
-    // ¼ì²éÄ¬ÈÏÖµ
+    // æ£€æŸ¥é»˜è®¤å€¼
     if (editDefault_->text().length() > spinBitCount_->value()) {
         editDefault_->setFocus();
         editDefault_->setProperty("highlight", true);
-        setStatus(QStringLiteral("Ä¬ÈÏÖµ³¬³öÆğÖ¹·¶Î§£¡"));
+        setStatus(tr("Default value is overflow!"));
         return false;
     } else {
         editDefault_->setProperty("highlight", false);
     }
-    // ¼ì²é±íÊı¾İ
+    // æ£€æŸ¥è¡¨æ•°æ®
     bool error = false;
     const int count = tableView_->rowCount();
     for (int i = 0; i < count; ++i) {
@@ -198,7 +198,7 @@ bool BitMapEdit::validate()
     if (error) {
         tableView_->setFocus();
         tableView_->setProperty("highlight", true);
-        setStatus(QStringLiteral("Öµº¬ÒåÖĞ²»ÄÜÓĞ´Ë·ûºÅ¡®,¡¯"));
+        setStatus(tr("Describe of value cannot contains sign \",\""));
         return false;
     } else {
         tableView_->setProperty("highlight", false);
@@ -220,30 +220,30 @@ ICDBitData *BitMapEdit::oldData()
 void BitMapEdit::updateTable(int newCount, bool behind)
 {
     int count = tableView_->rowCount();
-    // Èç¹ûÓĞ¶àÓàÏî£¬É¾³ı
-    if (newCount < count) {    // É¾³ı¶àÓà
-        if (behind) {   // ÖÕÖ¹Î»±ä¸ü£¬É¾³ı±íºó²¿·ÖÊı¾İ
+    // å¦‚æœæœ‰å¤šä½™é¡¹ï¼Œåˆ é™¤
+    if (newCount < count) {    // åˆ é™¤å¤šä½™
+        if (behind) {   // ç»ˆæ­¢ä½å˜æ›´ï¼Œåˆ é™¤è¡¨åéƒ¨åˆ†æ•°æ®
             tableView_->removeRow(newCount, count - newCount);
-        } else {    // ÆğÊ¼Î»±ä¸ü£¬É¾³ı±íÇ°²¿·ÖÊı¾İ
+        } else {    // èµ·å§‹ä½å˜æ›´ï¼Œåˆ é™¤è¡¨å‰éƒ¨åˆ†æ•°æ®
             tableView_->removeRow(0, count - newCount);
         }
-    } else {    // ²¹È«²»×ã
-        int offset = 0; // Æ«ÒÆÁ¿
-        int insertCount = newCount - count; // ²åÈëÊı¾İÁ¿
+    } else {    // è¡¥å…¨ä¸è¶³
+        int offset = 0; // åç§»é‡
+        int insertCount = newCount - count; // æ’å…¥æ•°æ®é‡
         if (behind) {
-            offset = count; // ÖÕÖ¹Î»±ä¸ü£¬Æ«ÒÆÖÁcount
+            offset = count; // ç»ˆæ­¢ä½å˜æ›´ï¼Œåç§»è‡³count
         }
         _Eigenvalue _data;
-        /*data.describe = QStringLiteral("±¸ÓÃ")*/;
+        /*data.describe = QStringLiteral("å¤‡ç”¨")*/;
         for (int i = 0; i < insertCount; ++i) {
             updateMapOne(i + offset, _data);
         }
-        // ¸üĞÂµÚÒ»ÏîÊı¾İ
+        // æ›´æ–°ç¬¬ä¸€é¡¹æ•°æ®
         tableView_->setItemValue(0, 0, data()->start());
     }
 }
 
-// ÏòbitMap±í²åÈëÒ»ÌõÊı¾İ
+// å‘bitMapè¡¨æ’å…¥ä¸€æ¡æ•°æ®
 void BitMapEdit::updateMapOne(int index, const _Eigenvalue &data, int option)
 {
     if (GlobalDefine::optNew == option) {

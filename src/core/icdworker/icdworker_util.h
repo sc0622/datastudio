@@ -16,7 +16,7 @@ typedef std::shared_ptr<Table> TablePtr;
  * @param size :需要进行CRC校验计算的数据段长度
  * @return
  */
-extern "C" ICDWORKER_EXPORT unsigned short gCalcCrc16(unsigned char *data, unsigned int size);
+ICDWORKER_EXPORT unsigned short gCalcCrc16(const unsigned char *data, unsigned int size);
 
 /**
  * @brief doCheck
@@ -24,7 +24,7 @@ extern "C" ICDWORKER_EXPORT unsigned short gCalcCrc16(unsigned char *data, unsig
  * @param buffer
  * @return
  */
-extern "C" ICDWORKER_EXPORT bool doCheck(const Icd::TablePtr &table, const char *buffer);
+ICDWORKER_EXPORT bool doCheck(const Icd::TablePtr &table, const char *buffer);
 
 /**
  * @brief checkData
@@ -34,8 +34,8 @@ extern "C" ICDWORKER_EXPORT bool doCheck(const Icd::TablePtr &table, const char 
  * @param target
  * @return
  */
-extern "C" ICDWORKER_EXPORT bool checkData(const Icd::TablePtr &table, int fileHeaderSize,
-                                           QFileDevice *source, QFileDevice *target);
+ICDWORKER_EXPORT bool checkData(const Icd::TablePtr &table, int fileHeaderSize,
+                                QFileDevice *source, QFileDevice *target);
 
 } // end of namespace Icd
 

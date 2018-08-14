@@ -49,7 +49,7 @@ double HeaderItem::data() const
         return 0.0;
     }
 
-    return *(unsigned char *)buffer;
+    return *reinterpret_cast<const unsigned char*>(buffer);
 }
 
 void HeaderItem::setData(double data)
@@ -59,13 +59,13 @@ void HeaderItem::setData(double data)
         return;
     }
 
-    *(unsigned char *)buffer = (unsigned char)data;
+    *reinterpret_cast<unsigned char*>(buffer) = static_cast<unsigned char>(data);
 }
 
 std::string HeaderItem::dataString() const
 {
     std::stringstream ss;
-    ss << std::hex << (unsigned char)data();
+    ss << std::hex << static_cast<unsigned char>(data());
     return ss.str();
 }
 
@@ -108,7 +108,7 @@ bool HeaderItem::restore(const Json::Value &json, int deep)
     }
 
     // limit mark
-    setDefaultValue((int)defaultValue() & 0xff);
+    setDefaultValue(static_cast<int>(defaultValue()) & 0xff);
 
     return true;
 }

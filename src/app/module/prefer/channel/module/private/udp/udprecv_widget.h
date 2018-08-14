@@ -11,7 +11,7 @@ class UdpRecvWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UdpRecvWidget(QWidget *parent = 0);
+    explicit UdpRecvWidget(QWidget *parent = nullptr);
     ~UdpRecvWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

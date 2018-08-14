@@ -4,7 +4,7 @@
 #include <QTranslator>
 #include <QFile>
 #include <QFontDatabase>
-#include "Common/Logging.h"
+#include "common/Logging.h"
 
 int main(int argc, char **argv)
 {

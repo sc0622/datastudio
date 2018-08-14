@@ -4,9 +4,9 @@
 
 TableSelWidget::TableSelWidget(QWidget *parent)
     : QDialog(parent)
-    , d_currentItem(0)
+    , d_currentItem(nullptr)
 {
-    setWindowTitle(QStringLiteral("表协议选择"));
+    setWindowTitle(tr("Select table protocol"));
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -23,8 +23,8 @@ TableSelWidget::TableSelWidget(QWidget *parent)
 
     horiLayoutBottom->addStretch();
 
-    QPushButton *buttonOk = new QPushButton(QStringLiteral("确定"), this);
-    QPushButton *buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    QPushButton *buttonOk = new QPushButton(tr("Ok"), this);
+    QPushButton *buttonCancel = new QPushButton(tr("Cancel"), this);
     buttonOk->setMinimumWidth(80);
     buttonCancel->setMinimumWidth(80);
     buttonOk->setDefault(true);
@@ -93,8 +93,8 @@ void TableSelWidget::accept()
     d_currentItem = d_treeView->currentItem();
 
     if (!d_currentItem || d_currentItem->type() != Icd::TreeItemTypeTable) {
-        QMessageBox::warning(this, QStringLiteral("警告"),
-                             QStringLiteral("没有选中有效表节点"));
+        QMessageBox::warning(this, tr("Warning"),
+                             tr("Not select any table"));
         return;
     }
 

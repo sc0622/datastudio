@@ -81,8 +81,9 @@ void JMainPrivate::init()
     Q_Q(JMain);
     notify = Icd::JNotifyPtr(Icd::JNotify::inst(QCoreApplication::applicationName(), q));
     Q_ASSERT(notify != nullptr);
-
-
+    //
+    JUtralEdit::JUtralEditCore::instance()->setLanguage("zh_CN");
+    JChart::JChartCore::instance()->setLanguage("zh_CN");
 }
 
 QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
@@ -217,8 +218,8 @@ QWidget *JMain::createMainWindow()
     MainWindow *mainWindow = new MainWindow();
 
     QScreen *screen = QApplication::primaryScreen();
-    mainWindow->resize(screen->geometry().width() * 0.7,
-                       screen->geometry().height() * 0.75);
+    mainWindow->resize(int(screen->geometry().width() * 0.7),
+                       int(screen->geometry().height() * 0.75));
     mainWindow->init();
 
     return mainWindow;
@@ -285,7 +286,7 @@ int JMain::execApp(QApplication *app)
     splashWidget.clear();
 
     jnotify->on("main.mainwindow.inst", JMain::instance(), [=](JNEvent &event){
-        event.setReturnValue(qVariantFromValue((void*)mainWindow));
+        event.setReturnValue(qVariantFromValue(static_cast<void*>(mainWindow)));
     });
 
     int exitCode = app->exec();
@@ -384,7 +385,8 @@ bool JMain::isNeedToRestart() const
 
 QWidget *JMain::mainWindow() const
 {
-    QWidget *widget = jVariantFromVoid<QWidget>(jnotify->send("main.mainwindow.inst", this));
+    QWidget *widget = jVariantFromVoid<QWidget>(jnotify->send("main.mainwindow.inst",
+                                                              static_cast<const QObject*>(this)));
     return widget;
 }
 
@@ -562,7 +564,7 @@ Icd::ParserPtr JMain::parser(const QString &module) const
     }
 
     Icd::JParserPtrHandle handle;
-    if (!jnotify->send(module + ".parser.inst", qVariantFromValue((void*)&handle)).toBool()
+    if (!jnotify->send(module + ".parser.inst", qVariantFromValue(static_cast<void*>(&handle))).toBool()
             || !handle.parser) {
         return Icd::ParserPtr();
     }

@@ -12,7 +12,7 @@ class SerialDetailWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SerialDetailWidget(QWidget *parent = 0);
+    explicit SerialDetailWidget(QWidget *parent = nullptr);
     ~SerialDetailWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

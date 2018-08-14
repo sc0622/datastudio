@@ -3,7 +3,7 @@
 
 #ifndef CHSCALE
 #   define     CHSCALE     2
-#endif  // CHSCALE(µ¥¸öÖĞÎÄ×Ö·û×Ö½Ú³¤¶È)
+#endif  // CHSCALE(å•ä¸ªä¸­æ–‡å­—ç¬¦å­—èŠ‚é•¿åº¦)
 
 LimitLineEdit::LimitLineEdit(QWidget *parent)
     : QLineEdit(parent)
@@ -45,23 +45,23 @@ int LimitLineEdit::maxLength() const
 
 QString LimitLineEdit::fuzzyText(const QString &text) const
 {
-    // Qt5.6ÖĞÎÄ×Ö·û´®ÓÃ3¸ö×Ö½Ú±íÊ¾£¬µ«Êı¾İ¿âÊÇ2×Ö½Ú£¬ËùÒÔ£¬ÕâÀïÒª½øĞĞ
-    // ÌØ¶¨ÅĞ¶Ï£¬ÊÇ·ñ³¬¹ıÁË×Ö·ûÏŞÖÆ
+    // Qt5.6ä¸­æ–‡å­—ç¬¦ä¸²ç”¨3ä¸ªå­—èŠ‚è¡¨ç¤ºï¼Œä½†æ•°æ®åº“æ˜¯2å­—èŠ‚ï¼Œæ‰€ä»¥ï¼Œè¿™é‡Œè¦è¿›è¡Œ
+    // ç‰¹å®šåˆ¤æ–­ï¼Œæ˜¯å¦è¶…è¿‡äº†å­—ç¬¦é™åˆ¶
     QString result = text;
-    if (text.toLocal8Bit().size() < maxLength()) {  // ¼òÒªÅĞ¶Ï
-        return result;  // ÉĞÎ´³¬¹ıÏŞÖÆ
+    if (text.toLocal8Bit().size() < maxLength()) {  // ç®€è¦åˆ¤æ–­
+        return result;  // å°šæœªè¶…è¿‡é™åˆ¶
     }
-    // ¾ßÌåÊı¾İÅĞ¶¨
+    // å…·ä½“æ•°æ®åˆ¤å®š
     int realSize = text.toLocal8Bit().size();
     int cursorPos = cursorPosition();
     int index = cursorPos - 1;
-    int removeSize = 0; // ĞèÒªÉ¾³ıµÄ×Ö·ûÊı
+    int removeSize = 0; // éœ€è¦åˆ é™¤çš„å­—ç¬¦æ•°
     while (realSize > maxLength()) {
         if (index < 0) {
             break;
         }
         QChar single = text.at(index--);
-        if (single >= 0x4e00 && single <= 0x9fa5) { // ÖĞÎÄ
+        if (single >= 0x4e00 && single <= 0x9fa5) { // ä¸­æ–‡
             realSize -= CHSCALE;
         } else {
             realSize -= QString(single).trimmed().toLocal8Bit().size();

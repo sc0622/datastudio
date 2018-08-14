@@ -21,7 +21,7 @@ void BindChannelWidgetPrivate::init()
 {
     Q_Q(BindChannelWidget);
 
-    q->setWindowTitle(QStringLiteral("绑定通道"));
+    q->setWindowTitle(BindChannelWidget::tr("Binding Channel"));
     q->resize(800, 600);
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(q);
@@ -37,11 +37,11 @@ void BindChannelWidgetPrivate::init()
     widgetUdp = new ChannelWidget(tabWidget);
 
     tabWidget->addTab(widgetFile, QIcon(":/icdwidget/image/file.png"),
-                      QStringLiteral("文件通道"));
+                      BindChannelWidget::tr("File Channel"));
     tabWidget->addTab(widgetSerial, QIcon(":/icdwidget/image/serial.png"),
-                      QStringLiteral("串口通道"));
+                      BindChannelWidget::tr("Serial Channel"));
     tabWidget->addTab(widgetUdp, QIcon(":/icdwidget/image/udp.png"),
-                      QStringLiteral("网络通道"));
+                      BindChannelWidget::tr("UDP Channel"));
 
     vertLayoutMain->addSpacing(10);
 
@@ -50,12 +50,12 @@ void BindChannelWidgetPrivate::init()
 
     horiLayoutBottom->addStretch();
 
-    buttonOk = new QPushButton(QStringLiteral("确定"), q);
+    buttonOk = new QPushButton(BindChannelWidget::tr("Ok"), q);
     buttonOk->setMinimumWidth(120);
     buttonOk->setDefault(true);
     horiLayoutBottom->addWidget(buttonOk);
 
-    buttonCancel = new QPushButton(QStringLiteral("取消"), q);
+    buttonCancel = new QPushButton(BindChannelWidget::tr("Cancel"), q);
     buttonCancel->setMinimumWidth(120);
     horiLayoutBottom->addSpacing(10);
     horiLayoutBottom->addWidget(buttonCancel);

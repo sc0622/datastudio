@@ -40,10 +40,10 @@ int FileChannelData::fileSize(std::fstream &file)
 {
     if (file.is_open()) {
         long size = 0;
-        size = file.tellp();
+        size = static_cast<long>(file.tellp());
         file.seekp(0, std::ios::end);
-        size = (long)file.tellp() - size;
-        return (int)size;
+        size = static_cast<long>(file.tellp()) - size;
+        return static_cast<int>(size);
     } else {
         return 0;
     }
@@ -130,7 +130,7 @@ bool FileChannel::open()
 
     // in
     if (!d->file.isOpen()) {
-        if (!d->file.open((QIODevice::OpenMode)d->openMode)) {
+        if (!d->file.open(static_cast<QIODevice::OpenMode>(d->openMode))) {
             return false;
         }
     }
@@ -151,7 +151,7 @@ bool FileChannel::open()
         }
         if (needHeader) {
             // marker
-            d->file.write((const char*)&d->fileHeader, 4);
+            d->file.write(reinterpret_cast<const char*>(&d->fileHeader), 4);
             // saveformat
             if (d->saveFormat & FileChannel::SaveFormatDomain) {
                 d->file.putChar('d');
@@ -181,7 +181,7 @@ void FileChannel::close()
 
 int FileChannel::read(char *buffer, int size)
 {
-    return (int)d->file.read(buffer, size);
+    return static_cast<int>(d->file.read(buffer, size));
 }
 
 int FileChannel::write(const char *buffer, int size)
@@ -190,9 +190,10 @@ int FileChannel::write(const char *buffer, int size)
     if (d->file.isOpen()) {
         if (d->saveFormat & FileChannel::SaveFormatTimestamp) {
             const qint64 msecs = QDateTime::currentMSecsSinceEpoch();
-            _size = d->file.write((const char*)&msecs, sizeof(msecs));
+            _size = static_cast<int>(d->file.write(reinterpret_cast<const char*>(&msecs),
+                                                   sizeof(msecs)));
         }
-        return _size + (int)d->file.write(buffer, size);
+        return _size + static_cast<int>(d->file.write(buffer, size));
     } else {
         return -1;
     }
@@ -203,7 +204,7 @@ int FileChannel::sizeOfIn() const
     // in
     if (d->openMode & ReadOnly) {
         if (d->file.isOpen()) {
-            return d->file.size();
+            return static_cast<int>(d->file.size());
         } else {
             return 0;
         }
@@ -298,7 +299,7 @@ bool FileChannel::setConfig(const std::string &config)
         if (openMode.find('b') != std::string::npos) {
             eOpenMode |= FileChannel::Unbuffered;
         }
-        setOpenMode((OpenMode)eOpenMode);
+        setOpenMode(static_cast<OpenMode>(eOpenMode));
     }
 
     // saveFormat
@@ -312,7 +313,7 @@ bool FileChannel::setConfig(const std::string &config)
         if (saveFormat.find('t') != std::string::npos) {
             eSaveFormat |= FileChannel::SaveFormatTimestamp;
         }
-        setSaveFormat((SaveFormat)eSaveFormat);
+        setSaveFormat(static_cast<SaveFormat>(eSaveFormat));
     }
 
     return true;

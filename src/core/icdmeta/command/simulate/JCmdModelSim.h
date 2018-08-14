@@ -1,23 +1,23 @@
-#ifndef JCmdSysModelSim_H
-#define JCmdSysModelSim_H
+#ifndef JCMDMODELSIM_H
+#define JCMDMODELSIM_H
 
 #include "../../icdmeta_global.h"
 #include "../JCmdChannel.h"
 
 namespace icdmeta {
 
-class JCmdSysModelSimPrivate;
+class JCmdModelSimPrivate;
 class JCmdChannelSim;
 
-class ICDMETA_EXPORT JCmdSysModelSim : public QObject
+class ICDMETA_EXPORT JCmdModelSim : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int workMode READ workMode WRITE setWorkMode NOTIFY workModeChanged)
     Q_PROPERTY(int currentWorkMode READ currentWorkMode WRITE setCurrentWorkMode NOTIFY currentWorkModeChanged)
     Q_PROPERTY(QQmlListProperty<icdmeta::JCmdChannelSim> channels READ channels NOTIFY channelsChanged)
 public:
-    explicit JCmdSysModelSim(QObject *parent = nullptr);
-    ~JCmdSysModelSim();
+    explicit JCmdModelSim(QObject *parent = nullptr);
+    ~JCmdModelSim();
 
     static void registerQmlType();
 
@@ -42,11 +42,11 @@ public slots:
     void reset();
 
 private:
-    Q_DISABLE_COPY(JCmdSysModelSim)
-    J_DECLARE_PRIVATE(JCmdSysModelSim)
-    J_DECLARE_SINGLE_INSTANCE(JCmdSysModelSim)
+    Q_DISABLE_COPY(JCmdModelSim)
+    J_DECLARE_PRIVATE(JCmdModelSim)
+    J_DECLARE_SINGLE_INSTANCE(JCmdModelSim)
 };
 
 }
 
-#endif // JCmdSysModelSim_H
+#endif // JCMDMODELSIM_H

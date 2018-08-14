@@ -3,7 +3,7 @@
 #include "icdcore/3rdpart/jsoncpp/json_tool.h"
 
 #ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
 // 最小子表数量
@@ -62,7 +62,7 @@ DBAccess::~DBAccess()
 {
     if (d) {
         delete d;
-        d = NULL;
+        d = nullptr;
     }
 }
 
@@ -283,13 +283,13 @@ bool DBAccess::readDictionary(std::unordered_map<std::string, std::vector<stDict
     if (!isOpen()) {
         return false;
     }
-    const int dicCount = d->q_dic.size();
+    const size_t dicCount = d->q_dic.size();
     if (dicCount < 1) {
         return true;
     }
     stDictionary stDic;
     std::vector<stDictionary> table;
-    for (int i = 0; i < dicCount; ++i) {
+    for (size_t i = 0; i < dicCount; ++i) {
         QString sql = QString("select * from %1").arg(d->q_dic[i].c_str());
         QSqlQuery query(d->q_db);
         // 无效数据
@@ -328,10 +328,10 @@ bool DBAccess::readDictionary(const std::vector<std::string> &dics,
     if (dics.empty()) {
         return true;
     }
-    const int dicCount = dics.size();
+    const size_t dicCount = dics.size();
     stDictionary stDic;
     std::vector<stDictionary> table;
-    for (int i = 0; i < dicCount; ++i) {
+    for (size_t i = 0; i < dicCount; ++i) {
         QString sql = QString("select * from %1").arg(dics[i].c_str());
         QSqlQuery query(d->q_db);
         // 无效数据
@@ -368,25 +368,25 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
     // 校验类型
     {
         stDic.nCode = GlobalDefine::ctInvalid;
-        stDic.sDec = QStringLiteral("无校验").toStdString();
+        stDic.sDec = QObject::tr("No Parity").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ct8And;
-        stDic.sDec = QStringLiteral("8位和校验").toStdString();
+        stDic.sDec = QObject::tr("8 bits sum-parity").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ct16And;
-        stDic.sDec = QStringLiteral("16位和校验").toStdString();
+        stDic.sDec = QObject::tr("16 bits sum-parity").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ctCRC8;
-        stDic.sDec = QStringLiteral("CRC8校验").toStdString();
+        stDic.sDec = QObject::tr("CRC8 parity").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ctCRC16;
-        stDic.sDec = QStringLiteral("CRC16校验").toStdString();
+        stDic.sDec = QObject::tr("CRC16 parity").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ctXor8;
-        stDic.sDec = QStringLiteral("8位异或和校验").toStdString();
+        stDic.sDec = QObject::tr("8 bits xor-parity").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ctXor16;
-        stDic.sDec = QStringLiteral("16位异或和校验").toStdString();
+        stDic.sDec = QObject::tr("16 bits xor-parity").toStdString();
         table.push_back(stDic);
 
         dic[tableName(DataBaseDefine::dbCheckType)] = table;
@@ -396,16 +396,16 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
     // 帧计数类型
     {
         stDic.nCode = GlobalDefine::counterU8;
-        stDic.sDec = QStringLiteral("8位计数").toStdString();
+        stDic.sDec = QObject::tr("8 bits").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::counterU16;
-        stDic.sDec = QStringLiteral("16位计数").toStdString();
+        stDic.sDec = QObject::tr("16 bits").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::counterU32;
-        stDic.sDec = QStringLiteral("32位计数").toStdString();
+        stDic.sDec = QObject::tr("32 bits").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::counterU64;
-        stDic.sDec = QStringLiteral("64位计数").toStdString();
+        stDic.sDec = QObject::tr("64 bits").toStdString();
         table.push_back(stDic);
         dic[tableName(DataBaseDefine::dbCounterType)] = table;
         table.clear();
@@ -413,37 +413,37 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
     // 数据类型
     {
         stDic.nCode = GlobalDefine::dtHead;
-        stDic.sDec = QStringLiteral("包头").toStdString();
+        stDic.sDec = QObject::tr("Header").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtCounter;
-        stDic.sDec = QStringLiteral("帧计数").toStdString();
+        stDic.sDec = QObject::tr("Counter").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtCheck;
-        stDic.sDec = QStringLiteral("校验").toStdString();
+        stDic.sDec = QObject::tr("Check").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtFrameCode;
-        stDic.sDec = QStringLiteral("帧识别码").toStdString();
+        stDic.sDec = QObject::tr("Frame Code").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtNumeric;
-        stDic.sDec = QStringLiteral("数值").toStdString();
+        stDic.sDec = QObject::tr("Numeric").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtArray;
-        stDic.sDec = QStringLiteral("数组").toStdString();
+        stDic.sDec = QObject::tr("Array").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtBitMap;
-        stDic.sDec = QStringLiteral("比特映射").toStdString();
+        stDic.sDec = QObject::tr("BitMap").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtBitValue;
-        stDic.sDec = QStringLiteral("比特值").toStdString();
+        stDic.sDec = QObject::tr("BitValue").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtComplex;
-        stDic.sDec = QStringLiteral("复合数据").toStdString();
+        stDic.sDec = QObject::tr("Complex").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtFrame;
-        stDic.sDec = QStringLiteral("帧数据").toStdString();
+        stDic.sDec = QObject::tr("Frame").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::dtBuffer;
-        stDic.sDec = QStringLiteral("数据预留区").toStdString();
+        stDic.sDec = QObject::tr("Buffer").toStdString();
         table.push_back(stDic);
         dic[tableName(DataBaseDefine::dbDataType)] = table;
         table.clear();
@@ -451,34 +451,34 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
     // 数值类型
     {
         stDic.nCode = GlobalDefine::NumericI8;
-        stDic.sDec = QStringLiteral("8位有符号").toStdString();
+        stDic.sDec = QObject::tr("8 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericU8;
-        stDic.sDec = QStringLiteral("8位无符号").toStdString();
+        stDic.sDec = QObject::tr("8 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericI16;
-        stDic.sDec = QStringLiteral("16位有符号").toStdString();
+        stDic.sDec = QObject::tr("16 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericU16;
-        stDic.sDec = QStringLiteral("16位无符号").toStdString();
+        stDic.sDec = QObject::tr("16 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericI32;
-        stDic.sDec = QStringLiteral("32位有符号").toStdString();
+        stDic.sDec = QObject::tr("32 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericU32;
-        stDic.sDec = QStringLiteral("32位无符号").toStdString();
+        stDic.sDec = QObject::tr("32 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericI64;
-        stDic.sDec = QStringLiteral("64位有符号").toStdString();
+        stDic.sDec = QObject::tr("64 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericU64;
-        stDic.sDec = QStringLiteral("64位无符号").toStdString();
+        stDic.sDec = QObject::tr("64 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericF32;
-        stDic.sDec = QStringLiteral("32位浮点数").toStdString();
+        stDic.sDec = QObject::tr("32 bits float").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::NumericF64;
-        stDic.sDec = QStringLiteral("64位浮点数").toStdString();
+        stDic.sDec = QObject::tr("64 bits double").toStdString();
         table.push_back(stDic);
 
         dic[tableName(DataBaseDefine::dbNumericType)] = table;
@@ -487,34 +487,34 @@ bool DBAccess::readLocalDictionary(std::unordered_map<std::string, std::vector<s
     // 数组类型
     {
         stDic.nCode = GlobalDefine::ArrayI8;
-        stDic.sDec = QStringLiteral("8位有符号").toStdString();
+        stDic.sDec = QObject::tr("8 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayU8;
-        stDic.sDec = QStringLiteral("8位无符号").toStdString();
+        stDic.sDec = QObject::tr("8 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayI16;
-        stDic.sDec = QStringLiteral("16位有符号").toStdString();
+        stDic.sDec = QObject::tr("16 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayU16;
-        stDic.sDec = QStringLiteral("16位无符号").toStdString();
+        stDic.sDec = QObject::tr("16 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayI32;
-        stDic.sDec = QStringLiteral("32位有符号").toStdString();
+        stDic.sDec = QObject::tr("32 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayU32;
-        stDic.sDec = QStringLiteral("32位无符号").toStdString();
+        stDic.sDec = QObject::tr("32 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayI64;
-        stDic.sDec = QStringLiteral("64位有符号").toStdString();
+        stDic.sDec = QObject::tr("64 bits signed").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayU64;
-        stDic.sDec = QStringLiteral("64位无符号").toStdString();
+        stDic.sDec = QObject::tr("64 bits unsigned").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayF32;
-        stDic.sDec = QStringLiteral("32位浮点数").toStdString();
+        stDic.sDec = QObject::tr("32 bits float").toStdString();
         table.push_back(stDic);
         stDic.nCode = GlobalDefine::ArrayF64;
-        stDic.sDec = QStringLiteral("64位浮点数").toStdString();
+        stDic.sDec = QObject::tr("64 bits double").toStdString();
         table.push_back(stDic);
 
         dic[tableName(DataBaseDefine::dbArrayType)] = table;
@@ -573,7 +573,7 @@ bool DBAccess::savePlanes(const DMSpace::_vectorPS &infrastructure,
     if (!isOpen()) {
         return false;
     }
-    int count = 0;;
+    size_t count = 0;;
     QString sql;
     QString cdtPlane;
     QString cdtSystem;
@@ -588,7 +588,7 @@ bool DBAccess::savePlanes(const DMSpace::_vectorPS &infrastructure,
         // system
         const std::vector<stSystem> &systems = itPS->second;
         count = systems.size();
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             const stSystem &system = systems[i];
             cdtSystem.append(QString("select '%1' typeCode,'%2' systemCode,'%3'"
                                      " describe,'%4' sign,'%5' remark union ")
@@ -640,8 +640,8 @@ bool DBAccess::savePlanes(const DMSpace::_vectorPS &infrastructure,
         // exist tables
         if (!dbSubTables.contains(QString::fromStdString(base.sName))) {
             subTables = querySubTables(base.sName);
-            const int bound = subTables.size();
-            for (int i = 0; i < bound; ++i) {
+            const size_t bound = subTables.size();
+            for (size_t i = 0; i < bound; ++i) {
                 dbSubTables.append(
                             QString("select '%1' tableName union ")
                             .arg(subTables[i].c_str()));
@@ -650,7 +650,7 @@ bool DBAccess::savePlanes(const DMSpace::_vectorPS &infrastructure,
         // rules
         const std::vector<stTableRules> &rules = itBR->second;
         count = rules.size();
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             const stTableRules &tableRule = rules[i];
             rulCmd.append(QString("('%1','%2','%3','%4','%5','%6',"
                                   "'%7','%8','%9','%10','%11','%12','%13'),")
@@ -842,7 +842,7 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
         // 清空数据库
         return clearDataBase();
     }
-    int count = 0;
+    size_t count = 0;
     QString sql;
     QString cdtPlane;
     QString cdtDeletePlane;
@@ -862,7 +862,7 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
         // 系统信息sql
         const std::vector<stSystem> &systems = itPS->second;
         count = systems.size();
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             const stSystem &system = systems[i];
             sql.append(QString("select '%1' typeCode,'%2' systemCode,'%3'"
                                " describe,'%4' sign,'%5' remark union ").arg(plane.nCode)
@@ -931,7 +931,7 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
         // 规则数据
         count = tableRules.size();
         QString rulCmd;
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             const stTableRules &tableRule = tableRules[i];
             rulCmd.append(QString("('%1','%2','%3','%4','%5','%6','%7',"
                                   "'%8','%9','%10','%11','%12','%13'),").arg(tableRule.nCode)
@@ -1027,9 +1027,9 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
                                       .arg(cdtPlane));
             }
             // 保存层次在ICD表之上
-            count = lstGroup.size();
-            for (int i = 0; i < count; ++i) {
-                sql.append("'").append(lstGroup[i]).append("',");
+            count = size_t(lstGroup.size());
+            for (size_t i = 0; i < count; ++i) {
+                sql.append("'").append(lstGroup[int(i)]).append("',");
             }
             if (!sql.isEmpty()) {
                 sql.chop(QString(",").size());
@@ -1055,8 +1055,8 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
                         continue;
                     }
                     subTables = querySubTables(name);
-                    const int bound = subTables.size();
-                    for (int i = 0; i < bound; ++i) {
+                    const size_t bound = subTables.size();
+                    for (size_t i = 0; i < bound; ++i) {
                         dbSubTables.append(
                                     QString("select '%1' tableName union ")
                                     .arg(subTables[i].c_str()));
@@ -1084,8 +1084,8 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
                     continue;
                 }
                 subTables = querySubTables(name);
-                const int bound = subTables.size();
-                for (int i = 0; i < bound; ++i) {
+                const size_t bound = subTables.size();
+                for (size_t i = 0; i < bound; ++i) {
                     dbSubTables.append(
                                 QString("select '%1' tableName union ")
                                 .arg(subTables[i].c_str()));
@@ -1138,9 +1138,9 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
     // 事务
     d->q_db.transaction();  // sql语句太长，分批执行
     // 删除系统
-    count = lstDeleteSystem.size();
-    for (int i = 0; i < count; ++i) {
-        const QString &cmd = lstDeleteSystem[i];
+    count = size_t(lstDeleteSystem.size());
+    for (size_t i = 0; i < count; ++i) {
+        const QString &cmd = lstDeleteSystem[int(i)];
         if (!query.exec(cmd)) {
             d->q_error = query.lastError().text();
             d->q_errorFunc = __FUNCTION__;
@@ -1185,9 +1185,9 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
         }
     }
     // 新增表
-    count = lstNewICD.size();
-    for (int i = 0; i < count; ++i) {
-        const QString &cmd = lstNewICD[i];
+    count = size_t(lstNewICD.size());
+    for (size_t i = 0; i < count; ++i) {
+        const QString &cmd = lstNewICD[int(i)];
         if (!query.exec(cmd)) {
             d->q_error = QString("create table<%1> failed!\r\n").arg(tableId);
             d->q_error += query.lastError().text();
@@ -1199,9 +1199,9 @@ bool DBAccess::savePlane(const DMSpace::_vectorPS &plane_system,
         }
     }
     // 删除表
-    count = lstDeleteICD.size();
-    for (int i = 0; i < count; ++i) {
-        const QString &cmd = lstDeleteICD[i];
+    count = size_t(lstDeleteICD.size());
+    for (size_t i = 0; i < count; ++i) {
+        const QString &cmd = lstDeleteICD[int(i)];
         if (!query.exec(cmd)) {
             d->q_error = query.lastError().text();
             d->q_errorFunc = __FUNCTION__;
@@ -1336,8 +1336,8 @@ bool DBAccess::deletePlane(const std::vector<int> &planes)
     QString cdtEqual;
     QString cdtLike;
     cdtEqual.append("(");
-    const int count = planes.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = planes.size();
+    for (size_t i = 0; i < count; ++i) {
         cdtEqual.append(QString("'%1',").arg(planes[i]));
         cdtLike.append(QString("bGroup like '%1/%' or ").arg(planes[i]));
     }
@@ -1557,8 +1557,8 @@ bool DBAccess::readICDBase(const std::vector<std::string> &names,
         return true;
     }
     QString cdtNames;
-    const int count = names.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = names.size();
+    for (size_t i = 0; i < count; ++i) {
         cdtNames.append("'")
                 .append(QString::fromStdString(names[i])).append("',");
     }
@@ -1693,7 +1693,7 @@ bool DBAccess::readTableRules(const std::string &table, DMSpace::srMap &rules)
         rule.nSerial = query.value(index++).toInt();
         rule.sName = query.value(index++).toString().toStdString();
         rule.sPrgCode = query.value(index++).toString().toStdString();
-        rule.uType = (unsigned short)query.value(index++).toInt();
+        rule.uType = static_cast<unsigned short>(query.value(index++).toInt());
         rule.sDefault = query.value(index++).toString().toStdString();
         rule.sRange = query.value(index++).toString().toStdString();
         rule.dOffset = query.value(index++).toDouble();
@@ -1701,7 +1701,7 @@ bool DBAccess::readTableRules(const std::string &table, DMSpace::srMap &rules)
         rule.dScale = query.value(index++).toDouble();
         rule.sRule = query.value(index++).toString().toStdString();
         rule.sRemark = query.value(index++).toString().toStdString();
-        rule.subType = (unsigned short)query.value(index++).toInt();
+        rule.subType = static_cast<unsigned short>(query.value(index++).toInt());
 
         rules[rule.nSerial] = rule;
         index = 0;
@@ -1726,8 +1726,8 @@ bool DBAccess::readTableRules(const std::vector<std::string> &tables,
         return true;
     }
     QString sql;
-    const int count(tables.size());
-    for (int i = 0; i < count; ++i) {
+    const size_t count(tables.size());
+    for (size_t i = 0; i < count; ++i) {
         sql.append(QString("select '%1' tableName,* from %1 union ")
                    .arg(tables[i].c_str()));
     }
@@ -1753,7 +1753,7 @@ bool DBAccess::readTableRules(const std::vector<std::string> &tables,
         rule.nSerial = query.value(index++).toInt();
         rule.sName = query.value(index++).toString().toStdString();
         rule.sPrgCode = query.value(index++).toString().toStdString();
-        rule.uType = (unsigned short)query.value(index++).toInt();
+        rule.uType = static_cast<unsigned short>(query.value(index++).toInt());
         rule.sDefault = query.value(index++).toString().toStdString();
         rule.sRange = query.value(index++).toString().toStdString();
         rule.dOffset = query.value(index++).toDouble();
@@ -1761,7 +1761,7 @@ bool DBAccess::readTableRules(const std::vector<std::string> &tables,
         rule.dScale = query.value(index++).toDouble();
         rule.sRule = query.value(index++).toString().toStdString();
         rule.sRemark = query.value(index++).toString().toStdString();
-        rule.subType = (unsigned short)query.value(index++).toInt();
+        rule.subType = static_cast<unsigned short>(query.value(index++).toInt());
 
         if (preName != name) {
             if (!preName.empty()) {
@@ -1865,8 +1865,8 @@ bool DBAccess::saveTableRules(const stICDBase &icdBase,
     sql.append(cdtRule);
     // 子表数据
     QString cdtSubTable;
-    const int count = subTables.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = subTables.size();
+    for (size_t i = 0; i < count; ++i) {
         const stICDBase &base = subTables[i];
         cdtSubTable.append(QString("select '%1' tableName,'%2' ptName,"
                                    "'%3' id,'%4' code,'%5' length,'%6' bGroup,"
@@ -1945,8 +1945,8 @@ bool DBAccess::saveTableRules(const std::vector<std::pair<stICDBase, DMSpace::sr
     // 没有，则删除该表
     std::vector<std::string> subTables = querySubTables(rules[0].first.sName);
     QString dbSubTables;
-    int count = subTables.size();
-    for (int i = 0; i < count; ++i) {
+    size_t count = subTables.size();
+    for (size_t i = 0; i < count; ++i) {
         dbSubTables.append(QString("select '%1' tableName union ")
                            .arg(subTables[i].c_str()));
     }
@@ -1956,7 +1956,7 @@ bool DBAccess::saveTableRules(const std::vector<std::pair<stICDBase, DMSpace::sr
     QString cdtRule;
     QStringList lstRule;
     count = rules.size();
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         const std::pair<stICDBase, DMSpace::srMap> &data = rules[i];
         const stICDBase &icdBase = data.first;
         const DMSpace::srMap &mapRules = data.second;
@@ -2150,8 +2150,8 @@ bool DBAccess::deleteTableRules(const std::string &table,
                    .arg(table.c_str()).arg(maxIndex));
     }
     QString cdtSubTable;
-    const int count = subTable.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = subTable.size();
+    for (size_t i = 0; i < count; ++i) {
         const std::string &name = subTable[i];
         cdtSubTable.append(QString("drop table %1;").arg(name.c_str()));
         cdtSubTable.append(QString("delete from %1 where tableName='%2';")
@@ -2283,8 +2283,8 @@ bool DBAccess::saveRule(const std::string &table,
 
     // 保存子表数据
     QString cdtSubTable;
-    const int count = subTables.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = subTables.size();
+    for (size_t i = 0; i < count; ++i) {
         const stICDBase &base = subTables[i];
         cdtSubTable.append(QString("select '%1' tableName,'%2' ptName,"
                                    "'%3' id,'%4' code,'%5' length,'%6' bGroup,'%7' describe,"
@@ -2364,12 +2364,12 @@ bool DBAccess::deleteRules(const std::string &table,
     }
     QString cdtRule;
     QString cdtSubTable;
-    int count = 0;
+    size_t count = 0;
     std::unordered_map<int, std::vector < std::string >> ::const_iterator it = rule.begin();
     for (; it != rule.end(); ++it) {
         cdtRule.append(QString("'%1',").arg(it->first));
         count = it->second.size();
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             const std::string &name = it->second[i];
             cdtSubTable.append(QString("drop table %1;").arg(name.c_str()));
             cdtSubTable.append(QString("delete from %1 where tableName='%2';")
@@ -2411,42 +2411,42 @@ bool DBAccess::deleteRules(const std::string &table,
 bool DBAccess::loadDBInfo(const Json::Value &config, stDBInfo& dbInfo)
 {
     if (config.isNull()) {
-        d->q_error = QStringLiteral("Invalid config information!");
+        d->q_error = QObject::tr("Invalid config information!");
         d->q_errorFunc = __FUNCTION__;
         return false;
     }
 
     // driver
     if (!config.isMember("driver")) {
-        d->q_error = QStringLiteral("can not find database config section<driver>！");
+        d->q_error = QObject::tr("Can not find database config section<driver>!");
         d->q_errorFunc = __FUNCTION__;
         return false;
     }
     dbInfo.driver = config["driver"].asString();
     // serverName
     if (!config.isMember("serverName")) {
-        d->q_error = QStringLiteral("can not find database config section<serverName>！");
+        d->q_error = QObject::tr("Can not find database config section<serverName>!");
         d->q_errorFunc = __FUNCTION__;
         return false;
     }
     dbInfo.server = config["serverName"].asString();
     // database
     if (!config.isMember("database")) {
-        d->q_error = QStringLiteral("can not find database config section<database>！");
+        d->q_error = QObject::tr("Can not find database config section<database>!");
         d->q_errorFunc = __FUNCTION__;
         return false;
     }
     dbInfo.database = config["database"].asString();
     // userName
     if (!config.isMember("userName")) {
-        d->q_error = QStringLiteral("can not find database config section<userName>！");
+        d->q_error = QObject::tr("Can not find database config section<userName>!");
         d->q_errorFunc = __FUNCTION__;
         return false;
     }
     dbInfo.user = config["userName"].asString();
     // password
     if (!config.isMember("password")) {
-        d->q_error = QStringLiteral("can not find database config section<password>！");
+        d->q_error = QObject::tr("Can not find database config section<password>!");
         d->q_errorFunc = __FUNCTION__;
         return false;
     }

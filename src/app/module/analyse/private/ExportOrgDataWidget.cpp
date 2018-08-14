@@ -19,16 +19,16 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
     QFormLayout *formLayout = new QFormLayout();
     layoutMain->addLayout(formLayout);
     QHBoxLayout *layoutPath = new QHBoxLayout();
-    formLayout->addRow(QStringLiteral("导出路径："), layoutPath);
+    formLayout->addRow(tr("Path of export:"), layoutPath);
     QLineEdit *editPath = new QLineEdit(this);
-    QPushButton *buttonView = new QPushButton(QStringLiteral("…"), this);
+    QPushButton *buttonView = new QPushButton("...", this);
     buttonView->setFixedWidth(60);
     layoutPath->addWidget(editPath);
     layoutPath->addWidget(buttonView);
     QCheckBox *checkBox = nullptr;
     if (hasTimeFormat) {
         checkBox = new QCheckBox(this);
-        formLayout->addRow(QStringLiteral("导出包时间："), checkBox);
+        formLayout->addRow(tr("Export package time"), checkBox);
     }
 
     QHBoxLayout *layoutBottom = new QHBoxLayout();
@@ -36,14 +36,14 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
 
     layoutBottom->addStretch();
 
-    QPushButton *buttonOk = new QPushButton(QStringLiteral("确定"), this);
+    QPushButton *buttonOk = new QPushButton(tr("Ok"), this);
     buttonOk->setMinimumWidth(120);
     buttonOk->setEnabled(false);
     layoutBottom->addWidget(buttonOk);
 
     layoutBottom->addSpacing(20);
 
-    QPushButton *buttonCancel = new QPushButton(QStringLiteral("取消"), this);
+    QPushButton *buttonCancel = new QPushButton(tr("Cancel"), this);
     buttonCancel->setMinimumWidth(120);
     layoutBottom->addWidget(buttonCancel);
 
@@ -57,9 +57,9 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
         }
     });
     connect(buttonView, &QPushButton::clicked, [=](){
-        QString selectedFilter = QStringLiteral("Data file (*.dat)");
+        QString selectedFilter = tr("Data file (*.dat)");
         const QString targetFilePath =
-                QFileDialog::getSaveFileName(this, QStringLiteral("另存为"),
+                QFileDialog::getSaveFileName(this, tr("Save as"),
                                              editPath->text(),
                                              "Any file (*.*);;"
                                              "ICD file (*.icd);;"
@@ -106,7 +106,7 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
         if (!table) {
             return;
         }
-        bufferOffset = (int)table->bufferOffset();
+        bufferOffset = int(table->bufferOffset());
         bufferSize = qCeil(table->bufferSize());
         break;
     }
@@ -116,7 +116,7 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
         if (!item) {
             return;
         }
-        bufferOffset = (int)item->bufferOffset();
+        bufferOffset = int(item->bufferOffset());
         bufferSize = qCeil(item->bufferSize());
         break;
     }
@@ -125,10 +125,10 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
     }
 
     Icd::ProgressDialog *progressDialog = new Icd::ProgressDialog(this);
-    progressDialog->setWindowTitle(QStringLiteral("导出数据"));
+    progressDialog->setWindowTitle(tr("Export data"));
     progressDialog->setProgressValue(100);
     progressDialog->setCancelVisible(false);
-    progressDialog->setMessage(QStringLiteral("正在导出数据……"));
+    progressDialog->setMessage(tr("Exporting data..."));
     QFuture<bool> future = QtConcurrent::run([=]() -> bool {
         QFile sourceFile(d_filePath);
         QFile targetFile(target);
@@ -140,10 +140,10 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
         }
         targetFile.resize(0);
         qint64 bufferSize = sourceFile.size() - d_headerSize;
-        int tableSize = (int)d_table->bufferSize();
+        int tableSize = qCeil(d_table->bufferSize());
         if (d_hasTimeFormat) {
             tableSize += 8;
-            const int count = bufferSize / tableSize;
+            const int count = int(bufferSize / tableSize);
             for (int i = 0; i < count; ++i) {
                 if (exportTime) {
                     sourceFile.seek(d_headerSize + tableSize * i);
@@ -153,7 +153,7 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
                 targetFile.write(sourceFile.read(bufferSize));
             }
         } else {
-            const int count = bufferSize / tableSize;
+            const int count = int(bufferSize / tableSize);
             for (int i = 0; i < count; ++i) {
                 sourceFile.seek(d_headerSize + tableSize * i + bufferOffset);
                 targetFile.write(sourceFile.read(bufferSize));
@@ -165,8 +165,8 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
         progressDialog->hide();
         progressDialog->disconnect(this);
         const QString message = progressDialog->futureResult()
-                ? QStringLiteral("导出完成！") : QStringLiteral("解析失败！");
-        QMessageBox::information(this, QStringLiteral("导出结果"), message);
+                ? tr("Export success!") : tr("Export failure!");
+        QMessageBox::information(this, tr("Result of export"), message);
         progressDialog->deleteLater();
     });
     progressDialog->setFuture(future);

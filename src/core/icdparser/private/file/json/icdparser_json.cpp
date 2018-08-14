@@ -794,7 +794,7 @@ bool JsonParser::generateRoot(const QStandardItem *itemRoot, bool exportAll, boo
     Json::Value vehiclesJson;
 
     if (exportAll) {
-        parser()->setMessage(QStringLiteral("获取所有机型数据\n%1")
+        parser()->setMessage(QObject::tr("Query all vehicles\n%1")
                              .arg(itemRoot->text().remove(QRegExp("<([^>]*)>")))
                              .toStdString());
         Icd::VehiclePtrArray vehicles;
@@ -841,7 +841,7 @@ bool JsonParser::generateVehicle(const QStandardItem *itemVehicle, bool exportAl
     }
 
     //
-    parser()->setMessage(QStringLiteral("获取机型数据\n机型：%1")
+    parser()->setMessage(QObject::tr("Query vehicle\nVehicle: %1")
                          .arg(itemVehicle->text().remove(QRegExp("<([^>]*)>")))
                          .toStdString());
     //
@@ -888,7 +888,7 @@ bool JsonParser::generateSystem(const QStandardItem *itemSystem, bool exportAll,
     }
 
     //
-    parser()->setMessage(QStringLiteral("获取系统数据\n系统：%1")
+    parser()->setMessage(QObject::tr("Query system\nSystem: %1")
                          .arg(itemSystem->text().remove(QRegExp("<([^>]*)>")))
                          .toStdString());
 
@@ -958,7 +958,7 @@ bool JsonParser::generateTable(const QStandardItem *itemTable, bool exportAll,
 #endif
     if (!table) {
         //
-        parser()->setMessage(QStringLiteral("获取表数据\n表：%1")
+        parser()->setMessage(QObject::tr("Query table\nTable: %1")
                              .arg(itemTable->text().remove(QRegExp("<([^>]*)>")))
                              .toStdString());
         //
@@ -1021,7 +1021,7 @@ bool JsonParser::generateVehicle(const QStandardItem *itemVehicle, Json::Value &
     }
 
     //
-    parser()->setMessage(QStringLiteral("获取机型数据\n机型：%1")
+    parser()->setMessage(QObject::tr("Query vehicle\nVehicle: %1")
                          .arg(itemVehicle->text().remove(QRegExp("<([^>]*)>")))
                          .toStdString());
     //
@@ -1062,7 +1062,7 @@ bool JsonParser::generateSystem(const QStandardItem *itemSystem, Json::Value &sy
     }
 
     //
-    parser()->setMessage(QStringLiteral("获取系统数据\n系统：%1")
+    parser()->setMessage(QObject::tr("Query system\nSystem: %1")
                          .arg(itemSystem->text().remove(QRegExp("<([^>]*)>")))
                          .toStdString());
 
@@ -1127,7 +1127,7 @@ bool JsonParser::generateTable(const QStandardItem *itemTable, Json::Value &tabl
 #endif
     if (!table) {
         //
-        parser()->setMessage(QStringLiteral("获取表数据\n表：%1")
+        parser()->setMessage(QObject::tr("Query table\nTable: %1")
                              .arg(itemTable->text().remove(QRegExp("<([^>]*)>")))
                              .toStdString());
         //

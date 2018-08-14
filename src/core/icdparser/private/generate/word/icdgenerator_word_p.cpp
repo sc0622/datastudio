@@ -35,14 +35,11 @@ bool WordGeneratorData::startup()
     }
 
     //
-    J_QPTR->parser()->setMessage(QStringLiteral("³õÊ¼»¯ÎÄµµ»ù±¾ÊôÐÔ").toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Initialize base options of document").toStdString());
 
     //
 #ifdef _MSC_VER
-    HRESULT ret = ::OleInitialize(nullptr);
-    if (ret != S_OK || ret == S_FALSE) {
-        //return false;
-    }
+    ::OleInitialize(nullptr);
 #endif // _MSC_VER
 
     word_ = new QAxObject("Word.Application");
@@ -68,7 +65,7 @@ bool WordGeneratorData::startup()
 
     //
     QAxObject *captionLabels = word_->querySubObject("CaptionLabels");
-    tableCaption_ = captionLabels->querySubObject("Add(QString)", QStringLiteral("±í"));
+    tableCaption_ = captionLabels->querySubObject("Add(QString)", QObject::tr("Table"));
     if (!tableCaption_) {
         word_->deleteLater();
         return false;
@@ -89,12 +86,11 @@ bool WordGeneratorData::startup()
             numberFormat.append('%' + QString::number(j) + '.');
         }
         listLevel->setProperty("NumberFormat", numberFormat);
-        const QString linkedStyle = QStringLiteral("±êÌâ %1").arg(i);
+        const QString linkedStyle = QObject::tr("Caption %1").arg(i);
         listLevel->setProperty("LinkedStyle", linkedStyle);
         QAxObject *font = listLevel->querySubObject("Font");
         font->setProperty("Bold", 1);
         font->setProperty("Size", 12);
-        //font->setProperty("Name", QStringLiteral("ËÎÌå"));
         //
         QAxObject *styles = document_->querySubObject("Styles");
         QAxObject *style = styles->querySubObject("Item(QString)", linkedStyle);
@@ -112,20 +108,20 @@ void WordGeneratorData::shutdown(const QString &filePath, int saveAsType)
     }
 
     //
-    J_QPTR->parser()->setMessage(QStringLiteral("ÊÍ·ÅÎÄµµÁÙÊ±×ÊÔ´").toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Release temporary resources").toStdString());
 
     //
     if (!filePath.isEmpty()) {
         if (saveAsType == 0) {
             document_->dynamicCall("SaveAs(QString,int)",
-                                  QDir::toNativeSeparators(filePath), saveAsType);
+                                   QDir::toNativeSeparators(filePath), saveAsType);
         } else {
             QVariantList params;
             params << QDir::toNativeSeparators(filePath)
                    << saveAsType << false << 0 << 0 << 1 << 1 << 0 << true << true << 1 << true;
             document_->dynamicCall("ExportAsFixedFormat(QString,int,boolean,int,int,int,"
-                                  "int,int,boolean,boolean,int,boolean)",
-                                  params);
+                                   "int,int,boolean,boolean,int,boolean)",
+                                   params);
         }
     }
     document_->dynamicCall("Close(boolean)", false);
@@ -214,9 +210,9 @@ bool WordGeneratorData::generateRoot(const QStandardItem *itemRoot, bool exportA
 
     if (exportAll) {
         //
-        J_QPTR->parser()->setMessage(QStringLiteral("»ñÈ¡ËùÓÐ»úÐÍÊý¾Ý\n%1")
-                                    .arg(itemRoot->text().remove(QRegExp("<([^>]*)>")))
-                                    .toStdString());
+        J_QPTR->parser()->setMessage(QObject::tr("Query all vehicles\n%1")
+                                     .arg(itemRoot->text().remove(QRegExp("<([^>]*)>")))
+                                     .toStdString());
 
         Icd::VehiclePtrArray vehicles;
         if (!J_QPTR->parser()->parse(vehicles, Icd::ObjectVehicle)) {
@@ -253,9 +249,9 @@ bool WordGeneratorData::generateVehicle(const QStandardItem *itemVehicle, bool e
     }
 
     //
-    J_QPTR->parser()->setMessage(QStringLiteral("»ñÈ¡»úÐÍÊý¾Ý\n»úÐÍ£º%1")
-                                .arg(itemVehicle->text().remove(QRegExp("<([^>]*)>")))
-                                .toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Query vehicle\nVehicle: %1")
+                                 .arg(itemVehicle->text().remove(QRegExp("<([^>]*)>")))
+                                 .toStdString());
 
     //
     const QString vehicleId = itemVehicle->data(TreeItemDomainRole).toString();
@@ -295,26 +291,26 @@ bool WordGeneratorData::generateVehicle(const QStandardItem *itemVehicle, bool e
 bool WordGeneratorData::generateVehicle(const VehiclePtr &vehicle, bool exportAll, int level)
 {
     //
-    J_QPTR->parser()->setMessage(QStringLiteral("Éú³É»úÐÍÎÄµµ\n»úÐÍ£º%1")
-                                .arg(QString::fromStdString(vehicle->name()))
-                                .toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Generate vehicle document\nVehicle: %1")
+                                 .arg(QString::fromStdString(vehicle->name()))
+                                 .toStdString());
 
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // ±êÌâ
+    // æ ‡é¢˜
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(vehicle->name()))
                     .arg(QString::fromStdString(vehicle->objectTypeString()).toUpper()), level);
 
-    // ÕýÎÄ1
+    // æ­£æ–‡1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
     paragraphFormat->setProperty("CharacterUnitFirstLineIndent", 2);
     QString vehicleDesc = QString::fromStdString(vehicle->desc());
-    if (!vehicleDesc.isEmpty() && !vehicleDesc.endsWith(QStringLiteral("¡£"))) {
-        vehicleDesc.append(QStringLiteral("¡£"));
+    if (!vehicleDesc.isEmpty() && !vehicleDesc.endsWith(QObject::tr("."))) {
+        vehicleDesc.append(QObject::tr("."));
     }
     selection_->dynamicCall("TypeText(QString)", vehicleDesc);
     selection_->dynamicCall("TypeParagraph()");
@@ -348,16 +344,16 @@ bool WordGeneratorData::generateSystem(const QStandardItem *itemSystem, bool exp
     }
 
     //
-    J_QPTR->parser()->setMessage(QStringLiteral("»ñÈ¡ÏµÍ³Êý¾Ý\nÏµÍ³£º%1")
-                                .arg(itemSystem->text().remove(QRegExp("<([^>]*)>")))
-                                .toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Query system\nSystem: %1")
+                                 .arg(itemSystem->text().remove(QRegExp("<([^>]*)>")))
+                                 .toStdString());
 
     //
     const QString domain = itemSystem->data(TreeItemDomainRole).toString();
     const std::string vehicleId = domain.section('/', 0, 0).toStdString();
     Icd::SystemPtr system;
     if (!J_QPTR->parser()->parse(vehicleId, domain.section('/', 1).toStdString(), system,
-                                Icd::ObjectSystem)) {
+                                 Icd::ObjectSystem)) {
         return false;
     }
 
@@ -393,26 +389,26 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
                                        bool exportAll, int level)
 {
     //
-    J_QPTR->parser()->setMessage(QStringLiteral("Éú³ÉÏµÍ³ÎÄµµ\nÏµÍ³£º%1")
-                                .arg(QString::fromStdString(system->name()))
-                                .toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Generate system document\nSystem: %1")
+                                 .arg(QString::fromStdString(system->name()))
+                                 .toStdString());
 
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // ±êÌâ
+    // æ ‡é¢˜
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(system->name()))
                     .arg(QString::fromStdString(system->objectTypeString()).toUpper()), level);
 
-    // ÕýÎÄ1
+    // æ­£æ–‡1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
     paragraphFormat->setProperty("CharacterUnitFirstLineIndent", 2);
     QString systemDesc = QString::fromStdString(system->desc());
-    if (!systemDesc.isEmpty() && !systemDesc.endsWith(QStringLiteral("¡£"))) {
-        systemDesc.append(QStringLiteral("¡£"));
+    if (!systemDesc.isEmpty() && !systemDesc.endsWith(QObject::tr("."))) {
+        systemDesc.append(QObject::tr("."));
     }
     selection_->dynamicCall("TypeText(QString)", systemDesc);
     selection_->dynamicCall("TypeParagraph()");
@@ -422,9 +418,9 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
         //
         ++level;
         //
-        J_QPTR->parser()->setMessage(QStringLiteral("»ñÈ¡ËùÓÐ±íÊý¾Ý\nÏµÍ³£º%1")
-                                    .arg(QString::fromStdString(system->name()))
-                                    .toStdString());
+        J_QPTR->parser()->setMessage(QObject::tr("Query all tables\nSystem: %1")
+                                     .arg(QString::fromStdString(system->name()))
+                                     .toStdString());
         //
         Icd::TablePtrArray tables;
         if (!J_QPTR->parser()->parse(vehicleId, system->id(), tables, Icd::ObjectItem)) {
@@ -472,14 +468,14 @@ bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool expor
     const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
     if (!table) {
         //
-        J_QPTR->parser()->setMessage(QStringLiteral("»ñÈ¡±íÊý¾Ý\n±í£º%1")
-                                    .arg(itemTable->text().remove(QRegExp("<([^>]*)>")))
-                                    .toStdString());
+        J_QPTR->parser()->setMessage(QObject::tr("Query table\nTable: %1")
+                                     .arg(itemTable->text().remove(QRegExp("<([^>]*)>")))
+                                     .toStdString());
         //
         if (!J_QPTR->parser()->parse(domain.section('/', 0, 0).toStdString(),
-                                    domain.section('/', 1, 1).toStdString(),
-                                    domain.section('/', 2, 2).toStdString(),
-                                    table, Icd::ObjectItem) || !table) {
+                                     domain.section('/', 1, 1).toStdString(),
+                                     domain.section('/', 2, 2).toStdString(),
+                                     table, Icd::ObjectItem) || !table) {
             return false;
         }
     }
@@ -509,39 +505,39 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
 
     //
     QString domain = QString::fromStdString(table->name());
-    J_QPTR->parser()->setMessage(QStringLiteral("Éú³É±íÎÄµµ\n±í£º%1")
-                                .arg(domain).toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Generate table document\nTable: %1")
+                                 .arg(domain).toStdString());
 
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // ±êÌâ
+    // æ ‡é¢˜
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(table->name()))
                     .arg(QString::fromStdString(table->typeName()).section('_', 0, 0).toUpper()),
                     level);
 
-    // ÕýÎÄ1
+    // æ­£æ–‡1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
     paragraphFormat->setProperty("CharacterUnitFirstLineIndent", 2);
     QString tableDesc = QString::fromStdString(table->desc());
-    if (!tableDesc.isEmpty() && !tableDesc.endsWith(QStringLiteral("¡£"))) {
-        tableDesc.append(QStringLiteral("¡£"));
+    if (!tableDesc.isEmpty() && !tableDesc.endsWith(QObject::tr("."))) {
+        tableDesc.append(QObject::tr("."));
     }
     if (!tableDesc.isEmpty()) {
         selection_->dynamicCall("TypeText(QString)", tableDesc);
         selection_->dynamicCall("TypeParagraph()");
     }
-    // ÕýÎÄ2 - [1]
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("¾ßÌåÐÅÏ¢¼û"));
+    // æ­£æ–‡2 - [1]
+    selection_->dynamicCall("TypeText(QString)", QObject::tr("View detail on "));
 
-    // ±íµ¥
+    // è¡¨å•
     QAxObject *axTable = tables_->querySubObject(
                 "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                 ->asVariant(), 1 + table->itemCount(), 5, 1, 2);
-    axTable->setProperty("Style", QStringLiteral("Íø¸ñ±í 1 Ç³É«"));
+    axTable->setProperty("Style", QObject::tr("Grid Table 1 Light"));
     int tableSize = qCeil(table->bufferSize());
 #if 1
     if (table->itemCount() == 0) {
@@ -557,38 +553,38 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
         }
     }
 #endif
-    generateTableCaption(QStringLiteral(" %1").arg(QString::fromStdString(table->name()))
-                         .append(QStringLiteral("£¨"))
+    generateTableCaption(QString(" %1").arg(QString::fromStdString(table->name()))
+                         .append(QObject::tr(" ("))
                          .append(QString::number(tableSize))
-                         .append(QStringLiteral(" B£©")), axTable);
+                         .append(QObject::tr(" B)")), axTable);
     axTable->querySubObject("Columns(int)", 1)->setProperty("Width", 50);   // offset
     axTable->querySubObject("Columns(int)", 2)->setProperty("Width", 80);   // name
     axTable->querySubObject("Columns(int)", 3)->setProperty("Width", 50);   // type
     axTable->querySubObject("Columns(int)", 4)->setProperty("Width", 100);  // desc
     axTable->dynamicCall("AutoFitBehavior(int)", 2);
 
-    // ÕýÎÄ2 - [2]
+    // æ­£æ–‡2 - [2]
     selection_->dynamicCall("MoveUp(int,int)", 5, 1);
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
-                           QStringLiteral("±í"), 3, tables_->property("Count").toInt(),
-                           true, false, false, " ");
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("ËùÊ¾¡£"));
+                            QObject::tr("Table"), 3, tables_->property("Count").toInt(),
+                            true, false, false, " ");
+    selection_->dynamicCall("TypeText(QString)", QObject::tr("."));
 
     //
     axTable->querySubObject("Range")->dynamicCall("Select()");
     selection_->querySubObject("Cells")->setProperty("VerticalAlignment", 1);
     axTable->querySubObject("Rows(int)", 1)->querySubObject("Range")->dynamicCall("Select()");
     selection_->querySubObject("ParagraphFormat")->setProperty("Alignment", 1);
-    setCellText(axTable, 1, 1, QStringLiteral("×Ö½Ú"));           // offset
-    setCellText(axTable, 1, 2, QStringLiteral("Ãû³Æ"));           // name
-    setCellText(axTable, 1, 3, QStringLiteral("ÀàÐÍ"));           // type
-    setCellText(axTable, 1, 4, QStringLiteral("ÌØÐÔ"));           // feature
-    setCellText(axTable, 1, 5, QStringLiteral("ËµÃ÷"));           // desc
+    setCellText(axTable, 1, 1, QObject::tr("Offset"));          // offset
+    setCellText(axTable, 1, 2, QObject::tr("Name"));            // name
+    setCellText(axTable, 1, 3, QObject::tr("Type"));            // type
+    setCellText(axTable, 1, 4, QObject::tr("Feature"));         // feature
+    setCellText(axTable, 1, 5, QObject::tr("Describe"));        // desc
 
     //
     ++level;
 
-    // ±íÐÅÏ¢
+    // è¡¨ä¿¡æ¯
     const Icd::ItemPtrArray &items = table->allItem();
     Icd::ItemPtrArray::const_iterator citer = items.cbegin();
     for (; citer != items.cend(); ++citer) {
@@ -644,16 +640,16 @@ bool WordGeneratorData::generateDataItem(const QStandardItem *itemData, bool exp
         if (_itemTable && _itemTable->type() == Icd::TreeItemTypeTable) {
             tableName = _itemTable->text().remove(QRegExp("<([^>]*)>"));
         } else {
-            tableName = QStringLiteral("<?>");
+            tableName = QObject::tr("<?>");
         }
         //
-        J_QPTR->parser()->setMessage(QStringLiteral("»ñÈ¡±íÊý¾Ý\n±í£º%1").arg(tableName)
-                                    .toStdString());
+        J_QPTR->parser()->setMessage(QObject::tr("Query table\nTable: %1").arg(tableName)
+                                     .toStdString());
         //
         if (!J_QPTR->parser()->parse(domain.section('/', 0, 0).toStdString(),
-                                    domain.section('/', 1, 1).toStdString(),
-                                    domain.section('/', 2, 2).toStdString(),
-                                    table, Icd::ObjectItem) || !table) {
+                                     domain.section('/', 1, 1).toStdString(),
+                                     domain.section('/', 2, 2).toStdString(),
+                                     table, Icd::ObjectItem) || !table) {
             return false;
         }
     }
@@ -689,70 +685,70 @@ bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, int level)
 
     //
     QString domain = QString::fromStdString(item->name());
-    J_QPTR->parser()->setMessage(QStringLiteral("Éú³ÉÊý¾ÝÎÄµµ\nÊý¾ÝÏî£º%1")
-                                .arg(domain).toStdString());
+    J_QPTR->parser()->setMessage(QObject::tr("Generate Data Item document\nData Item: %1")
+                                 .arg(domain).toStdString());
 
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // ±êÌâ
+    // æ ‡é¢˜
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(item->name()))
                     .arg(QString::fromStdString(item->typeName()).section('_', 0, 0).toUpper()), level);
 
-    // ÕýÎÄ1
+    // æ­£æ–‡1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
     paragraphFormat->setProperty("CharacterUnitFirstLineIndent", 2);
     QString itemDesc = QString::fromStdString(item->desc());
-    if (!itemDesc.isEmpty() && !itemDesc.endsWith(QStringLiteral("¡£"))) {
-        itemDesc.append(QStringLiteral("¡£"));
+    if (!itemDesc.isEmpty() && !itemDesc.endsWith(QObject::tr("."))) {
+        itemDesc.append(QObject::tr("."));
     }
     if (!itemDesc.isEmpty()) {
         selection_->dynamicCall("TypeText(QString)", itemDesc);
         selection_->dynamicCall("TypeParagraph()");
     }
-    // ÕýÎÄ2 - [1]
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("¾ßÌåÐÅÏ¢¼û"));
+    // æ­£æ–‡2 - [1]
+    selection_->dynamicCall("TypeText(QString)", QObject::tr("View detail on "));
 
-    // ±íµ¥
+    // è¡¨å•
     QAxObject *axTable = tables_->querySubObject(
                 "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                 ->asVariant(), 2, 5, 1, 2);
     int itemSize = qCeil(item->bufferSize());
-    generateTableCaption(QStringLiteral(" %1").arg(QString::fromStdString(item->name()))
-                         .append(QStringLiteral("£¨"))
+    generateTableCaption(QString(" %1").arg(QString::fromStdString(item->name()))
+                         .append(QObject::tr(" ("))
                          .append(QString::number(itemSize))
-                         .append(QStringLiteral(" B£©")), axTable);
+                         .append(QObject::tr(" B)")), axTable);
     axTable->querySubObject("Columns(int)", 1)->setProperty("Width", 50);   // offset
     axTable->querySubObject("Columns(int)", 2)->setProperty("Width", 80);   // name
     axTable->querySubObject("Columns(int)", 3)->setProperty("Width", 50);   // type
     axTable->querySubObject("Columns(int)", 4)->setProperty("Width", 100);  // desc
     axTable->dynamicCall("AutoFitBehavior(int)", 2);
 
-    // ÕýÎÄ2 - [2]
+    // æ­£æ–‡2 - [2]
     selection_->dynamicCall("MoveUp(int,int)", 5, 1);
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
-                           QStringLiteral("±í"), 3, tables_->property("Count").toInt(),
-                           true, false, false, " ");
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("ËùÊ¾¡£"));
+                            QObject::tr("Table"), 3, tables_->property("Count").toInt(),
+                            true, false, false, " ");
+    selection_->dynamicCall("TypeText(QString)", QObject::tr("."));
 
     //
     axTable->querySubObject("Range")->dynamicCall("Select()");
     selection_->querySubObject("Cells")->setProperty("VerticalAlignment", 1);
     axTable->querySubObject("Rows(int)", 1)->querySubObject("Range")->dynamicCall("Select()");
     selection_->querySubObject("ParagraphFormat")->setProperty("Alignment", 1);
-    setCellText(axTable, 1, 1, QStringLiteral("×Ö½Ú"));       // offset
-    setCellText(axTable, 1, 2, QStringLiteral("Ãû³Æ"));       // name
-    setCellText(axTable, 1, 3, QStringLiteral("ÀàÐÍ"));       // type
-    setCellText(axTable, 1, 4, QStringLiteral("ÌØÐÔ"));       // feature
-    setCellText(axTable, 1, 5, QStringLiteral("ËµÃ÷"));       // desc
+    setCellText(axTable, 1, 1, QObject::tr("Offset"));      // offset
+    setCellText(axTable, 1, 2, QObject::tr("Name"));        // name
+    setCellText(axTable, 1, 3, QObject::tr("Type"));        // type
+    setCellText(axTable, 1, 4, QObject::tr("Feature"));     // feature
+    setCellText(axTable, 1, 5, QObject::tr("Describe"));    // desc
 
     //
     ++level;
 
-    // Êý¾ÝÏîÐÅÏ¢
+    // æ•°æ®é¡¹ä¿¡æ¯
     if (!generateItem(item, axTable, 2, level)) {
         return false;
     }
@@ -767,7 +763,7 @@ bool WordGeneratorData::generateContents()
     selection_->dynamicCall("MoveUp(int)", 5);
     selection_->querySubObject("Paragraphs")->setProperty("Alignment", 1);
     selection_->querySubObject("Font")->setProperty("Bold", 1);
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("Ä¿Â¼"));
+    selection_->dynamicCall("TypeText(QString)", QObject::tr("Contents"));
     selection_->dynamicCall("TypeParagraph()");
     selection_->querySubObject("Paragraphs")->dynamicCall("Reset()");
     selection_->querySubObject("Font")->dynamicCall("Reset()");
@@ -784,7 +780,7 @@ bool WordGeneratorData::generateContents()
 
 bool WordGeneratorData::generateHeading(const QString &text, int level)
 {
-    // ±êÌâ
+    // æ ‡é¢˜
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", level);
     QAxObject *listFormat = selection_->querySubObject("Range")->querySubObject("ListFormat");
@@ -793,7 +789,6 @@ bool WordGeneratorData::generateHeading(const QString &text, int level)
     QAxObject *font = selection_->querySubObject("Font");
     font->setProperty("Bold", 1);
     font->setProperty("Size", 12);
-    //font->setProperty("Name", QStringLiteral("ËÎÌå"));
     selection_->dynamicCall("TypeText(QString)", text);
     paragraphs->dynamicCall("Reset()");
     selection_->dynamicCall("TypeParagraph()");
@@ -866,7 +861,7 @@ bool WordGeneratorData::generateHeaderItem(const HeaderItemPtr &headerItem, QAxO
     // column 3 - type
     setCellText(axTable, row, 3, QString::fromStdString(headerItem->typeName()).section('_', 1));
     // column 4 - feature
-    //setCellText(axTable, row, 4, QStringLiteral("ÎÞ"));
+    //setCellText(axTable, row, 4, QObject::tr("None"));
     // column 5 - desc
     setCellText(axTable, row, 5, QString::fromStdString(headerItem->desc()));
 
@@ -888,7 +883,7 @@ bool WordGeneratorData::generateCounterItem(const CounterItemPtr &counterItem, Q
     // column 3 - type
     setCellText(axTable, row, 3, QString::fromStdString(counterItem->typeName()).section('_', 1));
     // column 4 - feature
-    //setCellText(axTable, row, 4, QStringLiteral("ÎÞ"));
+    //setCellText(axTable, row, 4, QObject::tr("None"));
     // column 5 - desc
     setCellText(axTable, row, 5, QString::fromStdString(counterItem->desc()));
 
@@ -910,7 +905,7 @@ bool WordGeneratorData::generateCheckItem(const CheckItemPtr &checkItem, QAxObje
     // column 3 - type
     setCellText(axTable, row, 3, QString::fromStdString(checkItem->typeName()).section('_', 1));
     // column 4 - feature
-    //setCellText(axTable, row, 4, QStringLiteral("ÎÞ"));
+    //setCellText(axTable, row, 4, QObject::tr("None"));
     // column 5 - desc
     setCellText(axTable, row, 5, QString::fromStdString(checkItem->desc()));
 
@@ -932,7 +927,7 @@ bool WordGeneratorData::generateFrameCodeItem(const FrameCodeItemPtr &frameCodeI
     // column 3 - type
     setCellText(axTable, row, 3, QString::fromStdString(frameCodeItem->typeName()).section('_', 1));
     // column 4 - feature
-    //setCellText(axTable, row, 4, QStringLiteral("ÎÞ"));
+    //setCellText(axTable, row, 4, QObject::tr("None"));
     // column 5 - desc
     setCellText(axTable, row, 5, QString::fromStdString(frameCodeItem->desc()));
 
@@ -955,7 +950,7 @@ bool WordGeneratorData::generateNumericItem(const NumericItemPtr &numericItem, Q
     setCellText(axTable, row, 3, QString::fromStdString(numericItem->typeName()).section('_', 1));
     // column 4 - feature
     setCellText(axTable, row, 4,
-                QStringLiteral("1£©µ¥Î»£º%1£»\n2£©±ÈÀý£º%2£»\n3£©Æ«ÒÆ£º%3£»\n4£©·¶Î§£º%4¡£")
+                QObject::tr("1) Unit: %1; \n2) Scale: %2; \n3) Offset: %3; \n4) Range: %4.")
                 .arg(numericItem->unit().empty() ? "<?>"
                                                  : QString::fromStdString(numericItem->unit()))
                 .arg(numericItem->scale())
@@ -982,19 +977,19 @@ bool WordGeneratorData::generateBitItem(const BitItemPtr &bitItem, QAxObject *ax
     // column 3 - type
     setCellText(axTable, row, 3, QString::fromStdString(bitItem->typeName()).section('_', 1));
     // column 4 - feature
-    QString feature = QStringLiteral("1£©Î»Óò£º[%1£¬%2]¡£")
+    QString feature = QObject::tr("1) Range: [%1, %2].")
             .arg(bitItem->bitStart())
             .arg(bitItem->bitStart() + bitItem->bitCount() - 1);
     const std::map<icd_uint64, std::string> &specs = bitItem->specs();
     if (!specs.empty()) {
-        feature.append(QStringLiteral("\n2£©ÌØÕ÷Öµ£º\n"));
+        feature.append(QObject::tr("\n2) Feature:\n"));
     }
     std::map<icd_uint64, std::string>::const_iterator citerSpecs = specs.cbegin();
     switch (bitItem->type()) {
     case Icd::ItemBitMap:
     {
         for (; citerSpecs != specs.cend(); ++citerSpecs) {
-            feature.append(QStringLiteral(" BIT%1£º%2£»\n").arg(citerSpecs->first)
+            feature.append(QObject::tr(" BIT%1: %2;\n").arg(citerSpecs->first)
                            .arg(citerSpecs->second.empty() ? "<?>"
                                                            : QString::fromStdString(citerSpecs->second)));
         }
@@ -1003,7 +998,7 @@ bool WordGeneratorData::generateBitItem(const BitItemPtr &bitItem, QAxObject *ax
     case Icd::ItemBitValue:
     {
         for (; citerSpecs != specs.cend(); ++citerSpecs) {
-            feature.append(QStringLiteral(" %1£º%2£»\n").arg(citerSpecs->first)
+            feature.append(QObject::tr(" %1: %2;\n").arg(citerSpecs->first)
                            .arg(citerSpecs->second.empty() ? "<?>"
                                                            : QString::fromStdString(citerSpecs->second)));
         }
@@ -1052,21 +1047,21 @@ bool WordGeneratorData::generateComplexItem(const ComplexItemPtr &complexItem, Q
     // column 2 - name
     setCellText(axTable, row, 2, QString::fromStdString(complexItem->name()));
     // column 3 - type
-    setCellText(axTable, row, 3, QStringLiteral("¸´ºÏ/%1B").arg(complexItem->bufferSize()));
+    setCellText(axTable, row, 3, QObject::tr("Complex/%1B").arg(complexItem->bufferSize()));
     // column 4 - feature
-    //setCellText(axTable, row, 4, QStringLiteral("ÎÞ"));
+    //setCellText(axTable, row, 4, QObject::tr("None"));
     // column 5 - desc
     QString desc = QString::fromStdString(complexItem->desc());
-    if (!desc.isEmpty() && !desc.endsWith(QStringLiteral("¡£"))) {
-        desc.append(QStringLiteral("¡£"));
+    if (!desc.isEmpty() && !desc.endsWith(QObject::tr("."))) {
+        desc.append(QObject::tr("."));
     }
     setCellText(axTable, row, 5, desc);
     // reference
     axTable->querySubObject("Cell(int,int", row, 5)->dynamicCall("Select()");
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("£¨¼û"));
+    selection_->dynamicCall("TypeText(QString)", QObject::tr("(See "));
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean)",
-                           QStringLiteral("±êÌâ"), -2, headingLength + 1, true);
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("£©"));
+                            QObject::tr("Caption"), -2, headingLength + 1, true);
+    selection_->dynamicCall("TypeText(QString)", QObject::tr(")"));
 
     return true;
 }
@@ -1076,7 +1071,7 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
 {
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // ±êÌâ
+    // æ ‡é¢˜
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(frameItem->name()))
                     .arg(QString::fromStdString(frameItem->typeName()).section('_', 0, 0).toUpper()),
@@ -1093,32 +1088,32 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
     {
         const Icd::TablePtrMap &tables = frameItem->allTable();
 
-        // ÕýÎÄ1
+        // æ­£æ–‡1
         QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
         paragraphs->setProperty("OutlineLevel", 10);
         QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
         paragraphFormat->setProperty("CharacterUnitFirstLineIndent", 2);
         QString frameDesc = QString::fromStdString(frameItem->desc());
-        if (!frameDesc.isEmpty() && !frameDesc.endsWith(QStringLiteral("¡£"))) {
-            frameDesc.append(QStringLiteral("¡£"));
+        if (!frameDesc.isEmpty() && !frameDesc.endsWith(QObject::tr("."))) {
+            frameDesc.append(QObject::tr("."));
         }
         if (!frameDesc.isEmpty()) {
             selection_->dynamicCall("TypeText(QString)", frameDesc);
             selection_->dynamicCall("TypeParagraph()");
         }
-        // ÕýÎÄ2 - [1]
-        selection_->dynamicCall("TypeText(QString)", QStringLiteral("¾ßÌåÐÅÏ¢¼û"));
+        // æ­£æ–‡2 - [1]
+        selection_->dynamicCall("TypeText(QString)", QObject::tr("View detail on "));
 
-        // ±íµ¥
+        // è¡¨å•
         QAxObject *axSubTable = tables_->querySubObject(
                     "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                     ->asVariant(), 1 + tables.size(), 5, 1, 2);
-        axSubTable->setProperty("Style", QStringLiteral("Íø¸ñ±í 1 Ç³É«"));
+        axSubTable->setProperty("Style", QObject::tr("Grid Table 1 Light"));
         int frameSize = qCeil(frameItem->bufferSize());
-        generateTableCaption(QStringLiteral(" %1").arg(QString::fromStdString(frameItem->name()))
-                             .append(QStringLiteral("£¨"))
+        generateTableCaption(QString(" %1").arg(QString::fromStdString(frameItem->name()))
+                             .append(QObject::tr(" ("))
                              .append(QString::number(frameSize))
-                             .append(QStringLiteral(" B£©")), axSubTable);
+                             .append(QObject::tr(" B)")), axSubTable);
         axSubTable->querySubObject("Columns(int)", 1)->setProperty("Width", 50);    // code
         axSubTable->querySubObject("Columns(int)", 2)->setProperty("Width", 120);   // name
         axSubTable->querySubObject("Columns(int)", 3)->setProperty("Width", 50);    // size
@@ -1126,23 +1121,23 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
         axSubTable->querySubObject("Columns(int)", 5)->setProperty("Width", 100);   // desc
         axSubTable->dynamicCall("AutoFitBehavior(int)", 2);
 
-        // ÕýÎÄ2 - [2]
+        // æ­£æ–‡2 - [2]
         selection_->dynamicCall("MoveUp(int,int)", 5, 1);
         selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
-                               QStringLiteral("±í"), 3, tables_->property("Count").toInt(),
-                               true, false, false, " ");
-        selection_->dynamicCall("TypeText(QString)", QStringLiteral("ËùÊ¾¡£"));
+                                QObject::tr("Table"), 3, tables_->property("Count").toInt(),
+                                true, false, false, " ");
+        selection_->dynamicCall("TypeText(QString)", QObject::tr("."));
 
         //
         axSubTable->querySubObject("Range")->dynamicCall("Select()");
         selection_->querySubObject("Cells")->setProperty("VerticalAlignment", 1);
         axSubTable->querySubObject("Rows(int)", 1)->querySubObject("Range")->dynamicCall("Select()");
         selection_->querySubObject("ParagraphFormat")->setProperty("Alignment", 1);
-        setCellText(axSubTable, 1, 1, QStringLiteral("Ö¡Âë"));        // code
-        setCellText(axSubTable, 1, 2, QStringLiteral("Ãû³Æ"));        // name
-        setCellText(axSubTable, 1, 3, QStringLiteral("´óÐ¡"));        // size
-        setCellText(axSubTable, 1, 4, QStringLiteral("Ê±Ðò"));        // sequence
-        setCellText(axSubTable, 1, 5, QStringLiteral("ËµÃ÷"));        // desc
+        setCellText(axSubTable, 1, 1, QObject::tr("Code"));         // code
+        setCellText(axSubTable, 1, 2, QObject::tr("Name"));         // name
+        setCellText(axSubTable, 1, 3, QObject::tr("Size"));         // size
+        setCellText(axSubTable, 1, 4, QObject::tr("Sequence"));     // sequence
+        setCellText(axSubTable, 1, 5, QObject::tr("Describe"));     // desc
 
         //
         ++level;
@@ -1168,21 +1163,21 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
     // column 2 - name
     setCellText(axTable, row, 2, QString::fromStdString(frameItem->name()));
     // column 3 - type
-    setCellText(axTable, row, 3, QStringLiteral("×ÓÖ¡/%1B").arg(frameItem->bufferSize()));
+    setCellText(axTable, row, 3, QObject::tr("SubFrame/%1B").arg(frameItem->bufferSize()));
     // column 4 - feature
-    //setCellText(axTable, row, 4, QStringLiteral("ÎÞ"));
+    //setCellText(axTable, row, 4, QObject::tr("None"));
     // column 5 - desc
     QString desc = QString::fromStdString(frameItem->desc());
-    if (!desc.isEmpty() && !desc.endsWith(QStringLiteral("¡£"))) {
-        desc.append(QStringLiteral("¡£"));
+    if (!desc.isEmpty() && !desc.endsWith(QObject::tr("."))) {
+        desc.append(QObject::tr("."));
     }
     setCellText(axTable, row, 5, desc);
     // reference
     axTable->querySubObject("Cell(int,int", row, 5)->dynamicCall("Select()");
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("£¨¼û"));
+    selection_->dynamicCall("TypeText(QString)", QObject::tr(" (See "));
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean)",
-                           QStringLiteral("±êÌâ"), -2, headingLength, true);
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("£©"));
+                            QObject::tr("Caption"), -2, headingLength, true);
+    selection_->dynamicCall("TypeText(QString)", QObject::tr(")"));
 
     return true;
 }
@@ -1210,21 +1205,21 @@ bool WordGeneratorData::generateSubTable(const TablePtr &table, QAxObject *axTab
     // column 2 - name
     setCellText(axTable, row, 2, QString::fromStdString(table->name()));
     // column 3 - size
-    setCellText(axTable, row, 3, QStringLiteral("%1B").arg(table->bufferSize()));
+    setCellText(axTable, row, 3, QString("%1B").arg(table->bufferSize()));
     // column 4 - sequence
-    setCellText(axTable, row, 4, QStringLiteral("%1").arg(table->sequence()));
+    setCellText(axTable, row, 4, QString("%1").arg(table->sequence()));
     // column 5 - desc
     QString desc = QString::fromStdString(table->desc());
-    if (!desc.isEmpty() && !desc.endsWith(QStringLiteral("¡£"))) {
-        desc.append(QStringLiteral("¡£"));
+    if (!desc.isEmpty() && !desc.endsWith(QObject::tr("."))) {
+        desc.append(QObject::tr("."));
     }
     setCellText(axTable, row, 5, desc);
     // reference
     axTable->querySubObject("Cell(int,int", row, 5)->dynamicCall("Select()");
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("£¨¼û"));
+    selection_->dynamicCall("TypeText(QString)", QObject::tr(" (See "));
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean)",
-                           QStringLiteral("±êÌâ"), -2, headingLength + 1, true);
-    selection_->dynamicCall("TypeText(QString)", QStringLiteral("£©"));
+                            QObject::tr("Caption"), -2, headingLength + 1, true);
+    selection_->dynamicCall("TypeText(QString)", QObject::tr(")"));
 
     return true;
 }
@@ -1260,7 +1255,7 @@ bool WordGeneratorData::generateArrayItem(const ArrayItemPtr &arrayItem,
     setCellText(axTable, row, 3, QString::fromStdString(arrayItem->typeName())
                 .section('_', 1).append("[]"));
     // column 4 - feature
-    setCellText(axTable, row, 4, QStringLiteral("%1¸öÔªËØ").arg(arrayItem->count()));
+    setCellText(axTable, row, 4, QString("%1").arg(arrayItem->count()));
     // column 5 - desc
     setCellText(axTable, row, 5, QString::fromStdString(arrayItem->desc()));
 

@@ -60,7 +60,7 @@ void CounterItem::setCounterType(CounterType type)
     case CounterU16: setBufferSize(2); break;
     case CounterU32: setBufferSize(4); break;
     case CounterU64: setBufferSize(8); break;
-    default: assert(false); break;
+    default: break;
     }
 }
 
@@ -106,7 +106,7 @@ double CounterItem::data() const
     }
 
     unsigned int value = 0;
-    memcpy(&value, buffer, std::min<int>(sizeof(value), int(bufferSize())));
+    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
     return value;
 }
 
@@ -117,8 +117,8 @@ void CounterItem::setData(double data)
         return;
     }
 
-    unsigned int value = (unsigned int)data;
-    memcpy(buffer, &value, std::min<int>(sizeof(value), int(bufferSize())));
+    unsigned int value = static_cast<unsigned int>(data);
+    memcpy(buffer, &value, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
 }
 
 std::string CounterItem::dataString() const
@@ -141,7 +141,7 @@ void CounterItem::setValue(unsigned char value)
 std::string CounterItem::typeName() const
 {
     std::stringstream ss;
-    ss << "icd_uint" << ((int)bufferSize()) * 8;
+    ss << "icd_uint" << (static_cast<int>(bufferSize())) * 8;
     return ss.str();
 }
 

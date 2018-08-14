@@ -12,7 +12,7 @@ class FileRecvWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FileRecvWidget(QWidget *parent = 0);
+    explicit FileRecvWidget(QWidget *parent = nullptr);
     ~FileRecvWidget();
 
     void updateUi(const Icd::WorkerPtr &worker);

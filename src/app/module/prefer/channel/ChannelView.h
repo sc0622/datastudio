@@ -11,7 +11,7 @@ class ChannelView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ChannelView(QWidget *parent = 0);
+    explicit ChannelView(QWidget *parent = nullptr);
     ~ChannelView();
 
     bool init();

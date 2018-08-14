@@ -4,6 +4,8 @@ import qbs.FileInfo
 
 CoreDyLibrary {
     type: base.concat([ 'qmlfiles.out' ])
+    translations: [ 'zh_CN.ts' ]
+    defaultTranslation: true
     Qt.core.resourceFileBaseName: 'resource'
 
     Depends { name: 'Qt.widgets' }

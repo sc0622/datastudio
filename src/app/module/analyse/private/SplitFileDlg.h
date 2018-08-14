@@ -14,8 +14,6 @@ class QCheckBox;
 
 namespace Icd {
 
-template<typename T> class std::shared_ptr;
-
 class Object;
 typedef std::shared_ptr<Object> ObjectPtr;
 
@@ -39,7 +37,7 @@ class SplitFileDlg : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SplitFileDlg(QWidget *parent = Q_NULLPTR);
+    explicit SplitFileDlg(QWidget *parent = nullptr);
 
 signals:
     void rejected();
@@ -50,16 +48,16 @@ signals:
 public slots:
 
 private:
-    bool splitDataFile(const QString &filePath, const QString targetDir, qint64 splitSize);
-    bool splitIcdFile(const QString &filePath, const QString targetDir, qint64 splitSize);
-    bool splitATXFile(const QString &filePath, const QString targetDir, qint64 splitSize);
-    bool splitGBRFile(const QString &filePath, const QString targetDir, qint64 splitSize);
-    bool splitRAWFile(const QString &filePath, const QString targetDir, qint64 splitSize);
-    bool splitMRDFile(const QString &filePath, const QString targetDir, qint64 splitSize);
+    bool splitDataFile(const QString &filePath, const QString &targetDir, qint64 splitSize);
+    bool splitIcdFile(const QString &filePath, const QString &targetDir, qint64 splitSize);
+    bool splitATXFile(const QString &filePath, const QString &targetDir, qint64 splitSize);
+    bool splitGBRFile(const QString &filePath, const QString &targetDir, qint64 splitSize);
+    bool splitRAWFile(const QString &filePath, const QString &targetDir, qint64 splitSize);
+    bool splitMRDFile(const QString &filePath, const QString &targetDir, qint64 splitSize);
 
-    bool loadTable(const QString &filePath, const QString targetDir, qint64 splitSize,
+    bool loadTable(const QString &filePath, const QString &targetDir, qint64 splitSize,
                    const QString &domain, int headerSize, bool hasTimeFormat);
-    bool splitFile(QFile *sourceFile, const QString targetDir, qint64 splitSize,
+    bool splitFile(QFile *sourceFile, const QString &targetDir, qint64 splitSize,
                    int tableSize, int headerSize, bool hasTimeFormat);
 
 private:

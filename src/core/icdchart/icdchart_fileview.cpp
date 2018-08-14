@@ -384,7 +384,7 @@ void ChartFileView::dropEvent(QDropEvent *event)
 
     const Icd::TablePtr table = tableByFilePath(filePath);
     if (!table) {
-        qWarning(QStringLiteral("工作组没有绑定接收端协议表！").toLocal8Bit());
+        qWarning(QString("Worker has no binding recv-channel!").toLocal8Bit());
         return;
     }
 

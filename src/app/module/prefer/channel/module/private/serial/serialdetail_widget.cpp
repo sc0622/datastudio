@@ -7,7 +7,7 @@
 
 SerialDetailWidget::SerialDetailWidget(QWidget *parent)
     : QWidget(parent)
-    , d_worker(Icd::WorkerPtr(0))
+    , d_worker(Icd::WorkerPtr())
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -58,7 +58,7 @@ void SerialDetailWidget::onWorkerRemoved(const Icd::WorkerPtr &worker)
     }
 
     //
-    d_worker = Icd::WorkerPtr(0);
+    d_worker = Icd::WorkerPtr();
 
     //
     updateUi(d_worker);
@@ -67,7 +67,7 @@ void SerialDetailWidget::onWorkerRemoved(const Icd::WorkerPtr &worker)
 void SerialDetailWidget::onWorkerCleared()
 {
     //
-    d_worker = Icd::WorkerPtr(0);
+    d_worker = Icd::WorkerPtr();
 
     //
     updateUi(d_worker);

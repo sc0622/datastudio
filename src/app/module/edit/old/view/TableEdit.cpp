@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "TableEdit.h"
 #include "KernelClass/globalstruct.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
 
 TableEdit::TableEdit(QWidget* parent)
     : ObjectEdit(parent)
@@ -10,8 +10,8 @@ TableEdit::TableEdit(QWidget* parent)
     spinLength_ = new QSpinBox(this);
     spinLength_->setObjectName("edtLength");
     spinLength_->setRange(0, 1e6);
-    spinLength_->setSuffix(QStringLiteral(" 字节"));
-    checkLength_ = new QCheckBox(QStringLiteral("长度："), this);
+    spinLength_->setSuffix(tr(" B"));
+    checkLength_ = new QCheckBox(tr("Length:"), this);
     addFormRow(checkLength_, spinLength_);
 
     enableConnect(true);
@@ -86,12 +86,12 @@ bool TableEdit::validate()
     if (data_.check) {
         int total = 0;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&total));
+        args.append(qVariantFromValue(static_cast<void*>(&total)));
         QString command("total");
-        args.append(qVariantFromValue((void*)&command));
+        args.append(qVariantFromValue(static_cast<void*>(&command)));
         jnotify->send("edit.queryTableInformation", args);
         if (total > data_.nLength) {
-            setStatus(QStringLiteral("已规划数据超过当前预设长度！"));
+            setStatus(tr("Lenth of data is too large!"));
             return false;
         }
     }

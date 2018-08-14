@@ -23,7 +23,7 @@ bool HtmlGeneratorData::generateTypes(QTextStream &tableStream)
 {
     tableStream << "<p></p>"
                    "<h2 align='center'>"
-                << QStringLiteral("基本数据类型定义")
+                << QObject::tr("Base data type definitions")
                 << "</h2>";
     tableStream << "<p></p>"
                 << "<table class='gridtable' align='center' border='1' summary='Desc'"

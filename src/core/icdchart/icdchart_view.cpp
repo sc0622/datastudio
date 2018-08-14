@@ -462,7 +462,7 @@ void ChartView::dropEvent(QDropEvent *event)
     const Icd::TablePtr tableRecv = worker->workerRecv()->table();
     //
     if (!tableRecv) {
-        qWarning(QStringLiteral("工作组没有绑定接收端协议表 [通道：%1]！")
+        qWarning(QString("Worker has no binding channel [channel: %1]!")
                  .arg(channelId).toLocal8Bit());
         return;
     }

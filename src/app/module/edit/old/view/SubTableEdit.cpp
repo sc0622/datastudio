@@ -1,16 +1,16 @@
 #include "precomp.h"
 #include "SubTableEdit.h"
 #include "KernelClass/globalstruct.h"
-#include "LimitLineEdit.h"
-#include "LimitTextEdit.h"
-#include "HexSpinBox.h"
+#include "limitlineedit.h"
+#include "limittextedit.h"
+#include "hexspinbox.h"
 #include "jwt/jspinbox.h"
 
 SubTableEdit::SubTableEdit(QWidget* parent)
     : ObjectEdit(parent)
 {
     comboLength_ = new QComboBox(this);
-    addFormRow(QStringLiteral("帧码长度："), comboLength_);
+    addFormRow(tr("length of frame code:"), comboLength_);
 
     spinCode_ = new JLargeSpinBox(this);
     spinCode_->setObjectName("edtCode");
@@ -18,11 +18,11 @@ SubTableEdit::SubTableEdit(QWidget* parent)
     spinCode_->setRange(0, 0xff);
     spinCode_->setPrefix("0x");
     spinCode_->setFillChar(QChar('0'));
-    addFormRow(QStringLiteral("帧码："), spinCode_);
+    addFormRow(tr("Frame code:"), spinCode_);
 
     spinSequence_ = new QSpinBox(this);
     spinSequence_->setRange(1, 1e9);
-    addFormRow(QStringLiteral("时序："), spinSequence_);
+    addFormRow(tr("Sequence:"), spinSequence_);
 
     enableConnect(true);
 }
@@ -59,14 +59,14 @@ bool SubTableEdit::onTextChanged(const QString &text)
     if (sender == comboLength_) {
         int length = 2 * comboLength_->currentData().toInt();
         QString strValue = QString().fill('f', length);
-        spinCode_->setRange(0, strValue.prepend("0x").toUInt(0, 16));
+        spinCode_->setRange(0, strValue.prepend("0x").toUInt(nullptr, 16));
         length -= data_.sCode.length();
         if (length > 0) {
-            data_.sCode.insert(0, length, '0');
+            data_.sCode.insert(0, size_t(length), '0');
         } else if (length < 0) {
-            data_.sCode = data_.sCode.substr(abs(length));
+            data_.sCode = data_.sCode.substr(size_t(abs(length)));
         }
-        spinCode_->setValue(QString(data_.sCode.c_str()).toInt(0, 16));
+        spinCode_->setValue(static_cast<qulonglong>(QString(data_.sCode.c_str()).toInt(nullptr, 16)));
         result = true;
     } else if (sender == spinSequence_) {
         data_.sRemark = QString::number(spinSequence_->value()).toStdString();
@@ -84,16 +84,16 @@ bool SubTableEdit::init()
 {
     // length
     comboLength_->clear();
-    comboLength_->addItem(QStringLiteral("1字节"), 1);
-    comboLength_->addItem(QStringLiteral("2字节"), 2);
-    comboLength_->addItem(QStringLiteral("4字节"), 4);
+    comboLength_->addItem(QStringLiteral("1瀛楄妭"), 1);
+    comboLength_->addItem(QStringLiteral("2瀛楄妭"), 2);
+    comboLength_->addItem(QStringLiteral("4瀛楄妭"), 4);
     if (comboLength_) {
         comboLength_->setCurrentIndex(comboLength_->findData(data_.sCode.length() / 2));
     }
     // code
-    QString strValue = QString().fill('f', data_.sCode.length());
-    spinCode_->setRange(0, strValue.prepend("0x").toUInt(0, 16));
-    spinCode_->setValue(QString(data_.sCode.c_str()).toInt(0, 16));
+    QString strValue = QString().fill('f', int(data_.sCode.length()));
+    spinCode_->setRange(0, strValue.prepend("0x").toUInt(nullptr, 16));
+    spinCode_->setValue(static_cast<qulonglong>(QString(data_.sCode.c_str()).toInt(nullptr, 16)));
     spinCode_->clearFocus();
     data_.sCode = spinCode_->text().remove(spinCode_->prefix()).toStdString();
     // sequence;
@@ -132,25 +132,25 @@ bool SubTableEdit::validate()
     if (data_.sCode.empty()) {
         spinCode_->setFocus();
         spinCode_->setProperty("highlight", true);
-        setStatus(QStringLiteral("帧码不能为空！"));
+        setStatus(tr("FrameCode cannot be empty!"));
         return false;
     } else {
 
         QString section = "code";
         QMap<QString, QString> existed;
         QVariantList args;
-        args.append(qVariantFromValue((void*)&existed));
-        args.append(qVariantFromValue((void*)&section));
+        args.append(qVariantFromValue(static_cast<void*>(&existed)));
+        args.append(qVariantFromValue(static_cast<void*>(&section)));
         jnotify->send("edit.queryExistedData", args);
         if (existed.contains(data_.sCode.c_str())) {
             spinCode_->setFocus();
             spinCode_->setProperty("highlight", true);
-            setStatus(QStringLiteral("已存在同名标识！"));
+            setStatus(tr("Already exists the same mark \"%1\"").arg(data_.sCode.c_str()));
             return false;
         } else {
             if (data_.sCode.size() < 2) {
                 data_.sCode.insert(0, "0");
-                spinCode_->setValue(QString(data_.sCode.c_str()).toInt(0, 16));
+                spinCode_->setValue(static_cast<qulonglong>(QString(data_.sCode.c_str()).toInt(nullptr, 16)));
             }
             spinCode_->clearFocus();
             spinCode_->setProperty("highlight", false);

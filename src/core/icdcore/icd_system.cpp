@@ -62,8 +62,7 @@ void System::appendTable(const TablePtr &table)
 
 void System::insertTable(int index, const TablePtr &table)
 {
-    if (index < 0 || index >= (int)d->tables.size()) {
-        assert(false);
+    if (index < 0 || index >= static_cast<int>(d->tables.size())) {
         return;
     }
 
@@ -73,7 +72,7 @@ void System::insertTable(int index, const TablePtr &table)
 
 void System::removeTable(int index)
 {
-    if (index < 0 || index >= (int)d->tables.size()) {
+    if (index < 0 || index >= static_cast<int>(d->tables.size())) {
         return;     // overflow
     }
 
@@ -99,17 +98,16 @@ void System::clearTable()
 
 int System::tableCount() const
 {
-    return (int)d->tables.size();
+    return static_cast<int>(d->tables.size());
 }
 
 TablePtr System::tableAt(int index) const
 {
-    if (index < 0 || index >= (int)d->tables.size()) {
-        assert(false);
-        return 0;
+    if (index < 0 || index >= static_cast<int>(d->tables.size())) {
+        return TablePtr();
     }
 
-    return d->tables.at(index);
+    return d->tables.at(static_cast<size_t>(index));
 }
 
 TablePtr System::tableByMark(const std::string &mark) const
@@ -122,7 +120,7 @@ TablePtr System::tableByMark(const std::string &mark) const
         }
     }
 
-    return 0;
+    return TablePtr();
 }
 
 int System::childCount() const
@@ -198,8 +196,6 @@ bool System::restore(const Json::Value &json, int deep)
     if (!Object::restore(json, deep)) {
         return false;
     }
-
-    assert(deep <= Icd::ObjectItem);
 
     if (deep <= ObjectSystem) {
         return true;

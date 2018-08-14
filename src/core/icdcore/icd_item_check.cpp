@@ -80,7 +80,6 @@ void CheckItem::setCheckType(CheckType type)
         break;
     default:
         setBufferSize(0);
-        assert(false);
         break;
     }
 }
@@ -133,7 +132,7 @@ double CheckItem::data() const
     }
 
     unsigned short value = 0;
-    memcpy(&value, buffer, std::min<int>(sizeof(value), (int)bufferSize()));
+    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
     return value;
 }
 
@@ -144,14 +143,14 @@ void CheckItem::setData(double data)
         return;
     }
 
-    unsigned short value = (unsigned short)data;
-    memcpy(buffer, &value, std::min<int>(sizeof(value), (int)bufferSize()));
+    unsigned short value = static_cast<unsigned short>(data);
+    memcpy(buffer, &value, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
 }
 
 std::string CheckItem::dataString() const
 {
     std::stringstream str;
-    str << std::hex << (unsigned int)data();
+    str << std::hex << static_cast<unsigned int>(data());
     return str.str();
 }
 
@@ -163,7 +162,6 @@ int CheckItem::startPos() const
 void CheckItem::setStartPos(int startPos)
 {
     if (startPos < 0) {
-        assert(false);
         d->startPos = 0;
     } else {
         d->startPos = startPos;
@@ -192,7 +190,7 @@ int CheckItem::checkLength() const
 std::string CheckItem::typeName() const
 {
     std::stringstream ss;
-    ss << "icd_uint" << ((int)bufferSize()) * 8;
+    ss << "icd_uint" << (static_cast<int>(bufferSize())) * 8;
     return ss.str();
 }
 
@@ -234,9 +232,9 @@ bool CheckItem::restore(const Json::Value &json, int deep)
 
     CheckType checkType = stringCheckType(json["checkType"].asString());
     if (checkType == Icd::CheckInvalid) {
-        assert(false);
         return false;
     }
+
     setCheckType(checkType);
     setStartPos(json["startPos"].asInt());
     setEndPos(json["endPos"].asInt());
