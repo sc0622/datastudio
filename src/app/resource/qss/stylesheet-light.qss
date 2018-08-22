@@ -1268,7 +1268,7 @@ QLineEdit[highlight="true"] {
 
 /** custome-ext **/
 
-Icd--CoreTreeWidgetPrivate {
+Icd--JProtoTreeViewPrivate {
     qproperty-valueColor: blue;
 }
 

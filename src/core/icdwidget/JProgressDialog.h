@@ -1,5 +1,5 @@
-#ifndef PROGRESSDIALOG_H
-#define PROGRESSDIALOG_H
+#ifndef JPROGRESSDILOG_H
+#define JPROGRESSDILOG_H
 
 #include <QDialog>
 #include "icdwidget_global.h"
@@ -8,9 +8,9 @@ template<typename T> class QFuture;
 
 namespace Icd {
 
-class ProgressDialogPrivate;
+class JProgressDialogPrivate;
 
-class ICDWIDGET_EXPORT ProgressDialog : public QDialog
+class ICDWIDGET_EXPORT JProgressDialog : public QDialog
 {
     Q_OBJECT
     Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
@@ -21,8 +21,8 @@ class ICDWIDGET_EXPORT ProgressDialog : public QDialog
     Q_PROPERTY(QString cancelText READ cancelText WRITE setCancelText NOTIFY cancelTextChanged)
     Q_PROPERTY(bool cancelVisible READ cancelVisible WRITE setCancelVisible NOTIFY cancelVisibleChanged)
 public:
-    explicit ProgressDialog(QWidget *parent = 0);
-    ~ProgressDialog();
+    explicit JProgressDialog(QWidget *parent = 0);
+    ~JProgressDialog();
 
     QString message() const;
     int progressMinimum() const;
@@ -64,10 +64,10 @@ public slots:
     void setCancelVisible(bool visible);
 
 private:
-    Q_DISABLE_COPY(ProgressDialog)
-    J_DECLARE_PRIVATE(ProgressDialog)
+    Q_DISABLE_COPY(JProgressDialog)
+    J_DECLARE_PRIVATE(JProgressDialog)
 };
 
 } // end of namespace Icd
 
-#endif // PROGRESSDIALOG_H
+#endif // JPROGRESSDILOG_H

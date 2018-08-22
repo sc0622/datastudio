@@ -1,14 +1,14 @@
 #include "precomp.h"
-#include "icd_searchedit.h"
+#include "JSearchEdit.h"
 
 namespace Icd {
 
-// class SearchEditPrivate
+// class JSearchEditPrivate
 
-class SearchEditPrivate
+class JSearchEditPrivate
 {
 public:
-    SearchEditPrivate(SearchEdit *q)
+    JSearchEditPrivate(JSearchEdit *q)
         : J_QPTR(q)
     {
 
@@ -17,14 +17,14 @@ public:
     void init();
 
 private:
-    J_DECLARE_PUBLIC(SearchEdit)
+    J_DECLARE_PUBLIC(JSearchEdit)
     QLineEdit *lineEdit;
 };
 
-void SearchEditPrivate::init()
+void JSearchEditPrivate::init()
 {
-    Q_Q(SearchEdit);
-    q->setObjectName("SearchEdit");
+    Q_Q(JSearchEdit);
+    q->setObjectName("JSearchEdit");
     q->setFixedHeight(24);
 
     QHBoxLayout *horiLayoutMain = new QHBoxLayout(q);
@@ -43,22 +43,22 @@ void SearchEditPrivate::init()
     horiLayoutMain->addWidget(lineEdit);
 
     //
-    QObject::connect(lineEdit, &QLineEdit::textChanged, q, &SearchEdit::textChanged);
+    QObject::connect(lineEdit, &QLineEdit::textChanged, q, &JSearchEdit::textChanged);
 }
 
-// class SearchEdit
+// class JSearchEdit
 
-SearchEdit::SearchEdit(QWidget *parent)
+JSearchEdit::JSearchEdit(QWidget *parent)
     : QWidget(parent)
-    , J_DPTR(new SearchEditPrivate(this))
+    , J_DPTR(new JSearchEditPrivate(this))
 {
-    Q_D(SearchEdit);
+    Q_D(JSearchEdit);
     d->init();
 }
 
-SearchEdit::~SearchEdit()
+JSearchEdit::~JSearchEdit()
 {
-    Q_D(SearchEdit);
+    Q_D(JSearchEdit);
     delete d;
 }
 

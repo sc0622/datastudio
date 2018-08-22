@@ -2,7 +2,7 @@
 #include "filesetting_widget.h"
 #include "icdcomm/icdcomm_filechannel.h"
 #include "icdworker/icdworker_pool.h"
-#include "icdwidget/bindchannel_widget.h"
+#include "icdwidget/JGroupChannelPane.h"
 
 FileSettingWidget::FileSettingWidget(QWidget *parent)
     : QWidget(parent)
@@ -28,7 +28,8 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
     horiLayoutFilePath->addWidget(d_editFilePath);
 
     QPushButton *buttonView = new QPushButton("...", this);
-    buttonView->setFixedSize(d_editFilePath->sizeHint().height() + 6, d_editFilePath->sizeHint().height());
+    buttonView->setFixedSize(d_editFilePath->sizeHint().height() + 6,
+                             d_editFilePath->sizeHint().height());
     buttonView->setStyleSheet("border-radius: 1px;");
     horiLayoutFilePath->addWidget(buttonView);
 
@@ -64,7 +65,8 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
     horiLayoutRelayer->addWidget(d_editRelayer);
 
     QPushButton *buttonRelayer = new QPushButton("...", this);
-    buttonRelayer->setFixedSize(d_editRelayer->sizeHint().height() + 6, d_editRelayer->sizeHint().height());
+    buttonRelayer->setFixedSize(d_editRelayer->sizeHint().height() + 6,
+                                d_editRelayer->sizeHint().height());
     buttonRelayer->setStyleSheet("border-radius: 1px;");
     horiLayoutRelayer->addWidget(buttonRelayer);
 
@@ -150,14 +152,14 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
     });
     connect(buttonRelayer, &QPushButton::clicked, this, [=](){
         //
-        Icd::BindChannelWidget *bindChannelWidget = new Icd::BindChannelWidget(this);
-        if (bindChannelWidget->exec() != QDialog::Accepted) {
+        Icd::JGroupChannelPane *groupChannelPane = new Icd::JGroupChannelPane(this);
+        if (groupChannelPane->exec() != QDialog::Accepted) {
             return; // cancel
         }
 
         //
-        bindChannelWidget->deleteLater();
-        Icd::WorkerPtr selectedWorker = bindChannelWidget->selectedWorker();
+        groupChannelPane->deleteLater();
+        Icd::WorkerPtr selectedWorker = groupChannelPane->selectedWorker();
         if (selectedWorker) {
             const Icd::ChannelPtr channel = selectedWorker->channel();
             d_editRelayer->setProperty("relayer", QString::fromStdString(channel->identity()));

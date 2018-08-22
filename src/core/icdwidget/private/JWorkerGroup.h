@@ -1,5 +1,5 @@
-#ifndef ITEMWORKERGROUP_H
-#define ITEMWORKERGROUP_H
+#ifndef JWORKERGROUP_H
+#define JWORKERGROUP_H
 
 #include <QObject>
 #include "icdcore/icd_item.h"
@@ -7,28 +7,28 @@
 #include "icdcore/icd_item_bit.h"
 #include "icdcore/icd_item_frame.h"
 #include "icdworker/icdworker.h"
-#include "../coretree_widget.h"
+#include "../JProtoTreeView.h"
 
 class JTreeView;
 class JTreeViewItem;
 
 namespace Icd {
 
-class CoreTreeWidgetPrivate;
+class JProtoTreeViewPrivate;
 
-class ItemWorkerGroup : public QObject
+class JWorkerGroup : public QObject
 {
     Q_OBJECT
 public:
-    explicit ItemWorkerGroup(QStandardItem *itemTable, const Icd::WorkerPtr &worker,
-                             CoreTreeWidget::ShowAttributes attrs,
-                             QObject *parent = 0);
-    ~ItemWorkerGroup();
+    explicit JWorkerGroup(QStandardItem *itemTable, const Icd::WorkerPtr &worker,
+                          JProtoTreeView::ShowAttributes attrs,
+                          QObject *parent = nullptr);
+    ~JWorkerGroup();
 
     void updateTimer();
     void updateItemData();
     void updateItemData(bool showValue);
-    void updateItemData(CoreTreeWidget::ShowAttributes attrs, int dataFormat);
+    void updateItemData(JProtoTreeView::ShowAttributes attrs, int dataFormat);
     int timerInterval() const;
     void setTimerInterval(int interval);
     void start();
@@ -39,7 +39,7 @@ public:
     Icd::WorkerPtr worker() const;
     QStandardItem *itemTable() const;
     void setWorker(const WorkerPtr &worker);
-    void setBindTableType(CoreTreeWidget::BindTableTypes type);
+    void setBindTableType(JProtoTreeView::BindTableTypes type);
     void setDirty();
 
     static QString generateItemOffset(const ObjectPtr &object);
@@ -63,11 +63,11 @@ private:
     void updateFrameTable(QStandardItem *item, const Icd::TablePtr &table, bool show);
 
 private:
-    CoreTreeWidgetPrivate *treeView_;
+    JProtoTreeViewPrivate *treeView_;
     QStandardItem *itemTable_;
     Icd::WorkerPtr worker_;
-    CoreTreeWidget::ShowAttributes showAttris_;
-    CoreTreeWidget::BindTableTypes bindTableTypes_;
+    JProtoTreeView::ShowAttributes showAttris_;
+    JProtoTreeView::BindTableTypes bindTableTypes_;
     int timerId_;
     int timerInterval_;
     int dataFormat_;     // e.g.: 2 binary format
@@ -75,4 +75,4 @@ private:
 
 } // end of namespace Icd
 
-#endif // ITEMWORKERGROUP_H
+#endif // JWORKERGROUP_H

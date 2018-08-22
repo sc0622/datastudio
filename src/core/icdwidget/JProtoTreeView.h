@@ -1,5 +1,5 @@
-﻿#ifndef CORETREE_WIDGET_H
-#define CORETREE_WIDGET_H
+﻿#ifndef JPROTOTREEVIEW_H
+#define JPROTOTREEVIEW_H
 
 #include <QWidget>
 #include "icdwidget_global.h"
@@ -18,9 +18,6 @@ enum OptionType {
     //
 };
 
-//
-template<typename T> class HandlePtr;
-
 class Parser;
 typedef std::shared_ptr<Parser> ParserPtr;
 
@@ -28,11 +25,11 @@ typedef std::shared_ptr<Parser> ParserPtr;
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
 
-// class CoreTreeWidget
+// class JProtoTreeView
 
-class CoreTreeWidgetPrivate;
+class JProtoTreeViewPrivate;
 
-class ICDWIDGET_EXPORT CoreTreeWidget : public QWidget
+class ICDWIDGET_EXPORT JProtoTreeView : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
@@ -62,8 +59,8 @@ public:
     };
     Q_DECLARE_FLAGS(ShowAttributes, ShowAttribute)
 
-    explicit CoreTreeWidget(QWidget *parent = nullptr);
-    virtual ~CoreTreeWidget();
+    explicit JProtoTreeView(QWidget *parent = nullptr);
+    virtual ~JProtoTreeView();
 
     BindTableTypes bindTableType() const;
     void setBindTableType(BindTableTypes value);
@@ -138,10 +135,10 @@ public slots:
     void setDataFormat(int format);
 
 private:
-    Q_DISABLE_COPY(CoreTreeWidget)
-    J_DECLARE_PRIVATE(CoreTreeWidget)
+    Q_DISABLE_COPY(JProtoTreeView)
+    J_DECLARE_PRIVATE(JProtoTreeView)
 };
 
 } // end of namespace Icd
 
-#endif // CORETREE_WIDGET_H
+#endif // JPROTOTREEVIEW_H

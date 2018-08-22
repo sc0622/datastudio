@@ -124,7 +124,7 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
         return;
     }
 
-    Icd::ProgressDialog *progressDialog = new Icd::ProgressDialog(this);
+    Icd::JProgressDialog *progressDialog = new Icd::JProgressDialog(this);
     progressDialog->setWindowTitle(tr("Export data"));
     progressDialog->setProgressValue(100);
     progressDialog->setCancelVisible(false);
@@ -161,7 +161,7 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
         }
         return true;
     });
-    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=](){
+    connect(progressDialog, &Icd::JProgressDialog::finished, this, [=](){
         progressDialog->hide();
         progressDialog->disconnect(this);
         const QString message = progressDialog->futureResult()

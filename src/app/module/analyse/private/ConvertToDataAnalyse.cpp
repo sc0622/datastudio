@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "ConvertToDataAnalyse.h"
-#include "icdwidget/coretree_widget.h"
-#include "icdwidget/progressdialog.h"
+#include "icdwidget/JProtoTreeView.h"
+#include "icdwidget/JProgressDialog.h"
 #include "icdparser/icdparser.h"
 #include "icdcore/icdcore_inc.h"
 #include "icdcore/icd_item_bit.h"
@@ -67,7 +67,7 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
 
     JAutoCursor busyCursor(Qt::BusyCursor);
 
-    d_progressDialog = new Icd::ProgressDialog(this);
+    d_progressDialog = new Icd::JProgressDialog(this);
     d_progressDialog->setWindowTitle(tr("Load data"));
     d_progressDialog->setCancelVisible(false);
     d_progressDialog->setInvertedAppearance(false);
@@ -183,7 +183,7 @@ bool ConvertToDataAnalyse::loadData(const QString &domain, int headerSize,
         d_progressDialog->setFuture(QtConcurrent::run(convertFunc));
     }
 
-    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
+    connect(d_progressDialog, &Icd::JProgressDialog::finished, this, [=,&parseTable](){
         if (d_progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;

@@ -1,14 +1,14 @@
 #include "precomp.h"
-#include "progressdialog.h"
+#include "JProgressDialog.h"
 
 namespace Icd {
 
-// class ProgressDialogPrivate
+// class JProgressDialogPrivate
 
-class ProgressDialogPrivate
+class JProgressDialogPrivate
 {
 public:
-    ProgressDialogPrivate(ProgressDialog *q)
+    JProgressDialogPrivate(JProgressDialog *q)
         : J_QPTR(q)
     {
 
@@ -17,7 +17,7 @@ public:
     void init();
 
 private:
-    J_DECLARE_PUBLIC(ProgressDialog)
+    J_DECLARE_PUBLIC(JProgressDialog)
     QProgressBar *progressBar;
     QLabel *labelMsg;
     QPushButton *buttonAccept;
@@ -25,9 +25,9 @@ private:
     QFutureWatcher<bool> watcher;
 };
 
-void ProgressDialogPrivate::init()
+void JProgressDialogPrivate::init()
 {
-    Q_Q(ProgressDialog);
+    Q_Q(JProgressDialog);
     //
     q->resize(450, 150);
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(q);
@@ -41,8 +41,8 @@ void ProgressDialogPrivate::init()
     labelMsg = new QLabel(q);
     vertLayoutMain->addWidget(labelMsg);
     //
-    buttonAccept = new QPushButton(ProgressDialog::tr("Ok"), q);
-    buttonCancel = new QPushButton(ProgressDialog::tr("Cancel"), q);
+    buttonAccept = new QPushButton(JProgressDialog::tr("Ok"), q);
+    buttonCancel = new QPushButton(JProgressDialog::tr("Cancel"), q);
     buttonAccept->setVisible(false);
     buttonAccept->setMinimumWidth(80);
     buttonCancel->setMinimumWidth(80);
@@ -55,7 +55,7 @@ void ProgressDialogPrivate::init()
     horiLayoutBottom->addWidget(buttonCancel);
 
     QObject::connect(progressBar, &QProgressBar::valueChanged,
-                     q, &ProgressDialog::progressValueChanged);
+                     q, &JProgressDialog::progressValueChanged);
     QObject::connect(buttonAccept, &QPushButton::clicked, q, &QDialog::accept);
     QObject::connect(buttonCancel, &QPushButton::clicked, q, &QDialog::reject);
 
@@ -66,7 +66,7 @@ void ProgressDialogPrivate::init()
         q->hide();
         q->reject();
     });
-    QObject::connect(q, &ProgressDialog::rejected, q, [=](){
+    QObject::connect(q, &JProgressDialog::rejected, q, [=](){
         watcher.cancel();
         watcher.waitForFinished();
     });
@@ -78,85 +78,85 @@ void ProgressDialogPrivate::init()
     });
 }
 
-// class ProgressDialog
+// class JProgressDialog
 
-ProgressDialog::ProgressDialog(QWidget *parent)
+JProgressDialog::JProgressDialog(QWidget *parent)
     : QDialog(parent)
-    , J_DPTR(new ProgressDialogPrivate(this))
+    , J_DPTR(new JProgressDialogPrivate(this))
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->init();
 }
 
-Icd::ProgressDialog::~ProgressDialog()
+Icd::JProgressDialog::~JProgressDialog()
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     delete d;
 }
 
-QString ProgressDialog::message() const
+QString JProgressDialog::message() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->labelMsg->text();
 }
 
-int ProgressDialog::progressMinimum() const
+int JProgressDialog::progressMinimum() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->progressBar->minimum();
 }
 
-int ProgressDialog::progressMaximum() const
+int JProgressDialog::progressMaximum() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->progressBar->maximum();
 }
 
-int ProgressDialog::progressValue() const
+int JProgressDialog::progressValue() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->progressBar->value();
 }
 
-bool ProgressDialog::progressVisible() const
+bool JProgressDialog::progressVisible() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->progressBar->isVisible();
 }
 
-QString ProgressDialog::acceptText() const
+QString JProgressDialog::acceptText() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->buttonAccept->text();
 }
 
-bool ProgressDialog::acceptVisible() const
+bool JProgressDialog::acceptVisible() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->buttonAccept->isVisible();
 }
 
-QString ProgressDialog::cancelText() const
+QString JProgressDialog::cancelText() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->buttonCancel->text();
 }
 
-bool ProgressDialog::cancelVisible() const
+bool JProgressDialog::cancelVisible() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->buttonCancel->isVisible();
 }
 
-void ProgressDialog::waitForFinished()
+void JProgressDialog::waitForFinished()
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->watcher.waitForFinished();
 }
 
-void ProgressDialog::setFuture(const QFuture<bool> &future)
+void JProgressDialog::setFuture(const QFuture<bool> &future)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     if (!d->watcher.isFinished()) {
         d->watcher.cancel();
         d->watcher.waitForFinished();
@@ -164,86 +164,86 @@ void ProgressDialog::setFuture(const QFuture<bool> &future)
     d->watcher.setFuture(future);
 }
 
-bool ProgressDialog::isCanceled() const
+bool JProgressDialog::isCanceled() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->watcher.isCanceled();
 }
 
-bool ProgressDialog::futureResult() const
+bool JProgressDialog::futureResult() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->watcher.result();
 }
 
-void ProgressDialog::setInvertedAppearance(bool invert)
+void JProgressDialog::setInvertedAppearance(bool invert)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->progressBar->setInvertedAppearance(invert);
 }
 
-bool ProgressDialog::invertedAppearance() const
+bool JProgressDialog::invertedAppearance() const
 {
-    Q_D(const ProgressDialog);
+    Q_D(const JProgressDialog);
     return d->progressBar->invertedAppearance();
 }
 
-void ProgressDialog::setMessage(const QString &message)
+void JProgressDialog::setMessage(const QString &message)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     if (message != d->labelMsg->text()) {
         d->labelMsg->setText(message);
         emit messageChanged(message);
     }
 }
 
-void ProgressDialog::setProgressRange(int minimum, int maximum)
+void JProgressDialog::setProgressRange(int minimum, int maximum)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->progressBar->setRange(minimum, maximum);
 }
 
-void ProgressDialog::setProgressValue(int value)
+void JProgressDialog::setProgressValue(int value)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->progressBar->setValue(value);
 }
 
-void ProgressDialog::setProgressVisible(bool visible)
+void JProgressDialog::setProgressVisible(bool visible)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->progressBar->setVisible(visible);
     emit progressVisibleChanged(visible);
 }
 
-void ProgressDialog::setAcceptText(const QString &text)
+void JProgressDialog::setAcceptText(const QString &text)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     if (text != d->buttonAccept->text()) {
         d->buttonAccept->setText(text);
         emit acceptTextChanged(text);
     }
 }
 
-void ProgressDialog::setAcceptVisible(bool visible)
+void JProgressDialog::setAcceptVisible(bool visible)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->buttonAccept->setVisible(visible);
     emit acceptVisibleChanged(visible);
 }
 
-void ProgressDialog::setCancelText(const QString &text)
+void JProgressDialog::setCancelText(const QString &text)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     if (text != d->buttonCancel->text()) {
         d->buttonCancel->setText(text);
         emit cancelTextChanged(text);
     }
 }
 
-void ProgressDialog::setCancelVisible(bool visible)
+void JProgressDialog::setCancelVisible(bool visible)
 {
-    Q_D(ProgressDialog);
+    Q_D(JProgressDialog);
     d->buttonCancel->setVisible(visible);
     emit cancelVisibleChanged(visible);
 }

@@ -29,7 +29,7 @@ typedef std::shared_ptr<ComplexItem> ComplexItemPtr;
 class FrameItem;
 typedef std::shared_ptr<FrameItem> FrameItemPtr;
 
-class ProgressDialog;
+class JProgressDialog;
 
 } // end of namespace Icd
 
@@ -69,7 +69,7 @@ private:
     QPushButton *d_buttonSplit;
     QPushButton *d_buttonCancel;
     Icd::TablePtr d_table;
-    Icd::ProgressDialog *d_progressDialog;
+    Icd::JProgressDialog *d_progressDialog;
 };
 
 #endif // SPLITFILEDLG_H

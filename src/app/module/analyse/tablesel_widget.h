@@ -5,7 +5,7 @@
 
 namespace Icd {
 
-class CoreTreeWidget;
+class JProtoTreeView;
 
 }
 
@@ -32,7 +32,7 @@ public Q_SLOTS:
     void accept();
 
 private:
-    Icd::CoreTreeWidget *d_treeView;
+    Icd::JProtoTreeView *d_treeView;
     QStandardItem *d_currentItem;
 };
 

@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "SplitFileDlg.h"
-#include "icdwidget/coretree_widget.h"
-#include "icdwidget/progressdialog.h"
+#include "icdwidget/JProtoTreeView.h"
+#include "icdwidget/JProgressDialog.h"
 #include "icdparser/icdparser.h"
 #include "icdcore/icdcore_inc.h"
 #include "icdworker/icdworker_util.h"
@@ -311,7 +311,7 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString &targetDi
         d_progressDialog = Q_NULLPTR;
     }
 
-    d_progressDialog = new Icd::ProgressDialog(this);
+    d_progressDialog = new Icd::JProgressDialog(this);
     d_progressDialog->setCancelVisible(false);
     d_progressDialog->setInvertedAppearance(false);
     d_progressDialog->setWindowTitle(tr("Split file"));
@@ -468,7 +468,7 @@ bool SplitFileDlg::splitATXFile(const QString &filePath, const QString &targetDi
 
         return result;
     });
-    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=](){
+    connect(d_progressDialog, &Icd::JProgressDialog::finished, this, [=](){
         d_progressDialog->hide();
         d_progressDialog->disconnect(this);
         QString message =  d_progressDialog->futureResult()
@@ -557,7 +557,7 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString &targetDir,
         d_progressDialog = Q_NULLPTR;
     }
 
-    d_progressDialog = new Icd::ProgressDialog(this);
+    d_progressDialog = new Icd::JProgressDialog(this);
     d_progressDialog->setWindowTitle(tr("Load data"));
     d_progressDialog->setCancelVisible(false);
     d_progressDialog->setInvertedAppearance(false);
@@ -632,7 +632,7 @@ bool SplitFileDlg::loadTable(const QString &filePath, const QString &targetDir,
             return true;
         });
     };
-    connect(d_progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
+    connect(d_progressDialog, &Icd::JProgressDialog::finished, this, [=,&parseTable](){
         if (d_progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;

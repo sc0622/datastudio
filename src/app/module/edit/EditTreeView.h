@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-namespace Icd { class CoreTreeWidget; }
+namespace Icd { class JProtoTreeView; }
 
 namespace Edit {
 
@@ -26,7 +26,7 @@ private:
     bool updateParser();
 
 private:
-    Icd::CoreTreeWidget *treeView_;
+    Icd::JProtoTreeView *treeView_;
 };
 
 }

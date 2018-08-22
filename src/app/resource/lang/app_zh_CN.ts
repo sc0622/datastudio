@@ -1491,82 +1491,82 @@ Continue to save will lost part data, still continue?</source>
         <translation>文件路径：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="35"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="36"/>
         <source>Read Only</source>
         <translation>只读</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="36"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="37"/>
         <source>Open Mode:</source>
         <translation>打开模式：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="38"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="39"/>
         <source>Write Only</source>
         <translation>只写</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="41"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="42"/>
         <source>Append</source>
         <translation>追加写入</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="44"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="45"/>
         <source>Truncate</source>
         <translation>覆盖写入</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="47"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="48"/>
         <source>Text</source>
         <translation>文本存储模式</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="51"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="52"/>
         <source>Name of channel:</source>
         <translation>通道名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="53"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="54"/>
         <source>Domain of table (Query Id)</source>
         <translation>表域名（表协议查询ID）</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="54"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="55"/>
         <source>Save format:</source>
         <translation>存储格式：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="56"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="57"/>
         <source>Timestamp</source>
         <translation>时间戳</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="61"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="62"/>
         <source>Relayer channel:</source>
         <translation>转发通道：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="78"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="80"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="84"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="86"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="111"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="113"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="183"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="185"/>
         <source>Channel &quot;%1&quot; has been opened, can&apos;t modify!</source>
         <translation>通道“%1”已打开，不能修改属性！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="184"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="186"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>

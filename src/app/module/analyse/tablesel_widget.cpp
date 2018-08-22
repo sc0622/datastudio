@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "tablesel_widget.h"
-#include "icdwidget/coretree_widget.h"
+#include "icdwidget/JProtoTreeView.h"
 
 TableSelWidget::TableSelWidget(QWidget *parent)
     : QDialog(parent)
@@ -11,9 +11,9 @@ TableSelWidget::TableSelWidget(QWidget *parent)
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
 
-    d_treeView = new Icd::CoreTreeWidget(this);
+    d_treeView = new Icd::JProtoTreeView(this);
     d_treeView->setLoadingDeep(Icd::ObjectTable);
-    d_treeView->setTreeMode(Icd::CoreTreeWidget::TreeModeTableSel);
+    d_treeView->setTreeMode(Icd::JProtoTreeView::TreeModeTableSel);
     vertLayoutMain->addWidget(d_treeView);
 
     //
@@ -34,11 +34,11 @@ TableSelWidget::TableSelWidget(QWidget *parent)
     horiLayoutBottom->addSpacing(10);
 
     //
-    connect(d_treeView, &Icd::CoreTreeWidget::currentItemChanged, this,
+    connect(d_treeView, &Icd::JProtoTreeView::currentItemChanged, this,
             [=](QStandardItem *current){
         d_currentItem = current;
     });
-    connect(d_treeView, &Icd::CoreTreeWidget::itemDoubleClicked, this,
+    connect(d_treeView, &Icd::JProtoTreeView::itemDoubleClicked, this,
             [=](QStandardItem *current){
         d_currentItem = current;
         if (current && current->type() != Icd::TreeItemTypeTable) {

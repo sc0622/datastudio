@@ -6,7 +6,7 @@
 
 namespace Icd {
 
-class CoreTreeWidget;
+class JProtoTreeView;
 
 class Worker;
 typedef std::shared_ptr<Worker> WorkerPtr;

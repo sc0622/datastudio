@@ -5,14 +5,11 @@
 #include "KernelClass/planenode.h"
 #include "KernelClass/icdcomplexdata.h"
 
-namespace Icd { class SearchEdit; }
+namespace Icd { class JSearchEdit; }
 class JTreeView;
 class QMenu;
 class QStandardItem;
 
-/**
- * @brief ICD组织层次架构显示类
- */
 class ICDNavigationUi : public QWidget
 {
     // 存储数据类型定义
@@ -260,7 +257,7 @@ private:
     void updateRuleTip(const TableNode::smtTable& table, QStandardItem *parent);
 
 private:
-    Icd::SearchEdit *searchEdit_;
+    Icd::JSearchEdit *searchEdit_;
     JTreeView   *q_treeView;
     QMenu       *q_ruleMenu;
 };

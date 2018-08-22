@@ -2,7 +2,7 @@
 #include "serialsetting_widget.h"
 #include "icdcomm/icdcomm_serialchannel.h"
 #include "icdworker/icdworker_pool.h"
-#include <icdwidget/bindchannel_widget.h>
+#include <icdwidget/JGroupChannelPane.h>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 
@@ -151,14 +151,14 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
     });
     connect(buttonRelayer, &QPushButton::clicked, this, [=](){
         //
-        Icd::BindChannelWidget *bindChannelWidget = new Icd::BindChannelWidget(this);
-        if (bindChannelWidget->exec() != QDialog::Accepted) {
+        Icd::JGroupChannelPane *groupChannelPane = new Icd::JGroupChannelPane(this);
+        if (groupChannelPane->exec() != QDialog::Accepted) {
             return; // cancel
         }
 
         //
-        bindChannelWidget->deleteLater();
-        Icd::WorkerPtr selectedWorker = bindChannelWidget->selectedWorker();
+        groupChannelPane->deleteLater();
+        Icd::WorkerPtr selectedWorker = groupChannelPane->selectedWorker();
         if (selectedWorker) {
             const Icd::ChannelPtr channel = selectedWorker->channel();
             d_editRelayer->setProperty("relayer", QString::fromStdString(channel->identity()));

@@ -7,7 +7,7 @@ class QTemporaryFile;
 
 namespace Icd {
 
-class CoreTreeWidget;
+class JProtoTreeView;
 
 template<typename T> class std::shared_ptr;
 
@@ -51,7 +51,7 @@ private:
     QString generateTitle(const Icd::ObjectPtr &item) const;
 
 private:
-    Icd::CoreTreeWidget *treeView_;
+    Icd::JProtoTreeView *treeView_;
     Icd::TablePtr table_;
     ExportDataDlg *exportDataDlg_;
     QMap<QString/*filePath*/, Icd::TablePtr> fileTables_;

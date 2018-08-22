@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "convertfromicdwidget.h"
-#include "icdwidget/coretree_widget.h"
-#include "icdwidget/progressdialog.h"
+#include "icdwidget/JProtoTreeView.h"
+#include "icdwidget/JProgressDialog.h"
 #include "icdparser/icdparser.h"
 #include "icdcore/icdcore_inc.h"
 #include "icdworker/icdworker_util.h"
@@ -152,7 +152,7 @@ bool ConvertFromIcdWidget::loadData(const QString &domain, int headerSize,
         return false;
     }
 
-    Icd::ProgressDialog *progressDialog = new Icd::ProgressDialog(this);
+    Icd::JProgressDialog *progressDialog = new Icd::JProgressDialog(this);
     progressDialog->setWindowTitle(tr("Load data"));
     progressDialog->setProgressValue(100);
     progressDialog->setCancelVisible(false);
@@ -200,7 +200,7 @@ bool ConvertFromIcdWidget::loadData(const QString &domain, int headerSize,
             return true;
         });
     };
-    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=,&parseTable](){
+    connect(progressDialog, &Icd::JProgressDialog::finished, this, [=,&parseTable](){
         if (progressDialog->futureResult()) {
             if (parseTable) {
                 parseTable = false;

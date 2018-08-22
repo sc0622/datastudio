@@ -1,27 +1,27 @@
 #include "precomp.h"
-#include "bindchannel_widget_p.h"
+#include "JGroupChannelPane_p.h"
 #include "icdworker/icdworker_pool.h"
-#include "../channel_widget.h"
+#include "../JChannelPane.h"
 
 namespace Icd {
 
-BindChannelWidgetPrivate::BindChannelWidgetPrivate(BindChannelWidget *q)
+JGroupChannelPanePrivate::JGroupChannelPanePrivate(JGroupChannelPane *q)
     : QObject(q)
     , J_QPTR(q)
 {
 
 }
 
-BindChannelWidgetPrivate::~BindChannelWidgetPrivate()
+JGroupChannelPanePrivate::~JGroupChannelPanePrivate()
 {
 
 }
 
-void BindChannelWidgetPrivate::init()
+void JGroupChannelPanePrivate::init()
 {
-    Q_Q(BindChannelWidget);
+    Q_Q(JGroupChannelPane);
 
-    q->setWindowTitle(BindChannelWidget::tr("Binding Channel"));
+    q->setWindowTitle(JGroupChannelPane::tr("Binding Channel"));
     q->resize(800, 600);
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(q);
@@ -32,16 +32,16 @@ void BindChannelWidgetPrivate::init()
     tabWidget->setStyleSheet("QTabWidget:tab-bar{alignment:center;}");
     vertLayoutMain->addWidget(tabWidget);
 
-    widgetFile = new ChannelWidget(tabWidget);
-    widgetSerial = new ChannelWidget(tabWidget);
-    widgetUdp = new ChannelWidget(tabWidget);
+    widgetFile = new Icd::JChannelPane(tabWidget);
+    widgetSerial = new Icd::JChannelPane(tabWidget);
+    widgetUdp = new Icd::JChannelPane(tabWidget);
 
     tabWidget->addTab(widgetFile, QIcon(":/icdwidget/image/file.png"),
-                      BindChannelWidget::tr("File Channel"));
+                      JGroupChannelPane::tr("File Channel"));
     tabWidget->addTab(widgetSerial, QIcon(":/icdwidget/image/serial.png"),
-                      BindChannelWidget::tr("Serial Channel"));
+                      JGroupChannelPane::tr("Serial Channel"));
     tabWidget->addTab(widgetUdp, QIcon(":/icdwidget/image/udp.png"),
-                      BindChannelWidget::tr("UDP Channel"));
+                      JGroupChannelPane::tr("UDP Channel"));
 
     vertLayoutMain->addSpacing(10);
 
@@ -50,12 +50,12 @@ void BindChannelWidgetPrivate::init()
 
     horiLayoutBottom->addStretch();
 
-    buttonOk = new QPushButton(BindChannelWidget::tr("Ok"), q);
+    buttonOk = new QPushButton(JGroupChannelPane::tr("Ok"), q);
     buttonOk->setMinimumWidth(120);
     buttonOk->setDefault(true);
     horiLayoutBottom->addWidget(buttonOk);
 
-    buttonCancel = new QPushButton(BindChannelWidget::tr("Cancel"), q);
+    buttonCancel = new QPushButton(JGroupChannelPane::tr("Cancel"), q);
     buttonCancel->setMinimumWidth(120);
     horiLayoutBottom->addSpacing(10);
     horiLayoutBottom->addWidget(buttonCancel);
@@ -66,13 +66,13 @@ void BindChannelWidgetPrivate::init()
     connect(tabWidget, &QTabWidget::currentChanged, this, [=](int index){
         updateCurrentList(index);
     });
-    connect(widgetFile, &ChannelWidget::rowDoubleClicked, this, [=](int row){
+    connect(widgetFile, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
         onRowDoubleClicked(widgetFile, row);
     });
-    connect(widgetSerial, &ChannelWidget::rowDoubleClicked, this, [=](int row){
+    connect(widgetSerial, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
         onRowDoubleClicked(widgetSerial, row);
     });
-    connect(widgetUdp, &ChannelWidget::rowDoubleClicked, this, [=](int row){
+    connect(widgetUdp, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
         onRowDoubleClicked(widgetUdp, row);
     });
     connect(buttonOk, SIGNAL(clicked(bool)), q, SLOT(accept()));
@@ -82,9 +82,9 @@ void BindChannelWidgetPrivate::init()
     updateCurrentList();
 }
 
-Icd::WorkerPtr BindChannelWidgetPrivate::selectedWorker() const
+Icd::WorkerPtr JGroupChannelPanePrivate::selectedWorker() const
 {
-    ChannelWidget *widget = nullptr;
+    Icd::JChannelPane *widget = nullptr;
     switch (tabWidget->currentIndex()) {
     case 0: widget = widgetFile; break;
     case 1: widget = widgetSerial; break;
@@ -99,17 +99,17 @@ Icd::WorkerPtr BindChannelWidgetPrivate::selectedWorker() const
     return widget->selectedWorker();
 }
 
-void BindChannelWidgetPrivate::onRowDoubleClicked(ChannelWidget *widget, int row)
+void JGroupChannelPanePrivate::onRowDoubleClicked(Icd::JChannelPane *widget, int row)
 {
     if (!widget || row == -1) {
         return;
     }
 
-    Q_Q(BindChannelWidget);
+    Q_Q(JGroupChannelPane);
     q->accept();
 }
 
-void BindChannelWidgetPrivate::updateCurrentList(int index)
+void JGroupChannelPanePrivate::updateCurrentList(int index)
 {
     //
     if (index == -1) {
@@ -121,7 +121,7 @@ void BindChannelWidgetPrivate::updateCurrentList(int index)
 
     //
     Icd::ChannelType channelType = Icd::ChannelInvalid;
-    ChannelWidget *widget = nullptr;
+    Icd::JChannelPane *widget = nullptr;
     switch (index) {
     case 0:
         channelType = Icd::ChannelFile;
@@ -156,7 +156,7 @@ void BindChannelWidgetPrivate::updateCurrentList(int index)
             continue;   //
         }
         //
-        widget->addWorker(worker, ChannelWidget::NoOperate);
+        widget->addWorker(worker, Icd::JChannelPane::NoOperate);
     }
 
     //

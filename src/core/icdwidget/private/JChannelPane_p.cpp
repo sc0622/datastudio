@@ -1,25 +1,25 @@
 #include "precomp.h"
-#include "channel_widget_p.h"
+#include "JChannelPane_p.h"
 #include "icdworker/icdworker_pool.h"
-#include "../worker_label.h"
+#include "../JWorkerLabel.h"
 
 namespace Icd {
 
-ChannelWidgetPrivate::ChannelWidgetPrivate(ChannelWidget *q)
+JChannelPanePrivate::JChannelPanePrivate(JChannelPane *q)
     : J_QPTR(q)
 {
 
 }
 
-ChannelWidgetPrivate::~ChannelWidgetPrivate()
+JChannelPanePrivate::~JChannelPanePrivate()
 {
-    Q_Q(ChannelWidget);
+    Q_Q(JChannelPane);
     Icd::WorkerPool::getInstance()->disconnect(q);
 }
 
-void ChannelWidgetPrivate::init()
+void JChannelPanePrivate::init()
 {
-    Q_Q(ChannelWidget);
+    Q_Q(JChannelPane);
 
     QHBoxLayout *horiLayoutMain = new QHBoxLayout(q);
     horiLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -47,13 +47,13 @@ void ChannelWidgetPrivate::init()
     QObject::connect(tableView, &JTableView::currentCellChanged, q, [=]
                      (int currentRow, int, int previousRow, int){
         if (previousRow >= 0) {
-            WorkerLabel *label = qobject_cast<WorkerLabel *>(tableView->cellWidget(previousRow, 0));
+            JWorkerLabel *label = qobject_cast<JWorkerLabel *>(tableView->cellWidget(previousRow, 0));
             if (label) {
                 label->setIndicatorVisible(false);
             }
         }
         if (currentRow >= 0) {
-            WorkerLabel *label = qobject_cast<WorkerLabel *>(tableView->cellWidget(currentRow, 0));
+            JWorkerLabel *label = qobject_cast<JWorkerLabel *>(tableView->cellWidget(currentRow, 0));
             if (label) {
                 label->setIndicatorVisible(true);
             }
@@ -71,7 +71,7 @@ void ChannelWidgetPrivate::init()
                      [=](const Icd::WorkerPtr &worker){
         int count = tableView->rowCount();
         for (int i = 0; i < count; ++i) {
-            WorkerLabel *label = qobject_cast<WorkerLabel *>(tableView->cellWidget(i, 0));
+            JWorkerLabel *label = qobject_cast<JWorkerLabel *>(tableView->cellWidget(i, 0));
             if (!label || worker != label->worker()) {
                 continue;
             }
@@ -85,26 +85,26 @@ void ChannelWidgetPrivate::init()
     });
 }
 
-void ChannelWidgetPrivate::moveItemToBottom(QStandardItem *item)
+void JChannelPanePrivate::moveItemToBottom(QStandardItem *item)
 {
     if (!item) {
         return;
     }
 
-    WorkerLabel *label = qobject_cast<WorkerLabel *>
+    JWorkerLabel *label = qobject_cast<JWorkerLabel *>
             (tableView->cellWidget(item->row(), item->column()));
     if (!label) {
         return;
     }
 
-    Q_Q(ChannelWidget);
+    Q_Q(JChannelPane);
     q->addWorker(label->worker(), label->attrs());
     Icd::WorkerPool::getInstance()->moveToBottom(label->worker());
     Icd::WorkerPool::getInstance()->saveConfig();
     tableView->removeRow(0);
 }
 
-void ChannelWidgetPrivate::swapItem(QStandardItem *item1, QStandardItem *item2)
+void JChannelPanePrivate::swapItem(QStandardItem *item1, QStandardItem *item2)
 {
     if (!item1 || !item2) {
         return;
@@ -119,9 +119,9 @@ void ChannelWidgetPrivate::swapItem(QStandardItem *item1, QStandardItem *item2)
     item1->setText(item2->text());
     item2->setText(text);
     // swap cellWidget
-    WorkerLabel *label1 = qobject_cast<WorkerLabel *>
+    JWorkerLabel *label1 = qobject_cast<JWorkerLabel *>
             (tableView->cellWidget(item1->row(), item1->column()));
-    WorkerLabel *label2 = qobject_cast<WorkerLabel *>
+    JWorkerLabel *label2 = qobject_cast<JWorkerLabel *>
             (tableView->cellWidget(item2->row(), item2->column()));
     if (label1 && label2) {
         //

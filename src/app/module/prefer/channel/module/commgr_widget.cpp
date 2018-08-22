@@ -1,7 +1,6 @@
 ﻿#include "precomp.h"
 #include "commgr_widget.h"
 #include "private/commgr_widget_p.h"
-#include "icdwidget/channel_widget.h"
 
 // class ComMgrWidget
 

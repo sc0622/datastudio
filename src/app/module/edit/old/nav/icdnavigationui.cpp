@@ -3,17 +3,17 @@
 #include "jwt/jtreeview.h"
 #include "KernelClass/icdcomplexdata.h"
 #include "KernelClass/icdbitdata.h"
-#include "icdwidget/icd_searchedit.h"
+#include "icdwidget/JSearchEdit.h"
 
 ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     : QWidget(parent)
-    , q_ruleMenu(0)
+    , q_ruleMenu(nullptr)
 {
     QVBoxLayout* verMainLayout = new QVBoxLayout(this);
     verMainLayout->setContentsMargins(0, 0, 0, 0);
     verMainLayout->setSpacing(0);
 
-    searchEdit_ = new Icd::SearchEdit(this);
+    searchEdit_ = new Icd::JSearchEdit(this);
     verMainLayout->addWidget(searchEdit_);
 
     q_treeView = new JTreeView(this);

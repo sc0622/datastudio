@@ -1,13 +1,13 @@
 #include "precomp.h"
-#include "worker_label_p.h"
+#include "JWorkerLabel_p.h"
 #include "icdworker/icdworker_pool.h"
 
 namespace Icd {
 
-WorkerLabelPrivate::WorkerLabelPrivate(const Icd::WorkerPtr &worker, WorkerLabel *q)
+JWorkerLabelPrivate::JWorkerLabelPrivate(const Icd::WorkerPtr &worker, JWorkerLabel *q)
     : J_QPTR(q)
     , worker(worker)
-    , attributes(ChannelWidget::NoOperate)
+    , attributes(JChannelPane::NoOperate)
     , buttonOpen(nullptr)
     , buttonSwitchRecv(nullptr)
     , buttonRemove(nullptr)
@@ -16,14 +16,14 @@ WorkerLabelPrivate::WorkerLabelPrivate(const Icd::WorkerPtr &worker, WorkerLabel
 
 }
 
-WorkerLabelPrivate::~WorkerLabelPrivate()
+JWorkerLabelPrivate::~JWorkerLabelPrivate()
 {
 
 }
 
-void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
+void JWorkerLabelPrivate::init(JChannelPane::OperateAttributes attrs)
 {
-    Q_Q(WorkerLabel);
+    Q_Q(JWorkerLabel);
 
     attributes = attrs;
 
@@ -61,8 +61,8 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
     labelDetail->setDisabled(true);
     vertLayoutCenter->addWidget(labelDetail);
 
-    if (attrs & ChannelWidget::OperateOpen) {
-        buttonOpen = new QPushButton(WorkerLabel::tr("Open"), q);
+    if (attrs & JChannelPane::OperateOpen) {
+        buttonOpen = new QPushButton(JWorkerLabel::tr("Open"), q);
         buttonOpen->setProperty("_flat_", true);
         buttonOpen->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonOpen);
@@ -78,13 +78,13 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
         });
         QObject::connect(worker.get(), &Icd::Worker::opened, q, [=](){
             if (buttonOpen) {
-                buttonOpen->setText(WorkerLabel::tr("Close"));
+                buttonOpen->setText(JWorkerLabel::tr("Close"));
             }
         });
     }
 
-    if (attrs & ChannelWidget::OperateSwitchRecv) {
-        buttonSwitchRecv = new QPushButton(WorkerLabel::tr("Start Receiving"), q);
+    if (attrs & JChannelPane::OperateSwitchRecv) {
+        buttonSwitchRecv = new QPushButton(JWorkerLabel::tr("Start Receiving"), q);
         buttonSwitchRecv->setProperty("_flat_", true);
         buttonSwitchRecv->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonSwitchRecv);
@@ -104,24 +104,24 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
         QObject::connect(worker->workerRecv().get(), &Icd::WorkerRecv::toggled, q, [=](bool checked){
             if (buttonSwitchRecv) {
                 if (checked) {
-                    buttonSwitchRecv->setText(WorkerLabel::tr("Stop Receiving"));
+                    buttonSwitchRecv->setText(JWorkerLabel::tr("Stop Receiving"));
                 } else {
-                    buttonSwitchRecv->setText(WorkerLabel::tr("Start Receiving"));
+                    buttonSwitchRecv->setText(JWorkerLabel::tr("Start Receiving"));
                 }
             }
         });
     }
 
-    if (attrs & ChannelWidget::OperateRemove) {
-        buttonRemove = new QPushButton(WorkerLabel::tr("Remove"), q);
+    if (attrs & JChannelPane::OperateRemove) {
+        buttonRemove = new QPushButton(JWorkerLabel::tr("Remove"), q);
         buttonRemove->setProperty("_flat_", true);
         buttonRemove->setFixedSize(70, 40);
         horiLayoutMain->addWidget(buttonRemove);
         //
         QObject::connect(buttonRemove, &QPushButton::clicked, q, [=](){
             if (worker) {
-                int result = QMessageBox::warning(q, WorkerLabel::tr("Warning"),
-                                                  WorkerLabel::tr("Removing channel configuration won't restore, continue?"),
+                int result = QMessageBox::warning(q, JWorkerLabel::tr("Warning"),
+                                                  JWorkerLabel::tr("Removing channel configuration won't restore, continue?"),
                                                   QMessageBox::Yes | QMessageBox::No);
                 if (result != QMessageBox::Yes) {
                     return;
@@ -152,29 +152,29 @@ void WorkerLabelPrivate::init(ChannelWidget::OperateAttributes attrs)
     });
     QObject::connect(worker.get(), &Icd::Worker::closed, q, [=](){
         if (buttonOpen) {
-            buttonOpen->setText(WorkerLabel::tr("Open"));
+            buttonOpen->setText(JWorkerLabel::tr("Open"));
         }
         if (buttonSwitchRecv) {
-            buttonSwitchRecv->setText(WorkerLabel::tr("Start Receiving"));
+            buttonSwitchRecv->setText(JWorkerLabel::tr("Start Receiving"));
         }
     });
 }
 
-void WorkerLabelPrivate::updateUi()
+void JWorkerLabelPrivate::updateUi()
 {
     // channelType
     switch (worker->channel()->channelType()) {
     case Icd::ChannelSerial:
         labelChannelIcon->setPixmap(QPixmap(":/icdwidget/image/serial.png"));
-        labelChannelType->setText(WorkerLabel::tr("Serial Channel"));
+        labelChannelType->setText(JWorkerLabel::tr("Serial Channel"));
         break;
     case Icd::ChannelUdp:
         labelChannelIcon->setPixmap(QPixmap(":/icdwidget/image/udp.png"));
-        labelChannelType->setText(WorkerLabel::tr("UDP Channel"));
+        labelChannelType->setText(JWorkerLabel::tr("UDP Channel"));
         break;
     case Icd::ChannelFile:
         labelChannelIcon->setPixmap(QPixmap(":/icdwidget/image/file.png"));
-        labelChannelType->setText(WorkerLabel::tr("File Channel"));
+        labelChannelType->setText(JWorkerLabel::tr("File Channel"));
         break;
     default:
         break;
@@ -187,16 +187,16 @@ void WorkerLabelPrivate::updateUi()
     // switchRecv
     if (buttonSwitchRecv) {
         buttonSwitchRecv->setText(worker->workerRecv()->isRunning()
-                                  ? WorkerLabel::tr("Stop Receiving")
-                                  : WorkerLabel::tr("Start Receiving"));
+                                  ? JWorkerLabel::tr("Stop Receiving")
+                                  : JWorkerLabel::tr("Start Receiving"));
     }
     //
     updateDetailText();
 }
 
-void WorkerLabelPrivate::setDirty()
+void JWorkerLabelPrivate::setDirty()
 {
-    Q_Q(WorkerLabel);
+    Q_Q(JWorkerLabel);
     //
     if (worker) {
         worker->disconnect(q);
@@ -204,18 +204,18 @@ void WorkerLabelPrivate::setDirty()
     }
 }
 
-ChannelWidget::OperateAttributes WorkerLabelPrivate::attrs() const
+JChannelPane::OperateAttributes JWorkerLabelPrivate::attrs() const
 {
     return attributes;
 }
 
-void WorkerLabelPrivate::updateDetailText()
+void JWorkerLabelPrivate::updateDetailText()
 {
     const QString text = elidedText(labelDetail->font(), labelDetail->text(), 300);
     labelDetail->setText(text);
 }
 
-QString WorkerLabelPrivate::elidedText(const QFont &font, const QString &text, int width)
+QString JWorkerLabelPrivate::elidedText(const QFont &font, const QString &text, int width)
 {
     QFontMetrics fontMetrics(font);
     const int fontWidth = fontMetrics.width(text);

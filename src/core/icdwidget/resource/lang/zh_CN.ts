@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
-    <name>Icd::BindChannelWidget</name>
+    <name>Icd::JGroupChannelPane</name>
     <message>
         <source>Binding Channel</source>
         <translation>绑定通道</translation>
@@ -10,6 +10,10 @@
     <message>
         <source>File Channel</source>
         <translation>文件通道</translation>
+    </message>
+    <message>
+        <source>Serial Channel</source>
+        <translation>串口通道</translation>
     </message>
     <message>
         <source>UDP Channel</source>
@@ -23,13 +27,20 @@
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
+</context>
+<context>
+    <name>Icd::JProgressDialog</name>
     <message>
-        <source>Serial Channel</source>
-        <translation>串口通道</translation>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
-    <name>Icd::CoreTreeWidgetPrivate</name>
+    <name>Icd::JProtoTreeViewPrivate</name>
     <message>
         <source>Protocol information</source>
         <translation>协议信息</translation>
@@ -189,18 +200,7 @@
     </message>
 </context>
 <context>
-    <name>Icd::ProgressDialog</name>
-    <message>
-        <source>Ok</source>
-        <translation>确定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>取消</translation>
-    </message>
-</context>
-<context>
-    <name>Icd::WorkerLabel</name>
+    <name>Icd::JWorkerLabel</name>
     <message>
         <source>Open</source>
         <translation>打开</translation>

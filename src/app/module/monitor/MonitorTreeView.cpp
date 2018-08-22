@@ -10,9 +10,9 @@ TreeView::TreeView(QWidget *parent)
     vertLyoutMain->setContentsMargins(0, 0, 0, 0);
     vertLyoutMain->setSpacing(0);
 
-    treeView_ = new Icd::CoreTreeWidget(this);
-    treeView_->setTreeMode(Icd::CoreTreeWidget::TreeModeMonitor);
-    treeView_->setBindTableType(Icd::CoreTreeWidget::BindOnlyRecv);
+    treeView_ = new Icd::JProtoTreeView(this);
+    treeView_->setTreeMode(Icd::JProtoTreeView::TreeModeMonitor);
+    treeView_->setBindTableType(Icd::JProtoTreeView::BindOnlyRecv);
     vertLyoutMain->addWidget(treeView_);
 
     jnotify->on("monitor.toolbar.database.config", this, [=](JNEvent &){
@@ -20,48 +20,48 @@ TreeView::TreeView(QWidget *parent)
         args << "monitor" << qVariantFromValue(static_cast<void*>(this));
         jnotify->send("database.config", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::JProtoTreeView::itemPressed, this, [=](QStandardItem *item){
         jnotify->send("monitor.tree.item.pressed", qVariantFromValue(static_cast<void*>(item)));
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::JProtoTreeView::itemClicked, this, [=](QStandardItem *item){
         jnotify->send("monitor.tree.item.clicked", qVariantFromValue(static_cast<void*>(item)));
     });
-    connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
+    connect(treeView_, &Icd::JProtoTreeView::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(current)));
         args.append(qVariantFromValue(static_cast<void*>(previous)));
         jnotify->send("monitor.tree.item.currentchanged", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
+    connect(treeView_, &Icd::JProtoTreeView::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("monitor.tree.item.unloaded", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::channelBound, this,
+    connect(treeView_, &Icd::JProtoTreeView::channelBound, this,
             [=](QStandardItem *item, const QString &channelId){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(channelId);
         jnotify->send("monitor.tree.channel.bound", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::channelUnbound, this,
+    connect(treeView_, &Icd::JProtoTreeView::channelUnbound, this,
             [=](QStandardItem *item, const QString &channelId){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(channelId);
         jnotify->send("monitor.tree.channel.unbound", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::channelChanged, this,
+    connect(treeView_, &Icd::JProtoTreeView::channelChanged, this,
             [=](QStandardItem *item, const QString &channelId){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(channelId);
         jnotify->send("monitor.tree.channel.changed", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::unbindItem, this,
+    connect(treeView_, &Icd::JProtoTreeView::unbindItem, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
@@ -96,34 +96,34 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("monitor.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowOffset, checked);
     });
     jnotify->on("monitor.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowType, checked);
     });
     jnotify->on("monitor.toolbar.tree.showOrignal", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
         if (args.count() < 1) {
             return;
         }
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, args.at(0).toBool());
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowData, args.at(0).toBool());
         if (args.count() >= 2) {
             treeView_->setDataFormat(args.at(1).toInt());
         }
     });
     jnotify->on("monitor.toolbar.tree.showData", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowData, checked);
         JMain::instance()->setOption("moitor", "option.tree.showData", checked);
     });
     jnotify->on("monitor.toolbar.tree.showReal", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowValue, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowValue, checked);
     });
     jnotify->on("monitor.toolbar.tree.showDesc", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowSpec, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowSpec, checked);
     });
     jnotify->on("monitor.toolbar.flushToggle", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
@@ -209,15 +209,15 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    treeView_->setShowAttribute(static_cast<Icd::CoreTreeWidget::ShowAttribute>(attr), on);
+    treeView_->setShowAttribute(static_cast<Icd::JProtoTreeView::ShowAttribute>(attr), on);
 }
 
 void TreeView::setOrigValueRadix(int radix)
 {
     if (radix < 2 || radix > 36) {
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, false);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowData, false);
     } else {
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowData, true);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowData, true);
         treeView_->setDataFormat(radix);
     }
 }

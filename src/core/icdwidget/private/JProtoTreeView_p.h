@@ -1,8 +1,8 @@
-﻿#ifndef CORETREE_WIDGET_P_H
-#define CORETREE_WIDGET_P_H
+﻿#ifndef JPROTOTREEVIEW_P_H
+#define JPROTOTREEVIEW_P_H
 
 #include "jwt/jtreeview.h"
-#include "../coretree_widget.h"
+#include "../JProtoTreeView.h"
 #include "icdcore/icdcore_inc.h"
 #include "icdparser/icdparser.h"
 #include "icdworker/icdworker.h"
@@ -45,7 +45,7 @@ class TableItemWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TableItemWidget(CoreTreeWidget::BindTableTypes bindingTypes,
+    explicit TableItemWidget(JProtoTreeView::BindTableTypes bindingTypes,
                              QWidget *parent = nullptr);
     ~TableItemWidget();
 
@@ -71,24 +71,24 @@ private:
     QSpacerItem *spacer_;
     QPushButton *buttonRun_;
     Icd::WorkerPtr worker_;
-    CoreTreeWidget::BindTableTypes bindTableTypes_;
+    JProtoTreeView::BindTableTypes bindTableTypes_;
 };
 
-// class CoreTreeWidgetPrivate
+// class JProtoTreeViewPrivate
 
-class ItemWorkerGroup;
-class SearchEdit;
+class JWorkerGroup;
+class JSearchEdit;
 struct BindingData;
 
-class CoreTreeWidgetPrivate : public JTreeView
+class JProtoTreeViewPrivate : public JTreeView
 {
     Q_OBJECT
     Q_PROPERTY(quint32 bindTableTypes READ bindTableTypes NOTIFY bindTableTypesChanged)
     Q_PROPERTY(quint32 showAttris READ showAttris NOTIFY showAttrisChanged)
     Q_PROPERTY(QColor valueColor READ valueColor WRITE setValueColor NOTIFY valueColorChanged)
 public:
-    explicit CoreTreeWidgetPrivate(CoreTreeWidget *q);
-    ~CoreTreeWidgetPrivate();
+    explicit JProtoTreeViewPrivate(JProtoTreeView *q);
+    ~JProtoTreeViewPrivate();
 
     quint32 bindTableTypes() const { return quint32(bindTableTypes_); }
     quint32 showAttris() { return quint32(showAttris_); }
@@ -106,18 +106,18 @@ public:
                   bool hasTimeFormat, int headerSize, const QString &domain);
     void clearData();
 
-    CoreTreeWidget::ShowAttributes showAttributes() const;
-    void setShowAttributes(CoreTreeWidget::ShowAttributes attrs);
-    void setShowAttribute(CoreTreeWidget::ShowAttribute attr, bool on = true);
-    bool testShowAttribute(CoreTreeWidget::ShowAttribute attr) const;
+    JProtoTreeView::ShowAttributes showAttributes() const;
+    void setShowAttributes(JProtoTreeView::ShowAttributes attrs);
+    void setShowAttribute(JProtoTreeView::ShowAttribute attr, bool on = true);
+    bool testShowAttribute(JProtoTreeView::ShowAttribute attr) const;
 
     int dataFormat() const;
     void setDataFormat(int format);
 
-    CoreTreeWidget::TreeModes treeModes() const;
-    void setTreeMode(CoreTreeWidget::TreeModes modes);
-    void setTreeMode(CoreTreeWidget::TreeMode mode, bool on = true);
-    bool testTreeMode(CoreTreeWidget::TreeMode mode) const;
+    JProtoTreeView::TreeModes treeModes() const;
+    void setTreeMode(JProtoTreeView::TreeModes modes);
+    void setTreeMode(JProtoTreeView::TreeMode mode, bool on = true);
+    bool testTreeMode(JProtoTreeView::TreeMode mode) const;
 
     bool isRunning() const;
     void setRunning(bool value);
@@ -206,7 +206,7 @@ private:
     void removeWorkerGroup(QStandardItem *itemTable);
     void removeWorkerGroup(const Icd::WorkerPtr &worker);
     void clearWorkerGroup();
-    ItemWorkerGroup *findWorkerGroup(QStandardItem *itemTable) const;
+    JWorkerGroup *findWorkerGroup(QStandardItem *itemTable) const;
 
     bool hasItemBound(QStandardItem *item);
     void clearItemBoundRole(QStandardItem *item, bool bEmit);
@@ -242,16 +242,16 @@ private:
     static bool loadTable(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
 
 private:
-    J_DECLARE_PUBLIC(CoreTreeWidget)
-    SearchEdit *searchEdit_;
+    J_DECLARE_PUBLIC(JProtoTreeView)
+    JSearchEdit *searchEdit_;
     Icd::ParserPtr parser_;
     int loadingDeep_;
     int intervalUpdate_;
-    CoreTreeWidget::BindTableTypes bindTableTypes_;
-    CoreTreeWidget::ShowAttributes showAttris_;
+    JProtoTreeView::BindTableTypes bindTableTypes_;
+    JProtoTreeView::ShowAttributes showAttris_;
     int dataFormat_;
-    CoreTreeWidget::TreeModes treeModes_;
-    QHash<QStandardItem * /*itemTable*/, ItemWorkerGroup*> workerGroups_;
+    JProtoTreeView::TreeModes treeModes_;
+    QHash<QStandardItem * /*itemTable*/, JWorkerGroup*> workerGroups_;
     QFutureWatcher<BindingData> watcher_;
 
     // qss
@@ -263,14 +263,14 @@ struct BindingData
 {
     QString channelId;
     QString tableDomain;
-    CoreTreeWidgetPrivate *d;
+    JProtoTreeViewPrivate *d;
     QStandardItem *item;
     Icd::WorkerPtr worker;
     Icd::TablePtr table;
 
     BindingData():d(Q_NULLPTR){}
     BindingData(const QString &channelId, const QString &tableDomain,
-                CoreTreeWidgetPrivate *d)
+                JProtoTreeViewPrivate *d)
         : channelId(channelId)
         , tableDomain(tableDomain)
         , d(d)
@@ -302,4 +302,4 @@ Q_DECLARE_METATYPE(BindingData)
 
 } // end of namespace Icd
 
-#endif // CORETREE_WIDGET_P_H
+#endif // JPROTOTREEVIEW_P_H

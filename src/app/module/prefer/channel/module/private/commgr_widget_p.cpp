@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "commgr_widget_p.h"
 #include "commdetail_widget.h"
-#include "icdwidget/channel_widget.h"
+#include "icdwidget/JChannelPane.h"
 
 ComMgrWidgetPrivate::ComMgrWidgetPrivate(ComMgrWidget *q)
     : QObject(q)
@@ -34,8 +34,8 @@ void ComMgrWidgetPrivate::init()
     QVBoxLayout *vertLayoutArea = new QVBoxLayout(widgetArea);
     vertLayoutArea->setContentsMargins(0, 0, 0, 6);
 
-    channelWidget = new Icd::ChannelWidget(q);
-    vertLayoutArea->addWidget(channelWidget);
+    channelPane = new Icd::JChannelPane(q);
+    vertLayoutArea->addWidget(channelPane);
 
     QHBoxLayout *horiLayoutButtons = new QHBoxLayout();
     vertLayoutArea->addLayout(horiLayoutButtons);
@@ -58,10 +58,10 @@ void ComMgrWidgetPrivate::init()
     splitterTop->addWidget(commDetailWidget);
 
     //
-    connect(channelWidget, &Icd::ChannelWidget::currentRowChanged, q, [=]
+    connect(channelPane, &Icd::JChannelPane::currentRowChanged, q, [=]
             (int currentRow, int){
         if (currentRow >= 0) {
-            Icd::WorkerPtr worker = channelWidget->selectedWorker();
+            Icd::WorkerPtr worker = channelPane->selectedWorker();
             if (worker) {
                 commDetailWidget->updateUi(worker);
                 commDetailWidget->show();
@@ -70,7 +70,7 @@ void ComMgrWidgetPrivate::init()
             commDetailWidget->hide();
         }
     });
-    connect(channelWidget, &Icd::ChannelWidget::rowMoved, q, [=](int oldRow, int newRow){
+    connect(channelPane, &Icd::JChannelPane::rowMoved, q, [=](int oldRow, int newRow){
         Q_UNUSED(oldRow);
         Q_UNUSED(newRow);
     });
@@ -120,10 +120,10 @@ void ComMgrWidgetPrivate::init()
         Icd::WorkerPool::getInstance()->appendWorker(worker);
         Icd::WorkerPool::getInstance()->saveConfig();
         //
-        channelWidget->addWorker(worker, Icd::ChannelWidget::AllOperate);
+        channelPane->addWorker(worker, Icd::JChannelPane::AllOperate);
 
         //
-        channelWidget->setCurrentRow(channelWidget->rowCount() - 1);
+        channelPane->setCurrentRow(channelPane->rowCount() - 1);
     });
     connect(buttonClear, &QPushButton::clicked, q, [=](){
         int result = QMessageBox::warning(q, tr("Warning"),
@@ -146,16 +146,16 @@ void ComMgrWidgetPrivate::init()
 void ComMgrWidgetPrivate::updateUi()
 {
     //
-    channelWidget->clearWorker();
+    channelPane->clearWorker();
 
     //
     const Icd::WorkerPtrArray workers =
             Icd::WorkerPool::getInstance()->allWorkers();
     Icd::WorkerPtrArray::const_iterator citer = workers.begin();
     for (; citer != workers.end(); ++citer) {
-        channelWidget->addWorker(*citer, Icd::ChannelWidget::AllOperate);
+        channelPane->addWorker(*citer, Icd::JChannelPane::AllOperate);
     }
 
     //
-    channelWidget->setCurrentRow(0);
+    channelPane->setCurrentRow(0);
 }

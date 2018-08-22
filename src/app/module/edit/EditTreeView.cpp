@@ -10,8 +10,8 @@ TreeView::TreeView(QWidget *parent)
     vertLyoutMain->setContentsMargins(0, 0, 0, 0);
     vertLyoutMain->setSpacing(0);
 
-    treeView_ = new Icd::CoreTreeWidget(this);
-    treeView_->setTreeMode(Icd::CoreTreeWidget::TreeModeEdit);
+    treeView_ = new Icd::JProtoTreeView(this);
+    treeView_->setTreeMode(Icd::JProtoTreeView::TreeModeEdit);
     vertLyoutMain->addWidget(treeView_);
 
     jnotify->on("edit.toolbar.database.config", this, [=](JNEvent &){
@@ -19,20 +19,20 @@ TreeView::TreeView(QWidget *parent)
         args << "edit" << qVariantFromValue(static_cast<void*>(this));
         jnotify->send("database.config", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::JProtoTreeView::itemPressed, this, [=](QStandardItem *item){
         jnotify->send("edit.tree.item.pressed", qVariantFromValue(static_cast<void*>(item)));
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::JProtoTreeView::itemClicked, this, [=](QStandardItem *item){
         jnotify->send("edit.tree.item.clicked", qVariantFromValue(static_cast<void*>(item)));
     });
-    connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
+    connect(treeView_, &Icd::JProtoTreeView::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(current)));
         args.append(qVariantFromValue(static_cast<void*>(previous)));
         jnotify->send("edit.tree.item.currentchanged", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
+    connect(treeView_, &Icd::JProtoTreeView::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
@@ -59,11 +59,11 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("edit.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowOffset, checked);
     });
     jnotify->on("edit.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowType, checked);
     });
     jnotify->on("edit.toolbar.tree.copy", this, [=](JNEvent &){
         //
@@ -113,7 +113,7 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    treeView_->setShowAttribute(static_cast<Icd::CoreTreeWidget::ShowAttribute>(attr), on);
+    treeView_->setShowAttribute(static_cast<Icd::JProtoTreeView::ShowAttribute>(attr), on);
 }
 
 bool TreeView::updateParser()

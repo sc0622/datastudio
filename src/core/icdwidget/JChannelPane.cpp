@@ -1,36 +1,36 @@
 #include "precomp.h"
-#include "channel_widget.h"
-#include "private/channel_widget_p.h"
+#include "JChannelPane.h"
+#include "private/JChannelPane_p.h"
 #include "icdworker/icdworker_pool.h"
-#include "worker_label.h"
+#include "JWorkerLabel.h"
 
 namespace Icd {
 
-// class ChannelWidget
+// class JChannelPane
 
-ChannelWidget::ChannelWidget(QWidget *parent)
+JChannelPane::JChannelPane(QWidget *parent)
     : QWidget(parent)
-    , J_DPTR(new ChannelWidgetPrivate(this))
+    , J_DPTR(new JChannelPanePrivate(this))
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     d->init();
 }
 
-ChannelWidget::~ChannelWidget()
+JChannelPane::~JChannelPane()
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     delete d;
 }
 
-Icd::WorkerPtr ChannelWidget::selectedWorker() const
+Icd::WorkerPtr JChannelPane::selectedWorker() const
 {
-    Q_D(const ChannelWidget);
+    Q_D(const JChannelPane);
     int row = d->tableView->currentRow();
     if (row == -1) {
         return Icd::WorkerPtr();
     }
 
-    WorkerLabel *label = qobject_cast<WorkerLabel *>(d->tableView->cellWidget(row, 0));
+    JWorkerLabel *label = qobject_cast<JWorkerLabel *>(d->tableView->cellWidget(row, 0));
     if (!label) {
         return Icd::WorkerPtr();
     }
@@ -38,32 +38,32 @@ Icd::WorkerPtr ChannelWidget::selectedWorker() const
     return label->worker();
 }
 
-int ChannelWidget::rowCount() const
+int JChannelPane::rowCount() const
 {
-    Q_D(const ChannelWidget);
+    Q_D(const JChannelPane);
     return d->tableView->rowCount();
 }
 
-void ChannelWidget::setCurrentRow(int row)
+void JChannelPane::setCurrentRow(int row)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     d->tableView->setCurrentCell(row, 0);
 }
 
-void ChannelWidget::addWorker(const Icd::WorkerPtr &worker,
-                              ChannelWidget::OperateAttributes attrs)
+void JChannelPane::addWorker(const Icd::WorkerPtr &worker,
+                             JChannelPane::OperateAttributes attrs)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     insertWorker(d->tableView->rowCount(), worker, attrs);
 }
 
-void ChannelWidget::insertWorker(int row, const Icd::WorkerPtr &worker,
-                                      OperateAttributes attrs)
+void JChannelPane::insertWorker(int row, const Icd::WorkerPtr &worker,
+                                OperateAttributes attrs)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     d->tableView->insertRow(row);
-    WorkerLabel *label = new WorkerLabel(worker, attrs, this);
-    if (attrs == ChannelWidget::NoOperate) {
+    JWorkerLabel *label = new JWorkerLabel(worker, attrs, this);
+    if (attrs == JChannelPane::NoOperate) {
         if (worker->channel()->channelType() == Icd::ChannelFile) {
             if (worker->workerRecv()->table() || worker->workerSend()->table()) {
                 d->tableView->setRowHidden(row, true);
@@ -73,12 +73,12 @@ void ChannelWidget::insertWorker(int row, const Icd::WorkerPtr &worker,
     d->tableView->setCellWidget(row, 0, label);
 }
 
-void ChannelWidget::removeWorker(const Icd::WorkerPtr &worker)
+void JChannelPane::removeWorker(const Icd::WorkerPtr &worker)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     int rowCount = d->tableView->rowCount();
     for (int i = 0; i < rowCount; ++i) {
-        WorkerLabel *label = qobject_cast<WorkerLabel *>(d->tableView->cellWidget(i, 0));
+        JWorkerLabel *label = qobject_cast<JWorkerLabel *>(d->tableView->cellWidget(i, 0));
         if (label && label->worker() == worker) {
             d->tableView->removeRow(i);
             break;
@@ -86,13 +86,13 @@ void ChannelWidget::removeWorker(const Icd::WorkerPtr &worker)
     }
 }
 
-void ChannelWidget::removeWorker(const QString &channelId)
+void JChannelPane::removeWorker(const QString &channelId)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     const std::string id = channelId.toStdString();
     int rowCount = d->tableView->rowCount();
     for (int i = 0; i < rowCount; ++i) {
-        WorkerLabel *label = qobject_cast<WorkerLabel *>(d->tableView->cellWidget(i, 0));
+        JWorkerLabel *label = qobject_cast<JWorkerLabel *>(d->tableView->cellWidget(i, 0));
         if (label && label->worker()->channel()->identity() == id) {
             d->tableView->removeRow(i);
             break;
@@ -100,21 +100,21 @@ void ChannelWidget::removeWorker(const QString &channelId)
     }
 }
 
-void ChannelWidget::clearWorker()
+void JChannelPane::clearWorker()
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     d->tableView->clearContents();
 }
 
-void ChannelWidget::setTableEnabled(bool enabled)
+void JChannelPane::setTableEnabled(bool enabled)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     d->tableView->setEnabled(enabled);
 }
 
-void ChannelWidget::setEditEnabled(bool enabled)
+void JChannelPane::setEditEnabled(bool enabled)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
     d->tableView->setDragEnabled(enabled);
     d->tableView->setAcceptDrops(enabled);
     if (enabled) {
@@ -124,9 +124,9 @@ void ChannelWidget::setEditEnabled(bool enabled)
     }
 }
 
-bool ChannelWidget::eventFilter(QObject *watcher, QEvent *event)
+bool JChannelPane::eventFilter(QObject *watcher, QEvent *event)
 {
-    Q_D(ChannelWidget);
+    Q_D(JChannelPane);
 
     if (watcher == d->tableView->viewport()) {
         switch (event->type()) {

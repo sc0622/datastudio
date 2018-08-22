@@ -1,59 +1,59 @@
 #include "precomp.h"
-#include "itemworkergroup.h"
+#include "JWorkerGroup.h"
 #include "icdworker/icdworker_pool.h"
 #include "icdcore/icdcore_inc.h"
-#include "coretree_widget_p.h"
+#include "JProtoTreeView_p.h"
 
 namespace Icd {
 
-ItemWorkerGroup::ItemWorkerGroup(QStandardItem *itemTable, const WorkerPtr &worker,
-                                 CoreTreeWidget::ShowAttributes attrs,
-                                 QObject *parent)
+JWorkerGroup::JWorkerGroup(QStandardItem *itemTable, const WorkerPtr &worker,
+                           JProtoTreeView::ShowAttributes attrs,
+                           QObject *parent)
     : QObject(parent)
     , itemTable_(itemTable)
     , worker_(worker)
     , showAttris_(attrs)
-    , bindTableTypes_(CoreTreeWidget::BindOnlyRecv)
+    , bindTableTypes_(JProtoTreeView::BindOnlyRecv)
     , timerId_(0)
     , timerInterval_(100)  // 100 ms
     , dataFormat_(16)  // default: hex format
 {
     //
-    treeView_ = qobject_cast<CoreTreeWidgetPrivate*>(
+    treeView_ = qobject_cast<JProtoTreeViewPrivate*>(
                 dynamic_cast<JTreeViewItem*>(itemTable)->view());
     //
-    connect(treeView_, &CoreTreeWidgetPrivate::valueColorChanged, this, [=](){
+    connect(treeView_, &JProtoTreeViewPrivate::valueColorChanged, this, [=](){
         updateItemData();
     });
     //
     updateTimer();
 }
 
-ItemWorkerGroup::~ItemWorkerGroup()
+JWorkerGroup::~JWorkerGroup()
 {
     //
     setDirty();
 }
 
-void ItemWorkerGroup::updateTimer()
+void JWorkerGroup::updateTimer()
 {
     if (!worker_ || !worker_->isOpen()) {
         stop();
         return;
     }
 
-    if (!(showAttris_ & (CoreTreeWidget::ShowData | CoreTreeWidget::ShowValue))) {
+    if (!(showAttris_ & (JProtoTreeView::ShowData | JProtoTreeView::ShowValue))) {
         stop();
         return;
     }
 
-    if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
+    if (bindTableTypes_ & JProtoTreeView::BindOnlySend) {
         if (worker_->isOpen()) {
             start();
         } else {
             stop();
         }
-    } else if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+    } else if (bindTableTypes_ & JProtoTreeView::BindOnlyRecv) {
         if (worker_->workerRecv()->isRunning()) {
             start();
         } else {
@@ -62,18 +62,18 @@ void ItemWorkerGroup::updateTimer()
     }
 }
 
-void ItemWorkerGroup::updateItemData()
+void JWorkerGroup::updateItemData()
 {
     if (worker_) {
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlySend) {
             updateItemData(worker_->isOpen());
-        } else if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+        } else if (bindTableTypes_ & JProtoTreeView::BindOnlyRecv) {
             updateItemData(worker_->workerRecv()->isRunning());
         }
     }
 }
 
-void ItemWorkerGroup::updateItemData(bool showValue)
+void JWorkerGroup::updateItemData(bool showValue)
 {
     if (!itemTable_) {
         return;
@@ -81,10 +81,10 @@ void ItemWorkerGroup::updateItemData(bool showValue)
 
     Icd::TablePtr table = Icd::TablePtr();
     switch (bindTableTypes_) {
-    case CoreTreeWidget::BindOnlySend:
+    case JProtoTreeView::BindOnlySend:
         table = worker_->workerSend()->table();
         break;
-    case CoreTreeWidget::BindOnlyRecv:
+    case JProtoTreeView::BindOnlyRecv:
         table = worker_->workerRecv()->table();
         break;
     default:
@@ -105,8 +105,8 @@ void ItemWorkerGroup::updateItemData(bool showValue)
     }
 }
 
-void ItemWorkerGroup::updateItemData(CoreTreeWidget::ShowAttributes attrs,
-                                     int dataFormat)
+void JWorkerGroup::updateItemData(JProtoTreeView::ShowAttributes attrs,
+                                  int dataFormat)
 {
     showAttris_ = attrs;
     dataFormat_ = dataFormat;
@@ -114,12 +114,12 @@ void ItemWorkerGroup::updateItemData(CoreTreeWidget::ShowAttributes attrs,
     updateItemData();
 }
 
-int ItemWorkerGroup::timerInterval() const
+int JWorkerGroup::timerInterval() const
 {
     return timerInterval_;
 }
 
-void ItemWorkerGroup::setTimerInterval(int interval)
+void JWorkerGroup::setTimerInterval(int interval)
 {
     if (interval != timerInterval_) {
         timerInterval_ = interval;
@@ -131,7 +131,7 @@ void ItemWorkerGroup::setTimerInterval(int interval)
     }
 }
 
-void ItemWorkerGroup::timerEvent(QTimerEvent *event)
+void JWorkerGroup::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == timerId_) {
         updateItemData();
@@ -140,8 +140,8 @@ void ItemWorkerGroup::timerEvent(QTimerEvent *event)
     }
 }
 
-void ItemWorkerGroup::updateItemData(QStandardItem *item, const Icd::FrameItemPtr &frame,
-                                     bool showValue)
+void JWorkerGroup::updateItemData(QStandardItem *item, const Icd::FrameItemPtr &frame,
+                                  bool showValue)
 {
     if (!item || !frame) {
         return;
@@ -161,8 +161,8 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const Icd::FrameItemPt
     }
 }
 
-void ItemWorkerGroup::updateItemData(QStandardItem *item, const TablePtr &table,
-                                     bool showValue)
+void JWorkerGroup::updateItemData(QStandardItem *item, const TablePtr &table,
+                                  bool showValue)
 {
     if (!item || !table) {
         return;
@@ -180,14 +180,14 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const TablePtr &table,
     }
 }
 
-void ItemWorkerGroup::start()
+void JWorkerGroup::start()
 {
     if (timerId_ == 0) {
         timerId_ = QObject::startTimer(timerInterval_, Qt::PreciseTimer);
     }
 }
 
-void ItemWorkerGroup::start(int interval)
+void JWorkerGroup::start(int interval)
 {
     if (timerId_ > 0) {
         QObject::killTimer(timerId_);
@@ -198,7 +198,7 @@ void ItemWorkerGroup::start(int interval)
     timerInterval_ = interval;
 }
 
-void ItemWorkerGroup::stop()
+void JWorkerGroup::stop()
 {
     if (timerId_ > 0) {
         QObject::killTimer(timerId_);
@@ -207,12 +207,12 @@ void ItemWorkerGroup::stop()
     }
 }
 
-bool ItemWorkerGroup::isRunning() const
+bool JWorkerGroup::isRunning() const
 {
     return timerId_ > 0;
 }
 
-void ItemWorkerGroup::setRunning(bool running)
+void JWorkerGroup::setRunning(bool running)
 {
     if (worker_) {
         if (running) {
@@ -223,24 +223,24 @@ void ItemWorkerGroup::setRunning(bool running)
     }
 }
 
-WorkerPtr ItemWorkerGroup::worker() const
+WorkerPtr JWorkerGroup::worker() const
 {
     return worker_;
 }
 
-QStandardItem *ItemWorkerGroup::itemTable() const
+QStandardItem *JWorkerGroup::itemTable() const
 {
     return itemTable_;
 }
 
-void ItemWorkerGroup::setWorker(const WorkerPtr &worker)
+void JWorkerGroup::setWorker(const WorkerPtr &worker)
 {
     if (worker_) {
         worker_->disconnect(this);
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlySend) {
             worker_->workerSend()->disconnect(this);
         }
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlyRecv) {
             worker_->workerRecv()->disconnect(this);
         }
     }
@@ -253,15 +253,15 @@ void ItemWorkerGroup::setWorker(const WorkerPtr &worker)
     updateTimer();
 }
 
-void ItemWorkerGroup::setBindTableType(CoreTreeWidget::BindTableTypes type)
+void JWorkerGroup::setBindTableType(JProtoTreeView::BindTableTypes type)
 {
     if (worker_) {
         //
         worker_->disconnect(this);
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlySend) {
             worker_->workerSend()->disconnect(this);
         }
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlyRecv) {
             worker_->workerRecv()->disconnect(this);
         }
 
@@ -270,43 +270,43 @@ void ItemWorkerGroup::setBindTableType(CoreTreeWidget::BindTableTypes type)
 
         //
         connect(worker_.get(), &Icd::Worker::opened,
-                this, &Icd::ItemWorkerGroup::onWorkerOpened);
+                this, &Icd::JWorkerGroup::onWorkerOpened);
         connect(worker_.get(), &Icd::Worker::closed,
-                this, &Icd::ItemWorkerGroup::onWorkerClosed);
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
+                this, &Icd::JWorkerGroup::onWorkerClosed);
+        if (bindTableTypes_ & JProtoTreeView::BindOnlySend) {
             connect(worker_->workerSend().get(), &Icd::WorkerSend::started,
-                    this, &Icd::ItemWorkerGroup::onWorkerStarted);
+                    this, &Icd::JWorkerGroup::onWorkerStarted);
             connect(worker_->workerSend().get(), &Icd::WorkerSend::stopped,
-                    this, &Icd::ItemWorkerGroup::onWorkerStopped);
+                    this, &Icd::JWorkerGroup::onWorkerStopped);
         }
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlyRecv) {
             connect(worker_->workerRecv().get(), &Icd::WorkerRecv::started,
-                    this, &Icd::ItemWorkerGroup::onWorkerStarted);
+                    this, &Icd::JWorkerGroup::onWorkerStarted);
             connect(worker_->workerRecv().get(), &Icd::WorkerRecv::stopped,
-                    this, &Icd::ItemWorkerGroup::onWorkerStopped);
+                    this, &Icd::JWorkerGroup::onWorkerStopped);
         }
     }
 }
 
-void ItemWorkerGroup::setDirty()
+void JWorkerGroup::setDirty()
 {
     //
     stop();
 
     if (worker_) {
         worker_->disconnect(this);
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlySend) {
             worker_->workerSend()->disconnect(this);
             worker_->workerSend()->setTable(Icd::TablePtr());
         }
-        if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+        if (bindTableTypes_ & JProtoTreeView::BindOnlyRecv) {
             worker_->workerRecv()->disconnect(this);
             worker_->workerRecv()->setTable(Icd::TablePtr());
         }
     }
 }
 
-QString ItemWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
+QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
 {
     if (!object) {
         Q_ASSERT(false);
@@ -396,32 +396,32 @@ QString ItemWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
     return text;
 }
 
-void ItemWorkerGroup::onWorkerOpened()
+void JWorkerGroup::onWorkerOpened()
 {
-    if (bindTableTypes_ & CoreTreeWidget::BindOnlySend) {
+    if (bindTableTypes_ & JProtoTreeView::BindOnlySend) {
         updateTimer();
-    } else if (bindTableTypes_ & CoreTreeWidget::BindOnlyRecv) {
+    } else if (bindTableTypes_ & JProtoTreeView::BindOnlyRecv) {
         //
     }
 }
 
-void ItemWorkerGroup::onWorkerClosed()
+void JWorkerGroup::onWorkerClosed()
 {
     stop();
 }
 
-void ItemWorkerGroup::onWorkerStarted()
+void JWorkerGroup::onWorkerStarted()
 {
     start(timerInterval_);
 }
 
-void ItemWorkerGroup::onWorkerStopped()
+void JWorkerGroup::onWorkerStopped()
 {
     stop();
 }
 
-void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
-                                     bool showValue)
+void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
+                                  bool showValue)
 {
     if (!item || !dataItem) {
         return;
@@ -440,14 +440,14 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             return false;
         }
         //
-        if (showAttris_ & (CoreTreeWidget::ShowData | CoreTreeWidget::ShowValue)) {
+        if (showAttris_ & (JProtoTreeView::ShowData | JProtoTreeView::ShowValue)) {
             return true;
         }
         //
         switch (item->type()) {
         case Icd::ItemBitMap:
         case Icd::ItemBitValue:
-            if (showAttris_ & CoreTreeWidget::ShowSpec) {
+            if (showAttris_ & JProtoTreeView::ShowSpec) {
                 return true;
             }
             break;
@@ -464,13 +464,13 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         {
             QStringList values;
             // data
-            if (showAttris_ & CoreTreeWidget::ShowData) {
+            if (showAttris_ & JProtoTreeView::ShowData) {
                 values.append(QString("%1")
                               .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
-            if (showAttris_ & CoreTreeWidget::ShowValue) {
+            if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
@@ -480,13 +480,13 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         {
             QStringList values;
             // data
-            if (showAttris_ & CoreTreeWidget::ShowData) {
+            if (showAttris_ & JProtoTreeView::ShowData) {
                 values.append(QString("%1")
                               .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
-            if (showAttris_ & CoreTreeWidget::ShowValue) {
+            if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
@@ -496,13 +496,13 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         {
             QStringList values;
             // data
-            if (showAttris_ & CoreTreeWidget::ShowData) {
+            if (showAttris_ & JProtoTreeView::ShowData) {
                 values.append(QString("%1")
                               .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
-            if (showAttris_ & CoreTreeWidget::ShowValue) {
+            if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
@@ -512,13 +512,13 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         {
             QStringList values;
             // data
-            if (showAttris_ & CoreTreeWidget::ShowData) {
+            if (showAttris_ & JProtoTreeView::ShowData) {
                 values.append(QString("%1")
                               .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0'))
                               .toUpper());
             }
             // value
-            if (showAttris_ & CoreTreeWidget::ShowValue) {
+            if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(qulonglong(dataItem->data()), 0, 10));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
@@ -533,7 +533,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
                 break;
             }
             // data
-            if (showAttris_ & CoreTreeWidget::ShowData) {
+            if (showAttris_ & JProtoTreeView::ShowData) {
                 double originalData = itemNumeric->originalData();
                 switch (itemNumeric->numericType()) {
                 case Icd::NumericF32:
@@ -558,7 +558,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
                 }}
             }
             // value
-            if (showAttris_ & CoreTreeWidget::ShowValue) {
+            if (showAttris_ & JProtoTreeView::ShowValue) {
                 QString value;
                 switch (itemNumeric->numericType()) {
                 case Icd::NumericF32:
@@ -584,7 +584,7 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
             }
             // unit
             const std::string unit = itemNumeric->unit();
-            if (showAttris_ & CoreTreeWidget::ShowValue && !unit.empty()) {
+            if (showAttris_ & JProtoTreeView::ShowValue && !unit.empty()) {
                 info.append(unitPrefix).append(' ').append(QString::fromStdString(unit)).append(suffix);
             }
             break;
@@ -593,13 +593,13 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         {
             QStringList values;
             // data
-            if (showAttris_ & CoreTreeWidget::ShowData) {
+            if (showAttris_ & JProtoTreeView::ShowData) {
                 values.append(QString("%1")
                               .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0')).toUpper()
                               .toUpper());
             }
             // value
-            if (showAttris_ & CoreTreeWidget::ShowValue) {
+            if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(uint(dataItem->data()),
                                                 int(dataItem->bufferSize() * 8), 2, QChar('0')));
             }
@@ -610,19 +610,19 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         {
             QStringList values;
             // data
-            if (showAttris_ & CoreTreeWidget::ShowData) {
+            if (showAttris_ & JProtoTreeView::ShowData) {
                 values.append(QString("%1")
                               .arg(uint(dataItem->data()), asciiCount, dataFormat_, QChar('0')).toUpper()
                               .toUpper());
             }
             // value
-            if (showAttris_ & CoreTreeWidget::ShowValue) {
+            if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(uint(dataItem->data()),
                                                 int(dataItem->bufferSize() * 8), 2, QChar('0')));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             // spec
-            if (showAttris_ & CoreTreeWidget::ShowSpec) {
+            if (showAttris_ & JProtoTreeView::ShowSpec) {
                 const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
                 if (bitItem) {
                     std::string spec = bitItem->specAt(Icd::icd_uint64(dataItem->data()));
@@ -667,13 +667,13 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
 
     QString text;
     // offset
-    if (showAttris_ & CoreTreeWidget::ShowOffset) {
-        text.append(ItemWorkerGroup::generateItemOffset(dataItem));
+    if (showAttris_ & JProtoTreeView::ShowOffset) {
+        text.append(JWorkerGroup::generateItemOffset(dataItem));
     }
     // name
     text.append(QString::fromStdString(dataItem->name().empty() ? "<?>" : dataItem->name()));
     // type, value
-    if (showAttris_ & CoreTreeWidget::ShowType) {
+    if (showAttris_ & JProtoTreeView::ShowType) {
         text.append(" <font color=green size=2>[")
                 .append(QString::fromStdString(dataItem->typeString()).toUpper());
         if (info.isEmpty()) {
@@ -709,14 +709,14 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
         //
         QString text;
         // offset
-        if (showAttris_ & CoreTreeWidget::ShowOffset) {
-            text.append(ItemWorkerGroup::generateItemOffset(itemComplex));
+        if (showAttris_ & JProtoTreeView::ShowOffset) {
+            text.append(JWorkerGroup::generateItemOffset(itemComplex));
         }
         // name
         const std::string name = itemComplex->name();
         text.append(QString::fromStdString(name.empty() ? "<?>" : name));
         // type
-        if (showAttris_ & CoreTreeWidget::ShowType) {
+        if (showAttris_ & JProtoTreeView::ShowType) {
             text.append(" <font color=green size=2>[COMPLEX]</font>");
         }
         item->setText(text);
@@ -743,8 +743,8 @@ void ItemWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataIte
     }
 }
 
-void ItemWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bitItem,
-                                       bool showValue)
+void JWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bitItem,
+                                    bool showValue)
 {
     if (!item || !bitItem) {
         return;
@@ -767,9 +767,9 @@ void ItemWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bi
             return false;
         }
         //
-        if (showAttris_ & (CoreTreeWidget::ShowData
-                           | CoreTreeWidget::ShowValue
-                           | CoreTreeWidget::ShowSpec)) {
+        if (showAttris_ & (JProtoTreeView::ShowData
+                           | JProtoTreeView::ShowValue
+                           | JProtoTreeView::ShowSpec)) {
             return true;
         }
         return false;
@@ -791,7 +791,7 @@ void ItemWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bi
         //
         QString text;
         // offset
-        if (showAttris_ & CoreTreeWidget::ShowOffset) {
+        if (showAttris_ & JProtoTreeView::ShowOffset) {
             text.append(QString("<font color=green size=2>[%1]</font> ")
                         .arg(bitOffset, 2, 10, QChar('0')));
         }
@@ -802,12 +802,12 @@ void ItemWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bi
         if (_showValue) {
             text.append(" <font color=#1296c3>[");
             QStringList values;
-            if (showAttris_ & (CoreTreeWidget::ShowData | CoreTreeWidget::ShowValue)) {
+            if (showAttris_ & (JProtoTreeView::ShowData | JProtoTreeView::ShowValue)) {
                 values.append(QString("%1").arg(bitItem->testBit(bitOffset) ? 1 : 0,
                                                 1, 10, QChar('0')));
             }
             // spec
-            if (showAttris_ & CoreTreeWidget::ShowSpec) {
+            if (showAttris_ & JProtoTreeView::ShowSpec) {
                 std::string desc = bitItem->descAt(bitOffset);
                 if (desc.empty()) {
                     desc = "--";
@@ -822,7 +822,7 @@ void ItemWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bi
     }
 }
 
-void ItemWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, bool show)
+void JWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, bool show)
 {
     if (!item || !table) {
         return;
@@ -834,7 +834,7 @@ void ItemWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &tabl
         const std::string name = table->name();
         text.append(QString::fromStdString(name.empty() ? "<?>" : name));
         // type
-        if (showAttris_ & CoreTreeWidget::ShowType) {
+        if (showAttris_ & JProtoTreeView::ShowType) {
             text.append(" <font color=green size=2>[TABLE]</font>");
         }
         // channel
@@ -853,14 +853,14 @@ void ItemWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &tabl
     } else {
         QString text;
         // offset
-        if (showAttris_ & CoreTreeWidget::ShowOffset) {
-            text.append(ItemWorkerGroup::generateItemOffset(table));
+        if (showAttris_ & JProtoTreeView::ShowOffset) {
+            text.append(JWorkerGroup::generateItemOffset(table));
         }
         // name
         const std::string name = table->name();
         text.append(QString::fromStdString(name.empty() ? "<?>" : name));
         // type
-        if (showAttris_ & CoreTreeWidget::ShowType) {
+        if (showAttris_ & JProtoTreeView::ShowType) {
             text.append(" <font color=green size=2>[TABLE]</font>");
         }
 

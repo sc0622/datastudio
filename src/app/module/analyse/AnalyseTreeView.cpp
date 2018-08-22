@@ -13,8 +13,8 @@ TreeView::TreeView(QWidget *parent)
     QVBoxLayout *vertLyoutMain = new QVBoxLayout(this);
     vertLyoutMain->setContentsMargins(0, 0, 0, 0);
 
-    treeView_ = new Icd::CoreTreeWidget(this);
-    treeView_->setTreeMode(Icd::CoreTreeWidget::TreeModeAnalyse);
+    treeView_ = new Icd::JProtoTreeView(this);
+    treeView_->setTreeMode(Icd::JProtoTreeView::TreeModeAnalyse);
     vertLyoutMain->addWidget(treeView_);
 
     jnotify->on("analyse.toolbar.database.config", this, [=](JNEvent &){
@@ -22,38 +22,38 @@ TreeView::TreeView(QWidget *parent)
         args << "analyse" << qVariantFromValue(static_cast<void*>(this));
         jnotify->send("database.config", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemPressed, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::JProtoTreeView::itemPressed, this, [=](QStandardItem *item){
         jnotify->send("analyse.tree.item.pressed", qVariantFromValue(static_cast<void*>(item)));
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemClicked, this, [=](QStandardItem *item){
+    connect(treeView_, &Icd::JProtoTreeView::itemClicked, this, [=](QStandardItem *item){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
         QStandardItem *itemTable = treeView_->findItemTable(item);
         args.append(qVariantFromValue(static_cast<void*>(itemTable)));
         jnotify->send("analyse.tree.item.clicked", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::currentItemChanged, this,
+    connect(treeView_, &Icd::JProtoTreeView::currentItemChanged, this,
             [=](QStandardItem *current, QStandardItem *previous){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(current)));
         args.append(qVariantFromValue(static_cast<void*>(previous)));
         jnotify->send("analyse.tree.item.currentchanged", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::itemUnloaded, this,
+    connect(treeView_, &Icd::JProtoTreeView::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("analyse.tree.item.unloaded", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::unbindItem, this,
+    connect(treeView_, &Icd::JProtoTreeView::unbindItem, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));
         args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("analyse.tree.item.unbind", args);
     });
-    connect(treeView_, &Icd::CoreTreeWidget::exportAnalyseData, this,
+    connect(treeView_, &Icd::JProtoTreeView::exportAnalyseData, this,
             [=](QStandardItem *item, const QString &filePath,
             bool hasTimeFormat, int headerSize){
         exportData(item, filePath, hasTimeFormat, headerSize);
@@ -86,11 +86,11 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("analyse.toolbar.tree.showOffset", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowOffset, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowOffset, checked);
     });
     jnotify->on("analyse.toolbar.tree.showType", this, [=](JNEvent &event){
         const bool checked = event.argument().toBool();
-        treeView_->setShowAttribute(Icd::CoreTreeWidget::ShowType, checked);
+        treeView_->setShowAttribute(Icd::JProtoTreeView::ShowType, checked);
     });
     jnotify->on("analyse.toolbar.tree.loadData", this, [=](JNEvent &){
         loadRecordData();
@@ -127,7 +127,7 @@ bool TreeView::init()
 
 void TreeView::setShowAttribute(int attr, bool on)
 {
-    treeView_->setShowAttribute(static_cast<Icd::CoreTreeWidget::ShowAttribute>(attr), on);
+    treeView_->setShowAttribute(static_cast<Icd::JProtoTreeView::ShowAttribute>(attr), on);
 }
 
 void TreeView::loadRecordData()
@@ -248,7 +248,7 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
         return false;
     }
 
-    Icd::ProgressDialog *progressDialog = new Icd::ProgressDialog(this);
+    Icd::JProgressDialog *progressDialog = new Icd::JProgressDialog(this);
     progressDialog->setWindowTitle(tr("Load data"));
     progressDialog->setProgressValue(100);
     progressDialog->setCancelVisible(false);
@@ -262,7 +262,7 @@ bool TreeView::loadData(const QString &domain, const QString &filePath,
         }
         return true;
     });
-    connect(progressDialog, &Icd::ProgressDialog::finished, this, [=](){
+    connect(progressDialog, &Icd::JProgressDialog::finished, this, [=](){
         bool success = progressDialog->futureResult();
         if (success) {
             QSharedPointer<QTemporaryFile> tempFile;

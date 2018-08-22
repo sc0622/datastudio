@@ -39,7 +39,7 @@ typedef std::shared_ptr<ComplexItem> ComplexItemPtr;
 class FrameItem;
 typedef std::shared_ptr<FrameItem> FrameItemPtr;
 
-class ProgressDialog;
+class JProgressDialog;
 
 } // end of namespace Icd
 
@@ -130,7 +130,7 @@ private:
     bool d_hasTimeFormat;
     int d_headerSize;
     int d_bitOffset;
-    Icd::ProgressDialog *d_progressDialog;
+    Icd::JProgressDialog *d_progressDialog;
     int d_progressValue;
     int d_timerUpdate;
 };
