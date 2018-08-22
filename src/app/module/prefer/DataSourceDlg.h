@@ -1,5 +1,5 @@
-#ifndef DATASOURCECONFIGDLG_H
-#define DATASOURCECONFIGDLG_H
+#ifndef DATASOURCEDLG_H
+#define DATASOURCEDLG_H
 
 #include <QDialog>
 
@@ -75,16 +75,18 @@ private:
     QLineEdit *d_editPassword;
 };
 
-// class DataSourceConfigDlg
+// class DataSourceWidget
 
-class DataSourceConfigDlg : public QDialog
+class DataSourceWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DataSourceConfigDlg(const QString &module, QObject *receiver,
-                                 QWidget *parent = nullptr);
+    explicit DataSourceWidget(const QString &module, QObject *receiver,
+                              QWidget *parent = nullptr);
 
 signals:
+    void accepted();
+    void rejected();
 
 public slots:
 
@@ -102,6 +104,22 @@ private:
     QCheckBox *checkApplyToAll_;
     QPushButton *buttonConnect_;
     QPushButton *buttonOk_;
+};
+
+// class DataSourceDlg
+
+class DataSourceDlg : public QDialog
+{
+    Q_OBJECT
+public:
+    explicit DataSourceDlg(const QString &module, QObject *receiver,
+                           QWidget *parent = nullptr);
+
+signals:
+
+public slots:
+
+private:
 };
 
 #endif // DATASOURCECONFIGDLG_H

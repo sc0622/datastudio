@@ -10,9 +10,10 @@ namespace Icd {
 
 enum ChannelType {
     ChannelInvalid = -1,    // 通信类型不可用
-    ChannelSerial = 0,      // 串口通信方式
-    ChannelUdp,             // UDP通信方式
-    ChannelFile,            // 文件方式
+    ChannelSerial = 0,      // 串口通信
+    ChannelUdp,             // UDP通信
+    ChannelFile,            // 文件
+    ChannelArinc429,        // Arinc429
     ChannelTotal            // 标记边界
 };
 

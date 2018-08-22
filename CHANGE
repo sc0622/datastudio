@@ -1,4 +1,13 @@
 
+-- V4.5.2
+    tools: VS2015，Qt5.11.1，Qbs>=1.9.1
+    depends:
+        1) jframework: v2.7.1
+    fixed:
+        1) 修复帧码为0时未加载的问题（不检测为0时无效的逻辑）
+    next:
+        <inherit to v4.5.0>
+
 -- V4.5.1
     tools: VS2015，Qt5.11.1，Qbs>=1.9.1
     depends:

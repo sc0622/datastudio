@@ -3,6 +3,7 @@
 #include "icdcomm_serialchannel.h"
 #include "icdcomm_filechannel.h"
 #include "icdcomm_udpchannel.h"
+#include "icdcomm_arinc429.h"
 #include <sstream>
 #include <unordered_map>
 
@@ -50,6 +51,8 @@ ChannelPtr Channel::createInstance(Icd::ChannelType channelType)
         return ChannelPtr(new UdpChannel());
     case ChannelFile:
         return ChannelPtr(new FileChannel());
+    case ChannelArinc429:
+        return ChannelPtr(new Arinc429Channel());
     default:
         return ChannelPtr();
     }

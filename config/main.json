@@ -54,7 +54,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/jkbms/config/protocol.json",
+            "filePath" : "@ConfigDir@/protocol.json",
             "sourceType" : "file"
          }
       },
@@ -88,13 +88,13 @@
                "showValue" : true
             },
             "window" : {
-               "buffer" : true,
+               "buffer" : false,
                "chart" : true,
                "tree" : true
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/jkbms/config/protocol.json",
+            "filePath" : "@ConfigDir@/protocol.json",
             "sourceType" : "file"
          }
       },
@@ -117,7 +117,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/jkbms/config/protocol.json",
+            "filePath" : "@ConfigDir@/protocol.json",
             "sourceType" : "file"
          }
       }

@@ -452,6 +452,12 @@ void JMain::saveWidgetState(QWidget *widget, const QString prefix)
             return;
         }
         settings.setValue("currentIndex", tabWidget->currentIndex());
+    } else if (widget->inherits("QListWidget")) {
+        QListWidget *listWidget = qobject_cast<QListWidget *>(widget);
+        if (!listWidget) {
+            return;
+        }
+        settings.setValue("currentRow", listWidget->currentRow());
     }
     settings.endGroup();
 }
@@ -512,6 +518,14 @@ void JMain::restoreWidgetState(QWidget *widget, const QString prefix)
         }
         if (settings.contains("currentIndex")) {
             tabWidget->setCurrentIndex(settings.value("currentIndex").toInt());
+        }
+    } else if (widget->inherits("QListWidget")) {
+        QListWidget *listWidget = qobject_cast<QListWidget *>(widget);
+        if (!listWidget) {
+            return;
+        }
+        if (settings.contains("currentRow")) {
+            listWidget->setCurrentRow(settings.value("currentRow").toInt());
         }
     }
     settings.endGroup();

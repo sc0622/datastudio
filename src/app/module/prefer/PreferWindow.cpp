@@ -39,6 +39,7 @@ Window::Window(QWidget *parent)
 Window::~Window()
 {
     JMain::saveWidgetState(splitter_);
+    JMain::saveWidgetState(listWidget_);
 }
 
 bool Window::init()
@@ -57,9 +58,16 @@ bool Window::init()
                 tr("Channel management"));
     itemChannel->setSizeHint(QSize(itemChannel->sizeHint().width(), 40));
     listWidget_->addItem(itemChannel);
+    // database item
+    QListWidgetItem *itemDatabase = new QListWidgetItem(
+                QIcon(":/datastudio/image/toolbar/database.png"),
+                tr("Database management"));
+    itemDatabase->setSizeHint(QSize(itemChannel->sizeHint().width(), 40));
+    listWidget_->addItem(itemDatabase);
 
-    // set current type
-    listWidget_->setCurrentRow(ItemTypeChannel);
+    if (result) {
+        JMain::restoreWidgetState(listWidget_);
+    }
 
     return result;
 }

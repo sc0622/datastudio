@@ -109,7 +109,7 @@ void FrameItem::addTable(const TablePtr &table)
 {
     icd_uint64 code = Icd::strtou64(table->mark().c_str(), 16);
     if (code <= 0) {
-        return;
+        //return;
     }
 
     TablePtrMap::const_iterator citer = d->tables.find(code);

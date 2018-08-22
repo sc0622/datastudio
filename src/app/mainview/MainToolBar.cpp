@@ -1,6 +1,6 @@
 #include "precomp.h"
 #include "MainToolBar.h"
-#include "../module/common/DataSourceConfigDlg.h"
+#include "../module/prefer/DataSourceDlg.h"
 
 namespace Main {
 
@@ -57,7 +57,7 @@ void ToolBar::bindingNotify()
         if (!receiver) {
             return;
         }
-        DataSourceConfigDlg dialog(module, receiver, this);
+        DataSourceDlg dialog(module, receiver, this);
         if (dialog.exec() != QDialog::Accepted) {
             return;
         }

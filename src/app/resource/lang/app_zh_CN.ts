@@ -1041,87 +1041,92 @@ Continue to save will lost part data, still continue?</source>
     </message>
 </context>
 <context>
-    <name>DataSourceConfigDlg</name>
+    <name>DataSourceWidget</name>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="194"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="195"/>
         <source>Data source configuration</source>
         <translation>数据来源配置</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="204"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="205"/>
         <source>File source</source>
         <translation>文件类数据源</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="208"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="209"/>
         <source>SQL source</source>
         <translation>数据库类数据源</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="215"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="217"/>
         <source>Apply to all</source>
-        <translation>应用其他系统</translation>
+        <translation>应用到其他系统</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="220"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="223"/>
         <source>Connect</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="226"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="229"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="231"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="229"/>
+        <source>Apply</source>
+        <translation>应用</translation>
+    </message>
+    <message>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="236"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="313"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="329"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="337"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="345"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="353"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="361"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="375"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="381"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="327"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="343"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="351"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="359"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="367"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="375"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="389"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="395"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="314"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="328"/>
         <source>File &quot;%1&quot; is not exists!</source>
         <translation>文件“%1”不存在！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="329"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="343"/>
         <source>SQL type cannot be empty!</source>
         <translation>数据库类型不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="337"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="351"/>
         <source>Server&apos;s name cannot be empty!</source>
         <translation>服务器名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="345"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="359"/>
         <source>Database&apos;s name cannot be empty!</source>
         <translation>数据库名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="353"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="367"/>
         <source>User&apos;s name cannot be empty!</source>
         <translation>用户名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="361"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="375"/>
         <source>User&apos;s password cannot be empty!</source>
         <translation>用户密码不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="375"/>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="381"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="389"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="395"/>
         <source>Save config failure!</source>
         <translation>保存配置信息失败！</translation>
     </message>
@@ -1569,12 +1574,12 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>FileSourceWidget</name>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="17"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="17"/>
         <source>File path:</source>
         <translation>文件路径：</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="30"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="30"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>
@@ -1801,161 +1806,161 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>JMain</name>
     <message>
-        <location filename="../../main_global.cpp" line="582"/>
+        <location filename="../../main_global.cpp" line="596"/>
         <source>Head</source>
         <translation>帧头</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="633"/>
+        <location filename="../../main_global.cpp" line="647"/>
         <source>Int8</source>
         <translation>有符号8位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="634"/>
+        <location filename="../../main_global.cpp" line="648"/>
         <source>UInt8</source>
         <translation>无符号8位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="635"/>
+        <location filename="../../main_global.cpp" line="649"/>
         <source>Int16</source>
         <translation>有符号16位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="636"/>
+        <location filename="../../main_global.cpp" line="650"/>
         <source>UInt16</source>
         <translation>无符号16位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="637"/>
+        <location filename="../../main_global.cpp" line="651"/>
         <source>Int32</source>
         <translation>有符号32位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="638"/>
+        <location filename="../../main_global.cpp" line="652"/>
         <source>UInt32</source>
         <translation>无符号32位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="639"/>
+        <location filename="../../main_global.cpp" line="653"/>
         <source>Int64</source>
         <translation>有符号64位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="640"/>
+        <location filename="../../main_global.cpp" line="654"/>
         <source>UInt64</source>
         <translation>无符号64位</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="641"/>
+        <location filename="../../main_global.cpp" line="655"/>
         <source>Float32</source>
         <translation>32位浮点数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="642"/>
+        <location filename="../../main_global.cpp" line="656"/>
         <source>Float64</source>
         <translation>64位浮点数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="653"/>
+        <location filename="../../main_global.cpp" line="667"/>
         <source>Counter U8</source>
         <translation>8位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="654"/>
+        <location filename="../../main_global.cpp" line="668"/>
         <source>Counter U16</source>
         <translation>16位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="655"/>
+        <location filename="../../main_global.cpp" line="669"/>
         <source>Counter U32</source>
         <translation>32位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="656"/>
+        <location filename="../../main_global.cpp" line="670"/>
         <source>Counter U64</source>
         <translation>64位帧计数</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="667"/>
+        <location filename="../../main_global.cpp" line="681"/>
         <source>No check</source>
         <translation>无校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="668"/>
+        <location filename="../../main_global.cpp" line="682"/>
         <source>Check sum8</source>
         <translation>8位和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="669"/>
+        <location filename="../../main_global.cpp" line="683"/>
         <source>Check sum16</source>
         <translation>16位和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="670"/>
+        <location filename="../../main_global.cpp" line="684"/>
         <source>Check crc8</source>
         <translation>8位CRC和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="671"/>
+        <location filename="../../main_global.cpp" line="685"/>
         <source>Check crc16</source>
         <translation>16位CRC和校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="672"/>
+        <location filename="../../main_global.cpp" line="686"/>
         <source>Check xor8</source>
         <translation>8位XOR校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="673"/>
+        <location filename="../../main_global.cpp" line="687"/>
         <source>Check xor16</source>
         <translation>16位XOR校验</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="684"/>
+        <location filename="../../main_global.cpp" line="698"/>
         <source>FrameCode U8</source>
         <translation>8位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="685"/>
+        <location filename="../../main_global.cpp" line="699"/>
         <source>FrameCode U16</source>
         <translation>16位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="686"/>
+        <location filename="../../main_global.cpp" line="700"/>
         <source>FrameCode U32</source>
         <translation>32位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="687"/>
+        <location filename="../../main_global.cpp" line="701"/>
         <source>FrameCode U64</source>
         <translation>64位帧码</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="619"/>
+        <location filename="../../main_global.cpp" line="633"/>
         <source>BitMap</source>
         <translation>比特映射</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="620"/>
+        <location filename="../../main_global.cpp" line="634"/>
         <source>BitValue</source>
         <translation>比特值</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="621"/>
+        <location filename="../../main_global.cpp" line="635"/>
         <source>Complex</source>
         <translation>复合数据</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="622"/>
+        <location filename="../../main_global.cpp" line="636"/>
         <source>Frame</source>
         <translation>帧数据</translation>
     </message>
     <message>
-        <location filename="../../main_global.cpp" line="627"/>
-        <location filename="../../main_global.cpp" line="647"/>
+        <location filename="../../main_global.cpp" line="641"/>
         <location filename="../../main_global.cpp" line="661"/>
-        <location filename="../../main_global.cpp" line="678"/>
+        <location filename="../../main_global.cpp" line="675"/>
         <location filename="../../main_global.cpp" line="692"/>
+        <location filename="../../main_global.cpp" line="706"/>
         <source>Unknown</source>
         <translation>未知类型</translation>
     </message>
@@ -2665,13 +2670,14 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Prefer::Window</name>
     <message>
-        <location filename="../../module/prefer/PreferWindow.cpp" line="57"/>
+        <location filename="../../module/prefer/PreferWindow.cpp" line="58"/>
         <source>Channel management</source>
         <translation>通道管理</translation>
     </message>
     <message>
-        <source>Data source management</source>
-        <translation type="vanished">数据源管理</translation>
+        <location filename="../../module/prefer/PreferWindow.cpp" line="64"/>
+        <source>Database management</source>
+        <translation>数据来源</translation>
     </message>
 </context>
 <context>
@@ -2880,6 +2886,11 @@ Continue to save will lost part data, still continue?</source>
         <location filename="../../common/old/DBAccess/dbaccess.cpp" line="2449"/>
         <source>Can not find database config section&lt;password&gt;!</source>
         <translation>找不到数据库配置字段&lt;password&gt;！</translation>
+    </message>
+    <message>
+        <location filename="../../common/old/DBAccess/parser/icdparser_sql.cpp" line="17"/>
+        <source>Initialize database failure! [reson: %1]</source>
+        <translation>初始化数据库失败！[原因：%1]</translation>
     </message>
 </context>
 <context>
@@ -3524,27 +3535,27 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>SqlSourceWidget</name>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="69"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="69"/>
         <source>SQL type:</source>
         <translation>数据库类型：</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="72"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="72"/>
         <source>Server name:</source>
         <translation>服务器名称：</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="75"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="75"/>
         <source>Database name:</source>
         <translation>数据库名称：</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="78"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="78"/>
         <source>User name:</source>
         <translation>用户名称：</translation>
     </message>
     <message>
-        <location filename="../../module/common/DataSourceConfigDlg.cpp" line="82"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="82"/>
         <source>Password:</source>
         <translation>用户密码：</translation>
     </message>

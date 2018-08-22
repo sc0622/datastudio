@@ -14,7 +14,7 @@ SqlParser::SqlParser(const Json::Value &config)
     std::string filePath = config["filePath"].asString();
     if (!filePath.empty()) {
         if (!d->db->init(filePath)) {
-            QString error = QStringLiteral("初始化数据库失败！[原因]：%1")
+            QString error = QObject::tr("Initialize database failure! [reson: %1]")
                     .arg(QString::fromStdString(d->db->lastError()));
             qWarning() << error;
         }

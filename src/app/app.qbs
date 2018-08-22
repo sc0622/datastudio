@@ -35,7 +35,7 @@ Project {
         Group {
             name: 'Headers'
             files: [
-                '**/*.h',
+                '**/*.h'
             ]
             excludeFiles: [ '**/precomp.h', 'common/old/**/*', 'module/edit/old/**/*' ]
         }

@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "DataSourceConfigDlg.h"
+#include "DataSourceDlg.h"
 
 // class FileSourceWidget
 
@@ -183,13 +183,14 @@ void SqlSourceWidget::setPassword(const QString &password)
     d_editPassword->setText(password);
 }
 
-// class DataSourceConfigDlg
+// class DataSourceWidget
 
-DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receiver,
-                                         QWidget *parent)
-    : QDialog(parent)
+DataSourceWidget::DataSourceWidget(const QString &module, QObject *receiver,
+                                   QWidget *parent)
+    : QWidget(parent)
     , module_(module)
     , receiver_(receiver)
+    , checkApplyToAll_(nullptr)
 {
     setWindowTitle(tr("Data source configuration"));
 
@@ -201,19 +202,21 @@ DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receive
 
     fileSourceWidget_ = new FileSourceWidget(this);
     tabWidget_->addTab(fileSourceWidget_,
-                        QIcon(":/datastudio/image/global/file.png"), tr("File source"));
+                       QIcon(":/datastudio/image/global/file.png"), tr("File source"));
 
     sqlSourceWidget_ = new SqlSourceWidget(this);
     tabWidget_->addTab(sqlSourceWidget_,
-                        QIcon(":/datastudio/image/global/sql.png"), tr("SQL source"));
+                       QIcon(":/datastudio/image/global/sql.png"), tr("SQL source"));
 
     QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
     vertLayoutMain->addLayout(horiLayoutBottom);
 
     horiLayoutBottom->addStretch();
 
-    checkApplyToAll_ = new QCheckBox(tr("Apply to all"), this);
-    horiLayoutBottom->addWidget(checkApplyToAll_);
+    if (receiver) {
+        checkApplyToAll_ = new QCheckBox(tr("Apply to all"), this);
+        horiLayoutBottom->addWidget(checkApplyToAll_);
+    }
 
     horiLayoutBottom->addSpacing(20);
 
@@ -223,16 +226,23 @@ DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receive
 
     horiLayoutBottom->addSpacing(20);
 
-    buttonOk_ = new QPushButton(tr("Ok"), this);
-    buttonOk_->setMinimumWidth(80);
+    buttonOk_ = new QPushButton(receiver ? tr("Ok") : tr("Apply"), this);
+    buttonOk_->setMinimumWidth(receiver ? 80 : 150);
     buttonOk_->setDefault(true);
     horiLayoutBottom->addWidget(buttonOk_);
 
-    QPushButton *buttonCancel = new QPushButton(tr("Cancel"), this);
-    buttonCancel->setMinimumWidth(80);
-    horiLayoutBottom->addWidget(buttonCancel);
+    QPushButton *buttonCancel = nullptr;
+    if (receiver) {
+        buttonCancel = new QPushButton(tr("Cancel"), this);
+        buttonCancel->setMinimumWidth(80);
+        horiLayoutBottom->addWidget(buttonCancel);
+    }
 
-    horiLayoutBottom->addSpacing(10);
+    if (receiver) {
+        horiLayoutBottom->addSpacing(10);
+    } else {
+        horiLayoutBottom->addStretch();
+    }
 
     vertLayoutMain->addSpacing(10);
 
@@ -246,28 +256,32 @@ DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receive
     connect(sqlSourceWidget_, &SqlSourceWidget::contentChanged, this, [=](){
         buttonOk_->setEnabled(true);
     });
-    connect(checkApplyToAll_, &QCheckBox::stateChanged, this, [=](){
-        buttonOk_->setEnabled(true);
-    });
+    if (receiver) {
+        connect(checkApplyToAll_, &QCheckBox::stateChanged, this, [=](){
+            buttonOk_->setEnabled(true);
+        });
+    }
     connect(buttonOk_, &QPushButton::clicked, this, [=](){
         if (!saveConfig()) {
             return;
         }
-        this->accept();
+        emit accepted();
         // notify
-        if (checkApplyToAll_->isChecked()) {
+        if (!checkApplyToAll_ || checkApplyToAll_->isChecked()) {
             foreach (auto &module, JMain::modules()) {
                 jnotify->post(module + ".parser.changed");
             }
         } else {
             jnotify->post(module_ + ".parser.changed", receiver_);
         }
+        buttonOk_->setDisabled(true);
     });
-    connect(buttonCancel, &QPushButton::clicked, this, [=](){
-        reject();
-    });
+    if (buttonCancel) {
+        connect(buttonCancel, &QPushButton::clicked, this, [=](){
+            emit rejected();
+        });
+    }
 
-    resize(600, sizeHint().height());
     updateTab(tabWidget_->currentIndex());
     buttonOk_->setDisabled(true);
 
@@ -276,7 +290,7 @@ DataSourceConfigDlg::DataSourceConfigDlg(const QString &module, QObject *receive
     }
 }
 
-void DataSourceConfigDlg::updateTab(int index)
+void DataSourceWidget::updateTab(int index)
 {
     switch (index) {
     case DataSourceFile:
@@ -294,7 +308,7 @@ void DataSourceConfigDlg::updateTab(int index)
     }
 }
 
-bool DataSourceConfigDlg::saveConfig()
+bool DataSourceWidget::saveConfig()
 {
     Json::Value config;
 
@@ -369,7 +383,7 @@ bool DataSourceConfigDlg::saveConfig()
         break;
     }
 
-    if (checkApplyToAll_->isChecked()) {
+    if (!checkApplyToAll_ || checkApplyToAll_->isChecked()) {
         foreach (auto &module, JMain::modules()) {
             if (!JMain::instance()->setOption(module, "parser", config)) {
                 QMessageBox::warning(this, tr("Warning"), tr("Save config failure!"));
@@ -386,7 +400,7 @@ bool DataSourceConfigDlg::saveConfig()
     return true;
 }
 
-bool DataSourceConfigDlg::restoreConfig()
+bool DataSourceWidget::restoreConfig()
 {
     Json::Value config = JMain::instance()->option(module_, "parser");
     if (config.isNull()) {
@@ -432,4 +446,24 @@ bool DataSourceConfigDlg::restoreConfig()
     buttonOk_->setDisabled(true);
 
     return true;
+}
+
+// DataSourceDlg
+
+DataSourceDlg::DataSourceDlg(const QString &module, QObject *receiver,
+                             QWidget *parent)
+    : QDialog(parent)
+{
+    QHBoxLayout *layoutMain = new QHBoxLayout(this);
+    layoutMain->setContentsMargins(0, 0, 0, 0);
+
+    DataSourceWidget *dataSourceWidget = new DataSourceWidget(module, receiver, this);
+    layoutMain->addWidget(dataSourceWidget);
+
+    connect(dataSourceWidget, &DataSourceWidget::accepted, this,
+            &DataSourceDlg::accept);
+    connect(dataSourceWidget, &DataSourceWidget::rejected, this,
+            &DataSourceDlg::reject);
+
+    resize(600, sizeHint().height());
 }
