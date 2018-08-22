@@ -152,14 +152,14 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
     });
     connect(buttonRelayer, &QPushButton::clicked, this, [=](){
         //
-        Icd::JGroupChannelPane *groupChannelPane = new Icd::JGroupChannelPane(this);
-        if (groupChannelPane->exec() != QDialog::Accepted) {
+        Icd::JGroupChannelDlg *groupChannelDlg = new Icd::JGroupChannelDlg(this);
+        if (groupChannelDlg->exec() != QDialog::Accepted) {
             return; // cancel
         }
 
         //
-        groupChannelPane->deleteLater();
-        Icd::WorkerPtr selectedWorker = groupChannelPane->selectedWorker();
+        groupChannelDlg->deleteLater();
+        Icd::WorkerPtr selectedWorker = groupChannelDlg->selectedWorker();
         if (selectedWorker) {
             const Icd::ChannelPtr channel = selectedWorker->channel();
             d_editRelayer->setProperty("relayer", QString::fromStdString(channel->identity()));

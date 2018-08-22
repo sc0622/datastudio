@@ -366,42 +366,36 @@
         <translation>清空通道</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="84"/>
         <source>Type of channel:</source>
-        <translation>通道类型：</translation>
+        <translation type="vanished">通道类型：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="87"/>
         <source>Ok</source>
-        <translation>确定</translation>
+        <translation type="vanished">确定</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="88"/>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="vanished">取消</translation>
+    </message>
+    <message>
+        <source>Serial Channel</source>
+        <translation type="vanished">串口通道</translation>
+    </message>
+    <message>
+        <source>UDP Channel</source>
+        <translation type="vanished">UDP通道</translation>
+    </message>
+    <message>
+        <source>File Channel</source>
+        <translation type="vanished">文件通道</translation>
     </message>
     <message>
         <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="93"/>
-        <source>Serial Channel</source>
-        <translation>串口通道</translation>
-    </message>
-    <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="94"/>
-        <source>UDP Channel</source>
-        <translation>UDP通道</translation>
-    </message>
-    <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="95"/>
-        <source>File Channel</source>
-        <translation>文件通道</translation>
-    </message>
-    <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="129"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="130"/>
+        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="94"/>
         <source>Clear channel config could not be restore, continue?</source>
         <translation>清空所有通道配置将不可恢复，是否继续？</translation>
     </message>
@@ -2891,6 +2885,16 @@ Continue to save will lost part data, still continue?</source>
         <location filename="../../common/old/DBAccess/parser/icdparser_sql.cpp" line="17"/>
         <source>Initialize database failure! [reson: %1]</source>
         <translation>初始化数据库失败！[原因：%1]</translation>
+    </message>
+    <message>
+        <location filename="../../common/old/DBAccess/parser/private/icdparser_sql_restore.cpp" line="736"/>
+        <source>Parse rules failure</source>
+        <translation>解析规则数据失败</translation>
+    </message>
+    <message>
+        <location filename="../../common/old/DBAccess/parser/private/icdparser_sql_restore.cpp" line="737"/>
+        <source> (Table: [%1]; rule: [%2])</source>
+        <translation>（表：[%1]；规则名称：[%2]）</translation>
     </message>
 </context>
 <context>

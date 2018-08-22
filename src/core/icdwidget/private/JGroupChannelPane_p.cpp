@@ -8,6 +8,17 @@ namespace Icd {
 JGroupChannelPanePrivate::JGroupChannelPanePrivate(JGroupChannelPane *q)
     : QObject(q)
     , J_QPTR(q)
+    , operateAttrs(Icd::JChannelPane::NoOperate)
+{
+
+}
+
+JGroupChannelPanePrivate::JGroupChannelPanePrivate(JChannelPane::OperateAttribute attrs, JGroupChannelPane *q)
+    : QObject(q)
+    , J_QPTR(q)
+    , operateAttrs(attrs)
+    , buttonOk(nullptr)
+    , buttonCancel(nullptr)
 {
 
 }
@@ -22,61 +33,87 @@ void JGroupChannelPanePrivate::init()
     Q_Q(JGroupChannelPane);
 
     q->setWindowTitle(JGroupChannelPane::tr("Binding Channel"));
-    q->resize(800, 600);
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(q);
-    vertLayoutMain->setContentsMargins(0, 0, 0, 10);
 
     tabWidget = new QTabWidget(q);
     tabWidget->setIconSize(QSize(20, 20));
-    tabWidget->setStyleSheet("QTabWidget:tab-bar{alignment:center;}");
     vertLayoutMain->addWidget(tabWidget);
 
-    widgetFile = new Icd::JChannelPane(tabWidget);
-    widgetSerial = new Icd::JChannelPane(tabWidget);
-    widgetUdp = new Icd::JChannelPane(tabWidget);
+    channelPaneFile = new Icd::JChannelPane(tabWidget);
+    channelPaneSerial = new Icd::JChannelPane(tabWidget);
+    channelPaneUdp = new Icd::JChannelPane(tabWidget);
 
-    tabWidget->addTab(widgetFile, QIcon(":/icdwidget/image/file.png"),
+    tabWidget->addTab(channelPaneFile, QIcon(":/icdwidget/image/file.png"),
                       JGroupChannelPane::tr("File Channel"));
-    tabWidget->addTab(widgetSerial, QIcon(":/icdwidget/image/serial.png"),
+    tabWidget->addTab(channelPaneSerial, QIcon(":/icdwidget/image/serial.png"),
                       JGroupChannelPane::tr("Serial Channel"));
-    tabWidget->addTab(widgetUdp, QIcon(":/icdwidget/image/udp.png"),
+    tabWidget->addTab(channelPaneUdp, QIcon(":/icdwidget/image/udp.png"),
                       JGroupChannelPane::tr("UDP Channel"));
 
-    vertLayoutMain->addSpacing(10);
+    if (operateAttrs != Icd::JChannelPane::AllOperate) {
+        vertLayoutMain->setContentsMargins(0, 0, 0, 10);
+        tabWidget->setStyleSheet("QTabWidget:tab-bar{alignment:center;}");
 
-    QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
-    vertLayoutMain->addLayout(horiLayoutBottom);
+        vertLayoutMain->addSpacing(10);
 
-    horiLayoutBottom->addStretch();
+        QHBoxLayout *horiLayoutBottom = new QHBoxLayout();
+        vertLayoutMain->addLayout(horiLayoutBottom);
 
-    buttonOk = new QPushButton(JGroupChannelPane::tr("Ok"), q);
-    buttonOk->setMinimumWidth(120);
-    buttonOk->setDefault(true);
-    horiLayoutBottom->addWidget(buttonOk);
+        horiLayoutBottom->addStretch();
 
-    buttonCancel = new QPushButton(JGroupChannelPane::tr("Cancel"), q);
-    buttonCancel->setMinimumWidth(120);
-    horiLayoutBottom->addSpacing(10);
-    horiLayoutBottom->addWidget(buttonCancel);
+        buttonOk = new QPushButton(JGroupChannelPane::tr("Ok"), q);
+        buttonOk->setMinimumWidth(120);
+        buttonOk->setDefault(true);
+        horiLayoutBottom->addWidget(buttonOk);
 
-    horiLayoutBottom->addStretch();
+        buttonCancel = new QPushButton(JGroupChannelPane::tr("Cancel"), q);
+        buttonCancel->setMinimumWidth(120);
+        horiLayoutBottom->addSpacing(10);
+        horiLayoutBottom->addWidget(buttonCancel);
+
+        horiLayoutBottom->addStretch();
+
+        connect(buttonOk, &QPushButton::clicked, q, &Icd::JGroupChannelPane::accepted);
+        connect(buttonCancel, &QPushButton::clicked, q, &Icd::JGroupChannelPane::rejected);
+    } else {
+        vertLayoutMain->setContentsMargins(0, 2, 0, 0);
+    }
 
     //
     connect(tabWidget, &QTabWidget::currentChanged, this, [=](int index){
         updateCurrentList(index);
     });
-    connect(widgetFile, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
-        onRowDoubleClicked(widgetFile, row);
+    connect(channelPaneFile, &Icd::JChannelPane::currentRowChanged, this, [=](int currentRow){
+        const int currentTabIndex = tabWidget->currentIndex();
+        if (currentTabIndex != 0) {
+            return;     // ignore
+        }
+        emit q->currentRowChanged(currentRow, currentTabIndex);
     });
-    connect(widgetSerial, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
-        onRowDoubleClicked(widgetSerial, row);
+    connect(channelPaneSerial, &Icd::JChannelPane::currentRowChanged, this, [=](int currentRow){
+        const int currentTabIndex = tabWidget->currentIndex();
+        if (currentTabIndex != 1) {
+            return;     // ignore
+        }
+        emit q->currentRowChanged(currentRow, currentTabIndex);
     });
-    connect(widgetUdp, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
-        onRowDoubleClicked(widgetUdp, row);
+    connect(channelPaneUdp, &Icd::JChannelPane::currentRowChanged, this, [=](int currentRow){
+        const int currentTabIndex = tabWidget->currentIndex();
+        if (currentTabIndex != 2) {
+            return;     // ignore
+        }
+        emit q->currentRowChanged(currentRow, currentTabIndex);
     });
-    connect(buttonOk, SIGNAL(clicked(bool)), q, SLOT(accept()));
-    connect(buttonCancel, SIGNAL(clicked(bool)), q, SLOT(reject()));
+    connect(channelPaneFile, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
+        onRowDoubleClicked(channelPaneFile, row);
+    });
+    connect(channelPaneSerial, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
+        onRowDoubleClicked(channelPaneSerial, row);
+    });
+    connect(channelPaneUdp, &Icd::JChannelPane::rowDoubleClicked, this, [=](int row){
+        onRowDoubleClicked(channelPaneUdp, row);
+    });
 
     //
     updateCurrentList();
@@ -84,19 +121,86 @@ void JGroupChannelPanePrivate::init()
 
 Icd::WorkerPtr JGroupChannelPanePrivate::selectedWorker() const
 {
-    Icd::JChannelPane *widget = nullptr;
-    switch (tabWidget->currentIndex()) {
-    case 0: widget = widgetFile; break;
-    case 1: widget = widgetSerial; break;
-    case 2: widget = widgetUdp; break;
-    default: return Icd::WorkerPtr();
-    }
-
+    Icd::JChannelPane *widget = currentPane();
     if (!widget) {
         return Icd::WorkerPtr();
     }
 
     return widget->selectedWorker();
+}
+
+ChannelType JGroupChannelPanePrivate::currentChannelType() const
+{
+    switch (tabWidget->currentIndex()) {
+    case 0: return Icd::ChannelFile;
+    case 1: return Icd::ChannelSerial;
+    case 2: return Icd::ChannelUdp;
+    default: return Icd::ChannelInvalid;
+    }
+}
+
+JChannelPane *JGroupChannelPanePrivate::currentPane() const
+{
+    switch (tabWidget->currentIndex()) {
+    case 0: return channelPaneFile;
+    case 1: return channelPaneSerial;
+    case 2: return channelPaneUdp;
+    default: return nullptr;
+    }
+}
+
+int JGroupChannelPanePrivate::currentTabIndex() const
+{
+    return tabWidget->currentIndex();
+}
+
+int JGroupChannelPanePrivate::currentRowIndex() const
+{
+    Icd::JChannelPane *currentPane = this->currentPane();
+    if (!currentPane) {
+        return -1;
+    }
+
+    return currentPane->currentRow();
+}
+
+int JGroupChannelPanePrivate::currentRowCount() const
+{
+    Icd::JChannelPane *currentPane = this->currentPane();
+    if (!currentPane) {
+        return 0;
+    }
+
+    return currentPane->rowCount();
+}
+
+void JGroupChannelPanePrivate::addWorker(const WorkerPtr &worker)
+{
+    Icd::JChannelPane *currentPane = this->currentPane();
+    if (!currentPane) {
+        return;
+    }
+
+    //
+    currentPane->addWorker(worker, operateAttrs);
+}
+
+void JGroupChannelPanePrivate::updateAllTab()
+{
+    const int tabCount = tabWidget->count();
+    for (int i = 0; i < tabCount; ++i) {
+        updateCurrentList(i);
+    }
+}
+
+void JGroupChannelPanePrivate::setCurrentRowIndex(int index)
+{
+    Icd::JChannelPane *currentPane = this->currentPane();
+    if (!currentPane) {
+        return;
+    }
+
+    currentPane->setCurrentRow(index);
 }
 
 void JGroupChannelPanePrivate::onRowDoubleClicked(Icd::JChannelPane *widget, int row)
@@ -106,7 +210,7 @@ void JGroupChannelPanePrivate::onRowDoubleClicked(Icd::JChannelPane *widget, int
     }
 
     Q_Q(JGroupChannelPane);
-    q->accept();
+    emit q->accepted();
 }
 
 void JGroupChannelPanePrivate::updateCurrentList(int index)
@@ -121,22 +225,12 @@ void JGroupChannelPanePrivate::updateCurrentList(int index)
 
     //
     Icd::ChannelType channelType = Icd::ChannelInvalid;
-    Icd::JChannelPane *widget = nullptr;
+    Icd::JChannelPane *widget = currentPane();
     switch (index) {
-    case 0:
-        channelType = Icd::ChannelFile;
-        widget = widgetFile;
-        break;
-    case 1:
-        channelType = Icd::ChannelSerial;
-        widget = widgetSerial;
-        break;
-    case 2:
-        channelType = Icd::ChannelUdp;
-        widget = widgetUdp;
-        break;
-    default:
-        return; // invalid channel type
+    case 0: channelType = Icd::ChannelFile; break;
+    case 1: channelType = Icd::ChannelSerial; break;
+    case 2: channelType = Icd::ChannelUdp; break;
+    default: return; // invalid channel type
     }
 
     //
@@ -156,7 +250,7 @@ void JGroupChannelPanePrivate::updateCurrentList(int index)
             continue;   //
         }
         //
-        widget->addWorker(worker, Icd::JChannelPane::NoOperate);
+        widget->addWorker(worker, operateAttrs);
     }
 
     //

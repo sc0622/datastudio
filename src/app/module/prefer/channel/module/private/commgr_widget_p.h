@@ -6,7 +6,7 @@
 #include "../commgr_widget.h"
 
 namespace Icd {
-class JChannelPane;
+class JGroupChannelPane;
 }
 
 class JSplitter;
@@ -32,7 +32,7 @@ private:
     J_DECLARE_PUBLIC(ComMgrWidget)
     JSplitter *splitterTop;
     QScrollArea *scrollArea;
-    Icd::JChannelPane *channelPane;
+    Icd::JGroupChannelPane *groupChannelPane;
     CommDetailWidget *commDetailWidget;
     QPushButton *buttonAdd;
     QPushButton *buttonClear;

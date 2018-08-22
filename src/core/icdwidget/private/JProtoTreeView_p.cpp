@@ -1736,18 +1736,18 @@ bool JProtoTreeViewPrivate::changeChannel(QStandardItem *itemTable)
 
     //
     Q_Q(JProtoTreeView);
-    JGroupChannelPane *groupChannelPane = new JGroupChannelPane(q);
-    if (groupChannelPane->exec() != QDialog::Accepted) {
+    Icd::JGroupChannelDlg *groupChannelDlg = new Icd::JGroupChannelDlg(q);
+    if (groupChannelDlg->exec() != QDialog::Accepted) {
         return false; // cancel
     }
 
     //
-    groupChannelPane->deleteLater();
-    const Icd::WorkerPtr selectedWorker = groupChannelPane->selectedWorker();
+    groupChannelDlg->deleteLater();
+    const Icd::WorkerPtr selectedWorker = groupChannelDlg->selectedWorker();
     if (selectedWorker == nullptr) {
         return false; // invlaid worker
     }
-    groupChannelPane = nullptr;
+    groupChannelDlg = nullptr;
     //
     Icd::TablePtr oldTable;
     if (bindTableTypes_ == JProtoTreeView::BindOnlySend) {
@@ -1850,18 +1850,18 @@ bool JProtoTreeViewPrivate::bindChannel(QStandardItem *itemTable)
         return false;   //
     }
     //
-    JGroupChannelPane *groupChannelPane = new JGroupChannelPane(this);
-    if (groupChannelPane->exec() != QDialog::Accepted) {
+    Icd::JGroupChannelDlg *groupChannelDlg = new Icd::JGroupChannelDlg(this);
+    if (groupChannelDlg->exec() != QDialog::Accepted) {
         return false; // cancel
     }
     //
-    Icd::WorkerPtr selectedWorker = groupChannelPane->selectedWorker();
+    Icd::WorkerPtr selectedWorker = groupChannelDlg->selectedWorker();
     if (!selectedWorker) {
         return false; // invlaid worker
     }
 
-    groupChannelPane->deleteLater();
-    groupChannelPane = nullptr;
+    groupChannelDlg->deleteLater();
+    groupChannelDlg = nullptr;
 
     return bindChannel(itemTable, selectedWorker);
 }

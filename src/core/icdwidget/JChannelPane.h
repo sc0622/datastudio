@@ -33,6 +33,7 @@ public:
     Icd::WorkerPtr selectedWorker() const;
 
     int rowCount() const;
+    int currentRow() const;
     void setCurrentRow(int row);
 
     void addWorker(const Icd::WorkerPtr &worker, OperateAttributes attrs);

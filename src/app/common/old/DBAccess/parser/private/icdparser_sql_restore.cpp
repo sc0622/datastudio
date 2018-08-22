@@ -6,13 +6,6 @@ namespace Icd {
 
 // for query begin
 
-/**
- * @brief SqlParserData::queryItem
- * @param tableId
- * @param dataItemId
- * @param rules
- * @return
- */
 bool SqlParserData::queryItem(const std::string &tableId,
                               const std::string &itemId, stTableRules &rules)
 {
@@ -32,11 +25,6 @@ bool SqlParserData::queryItem(const std::string &tableId,
     return true;
 }
 
-/**
- * @brief SqlParserData::icdBase
- * @param id
- * @return
- */
 stICDBase SqlParserData::icdBase(const std::string &id) const
 {
     stICDBase result;
@@ -50,12 +38,6 @@ stICDBase SqlParserData::icdBase(const std::string &id) const
     return result;
 }
 
-/**
- * @brief SqlParserData::icdBaseArray
- * @param planeID
- * @param systemID
- * @return
- */
 std::vector<stICDBase> SqlParserData::icdBaseArray(const std::string &planeID,
                                                    const std::string &systemID,
                                                    bool topOnly) const
@@ -72,8 +54,8 @@ std::vector<stICDBase> SqlParserData::icdBaseArray(const std::string &planeID,
         return result;
     }
 
-    const int count = icdBase.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = icdBase.size();
+    for (size_t i = 0; i < count; ++i) {
         const std::vector<stICDBase> &base = icdBase[i].second;
         result.insert(result.end(), base.begin(), base.end());
     }
@@ -81,11 +63,6 @@ std::vector<stICDBase> SqlParserData::icdBaseArray(const std::string &planeID,
     return result;
 }
 
-/**
- * @brief SqlParserData::systemBase
- * @param id
- * @return
- */
 stSystem SqlParserData::systemBase(const std::string &planeID,
                                    const std::string &systemID) const
 {
@@ -101,8 +78,8 @@ stSystem SqlParserData::systemBase(const std::string &planeID,
     }
 
     // find system
-    const int count = systems.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = systems.size();
+    for (size_t i = 0; i < count; ++i) {
         stSystem &system = systems[i];
         if (system.nCode == QString::fromStdString(systemID).toInt()) {
             return system;
@@ -112,11 +89,6 @@ stSystem SqlParserData::systemBase(const std::string &planeID,
     return result;
 }
 
-/**
- * @brief SqlParserData::systemBaseArray
- * @param planeID
- * @return
- */
 std::vector<stSystem> SqlParserData::systemBaseArray(const std::string &planeID) const
 {
     std::vector<stSystem> result;
@@ -126,11 +98,6 @@ std::vector<stSystem> SqlParserData::systemBaseArray(const std::string &planeID)
     return result;
 }
 
-/**
- * @brief SqlParserData::planeBase
- * @param id
- * @return
- */
 stPlane SqlParserData::planeBase(const std::string &id) const
 {
     stPlane result;
@@ -145,8 +112,8 @@ stPlane SqlParserData::planeBase(const std::string &id) const
     }
 
     if (!planes.empty()) {
-        const int count = planes.size();
-        for (int i = 0; i < count; ++i) {
+        const size_t count = planes.size();
+        for (size_t i = 0; i < count; ++i) {
             stPlane &plane = planes[i];
             if (plane.nCode == QString::fromStdString(id).toInt()) {
                 return plane;
@@ -157,10 +124,6 @@ stPlane SqlParserData::planeBase(const std::string &id) const
     return result;
 }
 
-/**
- * @brief SqlParserData::planeBaseArray
- * @return
- */
 std::vector<stPlane> SqlParserData::planeBaseArray() const
 {
     std::vector<stPlane> result;
@@ -180,8 +143,8 @@ DMSpace::_vectorIcdTR SqlParserData::tableRules(const std::string &planeID,
     // read icdbase
     std::vector<std::string> tableIds;
     std::vector<stICDBase> tables = icdBaseArray(planeID, systemID);
-    const int count = tables.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = tables.size();
+    for (size_t i = 0; i < count; ++i) {
         tableIds.push_back(tables[i].sID);
     }
 
@@ -192,7 +155,7 @@ DMSpace::_vectorIcdTR SqlParserData::tableRules(const std::string &planeID,
     }
 
     DMSpace::svrMap::iterator it = rules.end();
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         const stICDBase &single = tables[i];
         if ((it = rules.find(single.sID)) != rules.end()) {
             result.push_back(std::make_pair(single, it->second));
@@ -226,8 +189,8 @@ DMSpace::_vectorIcdTR SqlParserData::tableRules(const std::string &tableId) cons
     }
 
     DMSpace::svrMap::iterator it = rules.end();
-    const int count = tables.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = tables.size();
+    for (size_t i = 0; i < count; ++i) {
         const stICDBase &single = tables[i];
         if ((it = rules.find(single.sID)) != rules.end()) {
             result.push_back(std::make_pair(single, it->second));
@@ -244,8 +207,8 @@ DMSpace::pairIcdTR SqlParserData::singleIcdTR(const DMSpace::_vectorIcdTR &rules
 {
     DMSpace::pairIcdTR result;
 
-    const int count = rules.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = rules.size();
+    for (size_t i = 0; i < count; ++i) {
         const DMSpace::pairIcdTR &icdTR = rules[i];
         if (icdTR.first.sID == icdBase.sID) {
             result = icdTR;
@@ -261,8 +224,8 @@ DMSpace::pairPS SqlParserData::singlePS(const DMSpace::_vectorPS &ps,
 {
     DMSpace::pairPS result;
 
-    const int count = ps.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = ps.size();
+    for (size_t i = 0; i < count; ++i) {
         const DMSpace::pairPS &data = ps[i];
         if (data.first.nCode == plane.nCode) {
             result = data;
@@ -276,16 +239,10 @@ DMSpace::pairPS SqlParserData::singlePS(const DMSpace::_vectorPS &ps,
 
 // for parse begin
 
-/**
- * @brief SqlParserData::parseObject
- * @param rule
- * @param object
- * @return
- */
 bool SqlParserData::parseObject(const stTableRules &rule,
                                 const Icd::ObjectPtr &object) const
 {
-    if (0 == object) {
+    if (nullptr == object) {
         return false;
     }
 
@@ -304,18 +261,11 @@ bool SqlParserData::parseObject(const stTableRules &rule,
     return true;
 }
 
-/**
- * @brief SqlParserData::parseItem
- * @param emItem
- * @param item
- * @param deep
- * @return
- */
 bool SqlParserData::parseItem(const stTableRules &rule,
                               Icd::ItemPtr &item,
                               const DMSpace::_vectorIcdTR &tableRules, int deep) const
 {
-    item = 0;
+    item = nullptr;
     bool result = false;
     switch (rule.uType) {
     case GlobalDefine::dtHead:
@@ -399,25 +349,19 @@ bool SqlParserData::parseItem(const stTableRules &rule,
     return result;
 }
 
-/**
- * @brief SqlParserData::parseItemHead
- * @param rule
- * @param head
- * @return
- */
 bool SqlParserData::parseItemHead(const stTableRules &rule,
                                   const Icd::HeaderItemPtr &head) const
 {
-    if (0 == head) {
+    if (nullptr == head) {
         return false;
     }
 
     // value attribute
     const QString value = QString::fromStdString(rule.sDefault);
     if (true/*value.startsWith("0x", Qt::CaseInsensitive)*/) {
-        head->setDefaultValue((unsigned char)(value.toUInt(0, 16) & 0xFF));
+        head->setDefaultValue(static_cast<unsigned char>(value.toUInt(nullptr, 16) & 0xFF));
     } else {
-        head->setDefaultValue((unsigned char)(value.toUInt() & 0xFF));
+        head->setDefaultValue(static_cast<unsigned char>(value.toUInt() & 0xFF));
     }
 
     return true;
@@ -426,7 +370,7 @@ bool SqlParserData::parseItemHead(const stTableRules &rule,
 bool SqlParserData::parseItemCounter(const stTableRules &rule,
                                      const CounterItemPtr &counter) const
 {
-    if (0 == counter) {
+    if (nullptr == counter) {
         return false;
     }
 
@@ -451,16 +395,10 @@ bool SqlParserData::parseItemCounter(const stTableRules &rule,
     return true;
 }
 
-/**
- * @brief SqlParserData::parseItemCheck
- * @param rule
- * @param check
- * @return
- */
 bool SqlParserData::parseItemCheck(const stTableRules &rule,
                                    const Icd::CheckItemPtr &check) const
 {
-    if (0 == check) {
+    if (nullptr == check) {
         return false;
     }
 
@@ -502,21 +440,15 @@ bool SqlParserData::parseItemCheck(const stTableRules &rule,
     return true;
 }
 
-/**
- * @brief SqlParserData::parseItemFrameCode
- * @param rule
- * @param frameCode
- * @return
- */
 bool SqlParserData::parseItemFrameCode(const stTableRules &rule,
                                        const Icd::FrameCodeItemPtr &frameCode) const
 {
-    if (0 == frameCode) {
+    if (nullptr == frameCode) {
         return false;
     }
 
     // frameCodeType attribute
-    switch ((int)rule.dScale) {
+    switch (int(rule.dScale)) {
     case GlobalDefine::frame8:
         frameCode->setFrameCodeType(Icd::FrameCodeU8);
         break;
@@ -539,21 +471,15 @@ bool SqlParserData::parseItemFrameCode(const stTableRules &rule,
     return true;
 }
 
-/**
- * @brief SqlParserData::parseItemNumeric
- * @param rule
- * @param numeric
- * @return
- */
 bool SqlParserData::parseItemNumeric(const stTableRules &rule,
                                      const Icd::NumericItemPtr &numeric) const
 {
-    if (0 == numeric) {
+    if (nullptr == numeric) {
         return false;
     }
 
     // numericType attribute
-    switch (rule.subType) {
+    switch (int(rule.subType)) {
     case GlobalDefine::NumericI8: numeric->setNumericType(Icd::NumericI8); break;
     case GlobalDefine::NumericU8: numeric->setNumericType(Icd::NumericU8); break;
     case GlobalDefine::NumericI16: numeric->setNumericType(Icd::NumericI16); break;
@@ -606,7 +532,7 @@ bool SqlParserData::parseItemNumeric(const stTableRules &rule,
             QString item = it.next();
             double key = item.left(item.indexOf("[")).toDouble();
             item = item.left(item.lastIndexOf("]"));
-            std::string info = item.mid(item.indexOf("[") + strlen("["))
+            std::string info = item.mid(item.indexOf("[") + int(strlen("[")))
                     .toStdString();
             numeric->addSpec(key, info);
         }
@@ -643,16 +569,10 @@ bool SqlParserData::parseItemArray(const stTableRules &rule, const ArrayItemPtr 
     return true;
 }
 
-/**
- * @brief SqlParserData::parseItemBit
- * @param rule
- * @param bit
- * @return
- */
 bool SqlParserData::parseItemBit(const stTableRules &rule,
                                  const Icd::BitItemPtr &bit) const
 {
-    if (0 == bit) {
+    if (nullptr == bit) {
         return false;
     }
 
@@ -680,27 +600,21 @@ bool SqlParserData::parseItemBit(const stTableRules &rule,
             QString item = it.next();
             int key = item.left(item.indexOf("[")).toInt();
             item = item.left(item.lastIndexOf("]"));
-            std::string info = item.mid(item.indexOf("[") + strlen("["))
+            std::string info = item.mid(item.indexOf("[") + int(strlen("[")))
                     .toStdString();
-            bit->addSpec(key, info);
+            bit->addSpec(Icd::icd_uint64(key), info);
         }
     }
 
     return true;
 }
 
-/**
- * @brief SqlParserData::parseItemComplex
- * @param rule
- * @param complex
- * @return
- */
 bool SqlParserData::parseItemComplex(const stTableRules &rule,
                                      const Icd::ComplexItemPtr &complex,
                                      const DMSpace::_vectorIcdTR &tableRules,
                                      int deep) const
 {
-    if (0 == complex) {
+    if (nullptr == complex) {
         return false;
     }
 
@@ -738,18 +652,12 @@ bool SqlParserData::parseItemComplex(const stTableRules &rule,
     }
 }
 
-/**
- * @brief SqlParserData::parseItemFrame
- * @param rule
- * @param frame
- * @return
- */
 bool SqlParserData::parseItemFrame(const stTableRules &rule,
                                    const Icd::FrameItemPtr &frame,
                                    const DMSpace::_vectorIcdTR &tableRules,
                                    int deep) const
 {
-    if (0 == frame) {
+    if (nullptr == frame) {
         return false;
     }
 
@@ -760,7 +668,7 @@ bool SqlParserData::parseItemFrame(const stTableRules &rule,
     QStringListIterator it = lstTable;
 
     // sequenceCount
-    frame->setSequenceCount((int)rule.dOffset);
+    frame->setSequenceCount(int(rule.dOffset));
 
     stICDBase base;
     DMSpace::pairIcdTR icdTR;
@@ -787,17 +695,10 @@ bool SqlParserData::parseItemFrame(const stTableRules &rule,
     return true;
 }
 
-/**
- * @brief SqlParserData::parseTable
- * @param base
- * @param table
- * @param deep
- * @return
- */
 bool SqlParserData::parseTable(const std::string &tableId, const Icd::TablePtr &table,
                                const DMSpace::_vectorIcdTR &tableRules, int deep) const
 {
-    if (0 == table) {
+    if (nullptr == table) {
         return false;
     }
 
@@ -827,13 +728,13 @@ bool SqlParserData::parseTable(const std::string &tableId, const Icd::TablePtr &
     // read rules
     const std::vector<stTableRules> &rules = icdTR.second;
     // parse item
-    const int count = rules.size();
-    for (int i = 0; i < count; ++i) {
-        Icd::ItemPtr item = 0;
+    const size_t count = rules.size();
+    for (size_t i = 0; i < count; ++i) {
+        Icd::ItemPtr item;
         const stTableRules &rule = rules[i];
         if (!parseItem(rule, item, tableRules, deep)) {
-            QString error = QStringLiteral("解析规则数据失败！")
-                    + QStringLiteral("（表：[%1]；数据定义：[%2]）")
+            QString error = QObject::tr("Parse rules failure")
+                    + QObject::tr(" (Table: [%1]; rule: [%2])")
                     .arg(base.sID.c_str()).arg(rule.sName.c_str());
             qWarning() << error;
             return false;
@@ -865,21 +766,13 @@ bool SqlParserData::parseTable(const std::string &tableId, const Icd::TablePtr &
     return true;
 }
 
-/**
- * @brief SqlParserData::parseSystem
- * @param planeID
- * @param systemBase
- * @param system
- * @param deep
- * @return
- */
 bool SqlParserData::parseSystem(const std::string &planeID,
                                 const stSystem &systemBase,
                                 const Icd::SystemPtr &system,
                                 const DMSpace::_vectorIcdTR &tableRules,
                                 int deep) const
 {
-    if (0 == system) {
+    if (nullptr == system) {
         return false;
     }
     // system base
@@ -916,20 +809,13 @@ bool SqlParserData::parseSystem(const std::string &planeID,
     return true;
 }
 
-/**
- * @brief SqlParserData::parseVehicle
- * @param planeID
- * @param vehicle
- * @param deep
- * @return
- */
 bool SqlParserData::parseVehicle(const std::string &planeID,
                                  const Icd::VehiclePtr &vehicle,
                                  const DMSpace::_vectorPS &plane_system,
                                  const DMSpace::_vectorIcdTR &tableRules,
                                  int deep) const
 {
-    if (0 == vehicle) {
+    if (nullptr == vehicle) {
         return false;
     }
     stPlane plane;
@@ -957,8 +843,8 @@ bool SqlParserData::parseVehicle(const std::string &planeID,
     const std::vector<stSystem> &systems = ps.second;
     DMSpace::_vectorIcdTR_Cit itR = tableRules.end();
     std::string group;
-    const int count = systems.size();
-    for (int i = 0; i < count; ++i) {
+    const size_t count = systems.size();
+    for (size_t i = 0; i < count; ++i) {
         DMSpace::_vectorIcdTR rules;
         const stSystem &single = systems[i];
         Icd::SystemPtr system(new Icd::System(vehicle.get()));
@@ -984,12 +870,6 @@ bool SqlParserData::parseVehicle(const std::string &planeID,
     return true;
 }
 
-/**
- * @brief SqlParserData::parseVehicle
- * @param vehicles
- * @param deep
- * @return
- */
 bool SqlParserData::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
 {
     std::vector<stPlane> planes;
@@ -1000,7 +880,7 @@ bool SqlParserData::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
 
     DMSpace::_vectorPS plane_system;
     DMSpace::_vectorIcdTR rules;
-    const int count = planes.size();
+    const size_t count = planes.size();
     if (deep >= Icd::ObjectSystem) {
         // read system base
         std::unordered_map<int, std::vector<stSystem>> allSystem;
@@ -1008,7 +888,7 @@ bool SqlParserData::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
             return false;
         }
         std::unordered_map<int, std::vector<stSystem>>::iterator it = allSystem.end();
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             const stPlane &plane = planes[i];
             if ((it = allSystem.find(plane.nCode)) != allSystem.end()) {
                 plane_system.push_back(std::make_pair(plane, it->second));
@@ -1025,15 +905,15 @@ bool SqlParserData::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
             } else {    // deep to table
                 std::vector<stICDBase> tables
                         = icdBaseArray(std::string(), std::string(), true);
-                const int count = tables.size();
-                for (int i = 0; i < count; ++i) {
+                const size_t count = tables.size();
+                for (size_t i = 0; i < count; ++i) {
                     rules.push_back(std::make_pair(tables[i],
                                                    std::vector<stTableRules>()));
                 }
             }
         }
     } else {
-        for (int i = 0; i < count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             plane_system.push_back(std::make_pair(planes[i],
                                                   std::vector<stSystem>()));
         }
@@ -1041,7 +921,7 @@ bool SqlParserData::parseVehicle(Icd::VehiclePtrArray &vehicles, int deep)
 
     // parse
     std::string planeID;
-    for (int i = 0; i < count; ++i) {
+    for (size_t i = 0; i < count; ++i) {
         planeID = QString::number(planes[i].nCode).toStdString();
         Icd::VehiclePtr vehicle(new Icd::Vehicle());
         if (!parseVehicle(planeID, vehicle, plane_system, rules, deep)) {

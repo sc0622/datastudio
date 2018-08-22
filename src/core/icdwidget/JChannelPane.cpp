@@ -44,6 +44,12 @@ int JChannelPane::rowCount() const
     return d->tableView->rowCount();
 }
 
+int JChannelPane::currentRow() const
+{
+    Q_D(const JChannelPane);
+    return d->tableView->currentRow();
+}
+
 void JChannelPane::setCurrentRow(int row)
 {
     Q_D(JChannelPane);
