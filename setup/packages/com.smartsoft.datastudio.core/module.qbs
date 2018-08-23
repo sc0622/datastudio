@@ -1,6 +1,7 @@
 import qbs
 import qbs.File
 import qbs.FileInfo
+import tools.EnvUtils
 
 PackageProduct {
     name: 'com.smartsoft.datastudio.core'
@@ -13,7 +14,7 @@ PackageProduct {
             var files = [];
             [ 'icdchart', 'icdcomm', 'icdcore', 'icdparser', 'icdwidget', 'icdworker' ]
             .forEach(function(item){
-                  files.push(item + project.variantSuffix + '.dll');
+                  files.push(item + EnvUtils.dylibSuffix(qbs));
               });
             return files;
         }

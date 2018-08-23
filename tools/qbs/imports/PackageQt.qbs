@@ -60,6 +60,7 @@ PackageProduct {
             });
             return files;
         }
+        excludeFiles: [ EnvUtils.excDylibFuzzy(qbs, true) ]
         qbs.install: true
         qbs.installPrefix: dataInstallPrefix
         qbs.installDir: 'plugins'
