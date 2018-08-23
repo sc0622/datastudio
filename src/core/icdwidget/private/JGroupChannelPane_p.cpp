@@ -116,7 +116,7 @@ void JGroupChannelPanePrivate::init()
     });
 
     //
-    updateCurrentList();
+    updateCurrentList(0);
 }
 
 Icd::WorkerPtr JGroupChannelPanePrivate::selectedWorker() const
@@ -225,11 +225,11 @@ void JGroupChannelPanePrivate::updateCurrentList(int index)
 
     //
     Icd::ChannelType channelType = Icd::ChannelInvalid;
-    Icd::JChannelPane *widget = currentPane();
+    Icd::JChannelPane *widget = nullptr;
     switch (index) {
-    case 0: channelType = Icd::ChannelFile; break;
-    case 1: channelType = Icd::ChannelSerial; break;
-    case 2: channelType = Icd::ChannelUdp; break;
+    case 0: channelType = Icd::ChannelFile; widget = channelPaneFile; break;
+    case 1: channelType = Icd::ChannelSerial; widget = channelPaneSerial; break;
+    case 2: channelType = Icd::ChannelUdp; widget = channelPaneUdp; break;
     default: return; // invalid channel type
     }
 

@@ -390,12 +390,12 @@
         <translation type="vanished">文件通道</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="93"/>
+        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="91"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="94"/>
+        <location filename="../../module/prefer/channel/module/private/commgr_widget_p.cpp" line="92"/>
         <source>Clear channel config could not be restore, continue?</source>
         <translation>清空所有通道配置将不可恢复，是否继续？</translation>
     </message>

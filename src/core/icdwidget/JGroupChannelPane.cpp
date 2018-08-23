@@ -65,6 +65,12 @@ void JGroupChannelPane::addWorker(const WorkerPtr &worker)
     return d->addWorker(worker);
 }
 
+QTabWidget *JGroupChannelPane::tabWidget() const
+{
+    Q_D(const JGroupChannelPane);
+    return d->tabWidget;
+}
+
 void JGroupChannelPane::updateAllTab()
 {
     Q_D(JGroupChannelPane);

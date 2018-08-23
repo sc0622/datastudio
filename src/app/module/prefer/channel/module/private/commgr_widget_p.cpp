@@ -12,7 +12,7 @@ ComMgrWidgetPrivate::ComMgrWidgetPrivate(ComMgrWidget *q)
 
 ComMgrWidgetPrivate::~ComMgrWidgetPrivate()
 {
-
+    JMain::saveWidgetState(groupChannelPane->tabWidget());
 }
 
 void ComMgrWidgetPrivate::init()
@@ -57,9 +57,8 @@ void ComMgrWidgetPrivate::init()
     commDetailWidget->hide();
     splitterTop->addWidget(commDetailWidget);
 
-    //
-    connect(groupChannelPane, &Icd::JGroupChannelPane::currentRowChanged, q, [=]
-            (int rowIndex, int tabIndex){
+    connect(groupChannelPane, &Icd::JGroupChannelPane::currentRowChanged,
+            q, [=](int rowIndex, int tabIndex){
         if (tabIndex >= 0 && rowIndex >= 0) {
             Icd::WorkerPtr worker = groupChannelPane->selectedWorker();
             if (worker) {
@@ -70,7 +69,6 @@ void ComMgrWidgetPrivate::init()
             commDetailWidget->hide();
         }
     });
-    //
     connect(buttonAdd, &QPushButton::clicked, q, [=](){
         //
         const Icd::ChannelType channelType = groupChannelPane->currentChannelType();
@@ -96,19 +94,14 @@ void ComMgrWidgetPrivate::init()
         if (result != QMessageBox::Yes) {
             return;
         }
-        //
         Icd::WorkerPool::getInstance()->clearWorker();
     });
 
     //
-    QFile file(":/icdsystem/com_channelmgr/qss/default.qss");
-    if (file.open(QFile::ReadOnly)) {
-        q->setStyleSheet(file.readAll());
-    }
+    JMain::restoreWidgetState(groupChannelPane->tabWidget());
 }
 
 void ComMgrWidgetPrivate::updateUi()
 {
-    //
     groupChannelPane->updateAllTab();
 }

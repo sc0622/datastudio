@@ -6,6 +6,8 @@
 #include "icdworker/icdworker.h"
 #include "JChannelPane.h"
 
+class QTabWidget;
+
 namespace Icd {
 
 // class JGroupChannelPane
@@ -27,6 +29,8 @@ public:
     Icd::ChannelType currentChannelType() const;
 
     void addWorker(const Icd::WorkerPtr &worker);
+
+    QTabWidget *tabWidget() const;
 
 signals:
     void accepted();
