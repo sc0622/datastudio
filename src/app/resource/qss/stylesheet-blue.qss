@@ -141,6 +141,7 @@ QTabWidget QTabBar QToolButton:disabled {
 
 QTabBar {
     /*background: #293956;*/
+    outline: none;
 }
 
 QTabBar::tab:selected {
@@ -770,6 +771,13 @@ QSpinBox::down-arrow:disabled,QDoubleSpinBox::down-arrow:disabled,
 QTimeEdit::down-arrow:disabled,QDateEdit::down-arrow:disabled,
 QDateTimeEdit::down-arrow:disabled {
     image: url(:/datastudio/image/system/spinbox/down_arrow_disabled.png);
+}
+
+QSpinBox[buttonSymbols="2"]::up-button,
+QSpinBox[buttonSymbols="2"]::down-button {
+    margin: 0;
+    width: 0;
+    border: none;
 }
 
 /** QListView **/

@@ -140,6 +140,7 @@ QTabWidget QTabBar QToolButton:disabled {
 
 QTabBar {
     background: transparent;
+    outline: none;
 }
 
 QTabBar::tab:selected {
@@ -847,6 +848,13 @@ QDateTimeEdit::down-arrow:disabled {
     image: url(:/datastudio/image/system/spinbox/down_arrow_disabled.png);
 }
 
+QSpinBox[buttonSymbols="2"]::up-button,
+QSpinBox[buttonSymbols="2"]::down-button {
+    margin: 0;
+    width: 0;
+    border: none;
+}
+
 /** QListView **/
 
 QListView {
@@ -860,7 +868,7 @@ QListView {
 QListView::item {
     background: #2a2a2a;
     margin-bottom: 1px;
-    padding: 2px; 
+    padding: 2px;
     outline: none;
 }
 
@@ -1099,17 +1107,17 @@ QTreeView QPushButton#buttonRun,
     height: 40px;
 }
 
-QTreeView QPushButton#buttonRun:hover, 
+QTreeView QPushButton#buttonRun:hover,
 QTableView QPushButton[_flat_="true"]:hover {
     background: #305060;
 }
 
-QTreeView QPushButton#buttonRun:pressed, 
+QTreeView QPushButton#buttonRun:pressed,
 QTableView QPushButton[_flat_="true"]:pressed {
     background: #306070;
 }
 
-QTreeView QPushButton#buttonRun:disabled, 
+QTreeView QPushButton#buttonRun:disabled,
 QTableView QPushButton[_flat_="true"]:disabled {
     background: #80323232;
     color: #bbb;
@@ -1364,6 +1372,10 @@ QLineEdit[highlight="true"] {
 }
 
 /** custome-ext **/
+
+JIPAddressEdit {
+    qproperty-dotColor: white;
+}
 
 Icd--JProtoTreeViewPrivate {
     qproperty-valueColor: steelblue;

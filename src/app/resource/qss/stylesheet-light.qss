@@ -12,7 +12,7 @@ QWidget[__node__="true"] {
 
 QDialog {
     /*background: #293956;*/
-}
+} 
 
 /** QMessageBox **/
 
@@ -62,14 +62,14 @@ QSlider::groove:horizontal {
     border-radius: 2px;
     border: 1px solid #aaa;
     background: #cce;
-}
+} 
 
 QSlider::handle:horizontal {
     background: rgb(0, 160, 230);
     width: 14px;
     border-radius: 6px;
     margin: -5px 0;
-}
+} 
 
 QSlider::vertical {
     width: 14px;
@@ -141,12 +141,13 @@ QTabWidget QTabBar QToolButton:disabled {
 
 QTabBar {
     /*background: #293956;*/
+    outline: none;
 }
 
 QTabBar::tab:selected {
     background: #fff29d;
     color: black;
-}
+} 
 
 QTabBar::tab:hover {
     background: #ffff2d;
@@ -344,7 +345,7 @@ QHeaderView::section:horizontal {
 QHeaderView::section:vertical {
     border-left: 0;
     border-right: 0;
-    border-top: 0;
+    border-top: 0; 
     border-bottom: 1px solid #ccc;
     padding-left: 4px;
     padding-right: 4px;
@@ -356,7 +357,7 @@ QHeaderView::section:hover {
 
 QHeaderView::section:checked {
     background: #5599ee;
-    color: #ffffaa;
+    color: #ffffaa; 
     font-style: italic;
 }
 
@@ -426,7 +427,7 @@ QTableView {
     outline: none;
 }
 
-QTableView::item {
+QTableView::item { 
     background: #eee;
     padding: 0;
     outline: none;
@@ -442,7 +443,7 @@ QTableView::item:focus {
 
 QTableView::item:selected,
 QTableView::item:selected:!focus {
-    background: #fff29d;
+    background: #fff29d; 
     color: blue;
 }
 
@@ -460,10 +461,10 @@ QStatusBar {
 
 /** QPushButton **/
 
-QPushButton {
-    border-radius: 2px;
+QPushButton { 
+    border-radius: 2px; 
     border: 1px solid #aaaf30;
-    background: #c0cccc;
+    background: #c0cccc; 
     color: black;
     padding-left: 0.6em;
     padding-right: 0.6em;
@@ -475,7 +476,7 @@ QPushButton {
 QPushButton:hover {
     background: #50cccc;
 }
-
+ 
 QPushButton:pressed {
     background: #5d5c91;
     color: white;
@@ -517,7 +518,7 @@ QToolButton:hover {
 QToolButton:pressed {
     background: #446;
     border: none;
-}
+} 
 */
 
 QToolButton:checked {
@@ -531,14 +532,14 @@ QToolButton[popupMode="1"] {
 QToolButton::menu-button {
     padding-right: 3px;
     width: 10px;
-}
+} 
 
 QToolButton::menu-button:!hover {
     background: transparent;
 }
 
 QToolButton::menu-arrow:hover {
-      top: 2px;
+      top: 2px; 
       left: 2px;
 }
 
@@ -582,7 +583,7 @@ QGroupBox {
     padding-top: 0.5em;
     color: black;
     font-weight: bold;
-}
+} 
 
 QGroupBox::title {
     background: #d6dbe9;
@@ -621,7 +622,7 @@ QLineEdit:read-only {
 QLineEdit:hover {
     border: 1px solid darkblue;
     color: darkblue;
-}
+} 
 
 QLineEdit:focus:!read-only {
     color: darkblue;
@@ -666,7 +667,7 @@ QTimeEdit:hover,QDateEdit:hover,QDateTimeEdit:hover {
 
 QComboBox:focus:!read-only,QSpinBox:focus:!read-only,QDoubleSpinBox:focus:!read-only,
 QTimeEdit:focus:!read-only,QDateEdit:focus:!read-only,QDateTimeEdit:focus:!read-only {
-
+    
 }
 
 QComboBox::down-arrow {
@@ -770,6 +771,13 @@ QSpinBox::down-arrow:disabled,QDoubleSpinBox::down-arrow:disabled,
 QTimeEdit::down-arrow:disabled,QDateEdit::down-arrow:disabled,
 QDateTimeEdit::down-arrow:disabled {
     image: url(:/datastudio/image/system/spinbox/down_arrow_disabled.png);
+}
+
+QSpinBox[buttonSymbols="2"]::up-button,
+QSpinBox[buttonSymbols="2"]::down-button {
+    margin: 0;
+    width: 0;
+    border: none;
 }
 
 /** QListView **/
@@ -1068,24 +1076,24 @@ QLineEdit#labelDetail {
 
 /** QTreeView QTableView QPushButton **/
 
-QTreeView QPushButton#buttonRun,
-QTableView QPushButton[_flat_="true"] {
+QTreeView QPushButton#buttonRun, 
+QTableView QPushButton[_flat_="true"] { 
     background: #80dddddd;
     width: 70px;
     height: 40px;
 }
 
-QTreeView QPushButton#buttonRun:hover,
+QTreeView QPushButton#buttonRun:hover, 
 QTableView QPushButton[_flat_="true"]:hover {
     background: #a0ff729d;
 }
-
-QTreeView QPushButton#buttonRun:pressed,
+ 
+QTreeView QPushButton#buttonRun:pressed, 
 QTableView QPushButton[_flat_="true"]:pressed {
     background: #306070;
 }
 
-QTreeView QPushButton#buttonRun:disabled,
+QTreeView QPushButton#buttonRun:disabled, 
 QTableView QPushButton[_flat_="true"]:disabled {
     background: #80aaaaaa;
     color: #bbb;
@@ -1095,13 +1103,13 @@ QTableView QPushButton[_flat_="true"]:disabled {
 
 QwtPlot {
     background: #d6fbf9;
-    padding: 2px;
+    padding: 2px; 
 }
 
 QwtPlot:hover {
     background: #f6fbf9;
 }
-
+   
 QwtPlotCanvas {
     background: #fff;
 }
@@ -1115,7 +1123,7 @@ QwtTextLabel#QwtPlotTitle {
     font-weight: bold;
     font-size: 12px;
     color: black;
-}
+} 
 
 QwtScaleWidget {
     color: black;
@@ -1126,7 +1134,7 @@ QwtLegend {
     background: transparent;
 }
 
-QwtLegendLabel {
+QwtLegendLabel { 
     color: black;
     background: transparent;
     font-size: 13px;
@@ -1137,7 +1145,7 @@ QwtPlot QScrollArea {
 }
 
 /**********************************************************/
-
+ 
 /** QToolBar **/
 
 QWidget#JChartView QToolBar {
@@ -1145,13 +1153,13 @@ QWidget#JChartView QToolBar {
     spacing: 2px;
     min-height: 20px;
     padding: 0;
-}
+} 
 
 QWidget#JChartView QToolBar::separator {
     width: 1px;
     background: #555;
 }
-
+ 
 QWidget#JChartView QToolBar QToolButton {
     background: transparent;
     border: 0;
@@ -1197,7 +1205,7 @@ QTreeView QLineEdit {
 
 QTreeView  QLineEdit:hover {
     border: 0;
-}
+} 
 
 QTreeView QLineEdit:focus:!read-only {
     border-radius: 0;
@@ -1230,7 +1238,7 @@ QToolButton#buttonClose:pressed {
 }
 
 QScrollArea, GeneralWidget {
-    background: white;
+    background: white; 
     outline: none;
 }
 

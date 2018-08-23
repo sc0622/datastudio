@@ -4,6 +4,7 @@
 #include "icdcomm_filechannel.h"
 #include "icdcomm_udpchannel.h"
 #include "icdcomm_arinc429.h"
+#include "icdcomm_ble.h"
 #include <sstream>
 #include <unordered_map>
 
@@ -53,6 +54,8 @@ ChannelPtr Channel::createInstance(Icd::ChannelType channelType)
         return ChannelPtr(new FileChannel());
     case ChannelArinc429:
         return ChannelPtr(new Arinc429Channel());
+    case ChannelBle:
+        return ChannelPtr(new BleChannel());
     default:
         return ChannelPtr();
     }
@@ -76,6 +79,10 @@ ChannelPtr Channel::createInstance(const std::string &config)
         channelType = Icd::ChannelFile;
     } else if (type == "udp") {
         channelType = Icd::ChannelUdp;
+    } else if (type == "arinc429") {
+        channelType = Icd::ChannelArinc429;
+    } else if (type == "ble") {
+        channelType = Icd::ChannelBle;
     } else {
         return ChannelPtr();   // not supported
     }

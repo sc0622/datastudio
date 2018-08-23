@@ -14,6 +14,7 @@ enum ChannelType {
     ChannelUdp,             // UDP通信
     ChannelFile,            // 文件
     ChannelArinc429,        // Arinc429
+    ChannelBle,             // Ble-bluetooth
     ChannelTotal            // 标记边界
 };
 

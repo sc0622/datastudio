@@ -6,5 +6,6 @@
 #include "icdcomm_udpchannel.h"
 #include "icdcomm_serialchannel.h"
 #include "icdcomm_arinc429.h"
+#include "icdcomm_ble.h"
 
 #endif // ICDCOMM_INC_H

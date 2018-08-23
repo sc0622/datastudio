@@ -45,7 +45,7 @@ ObjectEdit::ObjectEdit(QWidget *parent)
 
     editMark_ = new QLineEdit(this);
     editMark_->setMaxLength(255);
-    editMark_->setToolTip(QStringLiteral("At most 255 bytes"));
+    editMark_->setToolTip(tr("At most 255 bytes"));
     editMark_->setValidator(new QRegExpValidator(QRegExp("([a-zA-Z_]){1}([a-zA-Z0-9_]){,254}")));
     layoutBase_->addRow(tr("<font color=red>*</font>Identity:"), editMark_);
 

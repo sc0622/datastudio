@@ -2526,6 +2526,7 @@ Continue to save will lost part data, still continue?</source>
     </message>
     <message>
         <location filename="../../module/edit/old/view/ObjectEdit.cpp" line="43"/>
+        <location filename="../../module/edit/old/view/ObjectEdit.cpp" line="48"/>
         <location filename="../../module/edit/old/view/ObjectEdit.cpp" line="54"/>
         <source>At most 255 bytes</source>
         <translation>最多255个字节</translation>
