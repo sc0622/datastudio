@@ -960,7 +960,8 @@ Continue to save will lost part data, still continue?</source>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2726"/>
         <source>Failure!
 [%1]</source>
-        <translation>失败！\n[%1]</translation>
+        <translation>失败！
+[%1]</translation>
     </message>
     <message>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2729"/>
