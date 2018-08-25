@@ -144,7 +144,7 @@ void *ObjectEdit::nonData()
         return nullptr;
     }
 
-    return reinterpret_cast<void*>(&data_);
+    return static_cast<void*>(&data_);
 }
 
 void *ObjectEdit::nonOldData()
@@ -153,7 +153,7 @@ void *ObjectEdit::nonOldData()
         return nullptr;
     }
 
-    return reinterpret_cast<void*>(&oldData_);
+    return static_cast<void*>(&oldData_);
 }
 
 bool ObjectEdit::setData(const _UIData &data)
@@ -433,8 +433,8 @@ bool ObjectEdit::_validate()
         QString section = "name";
         QMap<QString, QString> existed;
         QVariantList args;
-        args.append(qVariantFromValue(static_cast<void*>(&existed)));
-        args.append(qVariantFromValue(static_cast<void*>(&section)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&existed)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&section)));
         jnotify->send("edit.queryExistedData", args);
         if (existed.contains(name())) {
             editName_->setFocus();
@@ -457,8 +457,8 @@ bool ObjectEdit::_validate()
         QString section = "code";
         QMap<QString, QString> existed;
         QVariantList args;
-        args.append(qVariantFromValue(static_cast<void*>(&existed)));
-        args.append(qVariantFromValue(static_cast<void*>(&section)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&existed)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&section)));
         jnotify->send("edit.queryExistedData", args);
         if (existed.contains(mark)) {
             editMark_->setFocus();
@@ -479,9 +479,9 @@ bool ObjectEdit::_validate()
         //
         int lengthCheck = 0;
         QVariantList args;
-        args.append(qVariantFromValue(static_cast<void*>(&lengthCheck)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&lengthCheck)));
         QString command("lengthCheck");
-        args.append(qVariantFromValue(static_cast<void*>(&command)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&command)));
         jnotify->send("edit.queryTableInformation", args);
         if (0 == lengthCheck) {
             return true;    // 不进行长度校验
@@ -493,15 +493,15 @@ bool ObjectEdit::_validate()
         int offset = 0;
         // 剩余可用长度
         args.clear();
-        args.append(qVariantFromValue(static_cast<void*>(&remains)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&remains)));
         command = "remains";
-        args.append(qVariantFromValue(static_cast<void*>(&command)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&command)));
         jnotify->send("edit.queryTableInformation", args);
 
         // 长度偏移量
         args.clear();
-        args.append(qVariantFromValue(static_cast<void*>(&data_)));
-        args.append(qVariantFromValue(static_cast<void*>(&offset)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&data_)));
+        args.append(qVariantFromValue(reinterpret_cast<void*>(&offset)));
         jnotify->send("edit.queryLengthOffset", args);
         if (remains >= offset) {
             if (newItem && remains < 0) {   // 如果是新增，需要判定剩余长度

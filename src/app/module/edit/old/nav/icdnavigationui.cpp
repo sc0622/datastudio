@@ -1249,17 +1249,23 @@ ICDElement::smtElement ICDNavigationUi::savePastedData(const QVector<int> &param
 }
 
 // 保存内存数据到数据源
-bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err)
+bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err, bool saveAll)
 {
-    QStandardItem *current = q_treeView->currentItem();
-    if (!current) {
+    QStandardItem *item = nullptr;
+    if (saveAll) {
+        item = q_treeView->topLevelItem(0, 0);
+    } else {
+        item = q_treeView->currentItem();
+    }
+
+    if (!item) {
         return false;
     }
-    QString keys = queryNodeKeys(current);
+    QString keys = queryNodeKeys(item);
     // 保存数据到数据源
     if (GlobalDefine::dsDatabase == type) {
         // 保存根节点时二次确认
-        if (keys.isEmpty() && !current->hasChildren()) {
+        if (keys.isEmpty() && !item->hasChildren()) {
             if (QMessageBox::warning(this,
                                      QStringLiteral("确认提示"),
                                      QStringLiteral("即将删除所有机型数据，包括下属数据")
@@ -1292,7 +1298,7 @@ bool ICDNavigationUi::saveMemoryData(int type, const QString &file, QString &err
 
     if (err.isEmpty()) {
         // 更新数据状态标识
-        updateDataState(current, StateReset);
+        updateDataState(item, StateReset);
     }
 
     return true;
@@ -2871,10 +2877,10 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
         // 更新树节点
         const QString name = QString("<font color=green size=2>[%1:%2]</font>"
                                      "%3<font color=green size=2>[%4]</font>")
-                             .arg(itemOffset + 1, 4, 10, QChar('0'))
-                             .arg(complex->index(), 4, 10, QChar('0'))
-                             .arg(data.sName.c_str())
-                             .arg(QString::fromStdString(table->typeString()).toUpper());
+                .arg(itemOffset + 1, 4, 10, QChar('0'))
+                .arg(complex->index(), 4, 10, QChar('0'))
+                .arg(data.sName.c_str())
+                .arg(QString::fromStdString(table->typeString()).toUpper());
         if (item) { // 更新节点
             item->setText(name);
         } else { // 插入节点

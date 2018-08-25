@@ -273,7 +273,14 @@ void ToolBar::addEditExportAction(const Json::Value &option)
                                             tr("Export to file"));
     connect(actionExportToFile, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.export.file");
-    }); //
+    });
+    // save
+    QAction *actionSave = addAction(QIcon(":/datastudio/image/toolbar/save.png"),
+                                            tr("Save data"));
+    connect(actionSave, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.save");
+    });
+    //
     jnotify->on("edit.toolbar.action.enabled", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
         if (args.count() != 2) {
@@ -285,6 +292,8 @@ void ToolBar::addEditExportAction(const Json::Value &option)
             actionExportToDB->setEnabled(enabled);
         } else if (name == "file") {
             actionExportToFile->setEnabled(enabled);
+        } else if (name == "save") {
+            actionSave->setEnabled(enabled);
         }
     });
 #if 1

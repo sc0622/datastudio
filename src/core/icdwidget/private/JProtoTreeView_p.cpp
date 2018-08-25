@@ -1813,7 +1813,7 @@ bool JProtoTreeViewPrivate::changeChannel(QStandardItem *itemTable)
         oldWorker->workerSend()->setTable(Icd::TablePtr());
         oldWorker->workerRecv()->setTable(Icd::TablePtr());
         selectedWorker->workerSend()->setTable(table);
-        selectedWorker->workerRecv()->setTable(Icd::TablePtr(reinterpret_cast<Table *>(table->clone())));
+        selectedWorker->workerRecv()->setTable(Icd::TablePtr(static_cast<Table *>(table->clone())));
     }
 
     //
@@ -1927,7 +1927,7 @@ bool JProtoTreeViewPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
         worker->workerRecv()->setTable(table);
     } else if (bindTableTypes_ == JProtoTreeView::BindAllTable) {
         worker->workerSend()->setTable(table);
-        worker->workerRecv()->setTable(Icd::TablePtr(reinterpret_cast<Table *>(table->clone())));
+        worker->workerRecv()->setTable(Icd::TablePtr(static_cast<Table *>(table->clone())));
         if (treeModes_ & JProtoTreeView::TreeModeSimulator) {
             worker->workerSend()->setFrameLoop(true);
         }

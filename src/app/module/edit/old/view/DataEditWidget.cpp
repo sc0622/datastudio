@@ -93,6 +93,9 @@ DataEditWidget::DataEditWidget(QWidget *parent)
     jnotify->on("edit.toolbar.export.file", this, [=](JNEvent &){
         slotSave2Source(GlobalDefine::dsFile);
     });
+    jnotify->on("edit.toolbar.save", this, [=](JNEvent &){
+        slotSave2Source(GlobalDefine::dsNone);
+    });
     jnotify->on("edit.toolbar.tool.genguid", this, [=](JNEvent &){
         const QString guid = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
         QClipboard *clipboard = QApplication::clipboard();
@@ -166,7 +169,7 @@ void DataEditWidget::initUI(int type, void *data)
         showData(planes);
         setActionEnabled("file", !planes.empty());
     } else if (type == GlobalDefine::ntVehicle) {
-        ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
+        ICDElement::smtElement element = *static_cast<ICDElement::smtElement *>(data);
         PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(element);
         const auto &systems = plane->allSystem();
         foreach (const auto &system, systems) {
@@ -175,19 +178,19 @@ void DataEditWidget::initUI(int type, void *data)
         data_ = plane->clone();
         showData(systems);
     } else if (type == GlobalDefine::ntSystem) {
-        ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
+        ICDElement::smtElement element = *static_cast<ICDElement::smtElement *>(data);
         SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(element);
         data_ = system->clone();
         showData(system->allTable());
     } else if (type == GlobalDefine::ntTable) {
-        ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(data);
+        ICDElement::smtElement element = *static_cast<ICDElement::smtElement *>(data);
         TableNode::smtTable table = std::dynamic_pointer_cast<TableNode>(element);
         data_ = table->clone();
         if (table) {
             showData(table->allRule());
         }
     } else if (type == GlobalDefine::ntRule) {
-        std::vector<int> &rule = *reinterpret_cast<std::vector<int> *>(data);
+        std::vector<int> &rule = *static_cast<std::vector<int> *>(data);
         if (2 == rule.size()) {
             subType_ = rule.at(0);
             ICDElement::smtElement element = *reinterpret_cast<ICDElement::smtElement *>(rule.at(1));
@@ -230,7 +233,7 @@ void DataEditWidget::initUI(int type, void *data)
         jnotify->send("edit.queryNodeFlag", args);
 
         if (Qt::Unchecked == loaded) {
-            editStatus_->setText(tr("Not loaded yet and cannot unable to operate"));
+            editStatus_->setText(tr("Not loaded yet and can't operate"));
             editStatus_->setHidden(loaded);
             // 更新按钮状态
             setActionEnabled("add", loaded);
@@ -2023,7 +2026,7 @@ void DataEditWidget::saveEditData(void *data)
 {
     if (GlobalDefine::ntUnknown == dataType_) {
         PlaneNode::smtPlane plane;
-        const stPlane &_plane = *reinterpret_cast<stPlane *>(data);
+        const stPlane &_plane = *static_cast<stPlane *>(data);
         const size_t count = vData_.size();
         for (size_t i = 0; i < count; ++i) {
             if (atoi(vData_[i]->id().c_str()) == _plane.nCode) {
@@ -2033,21 +2036,21 @@ void DataEditWidget::saveEditData(void *data)
             }
         }
     } else if (GlobalDefine::ntVehicle == dataType_) {
-        const stSystem &_system = *reinterpret_cast<stSystem *>(data);
+        const stSystem &_system = *static_cast<stSystem *>(data);
         PlaneNode::smtPlane plane = std::dynamic_pointer_cast<PlaneNode>(data_);
         SystemNode::smtSystem system = plane->system(_system.nCode);
         if (system) {
             system->setSystem(_system);
         }
     } else if (GlobalDefine::ntSystem == dataType_) {
-        const stICDBase &_icdBase = *reinterpret_cast<stICDBase *>(data);
+        const stICDBase &_icdBase = *static_cast<stICDBase *>(data);
         SystemNode::smtSystem system = std::dynamic_pointer_cast<SystemNode>(data_);
         TableNode::smtTable table = system->table(_icdBase.sID);
         if (table) {
             table->setICDBase(_icdBase);
         }
     } else if (GlobalDefine::ntTable == dataType_) {
-        ICDMetaData::smtMeta meta = *reinterpret_cast<ICDMetaData::smtMeta *>(data);
+        ICDMetaData::smtMeta meta = *static_cast<ICDMetaData::smtMeta *>(data);
         TableNode::smtTable table = SMT_CONVERT(TableNode, data_);
         ICDMetaData::smtMeta old = table->rule(meta->serial());
         // 如果数据长度变更，则重新计算表数据项字节号
@@ -2381,7 +2384,7 @@ void DataEditWidget::slotSave2Memory(void *data, bool &result)
             // 保存到内存
         } else { // 新增或者仅编辑了数据
             QVariantList args;
-            args.append(qVariantFromValue(static_cast<void*>(data)));
+            args.append(qVariantFromValue(data));
             args.append(qVariantFromValue(static_cast<void*>(&result)));
             jnotify->send("edit.updateNodeData", args);
         }
@@ -2692,34 +2695,74 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
     QString err;
     QString actionName;
     QVector<int> params;
-    if (GlobalDefine::dsDatabase == type) {   // 保存数据库
+
+    //
+    QString filePath;
+    if (type == GlobalDefine::dsNone) {
+        const Json::Value parser = JMain::instance()->option("edit", "parser");
+        if (!parser.isMember("sourceType")) {
+            return;
+        }
+        const std::string sourceType = parser["sourceType"].asString();
+        if (sourceType == "sql") {
+            type = GlobalDefine::dsDatabase;
+        } else if (sourceType == "file") {
+            type = GlobalDefine::dsFile;
+            filePath = QString::fromStdString(parser["filePath"].asString());
+        } else {
+            return;
+        }
+    }
+
+    switch (type) {
+    case GlobalDefine::dsDatabase:
+    {
         actionName = "db";
         setActionEnabled(actionName, false);
         params << int(&err) << int(&defaultPath_);
         args.clear();
         args.append(qVariantFromValue(static_cast<void*>(&params)));
         args.append(int(GlobalDefine::dsDatabase));
+        if (!filePath.isEmpty()) {
+            args.append(true);
+        }
         jnotify->send("edit.saveMemoryData", args);
 
         tip = tr("Save protocol to database");
-    } else if (GlobalDefine::dsFile == type) {  // 保存文件
+
+        break;
+    }
+    case GlobalDefine::dsFile:
+    {
         actionName = "file";
         setActionEnabled(actionName, false);
-        QString file = QFileDialog::getSaveFileName(this, tr("Save protocol"), defaultPath_,
-                                                    "JSON files (*.json);;"
-                                                    "XML files (*.xml)");
-        if (file.isEmpty()) {
-            setActionEnabled(actionName, true);
-            return;
+        if (filePath.isEmpty()) {
+            QString file = QFileDialog::getSaveFileName(this, tr("Save protocol"), defaultPath_,
+                                                        "JSON files (*.json);;"
+                                                        "XML files (*.xml)");
+            if (file.isEmpty()) {
+                setActionEnabled(actionName, true);
+                return;
+            }
+            defaultPath_ = file;
+        } else {
+            defaultPath_ = filePath;
         }
-        defaultPath_ = file;
         params << int(&err) << int(&defaultPath_);
         args.clear();
         args.append(qVariantFromValue(static_cast<void*>(&params)));
         args.append(int(GlobalDefine::dsFile));
+        if (!filePath.isEmpty()) {
+            args.append(true);
+        }
         jnotify->send("edit.saveMemoryData", args);
 
         tip = tr("Save protocol to file [%1]").arg(defaultPath_);
+
+        break;
+    }
+    default:
+        return;
     }
 
     if (!err.isEmpty()) {

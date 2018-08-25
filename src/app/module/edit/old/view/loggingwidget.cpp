@@ -162,7 +162,7 @@ void LoggingWidget::slotTypeChanged(int index)
         return;
     }
 
-    ICDCommonData::smtCommon &smtData = *reinterpret_cast<ICDCommonData::smtCommon*>(currentEdit_->nonData());
+    ICDCommonData::smtCommon &smtData = *static_cast<ICDCommonData::smtCommon*>(currentEdit_->nonData());
     if (!smtData) {
         return;
     }
@@ -243,7 +243,7 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
     const size_t count = dics.size();
     int lowerBound = GlobalDefine::dtHead;
     int upperBound = GlobalDefine::dtBuffer;
-    const ICDMetaData::smtMeta &meta = *reinterpret_cast<ICDMetaData::smtMeta*>(data.data);
+    const ICDMetaData::smtMeta &meta = *static_cast<ICDMetaData::smtMeta*>(data.data);
     if (!meta) {
         Q_ASSERT(false);
         return;

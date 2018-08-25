@@ -80,7 +80,7 @@ public:
     ICDElement::smtElement savePastedData(const QVector<int> &params);
 
     // 保存内存数据到数据源
-    bool saveMemoryData(int type, const QString &file, QString &err);
+    bool saveMemoryData(int type, const QString &file, QString &err, bool saveAll = false);
 
 Q_SIGNALS:
 

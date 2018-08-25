@@ -930,7 +930,11 @@ bool DataManegement::loadTableRule(int plane, int system, const std::string &tab
     if (!_table) {
         return false;
     }
+#if 0
     _table->setLengthCheck(_table->length() == int(_table->realLength()) && _table->length() > 0);
+#else
+    _table->setLengthCheck(false);
+#endif
     // 更新内存数据
     sysNode->addTable(_table);
 
@@ -1256,8 +1260,12 @@ bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBa
             const stICDBase &icdBase = _table->icdBase();
             system_table[QString(icdBase.sGroup.c_str())
                     .split("/").last().toInt()].push_back(_table);
+#if 0
             _table->setLengthCheck(_table->length() == int(_table->realLength())
                                    && _table->length() > 0);
+#else
+            _table->setLengthCheck(false);
+#endif
         }
     }
     // 冗余数据
@@ -1401,8 +1409,12 @@ std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlR
         _table = recursiveLinkTable(tables, topTables.at(i));
         if (_table) {
             const stICDBase &icdBase = _table->icdBase();
+#if 0
             _table->setLengthCheck(_table->length() == int(_table->realLength())
                                    && _table->length() > 0);
+#else
+            _table->setLengthCheck(false);
+#endif
             result[icdBase.sGroup].push_back(_table);
         }
     }
@@ -2228,13 +2240,13 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
     }
     ICDElement::smtElement *result = jVariantFromVoid<ICDElement::smtElement>(args[1]);
     if (!result) {
-        return -1;;
+        return -1;
     }
     // 查询源数据
     ICDElement::smtElement element;
     QVariantList newArgs;
     newArgs.append(qVariantFromValue(static_cast<void*>(&element)));
-    newArgs.append(params->at(0));
+    newArgs.append(qVariantFromValue(reinterpret_cast<void*>(params->at(0))));
     Icd::JNEvent newEvent("edit.querySingleElement", newArgs);
     querySingleElement(newEvent);
     if (!element) {

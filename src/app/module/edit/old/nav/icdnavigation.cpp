@@ -289,7 +289,7 @@ JLRESULT ICDNavigation::savePastedData(const Icd::JNEvent &event)
 JLRESULT ICDNavigation::saveMemoryData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
-    if (args.count() < 2) {
+    if (args.size() < 2) {
         return -1;
     }
 
@@ -308,7 +308,12 @@ JLRESULT ICDNavigation::saveMemoryData(const Icd::JNEvent &event)
         return -1;
     }
 
-    q_ui->saveMemoryData(args[1].toInt(), *file, *err);
+    bool saveAll = false;
+    if (args.size() > 2) {
+        saveAll = args[2].toBool();
+    }
+
+    q_ui->saveMemoryData(args[1].toInt(), *file, *err, saveAll);
 
     return 0;
 }
