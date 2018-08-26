@@ -156,7 +156,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const Icd::FrameItemPtr &
         if (!frameItem || !table) {
             continue;
         }
-        updateFrameTable(frameItem, table, showValue);
+        updateFrameTable(frameItem, table, showValue, i);
         updateItemData(frameItem, table, showValue);
     }
 }
@@ -306,7 +306,7 @@ void JWorkerGroup::setDirty()
     }
 }
 
-QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
+QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offset)
 {
     if (!object) {
         Q_ASSERT(false);
@@ -337,7 +337,7 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
                         .arg(int(table->bufferOffset() - itemOffset), 4, 10, QChar('0')));
         } else {
             text.append(QString("<font color=green size=2>[%1:%2]</font> ")
-                        .arg(table->itemOffset(), 4, 10, QChar('0'))
+                        .arg(table->itemOffset() + offset, 4, 10, QChar('0'))
                         .arg(int(table->bufferOffset()), 4, 10, QChar('0')));
         }
 
@@ -822,7 +822,7 @@ void JWorkerGroup::updateItemBitMap(QStandardItem *item, const BitItemPtr &bitIt
     }
 }
 
-void JWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, bool show)
+void JWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, bool show, int index)
 {
     if (!item || !table) {
         return;
@@ -854,7 +854,7 @@ void JWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, 
         QString text;
         // offset
         if (showAttris_ & JProtoTreeView::ShowOffset) {
-            text.append(JWorkerGroup::generateItemOffset(table));
+            text.append(JWorkerGroup::generateItemOffset(table, index));
         }
         // name
         const std::string name = table->name();

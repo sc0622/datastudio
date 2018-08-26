@@ -42,7 +42,7 @@ public:
     void setBindTableType(JProtoTreeView::BindTableTypes type);
     void setDirty();
 
-    static QString generateItemOffset(const ObjectPtr &object);
+    static QString generateItemOffset(const ObjectPtr &object, int offset = 0);
 
 signals:
 
@@ -60,7 +60,7 @@ private:
     void updateItemData(QStandardItem *item, const Icd::TablePtr &table, bool showValue);
     void updateItemData(QStandardItem *item, const Icd::ItemPtr &dataItem, bool showValue);
     void updateItemBitMap(QStandardItem *item, const Icd::BitItemPtr &bitItem, bool showValue);
-    void updateFrameTable(QStandardItem *item, const Icd::TablePtr &table, bool show);
+    void updateFrameTable(QStandardItem *item, const Icd::TablePtr &table, bool show, int index = 0);
 
 private:
     JProtoTreeViewPrivate *treeView_;

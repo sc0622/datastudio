@@ -22,26 +22,7 @@ bool ComMgrWidget::init()
 {
     Q_D(ComMgrWidget);
 
-    if (!loadChannelConfig()) {
-        return false;
-    }
-
     d->updateUi();
-
-    return true;
-}
-
-bool ComMgrWidget::loadChannelConfig()
-{
-    const Json::Value value = Json::resolve(JMain::instance()->configFile().toStdString(),
-                                            "global.channel.filePath");
-    if (value.isNull()) {
-        return false;
-    }
-
-    if (!Icd::WorkerPool::getInstance()->loadConfig(value.asString())) {
-        return false;
-    }
 
     return true;
 }

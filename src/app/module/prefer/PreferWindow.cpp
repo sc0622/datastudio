@@ -50,6 +50,10 @@ bool Window::init()
         JMain::restoreWidgetState(splitter_);
     }
 
+    if (result) {
+        result = loadChannelConfig();
+    }
+
     listWidget_->clear();
 
     // channel item
@@ -99,6 +103,21 @@ void Window::onCurrentRowChanged(int currentRow)
     default:
         break;
     }
+}
+
+bool Window::loadChannelConfig()
+{
+    const Json::Value value = Json::resolve(JMain::instance()->configFile().toStdString(),
+                                            "global.channel.filePath");
+    if (value.isNull()) {
+        return false;
+    }
+
+    if (!Icd::WorkerPool::getInstance()->loadConfig(value.asString())) {
+        return false;
+    }
+
+    return true;
 }
 
 }

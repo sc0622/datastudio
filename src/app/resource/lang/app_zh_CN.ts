@@ -2671,12 +2671,12 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Prefer::Window</name>
     <message>
-        <location filename="../../module/prefer/PreferWindow.cpp" line="58"/>
+        <location filename="../../module/prefer/PreferWindow.cpp" line="62"/>
         <source>Channel management</source>
         <translation>通道管理</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/PreferWindow.cpp" line="64"/>
+        <location filename="../../module/prefer/PreferWindow.cpp" line="68"/>
         <source>Database management</source>
         <translation>数据来源</translation>
     </message>

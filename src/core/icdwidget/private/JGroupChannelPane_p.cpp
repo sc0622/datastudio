@@ -13,7 +13,8 @@ JGroupChannelPanePrivate::JGroupChannelPanePrivate(JGroupChannelPane *q)
 
 }
 
-JGroupChannelPanePrivate::JGroupChannelPanePrivate(JChannelPane::OperateAttribute attrs, JGroupChannelPane *q)
+JGroupChannelPanePrivate::JGroupChannelPanePrivate(JChannelPane::OperateAttribute attrs,
+                                                   JGroupChannelPane *q)
     : QObject(q)
     , J_QPTR(q)
     , operateAttrs(attrs)

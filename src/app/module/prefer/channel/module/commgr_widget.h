@@ -23,9 +23,6 @@ signals:
 public slots:
 
 private:
-    bool loadChannelConfig();
-
-private:
     Q_DISABLE_COPY(ComMgrWidget)
     J_DECLARE_PRIVATE(ComMgrWidget)
 };

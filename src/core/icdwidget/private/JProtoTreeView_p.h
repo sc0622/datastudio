@@ -182,7 +182,7 @@ private:
 
     static bool loadItem(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
 
-    static QStandardItem *loadTable(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table);
+    static QStandardItem *loadTable(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table, int index = 0);
     static bool loadItem(QObject *target, QStandardItem *itemTable, const Icd::ItemPtr &item);
     static bool loadFrameCodeItem(QObject *target, QStandardItem *itemTable, const Icd::FrameCodeItemPtr &frameCodeItem);
     static bool loadComplexItem(QObject *target, QStandardItem *itemDataItem, const Icd::ComplexItemPtr &complexItem);

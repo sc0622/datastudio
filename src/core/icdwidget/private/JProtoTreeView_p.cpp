@@ -2396,7 +2396,7 @@ bool JProtoTreeViewPrivate::loadItem(QObject *target, QStandardItem *itemTable,
 }
 
 QStandardItem *JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *itemDataItem,
-                                                const Icd::TablePtr &table)
+                                                const Icd::TablePtr &table, int index)
 {
     //
     if (!target || !itemDataItem || !table) {
@@ -2424,7 +2424,7 @@ QStandardItem *JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *
     QString text;
     // offset
     if (showAttris & JProtoTreeView::ShowOffset) {
-        text.append(JWorkerGroup::generateItemOffset(table));
+        text.append(JWorkerGroup::generateItemOffset(table, index));
     }
     // name
     const QString name = QString::fromStdString(table->name().empty() ? "<?>" : table->name());
@@ -2519,12 +2519,13 @@ bool JProtoTreeViewPrivate::loadFrameItem(QObject *target, QStandardItem *itemDa
     }
 
     //
+    int index = 0;
     const Icd::TablePtrMap &allTable = fameItem->allTable();
     for (Icd::TablePtrMap::const_iterator citer = allTable.cbegin();
-         citer != allTable.cend(); ++citer) {
+         citer != allTable.cend(); ++citer,++index) {
         const Icd::TablePtr &table = citer->second;
         //
-        if (!loadTable(target, itemDataItem, table)) {
+        if (!loadTable(target, itemDataItem, table, index)) {
             continue;
         }
         //
