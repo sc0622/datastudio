@@ -353,7 +353,7 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object)
         qreal tableOffset = -1;
         if (item->parent() && item->parent()->objectType() == Icd::ObjectTable) {
             const Icd::Table *table = dynamic_cast<Icd::Table *>(item->parent());
-            if (table && table->parent()) {
+            if (table && table->parent() && table->parent()->objectType() != Icd::ObjectSystem) {
                 tableOffset = table->bufferOffset();
             }
         }

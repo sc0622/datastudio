@@ -36,7 +36,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/jk-4s25ap/config/protocol.json",
+            "filePath" : "C:/Users/iclosure/Documents/GitHub/jk-4s25ap/config/protocol.xml",
             "sourceType" : "file"
          }
       },
@@ -94,7 +94,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/jk-4s25ap/config/protocol.json",
+            "filePath" : "C:/Users/iclosure/Documents/GitHub/jk-4s25ap/config/protocol.xml",
             "sourceType" : "file"
          }
       },
@@ -117,7 +117,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/jk-4s25ap/config/protocol.json",
+            "filePath" : "C:/Users/iclosure/Documents/GitHub/jk-4s25ap/config/protocol.xml",
             "sourceType" : "file"
          }
       }
