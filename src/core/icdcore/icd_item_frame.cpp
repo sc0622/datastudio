@@ -3,6 +3,7 @@
 #include "icd_item_framecode.h"
 #include "icd_table.h"
 #include <algorithm>
+#include <unordered_map>
 
 namespace Icd {
 

@@ -1726,7 +1726,14 @@ Value &Path::make(Value &root) const {
         // Error: node is not an object at position...
       }
       if (!node->isMember(arg.key_)) {
-          (*node)[arg.key_] = Json::Value(objectValue);
+          Args::const_iterator _next_it = it + 1;
+          if (_next_it != args_.end()
+                  && (_next_it->kind_ == PathArgument::kindIndex
+                      || _next_it->kind_ == PathArgument::kindIndexKey)) {
+              (*node)[arg.key_] = Json::Value(arrayValue);
+          } else {
+              (*node)[arg.key_] = Json::Value(objectValue);
+          }
       }
       node = &((*node)[arg.key_]);
     } else if (arg.kind_ == PathArgument::kindIndexKey) {

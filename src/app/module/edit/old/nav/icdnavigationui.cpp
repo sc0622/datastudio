@@ -892,7 +892,7 @@ QString ICDNavigationUi::nextID(int type)
                     .append(QString("_%1").arg(code, 4, 10, QChar('0')));
         }
 #else
-        result = "ICDTable_" + QUuid::createUuid().toString();
+        result = "ICDTable_" + QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
 #endif
     }
 
@@ -918,7 +918,7 @@ bool ICDNavigationUi::insertNodeData(const std::vector<int> &params)
     ICDComplexData::smtComplex complex = SMT_CONVERT(ICDComplexData, meta);
     if (GlobalDefine::dtComplex == meta->type()) {
         stICDBase base;
-        base.sID = "ICDTable_" + QUuid::createUuid().toString().toStdString();
+        base.sID = "ICDTable_" + QUuid::createUuid().toString().remove(QRegExp("[{}-]")).toStdString();
         base.sName = complex->name();
         base.sCode = complex->proCode();
         base.nLength = complex->length();
@@ -2712,7 +2712,7 @@ bool ICDNavigationUi::updateRuleData(ICDMetaData::smtMeta &data, bool top)
         } else {
             if (GlobalDefine::dtComplex == meta->type()) {  // 复合数据
                 stICDBase base;
-                base.sID = "ICDTable_" + QUuid::createUuid().toString().toStdString();
+                base.sID = "ICDTable_" + QUuid::createUuid().toString().remove(QRegExp("[{}-]")).toStdString();
                 base.sName = complex->name();
                 base.sCode = complex->proCode();
                 base.nLength = complex->length();
@@ -2834,7 +2834,7 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
         data.sGroup = QString("%1/%2").arg(planeID).arg(systemID).toStdString();
     }
     if (data.sID.empty()) {
-        data.sID = "ICDTable_" + QUuid::createUuid().toString().toStdString();
+        data.sID = "ICDTable_" + QUuid::createUuid().toString().remove(QRegExp("[{}-]")).toStdString();
     }
     if (data.sParentName.empty()) {
         data.sParentName = keyLst.last().toStdString();

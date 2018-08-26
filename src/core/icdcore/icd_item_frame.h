@@ -3,7 +3,7 @@
 
 #include "icdcore_global.h"
 #include "icd_item.h"
-#include <unordered_map>
+#include <map>
 
 namespace Icd {
 
@@ -13,7 +13,7 @@ typedef std::shared_ptr<Table> TablePtr;
 class FrameItem;
 class FrameItemData;
 typedef std::shared_ptr<FrameItem> FrameItemPtr;
-typedef std::unordered_map<icd_uint64/*code*/, TablePtr> TablePtrMap;
+typedef std::map<icd_uint64/*code*/, TablePtr> TablePtrMap;
 
 class ICDCORE_EXPORT FrameItem : public Item
 {

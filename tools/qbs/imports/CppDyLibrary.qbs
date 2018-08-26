@@ -104,8 +104,8 @@ DynamicLibrary {
                     args.push(item);
                 })
             }
-            args.push('-recursive');
             // recursive
+            args.push('-recursive');
             if (product.recursivePaths.length > 0) {
                 product.recursivePaths.forEach(function(item){
                     args.push(item);

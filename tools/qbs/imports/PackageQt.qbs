@@ -7,6 +7,8 @@ import tools.EnvUtils
 
 PackageProduct {
 
+    type: base.concat([ 'qt.conf.out' ])
+
     property bool generateQtConf: true
     property stringList module3rdpart: [
         'd3dcompiler*.dll', 'opengl32*.dll', EnvUtils.incDylibFuzzy(qbs, false, 'lib*')
