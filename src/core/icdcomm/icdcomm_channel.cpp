@@ -300,9 +300,13 @@ std::unordered_map<std::string, std::string> Channel::parseConfig(const std::str
         value.erase(0, value.find_first_not_of(' '));   // left trim
         value.erase(value.find_last_not_of(' ') + 1);   // right trim
         // save
+#if 0
         if (!value.empty()) {
             items[name] = value;
         }
+#else
+        items[name] = value;
+#endif
         //
         end = start;
     }
