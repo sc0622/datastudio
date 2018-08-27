@@ -9,7 +9,7 @@ BufferEdit::BufferEdit(QWidget *parent)
     spinLength_ = new QSpinBox(this);
     spinLength_->setRange(1, 1e6);
     spinLength_->setSuffix(tr(" B"));
-    addFormRow(QStringLiteral("Length:"), spinLength_);
+    addFormRow(tr("Length:"), spinLength_);
 
     enableConnect(true);
 }

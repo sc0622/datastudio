@@ -184,6 +184,12 @@ void JWorkerLabelPrivate::updateUi()
     labelName->setText(QString::fromStdString(worker->channel()->name()));
     // desc
     labelDetail->setText(QString::fromStdString(worker->channel()->desc()));
+    // open status
+    if (buttonOpen) {
+        buttonOpen->setText(worker->channel()->isOpen()
+                            ? JWorkerLabel::tr("Close")
+                            : JWorkerLabel::tr("Open"));
+    }
     // switchRecv
     if (buttonSwitchRecv) {
         buttonSwitchRecv->setText(worker->workerRecv()->isRunning()

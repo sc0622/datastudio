@@ -95,8 +95,8 @@ TreeView::TreeView(QWidget *parent)
     jnotify->on("analyse.toolbar.tree.loadData", this, [=](JNEvent &){
         loadRecordData();
     });
-    jnotify->on("analyse.toolbar.tree.unloadData", this, [=](JNEvent &){
-        unloadRecordData();
+    jnotify->on("analyse.toolbar.tree.clearData", this, [=](JNEvent &){
+        clearRecordData();
     });
     jnotify->on("analyse.toolbar.window.tree", this, [=](JNEvent &event){
         setVisible(event.argument().toBool());
@@ -151,7 +151,7 @@ void TreeView::loadRecordData()
     }
 }
 
-void TreeView::unloadRecordData()
+void TreeView::clearRecordData()
 {
     treeView_->clearContents();
     table_ = Icd::TablePtr();

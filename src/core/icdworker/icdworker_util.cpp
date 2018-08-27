@@ -196,7 +196,7 @@ bool checkData(const TablePtr &table, int fileHeaderSize, QFileDevice *source,
         for (int i = 0, section = 0; i < bufferSize; ++i) {
             if (currentIndex < headerSize) {
                 if (buffer[i] == uchar(headers[size_t(currentIndex)])) {
-                    parseBuffer[currentIndex++] = *reinterpret_cast<const char*>(buffer[i]);
+                    parseBuffer[currentIndex++] = char(buffer[i]);
                 } else {
                     currentIndex = 0;
                     continue;

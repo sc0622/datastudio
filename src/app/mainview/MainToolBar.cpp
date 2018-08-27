@@ -1277,9 +1277,10 @@ void ToolBar::addAnalyseTreeAction(const Json::Value &option)
     });
     // unload data
     QAction *actionUnloadData = addAction(QIcon(":/datastudio/image/toolbar/unload.png"),
-                                          tr("Unload data"));
+                                          tr("Clear data"));
     connect(actionUnloadData, &QAction::triggered, this, [=](){
-        jnotify->send("analyse.toolbar.tree.unloadData");
+        jnotify->send("analyse.toolbar.chart.clean");
+        jnotify->send("analyse.toolbar.tree.clearData");
     });
     // convert data
     QAction *actionConvertData = addAction(QIcon(":/datastudio/image/toolbar/convert.png"),

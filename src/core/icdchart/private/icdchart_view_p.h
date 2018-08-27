@@ -28,9 +28,11 @@ public:
 
     ~SeriesData()
     {
+#if 0
         if (item) {
             item->setData(QVariant::Invalid, Icd::TreeBoundRole);
         }
+#endif
     }
 
     // disabled copy and voluation
@@ -57,10 +59,11 @@ public:
 
     ~ChartData()
     {
+#if 0
         if (item) {
             item->setData(QVariant::Invalid, Icd::TreeBoundRole);
         }
-
+#endif
         if (bitmapData) {
             delete bitmapData;
             bitmapData = nullptr;

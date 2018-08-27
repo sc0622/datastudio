@@ -35,7 +35,7 @@ public:
 
     void setShowAttribute(int attr, bool on = true);
     void loadRecordData();
-    void unloadRecordData();
+    void clearRecordData();
 
 signals:
 

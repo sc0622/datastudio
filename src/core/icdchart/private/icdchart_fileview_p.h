@@ -138,9 +138,6 @@ struct SeriesInfo
 class GroupSeries;
 typedef std::shared_ptr<GroupSeries> GroupSeriesPtr;
 
-/**
- * @brief The GroupSeries struct
- */
 class GroupSeries : public QObjectUserData
 {
 public:
@@ -155,9 +152,11 @@ public:
 
     ~GroupSeries()
     {
+#if 0
         if (item) {
             item->setData(QVariant::Invalid, Icd::TreeBoundRole);
         }
+#endif
     }
 
     // disabled copy and voluation
@@ -165,9 +164,6 @@ public:
     GroupSeries &operator =(const GroupSeries &);
 };
 
-/**
- * @brief The GroupChart struct
- */
 class GroupChart : public QObjectUserData
 {
 public:
@@ -184,9 +180,11 @@ public:
 
     ~GroupChart()
     {
+#if 0
         if (item) {
             item->setData(QVariant::Invalid, Icd::TreeBoundRole);
         }
+#endif
     }
 
     // disabled copy and voluation

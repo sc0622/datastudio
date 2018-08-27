@@ -334,6 +334,11 @@
         <source> B</source>
         <translation> 字节</translation>
     </message>
+    <message>
+        <location filename="../../module/edit/old/view/BufferEdit.cpp" line="12"/>
+        <source>Length:</source>
+        <translation>长度：</translation>
+    </message>
 </context>
 <context>
     <name>CheckEdit</name>
@@ -690,8 +695,8 @@
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="47"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="1699"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2290"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2816"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2867"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2820"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2871"/>
         <source>Past</source>
         <translation>粘贴</translation>
     </message>
@@ -864,10 +869,10 @@
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2565"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2574"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2626"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2633"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2640"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2648"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2686"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2634"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2642"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2651"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2690"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -895,9 +900,9 @@ Confirm deletion?</source>
     <message>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2576"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2628"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2635"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2642"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2650"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2636"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2644"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2653"/>
         <source>
 Confirm deletion?</source>
         <translation>
@@ -919,62 +924,62 @@ Confirm deletion?</source>
         <translation>即将删除所有机型，包括下属数据</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2634"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2635"/>
         <source>Will remove all systems in current vehicle, include all sub-data</source>
         <translation>即将删除当前机型下的所有系统，包括下属数据</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2641"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2643"/>
         <source>Will remove all tables in current system, include all sub-data</source>
         <translation>即将删除当前系统的所有表，包括下属数据</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2649"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2652"/>
         <source>Will remove all items in current table, include all sub-data</source>
         <translation>即将删除当前表的所有下属数据项</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2687"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2691"/>
         <source>Current item has non-loaded sub-item
 Continue to save will lost part data, still continue?</source>
         <translation>当前数据项包含未加载项
 继续保存将会丢失部分数据，是否继续？</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2731"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2735"/>
         <source>Save protocol to database</source>
         <translation>保存协议到数据库</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2740"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2778"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2744"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2782"/>
         <source>Save protocol</source>
         <translation>保存协议</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2760"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2764"/>
         <source>Save protocol to file [%1]</source>
         <translation>保存协议到文件 [%1]</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2769"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2773"/>
         <source>Failure!
 [%1]</source>
         <translation>失败！
 [%1]</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2772"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2776"/>
         <source>Success!</source>
         <translation>成功！</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2817"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2821"/>
         <source>Past failure, source is invalid!</source>
         <translation>粘贴失败，数据源无效！</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2868"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2872"/>
         <source>Count of Sub-Table has been reach upper limit!</source>
         <translation>字表数量达到上限，不能再增加！</translation>
     </message>
@@ -2207,7 +2212,7 @@ Continue to save will lost part data, still continue?</source>
         <location filename="../../mainview/MainToolBar.cpp" line="327"/>
         <location filename="../../mainview/MainToolBar.cpp" line="767"/>
         <location filename="../../mainview/MainToolBar.cpp" line="1142"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1403"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1404"/>
         <source>Tree window</source>
         <translation>协议窗口</translation>
     </message>
@@ -2220,7 +2225,7 @@ Continue to save will lost part data, still continue?</source>
         <location filename="../../mainview/MainToolBar.cpp" line="364"/>
         <location filename="../../mainview/MainToolBar.cpp" line="821"/>
         <location filename="../../mainview/MainToolBar.cpp" line="1179"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1440"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1441"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>
@@ -2298,37 +2303,37 @@ Continue to save will lost part data, still continue?</source>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="672"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1308"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1309"/>
         <source>Clear chart</source>
         <translation>清空图表</translation>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="679"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1315"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1316"/>
         <source>Same column width</source>
         <translation>相同列宽</translation>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="687"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1323"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1324"/>
         <source> Synchronize x-label</source>
         <translation>横轴同帧</translation>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="706"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1342"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1343"/>
         <source> Show y-label</source>
         <translation>纵轴标签</translation>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="725"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1361"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1362"/>
         <source> Show y-align</source>
         <translation>纵轴对齐</translation>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="744"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1380"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1381"/>
         <source> Synchronize track</source>
         <translation>同步跟踪</translation>
     </message>
@@ -2339,7 +2344,7 @@ Continue to save will lost part data, still continue?</source>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="801"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1420"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1421"/>
         <source>Chart window</source>
         <translation>图表窗口</translation>
     </message>
@@ -2360,21 +2365,21 @@ Continue to save will lost part data, still continue?</source>
     </message>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="1280"/>
-        <source>Unload data</source>
+        <source>Clear data</source>
         <translation>清除数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1286"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1287"/>
         <source>Convert data</source>
         <translation>转换数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1296"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1297"/>
         <source>Set coordinate</source>
         <translation>设置坐标</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1302"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1303"/>
         <source>Update data</source>
         <translation>刷新数据</translation>
     </message>

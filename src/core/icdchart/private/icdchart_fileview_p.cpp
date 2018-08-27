@@ -448,7 +448,7 @@ bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData, QFile &fi
     }
 
     //
-    int count = static_cast<uchar>(file.size() / tableStep);
+    int count = static_cast<int>(file.size() / tableStep);
     if (count <= 0) {
         return false;
     }
@@ -567,6 +567,7 @@ JChart::AbstractSeries *ChartFileViewPrivate::addSeries(JChart::Chart *chart, Gr
             break;
         }
         series->setIdentity(domain);
+        series->setUserData(seriesData);
         if (chart->seriesCount() > 1) {
             chart->setTitle("");
         } else {

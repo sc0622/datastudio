@@ -2625,21 +2625,24 @@ void DataEditWidget::slotClear()
         if (QMessageBox::No == QMessageBox::warning(this,
                                                     tr("Warning"),
                                                     tr("Will remove all vehicles, include all sub-data")
-                                                    + tr("\nConfirm deletion?"))) {
+                                                    + tr("\nConfirm deletion?"),
+                                                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntVehicle == dataType_) {
         if (QMessageBox::No == QMessageBox::warning(this,
                                                     tr("Warning"),
                                                     tr("Will remove all systems in current vehicle, include all sub-data")
-                                                    + tr("\nConfirm deletion?"))) {
+                                                    + tr("\nConfirm deletion?"),
+                                                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntSystem == dataType_) {
         if (QMessageBox::No == QMessageBox::warning(this,
                                                     tr("Warning"),
                                                     tr("Will remove all tables in current system, include all sub-data")
-                                                    + tr("\nConfirm deletion?"))) {
+                                                    + tr("\nConfirm deletion?"),
+                                                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntTable == dataType_
@@ -2647,7 +2650,8 @@ void DataEditWidget::slotClear()
         if (QMessageBox::No == QMessageBox::warning(this,
                                                     tr("Warning"),
                                                     tr("Will remove all items in current table, include all sub-data")
-                                                    + tr("\nConfirm deletion?"))) {
+                                                    + tr("\nConfirm deletion?"),
+                                                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else {
