@@ -23,6 +23,8 @@ enum ItemType {
     ItemTotal           /**<  */
 };
 
+class Table;
+
 class Item;
 class ItemData;
 typedef std::shared_ptr<Item> ItemPtr;
@@ -63,6 +65,9 @@ public:
     virtual Object *clone() const override;
     Item &operator =(const Item &other);
     static ItemPtr create(const std::string &id, ItemType type);
+
+    bool isSubFrameItem() const;
+    Icd::Table *subFrameTable() const;
 
 protected:
     Item(const Item &other);

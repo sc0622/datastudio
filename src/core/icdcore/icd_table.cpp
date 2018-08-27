@@ -882,6 +882,29 @@ bool Table::isFrameTable() const
     return d->isFrameTable;
 }
 
+bool Table::isSubFrameTable() const
+{
+    Icd::Object *_parent = parent();
+    if (!_parent) {
+        return false;
+    }
+
+    if (_parent->objectType() != Icd::ObjectItem) {
+        return false;
+    }
+
+    Icd::Item *item = dynamic_cast<Icd::Item*>(_parent);
+    if (!item) {
+        return false;
+    }
+
+    if (item->type() != Icd::ItemFrame) {
+        return false;
+    }
+
+    return true;
+}
+
 std::string Table::typeName() const
 {
     std::string prefix;

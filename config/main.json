@@ -36,7 +36,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Documents/GitHub/jk-4s25ap/src/resource/other/protocol.json",
+            "filePath" : "@ConfigDir@/protocol.json",
             "sourceType" : "file"
          }
       },

@@ -226,6 +226,72 @@ ItemPtr Item::create(const std::string &id, ItemType type)
     }
 }
 
+bool Item::isSubFrameItem() const
+{
+    Icd::Object *object = parent();
+    while (object) {
+        const Icd::ObjectType objectType = object->objectType();
+        if (objectType < Icd::ObjectTable) {
+            break;
+        }
+
+        if (objectType == Icd::ObjectTable) {
+            const Icd::Table *table = dynamic_cast<Icd::Table*>(object);
+            if (!table) {
+                break;
+            }
+            object = object->parent();
+            if (object && object->objectType() == Icd::ObjectItem) {
+                Icd::Item *item = dynamic_cast<Icd::Item*>(object);
+                if (!item) {
+                    break;
+                }
+                if (item->type() == Icd::ItemFrame) {
+                    return true;
+                }
+            }
+            continue;
+        }
+
+        object = object->parent();
+    }
+
+    return false;
+}
+
+Icd::Table *Item::subFrameTable() const
+{
+    Icd::Object *object = parent();
+    while (object) {
+        const Icd::ObjectType objectType = object->objectType();
+        if (objectType < Icd::ObjectTable) {
+            break;
+        }
+
+        if (objectType == Icd::ObjectTable) {
+            Icd::Table *table = dynamic_cast<Icd::Table*>(object);
+            if (!table) {
+                break;
+            }
+            object = object->parent();
+            if (object && object->objectType() == Icd::ObjectItem) {
+                Icd::Item *item = dynamic_cast<Icd::Item*>(object);
+                if (!item) {
+                    break;
+                }
+                if (item->type() == Icd::ItemFrame) {
+                    return table;
+                }
+            }
+            continue;
+        }
+
+        object = object->parent();
+    }
+
+    return nullptr;
+}
+
 void Item::setType(ItemType type)
 {
     d->type = type;

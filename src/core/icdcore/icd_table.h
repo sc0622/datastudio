@@ -71,6 +71,7 @@ public:
     void setSequence(int sequence);
     int period() const;
     bool isFrameTable() const;
+    bool isSubFrameTable() const;
     std::string typeName() const;
     std::string codeName() const;
 

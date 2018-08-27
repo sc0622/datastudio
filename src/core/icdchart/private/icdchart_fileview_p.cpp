@@ -411,6 +411,14 @@ GroupSeries *ChartFileViewPrivate::createGroupSeries(int chartType, const FileBa
         break;
     }
 
+    // for sub-frame
+    Icd::Table *subFrameTable = dataItem->subFrameTable();
+    if (subFrameTable) {
+        if (!initSeriesFrameCodeInfo(seriesInfo, subFrameTable)) {
+            return nullptr;
+        }
+    }
+
     // create buffer
     if (!createBuffer(seriesData)) {
         return nullptr;
@@ -442,25 +450,27 @@ bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData, QFile &fi
     const SeriesInfoPtr seriesInfo = seriesData->seriesInfo;
     const FileBaseInfo &baseInfo = seriesInfo->baseInfo;
 
-    int tableStep = static_cast<int>(std::ceil(baseInfo.table->bufferSize()));
+    int tableStep = int(std::ceil(baseInfo.table->bufferSize()));
     if (baseInfo.hasTimeFormat) {
         tableStep += 8;
     }
 
     //
-    int count = static_cast<int>(file.size() / tableStep);
+    const int count = int((file.size() - baseInfo.headerSize) / tableStep);
     if (count <= 0) {
         return false;
     }
 
     seriesInfo->bufferSize = seriesInfo->step * count;
-    seriesInfo->buffer = BufferPtr(new uchar[static_cast<unsigned int>(seriesInfo->bufferSize)],
+    seriesInfo->buffer = BufferPtr(new uchar[uint(seriesInfo->bufferSize)],
             [](uchar *ptr){
         delete[] ptr;
     });
 
-    int yOffset = seriesInfo->xSize + static_cast<int>(seriesData->dataItem->bufferOffset());
+    const int yOffset = seriesInfo->xSize + int(seriesData->dataItem->bufferOffset());
+    const int frameCodeOffset = seriesInfo->xSize + seriesInfo->frameCodeOffset;
     uchar *fileBuffer, *buffer = seriesInfo->buffer.data();
+    quint64 previous = 0;
     for (int i = 0; i < count; ++i, buffer += seriesInfo->step) {
         fileBuffer = file.map(baseInfo.headerSize + i * tableStep, tableStep);
         if (fileBuffer) {
@@ -469,7 +479,19 @@ bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData, QFile &fi
                 memcpy(buffer, fileBuffer, seriesInfo->xSize);
             }
             // y
-            memcpy((buffer + seriesInfo->yOffset), (fileBuffer + yOffset), seriesInfo->ySize);
+            // filter sub-frame if item of sub-frame
+            if (seriesInfo->frameCodeOffset >= 0) {
+                quint64 data = 0;
+                memcpy(&data, fileBuffer + frameCodeOffset, size_t(seriesInfo->frameCodeSize));
+                if (seriesInfo->frameCode != data) {
+                    memcpy((buffer + seriesInfo->yOffset), &previous, seriesInfo->ySize);
+                } else {
+                    memcpy(&previous, (fileBuffer + yOffset), seriesInfo->ySize);
+                    memcpy((buffer + seriesInfo->yOffset), &previous, seriesInfo->ySize);
+                }
+            } else {
+                memcpy((buffer + seriesInfo->yOffset), (fileBuffer + yOffset), seriesInfo->ySize);
+            }
             // unmap
             file.unmap(fileBuffer);
         } else {
@@ -1018,6 +1040,46 @@ void ChartFileViewPrivate::enableTrackerMarkerClearedNotify(bool enabled)
         QObject::connect(chartView, &JChart::View::trackerMarkerCleared,
                          this, &ChartFileViewPrivate::onTrackerMarkerCleared, Qt::QueuedConnection);
     }
+}
+
+bool ChartFileViewPrivate::initSeriesFrameCodeInfo(const SeriesInfoPtr &seriesInfo,
+                                                   Icd::Table *subFrameTable) const
+{
+    if (!seriesInfo || !subFrameTable) {
+        return false;
+    }
+
+    //
+    Icd::Object *object = subFrameTable->parent();  // get frame item
+    if (!object) {
+        return false;
+    }
+
+    object = object->parent();      // get framecode item
+    if (!object || object->objectType() != Icd::ObjectItem) {
+        return false;
+    }
+
+    Icd::Item *item = dynamic_cast<Icd::Item*>(object);
+    if (!item || item->type() != Icd::ItemFrameCode) {
+        return false;
+    }
+
+    Icd::FrameCodeItem *frameCodeItem = dynamic_cast<Icd::FrameCodeItem*>(item);
+    if (!frameCodeItem) {
+        return false;
+    }
+
+    seriesInfo->frameCodeOffset = int(frameCodeItem->bufferOffset());
+    seriesInfo->frameCodeSize = uchar(frameCodeItem->bufferSize());
+
+    bool ok = false;
+    seriesInfo->frameCode = QString::fromStdString(subFrameTable->mark()).toULongLong(&ok, 16);
+    if (!ok) {
+        return false;
+    }
+
+    return true;
 }
 
 } // end of namespace Icd

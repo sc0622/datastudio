@@ -13,6 +13,8 @@
 
 namespace Icd {
 
+class Frame;
+
 typedef QSharedPointer<uchar> BufferPtr;
 
 // struct FileBaseInfo
@@ -77,6 +79,10 @@ struct SeriesInfo
     qreal valueScale, valueOffset;
     int numericTypeX, numericTypeY;
     int bitStart, bitCount;
+    // for sub-frame
+    int frameCodeOffset;
+    uchar frameCodeSize;
+    quint64 frameCode;
 
     SeriesInfo()
         : buffer(BufferPtr())
@@ -88,6 +94,10 @@ struct SeriesInfo
         , numericTypeX(Icd::NumericInvalid)
         , numericTypeY(Icd::NumericInvalid)
         , bitStart(0), bitCount(0)
+        // for sub-frame
+        , frameCodeOffset(-1)
+        , frameCodeSize(0)
+        , frameCode(0)
     {
 
     }
@@ -103,6 +113,10 @@ struct SeriesInfo
         , numericTypeX(Icd::NumericInvalid)
         , numericTypeY(Icd::NumericInvalid)
         , bitStart(0), bitCount(0)
+        // for sub-frame
+        , frameCodeOffset(-1)
+        , frameCodeSize(0)
+        , frameCode(0)
     {
 
     }
@@ -131,6 +145,10 @@ struct SeriesInfo
         numericTypeY = other.numericTypeY;
         bitStart = other.bitStart;
         bitCount = other.bitCount;
+        // for sub-frame
+        frameCodeOffset = other.frameCodeOffset;
+        frameCodeSize = other.frameCodeSize;
+        frameCode = other.frameCode;
         return *this;
     }
 };
@@ -244,6 +262,9 @@ private:
     void enableTrackerChangedNotify(bool enabled);
     void enableTrackerMakedNotify(bool enabled);
     void enableTrackerMarkerClearedNotify(bool enabled);
+
+    bool initSeriesFrameCodeInfo(const SeriesInfoPtr &seriesInfo,
+                                 Icd::Table *subFrameTable) const;
 
 private:
     J_DECLARE_PUBLIC(ChartFileView)
