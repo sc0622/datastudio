@@ -143,11 +143,19 @@ void WorkerRecvPrivate::stop()
 
 int WorkerRecvPrivate::interval() const
 {
-    return int(timer->interval());
+    if (channel) {
+        return channel->recvInterval();
+    } else {
+        return int(timer->interval());
+    }
 }
 
 void WorkerRecvPrivate::setInterval(int value)
 {
+    if (channel) {
+        channel->setRecvInterval(value);
+    }
+
     timer->setInterval(static_cast<unsigned int>(value));
 }
 

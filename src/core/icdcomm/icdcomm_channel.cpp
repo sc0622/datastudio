@@ -18,6 +18,9 @@ public:
         : channelType(Icd::ChannelInvalid)
         , identity(QUuid::createUuid().toString().toStdString())
         , name("")
+        , autoSend(true)
+        , sendInterval(20)
+        , recvInterval(5)
         , desc("****")
         , relayer(nullptr)
     {
@@ -28,6 +31,9 @@ private:
     Icd::ChannelType channelType;
     std::string identity;
     std::string name;
+    bool autoSend;
+    int sendInterval;
+    int recvInterval;
     std::string desc;           // 描述信息
     Icd::ChannelPtr relayer;    // 中继者
 };
@@ -137,7 +143,10 @@ std::string Channel::config() const
 {
     std::ostringstream os;
     os << " --id=" << d->identity
-       << " --name=" << d->name;
+       << " --name=" << d->name
+       << " --autoSend=" << (d->autoSend ? 1 : 0)
+       << " --sendInterval=" << d->sendInterval
+       << " --recvInterval=" << d->recvInterval;
     if (d->relayer) {
         os << " --relayer=" << d->relayer->identity();
     }
@@ -151,6 +160,11 @@ bool Channel::setConfig(const std::string &config)
         return false;
     }
 
+    return setConfig(items);
+}
+
+bool Channel::setConfig(const std::unordered_map<std::string, std::string> &items)
+{
     // id
     std::unordered_map<std::string, std::string>::const_iterator citer = items.find("id");
     if (citer == items.cend()) {
@@ -165,6 +179,24 @@ bool Channel::setConfig(const std::string &config)
     }
     setName(citer->second);
 
+    // autoSave
+    citer = items.find("autoSend");
+    if (citer != items.cend()) {
+        d->autoSend = atoi(citer->second.c_str()) == 0 ? false : true;
+    }
+
+    // sendInterval
+    citer = items.find("sendInterval");
+    if (citer != items.cend()) {
+        d->sendInterval = atoi(citer->second.c_str());
+    }
+
+    // recvInterval
+    citer = items.find("recvInterval");
+    if (citer != items.cend()) {
+        d->recvInterval = atoi(citer->second.c_str());
+    }
+
     return true;
 }
 
@@ -176,6 +208,36 @@ std::string Channel::name() const
 void Channel::setName(const std::string &name)
 {
     d->name = name;
+}
+
+bool Channel::autoSend() const
+{
+    return d->autoSend;
+}
+
+void Channel::setAutoSend(bool enabled)
+{
+    d->autoSend = enabled;
+}
+
+int Channel::sendInterval() const
+{
+    return d->sendInterval;
+}
+
+void Channel::setSendInterval(int interval)
+{
+    d->sendInterval = interval;
+}
+
+int Channel::recvInterval() const
+{
+    return d->recvInterval;
+}
+
+void Channel::setRecvInterval(int interval)
+{
+    d->recvInterval = interval;
 }
 
 std::string Channel::desc() const

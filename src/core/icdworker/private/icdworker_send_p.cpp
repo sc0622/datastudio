@@ -21,6 +21,7 @@ WorkerSendPrivate::WorkerSendPrivate(Icd::WorkerSend *q)
     , tableBuffer(nullptr)
     , counterLoop(true)
     , frameLoop(false)
+    , running(false)
 {
     timer->setTask(this);
 }
@@ -198,37 +199,77 @@ bool WorkerSendPrivate::doCheck()
 
 bool WorkerSendPrivate::isRunning() const
 {
-    return timer->isRunning();
+    if (channel && channel->autoSend()) {
+        return timer->isRunning();
+    } else {
+        return running;
+    }
 }
 
 bool WorkerSendPrivate::start()
 {
-    return timer->start();
+    if (channel) {
+        if (channel->autoSend()) {
+            return timer->start();
+        } else {
+            running = true;
+            return true;
+        }
+    } else {
+        running = timer->start();
+        return running;
+    }
 }
 
 void WorkerSendPrivate::stop()
 {
+    running = false;
     timer->stop();
 }
 
 int WorkerSendPrivate::interval() const
 {
-    return int(timer->interval());
+    if (channel) {
+        return channel->sendInterval();
+    } else {
+        return int(timer->interval());
+    }
 }
 
 void WorkerSendPrivate::setInterval(int value)
 {
+    if (channel) {
+        channel->setSendInterval(value);
+    }
     timer->setInterval(static_cast<unsigned int>(value));
 }
 
 WorkerTrans::TimeEvent WorkerSendPrivate::timeEvent() const
 {
-    return WorkerTrans::TimeEvent(timer->timeEvent());
+    if (channel) {
+        return channel->autoSend() ? Icd::WorkerTrans::TimePeriodic
+                                   : Icd::WorkerTrans::TimeOneShot;
+    } else {
+        return WorkerTrans::TimeEvent(timer->timeEvent());
+    }
 }
 
 void WorkerSendPrivate::setTimeEvent(WorkerTrans::TimeEvent event)
 {
     timer->setTimeEvent(JRTTimer::TimeEvent(event));
+
+    if (channel) {
+        channel->setAutoSend(event == Icd::WorkerTrans::TimePeriodic);
+        if (channel->autoSend()) {
+            if (running && !timer->isRunning()) {
+                timer->start();
+            }
+        } else {
+            if (timer->isRunning()) {
+                timer->stop();
+            }
+        }
+    }
 }
 
 void WorkerSendPrivate::run()

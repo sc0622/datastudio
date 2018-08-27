@@ -255,22 +255,13 @@ bool FileChannel::setConfig(const std::string &config)
         return false;
     }
 
-    // id
-    std::unordered_map<std::string, std::string>::const_iterator citer = items.find("id");
-    if (citer == items.cend()) {
+    // base
+    if (!Channel::setConfig(items)) {
         return false;
     }
-    setIdentity(citer->second);
-
-    // name
-    citer = items.find("name");
-    if (citer == items.cend()) {
-        return false;
-    }
-    setName(citer->second);
 
     // filePath
-    citer = items.find("filePath");
+    std::unordered_map<std::string, std::string>::const_iterator citer = items.find("filePath");
     if (citer == items.cend()) {
         return false;
     }

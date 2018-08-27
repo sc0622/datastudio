@@ -6,8 +6,6 @@
 
 namespace Icd {
 
-template<typename T> class std::shared_ptr;
-
 class Item;
 typedef std::shared_ptr<Item> ItemPtr;
 
@@ -74,6 +72,10 @@ public:
     Q_INVOKABLE virtual int focusItem(const QString &domain);
     Q_INVOKABLE virtual void removeItem(const QString &domain);
 
+    bool realtimeUpdate() const;
+    bool autoSend() const;
+    bool autoUpdate() const;
+
 signals:
     void send();
     void remove();
@@ -92,15 +94,16 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
-    ItemType d_itemType;
-    Icd::WorkerPtr d_worker;
-    Icd::ItemPtr d_defaultData;
-    Icd::ItemPtr d_dataItem;
-    QStandardItem *d_item;
-    QLabel *d_labelTitle;
-    QPushButton *d_buttonSend;
-    QHBoxLayout *d_clientLayout;
-    QVBoxLayout *d_itemLayout;
+    ItemType itemType_;
+    Icd::WorkerPtr worker_;
+    Icd::ItemPtr defaultData_;
+    Icd::ItemPtr dataItem_;
+    QStandardItem *item_;
+    QLabel *labelTitle_;
+    QPushButton *buttonSend_;
+    QHBoxLayout *clientLayout_;
+    QVBoxLayout *itemLayout_;
+    bool realtimeUpdate_;
 };
 
 // class ItemWidgetHead
@@ -117,7 +120,7 @@ protected:
     bool updateUi(const Icd::ItemPtr &data);
 
 private:
-    JSpinBox *d_spinValue;
+    JSpinBox *spinValue_;
 };
 
 // class ItemWidgetCounter
@@ -134,7 +137,7 @@ protected:
     bool updateUi(const Icd::ItemPtr &data);
 
 private:
-    QSpinBox *d_spinValue;
+    QSpinBox *spinValue_;
 };
 
 // class ItemWidgetCheck
@@ -151,11 +154,11 @@ protected:
     bool updateUi(const Icd::ItemPtr &data);
 
 private:
-    QSpinBox *d_spinValue;
-    QComboBox *d_comboBoxCheckType;
-    QSpinBox *d_spinStartPos;
-    QSpinBox *d_spinEndPos;
-    QLabel *d_labelCheckLength;
+    QSpinBox *spinValue_;
+    QComboBox *comboBoxCheckType_;
+    QSpinBox *spinStartPos_;
+    QSpinBox *spinEndPos_;
+    QLabel *labelCheckLength_;
 };
 
 // class ItemWidgetFrameCode
@@ -174,7 +177,7 @@ protected:
     bool updateUi(const Icd::ItemPtr &data);
 
 private:
-    QComboBox *d_comboBoxCode;
+    QComboBox *comboBoxCode_;
 };
 
 // class ItemWidgetNumeric
@@ -191,11 +194,11 @@ protected:
     bool updateUi(const Icd::ItemPtr &data);
 
 private:
-    QSlider *d_sliderValue;
-    QDoubleSpinBox *d_spinValue;
-    QDoubleSpinBox *d_spinData;
-    QLabel *d_labelDesc;
-    QCheckBox *d_checkBoxLink;
+    QSlider *sliderValue_;
+    QDoubleSpinBox *spinValue_;
+    QDoubleSpinBox *spinData_;
+    QLabel *labelDesc_;
+    QCheckBox *checkBoxLink_;
 };
 
 // class ItemWidgetArray
@@ -213,7 +216,7 @@ protected:
 
 private:
     JUtralEdit::JView *dataView_;
-    QLabel *d_labelDesc;
+    QLabel *labelDesc_;
 };
 
 // class ItemWidgetBitMap
@@ -230,10 +233,10 @@ protected:
     bool updateUi(const Icd::ItemPtr &data);
 
 private:
-    QMap<int/*offset*/, QCheckBox *> d_checkBoxes;
-    QFormLayout *d_formLayout;
-    QDoubleSpinBox *d_spinData;
-    QLabel *d_labelDesc;
+    QMap<int/*offset*/, QCheckBox *> checkBoxes_;
+    QFormLayout *formLayout_;
+    QDoubleSpinBox *spinData_;
+    QLabel *labelDesc_;
 };
 
 // class ItemWidgetBitValue
@@ -250,8 +253,8 @@ protected:
     bool updateUi(const Icd::ItemPtr &data);
 
 private:
-    QDoubleSpinBox *d_spinData;
-    QLabel *d_labelDesc;
+    QDoubleSpinBox *spinData_;
+    QLabel *labelDesc_;
 };
 
 // class ItemWidgetComplex
@@ -275,7 +278,7 @@ private:
     void fixHeight();
 
 private:
-    DataTableWidget *d_tableWidget;
+    DataTableWidget *tableWidget_;
 };
 
 // class ItemWidgetFrame
@@ -299,7 +302,7 @@ private:
     void fixHeight(int index);
 
 private:
-    IcdTabWidget *d_tabWidget;
+    IcdTabWidget *tabWidget_;
 };
 
 }

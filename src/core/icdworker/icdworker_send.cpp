@@ -30,6 +30,11 @@ void WorkerSend::setChannel(const ChannelPtr &channel)
     if (channel != d->channel) {
         d->mutex.lock();
         d->channel = channel;
+        if (channel) {
+            d->setInterval(channel->sendInterval());
+            d->setTimeEvent(channel->autoSend() ? Icd::WorkerTrans::TimePeriodic
+                                                : Icd::WorkerTrans::TimeOneShot);
+        }
         d->mutex.unlock();
         emit channelChanged(d->channel);
         if (d->isRunning() && d->channel && !d->channel->isOpen()) {

@@ -56,7 +56,7 @@ SerialRecvWidget::SerialRecvWidget(QWidget *parent)
 
     connect(d_spinBoxInterval, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             this, [=](){
-        //
+        enableButtons(true);
     });
     connect(d_buttonApply, &QPushButton::clicked, this, [=](){
         //

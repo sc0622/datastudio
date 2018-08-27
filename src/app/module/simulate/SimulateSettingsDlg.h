@@ -28,8 +28,8 @@ private:
     bool init();
 
 private:
-    QBitArray d_modifyFlags;
-    QComboBox *d_comboBoxDeep;
+    QBitArray modifyFlags_;
+    QComboBox *comboBoxDeep_;
 };
 
 // class SetViewSettings
@@ -52,7 +52,8 @@ private:
     bool init();
 
 private:
-    QBitArray d_modifyFlags;
+    QBitArray modifyFlags_;
+    QCheckBox *checkBoxImmUpdate_;
 };
 
 // class SettingsDlg
@@ -72,8 +73,8 @@ private:
     bool saveConfig();
 
 private:
-    TreeViewSettings *d_treeViewSettings;
-    SetViewSettings *d_setViewSettings;
+    TreeViewSettings *treeViewSettings_;
+    SetViewSettings *setViewSettings_;
 };
 
 }

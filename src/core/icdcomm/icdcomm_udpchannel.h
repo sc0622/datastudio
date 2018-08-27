@@ -10,15 +10,9 @@ class UdpChannel;
 class UdpChannelData;
 typedef std::shared_ptr<UdpChannel> UdpChannelPtr;
 
-/**
- * @brief The UdpChannel class
- */
 class ICDCOMM_EXPORT UdpChannel : public Channel
 {
 public:
-    /**
-     * @brief The OpenMode enum
-     */
     enum OpenMode {
         NotOpen = 0x0000,
         ReadOnly = 0x0001,
@@ -26,29 +20,13 @@ public:
         ReadWrite = ReadOnly | WriteOnly
     };
 
-    /**
-     * @brief UdpChannel
-     */
     explicit UdpChannel();
-
-    /**
-     * @brief UdpChannel
-     * @param localIP
-     * @param localPort
-     * @param remoteIP
-     * @param remotePort
-     * @param openMode
-     */
     explicit UdpChannel(std::string localIP, int localPort,
                         std::string remoteIP, int remotePort,
                         OpenMode openMode = ReadWrite);
     virtual ~UdpChannel();
 
 public:
-    /**
-     * @brief 判断通道是否已打开
-     * @return
-     */
     bool isOpen() const;
 
     /**

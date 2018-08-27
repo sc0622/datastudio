@@ -9,15 +9,9 @@ class SerialChannel;
 class SerialChannelData;
 typedef std::shared_ptr<SerialChannel> SerialChannelPtr;
 
-/**
- * @brief The SerialChannel class
- */
 class ICDCOMM_EXPORT SerialChannel : public Channel
 {
 public:
-    /**
-     * @brief The DataBits enum
-     */
     enum DataBits {
         Data5 = 5,
         Data6 = 6,
@@ -26,9 +20,6 @@ public:
         UnknownDataBits = -1
     };
 
-    /**
-     * @brief The StopBits enum
-     */
     enum StopBits {
         OneStop = 1,
         OneAndHalfStop = 3,
@@ -36,9 +27,6 @@ public:
         UnknownStopBits = -1
     };
 
-    /**
-     * @brief The Parity enum
-     */
     enum Parity {
         NoParity = 0,
         EvenParity = 2,
@@ -48,9 +36,6 @@ public:
         UnknownParity = -1
     };
 
-    /**
-     * @brief SerialChannel
-     */
     explicit SerialChannel();
 
     /**

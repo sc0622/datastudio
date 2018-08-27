@@ -111,6 +111,9 @@
                "showType" : true,
                "showValue" : true
             },
+            "view" : {
+               "realtimeUpdate" : false
+            },
             "window" : {
                "modify" : true,
                "tree" : true

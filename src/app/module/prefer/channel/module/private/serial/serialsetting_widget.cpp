@@ -108,18 +108,18 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
     }
     // DataBits
     for (int i = 5; i < 9; ++i) {
-        d_comboBoxDataBits->addItem(QString::number(i));
+        d_comboBoxDataBits->addItem(QString::number(i), i);
     }
     // StopBits
-    d_comboBoxStopBits->addItem("1");
-    d_comboBoxStopBits->addItem("1.5");
-    d_comboBoxStopBits->addItem("2");
+    d_comboBoxStopBits->addItem("1", Icd::SerialChannel::OneStop);
+    d_comboBoxStopBits->addItem("1.5", Icd::SerialChannel::OneAndHalfStop);
+    d_comboBoxStopBits->addItem("2", Icd::SerialChannel::TwoStop);
     // Parity
-    d_comboBoxParity->addItem(tr("None"));
-    d_comboBoxParity->addItem(tr("Odd"));
-    d_comboBoxParity->addItem(tr("Even"));
-    d_comboBoxParity->addItem(tr("Space"));
-    d_comboBoxParity->addItem(tr("Mark"));
+    d_comboBoxParity->addItem(tr("None"), Icd::SerialChannel::NoParity);
+    d_comboBoxParity->addItem(tr("Even"), Icd::SerialChannel::EvenParity);
+    d_comboBoxParity->addItem(tr("Odd"), Icd::SerialChannel::OddParity);
+    d_comboBoxParity->addItem(tr("Space"), Icd::SerialChannel::SpaceParity);
+    d_comboBoxParity->addItem(tr("Mark"), Icd::SerialChannel::MarkParity);
 
     //
     auto enableButtons = [=](bool enabled){
@@ -197,52 +197,11 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
         // BaudRate
         channel->setBaudRate(d_comboBoxBaudRate->currentText().toInt());
         // DataBits
-        switch (d_comboBoxDataBits->currentIndex()) {
-        case 0:
-            channel->setDataBits(Icd::SerialChannel::Data5);
-            break;
-        case 1:
-            channel->setDataBits(Icd::SerialChannel::Data6);
-            break;
-        case 2:
-            channel->setDataBits(Icd::SerialChannel::Data7);
-            break;
-        case 3:
-            channel->setDataBits(Icd::SerialChannel::Data8);
-            break;
-        }
+        channel->setDataBits(Icd::SerialChannel::DataBits(d_comboBoxDataBits->currentData().toInt()));
         // StopBits
-        switch (d_comboBoxStopBits->currentIndex()) {
-        case 0:
-        default:
-            channel->setStopBits(Icd::SerialChannel::OneStop);
-            break;
-        case 1:
-            channel->setStopBits(Icd::SerialChannel::OneAndHalfStop);
-            break;
-        case 2:
-            channel->setStopBits(Icd::SerialChannel::TwoStop);
-            break;
-        }
+        channel->setStopBits(Icd::SerialChannel::StopBits(d_comboBoxStopBits->currentData().toInt()));
         // Parity
-        switch (d_comboBoxParity->currentIndex()) {
-        case 0:
-        default:
-            channel->setParity(Icd::SerialChannel::NoParity);
-            break;
-        case 1:
-            channel->setParity(Icd::SerialChannel::EvenParity);
-            break;
-        case 2:
-            channel->setParity(Icd::SerialChannel::OddParity);
-            break;
-        case 3:
-            channel->setParity(Icd::SerialChannel::OddParity);
-            break;
-        case 4:
-            channel->setParity(Icd::SerialChannel::MarkParity);
-            break;
-        }
+        channel->setParity(Icd::SerialChannel::Parity(d_comboBoxParity->currentData().toInt()));
         // name
         channel->setName(d_editName->text().toStdString());
         // relayer

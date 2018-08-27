@@ -51,9 +51,19 @@ public:
 
     virtual std::string config() const;
     virtual bool setConfig(const std::string &config);
+    bool setConfig(const std::unordered_map<std::string, std::string> &items);
 
     virtual std::string name() const;
     void setName(const std::string &name);
+
+    bool autoSend() const;
+    void setAutoSend(bool enabled);
+
+    int sendInterval() const;
+    void setSendInterval(int interval);
+
+    int recvInterval() const;
+    void setRecvInterval(int interval);
 
     virtual std::string desc() const;
     virtual void setDesc(const std::string &desc);

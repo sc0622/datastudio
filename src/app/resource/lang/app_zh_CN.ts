@@ -1453,27 +1453,27 @@ Continue to save will lost part data, still continue?</source>
         <translation>发送周期：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="35"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="132"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="148"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="167"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="177"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="33"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="130"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="146"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="165"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="175"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="41"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="39"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="47"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="45"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="146"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="172"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="144"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="170"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -2960,27 +2960,27 @@ Continue to save will lost part data, still continue?</source>
         <translation>发送周期：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="34"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="131"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="147"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="166"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="176"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="32"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="129"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="145"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="164"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="174"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="40"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="38"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="46"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="44"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="145"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="171"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="143"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="169"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -3043,25 +3043,24 @@ Continue to save will lost part data, still continue?</source>
         <translation>无</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="119"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="120"/>
         <source>Odd</source>
-        <translatorcomment>Even（偶校验）</translatorcomment>
         <translation>Odd（奇校验）</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="120"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="119"/>
         <source>Even</source>
-        <translation>Even</translation>
+        <translation>Even（偶校验）</translation>
     </message>
     <message>
         <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="121"/>
         <source>Space</source>
-        <translation>Even</translation>
+        <translation>Space</translation>
     </message>
     <message>
         <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="122"/>
         <source>Mark</source>
-        <translation>标识</translation>
+        <translation>Mark</translation>
     </message>
     <message>
         <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="184"/>
@@ -3077,17 +3076,17 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::DataItemWidget</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="65"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="66"/>
         <source>Send</source>
         <translation>发送</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="71"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="72"/>
         <source>Reset</source>
         <translation>复位</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="77"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="78"/>
         <source>Remove</source>
         <translation>删除</translation>
     </message>
@@ -3095,17 +3094,17 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetArray</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="955"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1029"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1009"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1083"/>
         <source>Size: </source>
         <translation>大小：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1013"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1087"/>
         <source>, Describe: </source>
         <translation>，描述信息：</translation>
     </message>
@@ -3113,22 +3112,22 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetBitMap</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1032"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1106"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1035"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1109"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1137"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1224"/>
         <source>BIT%1: </source>
         <translation>BIT%1：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1154"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1241"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -3136,17 +3135,17 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetBitValue</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1176"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1263"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1179"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1266"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1251"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1354"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -3154,70 +3153,70 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetCheck</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="456"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="517"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="460"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="521"/>
         <source>Parity:</source>
         <translation>校验位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="465"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="471"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="519"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="625"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="526"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="532"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="576"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="682"/>
         <source> B</source>
         <translation> 字节</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="466"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="527"/>
         <source>Start offset:</source>
         <translation>起始位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="472"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="533"/>
         <source>Stop offset:</source>
         <translation>终止位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="475"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="536"/>
         <source>Length:</source>
         <translation>位长度：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="477"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="538"/>
         <source>No parity</source>
         <translation>无校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="478"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="539"/>
         <source>8 bits sum-parity</source>
         <translation>8位和校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="479"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="540"/>
         <source>16 bits sum-parity</source>
         <translation>16位和校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="480"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="541"/>
         <source>8 bits xor-parity</source>
         <translation>8位异或校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="481"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="542"/>
         <source>16 bits xor-parity</source>
         <translation>16位异或校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="482"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="543"/>
         <source>CRC8 parity</source>
         <translation>CRC8校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="483"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="544"/>
         <source>CRC16 parity</source>
         <translation>CRC16校验</translation>
     </message>
@@ -3225,7 +3224,7 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetCounter</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="398"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="445"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
@@ -3233,7 +3232,7 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetFrameCode</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="642"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="699"/>
         <source>Current frame code:</source>
         <translation>当前帧码：</translation>
     </message>
@@ -3241,7 +3240,7 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetHead</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="340"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="373"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
@@ -3249,33 +3248,33 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetNumeric</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="740"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="797"/>
         <source>(Linkage original and value)</source>
         <translation>（原始数值和输出数值联动）</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="744"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="801"/>
         <source>Relative data:</source>
         <translation>关联数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="749"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="754"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="806"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="811"/>
         <source>Original data:</source>
         <translation>原始数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="760"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="817"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="763"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="820"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="928"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1002"/>
         <source>Scale: %1, Offset: %2, Range: %3, Unit: %4, size: %5.</source>
         <translation>比例：%1，偏移：%2，范围：%3，单位：%4，大小：%5。</translation>
     </message>
@@ -3289,29 +3288,42 @@ Continue to save will lost part data, still continue?</source>
     </message>
 </context>
 <context>
+    <name>Simulate::SetViewSettings</name>
+    <message>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="83"/>
+        <source>Update memory data once value changed</source>
+        <translation>一旦值改变立即刷新发送缓存</translation>
+    </message>
+    <message>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="84"/>
+        <source>Realtime update:</source>
+        <translation>实时更新：</translation>
+    </message>
+</context>
+<context>
     <name>Simulate::SettingsDlg</name>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="113"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="132"/>
         <source>Other settings for simulate module</source>
         <translation>仿真模块其他配置</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="123"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="142"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="127"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="146"/>
         <source>Set view</source>
         <translation>设置视图</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="136"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="155"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="140"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="159"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -3701,27 +3713,27 @@ Continue to save will lost part data, still continue?</source>
         <translation>发送周期：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="35"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="132"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="148"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="166"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="185"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="33"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="130"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="146"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="164"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="183"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="41"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="39"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="47"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="45"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="146"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="180"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="144"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="178"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>

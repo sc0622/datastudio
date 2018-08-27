@@ -7,26 +7,26 @@ namespace Simulate {
 
 TreeViewSettings::TreeViewSettings(QWidget *parent)
     : QWidget(parent)
-    , d_modifyFlags(1)
+    , modifyFlags_(1)
 {
     QFormLayout *formLayoutMain = new QFormLayout(this);
     formLayoutMain->setLabelAlignment(Qt::AlignRight);
 
-    d_comboBoxDeep = new QComboBox(this);
-    d_comboBoxDeep->addItem(tr("Vehicle"), Icd::ObjectVehicle);
-    d_comboBoxDeep->addItem(tr("System"), Icd::ObjectSystem);
-    d_comboBoxDeep->addItem(tr("Table"), Icd::ObjectTable);
-    d_comboBoxDeep->addItem(tr("Item"), Icd::ObjectItem);
-    d_comboBoxDeep->setCurrentIndex(1);
-    formLayoutMain->addRow(tr("Loading deep:"), d_comboBoxDeep);
+    comboBoxDeep_ = new QComboBox(this);
+    comboBoxDeep_->addItem(tr("Vehicle"), Icd::ObjectVehicle);
+    comboBoxDeep_->addItem(tr("System"), Icd::ObjectSystem);
+    comboBoxDeep_->addItem(tr("Table"), Icd::ObjectTable);
+    comboBoxDeep_->addItem(tr("Item"), Icd::ObjectItem);
+    comboBoxDeep_->setCurrentIndex(1);
+    formLayoutMain->addRow(tr("Loading deep:"), comboBoxDeep_);
 
     if (!init()) {
         //
     }
 
-    connect(d_comboBoxDeep, static_cast<void(QComboBox::*)(int)>
+    connect(comboBoxDeep_, static_cast<void(QComboBox::*)(int)>
             (&QComboBox::currentIndexChanged), this, [=](){
-        d_modifyFlags.setBit(0, true);
+        modifyFlags_.setBit(0, true);
         emit contentChanged();
     });
 }
@@ -38,11 +38,11 @@ TreeViewSettings::~TreeViewSettings()
 
 bool TreeViewSettings::tryAccept()
 {
-    if (d_modifyFlags.testBit(0)) {
-        const int deep = d_comboBoxDeep->currentData().toInt();
+    if (modifyFlags_.testBit(0)) {
+        const int deep = comboBoxDeep_->currentData().toInt();
         if (deep == -1) {
             QMessageBox::warning(this, tr("Warning"), tr("Deep cannot be empty!"));
-            d_comboBoxDeep->setFocus();
+            comboBoxDeep_->setFocus();
             return false;
         }
 
@@ -62,10 +62,10 @@ bool TreeViewSettings::init()
 
     if (option.isMember("loadDeep")) {
         const int deep = qBound(0, option["loadDeep"].asInt() - Icd::ObjectVehicle,
-                d_comboBoxDeep->count() - 1);
-        d_comboBoxDeep->setCurrentIndex(deep);
+                comboBoxDeep_->count() - 1);
+        comboBoxDeep_->setCurrentIndex(deep);
     } else {
-        d_comboBoxDeep->setCurrentIndex(1);
+        comboBoxDeep_->setCurrentIndex(1);
     }
 
     return true;
@@ -75,14 +75,22 @@ bool TreeViewSettings::init()
 
 SetViewSettings::SetViewSettings(QWidget *parent)
     : QWidget(parent)
-    , d_modifyFlags(2)
+    , modifyFlags_(1)
 {
     QFormLayout *formLayoutMain = new QFormLayout(this);
     formLayoutMain->setLabelAlignment(Qt::AlignRight);
 
+    checkBoxImmUpdate_ = new QCheckBox(tr("Update memory data once value changed"), this);
+    formLayoutMain->addRow(tr("Realtime update:"), checkBoxImmUpdate_);
+
     if (!init()) {
         //
     }
+
+    connect(checkBoxImmUpdate_, &QCheckBox::stateChanged, this, [=](int state){
+        modifyFlags_.setBit(0, true);
+        emit contentChanged();
+    });
 }
 
 SetViewSettings::~SetViewSettings()
@@ -92,14 +100,25 @@ SetViewSettings::~SetViewSettings()
 
 bool SetViewSettings::tryAccept()
 {
+    if (modifyFlags_.testBit(0)) {
+        const bool realtimeUpdate = checkBoxImmUpdate_->isChecked();
+        JMain::instance()->setOption("simulate", "option.view.realtimeUpdate", realtimeUpdate);
+        jnotify->post("simulate.view.realtimeUpdate.changed", QVariant(realtimeUpdate));
+    }
+
     return true;
 }
 
 bool SetViewSettings::init()
 {
-    const Json::Value option = JMain::instance()->option("simulate", "option.chart");
+    const Json::Value option = JMain::instance()->option("simulate", "option.view");
     if (option.isNull()) {
         return false;
+    }
+
+    // realtime update
+    if (option.isMember("realtimeUpdate")) {
+        checkBoxImmUpdate_->setChecked(option["realtimeUpdate"].asBool());
     }
 
     return true;
@@ -118,12 +137,12 @@ SettingsDlg::SettingsDlg(QWidget *parent)
     QTabWidget *tabWidget = new QTabWidget(this);
     vertLayoutMain->addWidget(tabWidget);
 
-    d_treeViewSettings = new TreeViewSettings(this);
-    tabWidget->addTab(d_treeViewSettings,
+    treeViewSettings_ = new TreeViewSettings(this);
+    tabWidget->addTab(treeViewSettings_,
                       QIcon(":/datastudio/image/global/tree-node.png"), tr("Tree view"));
 
-    d_setViewSettings = new SetViewSettings(this);
-    tabWidget->addTab(d_setViewSettings,
+    setViewSettings_ = new SetViewSettings(this);
+    tabWidget->addTab(setViewSettings_,
                       QIcon(":/datastudio/image/global/edit.png"), tr("Set view"));
 
     vertLayoutMain->addSpacing(20);
@@ -147,10 +166,10 @@ SettingsDlg::SettingsDlg(QWidget *parent)
 
     resize(500, sizeHint().height());
 
-    connect(d_treeViewSettings, &TreeViewSettings::contentChanged, this, [=](){
+    connect(treeViewSettings_, &TreeViewSettings::contentChanged, this, [=](){
         buttonOk->setEnabled(true);
     });
-    connect(d_setViewSettings, &SetViewSettings::contentChanged, this, [=](){
+    connect(setViewSettings_, &SetViewSettings::contentChanged, this, [=](){
         buttonOk->setEnabled(true);
     });
     connect(buttonOk, &QPushButton::clicked, this, [=](){
@@ -173,10 +192,10 @@ SettingsDlg::~SettingsDlg()
 
 bool SettingsDlg::saveConfig()
 {
-    if (!d_treeViewSettings->tryAccept()) {
+    if (!treeViewSettings_->tryAccept()) {
         return false;
     }
-    if (!d_setViewSettings->tryAccept()) {
+    if (!setViewSettings_->tryAccept()) {
         return false;
     }
 

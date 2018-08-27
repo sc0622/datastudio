@@ -12,10 +12,11 @@ namespace Simulate {
 
 DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     : QFrame(parent)
-    , d_itemType(itemType)
-    , d_item(nullptr)
-    , d_buttonSend(nullptr)
-    , d_itemLayout(nullptr)
+    , itemType_(itemType)
+    , item_(nullptr)
+    , buttonSend_(nullptr)
+    , itemLayout_(nullptr)
+    , realtimeUpdate_(false)
 {
     setObjectName("DataItemWidget");
     setFrameShape(QFrame::NoFrame);
@@ -27,22 +28,22 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     QHBoxLayout *layoutTop = new QHBoxLayout();
     vertLayoutMain->addLayout(layoutTop);
 
-    d_labelTitle = new QLabel(this);
-    d_labelTitle->setObjectName("labelTitle");
-    d_labelTitle->setContentsMargins(8, 0, 8, 0);
-    d_labelTitle->setFixedHeight(25);
-    QFont font = d_labelTitle->font();
+    labelTitle_ = new QLabel(this);
+    labelTitle_->setObjectName("labelTitle");
+    labelTitle_->setContentsMargins(8, 0, 8, 0);
+    labelTitle_->setFixedHeight(25);
+    QFont font = labelTitle_->font();
     font.setBold(true);
-    d_labelTitle->setFont(font);
-    layoutTop->addWidget(d_labelTitle, 0, Qt::AlignTop);
+    labelTitle_->setFont(font);
+    layoutTop->addWidget(labelTitle_, 0, Qt::AlignTop);
 
     layoutTop->addStretch();
 
-    d_clientLayout = new QHBoxLayout();
-    d_clientLayout->setContentsMargins(0, 0, 0, 0);
-    vertLayoutMain->addLayout(d_clientLayout);
+    clientLayout_ = new QHBoxLayout();
+    clientLayout_->setContentsMargins(0, 0, 0, 0);
+    vertLayoutMain->addLayout(clientLayout_);
 
-    switch (d_itemType) {
+    switch (itemType_) {
     case ItemTypeComplex:
     {
         const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem());
@@ -62,9 +63,9 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
         formButton->setFixedWidth(100);
         layoutTop->addWidget(formButton);
 
-        d_buttonSend = new QPushButton(tr("Send"), this);
-        d_buttonSend->setFixedSize(60, 25);
-        layoutTop->addWidget(d_buttonSend);
+        buttonSend_ = new QPushButton(tr("Send"), this);
+        buttonSend_->setFixedSize(60, 25);
+        layoutTop->addWidget(buttonSend_);
 
         layoutTop->addSpacing(10);
 
@@ -80,39 +81,47 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
 
         QWidget *widgetClient = new QWidget(this);
         widgetClient->setObjectName("widgetClient");
-        d_clientLayout->addWidget(widgetClient);
+        clientLayout_->addWidget(widgetClient);
 
         QHBoxLayout *horiLayoutClient = new QHBoxLayout(widgetClient);
         horiLayoutClient->setContentsMargins(0, 6, 0, 6);
 
-        d_itemLayout = new QVBoxLayout();
-        horiLayoutClient->addLayout(d_itemLayout);
-        d_itemLayout->setContentsMargins(0, 0, 0, 0);
-        d_itemLayout->setSpacing(6);
-        d_itemLayout->addStretch();
-
-        //horiLayoutClient->addStretch();
+        itemLayout_ = new QVBoxLayout();
+        horiLayoutClient->addLayout(itemLayout_);
+        itemLayout_->setContentsMargins(0, 0, 0, 0);
+        itemLayout_->setSpacing(6);
+        itemLayout_->addStretch();
 
         connect(buttonRemove, SIGNAL(clicked(bool)), this, SIGNAL(remove()));
-        connect(d_buttonSend, SIGNAL(clicked(bool)), this, SIGNAL(send()));
+        connect(buttonSend_, SIGNAL(clicked(bool)), this, SIGNAL(send()));
         connect(buttonRestore, &QPushButton::clicked, this, [=](){
-            restoreUi(d_defaultData);
+            restoreUi(defaultData_);
         });
 
         break;
     }}
+
+    //
+    const Json::Value option = JMain::instance()->option("simulate", "option.view");
+    if (option.isMember("realtimeUpdate")) {
+        realtimeUpdate_ = option["realtimeUpdate"].asBool();
+    }
+
+    jnotify->on("simulate.view.realtimeUpdate.changed", this, [=](JNEvent &event){
+        realtimeUpdate_ = event.argument().toBool();
+    });
 }
 
 DataItemWidget::~DataItemWidget()
 {
     //
-    if (d_item) {
-        d_item->setData(QVariant::Invalid, Icd::TreeBoundRole);
+    if (item_) {
+        item_->setData(QVariant::Invalid, Icd::TreeBoundRole);
     }
     //
-    if (d_worker) {
-        d_worker->disconnect(this);
-        d_worker->workerSend()->disconnect(this);
+    if (worker_) {
+        worker_->disconnect(this);
+        worker_->workerSend()->disconnect(this);
     }
 }
 
@@ -166,35 +175,35 @@ DataItemWidget *DataItemWidget::createWidget(const Icd::ItemPtr &dataItem, QWidg
 
 DataItemWidget::ItemType DataItemWidget::itemType() const
 {
-    return d_itemType;
+    return itemType_;
 }
 
 const Icd::WorkerPtr &DataItemWidget::worker() const
 {
-    return d_worker;
+    return worker_;
 }
 
 void DataItemWidget::setWorker(const Icd::WorkerPtr &worker)
 {
     // the same
-    if (worker && (d_worker == worker)) {
+    if (worker && (worker_ == worker)) {
         return;
     }
     //
-    if (d_worker) {
-        d_worker->disconnect(this);
-        d_worker->workerSend()->disconnect(this);
+    if (worker_) {
+        worker_->disconnect(this);
+        worker_->workerSend()->disconnect(this);
     }
     //
     if (worker) {
         auto setButtonSendEnabled = [=](Icd::WorkerTrans::TimeEvent event){
-            if (d_buttonSend) {
+            if (buttonSend_) {
                 switch (event) {
                 case Icd::WorkerTrans::TimeOneShot:
-                    d_buttonSend->setEnabled(worker->isOpen());
+                    buttonSend_->setEnabled(worker->isOpen());
                     break;
                 case Icd::WorkerTrans::TimePeriodic:
-                    d_buttonSend->setEnabled(false);
+                    buttonSend_->setEnabled(false);
                     break;
                 }
             }
@@ -212,12 +221,12 @@ void DataItemWidget::setWorker(const Icd::WorkerPtr &worker)
         });
     }
 
-    d_worker = worker;
+    worker_ = worker;
 }
 
 Icd::ItemPtr DataItemWidget::dataItem() const
 {
-    return d_dataItem;
+    return dataItem_;
 }
 
 bool DataItemWidget::setDataItem(const Icd::ItemPtr &dataItem)
@@ -227,25 +236,25 @@ bool DataItemWidget::setDataItem(const Icd::ItemPtr &dataItem)
         return false;
     }
 
-    d_defaultData = Icd::ItemPtr(dynamic_cast<Icd::Item *>(dataItem->clone()));
-    d_dataItem = dataItem;
+    defaultData_ = Icd::ItemPtr(dynamic_cast<Icd::Item *>(dataItem->clone()));
+    dataItem_ = dataItem;
 
     return true;
 }
 
 QStandardItem *DataItemWidget::item() const
 {
-    return d_item;
+    return item_;
 }
 
 void DataItemWidget::setItem(QStandardItem *item)
 {
-    d_item = item;
+    item_ = item;
 }
 
 void DataItemWidget::updateUi()
 {
-    updateUi(d_dataItem);
+    updateUi(dataItem_);
 }
 
 bool DataItemWidget::addDataItem(const QString &domain)
@@ -264,24 +273,48 @@ void DataItemWidget::removeItem(const QString &domain)
 {
     Q_UNUSED(domain);
     //
-    if (d_item) {
-        d_item->setData(QVariant::Invalid, Icd::TreeBoundRole);
+    if (item_) {
+        item_->setData(QVariant::Invalid, Icd::TreeBoundRole);
     }
+}
+
+bool DataItemWidget::realtimeUpdate() const
+{
+    return realtimeUpdate_;
+}
+
+bool DataItemWidget::autoSend() const
+{
+    if (!worker_) {
+        return false;
+    }
+
+    const Icd::ChannelPtr channel = worker_->channel();
+    if (!channel) {
+        return false;
+    }
+
+    return channel->autoSend();
+}
+
+bool DataItemWidget::autoUpdate() const
+{
+    return realtimeUpdate_ || !autoSend();
 }
 
 QHBoxLayout *DataItemWidget::clientLayout()
 {
-    return d_clientLayout;
+    return clientLayout_;
 }
 
 QVBoxLayout *DataItemWidget::itemLayout()
 {
-    return d_itemLayout;
+    return itemLayout_;
 }
 
 int DataItemWidget::titleBarHeight() const
 {
-    return d_labelTitle->height();
+    return labelTitle_->height();
 }
 
 void DataItemWidget::restoreUi(const Icd::ItemPtr &data)
@@ -298,16 +331,16 @@ bool DataItemWidget::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    if (d_item) {
-        const QString path = d_item->data(Icd::TreeItemPathRole).toString();
+    if (item_) {
+        const QString path = item_->data(Icd::TreeItemPathRole).toString();
         const QString name = path.section('@', 0, 0);
-        d_labelTitle->setText("<font color=#7777bb>" + name + "</font><font color=#807777aa size=2>@"
+        labelTitle_->setText("<font color=#7777bb>" + name + "</font><font color=#807777aa size=2>@"
                               + path.section('@', 1) + "</font>");
     } else {
-        d_labelTitle->setText(QString::fromStdString(data->name()));
+        labelTitle_->setText(QString::fromStdString(data->name()));
     }
 
-    if (d_worker) {
+    if (worker_) {
 
     }
 
@@ -333,18 +366,32 @@ ItemWidgetHead::ItemWidgetHead(QWidget *parent)
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
-    d_spinValue = new JSpinBox(this);
-    d_spinValue->setFillChar(QChar('0'));
-    d_spinValue->setRadix(16);
-    d_spinValue->setFixedWidth(300);
-    formLayout->addRow(tr("Current value:"), d_spinValue);
-    //
-    connect(d_spinValue, static_cast<void(JSpinBox::*)(int)>
-            (&JSpinBox::valueChanged), this, [=](int value){
+    spinValue_ = new JSpinBox(this);
+    spinValue_->setFillChar(QChar('0'));
+    spinValue_->setRadix(16);
+    spinValue_->setFixedWidth(300);
+    formLayout->addRow(tr("Current value:"), spinValue_);
+
+    auto updateValue = [=](int value) {
         if (!dataItem()) {
             return;
         }
         dataItem()->setData(value);
+    };
+    connect(spinValue_, static_cast<void(JSpinBox::*)(int)>
+            (&JSpinBox::valueChanged), this, [=](int value){
+        if (!autoUpdate()) {
+            return;
+        }
+        updateValue(value);
+    });
+    connect(spinValue_, &JSpinBox::editingFinished, this, [=](){
+        if (!autoUpdate()) {
+            updateValue(spinValue_->value());
+        }
+        if (!autoSend()) {
+            emit send();
+        }
     });
 }
 
@@ -363,7 +410,7 @@ void ItemWidgetHead::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_spinValue->setValue(int(itemHead->defaultValue()));
+    spinValue_->setValue(int(itemHead->defaultValue()));
 }
 
 bool ItemWidgetHead::updateUi(const Icd::ItemPtr &data)
@@ -377,8 +424,8 @@ bool ItemWidgetHead::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    d_spinValue->setRange(0, int((0x1U << (int(itemHead->bufferSize()) * 8)) - 1));
-    d_spinValue->setValue(int(itemHead->data()));
+    spinValue_->setRange(0, int((0x1U << (int(itemHead->bufferSize()) * 8)) - 1));
+    spinValue_->setValue(int(itemHead->data()));
 
     return true;
 }
@@ -393,16 +440,30 @@ ItemWidgetCounter::ItemWidgetCounter(QWidget *parent)
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
-    d_spinValue = new QSpinBox(this);
-    d_spinValue->setFixedWidth(300);
-    formLayout->addRow(tr("Current value:"), d_spinValue);
-    //
-    connect(d_spinValue, static_cast<void(QSpinBox::*)(int)>
-            (&QSpinBox::valueChanged), this, [=](int value){
+    spinValue_ = new QSpinBox(this);
+    spinValue_->setFixedWidth(300);
+    formLayout->addRow(tr("Current value:"), spinValue_);
+
+    auto updateValue = [=](int value) {
         if (!dataItem()) {
             return;
         }
         dataItem()->setData(value);
+    };
+    connect(spinValue_, static_cast<void(QSpinBox::*)(int)>
+            (&QSpinBox::valueChanged), this, [=](int value){
+        if (!autoUpdate()) {
+            return;
+        }
+        updateValue(value);
+    });
+    connect(spinValue_, &JSpinBox::editingFinished, this, [=](){
+        if (!autoUpdate()) {
+            updateValue(spinValue_->value());
+        }
+        if (!autoSend()) {
+            emit send();
+        }
     });
 }
 
@@ -421,7 +482,7 @@ void ItemWidgetCounter::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_spinValue->setValue(int(itemCounter->defaultValue()));
+    spinValue_->setValue(int(itemCounter->defaultValue()));
 }
 
 bool ItemWidgetCounter::updateUi(const Icd::ItemPtr &data)
@@ -435,8 +496,8 @@ bool ItemWidgetCounter::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    d_spinValue->setRange(0, int((0x1U << (int(itemCounter->bufferSize()) * 8)) - 1));
-    d_spinValue->setValue(int(itemCounter->data()));
+    spinValue_->setRange(0, int((0x1U << (int(itemCounter->bufferSize()) * 8)) - 1));
+    spinValue_->setValue(int(itemCounter->data()));
 
     return true;
 }
@@ -451,73 +512,69 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
-    d_spinValue = new QSpinBox(this);
-    d_spinValue->setFixedWidth(300);
-    formLayout->addRow(tr("Current value:"), d_spinValue);
+    spinValue_ = new QSpinBox(this);
+    spinValue_->setFixedWidth(300);
+    formLayout->addRow(tr("Current value:"), spinValue_);
 
-    d_comboBoxCheckType = new QComboBox(this);
-    d_comboBoxCheckType->setMinimumWidth(220);
-    formLayout->addRow(tr("Parity:"), d_comboBoxCheckType);
+    comboBoxCheckType_ = new QComboBox(this);
+    comboBoxCheckType_->setFixedWidth(300);
+    formLayout->addRow(tr("Parity:"), comboBoxCheckType_);
 
-    d_spinStartPos = new QSpinBox(this);
-    d_spinStartPos->setFixedWidth(300);
-    d_spinStartPos->setRange(0, 65535);
-    d_spinStartPos->setSuffix(tr(" B"));
-    formLayout->addRow(tr("Start offset:"), d_spinStartPos);
+    spinStartPos_ = new QSpinBox(this);
+    spinStartPos_->setFixedWidth(300);
+    spinStartPos_->setRange(0, 65535);
+    spinStartPos_->setSuffix(tr(" B"));
+    formLayout->addRow(tr("Start offset:"), spinStartPos_);
 
-    d_spinEndPos = new QSpinBox(this);
-    d_spinEndPos->setFixedWidth(300);
-    d_spinEndPos->setRange(0, 65535);
-    d_spinEndPos->setSuffix(tr(" B"));
-    formLayout->addRow(tr("Stop offset:"), d_spinEndPos);
+    spinEndPos_ = new QSpinBox(this);
+    spinEndPos_->setFixedWidth(300);
+    spinEndPos_->setRange(0, 65535);
+    spinEndPos_->setSuffix(tr(" B"));
+    formLayout->addRow(tr("Stop offset:"), spinEndPos_);
 
-    d_labelCheckLength = new QLabel(this);
-    formLayout->addRow(tr("Length:"), d_labelCheckLength);
+    labelCheckLength_ = new QLabel(this);
+    formLayout->addRow(tr("Length:"), labelCheckLength_);
     //
-    d_comboBoxCheckType->addItem(tr("No parity"));
-    d_comboBoxCheckType->addItem(tr("8 bits sum-parity"));
-    d_comboBoxCheckType->addItem(tr("16 bits sum-parity"));
-    d_comboBoxCheckType->addItem(tr("8 bits xor-parity"));
-    d_comboBoxCheckType->addItem(tr("16 bits xor-parity"));
-    d_comboBoxCheckType->addItem(tr("CRC8 parity"));
-    d_comboBoxCheckType->addItem(tr("CRC16 parity"));
-    //
-    connect(d_spinValue, static_cast<void(QSpinBox::*)(int)>
-            (&QSpinBox::valueChanged), this, [=](int value){
+    comboBoxCheckType_->addItem(tr("No parity"), Icd::CheckNone);
+    comboBoxCheckType_->addItem(tr("8 bits sum-parity"), Icd::CheckSum8);
+    comboBoxCheckType_->addItem(tr("16 bits sum-parity"), Icd::CheckSum16);
+    comboBoxCheckType_->addItem(tr("8 bits xor-parity"), Icd::CheckXor8);
+    comboBoxCheckType_->addItem(tr("16 bits xor-parity"), Icd::CheckXor16);
+    comboBoxCheckType_->addItem(tr("CRC8 parity"), Icd::CheckCrc8);
+    comboBoxCheckType_->addItem(tr("CRC16 parity"), Icd::CheckCrc16);
+
+    auto updateValue = [=](int value) {
         if (!dataItem()) {
             return;
         }
         dataItem()->setData(value);
+    };
+    connect(spinValue_, static_cast<void(QSpinBox::*)(int)>
+            (&QSpinBox::valueChanged), this, [=](int value){
+        if (!autoUpdate()) {
+            return;
+        }
+        updateValue(value);
     });
-    connect(d_comboBoxCheckType, static_cast<void(QComboBox::*)(int)>
+    connect(spinValue_, &JSpinBox::editingFinished, this, [=](){
+        if (!autoUpdate()) {
+            updateValue(spinValue_->value());
+        }
+        if (!autoSend()) {
+            emit send();
+        }
+    });
+    connect(comboBoxCheckType_, static_cast<void(QComboBox::*)(int)>
             (&QComboBox::currentIndexChanged), this, [=](int index){
-        //
+        Q_UNUSED(index);
         const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(dataItem());
         if (!itemCheck) {
             return;
         }
-        //
-        switch (index) {
-        case 0:
-        default:
-            itemCheck->setCheckType(Icd::CheckNone);
-            break;
-        case 1:
-            itemCheck->setCheckType(Icd::CheckSum8);
-            break;
-        case 2:
-            itemCheck->setCheckType(Icd::CheckSum16);
-            break;
-        case 3:
-            itemCheck->setCheckType(Icd::CheckCrc8);
-            break;
-        case 4:
-            itemCheck->setCheckType(Icd::CheckCrc16);
-            break;
-        }
+        itemCheck->setCheckType(Icd::CheckType(comboBoxCheckType_->currentData().toInt()));
     });
     const QString sByteUnit = tr(" B");
-    connect(d_spinStartPos, static_cast<void(QSpinBox::*)(int)>
+    connect(spinStartPos_, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
         //
         const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(dataItem());
@@ -526,13 +583,13 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
         }
         itemCheck->setStartPos(value);
         // CheckLength
-        d_labelCheckLength->setText(QString::number(itemCheck->checkLength()) + sByteUnit);
+        labelCheckLength_->setText(QString::number(itemCheck->checkLength()) + sByteUnit);
         //
-        if (value > d_spinEndPos->value()) {
-            d_spinStartPos->setValue(d_spinEndPos->value());
+        if (value > spinEndPos_->value()) {
+            spinStartPos_->setValue(spinEndPos_->value());
         }
     });
-    connect(d_spinEndPos, static_cast<void(QSpinBox::*)(int)>
+    connect(spinEndPos_, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
         //
         const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(dataItem());
@@ -541,10 +598,10 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
         }
         itemCheck->setEndPos(value);
         // CheckLength
-        d_labelCheckLength->setText(QString::number(itemCheck->checkLength()) + sByteUnit);
+        labelCheckLength_->setText(QString::number(itemCheck->checkLength()) + sByteUnit);
         //
-        if (value < d_spinStartPos->value()) {
-            d_spinEndPos->setValue(d_spinStartPos->value());
+        if (value < spinStartPos_->value()) {
+            spinEndPos_->setValue(spinStartPos_->value());
         }
     });
 }
@@ -564,7 +621,7 @@ void ItemWidgetCheck::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_spinValue->setValue(int(itemCheck->defaultValue()));
+    spinValue_->setValue(int(itemCheck->defaultValue()));
 }
 
 bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
@@ -573,11 +630,11 @@ bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    d_spinValue->setValue(0);
-    d_comboBoxCheckType->setCurrentIndex(0);
-    d_spinStartPos->setValue(0);
-    d_spinEndPos->setValue(0);
-    d_labelCheckLength->setText("");
+    spinValue_->setValue(0);
+    comboBoxCheckType_->setCurrentIndex(0);
+    spinStartPos_->setValue(0);
+    spinEndPos_->setValue(0);
+    labelCheckLength_->setText("");
     //
     if (!worker()) {
         return false;
@@ -588,40 +645,40 @@ bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    d_spinStartPos->setRange(0, qCeil(tableSend->bufferSize()) - 1);
-    d_spinEndPos->setRange(0, qCeil(tableSend->bufferSize()) - 1);
+    spinStartPos_->setRange(0, qCeil(tableSend->bufferSize()) - 1);
+    spinEndPos_->setRange(0, qCeil(tableSend->bufferSize()) - 1);
     //
     const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem, Icd::Item>(data);
     if (!checkItem) {
         return false;
     }
     // value
-    d_spinValue->setValue(int(checkItem->data()));
+    spinValue_->setValue(int(checkItem->data()));
     // CheckType
     switch (checkItem->checkType()) {
     case Icd::CheckNone:
     default:
-        d_comboBoxCheckType->setCurrentIndex(0);
+        comboBoxCheckType_->setCurrentIndex(0);
         break;
     case Icd::CheckSum8:
-        d_comboBoxCheckType->setCurrentIndex(1);
+        comboBoxCheckType_->setCurrentIndex(1);
         break;
     case Icd::CheckSum16:
-        d_comboBoxCheckType->setCurrentIndex(2);
+        comboBoxCheckType_->setCurrentIndex(2);
         break;
     case Icd::CheckCrc8:
-        d_comboBoxCheckType->setCurrentIndex(3);
+        comboBoxCheckType_->setCurrentIndex(3);
         break;
     case Icd::CheckCrc16:
-        d_comboBoxCheckType->setCurrentIndex(4);
+        comboBoxCheckType_->setCurrentIndex(4);
         break;
     }
     // EndPos
-    d_spinEndPos->setValue(checkItem->endPos());
+    spinEndPos_->setValue(checkItem->endPos());
     // StartPos
-    d_spinStartPos->setValue(checkItem->startPos());
+    spinStartPos_->setValue(checkItem->startPos());
     // CheckLength
-    d_labelCheckLength->setText(QString::number(checkItem->checkLength())
+    labelCheckLength_->setText(QString::number(checkItem->checkLength())
                                 + tr(" B"));
 
     return true;
@@ -637,16 +694,16 @@ ItemWidgetFrameCode::ItemWidgetFrameCode(QWidget *parent)
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
-    d_comboBoxCode = new QComboBox(this);
-    d_comboBoxCode->setFixedWidth(300);
-    formLayout->addRow(tr("Current frame code:"), d_comboBoxCode);
+    comboBoxCode_ = new QComboBox(this);
+    comboBoxCode_->setFixedWidth(300);
+    formLayout->addRow(tr("Current frame code:"), comboBoxCode_);
     //
-    connect(d_comboBoxCode, static_cast<void(QComboBox::*)
+    connect(comboBoxCode_, static_cast<void(QComboBox::*)
             (int)>(&QComboBox::currentIndexChanged), this, [=](int index){
         if (!dataItem()) {
             return;
         }
-        dataItem()->setData(d_comboBoxCode->itemData(index).toInt());
+        dataItem()->setData(comboBoxCode_->itemData(index).toInt());
     });
 }
 
@@ -672,10 +729,10 @@ void ItemWidgetFrameCode::setWorker(const Icd::WorkerPtr &worker)
                 [=](Icd::WorkerTrans::TimeEvent event){
             switch (event) {
             case Icd::WorkerTrans::TimeOneShot:
-                d_comboBoxCode->setEnabled(true);
+                comboBoxCode_->setEnabled(true);
                 break;
             case Icd::WorkerTrans::TimePeriodic:
-                d_comboBoxCode->setEnabled(false);
+                comboBoxCode_->setEnabled(false);
                 break;
             }
         });
@@ -692,14 +749,14 @@ void ItemWidgetFrameCode::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_comboBoxCode->setCurrentText(QString("0x%1").arg(int(itemFrameCode->defaultValue()),
+    comboBoxCode_->setCurrentText(QString("0x%1").arg(int(itemFrameCode->defaultValue()),
                                                        2, 16, QChar('0')).toUpper());
 }
 
 bool ItemWidgetFrameCode::updateUi(const Icd::ItemPtr &data)
 {
     //
-    d_comboBoxCode->clear();
+    comboBoxCode_->clear();
 
     if (!DataItemWidget::updateUi(data)) {
         return false;
@@ -718,10 +775,10 @@ bool ItemWidgetFrameCode::updateUi(const Icd::ItemPtr &data)
     const Icd::TablePtrMap &tables = frame->allTable();
     for (Icd::TablePtrMap::const_iterator citer = tables.cbegin();
          citer != tables.cend(); ++citer) {
-        d_comboBoxCode->addItem(QString::fromStdString(citer->second->name()), citer->first);
+        comboBoxCode_->addItem(QString::fromStdString(citer->second->name()), citer->first);
     }
     //
-    d_comboBoxCode->setCurrentText(QString("0x%1").arg(int(itemFrameCode->data()),
+    comboBoxCode_->setCurrentText(QString("0x%1").arg(int(itemFrameCode->data()),
                                                        2, 16, QChar('0')).toUpper());
 
     return true;
@@ -737,37 +794,33 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
-    d_checkBoxLink = new QCheckBox(tr("(Linkage original and value)"), this);
-    d_checkBoxLink->setFixedWidth(300);
-    d_checkBoxLink->setCheckable(false);
-    d_checkBoxLink->setChecked(true);   //FIXME
-    formLayout->addRow(tr("Relative data:"), d_checkBoxLink);
+    checkBoxLink_ = new QCheckBox(tr("(Linkage original and value)"), this);
+    checkBoxLink_->setFixedWidth(300);
+    checkBoxLink_->setCheckable(false);
+    checkBoxLink_->setChecked(true);   //FIXME
+    formLayout->addRow(tr("Relative data:"), checkBoxLink_);
 
-    d_sliderValue = new QSlider(this);
-    d_sliderValue->setFixedWidth(300);
-    d_sliderValue->setOrientation(Qt::Horizontal);
-    formLayout->addRow(tr("Original data:"), d_sliderValue);
+    sliderValue_ = new QSlider(this);
+    sliderValue_->setFixedWidth(300);
+    sliderValue_->setOrientation(Qt::Horizontal);
+    formLayout->addRow(tr("Original data:"), sliderValue_);
 
-    d_spinValue = new QDoubleSpinBox(this);
-    d_spinValue->setFixedWidth(300);
-    d_spinValue->setDecimals(DBL_DIG);
-    formLayout->addRow(tr("Original data:"), d_spinValue);
+    spinValue_ = new QDoubleSpinBox(this);
+    spinValue_->setFixedWidth(300);
+    spinValue_->setDecimals(DBL_DIG);
+    formLayout->addRow(tr("Original data:"), spinValue_);
 
-    d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setFixedWidth(300);
-    d_spinData->setDecimals(DBL_DIG);
-    d_spinData->setEnabled(false);
-    formLayout->addRow(tr("Output data:"), d_spinData);
+    spinData_ = new QDoubleSpinBox(this);
+    spinData_->setFixedWidth(300);
+    spinData_->setDecimals(DBL_DIG);
+    spinData_->setEnabled(false);
+    formLayout->addRow(tr("Output data:"), spinData_);
 
-    d_labelDesc = new QLabel(this);
-    formLayout->addRow(tr("Describe:"), d_labelDesc);
+    labelDesc_ = new QLabel(this);
+    formLayout->addRow(tr("Describe:"), labelDesc_);
     //
-    connect(d_sliderValue, &QSlider::valueChanged, [=](int value){
-        d_spinValue->setValue(value);
-    });
-    connect(d_spinValue, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-            [=](double value){
-        d_sliderValue->setValue(int(value));
+    connect(sliderValue_, &QSlider::valueChanged, [=](int value){
+        spinValue_->setValue(value);
     });
     auto setDataSuffix = [=](const Icd::NumericItemPtr &itemNumeric){
         QString suffix;
@@ -818,20 +871,41 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
                                           16, QChar('0')).toUpper();
             break;
         }}
-        d_spinData->setSuffix(suffix);
+        spinData_->setSuffix(suffix);
     };
-    connect(d_spinValue, static_cast<void(QDoubleSpinBox::*)(double)>
-            (&QDoubleSpinBox::valueChanged), this, [=](double value){
+    auto updateValue = [=](double value) {
+        if (!dataItem()) {
+            return;
+        }
+        //
         const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(dataItem());
         if (!itemNumeric) {
             return;
         }
         itemNumeric->setData(value);
         const double dataValue = (value - itemNumeric->offset()) / itemNumeric->scale();
-        d_spinData->setValue(dataValue);
+        spinData_->setValue(dataValue);
         setDataSuffix(itemNumeric);
+    };
+    connect(spinValue_, static_cast<void(QDoubleSpinBox::*)(double)>
+            (&QDoubleSpinBox::valueChanged), this, [=](double value){
+        //
+        sliderValue_->setValue(int(value));
+        //
+        if (!autoUpdate()) {
+            return;
+        }
+        updateValue(value);
     });
-    connect(d_spinData, static_cast<void(QDoubleSpinBox::*)(double)>
+    connect(spinValue_, &QDoubleSpinBox::editingFinished, this, [=](){
+        if (!autoUpdate()) {
+            updateValue(spinValue_->value());
+        }
+        if (!autoSend()) {
+            emit send();
+        }
+    });
+    connect(spinData_, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){
         const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(dataItem());
         if (!itemNumeric) {
@@ -840,21 +914,21 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         const double realValue = value * itemNumeric->scale() + itemNumeric->offset();
         itemNumeric->setData(realValue);
         setDataSuffix(itemNumeric);
-        if (!d_checkBoxLink->isChecked()) {
+        if (!checkBoxLink_->isChecked()) {
             return;
         }
-        d_spinValue->setValue(realValue);
+        spinValue_->setValue(realValue);
     });
-    connect(d_checkBoxLink, &QCheckBox::stateChanged, this, [=](int state){
+    connect(checkBoxLink_, &QCheckBox::stateChanged, this, [=](int state){
         if (state == Qt::Checked) {
-            d_spinData->setEnabled(true);
+            spinData_->setEnabled(true);
         } else {
-            d_spinData->setEnabled(false);
+            spinData_->setEnabled(false);
         }
     });
 
     //
-    d_checkBoxLink->setChecked(false);
+    checkBoxLink_->setChecked(false);
 }
 
 ItemWidgetNumeric::~ItemWidgetNumeric()
@@ -872,7 +946,7 @@ void ItemWidgetNumeric::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    d_spinValue->setValue(itemNumeric->defaultValue());
+    spinValue_->setValue(itemNumeric->defaultValue());
 }
 
 bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
@@ -893,24 +967,24 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     //
     switch (itemNumeric->numericType()) {
     case Icd::NumericF32:
-        d_spinValue->setDecimals(FLT_DIG);
-        d_spinData->setDecimals(FLT_DIG);
+        spinValue_->setDecimals(FLT_DIG);
+        spinData_->setDecimals(FLT_DIG);
         break;
     default:
-        d_spinData->setDecimals(DBL_DIG);
-        d_spinValue->setDecimals(DBL_DIG);
+        spinData_->setDecimals(DBL_DIG);
+        spinValue_->setDecimals(DBL_DIG);
         break;
     }
     // unit
     const QString unit = QString::fromStdString(itemNumeric->unit()).trimmed();
     if (!unit.isEmpty()) {
-        d_spinValue->setSuffix(" " + unit);
+        spinValue_->setSuffix(" " + unit);
     }
     // range
     std::pair<double, double> range = itemNumeric->valueRange();
     //
-    d_spinValue->setRange(range.first, range.second);
-    d_spinValue->setSingleStep(itemNumeric->scale());
+    spinValue_->setRange(range.first, range.second);
+    spinValue_->setSingleStep(itemNumeric->scale());
     //
     if (range.first < INT_MIN) {
         range.first = INT_MIN;
@@ -918,14 +992,14 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
     if (range.second > INT_MAX) {
         range.second = INT_MAX;
     }
-    d_sliderValue->setRange(qFloor(range.first), qCeil(range.second));
+    sliderValue_->setRange(qFloor(range.first), qCeil(range.second));
     //
     range = itemNumeric->dataRange();
-    d_spinData->setRange(range.first, range.second);
+    spinData_->setRange(range.first, range.second);
     //
-    d_spinValue->setValue(itemNumeric->data());
+    spinValue_->setValue(itemNumeric->data());
     //
-    d_labelDesc->setText(tr("Scale: %1, Offset: %2, Range: %3, Unit: %4, size: %5.")
+    labelDesc_->setText(tr("Scale: %1, Offset: %2, Range: %3, Unit: %4, size: %5.")
                          .arg(itemNumeric->scale(), 0, 'g', 20)
                          .arg(itemNumeric->offset(), 0, 'g', 20)
                          .arg(QString::fromStdString(limit->toString()))
@@ -951,8 +1025,8 @@ ItemWidgetArray::ItemWidgetArray(QWidget *parent)
 
     clientLayout()->setStretch(0, 0);
 
-    d_labelDesc = new QLabel(this);
-    formLayout->addRow(tr("Describe:"), d_labelDesc);
+    labelDesc_ = new QLabel(this);
+    formLayout->addRow(tr("Describe:"), labelDesc_);
 
     connect(dataView_, &JUtralEdit::JView::textChanged, this, [=](){
         const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(dataItem());
@@ -1021,22 +1095,23 @@ bool ItemWidgetArray::updateUi(const Icd::ItemPtr &data)
 ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
     : DataItemWidget(ItemTypeBitMap, parent)
 {
-    d_formLayout = new QFormLayout();
-    d_formLayout->setLabelAlignment(Qt::AlignRight);
-    itemLayout()->addLayout(d_formLayout);
+    formLayout_ = new QFormLayout();
+    formLayout_->setLabelAlignment(Qt::AlignRight);
+    itemLayout()->addLayout(formLayout_);
     itemLayout()->addStretch();
 
-    d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setFixedWidth(300);
-    d_spinData->setDecimals(0);
-    d_formLayout->addRow(tr("Output data:"), d_spinData);
+    spinData_ = new QDoubleSpinBox(this);
+    spinData_->setFixedWidth(300);
+    spinData_->setDecimals(0);
+    formLayout_->addRow(tr("Output data:"), spinData_);
 
-    d_labelDesc = new QLabel(this);
-    d_formLayout->addRow(tr("Describe:"), d_labelDesc);
+    labelDesc_ = new QLabel(this);
+    formLayout_->addRow(tr("Describe:"), labelDesc_);
     //
-    connect(d_spinData, static_cast<void(QDoubleSpinBox::*)(double)>
-            (&QDoubleSpinBox::valueChanged), this, [=](double value){
-        //
+    auto updateValue = [=](int value) {
+        if (!dataItem()) {
+            return;
+        }
         const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem());
         if (!itemBit) {
             return;
@@ -1044,11 +1119,11 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
         //
         const unsigned int data = static_cast<unsigned int>(value) & (itemBit->mask() >> itemBit->bitStart());
         if (data != static_cast<unsigned int>(value)) {
-            d_spinData->setValue(data);
+            spinData_->setValue(data);
             return;
         }
         //
-        QMapIterator<int, QCheckBox *> citer(d_checkBoxes);
+        QMapIterator<int, QCheckBox *> citer(checkBoxes_);
         while (citer.hasNext()) {
             citer.next();
             QCheckBox *checkBox = citer.value();
@@ -1075,7 +1150,19 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
                     .arg(qulonglong(data), 16, 16, QChar('0'))
                     .arg(qulonglong(data), itemBit->bitCount(), 2, QChar('0'));
         }
-        d_spinData->setSuffix(suffix.toUpper());
+        spinData_->setSuffix(suffix.toUpper());
+    };
+    connect(spinData_, static_cast<void(QDoubleSpinBox::*)(double)>
+            (&QDoubleSpinBox::valueChanged), this, [=](double value){
+        updateValue(value);
+    });
+    connect(spinData_, &QDoubleSpinBox::editingFinished, this, [=](){
+        if (!autoUpdate()) {
+            updateValue(spinData_->value());
+        }
+        if (!autoSend()) {
+            emit send();
+        }
     });
 }
 
@@ -1095,7 +1182,7 @@ void ItemWidgetBitMap::restoreUi(const Icd::ItemPtr &data)
     }
     //
     const quint32 defaultValue = quint32(itemBit->defaultValue());
-    QMapIterator<int, QCheckBox *> citer(d_checkBoxes);
+    QMapIterator<int, QCheckBox *> citer(checkBoxes_);
     while (citer.hasNext()) {
         citer.next();
         QCheckBox *checkBox = citer.value();
@@ -1109,13 +1196,13 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    QMapIterator<int, QCheckBox *> citer(d_checkBoxes);
+    QMapIterator<int, QCheckBox *> citer(checkBoxes_);
     while (citer.hasNext()) {
         citer.next();
         QCheckBox *checkBox = citer.value();
-        QWidget *label = d_formLayout->labelForField(checkBox);
-        d_formLayout->removeWidget(label);
-        d_formLayout->removeWidget(checkBox);
+        QWidget *label = formLayout_->labelForField(checkBox);
+        formLayout_->removeWidget(label);
+        formLayout_->removeWidget(checkBox);
         label->deleteLater();
         checkBox->deleteLater();
     }
@@ -1125,7 +1212,7 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    d_spinData->setRange(0, (0x1ULL << itemBit->bitCount()) - 1);
+    spinData_->setRange(0, (0x1ULL << itemBit->bitCount()) - 1);
     //
     for (int i = 0; i < itemBit->bitCount(); ++i) {
         //
@@ -1134,24 +1221,24 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
             continue;
         }
         QCheckBox *checkBox = new QCheckBox((name.isEmpty() ? "<?>" : name), this);
-        d_formLayout->insertRow(1, tr("BIT%1: ")
+        formLayout_->insertRow(1, tr("BIT%1: ")
                                 .arg(i + itemBit->bitStart(), 2, 10, QChar('0')), checkBox);
         checkBox->setChecked(itemBit->testBit(i));
-        d_checkBoxes[i] = checkBox;
+        checkBoxes_[i] = checkBox;
         connect(checkBox, &QCheckBox::toggled, this, [=](bool checked){
-            quint32 value = quint32(d_spinData->value());
+            quint32 value = quint32(spinData_->value());
             if (checked) {
                 value |= (0x1UL << i);
             } else {
                 value &= ~(0x1UL << i);
             }
-            d_spinData->setValue(value & (itemBit->mask() >> itemBit->bitStart()));
+            spinData_->setValue(value & (itemBit->mask() >> itemBit->bitStart()));
         });
     }
     //
-    d_spinData->setValue(itemBit->data());
+    spinData_->setValue(itemBit->data());
     //
-    d_labelDesc->setText(tr("Start bit: %1, stop bit: %2, bits: %3, size: %4.")
+    labelDesc_->setText(tr("Start bit: %1, stop bit: %2, bits: %3, size: %4.")
                          .arg(itemBit->bitStart())
                          .arg(itemBit->bitStart() + itemBit->bitCount() - 1)
                          .arg(itemBit->bitCount())
@@ -1170,17 +1257,18 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
-    d_spinData = new QDoubleSpinBox(this);
-    d_spinData->setFixedWidth(300);
-    d_spinData->setDecimals(0);
-    formLayout->addRow(tr("Output data:"), d_spinData);
+    spinData_ = new QDoubleSpinBox(this);
+    spinData_->setFixedWidth(300);
+    spinData_->setDecimals(0);
+    formLayout->addRow(tr("Output data:"), spinData_);
 
-    d_labelDesc = new QLabel(this);
-    formLayout->addRow(tr("Describe:"), d_labelDesc);
+    labelDesc_ = new QLabel(this);
+    formLayout->addRow(tr("Describe:"), labelDesc_);
     //
-    connect(d_spinData, static_cast<void(QDoubleSpinBox::*)(double)>
-            (&QDoubleSpinBox::valueChanged), this, [=](double value){
-        //
+    auto updateValue = [=](int value) {
+        if (!dataItem()) {
+            return;
+        }
         const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem());
         if (!itemBit) {
             return;
@@ -1206,7 +1294,22 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
                     .arg(qulonglong(value), 16, 16, QChar('0'))
                     .arg(qulonglong(value), itemBit->bitCount(), 2, QChar('0'));
         }
-        d_spinData->setSuffix(suffix.toUpper());
+        spinData_->setSuffix(suffix.toUpper());
+    };
+    connect(spinData_, static_cast<void(QDoubleSpinBox::*)(double)>
+            (&QDoubleSpinBox::valueChanged), this, [=](double value){
+        if (!autoUpdate()) {
+            return;
+        }
+        updateValue(value);
+    });
+    connect(spinData_, &JSpinBox::editingFinished, this, [=](){
+        if (!autoUpdate()) {
+            updateValue(spinData_->value());
+        }
+        if (!autoSend()) {
+            emit send();
+        }
     });
 }
 
@@ -1227,7 +1330,7 @@ void ItemWidgetBitValue::restoreUi(const Icd::ItemPtr &data)
     }
 
     //
-    d_spinData->setValue(itemBit->defaultValue());
+    spinData_->setValue(itemBit->defaultValue());
 }
 
 bool ItemWidgetBitValue::updateUi(const Icd::ItemPtr &data)
@@ -1242,13 +1345,13 @@ bool ItemWidgetBitValue::updateUi(const Icd::ItemPtr &data)
     }
 
     //
-    d_spinData->setRange(0, (0x1UL << itemBit->bitCount()) - 1);
+    spinData_->setRange(0, (0x1UL << itemBit->bitCount()) - 1);
 
     //
-    d_spinData->setValue(itemBit->data());
+    spinData_->setValue(itemBit->data());
 
     //
-    d_labelDesc->setText(tr("Start bit: %1, stop bit: %2, bits: %3, size: %4.")
+    labelDesc_->setText(tr("Start bit: %1, stop bit: %2, bits: %3, size: %4.")
                          .arg(itemBit->bitStart())
                          .arg(itemBit->bitStart() + itemBit->bitCount() - 1)
                          .arg(itemBit->bitCount())
@@ -1261,7 +1364,7 @@ bool ItemWidgetBitValue::updateUi(const Icd::ItemPtr &data)
 
 ItemWidgetComplex::ItemWidgetComplex(QWidget *parent)
     : DataItemWidget(ItemTypeComplex, parent)
-    , d_tableWidget(nullptr)
+    , tableWidget_(nullptr)
 {
 
 }
@@ -1289,22 +1392,22 @@ bool ItemWidgetComplex::addDataItem(const QString &domain)
     }
 
     //
-    if (!d_tableWidget) {
+    if (!tableWidget_) {
         //
-        d_tableWidget = new DataTableWidget(this);
-        d_tableWidget->layout()->setContentsMargins(0, 1, 0, 0);
-        clientLayout()->addWidget(d_tableWidget);
-        d_tableWidget->setItemTable(item());
+        tableWidget_ = new DataTableWidget(this);
+        tableWidget_->layout()->setContentsMargins(0, 1, 0, 0);
+        clientLayout()->addWidget(tableWidget_);
+        tableWidget_->setItemTable(item());
         //
-        connect(d_tableWidget, &DataTableWidget::heightChanged, this, [=](){
+        connect(tableWidget_, &DataTableWidget::heightChanged, this, [=](){
             fixHeight();
         });
-        connect(d_tableWidget, &DataTableWidget::itemRemoved, this, [=](){
+        connect(tableWidget_, &DataTableWidget::itemRemoved, this, [=](){
             fixHeight();
         });
     }
 
-    if (!d_tableWidget->addDataItem(domain, worker(), table)) {
+    if (!tableWidget_->addDataItem(domain, worker(), table)) {
         return false;
     }
 
@@ -1319,10 +1422,10 @@ int ItemWidgetComplex::focusItem(const QString &domain)
     int pos = DataItemWidget::focusItem(domain);
 
     //
-    if (d_tableWidget) {
+    if (tableWidget_) {
         int offset = 0;
         if (!QMetaObject::invokeMethod(
-                    d_tableWidget, "focusItem", Q_RETURN_ARG(int, offset),
+                    tableWidget_, "focusItem", Q_RETURN_ARG(int, offset),
                     Q_ARG(QString, domain))) {
             offset = 0;
             //return pos;
@@ -1338,8 +1441,8 @@ int ItemWidgetComplex::focusItem(const QString &domain)
 void ItemWidgetComplex::removeItem(const QString &domain)
 {
     //
-    if (d_tableWidget) {
-        if (!QMetaObject::invokeMethod(d_tableWidget, "removeItem",
+    if (tableWidget_) {
+        if (!QMetaObject::invokeMethod(tableWidget_, "removeItem",
                                        Q_ARG(QString, domain))) {
             //
         }
@@ -1386,8 +1489,8 @@ void ItemWidgetComplex::fixHeight()
 {
     //
     int height = 0;
-    if (d_tableWidget->rowCount() > 0) {
-        height = d_tableWidget->contentsHeight();
+    if (tableWidget_->rowCount() > 0) {
+        height = tableWidget_->contentsHeight();
     } else {
         height = 30;
     }
@@ -1400,19 +1503,19 @@ void ItemWidgetComplex::fixHeight()
 ItemWidgetFrame::ItemWidgetFrame(QWidget *parent)
     : DataItemWidget(ItemTypeFrame, parent)
 {
-    d_tabWidget = new IcdTabWidget(this);
-    d_tabWidget->setContentsMargins(0, 0, 0, 0);
-    clientLayout()->addWidget(d_tabWidget);
+    tabWidget_ = new IcdTabWidget(this);
+    tabWidget_->setContentsMargins(0, 0, 0, 0);
+    clientLayout()->addWidget(tabWidget_);
 
     //
-    connect(d_tabWidget, &IcdTabWidget::currentChanged, this, [=](){
-        fixHeight(d_tabWidget->currentIndex());
+    connect(tabWidget_, &IcdTabWidget::currentChanged, this, [=](){
+        fixHeight(tabWidget_->currentIndex());
     });
-    connect(d_tabWidget, &IcdTabWidget::heightChanged, this, [=](){
-        fixHeight(d_tabWidget->currentIndex());
+    connect(tabWidget_, &IcdTabWidget::heightChanged, this, [=](){
+        fixHeight(tabWidget_->currentIndex());
     });
-    connect(d_tabWidget, &IcdTabWidget::itemRemoved, this, [=](){
-        fixHeight(d_tabWidget->currentIndex());
+    connect(tabWidget_, &IcdTabWidget::itemRemoved, this, [=](){
+        fixHeight(tabWidget_->currentIndex());
     });
 }
 
@@ -1446,7 +1549,7 @@ bool ItemWidgetFrame::addDataItem(const QString &domain)
                 continue;
             }
             //
-            if (!d_tabWidget->addDataItem(domain, worker(), table, itemTable)) {
+            if (!tabWidget_->addDataItem(domain, worker(), table, itemTable)) {
                 continue;
             }
         }
@@ -1457,7 +1560,7 @@ bool ItemWidgetFrame::addDataItem(const QString &domain)
             const Icd::TablePtr &table = citer->second;
             QStandardItem *itemTable = item()->child(i);
             if (table && itemTable && table->id() == tableId) {
-                if (!d_tabWidget->addDataItem(domain, worker(), table, itemTable)) {
+                if (!tabWidget_->addDataItem(domain, worker(), table, itemTable)) {
                     return false;
                 }
                 //
@@ -1467,7 +1570,7 @@ bool ItemWidgetFrame::addDataItem(const QString &domain)
         }
     }
 
-    d_tabWidget->setCurrentIndex(0);
+    tabWidget_->setCurrentIndex(0);
 
     //
     fixHeight(0);
@@ -1482,7 +1585,7 @@ int ItemWidgetFrame::focusItem(const QString &domain)
     //
     int offset = 0;
     if (!QMetaObject::invokeMethod(
-                d_tabWidget, "focusItem", Q_RETURN_ARG(int, offset),
+                tabWidget_, "focusItem", Q_RETURN_ARG(int, offset),
                 Q_ARG(QString, domain))) {
         return pos;
     }
@@ -1498,12 +1601,12 @@ void ItemWidgetFrame::removeItem(const QString &domain)
     DataItemWidget::removeItem(domain);
 
     //
-    if (!QMetaObject::invokeMethod(d_tabWidget, "removeItem", Q_ARG(QString, domain))) {
+    if (!QMetaObject::invokeMethod(tabWidget_, "removeItem", Q_ARG(QString, domain))) {
         return;
     }
 
     //
-    fixHeight(d_tabWidget->currentIndex());
+    fixHeight(tabWidget_->currentIndex());
 }
 
 void ItemWidgetFrame::restoreUi(const Icd::ItemPtr &data)
@@ -1532,7 +1635,7 @@ bool ItemWidgetFrame::updateUi(const Icd::ItemPtr &data)
     }
 
     //
-    fixHeight(d_tabWidget->currentIndex());
+    fixHeight(tabWidget_->currentIndex());
 
     return true;
 }
@@ -1540,7 +1643,7 @@ bool ItemWidgetFrame::updateUi(const Icd::ItemPtr &data)
 void ItemWidgetFrame::fixHeight(int index)
 {
     //
-    DataTableWidget *tableWidget = qobject_cast<DataTableWidget *>(d_tabWidget->widget(index));
+    DataTableWidget *tableWidget = qobject_cast<DataTableWidget *>(tabWidget_->widget(index));
     if (!tableWidget) {
         return;
     }
@@ -1553,7 +1656,7 @@ void ItemWidgetFrame::fixHeight(int index)
         height = 30;
     }
 
-    setFixedHeight(height + d_tabWidget->tabBar()->height()
+    setFixedHeight(height + tabWidget_->tabBar()->height()
                    + titleBarHeight() + 2);
 }
 

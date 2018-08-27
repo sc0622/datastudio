@@ -24,8 +24,6 @@ SerialSendWidget::SerialSendWidget(QWidget *parent)
     d_spinBoxInterval->setSuffix(" ms");
     d_formLayout->addRow(tr("Peroid of sending:"), d_spinBoxInterval);
 
-    vertLayoutGroupBox->addSpacing(20);
-
     QHBoxLayout *horiLayoutButtons = new QHBoxLayout();
     vertLayoutGroupBox->addLayout(horiLayoutButtons);
 

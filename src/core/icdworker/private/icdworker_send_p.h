@@ -46,6 +46,7 @@ private:
     char* tableBuffer;
     bool counterLoop;
     bool frameLoop;
+    bool running;
 };
 
 } // end of namespace Icd

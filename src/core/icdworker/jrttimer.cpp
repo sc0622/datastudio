@@ -58,9 +58,7 @@ void JRTTimerData::init()
 bool JRTTimerData::start()
 {
     //
-    if (isRunning) {
-        stop();
-    }
+    stop();
 
     // 利用函数timeGetDevCaps取出系统分辨率的取值范围，如果正确则继续
     TIMECAPS tcaps;
@@ -69,10 +67,11 @@ bool JRTTimerData::start()
         wAccuracy = qMin<UINT>(qMax<UINT>(tcaps.wPeriodMin, wAccuracy), tcaps.wPeriodMax);
         // 调用timeBeginPeriod函数设置定时器的分辨率
         //::timeBeginPeriod(wAccuracy);
+        UINT _timeEvent = (timeEvent == JRTTimer::TimePeriodic) ? TIME_PERIODIC : TIME_ONESHOT;
         // 设置定时器
         timerId = ::timeSetEvent(wInterval/*1ms和2s时钟间隔，单位为ms*/,
                                  wAccuracy, LPTIMECALLBACK(onTimeCallback),
-                                 DWORD_PTR(this), TIME_PERIODIC);
+                                 DWORD_PTR(this), _timeEvent);
         if (timerId == 0) {
             Q_ASSERT(false);
             return false;
