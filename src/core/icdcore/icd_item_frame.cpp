@@ -155,21 +155,21 @@ void FrameItem::clearTable()
 
 bool FrameItem::replaceCode(icd_uint64 oldCode, icd_uint64 newCode)
 {
-    // ²éÕÒĞÂÖ¡
+    // 
     if (d->tables.find(newCode) != d->tables.end()) {
-        return false;   // ÒÑ´æÔÚ
+        return false;   // 
     }
 
-    // ²éÕÒ¾ÉÖ¡
+    // 
     TablePtrMap::const_iterator citerOld = d->tables.find(oldCode);
     if (citerOld == d->tables.end()) {
-        return false;   // ²»´æÔÚ
+        return false;   // 
     }
 
-    // Ìæ»»
+    // I
     d->tables[newCode] = citerOld->second;
 
-    // É¾³ı¾ÉÖ¡
+    // 
     d->tables.erase(citerOld);
 
     return true;

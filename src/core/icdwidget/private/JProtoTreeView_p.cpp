@@ -2118,7 +2118,7 @@ bool JProtoTreeViewPrivate::loadVehicle(QStandardItem *itemRoot, int deep)
         QString text = name;
         // type
         if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>" + QString("[VEHICLE]") + "</font>");
+            text.append(" <font color=green size=2>[VEHICLE]</font>");
         }
         // create item
         JTreeViewItem *itemVehicle = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
@@ -2203,7 +2203,7 @@ bool JProtoTreeViewPrivate::loadSystem(QStandardItem *itemVehicle,
         QString text = name;
         // type
         if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>" + QString("[SYSTEM]") + "</font>");
+            text.append(" <font color=green size=2>[SYSTEM]</font>");
         }
         // create item
         JTreeViewItem *itemSystem = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-system.png"),
@@ -2293,7 +2293,7 @@ bool JProtoTreeViewPrivate::loadTable(QStandardItem *itemSystem,
         QString text = name;
         // type
         if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+            text.append(" <font color=green size=2>[TABLE]</font>");
         }
         // create item
         JTreeViewItem *itemTable = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
@@ -2431,7 +2431,7 @@ QStandardItem *JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *
     text.append(name);
     // type
     if (showAttris & JProtoTreeView::ShowType) {
-        text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+        text.append(" <font color=green size=2>[TABLE]</font>");
     }
     int itemType = 0;
     if (itemDataItem == treeView->invisibleRootItem()) {
@@ -2722,7 +2722,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *item)
     {
         QString text = item->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
         if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>" + QString("[VEHICLE]") + "</font>");
+            text.append(" <font color=green size=2>[VEHICLE]</font>");
         }
         item->setText(text);
         break;
@@ -2731,7 +2731,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *item)
     {
         QString text = item->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
         if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>" + QString("[SYSTEM]") + "</font>");
+            text.append(" <font color=green size=2>[SYSTEM]</font>");
         }
         item->setText(text);
         break;
@@ -2746,7 +2746,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *item)
                 if (!isBoundChannel(item)) {
                     QString text = item->text().remove(QRegExp("<font[^>]*>[\\s\\S]*<\\/font>")).trimmed();
                     if (showAttris_ & JProtoTreeView::ShowType) {
-                        text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+                        text.append(" <font color=green size=2>[TABLE]</font>");
                     }
                     item->setText(text);
                 }
@@ -2911,7 +2911,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *itemDataItem, const Co
     text.append(QString::fromStdString(complex->name().empty() ? "<?>" : complex->name()));
     // type
     if (showAttris_ & JProtoTreeView::ShowType) {
-        text.append(" <font color=green size=2>" + QString("[COMPLEX]") + "</font>");
+        text.append(" <font color=green size=2>[COMPLEX]</font>");
     }
 
     //
@@ -2957,7 +2957,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *itemTable, const Table
     text.append(QString::fromStdString(table->name().empty() ? "<?>" : table->name()));
     // type
     if (showAttris_ & JProtoTreeView::ShowType) {
-        text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+        text.append(" <font color=green size=2>[TABLE]</font>");
     }
     // fileName
     const QString filePath = itemTable->data(TreeFilePathRole).toString();
@@ -3252,7 +3252,7 @@ QStandardItem *JProtoTreeViewPrivate::findTableItem(QStandardItem *itemParent,
                                                     const QString &domain)
 {
     if (!itemParent) {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     int rowCount = itemParent->rowCount();
@@ -3279,7 +3279,7 @@ QStandardItem *JProtoTreeViewPrivate::findTableItem(QStandardItem *itemParent,
         }
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void JProtoTreeViewPrivate::findAllTableItem(QList<QStandardItem *> &items,
@@ -3405,7 +3405,7 @@ void JProtoTreeViewPrivate::restoreChannelItem(QStandardItem *itemTable, const I
     text.append(name);
     // type
     if (showAttris_ & JProtoTreeView::ShowType) {
-        text.append(" <font color=green size=2>" + QString("[TABLE]") + "</font>");
+        text.append(" <font color=green size=2>[TABLE]</font>");
     }
     itemTable->setText(text);
 }

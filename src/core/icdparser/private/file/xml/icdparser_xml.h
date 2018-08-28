@@ -63,7 +63,7 @@ public:
 private:
     //
     TiXmlElement *readElementRoot() const;
-    TiXmlDocument *createDocument() const;
+    static TiXmlDocument *createDocument();
     bool saveDocument(TiXmlDocument *document) const;
 
     //
@@ -113,6 +113,9 @@ public:
     bool generate(const TablePtr &table, const std::string &filePath);
     Parser *parser();
     const Parser *parser() const;
+
+private:
+    friend class Parser;
 };
 
 }

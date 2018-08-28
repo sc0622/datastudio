@@ -34,7 +34,7 @@ public slots:
     void setFilePath(const QString &filePath);
 
 private:
-    QLineEdit *d_editFilePath;
+    QLineEdit *editFilePath_;
 };
 
 // class SqlSourceWidget
@@ -68,11 +68,11 @@ public slots:
     void setPassword(const QString &password);
 
 private:
-    QComboBox *d_comboBoxSqlType;
-    QLineEdit *d_editServerName;
-    QLineEdit *d_editDatabaseName;
-    QLineEdit *d_editUserName;
-    QLineEdit *d_editPassword;
+    QComboBox *comboBoxSqlType_;
+    QLineEdit *editServerName_;
+    QLineEdit *editDatabaseName_;
+    QLineEdit *editUserName_;
+    QLineEdit *editPassword_;
 };
 
 // class DataSourceWidget

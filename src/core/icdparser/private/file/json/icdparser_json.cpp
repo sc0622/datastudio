@@ -40,12 +40,12 @@ bool JsonParser::parse(RootPtr &root, int deep) const
 
 bool JsonParser::parse(Icd::VehiclePtrArray &vehicles, int deep) const
 {
+    vehicles.clear();
+
     const Json::Value vehiclesJson = queryVehicles();
     if (vehiclesJson == Json::Value::null) {
-        return false;
+        return true;//TODO
     }
-
-    vehicles.clear();
 
     for (Json::ValueConstIterator citer = vehiclesJson.begin();
          citer != vehiclesJson.end(); ++citer) {
@@ -187,10 +187,24 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
         }
         // offset
         if (!items.empty()) {
+            //
             const Icd::ItemPtr &last = *items.crbegin();
             item->setItemOffset(last->itemOffset() + 1);
-            item->setBufferOffset(last->bufferOffset() + last->bufferSize());
+            //
+            double offset = 0;
+            const Icd::ItemType itemType = item->type();
+            if (itemType == Icd::ItemBitMap || itemType == Icd::ItemBitValue) {
+                offset = Icd::Table::recalcBitBufferOffset(JHandlePtrCast<Icd::BitItem, Icd::Item>(item),
+                                                           items, items.crbegin());
+                if (offset < 0) {
+                    offset = last->bufferOffset() + last->bufferSize();
+                }
+            } else {
+                offset = last->bufferOffset() + last->bufferSize();
+            }
+            item->setBufferOffset(offset);
         }
+
         items.push_back(item);
     }
 

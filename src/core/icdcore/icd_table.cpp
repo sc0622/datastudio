@@ -6,6 +6,7 @@
 #include "icd_item_complex.h"
 #include "icd_item_framecode.h"
 #include "icd_item_frame.h"
+#include "icd_item_bit.h"
 #include <assert.h>
 #include <deque>
 #include "private/jprecitimer.h"
@@ -41,6 +42,10 @@ public:
     void updatePeriod();
 
     icd_int64 currentMillisecond() const;
+
+    static double recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
+                                        const ItemPtrArray &items,
+                                        ItemPtrArray::const_reverse_iterator citer);
 
 private:
     int sequence;
@@ -216,6 +221,56 @@ icd_int64 TableData::currentMillisecond() const
     return preciTimer.mscount();
 }
 
+double TableData::recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
+                                        const ItemPtrArray &items,
+                                        ItemPtrArray::const_reverse_iterator citer)
+{
+    if (!bitItem || citer == items.crend()) {
+        return -1;
+    }
+
+    const ItemPtr item = *citer;
+    if (!item) {
+        return -1;
+    }
+
+    double offset = item->bufferOffset() + item->bufferSize();
+
+    const ItemType type = item->type();
+    if (type != Icd::ItemBitMap && type != Icd::ItemBitValue) {
+        return std::ceil(offset);
+    }
+
+    const Icd::BitItemPtr _bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+    if (!_bitItem) {
+        return std::ceil(offset);
+    }
+
+    if (_bitItem->bitStart() > bitItem->bitStart()) {
+        return std::ceil(offset);
+    }
+
+    const int calcSize = bitItem->calcSize();
+    const int _calcSize = _bitItem->calcSize();
+    if (_calcSize == calcSize) {
+        return std::floor(offset - item->bufferSize());
+    }
+
+    ++citer;
+    if (citer == items.crend()) {
+        return offset;
+    }
+
+    offset = recalcBitBufferOffset(_bitItem, items, citer);
+    if (offset < 0) {
+        return offset;
+    }
+
+    _bitItem->setBufferOffset(offset);
+
+    return offset;
+}
+
 // class Table
 
 Table::Table(Object *parent)
@@ -275,26 +330,14 @@ double Table::bufferOffset() const
 
 void Table::setBufferOffset(double offset)
 {
+    const double delta = offset - d->bufferOffset;
+
     d->bufferOffset = offset;
 
-    //
-    double _offset = d->bufferOffset;
     for (ItemPtrArray::const_iterator citer = d->items.cbegin();
          citer != d->items.cend(); ++citer) {
         const ItemPtr &item = *citer;
-        switch (item->type()) {
-        case Icd::ItemBitMap:
-        case Icd::ItemBitValue:
-        {
-            item->setBufferOffset(_offset);
-            break;
-        }
-        default:
-            _offset = std::ceil(_offset);
-            item->setBufferOffset(_offset);
-            break;
-        }
-        _offset += item->bufferSize();
+        item->setBufferOffset(item->bufferOffset() + delta);
     }
 }
 
@@ -336,126 +379,59 @@ const ItemPtrArray &Table::allItem() const
 void Table::appendItem(const ItemPtr &item)
 {
     item->setParent(this);
+    //
+    double bufferSize = 0.0;
     // append
     if (d->items.empty()) {
         item->setItemOffset(d->itemOffset);
         item->setBufferOffset(d->bufferOffset);
         d->items.push_back(item);
+        bufferSize = item->bufferSize();
     } else {
+        //
         const ItemPtr &last = *d->items.crbegin();
         item->setItemOffset(last->itemOffset() + 1);
-        const double offset = last->bufferOffset() + last->bufferSize();
+        //
+        double offset = 0.0;
         switch (item->type()) {
         case Icd::ItemBitMap:
         case Icd::ItemBitValue:
         {
-            item->setBufferOffset(offset);
+            bufferSize = item->bufferSize();
+            //
+            const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+            if (!bitItem) {
+                assert(false);
+                return;
+            }
+            if (bitItem->bitStart() == 0) {
+                // start from bit0
+                offset = std::ceil(last->bufferOffset() + last->bufferSize());
+            } else {
+                offset = TableData::recalcBitBufferOffset(bitItem, d->items, d->items.crbegin());
+                if (offset < 0) {
+                    offset = std::ceil(last->bufferOffset() + last->bufferSize());
+                }
+            }
             break;
         }
         default:
-            item->setBufferOffset(static_cast<int>(std::ceil(offset)));
+        {
+            // bufferSize
+            bufferSize = std::ceil(item->bufferSize());
+            // bufferOffset
+            offset = std::ceil(last->bufferOffset() + bufferSize);
             break;
-        }
+        }}
+        item->setBufferOffset(offset);
         d->items.push_back(item);
     }
 
     // update self buffsetSize
-    d->bufferSize += item->bufferSize();
+    d->bufferSize += bufferSize;
 
     // save special item
     d->saveItem(item);
-}
-
-void Table::insertItem(int index, const ItemPtr &item)
-{
-    if (index < 0 || index >= static_cast<int>(d->items.size())) {
-        return;
-    }
-
-    item->setParent(this);
-
-    // get offset iterator
-    ItemPtrArray::const_iterator citer = d->items.cbegin() + index;
-
-    // initialize itemOffset
-    int itemOffset = (*citer)->itemOffset();
-    // initialize bufferOffset
-    int bufferOffset = int((*citer)->bufferOffset());
-
-    // insert item
-    d->items.insert(citer, item);
-
-    // update offset
-    for (; citer != d->items.cend(); ++citer) {
-        const ItemPtr &next = *citer;
-        next->setItemOffset(itemOffset);
-        next->setBufferOffset(bufferOffset);
-        ++itemOffset;
-        bufferOffset += int(next->bufferSize());
-    }
-
-    // update self buffsetSize
-    d->bufferSize += item->bufferSize();
-
-    // save special item
-    d->saveItem(item);
-}
-
-void Table::removeItem(int index)
-{
-    if (index < 0 || index >= static_cast<int>(d->items.size())) {
-        return;     // overflow
-    }
-
-    // get offset iterator
-    ItemPtrArray::const_iterator citer = d->items.cbegin() + index;
-
-    // erase item
-    d->items.erase(citer);
-
-    // update offset
-
-    // update self buffsetSize
-    d->bufferSize -= (*citer)->bufferSize();
-
-    // remove special item
-    d->removeItem(*citer);
-}
-
-void Table::removeItemById(const std::string &id)
-{
-    for (ItemPtrArray::const_iterator citer = d->items.cbegin();
-         citer != d->items.cend(); ++citer) {
-        //
-        const ItemPtr &item = *citer;
-        if(item->id() == id) {
-            // erase item
-            d->items.erase(citer);
-            // update self buffsetSize
-            d->bufferSize -= item->bufferSize();
-            // remove special item
-            d->removeItem(item);
-            break;
-        }
-    }
-}
-
-void Table::removeItemByMark(const std::string &mark)
-{
-    for (ItemPtrArray::const_iterator citer = d->items.cbegin();
-         citer != d->items.cend(); ++citer) {
-        //
-        const ItemPtr &item = *citer;
-        if(item->mark() == mark) {
-            // erase item
-            d->items.erase(citer);
-            // update self buffsetSize
-            d->bufferSize -= item->bufferSize();
-            // remove special item
-            d->removeItem(item);
-            break;
-        }
-    }
 }
 
 void Table::clearItem()
@@ -1018,6 +994,13 @@ Table &Table::operator =(const Table &other)
     return *this;
 }
 
+double Table::recalcBitBufferOffset(const BitItemPtr &bitItem,
+                                    const ItemPtrArray &items,
+                                    ItemPtrArray::const_reverse_iterator citer)
+{
+    return TableData::recalcBitBufferOffset(bitItem, items, citer);
+}
+
 Json::Value Table::save() const
 {
     Json::Value json = Object::save();
@@ -1070,10 +1053,8 @@ bool Table::restore(const Json::Value &json, int deep)
             if (!item->restore(itemJson, deep)) {
                 continue;
             }
-            item->setParent(this);
             appendItem(item);
         }
-
         // link frame and frame code
         Icd::FrameCodeItemPtrArray::const_iterator citer = d->frameCodes.cbegin();
         for (; citer != d->frameCodes.cend(); ++citer) {
@@ -1083,8 +1064,7 @@ bool Table::restore(const Json::Value &json, int deep)
                 continue;
             }
             // find frame
-            Icd::FrameItemPtr frame =
-                    JHandlePtrCast<Icd::FrameItem, Icd::Item>(itemById(frameId));
+            Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(itemById(frameId));
             if (!frame) {
                 continue;
             }

@@ -17,6 +17,9 @@ class FrameCodeItem;
 typedef std::shared_ptr<FrameCodeItem> FrameCodeItemPtr;
 typedef std::vector<FrameCodeItemPtr> FrameCodeItemPtrArray;
 
+class BitItem;
+typedef std::shared_ptr<BitItem> BitItemPtr;
+
 class Table;
 class TableData;
 typedef std::shared_ptr<Table> TablePtr;
@@ -38,10 +41,6 @@ public:
     ItemPtrArray allItem();
     const ItemPtrArray &allItem() const;
     void appendItem(const ItemPtr &item);
-    void insertItem(int index, const ItemPtr &item);
-    void removeItem(int index);
-    void removeItemById(const std::string &id);
-    void removeItemByMark(const std::string &mark);
     void clearItem();
     bool isEmpty() const;
     int itemCount() const;
@@ -82,6 +81,10 @@ public:
 
     Object *clone() const override;
     Table &operator =(const Table &other);
+
+    static double recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
+                                        const Icd::ItemPtrArray &items,
+                                        Icd::ItemPtrArray::const_reverse_iterator citer);
 
     // Serializable interface
 public:

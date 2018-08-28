@@ -8,6 +8,7 @@
 #include "private/generate/icdgenerate.h"
 #include "private/sql/icdparser_sql.h"
 #endif
+#include "private/file/xml/icdparser_xml.h"
 
 namespace Icd {
 
@@ -308,6 +309,20 @@ void Parser::cancelSaveAs(bool cancel)
 {
     QMutexLocker locker(&d->mutex);
     d->canceledSaveAs = cancel;
+}
+
+bool Parser::createXmlFile(const std::string &filePath)
+{
+    TiXmlDocument *document = Icd::XmlParser::createDocument();
+    if (!document) {
+        return false;
+    }
+
+    bool result = document->SaveFile(filePath);
+
+    delete document;
+
+    return result;
 }
 
 } // end of namespace Icd

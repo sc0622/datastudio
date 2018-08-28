@@ -69,6 +69,9 @@ public:
     bool isSubFrameItem() const;
     Icd::Table *subFrameTable() const;
 
+    static bool fuzzyCompare(double p1, double p2);
+    static bool fuzzyCompare(float p1, float p2);
+
 protected:
     Item(const Item &other);
 
@@ -87,6 +90,7 @@ public:
 private:
     ItemData *d;
     friend class Table;
+    friend class TableData;
     friend class JsonParser;
     friend class XmlParser;
     friend class SqlParser;

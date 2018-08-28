@@ -4,7 +4,7 @@
 
 namespace Icd {
 
-TiXmlDocument *XmlParser::createDocument() const
+TiXmlDocument *XmlParser::createDocument()
 {
     //
     TiXmlDocument *document = new TiXmlDocument();

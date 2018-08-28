@@ -16,40 +16,40 @@ FileSourceWidget::FileSourceWidget(QWidget *parent)
     horiLayoutFilePath->setSpacing(0);
     formLayoutTop->addRow(tr("File path:"), horiLayoutFilePath);
 
-    d_editFilePath = new QLineEdit(this);
-    horiLayoutFilePath->addWidget(d_editFilePath);
+    editFilePath_ = new QLineEdit(this);
+    horiLayoutFilePath->addWidget(editFilePath_);
 
     QPushButton *buttonView = new QPushButton(QIcon(":/datastudio/image/global/view.png"),
                                               QString(), this);
-    buttonView->setFixedSize(35, d_editFilePath->minimumSizeHint().height());
+    buttonView->setFixedSize(35, editFilePath_->minimumSizeHint().height());
     horiLayoutFilePath->addWidget(buttonView);
 
-    connect(d_editFilePath, &QLineEdit::textChanged, this, &FileSourceWidget::contentChanged);
+    connect(editFilePath_, &QLineEdit::textChanged, this, &FileSourceWidget::contentChanged);
     connect(buttonView, &QPushButton::clicked, this, [=](){
         const QString filePath = QFileDialog::getOpenFileName(
-                    this, tr("Select file"), d_editFilePath->text(),
+                    this, tr("Select file"), editFilePath_->text(),
                     "JSON file (*.json);;XML file (*.xml)").trimmed();
         if (filePath.isEmpty()) {
             return;
         }
-        d_editFilePath->setText(filePath);
+        editFilePath_->setText(filePath);
     });
 }
 
 QString FileSourceWidget::filePath() const
 {
-    return d_editFilePath->text().trimmed();
+    return editFilePath_->text().trimmed();
 }
 
 void FileSourceWidget::focusFilePath()
 {
-    d_editFilePath->setFocus();
-    d_editFilePath->selectAll();
+    editFilePath_->setFocus();
+    editFilePath_->selectAll();
 }
 
 void FileSourceWidget::setFilePath(const QString &filePath)
 {
-    d_editFilePath->setText(filePath);
+    editFilePath_->setText(filePath);
 }
 
 // class SqlSourceWidget
@@ -63,124 +63,124 @@ SqlSourceWidget::SqlSourceWidget(QWidget *parent)
     formLayoutTop->setLabelAlignment(Qt::AlignRight);
     vertLayoutMain->addLayout(formLayoutTop);
 
-    d_comboBoxSqlType = new QComboBox(this);
-    d_comboBoxSqlType->addItem("SQL Server", "SQL Server");
-    d_comboBoxSqlType->addItem("Oracle", "Oracle");
-    formLayoutTop->addRow(tr("SQL type:"), d_comboBoxSqlType);
+    comboBoxSqlType_ = new QComboBox(this);
+    comboBoxSqlType_->addItem("SQL Server", "SQL Server");
+    comboBoxSqlType_->addItem("Oracle", "Oracle");
+    formLayoutTop->addRow(tr("SQL type:"), comboBoxSqlType_);
 
-    d_editServerName = new QLineEdit(this);
-    formLayoutTop->addRow(tr("Server name:"), d_editServerName);
+    editServerName_ = new QLineEdit(this);
+    formLayoutTop->addRow(tr("Server name:"), editServerName_);
 
-    d_editDatabaseName = new QLineEdit(this);
-    formLayoutTop->addRow(tr("Database name:"), d_editDatabaseName);
+    editDatabaseName_ = new QLineEdit(this);
+    formLayoutTop->addRow(tr("Database name:"), editDatabaseName_);
 
-    d_editUserName = new QLineEdit(this);
-    formLayoutTop->addRow(tr("User name:"), d_editUserName);
+    editUserName_ = new QLineEdit(this);
+    formLayoutTop->addRow(tr("User name:"), editUserName_);
 
-    d_editPassword = new QLineEdit(this);
-    d_editPassword->setEchoMode(QLineEdit::Password);
-    formLayoutTop->addRow(tr("Password:"), d_editPassword);
+    editPassword_ = new QLineEdit(this);
+    editPassword_->setEchoMode(QLineEdit::Password);
+    formLayoutTop->addRow(tr("Password:"), editPassword_);
 
-    connect(d_comboBoxSqlType, static_cast<void(QComboBox::*)(int)>
+    connect(comboBoxSqlType_, static_cast<void(QComboBox::*)(int)>
             (&QComboBox::currentIndexChanged), this, [=](int index){
         Q_UNUSED(index);
         emit contentChanged();
     });
-    connect(d_editServerName, &QLineEdit::textChanged, this, [=](){
+    connect(editServerName_, &QLineEdit::textChanged, this, [=](){
         emit contentChanged();
     });
-    connect(d_editDatabaseName, &QLineEdit::textChanged, this, [=](){
+    connect(editDatabaseName_, &QLineEdit::textChanged, this, [=](){
         emit contentChanged();
     });
-    connect(d_editUserName, &QLineEdit::textChanged, this, [=](){
+    connect(editUserName_, &QLineEdit::textChanged, this, [=](){
         emit contentChanged();
     });
-    connect(d_editPassword, &QLineEdit::textChanged, this, [=](){
+    connect(editPassword_, &QLineEdit::textChanged, this, [=](){
         emit contentChanged();
     });
 }
 
 QString SqlSourceWidget::sqlType() const
 {
-    return d_comboBoxSqlType->currentData().toString();
+    return comboBoxSqlType_->currentData().toString();
 }
 
 QString SqlSourceWidget::serverName() const
 {
-    return d_editServerName->text().trimmed();
+    return editServerName_->text().trimmed();
 }
 
 QString SqlSourceWidget::databaseName() const
 {
-    return d_editDatabaseName->text().trimmed();
+    return editDatabaseName_->text().trimmed();
 }
 
 QString SqlSourceWidget::userName() const
 {
-    return d_editUserName->text().trimmed();
+    return editUserName_->text().trimmed();
 }
 
 QString SqlSourceWidget::password() const
 {
-    return d_editPassword->text().trimmed();
+    return editPassword_->text().trimmed();
 }
 
 void SqlSourceWidget::focusSqlType()
 {
-    d_comboBoxSqlType->setFocus();
+    comboBoxSqlType_->setFocus();
 }
 
 void SqlSourceWidget::focusServerName()
 {
-    d_editServerName->setFocus();
-    d_editServerName->selectAll();
+    editServerName_->setFocus();
+    editServerName_->selectAll();
 }
 
 void SqlSourceWidget::focusDatabaseName()
 {
-    d_editDatabaseName->setFocus();
-    d_editDatabaseName->selectAll();
+    editDatabaseName_->setFocus();
+    editDatabaseName_->selectAll();
 }
 
 void SqlSourceWidget::focusUserName()
 {
-    d_editUserName->setFocus();
-    d_editUserName->selectAll();
+    editUserName_->setFocus();
+    editUserName_->selectAll();
 }
 
 void SqlSourceWidget::focusPassword()
 {
-    d_editPassword->setFocus();
-    d_editPassword->selectAll();
+    editPassword_->setFocus();
+    editPassword_->selectAll();
 }
 
 void SqlSourceWidget::setSqlType(const QString &sqlType)
 {
     if (sqlType == "SQL Server") {
-        d_comboBoxSqlType->setCurrentText("SQL Server");
+        comboBoxSqlType_->setCurrentText("SQL Server");
     } else if (sqlType == "Oracle") {
-        d_comboBoxSqlType->setCurrentText("Oracle");
+        comboBoxSqlType_->setCurrentText("Oracle");
     }
 }
 
 void SqlSourceWidget::setServrerName(const QString &serverName)
 {
-    d_editServerName->setText(serverName);
+    editServerName_->setText(serverName);
 }
 
 void SqlSourceWidget::setDatabaseName(const QString &databaseName)
 {
-    d_editDatabaseName->setText(databaseName);
+    editDatabaseName_->setText(databaseName);
 }
 
 void SqlSourceWidget::setUserName(const QString &userName)
 {
-    d_editUserName->setText(userName);
+    editUserName_->setText(userName);
 }
 
 void SqlSourceWidget::setPassword(const QString &password)
 {
-    d_editPassword->setText(password);
+    editPassword_->setText(password);
 }
 
 // class DataSourceWidget

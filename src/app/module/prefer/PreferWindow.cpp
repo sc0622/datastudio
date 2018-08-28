@@ -69,6 +69,8 @@ bool Window::init()
     itemDatabase->setSizeHint(QSize(itemChannel->sizeHint().width(), 40));
     listWidget_->addItem(itemDatabase);
 
+    listWidget_->setCurrentRow(0);
+
     if (result) {
         JMain::restoreWidgetState(listWidget_);
     }

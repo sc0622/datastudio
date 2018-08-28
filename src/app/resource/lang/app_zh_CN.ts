@@ -695,8 +695,8 @@
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="47"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="1699"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2290"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2820"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2871"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2825"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2876"/>
         <source>Past</source>
         <translation>粘贴</translation>
     </message>
@@ -868,11 +868,11 @@
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2557"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2565"/>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2574"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2626"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2634"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2642"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2651"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2690"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2627"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2636"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2645"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2655"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2695"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -899,10 +899,10 @@ Confirm deletion?</source>
     </message>
     <message>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2576"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2628"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2636"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2644"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2653"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2629"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2638"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2647"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2657"/>
         <source>
 Confirm deletion?</source>
         <translation>
@@ -919,67 +919,67 @@ Confirm deletion?</source>
         <translation>尚未加载数据，不能进行操作</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2627"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2628"/>
         <source>Will remove all vehicles, include all sub-data</source>
         <translation>即将删除所有机型，包括下属数据</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2635"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2637"/>
         <source>Will remove all systems in current vehicle, include all sub-data</source>
         <translation>即将删除当前机型下的所有系统，包括下属数据</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2643"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2646"/>
         <source>Will remove all tables in current system, include all sub-data</source>
         <translation>即将删除当前系统的所有表，包括下属数据</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2652"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2656"/>
         <source>Will remove all items in current table, include all sub-data</source>
         <translation>即将删除当前表的所有下属数据项</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2691"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2696"/>
         <source>Current item has non-loaded sub-item
 Continue to save will lost part data, still continue?</source>
         <translation>当前数据项包含未加载项
 继续保存将会丢失部分数据，是否继续？</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2735"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2739"/>
         <source>Save protocol to database</source>
         <translation>保存协议到数据库</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2744"/>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2782"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2749"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2787"/>
         <source>Save protocol</source>
         <translation>保存协议</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2764"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2769"/>
         <source>Save protocol to file [%1]</source>
         <translation>保存协议到文件 [%1]</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2773"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2778"/>
         <source>Failure!
 [%1]</source>
         <translation>失败！
 [%1]</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2776"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2781"/>
         <source>Success!</source>
         <translation>成功！</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2821"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2826"/>
         <source>Past failure, source is invalid!</source>
         <translation>粘贴失败，数据源无效！</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2872"/>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2877"/>
         <source>Count of Sub-Table has been reach upper limit!</source>
         <translation>字表数量达到上限，不能再增加！</translation>
     </message>
@@ -1240,6 +1240,44 @@ Continue to save will lost part data, still continue?</source>
         <location filename="../../module/edit/details/DetailTable.cpp" line="452"/>
         <source>Sequence</source>
         <translation>时序</translation>
+    </message>
+</context>
+<context>
+    <name>Edit::EditCreateDlg</name>
+    <message>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="11"/>
+        <source>Create data source</source>
+        <translation>创建数据源</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="21"/>
+        <source>File path:</source>
+        <translation>文件路径：</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="38"/>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="42"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="50"/>
+        <source>Select file</source>
+        <translation>选择文件</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="110"/>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="111"/>
+        <source>File &quot;%1&quot; is not exists!</source>
+        <translation>文件“%1”不存在！</translation>
     </message>
 </context>
 <context>
@@ -2083,303 +2121,308 @@ Continue to save will lost part data, still continue?</source>
     <name>Main::ToolBar</name>
     <message>
         <location filename="../../mainview/MainToolBar.cpp" line="83"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="379"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="836"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1195"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="385"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="842"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1201"/>
         <source>Database</source>
         <translation>数据来源</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="103"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="89"/>
+        <source>Create data-source</source>
+        <translation>创建数据</translation>
+    </message>
+    <message>
+        <location filename="../../mainview/MainToolBar.cpp" line="109"/>
         <source>Copy</source>
         <translation>复制数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="109"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="115"/>
         <source>Save</source>
         <translation>保存数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="116"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="122"/>
         <source>Save as</source>
         <translation>另存数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="134"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="407"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="864"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1221"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="140"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="413"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="870"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1227"/>
         <source>Show data</source>
         <translation>数据显示</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="142"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="415"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="872"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1229"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="148"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="421"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="878"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1235"/>
         <source>Show offset</source>
         <translation>显示偏移</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="159"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="432"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="889"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1246"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="165"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="438"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="895"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1252"/>
         <source>Show type</source>
         <translation>显示类型</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="508"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="965"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="514"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="971"/>
         <source>Hide</source>
         <translation>不显示</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="525"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="982"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="531"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="988"/>
         <source>Decimal integer</source>
         <translation>十进制</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="537"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="994"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="543"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1000"/>
         <source>Hexadecimal integer</source>
         <translation>十六进制</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="549"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1006"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="555"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1012"/>
         <source>Binary integer</source>
         <translation>二进制</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="561"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1018"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="567"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1024"/>
         <source>Octal integer</source>
         <translation>八进制</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="188"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="194"/>
         <source>Add item</source>
         <translation>新增一项</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="194"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="200"/>
         <source>Insert item</source>
         <translation>插入一项</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="200"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="206"/>
         <source>Up item</source>
         <translation>上移一项</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="206"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="212"/>
         <source>Down item</source>
         <translation>下移一项</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="212"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="218"/>
         <source>Remove item</source>
         <translation>删除一项</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="218"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="224"/>
         <source>Clean item</source>
         <translation>清空数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="267"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="273"/>
         <source>Export to DB</source>
         <translation>导出数据库</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="273"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="279"/>
         <source>Export to file</source>
         <translation>导出为文件</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="279"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="285"/>
         <source>Save data</source>
         <translation>保存数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="316"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="322"/>
         <source>Generate GUID</source>
         <translation>生成GUID</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="327"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="767"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1142"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1404"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="333"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="773"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1148"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1410"/>
         <source>Tree window</source>
         <translation>协议窗口</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="344"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="350"/>
         <source>Settings window</source>
         <translation>编辑窗口</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="364"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="821"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1179"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1441"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="370"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="827"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1185"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1447"/>
         <source>Settings</source>
         <translation>其他设置</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="449"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="906"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="455"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="912"/>
         <source>Orignal value</source>
         <translation>原始数值</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="453"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="910"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="459"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="916"/>
         <source>Real value</source>
         <translation>计算数值</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="470"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="927"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="476"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="933"/>
         <source>Description</source>
         <translation>数值描述</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="610"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1068"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="616"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1074"/>
         <source>Period of flush</source>
         <translation>刷新周期</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="618"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1076"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="624"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1082"/>
         <source>%1 flush</source>
         <translation>%1刷新</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="618"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1076"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="624"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1082"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="618"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1076"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="624"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1082"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="642"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1100"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="648"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1106"/>
         <source>Binding channel</source>
         <translation>绑定通道</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="647"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1105"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="653"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1111"/>
         <source>Unbinding channel</source>
         <translation>解除绑定</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="652"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1110"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="658"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1116"/>
         <source>Export status</source>
         <translation>导出状态</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="657"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1115"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="663"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1121"/>
         <source>Start all</source>
         <translation>启动通道</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="662"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1120"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="668"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1126"/>
         <source>Stop all</source>
         <translation>关闭通道</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="672"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1309"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="678"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1315"/>
         <source>Clear chart</source>
         <translation>清空图表</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="679"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1316"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="685"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1322"/>
         <source>Same column width</source>
         <translation>相同列宽</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="687"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1324"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="693"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1330"/>
         <source> Synchronize x-label</source>
         <translation>横轴同帧</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="706"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1343"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="712"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1349"/>
         <source> Show y-label</source>
         <translation>纵轴标签</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="725"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1362"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="731"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1368"/>
         <source> Show y-align</source>
         <translation>纵轴对齐</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="744"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1381"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="750"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1387"/>
         <source> Synchronize track</source>
         <translation>同步跟踪</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="784"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="790"/>
         <source>Buffer window</source>
         <translation>数据窗口</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="801"/>
-        <location filename="../../mainview/MainToolBar.cpp" line="1421"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="807"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1427"/>
         <source>Chart window</source>
         <translation>图表窗口</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1131"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1137"/>
         <source>Clear view</source>
         <translation>清空视图</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1159"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1165"/>
         <source>Modify window</source>
         <translation>设置窗口</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1274"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1280"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1280"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1286"/>
         <source>Clear data</source>
         <translation>清除数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1287"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1293"/>
         <source>Convert data</source>
         <translation>转换数据</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1297"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1303"/>
         <source>Set coordinate</source>
         <translation>设置坐标</translation>
     </message>
     <message>
-        <location filename="../../mainview/MainToolBar.cpp" line="1303"/>
+        <location filename="../../mainview/MainToolBar.cpp" line="1309"/>
         <source>Update data</source>
         <translation>刷新数据</translation>
     </message>

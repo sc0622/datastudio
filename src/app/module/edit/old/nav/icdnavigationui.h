@@ -254,7 +254,7 @@ private:
     void updateTopTableTip();
 
     // 更新规则节点提示信息
-    void updateRuleTip(const TableNode::smtTable& table, QStandardItem *parent);
+    void updateRuleTip(const TableNode::smtTable& table, QStandardItem *parent, int offset);
 
 private:
     Icd::JSearchEdit *searchEdit_;

@@ -32,6 +32,8 @@ public:
     int typeSize() const;
     void setTypeSize(int size);
 
+    int calcSize() const;
+
     icd_uint64 mask() const;
 
     std::map<icd_uint64, std::string> specs();

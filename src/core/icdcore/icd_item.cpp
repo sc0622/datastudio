@@ -2,6 +2,7 @@
 #include "icd_item.h"
 #include "icdcore_inc.h"
 #include <unordered_map>
+#include <limits>
 #include <assert.h>
 
 namespace Icd {
@@ -290,6 +291,16 @@ Icd::Table *Item::subFrameTable() const
     }
 
     return nullptr;
+}
+
+bool Item::fuzzyCompare(double p1, double p2)
+{
+    return std::abs(p1 - p2) * 1000000000000. <= std::min(std::abs(p1), std::abs(p2));
+}
+
+bool Item::fuzzyCompare(float p1, float p2)
+{
+    return std::fabs(p1 - p2) * 100000.f <= std::min(std::fabs(p1), std::fabs(p2));
 }
 
 void Item::setType(ItemType type)

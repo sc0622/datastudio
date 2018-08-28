@@ -2546,35 +2546,35 @@ void DataEditWidget::slotDelete()
     bool showTip = false;
     if (GlobalDefine::ntUnknown == dataType_) {
         if (QMessageBox::No == QMessageBox::warning(this,
-                                                     tr("Warning"),
-                                                     tr("Will remove sub-data under vehicle"
-                                                        "\nConfirm deletion?"),
-                                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
+                                                    tr("Warning"),
+                                                    tr("Will remove sub-data under vehicle"
+                                                       "\nConfirm deletion?"),
+                                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntVehicle == dataType_) {
         if (QMessageBox::No == QMessageBox::warning(this,
-                                                     tr("Warning"),
-                                                     tr("Will remove sub-data under system"
-                                                        "\nConfirm deletion?"),
-                                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
+                                                    tr("Warning"),
+                                                    tr("Will remove sub-data under system"
+                                                       "\nConfirm deletion?"),
+                                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntSystem == dataType_) {
         if (QMessageBox::No == QMessageBox::warning(this,
-                                                     tr("Warning"),
-                                                     tr("Will remove item under table"
-                                                        "\nConfirm deletion?"),
-                                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
+                                                    tr("Warning"),
+                                                    tr("Will remove item under table"
+                                                       "\nConfirm deletion?"),
+                                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntTable == dataType_
                || GlobalDefine::ntRule == dataType_) {
         if (QMessageBox::No == QMessageBox::warning(this,
-                                                     tr("Warning"),
-                                                     tr("Will remove data")
-                                                     + tr("\nConfirm deletion?"),
-                                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
+                                                    tr("Warning"),
+                                                    tr("Will remove data")
+                                                    + tr("\nConfirm deletion?"),
+                                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
         showTip = true;
@@ -2622,36 +2622,40 @@ void DataEditWidget::slotClear()
 {
     bool result = false;
     if (GlobalDefine::ntUnknown == dataType_) {
-        if (QMessageBox::No == QMessageBox::warning(this,
-                                                    tr("Warning"),
-                                                    tr("Will remove all vehicles, include all sub-data")
-                                                    + tr("\nConfirm deletion?"),
-                                                    QMessageBox::Yes|QMessageBox::No)) {
+        if (QMessageBox::No == QMessageBox::warning(
+                    this,
+                    tr("Warning"),
+                    tr("Will remove all vehicles, include all sub-data")
+                    + tr("\nConfirm deletion?"),
+                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntVehicle == dataType_) {
-        if (QMessageBox::No == QMessageBox::warning(this,
-                                                    tr("Warning"),
-                                                    tr("Will remove all systems in current vehicle, include all sub-data")
-                                                    + tr("\nConfirm deletion?"),
-                                                    QMessageBox::Yes|QMessageBox::No)) {
+        if (QMessageBox::No == QMessageBox::warning(
+                    this,
+                    tr("Warning"),
+                    tr("Will remove all systems in current vehicle, include all sub-data")
+                    + tr("\nConfirm deletion?"),
+                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntSystem == dataType_) {
-        if (QMessageBox::No == QMessageBox::warning(this,
-                                                    tr("Warning"),
-                                                    tr("Will remove all tables in current system, include all sub-data")
-                                                    + tr("\nConfirm deletion?"),
-                                                    QMessageBox::Yes|QMessageBox::No)) {
+        if (QMessageBox::No == QMessageBox::warning(
+                    this,
+                    tr("Warning"),
+                    tr("Will remove all tables in current system, include all sub-data")
+                    + tr("\nConfirm deletion?"),
+                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else if (GlobalDefine::ntTable == dataType_
                || GlobalDefine::ntRule == dataType_) {
-        if (QMessageBox::No == QMessageBox::warning(this,
-                                                    tr("Warning"),
-                                                    tr("Will remove all items in current table, include all sub-data")
-                                                    + tr("\nConfirm deletion?"),
-                                                    QMessageBox::Yes|QMessageBox::No)) {
+        if (QMessageBox::No == QMessageBox::warning(
+                    this,
+                    tr("Warning"),
+                    tr("Will remove all items in current table, include all sub-data")
+                    + tr("\nConfirm deletion?"),
+                    QMessageBox::Yes|QMessageBox::No)) {
             return;
         }
     } else {
@@ -2686,12 +2690,12 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
     jnotify->send("edit.queryNodeFlag", args);
 
     if (GlobalDefine::wholeState != loaded) {
-        if (QMessageBox::No == QMessageBox::warning(this,
-                                                    tr("Warning"),
-                                                    tr("Current item has non-loaded sub-item\n"
-                                                       "Continue to save will lost part data, still continue?"),
-                                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
-
+        if (QMessageBox::No == QMessageBox::warning(
+                    this,
+                    tr("Warning"),
+                    tr("Current item has non-loaded sub-item\n"
+                       "Continue to save will lost part data, still continue?"),
+                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No)) {
             return;
         }
     }
@@ -2741,9 +2745,10 @@ void DataEditWidget::slotSave2Source(GlobalDefine::DataSource type)
         actionName = "file";
         setActionEnabled(actionName, false);
         if (filePath.isEmpty()) {
-            QString file = QFileDialog::getSaveFileName(this, tr("Save protocol"), defaultPath_,
-                                                        "JSON files (*.json);;"
-                                                        "XML files (*.xml)");
+            QString file = QFileDialog::getSaveFileName(
+                        this, tr("Save protocol"), defaultPath_,
+                        "JSON files (*.json);;"
+                        "XML files (*.xml)");
             if (file.isEmpty()) {
                 setActionEnabled(actionName, true);
                 return;

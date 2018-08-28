@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "EditTreeView.h"
+#include "EditCreateDlg.h"
 
 namespace Edit {
 
@@ -18,6 +19,14 @@ TreeView::TreeView(QWidget *parent)
         QVariantList args;
         args << "edit" << qVariantFromValue(static_cast<void*>(this));
         jnotify->send("database.config", args);
+    });
+    jnotify->on("edit.toolbar.database.create", this, [=](JNEvent &){
+        EditCreateDlg dialog(this);
+        if (dialog.exec() != QDialog::Accepted) {
+            return;
+        }
+        // notify edit module
+        jnotify->post("edit.parser.changed", this);
     });
     connect(treeView_, &Icd::JProtoTreeView::itemPressed, this, [=](QStandardItem *item){
         jnotify->send("edit.tree.item.pressed", qVariantFromValue(static_cast<void*>(item)));

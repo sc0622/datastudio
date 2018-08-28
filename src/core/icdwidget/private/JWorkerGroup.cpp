@@ -362,8 +362,8 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
             case Icd::ItemBitMap:
             case Icd::ItemBitValue:
             {
-#if 0
-                const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(, item);
+#if 1
+                const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
                 if (!itemBit) {
                     break;
                 }

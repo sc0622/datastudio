@@ -234,6 +234,11 @@ void BitItem::setTypeSize(int size)
     d->typeSize = size;
 }
 
+int BitItem::calcSize() const
+{
+    return int(std::ceil((d->bitStart + 1) / 8.0));
+}
+
 icd_uint64 BitItem::mask() const
 {
     return (((1ull << d->bitCount) - 1) << d->bitStart);

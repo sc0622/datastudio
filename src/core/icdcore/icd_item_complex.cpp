@@ -192,10 +192,13 @@ bool ComplexItem::restore(const Json::Value &json, int deep)
         if (!d->table->restore(json["table"], deep)) {
             return false;
         }
-
         // ignore table attributes
         d->table->setName(name());
         d->table->setMark(mark());
+        //
+        if (!d->table->isEmpty()) {
+            setBufferSize(std::ceil(d->table->bufferSize()));
+        }
     }
 
     return true;

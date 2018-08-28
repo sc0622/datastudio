@@ -79,10 +79,16 @@ void ToolBar::updateEdit()
 
     const Json::Value option = JMain::instance()->option("edit", "option");
     // database
-    QAction *actionDatabase = addAction(QIcon(":/datastudio/image/toolbar/database.png"),
+    QAction *actionConfigDatabase = addAction(QIcon(":/datastudio/image/toolbar/database.png"),
                                         tr("Database"));
-    connect(actionDatabase, &QAction::triggered, this, [=](){
+    connect(actionConfigDatabase, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.database.config");
+    });
+    // database-add
+    QAction *actionCreateDatabase = addAction(QIcon(":/datastudio/image/toolbar/database-add.png"),
+                                        tr("Create data-source"));
+    connect(actionCreateDatabase, &QAction::triggered, this, [=](){
+        jnotify->send("edit.toolbar.database.create");
     });
 #ifdef EDIT_OLD
     // data [edit]

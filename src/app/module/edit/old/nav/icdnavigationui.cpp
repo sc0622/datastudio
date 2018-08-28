@@ -4,6 +4,7 @@
 #include "KernelClass/icdcomplexdata.h"
 #include "KernelClass/icdbitdata.h"
 #include "icdwidget/JSearchEdit.h"
+#include "../../EditCreateDlg.h"
 
 ICDNavigationUi::ICDNavigationUi(QWidget *parent)
     : QWidget(parent)
@@ -46,6 +47,14 @@ ICDNavigationUi::ICDNavigationUi(QWidget *parent)
 
     jnotify->on("edit.tree.loadVehicle", this, [=](JNEvent &){
         loadVehicle();
+    });
+    jnotify->on("edit.toolbar.database.create", this, [=](JNEvent &){
+        Edit::EditCreateDlg dialog(this);
+        if (dialog.exec() != QDialog::Accepted) {
+            return;
+        }
+        // notify edit module
+        jnotify->post("edit.parser.changed", this);
     });
 }
 
@@ -729,9 +738,9 @@ void ICDNavigationUi::createRuleMenu()
 // 更新表节点下的所有规则节点提示信息
 void ICDNavigationUi::updateTopTableTip()
 {
-    ICDElement::smtElement table = 0;
+    ICDElement::smtElement element = nullptr;
 
-    queryTopTable(table);
+    queryTopTable(element);
     QStandardItem *item = q_treeView->currentItem();
     if (!item || item->data(LevelIndex).toInt() < GlobalDefine::ntTable) {
         return; // 当前节点层级不需要更新
@@ -740,20 +749,25 @@ void ICDNavigationUi::updateTopTableTip()
     while (item->data(LevelIndex).toInt() > GlobalDefine::ntTable) {
         item = item->parent();
     }
-    updateRuleTip(SMT_CONVERT(TableNode, table), item);
+
+    TableNode::smtTable table = SMT_CONVERT(TableNode, element);
+    if (!table) {
+        return;
+    }
+
+    updateRuleTip(table, item, -1);
 }
 
 // 更新规则节点提示信息
-void ICDNavigationUi::updateRuleTip(const TableNode::smtTable &table, QStandardItem *parent)
+void ICDNavigationUi::updateRuleTip(const TableNode::smtTable &table, QStandardItem *parent, int offset)
 {
     if (!table || table->isEmpty()) {
         return;
     }
-    int offset = -1;
     QString identify;
-    QStandardItem *ruleItem = 0;
-    TableNode::smtTable subData = 0;
-    ICDComplexData::smtComplex complex = 0;
+    QStandardItem *ruleItem = nullptr;
+    TableNode::smtTable subData = nullptr;
+    ICDComplexData::smtComplex complex = nullptr;
     ICDMetaData::ruleMap dataMap(table->allRule());
     ICDMetaData::ruleMap::iterator it(dataMap.begin());
     for (; it != dataMap.end(); ++it) {
@@ -761,7 +775,7 @@ void ICDNavigationUi::updateRuleTip(const TableNode::smtTable &table, QStandardI
         if (!meta) {
             continue;
         }
-        complex = 0;
+        complex = nullptr;
         identify = QString("%1").arg(meta->serial());
         if (GlobalDefine::dtComplex == meta->type()) {
             complex = SMT_CONVERT(ICDComplexData, meta);
@@ -772,16 +786,17 @@ void ICDNavigationUi::updateRuleTip(const TableNode::smtTable &table, QStandardI
         }
         if (complex) {
             TableNode::tableVector subTable = complex->allTable();
-            const int count = subTable.size();
-            for (int i = 0; i < count; ++i) {
+            const size_t count = subTable.size();
+            for (size_t i = 0; i < count; ++i) {
                 if (!(subData = subTable[i])) {
                     continue;
                 }
                 if (GlobalDefine::dtFrame == meta->type()) { // 帧数据
                     ruleItem = findItem(UserKey, subData->key().c_str(), ruleItem);
                 } else if (GlobalDefine::dtComplex == meta->type()) {
+                    //
                 }
-                updateRuleTip(subData, ruleItem);
+                updateRuleTip(subData, ruleItem, complex->index());
             }
         }
     }
@@ -1313,8 +1328,7 @@ QStandardItem* ICDNavigationUi::formPlaneNode(QStandardItem *parent, const Plane
     SystemNode::systemVector subSystem = plane->allSystem();
     QStandardItem* result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
                                               QString::fromStdString(plane->name())
-                                              + QString("<font color=green size=2>[%1]</font>")
-                                              .arg(QString::fromStdString(plane->typeString()).toUpper()));
+                                              + QString(" <font color=green size=2>[VEHICLE]</font>"));
     result->setData(plane->id().c_str(), UserKey);
     if (subSystem.empty()) {
         result->setData(GlobalDefine::wholeState, ItemLoaded);
@@ -1358,7 +1372,7 @@ void ICDNavigationUi::reorderPlaneNode(const std::vector<ICDElement::smtElement>
         if (item = items.value(planes[i]->id().c_str())) {
             auto plane = planes[i];
             item->setText(QString::fromStdString(plane->name())
-                          + QString("<font color=green size=2>[%1]</font>")
+                          + QString(" <font color=green size=2>[%1]</font>")
                           .arg(QString::fromStdString(plane->typeString()).toUpper()));
             item->setData(GlobalDefine::wholeState, DataChanged);
             current->insertRow(i, item);
@@ -1381,7 +1395,7 @@ QStandardItem* ICDNavigationUi::formSystemNode(QStandardItem *parent,
     const int count = icdTable.size();
     QStandardItem* result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-system.png"),
                                               QString::fromStdString(system->name())
-                                              + QString("<font color=green size=2>[%1]</font>")
+                                              + QString(" <font color=green size=2>[%1]</font>")
                                               .arg(QString::fromStdString(system->typeString()).toUpper()));
     result->setData(system->numeralId(), UserKey);
     if (0 == count) {
@@ -1433,7 +1447,7 @@ void ICDNavigationUi::reorderSystemNode(const PlaneNode::smtPlane &plane, int po
         }
         if (item = items.value(system->id().c_str())) {
             item->setText(QString::fromStdString(system->name())
-                          + QString("<font color=green size=2>[%1]</font>")
+                          + QString(" <font color=green size=2>[%1]</font>")
                           .arg(QString::fromStdString(system->typeString()).toUpper()));
             item->setData(GlobalDefine::wholeState, DataChanged);
             current->insertRow(i, item);
@@ -1454,7 +1468,7 @@ QStandardItem* ICDNavigationUi::formTableNode(QStandardItem *parent, const Table
 
     QStandardItem* result = new QStandardItem(QIcon(":/datastudio/image/global/circle-gray.png"),
                                               QString::fromStdString(table->name())
-                                              + QString("<font color=green size=2>[%1]</font>")
+                                              + QString(" <font color=green size=2>[%1]</font>")
                                               .arg(QString::fromStdString(table->typeString()).toUpper()));
     result->setToolTip(result->text());
     result->setData(QString::fromStdString(table->key()), UserKey);
@@ -1497,7 +1511,7 @@ void ICDNavigationUi::reorderTableNode(const SystemNode::smtSystem &system, int 
         }
         if (item = items.value(table->id().c_str())) {
             item->setText(QString::fromStdString(table->name())
-                          + QString("<font color=green size=2>[%1]</font>")
+                          + QString(" <font color=green size=2>[%1]</font>")
                           .arg(QString::fromStdString(table->typeString()).toUpper()));
             item->setData(GlobalDefine::wholeState, DataChanged);
             current->insertRow(i, item);
@@ -1517,7 +1531,7 @@ QStandardItem* ICDNavigationUi::formSubTableNode(QStandardItem *parent,
     stICDBase base = table->icdBase();
     QStandardItem *result = new QStandardItem(QIcon(":/icdwidget/image/tree/icon-table.png"),
                                               QString("<font color=green size=2>[%1:%2]</font>"
-                                                      "%3<font color=green size=2>[%4]</font>")
+                                                      " %3 <font color=green size=2>[%4]</font>")
                                               .arg(index, 4, 10, QChar('0'))
                                               .arg(offset, 4, 10, QChar('0'))
                                               .arg(QString::fromStdString(table->name()))
@@ -1560,7 +1574,7 @@ void ICDNavigationUi::reorderSubTableNode(const ICDMetaData::smtMeta &meta, int 
         }
         if (item = items.value(table->id().c_str())) {
             item->setText(QString("<font color=green size=2>[%1:%2]</font>"
-                                  "%3<font color=green size=2>[%4]</font>")
+                                  " %3 <font color=green size=2>[%4]</font>")
                           .arg(i, 4, 10, QChar('0'))
                           .arg(complex->index(), 4, 10, QChar('0'))
                           .arg(QString::fromStdString(table->name()))
@@ -1733,7 +1747,7 @@ void ICDNavigationUi::showMenu(QStandardItem* item)
     // 如果节点下所有的规则表均卸载，则不显示“卸载”菜单
     switch (level.toInt()) {
     case GlobalDefine::ntUnknown:   // 根节点
-        if (GlobalDefine::dsNone == item->data(UserKey).toInt()) {
+        if (GlobalDefine::dsNone == item->data(DataSource).toInt()) {
             // 查询数据源
             int dataSource = GlobalDefine::dsNone;
 
@@ -2502,7 +2516,7 @@ bool ICDNavigationUi::updatePalneData(stPlane &data)
     jnotify->send("edit.savePlane", args);
 
     if (result) {
-        const QString nameSuffix("<font color=green size=2>[VEHICLE]</font>");
+        const QString nameSuffix(" <font color=green size=2>[VEHICLE]</font>");
         // 更新树节点
         QStandardItem *item = findItem(UserKey, data.nCode, current);
         if (item) { // 更新节点
@@ -2543,7 +2557,7 @@ bool ICDNavigationUi::updateSystemData(stSystem &data)
     args.append(qVariantFromValue((void*)&result));
     jnotify->send("edit.saveSystem", args);
     if (result) {
-        const QString nameSuffix("<font color=green size=2>[SYSTEM]</font>");
+        const QString nameSuffix(" <font color=green size=2>[SYSTEM]</font>");
         // 更新树节点
         QStandardItem *item = findItem(UserKey, data.nCode, current);
         if (item) { // 更新节点
@@ -2588,7 +2602,7 @@ bool ICDNavigationUi::updateICDData(stICDBase &data)
     jnotify->send("edit.saveTable", args);
 
     if (result) {
-        const QString nameSuffix("<font color=green size=2>[TABLE]</font>");
+        const QString nameSuffix(" <font color=green size=2>[TABLE]</font>");
         // 更新树节点
         QStandardItem *item = findItem(UserKey, data.sID.c_str(), current);
         if (item) { // 更新节点
@@ -2876,7 +2890,7 @@ bool ICDNavigationUi::updateSubTableData(stICDBase &data)
         const int itemOffset = item ? item->row() : current->rowCount();
         // 更新树节点
         const QString name = QString("<font color=green size=2>[%1:%2]</font>"
-                                     "%3<font color=green size=2>[%4]</font>")
+                                     " %3 <font color=green size=2>[%4]</font>")
                 .arg(itemOffset + 1, 4, 10, QChar('0'))
                 .arg(complex->index(), 4, 10, QChar('0'))
                 .arg(data.sName.c_str())
@@ -2931,16 +2945,16 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
                 break;
             }
             if (offset >= 0) {
-                result = QString("<font color=green size=2>[%1:%2:%3(%4)]</font>"
-                                 "%5<font color=green size=2>[%6]</font>")
+                result = QString("<font color=green size=2>[%1:%2:%3.%4]</font>"
+                                 " %5 <font color=green size=2>[%6]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(offset + meta->index(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(bit->start(), 2, 10, QChar('0'))
                         .arg(meta->name().c_str()).arg(typeString);
             } else {
-                result = QString("<font color=green size=2>[%1:%2(%3)]</font>"
-                                 "%4<font color=green size=2>[%5]</font>")
+                result = QString("<font color=green size=2>[%1:%2.%3]</font>"
+                                 " %4 <font color=green size=2>[%5]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(bit->start(), 2, 10, QChar('0'))
@@ -2949,14 +2963,14 @@ QString ICDNavigationUi::offsetString(const ICDElement::smtElement &element, int
         } else {
             if (offset >= 0) {
                 result = QString("<font color=green size=2>[%1:%2:%3]</font>"
-                                 "%4<font color=green size=2>[%5]</font>")
+                                 " %4 <font color=green size=2>[%5]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(offset + meta->index(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(meta->name().c_str()).arg(typeString);
             } else {
                 result = QString("<font color=green size=2>[%1:%2]</font>"
-                                 "%3<font color=green size=2>[%4]</font>")
+                                 " %3 <font color=green size=2>[%4]</font>")
                         .arg(meta->serial(), 4, 10, QChar('0'))
                         .arg(meta->index(), 4, 10, QChar('0'))
                         .arg(meta->name().c_str()).arg(typeString);

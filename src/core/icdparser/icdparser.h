@@ -115,6 +115,8 @@ public:
     bool canceledSaveAs() const;
     void cancelSaveAs(bool cancel = true);
 
+    static bool createXmlFile(const std::string &filePath);
+
 private:
     Parser(const Parser&);
     Parser &operator=(const Parser&);
