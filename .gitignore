@@ -92,3 +92,4 @@ datastudio-setup.qbs
 # nodejs
 /node/datastudio/node_modules
 /node/DataStudioApp
+*.qbs.user*
