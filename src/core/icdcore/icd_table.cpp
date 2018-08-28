@@ -397,8 +397,7 @@ void Table::appendItem(const ItemPtr &item)
         case Icd::ItemBitMap:
         case Icd::ItemBitValue:
         {
-            bufferSize = item->bufferSize();
-            //
+            // bufferOffset
             const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
             if (!bitItem) {
                 assert(false);
@@ -413,14 +412,26 @@ void Table::appendItem(const ItemPtr &item)
                     offset = std::ceil(last->bufferOffset() + last->bufferSize());
                 }
             }
+            // bufferSize
+            bufferSize = item->bufferSize();
             break;
         }
         default:
         {
+            // bufferOffset
+            const ItemType lastType = last->type();
+            if (lastType == Icd::ItemBitMap || lastType == Icd::ItemBitValue) {
+                const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(last);
+                if (!bitItem) {
+                    assert(false);
+                    return;
+                }
+                offset = std::ceil(last->bufferOffset() + bitItem->calcSize());
+            } else {
+                offset = std::ceil(last->bufferOffset() + last->bufferSize());
+            }
             // bufferSize
             bufferSize = std::ceil(item->bufferSize());
-            // bufferOffset
-            offset = std::ceil(last->bufferOffset() + bufferSize);
             break;
         }}
         item->setBufferOffset(offset);
