@@ -192,7 +192,7 @@ bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
     for (TiXmlElement *emTable = emSystem->FirstChildElement("table");
          emTable != Q_NULLPTR;
          emTable = emTable->NextSiblingElement("table")) {
-        const QString id = QString::fromUtf8(emTable->Attribute("id"));
+        const QString id = QString::fromUtf8(emTable->Attribute("id"))/*.remove(QRegExp("[{}-]"))*/;
         if (id == _tableId) {
             TablePtr _table(new Table());
             if (!parseTable(emTable, _table, deep)) {

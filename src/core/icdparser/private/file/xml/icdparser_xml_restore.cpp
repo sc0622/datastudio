@@ -188,21 +188,22 @@ bool XmlParser::parseObject(const TiXmlElement *emObject,
 #else
     if (object->id().empty()) {
         if (emObject->QueryStringAttribute("id", &sVal) == TIXML_SUCCESS) {
+#if 1
             object->setId(sVal);
+#else
+            object->setId(QString::fromStdString(sVal).remove(QRegExp("[{}-]")).toStdString());
+#endif
         }
     }
 #endif
-
     // name
     if (emObject->QueryStringAttribute("name", &sVal) == TIXML_SUCCESS) {
         object->setName(sVal);
     }
-
     // mark
     if (emObject->QueryStringAttribute("mark", &sVal) == TIXML_SUCCESS) {
         object->setMark(sVal);
     }
-
     // desc
     if (emObject->QueryStringAttribute("desc", &sVal) == TIXML_SUCCESS) {
         object->setDesc(sVal);

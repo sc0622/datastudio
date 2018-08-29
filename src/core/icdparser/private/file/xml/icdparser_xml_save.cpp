@@ -41,7 +41,15 @@ bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object)
     if (!id.empty()) {
         switch (object->objectType()) {
         case Icd::ObjectItem: break;
-        default: emObject->SetAttribute("id", id); break;
+#if 0
+        case Icd::ObjectTable:
+            emObject->SetAttribute("id", "ICDTable_" + QUuid::createUuid()
+                                   .toString().remove(QRegExp("[{}-]")).toStdString());
+            break;
+#endif
+        default:
+            emObject->SetAttribute("id", id);
+            break;
         }
     }
 
