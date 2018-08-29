@@ -5,6 +5,8 @@ CoreDyLibrary {
     version: '1.0.0'
     defaultExport: false
 
+    Depends { name: 'Qt.core' }
+
     Group {
         name: 'Headers'
         files: [ '**/*.h', '3rdpart/jsoncpp/**/*.h']
@@ -24,7 +26,7 @@ CoreDyLibrary {
 
     cpp.cxxStandardLibrary: 'c++98'
     cpp.includePaths: base.concat(['3rdpart/jsoncpp'])
-    cpp.defines: base.concat([ 'JSON_DLL_BUILD' ])
+    cpp.defines: base.concat([ 'JSON_DLL_BUILD', 'USE_QFILE' ])
 
     Export {
         Depends { name: 'cpp' }

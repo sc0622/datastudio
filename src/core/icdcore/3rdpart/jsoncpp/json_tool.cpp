@@ -1,7 +1,6 @@
 #include "json_tool.h"
 #if defined(QT_CORE_LIB) && defined(USE_QFILE)
 #include <QFile>
-#include <QString>
 #endif
 
 #ifndef JSON_MAX_PATH_LEN
