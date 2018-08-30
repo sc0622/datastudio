@@ -112,7 +112,7 @@
                "showValue" : true
             },
             "view" : {
-               "realtimeUpdate" : false
+               "realtimeUpdate" : true
             },
             "window" : {
                "modify" : true,

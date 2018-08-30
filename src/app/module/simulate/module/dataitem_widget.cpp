@@ -819,9 +819,6 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     labelDesc_ = new QLabel(this);
     formLayout->addRow(tr("Describe:"), labelDesc_);
     //
-    connect(sliderValue_, &QSlider::valueChanged, [=](int value){
-        spinValue_->setValue(value);
-    });
     auto setDataSuffix = [=](const Icd::NumericItemPtr &itemNumeric){
         QString suffix;
         double data = (itemNumeric->data() - itemNumeric->offset()) / itemNumeric->scale();
@@ -887,6 +884,18 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         spinData_->setValue(dataValue);
         setDataSuffix(itemNumeric);
     };
+    auto editFinished = [=](){
+        if (!autoUpdate()) {
+            updateValue(spinValue_->value());
+        }
+        if (!autoSend()) {
+            emit send();
+        }
+    };
+    connect(sliderValue_, &QSlider::valueChanged, [=](int value){
+        spinValue_->setValue(value);
+        editFinished();
+    });
     connect(spinValue_, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){
         //
@@ -898,12 +907,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         updateValue(value);
     });
     connect(spinValue_, &QDoubleSpinBox::editingFinished, this, [=](){
-        if (!autoUpdate()) {
-            updateValue(spinValue_->value());
-        }
-        if (!autoSend()) {
-            emit send();
-        }
+        editFinished();
     });
     connect(spinData_, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){

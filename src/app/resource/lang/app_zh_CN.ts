@@ -1041,6 +1041,14 @@ Continue to save will lost part data, still continue?</source>
     </message>
 </context>
 <context>
+    <name>DataSourceDlg</name>
+    <message>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="457"/>
+        <source>Data source settings</source>
+        <translation>数据源设置</translation>
+    </message>
+</context>
+<context>
     <name>DataSourceWidget</name>
     <message>
         <location filename="../../module/prefer/DataSourceDlg.cpp" line="195"/>
@@ -3137,17 +3145,17 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetArray</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1029"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1033"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1083"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1087"/>
         <source>Size: </source>
         <translation>大小：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1087"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1091"/>
         <source>, Describe: </source>
         <translation>，描述信息：</translation>
     </message>
@@ -3155,22 +3163,22 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetBitMap</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1106"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1110"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1109"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1113"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1224"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1228"/>
         <source>BIT%1: </source>
         <translation>BIT%1：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1241"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1245"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -3178,17 +3186,17 @@ Continue to save will lost part data, still continue?</source>
 <context>
     <name>Simulate::ItemWidgetBitValue</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1263"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1267"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1266"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1270"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1354"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1358"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -3317,7 +3325,7 @@ Continue to save will lost part data, still continue?</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1002"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1006"/>
         <source>Scale: %1, Offset: %2, Range: %3, Unit: %4, size: %5.</source>
         <translation>比例：%1，偏移：%2，范围：%3，单位：%4，大小：%5。</translation>
     </message>

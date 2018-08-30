@@ -454,6 +454,8 @@ DataSourceDlg::DataSourceDlg(const QString &module, QObject *receiver,
                              QWidget *parent)
     : QDialog(parent)
 {
+    setWindowTitle(tr("Data source settings"));
+
     QHBoxLayout *layoutMain = new QHBoxLayout(this);
     layoutMain->setContentsMargins(0, 0, 0, 0);
 
