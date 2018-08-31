@@ -4,7 +4,6 @@
 #include <QTranslator>
 #include <QFile>
 #include <QFontDatabase>
-#include "common/Logging.h"
 
 int main(int argc, char **argv)
 {
@@ -24,7 +23,6 @@ int main(int argc, char **argv)
                                             .arg(JMain::appVerMajor())
                                             .arg(JMain::appVerMinor())
                                             .arg(JMain::appVerPatch()));
-
     // settings
     QSettings settings;
     settings.beginGroup(QCoreApplication::applicationVersion().append("/Temp/Paths"));
@@ -43,8 +41,6 @@ int main(int argc, char **argv)
     settings.setValue("WORKSPACE_DIR", QDir(projectDir + "/example").canonicalPath());
     settings.endGroup();
 
-    IcdWidget::instance()->init();
-    Logging::instance()->init();
     JMain::initTranslators();
 
     QApplication::setApplicationDisplayName(QObject::tr("Data Studio"));

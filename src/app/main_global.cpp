@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QTabWidget>
+#include "common/Logging.h"
 
 // class JMainPrivate
 
@@ -235,6 +236,8 @@ int JMain::execApp(QApplication *app)
     splashWidget->show();
 
     initFontDatabase();
+    IcdWidget::instance()->init();
+    Logging::instance()->init();
 
     // initialize models
     bool result = instance()->init();
@@ -283,11 +286,11 @@ int JMain::execApp(QApplication *app)
 
     mainWindow->show();
 
-    splashWidget.clear();
-
     jnotify->on("main.mainwindow.inst", JMain::instance(), [=](JNEvent &event){
         event.setReturnValue(qVariantFromValue(static_cast<void*>(mainWindow)));
     });
+
+    splashWidget.clear();
 
     int exitCode = app->exec();
 
