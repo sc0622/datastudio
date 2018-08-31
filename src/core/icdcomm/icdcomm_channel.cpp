@@ -168,9 +168,10 @@ bool Channel::setConfig(const std::unordered_map<std::string, std::string> &item
     // id
     std::unordered_map<std::string, std::string>::const_iterator citer = items.find("id");
     if (citer == items.cend()) {
-        return false;
+        setIdentity(QUuid::createUuid().toString().toStdString());
+    } else {
+        setIdentity(citer->second);
     }
-    setIdentity(citer->second);
 
     // name
     citer = items.find("name");

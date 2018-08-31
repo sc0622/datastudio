@@ -2,6 +2,7 @@
 #define JRTTIMER_H
 
 #include "icdworker_global.h"
+#include <memory>
 
 namespace Icd {
 
