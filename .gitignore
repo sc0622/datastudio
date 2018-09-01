@@ -72,6 +72,7 @@ CMakeLists.txt.user*
 /bin/icdparser*
 /bin/icdwidget*
 /bin/icdworker*
+/bin/icdmeta*
 /bin/pcomm*
 
 /bin/record
