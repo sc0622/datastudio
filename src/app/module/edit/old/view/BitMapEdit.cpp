@@ -176,7 +176,7 @@ bool BitMapEdit::confirm()
 
 bool BitMapEdit::validate()
 {
-    // æ£€æŸ¥é»˜è®¤å€¼
+    // check default value
     if (editDefault_->text().length() > spinBitCount_->value()) {
         editDefault_->setFocus();
         editDefault_->setProperty("highlight", true);
@@ -185,7 +185,7 @@ bool BitMapEdit::validate()
     } else {
         editDefault_->setProperty("highlight", false);
     }
-    // æ£€æŸ¥è¡¨æ•°æ®
+    // check table
     bool error = false;
     const int count = tableView_->rowCount();
     for (int i = 0; i < count; ++i) {
@@ -220,30 +220,30 @@ ICDBitData *BitMapEdit::oldData()
 void BitMapEdit::updateTable(int newCount, bool behind)
 {
     int count = tableView_->rowCount();
-    // å¦‚æœæœ‰å¤šä½™é¡¹ï¼Œåˆ é™¤
-    if (newCount < count) {    // åˆ é™¤å¤šä½™
-        if (behind) {   // ç»ˆæ­¢ä½å˜æ›´ï¼Œåˆ é™¤è¡¨åéƒ¨åˆ†æ•°æ®
+    // Èç¹ûÓĞ¶àÓàÏî£¬É¾³ı
+    if (newCount < count) {    // É¾³ı¶àÓà
+        if (behind) {   // ÖÕÖ¹Î»±ä¸ü£¬É¾³ı±íºó²¿·ÖÊı¾İ
             tableView_->removeRow(newCount, count - newCount);
-        } else {    // èµ·å§‹ä½å˜æ›´ï¼Œåˆ é™¤è¡¨å‰éƒ¨åˆ†æ•°æ®
+        } else {    // ÆğÊ¼Î»±ä¸ü£¬É¾³ı±íÇ°²¿·ÖÊı¾İ
             tableView_->removeRow(0, count - newCount);
         }
-    } else {    // è¡¥å…¨ä¸è¶³
-        int offset = 0; // åç§»é‡
-        int insertCount = newCount - count; // æ’å…¥æ•°æ®é‡
+    } else {    // ²¹È«²»×ã
+        int offset = 0; // Æ«ÒÆÁ¿
+        int insertCount = newCount - count; // ²åÈëÊı¾İÁ¿
         if (behind) {
-            offset = count; // ç»ˆæ­¢ä½å˜æ›´ï¼Œåç§»è‡³count
+            offset = count; // ÖÕÖ¹Î»±ä¸ü£¬Æ«ÒÆÖÁcount
         }
         _Eigenvalue _data;
-        /*data.describe = QStringLiteral("å¤‡ç”¨")*/;
+        /*data.describe = QStringLiteral("±¸ÓÃ")*/;
         for (int i = 0; i < insertCount; ++i) {
             updateMapOne(i + offset, _data);
         }
-        // æ›´æ–°ç¬¬ä¸€é¡¹æ•°æ®
+        // ¸üĞÂµÚÒ»ÏîÊı¾İ
         tableView_->setItemValue(0, 0, data()->start());
     }
 }
 
-// å‘bitMapè¡¨æ’å…¥ä¸€æ¡æ•°æ®
+// ÏòbitMap±í²åÈëÒ»ÌõÊı¾İ
 void BitMapEdit::updateMapOne(int index, const _Eigenvalue &data, int option)
 {
     if (GlobalDefine::optNew == option) {

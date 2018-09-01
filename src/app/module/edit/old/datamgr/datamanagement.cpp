@@ -18,12 +18,12 @@ DataManegement::DataManegement(QWidget *parent)
     , q_dbaccess(nullptr)
     , q_dataSource(GlobalDefine::dsNone)
 {
-    // é»˜è®¤æ–‡ä»¶è·¯å¾„
+    // Ä¬ÈÏÎÄ¼şÂ·¾¶
     q_defaultPath = readXmlFile();
 
     q_dbaccess = new DBAccess();
     if (GlobalDefine::dsDatabase == q_dataSource) {
-        // åˆå§‹åŒ–æ•°æ®åº“
+        // ³õÊ¼»¯Êı¾İ¿â
         const Json::Value option = JMain::instance()->option("edit", "parser");
         if (!option.isNull()) {
             if (!q_dbaccess->init(option)) {
@@ -136,13 +136,13 @@ bool DataManegement::init()
     return true;
 }
 
-// æ¶ˆæ¯å“åº”å›è°ƒ
+// ÏûÏ¢ÏìÓ¦»Øµ÷
 JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
 {
     QVariantList args = event.argument().toList();
     const QString id = event.channel().section("edit.", 1);
 
-    if ("loadInfrastructure" == id) { // æŸ¥è¯¢æ‰€æœ‰çš„æœºå‹æ•°æ®
+    if ("loadInfrastructure" == id) { // ²éÑ¯ËùÓĞµÄ»úĞÍÊı¾İ
         if (args.count() >= 2) {
             QString *error = jVariantFromVoid<QString>(args[1]);
             if (!error) {
@@ -156,7 +156,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
                 if (args.count() >= 3) {
                     deep = args[2].toInt();
                 }
-                // åŠ è½½åŸºæœ¬ç»“æ„æ•°æ®
+                // ¼ÓÔØ»ù±¾½á¹¹Êı¾İ
                 std::string err;
                 if (!loadBaseData(err, deep)) {
                     *error = err.c_str();
@@ -177,14 +177,14 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
                 if (args.count() >= 3) {
                     deep = args[2].toInt();
                 }
-                // åŠ è½½æ–‡ä»¶æ•°æ®
+                // ¼ÓÔØÎÄ¼şÊı¾İ
                 Icd::VehiclePtrArray vehicles;
-                // è§£ææ•°æ®
+                // ½âÎöÊı¾İ
                 if (!parser->parse(vehicles, deep)) {
                     *error = tr("Parse file failure!");
                     break;
                 }
-                // è½¬æ¢æ•°æ®
+                // ×ª»»Êı¾İ
                 Json::Value config2(Json::objectValue);
                 Icd::SqlParser sqlParser(config2);
                 DMSpace::_vectorPS infrastructure;
@@ -206,7 +206,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
                 break;
             }
         }
-    } else if("queryAllPlane" == id) { // æŸ¥è¯¢æ‰€æœ‰çš„æœºå‹æ•°æ®
+    } else if("queryAllPlane" == id) { // ²éÑ¯ËùÓĞµÄ»úĞÍÊı¾İ
         if (args.count() > 0) {
             PlaneNode::planeVector *data = jVariantFromVoid<PlaneNode::planeVector>(args[0]);
             if (!data) {
@@ -214,7 +214,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
             }
             *data = q_planes;
         }
-    } else if ("querySinglePlane" == id) { // æŸ¥è¯¢ä¸€æ¡æœºå‹æ•°æ®
+    } else if ("querySinglePlane" == id) { // ²éÑ¯Ò»Ìõ»úĞÍÊı¾İ
         if (args.count() >= 2) {
             PlaneNode::smtPlane *data = jVariantFromVoid<PlaneNode::smtPlane>(args[0]);
             if (!data) {
@@ -222,7 +222,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
             }
             *data = planeNode(args[1].toInt());
         }
-    } else if ("queryDictionary" == id) { // æŸ¥è¯¢å­—å…¸è¡¨
+    } else if ("queryDictionary" == id) { // ²éÑ¯×Öµä±í
         if (args.count() > 0) {
             stQueryDic *data = jVariantFromVoid<stQueryDic>(args[0]);
             if (!data) {
@@ -231,7 +231,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
 
             queryDictionary(*data);
         }
-    } else if ("queryDictionaryTable" == id) { // æŸ¥è¯¢ä¸€å¼ å­—å…¸è¡¨
+    } else if ("queryDictionaryTable" == id) { // ²éÑ¯Ò»ÕÅ×Öµä±í
         if (args.count() < 2) {
             return -1;
         }
@@ -245,29 +245,29 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         }
         std::string dicName;
         switch (type) {
-        case GlobalDefine::dicDataType:    // æ•°æ®ç±»å‹
+        case GlobalDefine::dicDataType:    // Êı¾İÀàĞÍ
             dicName = DBAccess::tableName(DataBaseDefine::dbDataType);
             break;
-        case GlobalDefine::dicPowerType:   // æƒé™ç±»å‹
+        case GlobalDefine::dicPowerType:   // È¨ÏŞÀàĞÍ
             dicName = DBAccess::tableName(DataBaseDefine::dbPowerType);
             break;
-        case GlobalDefine::dicCounterType: // å¸§è®¡æ•°ç±»å‹
+        case GlobalDefine::dicCounterType: // Ö¡¼ÆÊıÀàĞÍ
             dicName = DBAccess::tableName(DataBaseDefine::dbCounterType);
             break;
-        case GlobalDefine::dicCheckType:   // æ ¡éªŒç±»å‹
+        case GlobalDefine::dicCheckType:   // Ğ£ÑéÀàĞÍ
             dicName = DBAccess::tableName(DataBaseDefine::dbCheckType);
             break;
-        case GlobalDefine::dicArrayType:   // æ•°ç»„ç±»å‹
+        case GlobalDefine::dicArrayType:   // Êı×éÀàĞÍ
             dicName = DBAccess::tableName(DataBaseDefine::dbArrayType);
             break;
-        case GlobalDefine::dicNumericType:  // æ•°å€¼ç±»å‹
+        case GlobalDefine::dicNumericType:  // ÊıÖµÀàĞÍ
             dicName = DBAccess::tableName(DataBaseDefine::dbNumericType);
             break;
         default:
             break;
         }
         *dics = CDictionary::instance().singleDic(dicName);
-    } else if ("loadRules" == id) {    // åŠ è½½è§„åˆ™æ•°æ®
+    } else if ("loadRules" == id) {    // ¼ÓÔØ¹æÔòÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -282,7 +282,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         const QString &condition = *reinterpret_cast<QString *>(params->at(0));
         bool increment = params->at(1);
         loadRules(*data, condition, increment);
-    } else if ("unLoadRules" == id) {    // å¸è½½è§„åˆ™æ•°æ®
+    } else if ("unLoadRules" == id) {    // Ğ¶ÔØ¹æÔòÊı¾İ
         if (args.count() < 1) {
             return -1;
         }
@@ -291,7 +291,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
             return -1;
         }
         unLoadRules(*condition);
-    } else if ("modifyAllPlane" == id) { // ä¿®æ”¹æ‰€æœ‰æœºå‹æ•°æ®
+    } else if ("modifyAllPlane" == id) { // ĞŞ¸ÄËùÓĞ»úĞÍÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -309,9 +309,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         for (size_t i = 0; i < count; ++i) {
             planes.push_back(std::dynamic_pointer_cast<PlaneNode>(elements->at(i)));
         }
-        // æ›´æ–°æ‰€æœ‰æœºå‹æ•°æ®
+        // ¸üĞÂËùÓĞ»úĞÍÊı¾İ
         *result = modifyAllKC(planes);
-    } else if ("savePlane" == id) { // ä¿å­˜æœºå‹æ•°æ®
+    } else if ("savePlane" == id) { // ±£´æ»úĞÍÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -323,9 +323,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         if (!result) {
             return -1;
         }
-        // ä¿å­˜æ•°æ®
+        // ±£´æÊı¾İ
         *result = savePlane(*plane);
-    } else if ("modifyPlane" == id) {   // ä¿®æ”¹æœºå‹æ•°æ®
+    } else if ("modifyPlane" == id) {   // ĞŞ¸Ä»úĞÍÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -337,9 +337,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         if (!result) {
             return -1;
         }
-        // ä¿®æ”¹æ•°æ®
+        // ĞŞ¸ÄÊı¾İ
         *result = modifyOneKC(SMT_CONVERT(PlaneNode, *element));
-    } else if ("deletePlane" == id) {   // åˆ é™¤æœºå‹æ•°æ®
+    } else if ("deletePlane" == id) {   // É¾³ı»úĞÍÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -351,9 +351,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         if (!result) {
             return -1;
         }
-        // åˆ é™¤æ•°æ®
+        // É¾³ıÊı¾İ
         *result = deletePlane(*planeID);
-    } else if ("saveSystem" == id) {    // ä¿å­˜ç³»ç»Ÿæ•°æ®
+    } else if ("saveSystem" == id) {    // ±£´æÏµÍ³Êı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -365,9 +365,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         std::vector<stSystem> &systems
                 = *reinterpret_cast<std::vector<stSystem> *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // ä¿å­˜æ•°æ®
+        // ±£´æÊı¾İ
         *result = saveSystem(planeID.toInt(), systems);
-    } else if ("modifySystem" == id) {    // ä¿®æ”¹ç³»ç»Ÿæ•°æ®
+    } else if ("modifySystem" == id) {    // ĞŞ¸ÄÏµÍ³Êı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -379,9 +379,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         ICDElement::smtElement &element
                 = *reinterpret_cast<ICDElement::smtElement *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // ä¿®æ”¹æ•°æ®
+        // ĞŞ¸ÄÊı¾İ
         *result = modifySystem(planeID, SMT_CONVERT(SystemNode, element));
-    } else if ("deleteSystem" == id) {  // åˆ é™¤ç³»ç»Ÿæ•°æ®
+    } else if ("deleteSystem" == id) {  // É¾³ıÏµÍ³Êı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -393,9 +393,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         std::vector<int> &systemID
                 = *reinterpret_cast<std::vector<int> *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // åˆ é™¤æ•°æ®
+        // É¾³ıÊı¾İ
         *result = deleteSystem(planeID.toInt(), systemID);
-    } else if ("saveTable" == id) { // ä¿å­˜ICDè¡¨æ•°æ®
+    } else if ("saveTable" == id) { // ±£´æICD±íÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -407,9 +407,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         std::vector<stICDBase> &tables
                 = *reinterpret_cast<std::vector<stICDBase> *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // ä¿å­˜æ•°æ®
+        // ±£´æÊı¾İ
         *result = saveTable(keys, tables);
-    } else if ("modifyTable" == id) { // ä¿®æ”¹ICDè¡¨æ•°æ®
+    } else if ("modifyTable" == id) { // ĞŞ¸ÄICD±íÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -421,7 +421,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         ICDElement::smtElement element
                 = *reinterpret_cast<ICDElement::smtElement *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // ä¿®æ”¹æ•°æ®
+        // ĞŞ¸ÄÊı¾İ
         *result = modifyTable(keys, SMT_CONVERT(TableNode, element));
     } else if ("deleteTable" == id) {
         if (args.count() < 2) {
@@ -435,7 +435,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         std::vector<std::string> tables
                 = *reinterpret_cast<std::vector<std::string> *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // åˆ é™¤æ•°æ®
+        // É¾³ıÊı¾İ
         *result = deleteTable(keys, tables);
     } else if ("saveRule" == id) {
         if (args.count() < 2) {
@@ -449,7 +449,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         ICDMetaData::smtMeta &meta
                 = *reinterpret_cast<ICDMetaData::smtMeta *>(params->at(1));
         int *result = jVariantFromVoid<int>(args[1]);
-        // ä¿å­˜æ•°æ®åº“
+        // ±£´æÊı¾İ¿â
         *result = saveRule(keys, meta);
     } else if ("insertRule" == id) {
         if (args.count() < 2) {
@@ -463,9 +463,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         ICDMetaData::smtMeta &meta
                 = *reinterpret_cast<ICDMetaData::smtMeta *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // ä¿å­˜æ•°æ®åº“
+        // ±£´æÊı¾İ¿â
         *result = insertRule(keys, meta);
-    } else if ("deleteRule" == id) {    // åˆ é™¤è§„åˆ™æ•°æ®
+    } else if ("deleteRule" == id) {    // É¾³ı¹æÔòÊı¾İ
         if (args.count() < 2) {
             return -1;
         }
@@ -477,9 +477,9 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         std::vector<int> &rules
                 = *reinterpret_cast <std::vector<int> *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // åˆ é™¤æ•°æ®åº“
+        // É¾³ıÊı¾İ¿â
         *result = deleteRule(keys, rules);
-    } else if ("deleteSubTable" == id) {    // åˆ é™¤å¸§è¯†åˆ«ç å­è¡¨
+    } else if ("deleteSubTable" == id) {    // É¾³ıÖ¡Ê¶±ğÂë×Ó±í
         if (args.count() < 2) {
             return -1;
         }
@@ -491,7 +491,7 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
         std::vector<std::string> &rules
                 = *reinterpret_cast <std::vector<std::string> *>(params->at(1));
         bool *result = jVariantFromVoid<bool>(args[1]);
-        // åˆ é™¤æ•°æ®åº“
+        // É¾³ıÊı¾İ¿â
         *result = deleteSubTable(keys, rules);
     }
 
@@ -499,21 +499,21 @@ JLRESULT DataManegement::notifyRespond(const Icd::JNEvent &event)
 }
 
 /**
- * @brief åŠ è½½åŸºç¡€æ•°æ®
+ * @brief ¼ÓÔØ»ù´¡Êı¾İ
      * @param [in] deep
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::loadBaseData(std::string &error, int deep)
 {
-    // æ¸…ç©ºæ•°æ®
+    // Çå¿ÕÊı¾İ
     clearKC();
 
-    // åˆå§‹åŒ–å­—å…¸è¡¨æ•°æ®
+    // ³õÊ¼»¯×Öµä±íÊı¾İ
     if (!loadDic()) {
         return false;
     }
 
-    // åˆå§‹åŒ–ç³»ç»Ÿä¿¡æ¯
+    // ³õÊ¼»¯ÏµÍ³ĞÅÏ¢
     if (!loadInfrastructure(deep)) {
         error = q_dbaccess->lastError().c_str();
         qDebug() << error.c_str();
@@ -524,42 +524,42 @@ bool DataManegement::loadBaseData(std::string &error, int deep)
 }
 
 /**
-* @brief åŠ è½½åŸºç¡€æ•°æ®
-* @param [in] loadXmlBaseData : æœºå‹ç³»ç»Ÿä¿¡æ¯
-* @param [in] tableRules : è¡¨è§„åˆ™ä¿¡æ¯
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief ¼ÓÔØ»ù´¡Êı¾İ
+* @param [in] loadXmlBaseData : »úĞÍÏµÍ³ĞÅÏ¢
+* @param [in] tableRules : ±í¹æÔòĞÅÏ¢
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 bool DataManegement::loadXmlBaseData(const DMSpace::_vectorPS &infrastructure,
                                      const DMSpace::_vectorIcdTR &tableRules)
 {
-    // æ¸…ç©ºæ•°æ®
+    // Çå¿ÕÊı¾İ
     clearKC();
 
-    // åˆå§‹åŒ–å­—å…¸è¡¨æ•°æ®
+    // ³õÊ¼»¯×Öµä±íÊı¾İ
     if (!loadDic()) {
         return false;
     }
-    TableNode::tableVector tables;  // è®°å½•è¡¨è§„åˆ™
-    // æ„é€ é¡¶å±‚è¡¨æ•°æ®
+    TableNode::tableVector tables;  // ¼ÇÂ¼±í¹æÔò
+    // ¹¹Ôì¶¥²ã±íÊı¾İ
     size_t count = tableRules.size();
-    //    int tableLevel = 1; // é¡¶å±‚è¡¨ä»1å¼€å§‹
+    //    int tableLevel = 1; // ¶¥²ã±í´Ó1¿ªÊ¼
     for (size_t i = 0; i < count; ++i) {
         const DMSpace::pairIcdTR &icdTR = tableRules[i];
         stICDBase icdBase = icdTR.first;
         if (!icdBase.sParentName.empty()) {
             continue;
         }
-        // å¡«å†™ç•Œé¢ç­‰çº§
+        // ÌîĞ´½çÃæµÈ¼¶
         //         if (icdBase.sLevel.empty()) {
         //             icdBase.sLevel = QString("%1_%2").arg(tableLevel)
         //                 .arg(i + 1).toStdString();
         //         }
-        // æ²¡æœ‰çˆ¶è¡¨ï¼Œè¯æ˜æ˜¯é¡¶å±‚è¡¨
+        // Ã»ÓĞ¸¸±í£¬Ö¤Ã÷ÊÇ¶¥²ã±í
         TableNode::smtTable tableNode(new TableNode(icdBase));
         tables.push_back(tableNode);
     }
 
-    // æ ¹æ®æ‰€å±ç»„è¿›è¡Œåˆ†ç±»
+    // ¸ù¾İËùÊô×é½øĞĞ·ÖÀà
     count = tables.size();
     TableNode::smtTable table = nullptr;
     std::unordered_map<std::string, TableNode::tableVector> classified;
@@ -571,18 +571,18 @@ bool DataManegement::loadXmlBaseData(const DMSpace::_vectorPS &infrastructure,
         }
     }
 
-    // æ„é€ æœºå‹ç³»ç»Ÿæ•°æ®
+    // ¹¹Ôì»úĞÍÏµÍ³Êı¾İ
     std::string group;
     std::unordered_map<std::string, TableNode::tableVector>::iterator
             itTable = classified.end();
     DMSpace::_vectorPS_Cit itPS = infrastructure.begin();
     for (; itPS != infrastructure.end(); ++itPS) {
         const stPlane &plane = itPS->first;
-        // æœºå‹
+        // »úĞÍ
         PlaneNode::smtPlane planeNode(new PlaneNode(plane));
         const std::vector<stSystem>& department = itPS->second;
         count = department.size();
-        // ç³»ç»Ÿ
+        // ÏµÍ³
         for (size_t i = 0; i < count; ++i) {
             const stSystem &system = department.at(i);
             SystemNode::smtSystem systemNode(new SystemNode(system));
@@ -600,8 +600,8 @@ bool DataManegement::loadXmlBaseData(const DMSpace::_vectorPS &infrastructure,
 }
 
 /**
- * @brief åŠ è½½å­—å…¸è¡¨æ•°æ®
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief ¼ÓÔØ×Öµä±íÊı¾İ
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::loadDic()
 {
@@ -624,9 +624,9 @@ bool DataManegement::loadDic()
 }
 
 /**
-* @brief é‡æ–°åŠ è½½å­—å…¸è¡¨æ•°æ®
-* @param [in] dics : å­—å…¸è¡¨é›†
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief ÖØĞÂ¼ÓÔØ×Öµä±íÊı¾İ
+* @param [in] dics : ×Öµä±í¼¯
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 bool DataManegement::reloadDic(const std::vector<std::string> &dics)
 {
@@ -649,22 +649,22 @@ bool DataManegement::reloadDic(const std::vector<std::string> &dics)
 }
 
 /**
- * @brief åŠ è½½åŸºç¡€æ¶æ„æ•°æ®ï¼ˆæœºå‹å’Œç³»ç»Ÿï¼‰
+ * @brief ¼ÓÔØ»ù´¡¼Ü¹¹Êı¾İ£¨»úĞÍºÍÏµÍ³£©
      * @param [in] deep
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::loadInfrastructure(int deep)
 {
     if (!q_dbaccess) {
         return false;
     }
-    // è¯»å–æœºå‹
+    // ¶ÁÈ¡»úĞÍ
     std::vector<stPlane> planeBase;
     if (!q_dbaccess->readPlane(planeBase)) {
         qDebug() << "readPlane failed!";
         return false;
     }
-    // è¯»å–ç³»ç»Ÿ
+    // ¶ÁÈ¡ÏµÍ³
     std::unordered_map<int, std::vector<stSystem> > systemBase;
     if (deep >= Icd::ObjectSystem) {
         if (!q_dbaccess->readSystem(systemBase)) {
@@ -672,7 +672,7 @@ bool DataManegement::loadInfrastructure(int deep)
             return false;
         }
     }
-    // æŸ¥è¯¢è¡¨åŸºæœ¬ä¿¡æ¯
+    // ²éÑ¯±í»ù±¾ĞÅÏ¢
     std::unordered_map<std::string, std::vector<stICDBase>> icdBase;
     if (deep >= Icd::ObjectTable) {
         if (!q_dbaccess->readICDBase(true, icdBase)) {
@@ -684,27 +684,27 @@ bool DataManegement::loadInfrastructure(int deep)
     std::unordered_map<std::string, std::vector<stICDBase>>::iterator itBase = icdBase.end();
     std::unordered_map<int, std::vector<stSystem> >::iterator it = systemBase.end();
     const size_t count = planeBase.size();
-    //    int tableLevel = 1; // é¡¶å±‚è¡¨ä»1å¼€å§‹
+    //    int tableLevel = 1; // ¶¥²ã±í´Ó1¿ªÊ¼
     for (size_t i = 0; i < count; ++i) {
-        // æœºå‹
+        // »úĞÍ
         stPlane plane = planeBase.at(i);
         PlaneNode::smtPlane planeNode(new PlaneNode(plane));
         if ((it = systemBase.find(plane.nCode)) != systemBase.end()) {
             const std::vector<stSystem>& department = it->second;
             const size_t bound = department.size();
-            // åˆ†ç³»ç»Ÿ
+            // ·ÖÏµÍ³
             for (size_t j = 0; j < bound; ++j) {
                 stSystem system = department.at(j);
                 SystemNode::smtSystem systemNode(new SystemNode(system));
                 std::string group = QString("%1/%2")
                         .arg(plane.nCode).arg(system.nCode).toStdString();
-                // è§„åˆ™è¡¨
+                // ¹æÔò±í
                 if ((itBase = icdBase.find(group)) != icdBase.end()) {
                     std::vector<stICDBase>& collBase = itBase->second;
                     const size_t bound(collBase.size());
                     for (size_t j = 0; j < bound; ++j) {
                         stICDBase& base = collBase.at(j);
-                        // åªåŠ å…¥éš¶å±äºç³»ç»ŸèŠ‚ç‚¹çš„è§„åˆ™è¡¨
+                        // Ö»¼ÓÈëÁ¥ÊôÓÚÏµÍ³½ÚµãµÄ¹æÔò±í
                         if (base.sParentName.empty()) {
                             TableNode::smtTable tableNode(new TableNode(base));
                             systemNode->addTable(tableNode);
@@ -721,17 +721,17 @@ bool DataManegement::loadInfrastructure(int deep)
 }
 
 /**
- * @brief åŠ è½½æŒ‡å®šæœºå‹çš„æ‰€æœ‰ICDè¡¨
- * @param [in] planeType : é£æœºå‹å·ç 
- * @param [in] increment : å¢é‡æ ‡è¯†
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief ¼ÓÔØÖ¸¶¨»úĞÍµÄËùÓĞICD±í
+ * @param [in] planeType : ·É»úĞÍºÅÂë
+ * @param [in] increment : ÔöÁ¿±êÊ¶
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::loadTypeRule(int planeType, bool increment)
 {
     if (nullptr == q_dbaccess) {
         return false;
     }
-    // è¯»å–åŸºæœ¬è¡¨ä¿¡æ¯
+    // ¶ÁÈ¡»ù±¾±íĞÅÏ¢
     DMSpace::_vectorSB ICDBase;
     QString condition = QString::number(planeType);
     if (!q_dbaccess->readSpecificICD(condition.toStdString(), ICDBase)) {
@@ -741,14 +741,14 @@ bool DataManegement::loadTypeRule(int planeType, bool increment)
 }
 
 /**
-* @brief åŠ è½½æŒ‡å®šæœºå‹çš„æ‰€æœ‰ICDè¡¨
-* @param [in] planeType : é£æœºå‹å·ç 
-* @param [in] tableRules : è¡¨è§„åˆ™ä¿¡æ¯
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief ¼ÓÔØÖ¸¶¨»úĞÍµÄËùÓĞICD±í
+* @param [in] planeType : ·É»úĞÍºÅÂë
+* @param [in] tableRules : ±í¹æÔòĞÅÏ¢
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 bool DataManegement::loadXmlTypeRule(int planeType, DMSpace::_vectorIcdTR &tableRules)
 {
-    // æŸ¥è¯¢å†…å­˜ä¸­æ˜¯å¦å·²ç»åŠ è½½åŸºç¡€æ¶æ„æ•°æ®
+    // ²éÑ¯ÄÚ´æÖĞÊÇ·ñÒÑ¾­¼ÓÔØ»ù´¡¼Ü¹¹Êı¾İ
     PlaneNode::smtPlane plane = planeNode(planeType);
     if (nullptr == plane) {
         return false;
@@ -756,7 +756,7 @@ bool DataManegement::loadXmlTypeRule(int planeType, DMSpace::_vectorIcdTR &table
     SystemNode::smtSystem system;
     std::unordered_map<std::string, TableNode::tableVector> rules = loadXmlRuleData(tableRules);
     std::unordered_map<std::string, TableNode::tableVector>::iterator it = rules.begin();
-    // å°†æ•°æ®ä¿å­˜åˆ°å†…å­˜ä¸­
+    // ½«Êı¾İ±£´æµ½ÄÚ´æÖĞ
     for (; it != rules.end(); ++it) {
         const std::string &group = it->first;
         system = plane->system(QString(group.c_str()).split("/").last().toInt());
@@ -769,9 +769,9 @@ bool DataManegement::loadXmlTypeRule(int planeType, DMSpace::_vectorIcdTR &table
 }
 
 /**
-* @brief å¸è½½æŒ‡å®šæœºå‹çš„æ‰€æœ‰ICDè¡¨
-* @param [in] planeType : é£æœºå‹å·ç 
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief Ğ¶ÔØÖ¸¶¨»úĞÍµÄËùÓĞICD±í
+* @param [in] planeType : ·É»úĞÍºÅÂë
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 void DataManegement::unLoadTypeRule(int planeType)
 {
@@ -799,11 +799,11 @@ void DataManegement::unLoadTypeRule(int planeType)
 }
 
 /**
- * @brief åŠ è½½æŒ‡å®šæœºå‹ä¸‹åˆ†ç³»ç»Ÿçš„æ‰€æœ‰ICDè¡¨
- * @param [in] planeType : é£æœºå‹å·ç 
- * @param [in] system : ç³»ç»Ÿç 
- * @param [in] increment : å¢é‡æ ‡è¯†
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief ¼ÓÔØÖ¸¶¨»úĞÍÏÂ·ÖÏµÍ³µÄËùÓĞICD±í
+ * @param [in] planeType : ·É»úĞÍºÅÂë
+ * @param [in] system : ÏµÍ³Âë
+ * @param [in] increment : ÔöÁ¿±êÊ¶
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::loadSystemRule(int planeType, int system,
                                     bool increment)
@@ -811,7 +811,7 @@ bool DataManegement::loadSystemRule(int planeType, int system,
     if (nullptr == q_dbaccess) {
         return false;
     }
-    // è¯»å–åŸºæœ¬è¡¨ä¿¡æ¯
+    // ¶ÁÈ¡»ù±¾±íĞÅÏ¢
     DMSpace::_vectorSB ICDBase;
     QString condition = QString("%1/%2").arg(planeType).arg(system);
     if (!q_dbaccess->readSpecificICD(condition.toStdString(), ICDBase)) {
@@ -821,15 +821,15 @@ bool DataManegement::loadSystemRule(int planeType, int system,
 }
 
 /**
-* @brief åŠ è½½æŒ‡å®šæœºå‹ä¸‹åˆ†ç³»ç»Ÿçš„æ‰€æœ‰ICDè¡¨
-* @param [in] planeType : é£æœºå‹å·ç 
-* @param [in] system : ç³»ç»Ÿç 
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief ¼ÓÔØÖ¸¶¨»úĞÍÏÂ·ÖÏµÍ³µÄËùÓĞICD±í
+* @param [in] planeType : ·É»úĞÍºÅÂë
+* @param [in] system : ÏµÍ³Âë
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 bool DataManegement::loadXmlSystemRule(int planeType, int system,
                                        DMSpace::_vectorIcdTR &tableRules)
 {
-    // æŸ¥è¯¢å†…å­˜ä¸­æ˜¯å¦å·²ç»åŠ è½½åŸºç¡€æ¶æ„æ•°æ®
+    // ²éÑ¯ÄÚ´æÖĞÊÇ·ñÒÑ¾­¼ÓÔØ»ù´¡¼Ü¹¹Êı¾İ
     PlaneNode::smtPlane plane = planeNode(planeType);
     if (!plane) {
         return false;
@@ -841,7 +841,7 @@ bool DataManegement::loadXmlSystemRule(int planeType, int system,
     std::unordered_map<std::string, TableNode::tableVector> rules = loadXmlRuleData(tableRules);
     const std::string group = QString("%1/%2").arg(planeType).arg(system).toStdString();
     std::unordered_map<std::string, TableNode::tableVector>::iterator it = rules.find(group);
-    // å°†æ•°æ®ä¿å­˜åˆ°å†…å­˜ä¸­
+    // ½«Êı¾İ±£´æµ½ÄÚ´æÖĞ
     if (it != rules.end()) {
         singleSystem->setTable(it->second);
     }
@@ -850,10 +850,10 @@ bool DataManegement::loadXmlSystemRule(int planeType, int system,
 }
 
 /**
-* @brief å¸è½½æŒ‡å®šæœºå‹ä¸‹åˆ†ç³»ç»Ÿçš„æ‰€æœ‰ICDè¡¨
-* @param [in] planeType : é£æœºå‹å·ç 
-* @param [in] system : ç³»ç»Ÿç 
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief Ğ¶ÔØÖ¸¶¨»úĞÍÏÂ·ÖÏµÍ³µÄËùÓĞICD±í
+* @param [in] planeType : ·É»úĞÍºÅÂë
+* @param [in] system : ÏµÍ³Âë
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 void DataManegement::unLoadSystemRule(int planeType, int system)
 {
@@ -878,28 +878,28 @@ void DataManegement::unLoadSystemRule(int planeType, int system)
 }
 
 /**
- * @brief åŠ è½½å•å¼ ICDè¡¨
- * @param [in] plane : é£æœºå‹å·ç 
- * @param [in] system : ç³»ç»Ÿç 
- * @param [in] table : ICDè¡¨å
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief ¼ÓÔØµ¥ÕÅICD±í
+ * @param [in] plane : ·É»úĞÍºÅÂë
+ * @param [in] system : ÏµÍ³Âë
+ * @param [in] table : ICD±íÃû
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::loadTableRule(int plane, int system, const std::string &table)
 {
     if (nullptr == q_dbaccess) {
         return false;
     }
-    // æŸ¥è¯¢å†…å­˜ä¸­æ˜¯å¦å·²ç»åŠ è½½åŸºç¡€æ¶æ„æ•°æ®
+    // ²éÑ¯ÄÚ´æÖĞÊÇ·ñÒÑ¾­¼ÓÔØ»ù´¡¼Ü¹¹Êı¾İ
     PlaneNode::smtPlane data = planeNode(plane);
     if (nullptr == data) {
         return false;
     }
-    // æŸ¥è¯¢ç³»ç»Ÿè¡¨
+    // ²éÑ¯ÏµÍ³±í
     SystemNode::smtSystem sysNode = data->system(system);
     if (nullptr == sysNode) {
         return false;
     }
-    // è¯»å–å­è¡¨
+    // ¶ÁÈ¡×Ó±í
     std::vector<std::string> tables = q_dbaccess->querySubTables(table);
     tables.insert(tables.begin(), table);
     //
@@ -907,13 +907,13 @@ bool DataManegement::loadTableRule(int plane, int system, const std::string &tab
     if (!q_dbaccess->readICDBase(tables, icdBases)) {
         return false;
     }
-    // è¯»å–è§„åˆ™æ•°æ®
+    // ¶ÁÈ¡¹æÔòÊı¾İ
     DMSpace::svrMap rules;
     if (!q_dbaccess->readTableRules(tables, rules)) {
         return false;
     }
-    // æ„é€ è¡¨
-    TableNode::tableMap tableNodes;    // è®°å½•è¡¨èŠ‚ç‚¹
+    // ¹¹Ôì±í
+    TableNode::tableMap tableNodes;    // ¼ÇÂ¼±í½Úµã
     const size_t count = icdBases.size();
     for (size_t j = 0; j < count; ++j) {
         const stICDBase &icdData = icdBases[j];
@@ -921,11 +921,11 @@ bool DataManegement::loadTableRule(int plane, int system, const std::string &tab
         TableNode::smtTable table(new TableNode(icdData));
         tableNodes[icdData.sID] = table;
     }
-    // å¡«å……è§„åˆ™
+    // Ìî³ä¹æÔò
     fillRules(tableNodes, rules);
 
-    // æŸ¥è¯¢å…³ç³»ï¼Œå°†è¡¨æ•°æ®ä¿å­˜åˆ°å†…å­˜ä¸­
-    // æŸ¥è¯¢å¤åˆè¡¨çš„å­è¡¨æ•°æ®ï¼Œå¹¶å°†ä¹‹å…³è”èµ·æ¥
+    // ²éÑ¯¹ØÏµ£¬½«±íÊı¾İ±£´æµ½ÄÚ´æÖĞ
+    // ²éÑ¯¸´ºÏ±íµÄ×Ó±íÊı¾İ£¬²¢½«Ö®¹ØÁªÆğÀ´
     TableNode::smtTable _table = recursiveLinkTable(tableNodes, table);
     if (!_table) {
         return false;
@@ -935,25 +935,25 @@ bool DataManegement::loadTableRule(int plane, int system, const std::string &tab
 #else
     _table->setLengthCheck(false);
 #endif
-    // æ›´æ–°å†…å­˜æ•°æ®
+    // ¸üĞÂÄÚ´æÊı¾İ
     sysNode->addTable(_table);
 
     return true;
 }
 
 /**
-* @brief åŠ è½½å•å¼ ICDè¡¨
-* @param [in] plane : é£æœºå‹å·ç 
-* @param [in] system : ç³»ç»Ÿç 
-* @param [in] table : ICDè¡¨å
-* @param [in] tableRules : è¡¨è§„åˆ™ä¿¡æ¯
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief ¼ÓÔØµ¥ÕÅICD±í
+* @param [in] plane : ·É»úĞÍºÅÂë
+* @param [in] system : ÏµÍ³Âë
+* @param [in] table : ICD±íÃû
+* @param [in] tableRules : ±í¹æÔòĞÅÏ¢
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 bool DataManegement::loadXmlTablemRule(int plane, int system,
                                        const std::string &table,
                                        DMSpace::_vectorIcdTR &tableRules)
 {
-    // æŸ¥è¯¢å†…å­˜ä¸­æ˜¯å¦å·²ç»åŠ è½½åŸºç¡€æ¶æ„æ•°æ®
+    // ²éÑ¯ÄÚ´æÖĞÊÇ·ñÒÑ¾­¼ÓÔØ»ù´¡¼Ü¹¹Êı¾İ
     PlaneNode::smtPlane singlePlane = planeNode(plane);
     if (!singlePlane) {
         return false;
@@ -965,7 +965,7 @@ bool DataManegement::loadXmlTablemRule(int plane, int system,
     std::unordered_map<std::string, TableNode::tableVector> rules = loadXmlRuleData(tableRules);
     const std::string group = QString("%1/%2").arg(plane).arg(system).toStdString();
     std::unordered_map<std::string, TableNode::tableVector>::iterator it = rules.find(group);
-    // å°†æ•°æ®ä¿å­˜åˆ°å†…å­˜ä¸­
+    // ½«Êı¾İ±£´æµ½ÄÚ´æÖĞ
     if (it != rules.end()) {
         const TableNode::tableVector &tables = it->second;
         const size_t count = tables.size();
@@ -981,11 +981,11 @@ bool DataManegement::loadXmlTablemRule(int plane, int system,
 }
 
 /**
-* @brief å¸è½½å•å¼ ICDè¡¨
-* @param [in] planeType : é£æœºå‹å·ç 
-* @param [in] system : ç³»ç»Ÿç 
-* @param [in] table : ICDè¡¨å
-* @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+* @brief Ğ¶ÔØµ¥ÕÅICD±í
+* @param [in] planeType : ·É»úĞÍºÅÂë
+* @param [in] system : ÏµÍ³Âë
+* @param [in] table : ICD±íÃû
+* @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
 */
 void DataManegement::unLloadTableRule(int plane,
                                       int system,
@@ -1008,11 +1008,11 @@ void DataManegement::unLloadTableRule(int plane,
 }
 
 /**
- * @brief é€’å½’åŠ è½½è¡¨è§„åˆ™æ•°æ®
- * @param [in] name : ICDè¡¨å
- * @param [in] table : è§„åˆ™æ•°æ®
- * @param [in] rules : è¡¨è§„åˆ™æ•°æ®
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief µİ¹é¼ÓÔØ±í¹æÔòÊı¾İ
+ * @param [in] name : ICD±íÃû
+ * @param [in] table : ¹æÔòÊı¾İ
+ * @param [in] rules : ±í¹æÔòÊı¾İ
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::recursiveLoadRule(const std::string &id,
                                        TableNode::smtTable &table,
@@ -1021,7 +1021,7 @@ bool DataManegement::recursiveLoadRule(const std::string &id,
     if (!table) {
         return false;
     }
-    // æŸ¥è¯¢æ•°æ®
+    // ²éÑ¯Êı¾İ
     DMSpace::pairIcdTR icdTR = singleIcdTR(id, rules, true);
     if (icdTR.first.sID.empty()) {
         return false;
@@ -1029,12 +1029,12 @@ bool DataManegement::recursiveLoadRule(const std::string &id,
     int size = 0;
     table->setICDBase(icdTR.first);
     const std::vector<stTableRules> &tableRules = icdTR.second;
-    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // å¸§è¯†åˆ«ç 
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // Ö¡Ê¶±ğÂë
     const size_t count = tableRules.size();
     ICDMetaData::smtMeta metaData = nullptr;
     for (size_t i = 0; i < count; ++i) {
         const stTableRules &ruleData = tableRules[i];
-        // æ ¹æ®è§„åˆ™æ•°æ®åˆ›å»ºå¯¹åº”çš„æ•°æ®ç±»å®ä¾‹
+        // ¸ù¾İ¹æÔòÊı¾İ´´½¨¶ÔÓ¦µÄÊı¾İÀàÊµÀı
         if (!(metaData = ICDFactory::instance().CreatObject(ruleData))) {
             continue;
         }
@@ -1042,11 +1042,11 @@ bool DataManegement::recursiveLoadRule(const std::string &id,
             codes[atoi(ruleData.sDefault.c_str())]
                     = SMT_CONVERT(ICDFrameCodeData, metaData);
         }
-        // å¦‚æœè§„åˆ™æ•°æ®ä¸ºå¤åˆæ•°æ®ï¼Œåˆ™å†æ¬¡è¯»å–è¯¥è¡¨çš„è§„åˆ™æ•°æ®
+        // Èç¹û¹æÔòÊı¾İÎª¸´ºÏÊı¾İ£¬ÔòÔÙ´Î¶ÁÈ¡¸Ã±íµÄ¹æÔòÊı¾İ
         if (IcdDefine::icdComplex == metaData->metaType()) {
             ICDComplexData::smtComplex complex
                     = std::dynamic_pointer_cast<ICDComplexData>(metaData);
-            // å¾ªç¯è¯»å–å­è¡¨æ•°æ®
+            // Ñ­»·¶ÁÈ¡×Ó±íÊı¾İ
             QStringList nameLst = QString::fromStdString(complex->rule())
                     .split("@", QString::SkipEmptyParts);
             TableNode::tableVector subTables;
@@ -1060,10 +1060,10 @@ bool DataManegement::recursiveLoadRule(const std::string &id,
             }
             complex->setTable(subTables);
         }
-        // è®°å½•
+        // ¼ÇÂ¼
         table->addRule(metaData);
     }
-    // å°†å¸§è¯†åˆ«ç å’Œå¸§æ•°æ®å»ºç«‹è¿æ¥
+    // ½«Ö¡Ê¶±ğÂëºÍÖ¡Êı¾İ½¨Á¢Á¬½Ó
     std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
     for (itC = codes.begin(); itC != codes.end(); ++itC) {
         ICDFrameCodeData::smtFrameCode &frameCode = itC->second;
@@ -1079,9 +1079,9 @@ bool DataManegement::recursiveLoadRule(const std::string &id,
 }
 
 /**
- * @brief æ–°å¢ä¸€æ¡æœºå‹æ•°æ®
- * @param [in] data : æœºå‹æ•°æ®
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief ĞÂÔöÒ»Ìõ»úĞÍÊı¾İ
+ * @param [in] data : »úĞÍÊı¾İ
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::addOneKC(const PlaneNode::smtPlane &data)
 {
@@ -1101,9 +1101,9 @@ bool DataManegement::addOneKC(const PlaneNode::smtPlane &data)
 }
 
 /**
- * @brief ä¿®æ”¹ä¸€æ¡æœºå‹æ•°æ®
- * @param [in] data : æœºå‹æ•°æ®
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief ĞŞ¸ÄÒ»Ìõ»úĞÍÊı¾İ
+ * @param [in] data : »úĞÍÊı¾İ
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::modifyOneKC(const PlaneNode::smtPlane &data)
 {
@@ -1128,9 +1128,9 @@ bool DataManegement::modifyOneKC(const PlaneNode::smtPlane &data)
 }
 
 /**
- * @brief åˆ é™¤ä¸€æ¡æœºå‹æ•°æ®
- * @param [in] code : æœºå‹ç 
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief É¾³ıÒ»Ìõ»úĞÍÊı¾İ
+ * @param [in] code : »úĞÍÂë
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::deleteOneKC(int code)
 {
@@ -1149,7 +1149,7 @@ bool DataManegement::deleteOneKC(int code)
 }
 
 /**
-* @brief æ¸…ç©ºæœºå‹æ•°æ®
+* @brief Çå¿Õ»úĞÍÊı¾İ
 */
 void DataManegement::clearKC()
 {
@@ -1157,9 +1157,9 @@ void DataManegement::clearKC()
 }
 
 /**
- * @brief æŸ¥è¯¢æœºå‹æ•°æ®
- * @param [in] code : æœºå‹ç 
- * @return æœºå‹æ•°æ®
+ * @brief ²éÑ¯»úĞÍÊı¾İ
+ * @param [in] code : »úĞÍÂë
+ * @return »úĞÍÊı¾İ
  */
 PlaneNode::smtPlane DataManegement::planeNode(int code)
 {
@@ -1177,11 +1177,11 @@ PlaneNode::smtPlane DataManegement::planeNode(int code)
 }
 
 /**
-* @brief æŸ¥è¯¢å½“ä¸ªè§„åˆ™è¡¨æ•°æ®
-* @param [in] name : ICDè¡¨å
-* @param [in] rules : ICDè¡¨æ•°æ®é›†
-* @param [in] remove : åˆ é™¤æ ‡è¯†
-* @return è§„åˆ™è¡¨æ•°æ®
+* @brief ²éÑ¯µ±¸ö¹æÔò±íÊı¾İ
+* @param [in] name : ICD±íÃû
+* @param [in] rules : ICD±íÊı¾İ¼¯
+* @param [in] remove : É¾³ı±êÊ¶
+* @return ¹æÔò±íÊı¾İ
 */
 DMSpace::pairIcdTR DataManegement::singleIcdTR(const std::string &id, DMSpace::_vectorIcdTR &rules,
                                                bool remove) const
@@ -1202,28 +1202,28 @@ DMSpace::pairIcdTR DataManegement::singleIcdTR(const std::string &id, DMSpace::_
 }
 
 /**
- * @brief åŠ è½½è§„åˆ™æ•°æ®
- * @param [in] planeType : æœºå‹ç 
- * @param [in] ICDBase : ICDåŸºæœ¬è¡¨æ•°æ®
- * @param [in] increment : å¢é‡æ ‡è¯†
- * @return æ‰§è¡Œç»“æœï¼Œtrueï¼šæˆåŠŸï¼›falseï¼šå¤±è´¥
+ * @brief ¼ÓÔØ¹æÔòÊı¾İ
+ * @param [in] planeType : »úĞÍÂë
+ * @param [in] ICDBase : ICD»ù±¾±íÊı¾İ
+ * @param [in] increment : ÔöÁ¿±êÊ¶
+ * @return Ö´ĞĞ½á¹û£¬true£º³É¹¦£»false£ºÊ§°Ü
  */
 bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBase,
                                   bool increment)
 {
-    // è®¿é—®æ•°æ®åº“
+    // ·ÃÎÊÊı¾İ¿â
     if (nullptr == q_dbaccess) {
         return false;
     }
-    // æŸ¥è¯¢å†…å­˜ä¸­æ˜¯å¦å·²ç»åŠ è½½åŸºç¡€æ¶æ„æ•°æ®
+    // ²éÑ¯ÄÚ´æÖĞÊÇ·ñÒÑ¾­¼ÓÔØ»ù´¡¼Ü¹¹Êı¾İ
     PlaneNode::smtPlane data = planeNode(planeType);
     if (nullptr == data) {
         return false;
     }
-    TableNode::tableMap tableNodes;    // è®°å½•è¡¨èŠ‚ç‚¹
-    std::vector<std::string> topTables;     // è®°å½•é¡¶å±‚è¡¨
-    // æ„é€ å…³ç³»
-    std::vector<std::string> tables;    // è®°å½•æ‰€æœ‰è¡¨
+    TableNode::tableMap tableNodes;    // ¼ÇÂ¼±í½Úµã
+    std::vector<std::string> topTables;     // ¼ÇÂ¼¶¥²ã±í
+    // ¹¹Ôì¹ØÏµ
+    std::vector<std::string> tables;    // ¼ÇÂ¼ËùÓĞ±í
     size_t count = ICDBase.size();
     size_t size = 0;
     for (size_t i = 1; i < count; ++i) {
@@ -1232,7 +1232,7 @@ bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBa
         for (size_t j = 0; j < size; ++j) {
             const stICDBase &icdData = base[j];
             tables.push_back(icdData.sID);
-            // æŒ‘é€‰é¡¶å±‚è¡¨
+            // ÌôÑ¡¶¥²ã±í
             if (icdData.sParentName.empty()) {
                 topTables.push_back(icdData.sID);
             }
@@ -1240,17 +1240,17 @@ bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBa
             tableNodes[icdData.sID] = table;
         }
     }
-    // è¯»å–è§„åˆ™æ•°æ®
+    // ¶ÁÈ¡¹æÔòÊı¾İ
     DMSpace::svrMap rules;
     if (!q_dbaccess->readTableRules(tables, rules)) {
         return false;
     }
-    // å¡«å……è§„åˆ™
+    // Ìî³ä¹æÔò
     fillRules(tableNodes, rules);
 
-    // æŸ¥è¯¢å…³ç³»ï¼Œå°†è¡¨æ•°æ®ä¿å­˜åˆ°å†…å­˜ä¸­
-    // æŸ¥è¯¢å¤åˆè¡¨çš„å­è¡¨æ•°æ®ï¼Œå¹¶å°†ä¹‹å…³è”èµ·æ¥
-    // æ ¹æ®æ‰€å±ç»„è¿›è¡Œåˆ†ç±»ï¼ŒæŒ‰æè¿°æ’åº
+    // ²éÑ¯¹ØÏµ£¬½«±íÊı¾İ±£´æµ½ÄÚ´æÖĞ
+    // ²éÑ¯¸´ºÏ±íµÄ×Ó±íÊı¾İ£¬²¢½«Ö®¹ØÁªÆğÀ´
+    // ¸ù¾İËùÊô×é½øĞĞ·ÖÀà£¬°´ÃèÊöÅÅĞò
     std::unordered_map<int, TableNode::tableVector> system_table;
     count = topTables.size();
     TableNode::smtTable _table = nullptr;
@@ -1268,7 +1268,7 @@ bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBa
 #endif
         }
     }
-    // å†—ä½™æ•°æ®
+    // ÈßÓàÊı¾İ
 #ifdef _DEBUG_PRINT_D
     if (tableNodes.size() > topTables.size()) {
         count = topTables.size();
@@ -1283,13 +1283,13 @@ bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBa
         }
     }
 #endif
-    // å°†æ•°æ®ä¿å­˜åˆ°å†…å­˜ä¸­
-    if (increment) {    // å¦‚æœæ˜¯å¢é‡ï¼Œåˆ™åªæ›´æ–°
+    // ½«Êı¾İ±£´æµ½ÄÚ´æÖĞ
+    if (increment) {    // Èç¹ûÊÇÔöÁ¿£¬ÔòÖ»¸üĞÂ
         std::unordered_map<int, TableNode::tableVector>::iterator itIS
                 = system_table.begin();
         SystemNode::smtSystem sysNode;
         for (; itIS != system_table.end(); ++itIS) {
-            // æŸ¥è¯¢ç³»ç»Ÿè¡¨
+            // ²éÑ¯ÏµÍ³±í
             if (!(sysNode = data->system(itIS->first))) {
                 continue;
             }
@@ -1299,12 +1299,12 @@ bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBa
                 sysNode->addTable(items[i]);
             }
         }
-    } else {    // é‡æ–°è®¾ç½®æ•°æ®
+    } else {    // ÖØĞÂÉèÖÃÊı¾İ
         std::unordered_map<int, TableNode::tableVector>::iterator itIS
                 = system_table.begin();
         SystemNode::smtSystem sysNode;
         for (; itIS != system_table.end(); ++itIS) {
-            // æŸ¥è¯¢ç³»ç»Ÿè¡¨
+            // ²éÑ¯ÏµÍ³±í
             if (!(sysNode = data->system(itIS->first))) {
                 continue;
             }
@@ -1316,21 +1316,21 @@ bool DataManegement::loadRuleData(int planeType, const DMSpace::_vectorSB &ICDBa
 }
 
 /**
-* @brief å¡«å……è§„åˆ™æ•°æ®
-* @param [in] tables : è¡¨é›†
-* @param [in] rules : è§„åˆ™æ•°æ®é›†<è¡¨å, è§„åˆ™æ•°æ®é›†>
+* @brief Ìî³ä¹æÔòÊı¾İ
+* @param [in] tables : ±í¼¯
+* @param [in] rules : ¹æÔòÊı¾İ¼¯<±íÃû, ¹æÔòÊı¾İ¼¯>
 */
 void DataManegement::fillRules(TableNode::tableMap &tables,
                                const DMSpace::svrMap &rules)
 {
     ICDMetaData::smtMeta metaData = nullptr;
     ICDMetaData::ruleMap::iterator itR;
-    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // å¸§è¯†åˆ«ç 
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // Ö¡Ê¶±ğÂë
     std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC = codes.begin();
     TableNode::tableMap::iterator itTM = tables.end();
     DMSpace::svrMap::const_iterator itSSR = rules.begin();
     for (; itSSR != rules.end(); ++itSSR) {
-        // æŸ¥è¯¢è¡¨
+        // ²éÑ¯±í
         if ((itTM = tables.find(itSSR->first)) != tables.end()) {
             TableNode::smtTable &table = itTM->second;
             if (!table) {
@@ -1338,7 +1338,7 @@ void DataManegement::fillRules(TableNode::tableMap &tables,
             }
             const std::vector<stTableRules> &srRules = itSSR->second;
             ICDMetaData::ruleMap tableRules;
-            // æ„é€ è¡¨è§„åˆ™æ•°æ®
+            // ¹¹Ôì±í¹æÔòÊı¾İ
             const size_t count = srRules.size();
             for (size_t i = 0; i < count; ++i) {
                 const stTableRules &ruleData = srRules[i];
@@ -1351,7 +1351,7 @@ void DataManegement::fillRules(TableNode::tableMap &tables,
                     }
                 }
             }
-            // å°†å¸§è¯†åˆ«ç å’Œå¸§æ•°æ®å»ºç«‹è¿æ¥
+            // ½«Ö¡Ê¶±ğÂëºÍÖ¡Êı¾İ½¨Á¢Á¬½Ó
             for (itC = codes.begin(); itC != codes.end(); ++itC) {
                 if ((itR = tableRules.find(itC->first)) != tableRules.end()) {
                     ICDFrameCodeData::smtFrameCode &frameCode
@@ -1370,9 +1370,9 @@ void DataManegement::fillRules(TableNode::tableMap &tables,
 }
 
 /**
-* @brief åŠ è½½è§„åˆ™æ•°æ®
-* @param [in] tableRules : è¡¨è§„åˆ™ä¿¡æ¯
-* @return è¡¨è§„åˆ™ä¿¡æ¯<æ‰€å±ç»„ï¼Œ<è¡¨è§„åˆ™>>
+* @brief ¼ÓÔØ¹æÔòÊı¾İ
+* @param [in] tableRules : ±í¹æÔòĞÅÏ¢
+* @return ±í¹æÔòĞÅÏ¢<ËùÊô×é£¬<±í¹æÔò>>
 */
 std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlRuleData(
         const DMSpace::_vectorIcdTR &tableRules)
@@ -1383,15 +1383,15 @@ std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlR
         return result;
     }
     ICDMetaData::ruleMap mapRules;
-    TableNode::tableMap tables;  // è®°å½•è¡¨è§„åˆ™
-    std::vector<std::string> topTables;  // è®°å½•é¡¶å±‚è¡¨
-    // æ„é€ è¡¨è§„åˆ™æ•°æ®
+    TableNode::tableMap tables;  // ¼ÇÂ¼±í¹æÔò
+    std::vector<std::string> topTables;  // ¼ÇÂ¼¶¥²ã±í
+    // ¹¹Ôì±í¹æÔòÊı¾İ
     size_t count = tableRules.size();
     for (size_t i = 0; i < count; ++i) {
         const DMSpace::pairIcdTR &icdTR = tableRules[i];
         stICDBase icdBase = icdTR.first;
         const std::vector<stTableRules> &rules = icdTR.second;
-        // æ²¡æœ‰çˆ¶è¡¨ï¼Œè¯æ˜æ˜¯é¡¶å±‚è¡¨
+        // Ã»ÓĞ¸¸±í£¬Ö¤Ã÷ÊÇ¶¥²ã±í
         if (icdBase.sParentName.empty()) {
             topTables.push_back(icdBase.sID);
         }
@@ -1401,8 +1401,8 @@ std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlR
         tables[icdBase.sID] = tableNode;
         mapRules.clear();
     }
-    // æŸ¥è¯¢å¤åˆè¡¨çš„å­è¡¨æ•°æ®ï¼Œå¹¶å°†ä¹‹å…³è”èµ·æ¥
-    // æ ¹æ®æ‰€å±ç»„è¿›è¡Œåˆ†ç±»ï¼ŒæŒ‰æè¿°æ’åº
+    // ²éÑ¯¸´ºÏ±íµÄ×Ó±íÊı¾İ£¬²¢½«Ö®¹ØÁªÆğÀ´
+    // ¸ù¾İËùÊô×é½øĞĞ·ÖÀà£¬°´ÃèÊöÅÅĞò
     count = topTables.size();
     TableNode::smtTable _table = nullptr;
     for (size_t i = 0; i < count; ++i) {
@@ -1423,10 +1423,10 @@ std::unordered_map<std::string, TableNode::tableVector> DataManegement::loadXmlR
 }
 
 /**
- * @brief é€’å½’å»ºç«‹å¤åˆè¡¨å…³ç³»
- * @param [in] allTable : æºè¡¨é›†
- * @param [in] name : è¡¨å
- * @return å­è¡¨æ•°æ®
+ * @brief µİ¹é½¨Á¢¸´ºÏ±í¹ØÏµ
+ * @param [in] allTable : Ô´±í¼¯
+ * @param [in] name : ±íÃû
+ * @return ×Ó±íÊı¾İ
  */
 TableNode::smtTable DataManegement::recursiveLinkTable(TableNode::tableMap &allTable,
                                                        const std::string &tableId)
@@ -1436,7 +1436,7 @@ TableNode::smtTable DataManegement::recursiveLinkTable(TableNode::tableMap &allT
         return TableNode::smtTable();
     }
     size_t count = 0;
-    // å¤åˆè¡¨
+    // ¸´ºÏ±í
     TableNode::smtTable tableNode = itTM->second;
     if (tableNode->isComplex()) {
         ICDMetaData::ruleMap tableRules = tableNode->allRule();
@@ -1445,7 +1445,7 @@ TableNode::smtTable DataManegement::recursiveLinkTable(TableNode::tableMap &allT
         TableNode::smtTable subTable = nullptr;
         for (; itTR != tableRules.end(); ++itTR) {
             ICDMetaData::smtMeta& metaData = itTR->second;
-            // éå¤åˆç±»æ•°æ®
+            // ·Ç¸´ºÏÀàÊı¾İ
             if (nullptr == metaData
                     || IcdDefine::icdComplex != metaData->metaType()) {
                 continue;
@@ -1453,24 +1453,24 @@ TableNode::smtTable DataManegement::recursiveLinkTable(TableNode::tableMap &allT
             if (!(complex = SMT_CONVERT(ICDComplexData, metaData))) {
                 continue;
             }
-            // å¯èƒ½å­˜åœ¨å¤šå¼ å­è¡¨
+            // ¿ÉÄÜ´æÔÚ¶àÕÅ×Ó±í
             QStringList lstName = QString::fromStdString(complex->rule())
                     .split("@", QString::SkipEmptyParts);
             count = size_t(lstName.size());
-            // è¯»å–å­è¡¨æ•°æ®
+            // ¶ÁÈ¡×Ó±íÊı¾İ
             for (size_t i = 0; i < count; ++i) {
                 subTable = recursiveLinkTable(allTable, lstName[int(i)].toStdString());
                 if (nullptr != subTable) {
-                    // å»ºç«‹è¿æ¥
+                    // ½¨Á¢Á¬½Ó
                     complex->addTable(subTable);
-                    // ä»æ€»è¡¨ä¸­åˆ é™¤å­è¡¨
+                    // ´Ó×Ü±íÖĞÉ¾³ı×Ó±í
                     if (!subTable->icdBase().sParentName.empty()) {
                         if ((itTM = allTable.find(subTable->key())) != allTable.end())
                             allTable.erase(itTM);
                     }
                 }
             }
-            // æ›´æ–°è¡¨é•¿åº¦
+            // ¸üĞÂ±í³¤¶È
             if (count > 0) {
                 tableNode->updateLength("");
             }
@@ -1490,23 +1490,23 @@ bool DataManegement::queryDictionary(stQueryDic &data)
     int code = -1;
     stDictionary single;
     switch (data.dicType) {
-    case GlobalDefine::dictCode:   // ç¼–ç 
+    case GlobalDefine::dictCode:   // ±àÂë
         CDictionary::instance().convert2Code(dicName(data.dic),
                                              data.condition,
                                              code);
         data.result = QString::number(code).toStdString();
         break;
-    case GlobalDefine::dictDec:    // æè¿°
+    case GlobalDefine::dictDec:    // ÃèÊö
         CDictionary::instance().convert2Dec(dicName(data.dic),
                                             atoi(data.condition.c_str()),
                                             data.result);
         break;
-    case GlobalDefine::dictSign:   // æ ‡è¯†
+    case GlobalDefine::dictSign:   // ±êÊ¶
         single = CDictionary::instance()
                 .singleItem(dicName(data.dic), atoi(data.condition.c_str()));
         data.result = single.sSign;
         break;
-    case GlobalDefine::dictRemark: // å¤‡æ³¨
+    case GlobalDefine::dictRemark: // ±¸×¢
         single = CDictionary::instance()
                 .singleItem(dicName(data.dic), atoi(data.condition.c_str()));
         data.result = single.sRemark;
@@ -1516,7 +1516,7 @@ bool DataManegement::queryDictionary(stQueryDic &data)
     return true;
 }
 
-// åŠ è½½è§„åˆ™æ•°æ®
+// ¼ÓÔØ¹æÔòÊı¾İ
 bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
                                const QString &condition,
                                bool increment)
@@ -1527,9 +1527,9 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
     }
 
     QStringList items = condition.split("/");
-    // æ ¹æ®æ•°æ®æºçš„ä¸åŒæ¥é‡æ–°è¯»å–æ•°æ®
+    // ¸ù¾İÊı¾İÔ´µÄ²»Í¬À´ÖØĞÂ¶ÁÈ¡Êı¾İ
     if (GlobalDefine::dsDatabase == q_dataSource) {
-        // æ•°æ®æºä¸ºæ•°æ®åº“
+        // Êı¾İÔ´ÎªÊı¾İ¿â
         switch (items.size()) {
         case 1:
             result = loadTypeRule(items.at(0).toInt(), increment);
@@ -1544,7 +1544,7 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
             break;
         }
     } else if (GlobalDefine::dsFile == q_dataSource) {
-        // æ•°æ®æºä¸ºæ–‡ä»¶   // åŠ è½½æ–‡ä»¶æ•°æ®
+        // Êı¾İÔ´ÎªÎÄ¼ş   // ¼ÓÔØÎÄ¼şÊı¾İ
         Json::Value config;
         config["sourceType"] = "file";
         config["filePath"] = q_defaultPath;
@@ -1554,16 +1554,16 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
         }
         Icd::VehiclePtr vehicle;
         Icd::VehiclePtrArray vehicles;
-        // è§£ææ•°æ®
+        // ½âÎöÊı¾İ
         switch (items.size()) {
-        case 1: // æœºå‹
+        case 1: // »úĞÍ
         {
             if (!parser->parse(items.first().toStdString(), vehicle, Icd::ObjectItem)) {
                 break;
             }
             break;
         }
-        case 2: // ç³»ç»Ÿ
+        case 2: // ÏµÍ³
         {
             Icd::SystemPtr system(new Icd::System());
             if (!parser->parse(items[0].toStdString(),
@@ -1575,7 +1575,7 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
             vehicle->appendSystem(system);
             break;
         }
-        case 3: // è¡¨
+        case 3: // ±í
         {
             Icd::TablePtr table(new Icd::Table());
             if (!parser->parse(items[0].toStdString(),
@@ -1600,7 +1600,7 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
         }
 
         vehicles.push_back(vehicle);
-        // è½¬æ¢æ•°æ®
+        // ×ª»»Êı¾İ
         Json::Value config2(Json::objectValue);
         Icd::SqlParser sqlParser(config2);
         DMSpace::_vectorPS infrastructure;
@@ -1633,7 +1633,7 @@ bool DataManegement::loadRules(PlaneNode::smtPlane &plane,
     return result;
 }
 
-// å¸è½½è§„åˆ™æ•°æ®
+// Ğ¶ÔØ¹æÔòÊı¾İ
 void DataManegement::unLoadRules(const QString &condition)
 {
     QStringList items = condition.split("/");
@@ -1648,17 +1648,17 @@ void DataManegement::unLoadRules(const QString &condition)
     }
 }
 
-// ä¿®æ”¹æ‰€æœ‰æœºå‹æ•°æ®
+// ĞŞ¸ÄËùÓĞ»úĞÍÊı¾İ
 bool DataManegement::modifyAllKC(const std::vector<PlaneNode::smtPlane> &planes)
 {
     q_planes = planes;
     return true;
 }
 
-// ä¿å­˜æœºå‹æ•°æ®
+// ±£´æ»úĞÍÊı¾İ
 bool DataManegement::savePlane(const stPlane &plane)
 {
-    // ä¿å­˜å†…å­˜
+    // ±£´æÄÚ´æ
     PlaneNode::smtPlane data = planeNode(plane.nCode);
     if (data) {
         data->setPlane(plane);
@@ -1671,7 +1671,7 @@ bool DataManegement::savePlane(const stPlane &plane)
 
 bool DataManegement::deletePlane(const std::vector<int> &keys)
 {
-    // åˆ é™¤å†…å­˜
+    // É¾³ıÄÚ´æ
     const size_t count = keys.size();
     for (size_t i = 0; i < count; ++i) {
         deleteOneKC(keys.at(i));
@@ -1680,10 +1680,10 @@ bool DataManegement::deletePlane(const std::vector<int> &keys)
     return true;
 }
 
-// ä¿å­˜ç³»ç»Ÿæ•°æ®
+// ±£´æÏµÍ³Êı¾İ
 bool DataManegement::saveSystem(int plane, const std::vector<stSystem>& system)
 {
-    // ä¿å­˜å†…å­˜
+    // ±£´æÄÚ´æ
     const size_t count = system.size();
     PlaneNode::smtPlane smtPlane = planeNode(plane);
     if (!smtPlane) {
@@ -1702,7 +1702,7 @@ bool DataManegement::saveSystem(int plane, const std::vector<stSystem>& system)
     return true;
 }
 
-// ä¿®æ”¹ç³»ç»Ÿæ•°æ®
+// ĞŞ¸ÄÏµÍ³Êı¾İ
 bool DataManegement::modifySystem(int plane, const SystemNode::smtSystem &system)
 {
     PlaneNode::smtPlane smtPlane = planeNode(plane);
@@ -1714,10 +1714,10 @@ bool DataManegement::modifySystem(int plane, const SystemNode::smtSystem &system
     return true;
 }
 
-// åˆ é™¤ç³»ç»Ÿæ•°æ®
+// É¾³ıÏµÍ³Êı¾İ
 bool DataManegement::deleteSystem(int plane, const std::vector<int>& system)
 {
-    // åˆ é™¤å†…å­˜
+    // É¾³ıÄÚ´æ
     PlaneNode::smtPlane smtPlane = planeNode(plane);
     if (!smtPlane) {
         return false;
@@ -1727,10 +1727,10 @@ bool DataManegement::deleteSystem(int plane, const std::vector<int>& system)
     return true;
 }
 
-// ä¿å­˜ICDè¡¨æ•°æ®
+// ±£´æICD±íÊı¾İ
 bool DataManegement::saveTable(const QString &keys, const std::vector<stICDBase> &tables)
 {
-    // ä¿å­˜å†…å­˜
+    // ±£´æÄÚ´æ
     const size_t count = tables.size();
     QStringList keyLst = keys.split("/");
     int planeID = keyLst.first().toInt();
@@ -1756,11 +1756,11 @@ bool DataManegement::saveTable(const QString &keys, const std::vector<stICDBase>
     return true;
 }
 
-// ä¿®æ”¹ICDè¡¨æ•°æ®
+// ĞŞ¸ÄICD±íÊı¾İ
 bool DataManegement::modifyTable(const QString &keys,
                                  const TableNode::smtTable &table)
 {
-    // ä¿å­˜å†…å­˜
+    // ±£´æÄÚ´æ
     QStringList keyLst = keys.split("/");
     int planeID = keyLst.takeFirst().toInt();
     int systemID = keyLst.takeFirst().toInt();
@@ -1777,9 +1777,9 @@ bool DataManegement::modifyTable(const QString &keys,
     if (!smtTable) {
         return false;
     }
-    if (keyLst.empty()) {   // é¡¶å±‚è¡¨
+    if (keyLst.empty()) {   // ¶¥²ã±í
         system->addTable(table);
-    } else {    // å­è¡¨
+    } else {    // ×Ó±í
         int id = keyLst.takeLast().toInt();
         if (!keyLst.empty()) {
             if (!(smtTable = smtTable->subTable(keyLst.join("/").toStdString()))) {
@@ -1797,7 +1797,7 @@ bool DataManegement::modifyTable(const QString &keys,
     return true;
 }
 
-// åˆ é™¤ICDè¡¨æ•°æ®
+// É¾³ıICD±íÊı¾İ
 bool DataManegement::deleteTable(const QString &keys, const std::vector<std::string>& tables)
 {
     bool result = false;
@@ -1810,20 +1810,20 @@ bool DataManegement::deleteTable(const QString &keys, const std::vector<std::str
     PlaneNode::smtPlane plane = planeNode(planeID);
     SystemNode::smtSystem system;
     std::vector<std::string> deleteTables;
-    // æŸ¥è¯¢å­è¡¨
+    // ²éÑ¯×Ó±í
     if (!plane) {
         return false;
     }
     if (!(system = plane->system(systemID))) {
         return false;
     }
-    // åˆ é™¤å†…å­˜
+    // É¾³ıÄÚ´æ
     system->deleteTable(tables);
 
     return true;
 }
 
-// ä¿å­˜è§„åˆ™æ•°æ®
+// ±£´æ¹æÔòÊı¾İ
 int DataManegement::saveRule(const QString &keys, const ICDMetaData::smtMeta &meta)
 {
     int result = 0;
@@ -1842,14 +1842,14 @@ int DataManegement::saveRule(const QString &keys, const ICDMetaData::smtMeta &me
     if (!table) {
         return result;
     }
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         if (!(table = table->subTable(keyLst.join("/").toStdString()))) {
             return result;
         }
     }
-    // å¦‚æœæ˜¯å¸§è¯†åˆ«ç ï¼Œå…ˆç»‘å®šå¸§æ•°æ®
+    // Èç¹ûÊÇÖ¡Ê¶±ğÂë£¬ÏÈ°ó¶¨Ö¡Êı¾İ
     ICDFrameCodeData::smtFrameCode frameCode = std::dynamic_pointer_cast<ICDFrameCodeData>(meta);
-    if (frameCode) {    // é‡ç½®å¸§æ•°æ®
+    if (frameCode) {    // ÖØÖÃÖ¡Êı¾İ
         std::string code = frameCode->defaultStr();
         if (code.empty()) {
             frameCode->bindData(nullptr);
@@ -1859,22 +1859,22 @@ int DataManegement::saveRule(const QString &keys, const ICDMetaData::smtMeta &me
             frameCode->bindData(complex);
         }
     }
-    bool reorder = false;   // é‡æ–°æ•´ç†æ•°æ®æ ‡å¿—
-    // å¦‚æœä¿®æ”¹æ•°æ®é•¿åº¦ï¼Œå¹¶ä¸”è¯¥æ•°æ®ä¸æ˜¯æœ€åä¸€é¡¹æ•°æ®ï¼Œä¼šå‡ºç°å­—èŠ‚åºå·é”™ä½çš„é—®é¢˜ï¼Œ
-    // æ‰€ä»¥å…ˆå°†åŸå§‹æ•°æ®æ‹·è´ï¼Œä»å¾…ä¿å­˜æ•°æ®åºå·å¼€å§‹ï¼Œé‡æ–°æ•´ç†å­—èŠ‚åºå·ï¼Œå†ä¿å­˜
+    bool reorder = false;   // ÖØĞÂÕûÀíÊı¾İ±êÖ¾
+    // Èç¹ûĞŞ¸ÄÊı¾İ³¤¶È£¬²¢ÇÒ¸ÃÊı¾İ²»ÊÇ×îºóÒ»ÏîÊı¾İ£¬»á³öÏÖ×Ö½ÚĞòºÅ´íÎ»µÄÎÊÌâ£¬
+    // ËùÒÔÏÈ½«Ô­Ê¼Êı¾İ¿½±´£¬´Ó´ı±£´æÊı¾İĞòºÅ¿ªÊ¼£¬ÖØĞÂÕûÀí×Ö½ÚĞòºÅ£¬ÔÙ±£´æ
     ICDMetaData::smtMeta oldMeta = table->rule(meta->serial());
-    if (oldMeta) {  // ä¿®æ”¹
+    if (oldMeta) {  // ĞŞ¸Ä
         if (meta->serial() != table->allRule().rbegin()->first) {
-            // ä¿®æ”¹ä¸­é—´æ•°æ®
+            // ĞŞ¸ÄÖĞ¼äÊı¾İ
             if (meta->byteLength() != oldMeta->byteLength()
                     || meta->length() != oldMeta->length()
                     || meta->metaType() != oldMeta->metaType()) {
-                // æ•°æ®é•¿åº¦å˜æ›´ï¼Œæˆ–åˆ™æ•°æ®ç±»å‹å˜æ›´
+                // Êı¾İ³¤¶È±ä¸ü£¬»òÔòÊı¾İÀàĞÍ±ä¸ü
                 reorder = true;
             } else {
                 ICDBitData::smtBit oldBit = SMT_CONVERT(ICDBitData, oldMeta);
                 ICDBitData::smtBit bit = SMT_CONVERT(ICDBitData, meta);
-                // åˆ¤å®šæ˜¯å¦å˜æ›´äº†å½±å“å­—èŠ‚åºå·çš„å±æ€§
+                // ÅĞ¶¨ÊÇ·ñ±ä¸üÁËÓ°Ïì×Ö½ÚĞòºÅµÄÊôĞÔ
                 if (oldBit) {
                     if (oldBit->start() != bit->start()) {
                         reorder = true;
@@ -1884,21 +1884,21 @@ int DataManegement::saveRule(const QString &keys, const ICDMetaData::smtMeta &me
         }
     }
     if (reorder) {
-        // é‡æ–°æ•´ç†æ•°æ®
+        // ÖØĞÂÕûÀíÊı¾İ
         ICDMetaData::ruleMap rules = table->allRule();
         ICDMetaData::ruleMap::iterator itR = rules.find(meta->serial());
         int index = 0;
         ICDBitData::smtBit bit = nullptr;
         ICDMetaData::smtMeta metaPre = meta;
         ICDBitData::smtBit bitPre = SMT_CONVERT(ICDBitData, metaPre);
-        // ä»ç›®æ ‡æ•°æ®ä¹‹åå¼€å§‹ï¼Œè°ƒæ•´å­—èŠ‚å·
+        // ´ÓÄ¿±êÊı¾İÖ®ºó¿ªÊ¼£¬µ÷Õû×Ö½ÚºÅ
         for (++itR; itR != rules.end(); ++itR) {
             ICDMetaData::smtMeta &smtMeta = itR->second;
             if (!smtMeta) {
                 continue;
             }
             bit = SMT_CONVERT(ICDBitData, smtMeta);
-            // æ›´æ–°å­—èŠ‚åºå·
+            // ¸üĞÂ×Ö½ÚĞòºÅ
             if (bitPre && bit
                     && bitPre->end() < bit->start()) {
                 index = bitPre->index() - bitPre->start() / 8 + bit->start() / 8;
@@ -1907,30 +1907,30 @@ int DataManegement::saveRule(const QString &keys, const ICDMetaData::smtMeta &me
                     index = metaPre->index() + metaPre->byteLength();
                 }
                 if (bit) {
-                    index += bit->start() / 8;  // åç§»å­—èŠ‚
+                    index += bit->start() / 8;  // Æ«ÒÆ×Ö½Ú
                 }
             }
             smtMeta->setIndex(index);
             metaPre = smtMeta;
             bitPre = bit;
         }
-        // æ›´æ–°ç›®æ ‡æ•°æ®
+        // ¸üĞÂÄ¿±êÊı¾İ
         table->addRule(meta);
         result = GlobalDefine::special;
-    } else {    // æ–°å¢æˆ–è€…å¹¶æœªå˜æ›´æ•°æ®é•¿åº¦
-        // ä¿å­˜å†…å­˜
+    } else {    // ĞÂÔö»òÕß²¢Î´±ä¸üÊı¾İ³¤¶È
+        // ±£´æÄÚ´æ
         table->addRule(meta);
         result = GlobalDefine::success;
     }
-    // æ›´æ–°è¡¨é•¿åº¦
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    // ¸üĞÂ±í³¤¶È
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         topTable->updateLength(keyLst.join("/").toStdString());
     }
 
     return result;
 }
 
-// ä¿å­˜è§„åˆ™æ•°æ®
+// ±£´æ¹æÔòÊı¾İ
 bool DataManegement::insertRule(const QString &keys,
                                 const ICDMetaData::smtMeta &meta)
 {
@@ -1949,15 +1949,15 @@ bool DataManegement::insertRule(const QString &keys,
     if (!table) {
         return false;
     }
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         table = table->subTable(keyLst.join("/").toStdString());
         if (!table) {
             return false;
         }
     }
-    // å¦‚æœæ˜¯å¸§è¯†åˆ«ç ï¼Œå…ˆç»‘å®šå¸§æ•°æ®
+    // Èç¹ûÊÇÖ¡Ê¶±ğÂë£¬ÏÈ°ó¶¨Ö¡Êı¾İ
     ICDFrameCodeData::smtFrameCode frameCode = SMT_CONVERT(ICDFrameCodeData, meta);
-    if (frameCode) {    // é‡ç½®å¸§æ•°æ®
+    if (frameCode) {    // ÖØÖÃÖ¡Êı¾İ
         std::string code = frameCode->defaultStr();
         if (code.empty()) {
             frameCode->bindData(nullptr);
@@ -1968,24 +1968,24 @@ bool DataManegement::insertRule(const QString &keys,
             frameCode->bindData(complex);
         }
     }
-    // æ’å…¥æ•°æ®ä¼šå‡ºç°å­—èŠ‚åºå·é”™ä½çš„é—®é¢˜ï¼Œæ‰€ä»¥ä»æ’å…¥ä½ç½®å¼€å§‹ï¼Œ
-    // é‡æ–°æ•´ç†å­—èŠ‚åºå·ï¼Œå†ä¿å­˜
+    // ²åÈëÊı¾İ»á³öÏÖ×Ö½ÚĞòºÅ´íÎ»µÄÎÊÌâ£¬ËùÒÔ´Ó²åÈëÎ»ÖÃ¿ªÊ¼£¬
+    // ÖØĞÂÕûÀí×Ö½ÚĞòºÅ£¬ÔÙ±£´æ
     ICDMetaData::ruleMap rules = table->allRule();
-    // è®°å½•æ–°æ•°æ®
+    // ¼ÇÂ¼ĞÂÊı¾İ
     ICDMetaData::smtMeta newData = meta;
     ICDMetaData::smtMeta oldData = nullptr;
     ICDMetaData::ruleMap::iterator itR = rules.find(meta->serial());
     if (itR == rules.end()) {
         return false;
     }
-    // æŸ¥è¯¢æ˜¯å¦æ˜¯bitåˆå¹¶æ•°æ®
+    // ²éÑ¯ÊÇ·ñÊÇbitºÏ²¢Êı¾İ
     if (!(oldData = itR->second)) {
         return false;
     }
     int index = 0;
     ICDBitData::smtBit bit = nullptr;
     ICDBitData::smtBit bitPre = SMT_CONVERT(ICDBitData, newData);
-    // ä»ç›®æ ‡æ•°æ®å¼€å§‹ï¼Œè°ƒæ•´å­—èŠ‚åºå·
+    // ´ÓÄ¿±êÊı¾İ¿ªÊ¼£¬µ÷Õû×Ö½ÚĞòºÅ
     for (; itR != rules.end(); ++itR) {
         if (!(oldData = itR->second)) {
             continue;
@@ -1993,36 +1993,36 @@ bool DataManegement::insertRule(const QString &keys,
         bit = SMT_CONVERT(ICDBitData, oldData);
         if (bitPre && bit
                 && bitPre->end() < bit->start()) {
-            // å½“å‰é¡¹èƒ½å¤Ÿå‘å‰ä¸€é¡¹åˆå¹¶ï¼Œä¸å¢åŠ åç§»é‡
+            // µ±Ç°ÏîÄÜ¹»ÏòÇ°Ò»ÏîºÏ²¢£¬²»Ôö¼ÓÆ«ÒÆÁ¿
             index = bitPre->index() - bitPre->start() / 8 + bit->start() / 8;
         } else {
             index = newData->index() + newData->byteLength();
             if (bit) {
-                index += bit->start() / 8;  // åç§»å­—èŠ‚
+                index += bit->start() / 8;  // Æ«ÒÆ×Ö½Ú
             }
         }
-        // æ›´æ–°å­—èŠ‚åºå·
+        // ¸üĞÂ×Ö½ÚĞòºÅ
         oldData->setIndex(index);
-        // æ›´æ–°é¡ºåºå·
+        // ¸üĞÂË³ĞòºÅ
         oldData->setSerial(oldData->serial() + 1);
-        // æ›´æ–°map
+        // ¸üĞÂmap
         itR->second = newData;
         newData = oldData;
         bitPre = bit;
     }
-    // ä¿å­˜åŸå§‹çš„æœ€åä¸€é¡¹æ•°æ®
+    // ±£´æÔ­Ê¼µÄ×îºóÒ»ÏîÊı¾İ
     rules[newData->serial()] = newData;
-    // ä¿å­˜å†…å­˜
+    // ±£´æÄÚ´æ
     table->setRule(rules);
-    // æ›´æ–°è¡¨é•¿åº¦
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    // ¸üĞÂ±í³¤¶È
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         topTable->updateLength(keyLst.join("/").toStdString());
     }
 
     return true;
 }
 
-// åˆ é™¤è§„åˆ™æ•°æ®
+// É¾³ı¹æÔòÊı¾İ
 bool DataManegement::deleteRule(const QString &keys,
                                 const std::vector<int> &rules)
 {
@@ -2036,21 +2036,21 @@ bool DataManegement::deleteRule(const QString &keys,
     int planeID = keyLst.takeFirst().toInt();
     int systemID = keyLst.takeFirst().toInt();
     std::string rootParent = keyLst.takeFirst().toStdString();
-    // ç”±äºåˆ é™¤æ•°æ®åï¼Œä¼šå‡ºç°å­—èŠ‚åºå·ä¸è¿ç»­çš„é—®é¢˜ï¼Œæ‰€ä»¥å…ˆå°†åŸå§‹æ•°æ®æ‹·è´ï¼Œ
-    // åˆ é™¤ç›®æ ‡æ•°æ®åï¼Œé‡æ–°æ•´ç†å­—èŠ‚åºå·ï¼Œå†ä¿å­˜
+    // ÓÉÓÚÉ¾³ıÊı¾İºó£¬»á³öÏÖ×Ö½ÚĞòºÅ²»Á¬ĞøµÄÎÊÌâ£¬ËùÒÔÏÈ½«Ô­Ê¼Êı¾İ¿½±´£¬
+    // É¾³ıÄ¿±êÊı¾İºó£¬ÖØĞÂÕûÀí×Ö½ÚĞòºÅ£¬ÔÙ±£´æ
     TableNode::smtTable topTable = rootTable(planeID, systemID, rootParent);
     TableNode::smtTable table = topTable;
     if (!table) {
         return false;
     }
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         if (!(table = table->subTable(keyLst.join("/").toStdString()))) {
             return false;
         }
     }
-    // åˆ é™¤è§„åˆ™
+    // É¾³ı¹æÔò
     table->deleteRule(rules);
-    // æ‰¹é‡åˆ é™¤æˆ–è€…åˆ é™¤çš„æ•°æ®ä¸æ˜¯æœ€åä¸€æ¡æ•°æ®æ—¶ï¼Œè¿›è¡Œé‡æ–°æ•´ç†
+    // ÅúÁ¿É¾³ı»òÕßÉ¾³ıµÄÊı¾İ²»ÊÇ×îºóÒ»ÌõÊı¾İÊ±£¬½øĞĞÖØĞÂÕûÀí
     if (rules.size() > 1
             || (!table->isEmpty()
                 && table->allRule().rbegin()->first != rules[0])) {
@@ -2068,7 +2068,7 @@ bool DataManegement::deleteRule(const QString &keys,
             bit = SMT_CONVERT(ICDBitData, meta);
             if (bitPre && bit
                     && bitPre->end() < bit->start()) {
-                // å½“å‰é¡¹èƒ½å¤Ÿå‘å‰ä¸€é¡¹åˆå¹¶ï¼Œä¸å¢åŠ åç§»é‡
+                // µ±Ç°ÏîÄÜ¹»ÏòÇ°Ò»ÏîºÏ²¢£¬²»Ôö¼ÓÆ«ÒÆÁ¿
                 offset += bit->end() / 8 - bitPre->end() / 8;
             } else {
                 offset += meta->byteLength();
@@ -2080,15 +2080,15 @@ bool DataManegement::deleteRule(const QString &keys,
         }
         table->setRule(newRules);
     }
-    // æ›´æ–°è¡¨é•¿åº¦
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    // ¸üĞÂ±í³¤¶È
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         topTable->updateLength(keyLst.join("/").toStdString());
     }
 
     return true;
 }
 
-// åˆ é™¤å¸§è¯†åˆ«ç å­è¡¨
+// É¾³ıÖ¡Ê¶±ğÂë×Ó±í
 bool DataManegement::deleteSubTable(const QString &keys,
                                     const std::vector<std::string> &subTables)
 {
@@ -2100,34 +2100,34 @@ bool DataManegement::deleteSubTable(const QString &keys,
     int systemID = keyLst.takeFirst().toInt();
     int serial = keyLst.takeLast().toInt();
     std::string rootParent = keyLst.takeFirst().toStdString();
-    // æŸ¥è¯¢å­è¡¨
+    // ²éÑ¯×Ó±í
     TableNode::smtTable topTable = rootTable(planeID, systemID, rootParent);
     TableNode::smtTable table = topTable;
     if (!table) {
         return false;
     }
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         if (!(table = table->subTable(keyLst.join("/").toStdString()))) {
             return false;
         }
     }
-    // æŸ¥è¯¢å¸§æ•°æ®
+    // ²éÑ¯Ö¡Êı¾İ
     ICDComplexData::smtComplex complex
             = std::dynamic_pointer_cast<ICDComplexData>(table->rule(serial));
     if (!complex) {
         return false;
     }
-    // åˆ é™¤å†…å­˜
+    // É¾³ıÄÚ´æ
     complex->deleteTable(subTables);
-    // æ›´æ–°è¡¨é•¿åº¦
-    if (keyLst.size() > 0) {    // å­è¡¨æ•°æ®
+    // ¸üĞÂ±í³¤¶È
+    if (keyLst.size() > 0) {    // ×Ó±íÊı¾İ
         topTable->updateLength(keyLst.join("/").toStdString());
     }
 
     return true;
 }
 
-// æŸ¥è¯¢å†…å­˜æ•°æ®
+// ²éÑ¯ÄÚ´æÊı¾İ
 JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -2146,15 +2146,15 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
     QStringList keyList = keys->split("/", QString::SkipEmptyParts);
     if (keyList.empty()) {
         return -1;
-    } else if (1 == keyList.size()) {   // æœºå‹
+    } else if (1 == keyList.size()) {   // »úĞÍ
         *element = planeNode(keyList.first().toInt());
-    } else if (2 == keyList.size()) {   // ç³»ç»Ÿ
+    } else if (2 == keyList.size()) {   // ÏµÍ³
         PlaneNode::smtPlane plane = planeNode(keyList.takeFirst().toInt());
         if (!plane) {
             return -1;
         }
         *element = plane->system(keyList.takeFirst().toInt());
-    } else if (3 == keyList.size()) {  // è¡¨
+    } else if (3 == keyList.size()) {  // ±í
         PlaneNode::smtPlane plane = planeNode(keyList.takeFirst().toInt());
         if (!plane) {
             return -1;
@@ -2164,7 +2164,7 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
             return -1;;
         }
         *element = system->table(keyList.takeFirst().toStdString());
-    } else {    // è§„åˆ™
+    } else {    // ¹æÔò
         PlaneNode::smtPlane plane = planeNode(keyList.takeFirst().toInt());
         if (!plane) {
             return -1;;
@@ -2179,10 +2179,10 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
         }
         QString lastItem = keyList.last();
         if (lastItem.contains("ICDTable_")) {
-            // å­è¡¨
+            // ×Ó±í
             *element = table->subTable(keyList.join("/").toStdString());
         } else {
-            // è§„åˆ™æ•°æ®
+            // ¹æÔòÊı¾İ
             keyList.takeLast();
             if (!keyList.isEmpty()) {
                 table = table->subTable(keyList.join("/").toStdString());
@@ -2190,7 +2190,7 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
                     return -1;;
                 }
             }
-            // è§„åˆ™æ•°æ®
+            // ¹æÔòÊı¾İ
             *element = table->rule(lastItem.toInt());
         }
     }
@@ -2198,7 +2198,7 @@ JLRESULT DataManegement::querySingleElement(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢åŠ è½½æ•°æ®æº
+// ²éÑ¯¼ÓÔØÊı¾İÔ´
 JLRESULT DataManegement::queryDataSource(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -2212,7 +2212,7 @@ JLRESULT DataManegement::queryDataSource(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢å­è¡¨ä¸Šé™
+// ²éÑ¯×Ó±íÉÏÏŞ
 JLRESULT DataManegement::queryMaxTableCount(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -2226,7 +2226,7 @@ JLRESULT DataManegement::queryMaxTableCount(const Icd::JNEvent &event)
     return 0;
 }
 
-// ä¿å­˜æ‹·è´æ•°æ®
+// ±£´æ¿½±´Êı¾İ
 JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -2242,7 +2242,7 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
     if (!result) {
         return -1;
     }
-    // æŸ¥è¯¢æºæ•°æ®
+    // ²éÑ¯Ô´Êı¾İ
     ICDElement::smtElement element;
     QVariantList newArgs;
     newArgs.append(qVariantFromValue(static_cast<void*>(&element)));
@@ -2265,11 +2265,11 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
         if (!lst.empty()) {
             subKey = lst.join("/").toStdString();
         }
-        // æºæ•°æ®ä¸ºè§„åˆ™ç±»å‹æ—¶ï¼Œæœ‰å¯èƒ½æ˜¯å­è¡¨ï¼Œä¹Ÿæœ‰å¯èƒ½æ˜¯è§„åˆ™
+        // Ô´Êı¾İÎª¹æÔòÀàĞÍÊ±£¬ÓĞ¿ÉÄÜÊÇ×Ó±í£¬Ò²ÓĞ¿ÉÄÜÊÇ¹æÔò
         lastItem = dest.mid(int(dest.lastIndexOf("/")) + int(strlen("/")));
-        if (lastItem.contains("ICDTable_")) { // å­è¡¨
+        if (lastItem.contains("ICDTable_")) { // ×Ó±í
             lastItem.clear();
-        } else {    // è§„åˆ™
+        } else {    // ¹æÔò
             dest.truncate(dest.lastIndexOf("/"));
         }
     }
@@ -2283,13 +2283,13 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
             return -1;;
         }
     }
-    // æ›´æ–°æ•°æ®
+    // ¸üĞÂÊı¾İ
     if (GlobalDefine::ntVehicle == element->objectType()) {
         QString id;
-        // æœºå‹
+        // »úĞÍ
         const stPlane &base = *reinterpret_cast<stPlane *>(params->at(1));
         id = jnotify->send("edit.queryId", QVariant(int(GlobalDefine::ntVehicle))).toString();
-        // å…‹éš†æ•°æ®
+        // ¿ËÂ¡Êı¾İ
         PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, element)->clone();
         if (!plane) {
             return -1;;
@@ -2300,7 +2300,7 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
         *result = plane;
     } else if (GlobalDefine::ntSystem == element->objectType()) {
         QString id = jnotify->send("edit.queryId", int(GlobalDefine::ntSystem)).toString();
-        // ç³»ç»Ÿ
+        // ÏµÍ³
         const stSystem &base = *reinterpret_cast<stSystem *>(params->at(1));
         SystemNode::smtSystem system = SMT_CONVERT(SystemNode, element)->clone();
         PlaneNode::smtPlane plane = SMT_CONVERT(PlaneNode, desElement);
@@ -2314,13 +2314,13 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
         plane->addSystem(system);
         *result = system;
     } else if (GlobalDefine::ntTable == element->objectType()) {
-        // è¡¨
+        // ±í
         const stICDBase &base = *reinterpret_cast<stICDBase *>(params->at(1));
         TableNode::smtTable table = SMT_CONVERT(TableNode, element)->clone();
         if (!table) {
             return -1;;
         }
-        if (lastItem.isEmpty()) {   // é¡¶å±‚è¡¨
+        if (lastItem.isEmpty()) {   // ¶¥²ã±í
             SystemNode::smtSystem system = SMT_CONVERT(SystemNode, desElement);
             if (!system) {
                 return -1;;
@@ -2335,7 +2335,7 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
             table->setICDBase(icdBase);
             copyTableData(table, icdBase);
             system->addTable(table);
-        } else {    // å­è¡¨
+        } else {    // ×Ó±í
             TableNode::smtTable destTable = SMT_CONVERT(TableNode, desElement);
             if (!destTable) {
                 return -1;;
@@ -2352,14 +2352,14 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
             table->setICDBase(icdBase);
             copyTableData(table, icdBase);
             complex->addTable(table);
-            // æ›´æ–°è¡¨é•¿åº¦
+            // ¸üĞÂ±í³¤¶È
             if (topTable) {
                 topTable->updateLength(subKey);
             }
         }
         *result = table;
     } else if (GlobalDefine::ntRule == element->objectType()) {
-        // è§„åˆ™
+        // ¹æÔò
         ICDCommonData::smtCommon data =
                 SMT_CONVERT(ICDCommonData, *reinterpret_cast<ICDMetaData::smtMeta *>(params->at(1)));
         ICDMetaData::smtMeta meta = SMT_CONVERT(ICDMetaData, element);
@@ -2368,7 +2368,7 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
             return -1;;
         }
         ICDCommonData::smtCommon common;
-        // å¦‚æœç”¨æˆ·æ”¹å˜æ•°æ®ç±»å‹ï¼Œåˆ™ä½¿ç”¨ç•Œé¢æ•°æ®ï¼Œå¦åˆ™ä½¿ç”¨æºæ•°æ®
+        // Èç¹ûÓÃ»§¸Ä±äÊı¾İÀàĞÍ£¬ÔòÊ¹ÓÃ½çÃæÊı¾İ£¬·ñÔòÊ¹ÓÃÔ´Êı¾İ
         if (data->type() == meta->type()) {
             common = SMT_CONVERT(ICDCommonData, meta->clone());
             if (!common) {
@@ -2381,7 +2381,7 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
         }
         table->addRule(common);
         *result = common;
-        // æ›´æ–°è¡¨é•¿åº¦
+        // ¸üĞÂ±í³¤¶È
         if (topTable) {
             topTable->updateLength(subKey);
         }
@@ -2390,11 +2390,11 @@ JLRESULT DataManegement::saveCopyData(const Icd::JNEvent &event)
     return 0;
 }
 
-// å°†å†…å­˜æ•°æ®ä¿å­˜åˆ°æ•°æ®åº“
+// ½«ÄÚ´æÊı¾İ±£´æµ½Êı¾İ¿â
 JLRESULT DataManegement::saveDatabase(const Icd::JNEvent &event)
 {
-    // æŸ¥è¯¢æ•°æ®æºï¼Œå¦‚æœæ˜¯æ–‡ä»¶ï¼Œåˆ™æ•´ç†åˆ°è¡¨ä¸€çº§ï¼Œ
-    // å¦åˆ™ï¼Œæ•´ç†åˆ°ä¿å­˜å±‚çº§ï¼ˆåˆ é™¤å†…å­˜ä¸­ä¸å­˜åœ¨çš„æ•°æ®ï¼‰
+    // ²éÑ¯Êı¾İÔ´£¬Èç¹ûÊÇÎÄ¼ş£¬ÔòÕûÀíµ½±íÒ»¼¶£¬
+    // ·ñÔò£¬ÕûÀíµ½±£´æ²ã¼¶£¨É¾³ıÄÚ´æÖĞ²»´æÔÚµÄÊı¾İ£©
     const QVariantList args = event.argument().toList();
     if (args.count() < 2) {
         return -1;;
@@ -2418,14 +2418,14 @@ JLRESULT DataManegement::saveDatabase(const Icd::JNEvent &event)
     int dataLevel = GlobalDefine::ntUnknown;
 
     if (0 == keyList.size()) {
-    } else if (1 == keyList.size()) {  // ä¿å­˜æœºå‹
+    } else if (1 == keyList.size()) {  // ±£´æ»úĞÍ
         dataLevel = GlobalDefine::ntVehicle;
-    } else if (2 == keyList.size()) {   // ä¿å­˜ç³»ç»Ÿ
+    } else if (2 == keyList.size()) {   // ±£´æÏµÍ³
         dataLevel = GlobalDefine::ntSystem;
-    } else {    // ä¿å­˜è¡¨
+    } else {    // ±£´æ±í
         dataLevel = GlobalDefine::ntTable;
     }
-    // æ„é€ æ•°æ®
+    // ¹¹ÔìÊı¾İ
     if (!generateSavedData(keyList, plane_system, tableRules, *err)) {
         return -1;;
     }
@@ -2449,7 +2449,7 @@ JLRESULT DataManegement::saveDatabase(const Icd::JNEvent &event)
     return 0;
 }
 
-// å°†å†…å­˜æ•°æ®ä¿å­˜åˆ°xmlæ–‡ä»¶
+// ½«ÄÚ´æÊı¾İ±£´æµ½xmlÎÄ¼ş
 JLRESULT DataManegement::saveFile(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -2470,7 +2470,7 @@ JLRESULT DataManegement::saveFile(const Icd::JNEvent &event)
     DMSpace::_vectorIcdTR tableRules;
     QStringList keyList = keys.split("/", QString::SkipEmptyParts);
 
-    // æ„é€ æ•°æ®
+    // ¹¹ÔìÊı¾İ
     if (!generateSavedData(keyList, plane_system, tableRules, *err)) {
         if (err->isEmpty()) {
             *err = tr("Parse cache data failure!");
@@ -2482,14 +2482,14 @@ JLRESULT DataManegement::saveFile(const Icd::JNEvent &event)
     Icd::VehiclePtrArray vehicles;
     Json::Value configSql(Json::objectValue);
     Icd::SqlParser sqlParser(configSql);
-    // è½¬æ¢æ•°æ®
+    // ×ª»»Êı¾İ
     datas.push_back(int(&plane_system));
     datas.push_back(int(&tableRules));
     if (!sqlParser.convert2Core(datas, vehicles)) {
         *err = tr("Parse cache data failure!");
         return -1;;
     }
-    // åŠ è½½æ–‡ä»¶æ•°æ®
+    // ¼ÓÔØÎÄ¼şÊı¾İ
     Json::Value config;
     config["sourceType"] = "file";
     config["filePath"] = file.toStdString();
@@ -2497,7 +2497,7 @@ JLRESULT DataManegement::saveFile(const Icd::JNEvent &event)
     if (!parser) {
         return -1;
     }
-    // ä¿å­˜æ•°æ®
+    // ±£´æÊı¾İ
     if (!parser->save(vehicles)) {
         *err = tr("Write file failure!");
     }
@@ -2505,7 +2505,7 @@ JLRESULT DataManegement::saveFile(const Icd::JNEvent &event)
     return 0;
 }
 
-// æ›´æ–°æ•°æ®åº“é…ç½®ä¿¡æ¯
+// ¸üĞÂÊı¾İ¿âÅäÖÃĞÅÏ¢
 JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
 {
     Q_UNUSED(event);
@@ -2518,7 +2518,7 @@ JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
 
     if (sourceType == "sql") {
         q_dataSource = GlobalDefine::dsDatabase;
-        // é‡æ–°åˆå§‹åŒ–æ•°æ®åº“
+        // ÖØĞÂ³õÊ¼»¯Êı¾İ¿â
         if (!q_dbaccess) {
             q_dbaccess = new DBAccess();
         }
@@ -2527,7 +2527,7 @@ JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
                                   q_dbaccess->lastError().c_str());
             return -1;
         }
-        // å¦‚æœæ•°æ®æºä¸ºæ•°æ®åº“ï¼ŒåŠ è½½åŸºç¡€æ•°æ®
+        // Èç¹ûÊı¾İÔ´ÎªÊı¾İ¿â£¬¼ÓÔØ»ù´¡Êı¾İ
         std::string error;
         loadBaseData(error);
     } else if (sourceType == "file") {
@@ -2551,7 +2551,7 @@ JLRESULT DataManegement::dataSourceChanged(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢æ•°æ®åº“é”™è¯¯ä¿¡æ¯
+// ²éÑ¯Êı¾İ¿â´íÎóĞÅÏ¢
 JLRESULT DataManegement::queryDBError(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -2567,7 +2567,7 @@ JLRESULT DataManegement::queryDBError(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢é¡¶å±‚è¡¨
+// ²éÑ¯¶¥²ã±í
 TableNode::smtTable DataManegement::rootTable(int plane, int system, const std::string &table)
 {
     TableNode::smtTable result;
@@ -2583,21 +2583,21 @@ TableNode::smtTable DataManegement::rootTable(int plane, int system, const std::
     return (result = smtSystem->table(table));
 }
 
-// æŸ¥è¯¢å­—å…¸å
+// ²éÑ¯×ÖµäÃû
 std::string DataManegement::dicName(GlobalDefine::DictionaryIndex dic) const
 {
     std::string dicName;
     switch (dic) {
-    case GlobalDefine::dicDataType:    // æ•°æ®ç±»å‹
+    case GlobalDefine::dicDataType:    // Êı¾İÀàĞÍ
         dicName = DBAccess::tableName(DataBaseDefine::dbDataType);
         break;
-    case GlobalDefine::dicPowerType:   // æƒé™ç±»å‹
+    case GlobalDefine::dicPowerType:   // È¨ÏŞÀàĞÍ
         dicName = DBAccess::tableName(DataBaseDefine::dbPowerType);
         break;
-    case GlobalDefine::dicArrayType:   // æ•°ç»„ç±»å‹
+    case GlobalDefine::dicArrayType:   // Êı×éÀàĞÍ
         dicName = DBAccess::tableName(DataBaseDefine::dbArrayType);
         break;
-    case GlobalDefine::dicCheckType:   // æ ¡éªŒç±»å‹
+    case GlobalDefine::dicCheckType:   // Ğ£ÑéÀàĞÍ
         dicName = DBAccess::tableName(DataBaseDefine::dbCheckType);
         break;
     default:break;
@@ -2606,7 +2606,7 @@ std::string DataManegement::dicName(GlobalDefine::DictionaryIndex dic) const
     return dicName;
 }
 
-// æ„é€ éœ€è¦ä¿å­˜çš„æ•°æ®
+// ¹¹ÔìĞèÒª±£´æµÄÊı¾İ
 bool DataManegement::generateSavedData(QStringList &keyList,
                                        DMSpace::_vectorPS &plane_system,
                                        DMSpace::_vectorIcdTR &tableRules,
@@ -2617,19 +2617,19 @@ bool DataManegement::generateSavedData(QStringList &keyList,
         if (!generateAll(plane_system, tables, err)) {
             return false;
         }
-    } else if (1 == keyList.size()) {  // ä¿å­˜æœºå‹
+    } else if (1 == keyList.size()) {  // ±£´æ»úĞÍ
         if (!generatePlane(keyList.first().toInt(),
                            plane_system, tables, err)) {
             return false;
         }
-    } else if (2 == keyList.size()) {   // ä¿å­˜ç³»ç»Ÿ
+    } else if (2 == keyList.size()) {   // ±£´æÏµÍ³
         int planeID = keyList.first().toInt();
         int systemID = keyList.last().toInt();
         if (!generateSystem(planeID, systemID,
                             plane_system, tables, err)) {
             return false;
         }
-    } else {    // ä¿å­˜è¡¨
+    } else {    // ±£´æ±í
         int planeID = keyList.takeFirst().toInt();
         int systemID = keyList.takeFirst().toInt();
         std::string rootParent = keyList.takeFirst().toStdString();
@@ -2664,13 +2664,13 @@ bool DataManegement::generateAll(DMSpace::_vectorPS &plane_system,
         systemVector = smtPlane->allSystem();
         const size_t bound = systemVector.size();
         for (size_t j = 0; j < bound; ++j) {
-            // ç³»ç»Ÿ
+            // ÏµÍ³
             if (!(system = systemVector[j])) {
                 continue;
             }
             systems.push_back(system->system());
             tableVector = system->allTable();
-            // è¡¨
+            // ±í
             const size_t size = tableVector.size();
             for (size_t k = 0; k < size; ++k) {
                 table = tableVector[k];
@@ -2735,13 +2735,13 @@ bool DataManegement::generatePlane(int planeId,
     const size_t bound = systemVector.size();
     std::string nameTip;
     for (size_t i = 0; i < bound; ++i) {
-        // ç³»ç»Ÿ
+        // ÏµÍ³
         if (!(system = systemVector[i])) {
             continue;
         }
         systems.push_back(system->system());
         tableVector = system->allTable();
-        // è¡¨
+        // ±í
         const size_t count = tableVector.size();
         for (size_t j = 0; j < count; ++j) {
             if (!(table = tableVector[j])) {
@@ -2799,7 +2799,7 @@ bool DataManegement::generateSystem(int planeId, int systemId, DMSpace::_vectorP
     TableNode::tableVector subTables;
     TableNode::tableVector tableVector = smtSystem->allTable();
     systems.push_back(smtSystem->system());
-    // è¡¨
+    // ±í
     TableNode::smtTable table = nullptr;
     const size_t count = tableVector.size();
     std::string nameTip;
@@ -2884,7 +2884,7 @@ bool DataManegement::generateTable(int planeId,
         return false;
 #endif
     }
-    if (!subId.empty()) {    // å­è¡¨æ•°æ®
+    if (!subId.empty()) {    // ×Ó±íÊı¾İ
         if (!(table = table->subTable(subId))) {
             return false;
         }
@@ -2906,7 +2906,7 @@ bool DataManegement::generateTable(int planeId,
     return true;
 }
 
-// å°†è§„åˆ™å†…å­˜æ•°æ®è½¬æ¢æˆé€šç”¨ç»“æ„
+// ½«¹æÔòÄÚ´æÊı¾İ×ª»»³ÉÍ¨ÓÃ½á¹¹
 DMSpace::_vectorIcdTR DataManegement::convert2TableRules(
         const std::vector<TableNode::smtTable> &tables) const
 {
@@ -2933,11 +2933,11 @@ DMSpace::_vectorIcdTR DataManegement::convert2TableRules(
     return tableRules;
 }
 
-// å°†é€šç”¨ç»“æ„è½¬æ¢æˆè§„åˆ™å†…å­˜æ•°æ®
+// ½«Í¨ÓÃ½á¹¹×ª»»³É¹æÔòÄÚ´æÊı¾İ
 ICDMetaData::ruleMap DataManegement::convert2IcdRules(
         const std::vector<stTableRules> &rules)
 {
-    QMap<int, ICDFrameCodeData::smtFrameCode> codes;    // å¸§è¯†åˆ«ç 
+    QMap<int, ICDFrameCodeData::smtFrameCode> codes;    // Ö¡Ê¶±ğÂë
     ICDMetaData::ruleMap result;
     const size_t count = rules.size();
     for (size_t i = 0; i < count; ++i) {
@@ -2950,7 +2950,7 @@ ICDMetaData::ruleMap DataManegement::convert2IcdRules(
             }
         }
     }
-    // å°†å¸§è¯†åˆ«ç å’Œå¸§æ•°æ®å»ºç«‹è¿æ¥
+    // ½«Ö¡Ê¶±ğÂëºÍÖ¡Êı¾İ½¨Á¢Á¬½Ó
     QMapIterator<int, ICDFrameCodeData::smtFrameCode> itCode = codes;
     ICDMetaData::ruleMap::iterator it = result.end();
     while (itCode.hasNext()) {
@@ -2967,7 +2967,7 @@ ICDMetaData::ruleMap DataManegement::convert2IcdRules(
     return result;
 }
 
-// æ‹·è´æœºå‹æ•°æ®ï¼ˆé‡æ–°å®šä¹‰æ‰€æœ‰è§„åˆ™è¡¨æ ‡è¯†ï¼‰
+// ¿½±´»úĞÍÊı¾İ£¨ÖØĞÂ¶¨ÒåËùÓĞ¹æÔò±í±êÊ¶£©
 bool DataManegement::copyPlaneData(PlaneNode::smtPlane &plane, int planeId)
 {
     if (!plane) {
@@ -2990,7 +2990,7 @@ bool DataManegement::copyPlaneData(PlaneNode::smtPlane &plane, int planeId)
     return true;
 }
 
-// æ‹·è´ç³»ç»Ÿæ•°æ®ï¼ˆé‡æ–°å®šä¹‰æ‰€æœ‰è§„åˆ™è¡¨æ ‡è¯†ï¼‰
+// ¿½±´ÏµÍ³Êı¾İ£¨ÖØĞÂ¶¨ÒåËùÓĞ¹æÔò±í±êÊ¶£©
 bool DataManegement::copySystemData(SystemNode::smtSystem &system,
                                     int planeId, int systemId)
 {
@@ -3019,7 +3019,7 @@ bool DataManegement::copySystemData(SystemNode::smtSystem &system,
     return true;
 }
 
-// æ‹·è´è¡¨æ•°æ®ï¼ˆé‡æ–°å®šä¹‰å­è§„åˆ™è¡¨æ ‡è¯†ï¼‰
+// ¿½±´±íÊı¾İ£¨ÖØĞÂ¶¨Òå×Ó¹æÔò±í±êÊ¶£©
 bool DataManegement::copyTableData(TableNode::smtTable &table, const stICDBase &icdBase)
 {
     if (!table) {
@@ -3033,7 +3033,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table, const stICDBase &
     table->setICDBase(base);
     ICDMetaData::ruleMap rules = table->allRule();
     ICDMetaData::ruleMap::iterator it = rules.begin();
-    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // å¸§è¯†åˆ«ç 
+    std::unordered_map<int, ICDFrameCodeData::smtFrameCode> codes;    // Ö¡Ê¶±ğÂë
     for (; it != rules.end(); ++it) {
         ICDCommonData::smtCommon common = SMT_CONVERT(ICDCommonData, it->second);
         if (common) {
@@ -3045,7 +3045,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table, const stICDBase &
             return false;
         }
     }
-    // å°†å¸§è¯†åˆ«ç å’Œå¸§æ•°æ®å»ºç«‹è¿æ¥
+    // ½«Ö¡Ê¶±ğÂëºÍÖ¡Êı¾İ½¨Á¢Á¬½Ó
     std::unordered_map<int, ICDFrameCodeData::smtFrameCode>::iterator itC;
     for (itC = codes.begin(); itC != codes.end(); ++itC) {
         ICDFrameCodeData::smtFrameCode &frameCode = itC->second;
@@ -3058,7 +3058,7 @@ bool DataManegement::copyTableData(TableNode::smtTable &table, const stICDBase &
     return true;
 }
 
-// æ‹·è´è§„åˆ™æ•°æ®ï¼ˆé‡æ–°å®šä¹‰å­è§„åˆ™è¡¨æ ‡è¯†ï¼‰
+// ¿½±´¹æÔòÊı¾İ£¨ÖØĞÂ¶¨Òå×Ó¹æÔò±í±êÊ¶£©
 bool DataManegement::copyRuleData(const ICDMetaData::smtMeta &meta, const stICDBase &icdBase)
 {
     if (!meta) {
@@ -3090,7 +3090,7 @@ bool DataManegement::copyRuleData(const ICDMetaData::smtMeta &meta, const stICDB
     return true;
 }
 
-// åŠ è½½xmlæ–‡ä»¶ä¿¡æ¯
+// ¼ÓÔØxmlÎÄ¼şĞÅÏ¢
 std::string DataManegement::readXmlFile()
 {
     const Json::Value option = JMain::instance()->option("edit", "parser");

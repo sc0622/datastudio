@@ -1509,7 +1509,7 @@ void JProtoTreeViewPrivate::itemDataItemRightClicked(QStandardItem *item, int de
 
     QMenu menu(this);
 
-    // è·å–æ•°æ®é¡¹ç±»å‹
+    // »ñÈ¡Êı¾İÏîÀàĞÍ
     int dataType = Icd::ItemInvalid;
     const QVariant dataTypeVar = item->data(Icd::TreeDataTypeRole);
     if (dataTypeVar.isValid()) {
@@ -1523,7 +1523,7 @@ void JProtoTreeViewPrivate::itemDataItemRightClicked(QStandardItem *item, int de
         bound = varBound.toBool();
     }
 
-    // æ ¹æ®æ•°æ®é¡¹ç±»å‹è¿›è¡Œç›¸åº”çš„å¤„ç†
+    // ¸ù¾İÊı¾İÏîÀàĞÍ½øĞĞÏàÓ¦µÄ´¦Àí
     switch (dataType) {
     case Icd::ItemHead:
     case Icd::ItemCounter:
@@ -1755,7 +1755,7 @@ bool JProtoTreeViewPrivate::changeChannel(QStandardItem *itemTable)
     } else if (bindTableTypes_ == JProtoTreeView::BindOnlyRecv) {
         oldTable = oldWorker->workerRecv()->table();
     }
-    // å…ˆæ¢å¤çŠ¶æ€
+    // ÏÈ»Ö¸´×´Ì¬
     if (oldTable) {
         restoreChannelItem(itemTable, oldTable);
     }
@@ -1781,7 +1781,7 @@ bool JProtoTreeViewPrivate::changeChannel(QStandardItem *itemTable)
         return true;
     };
 
-    // è®¾ç½®è¡¨é¡¹
+    // ÉèÖÃ±íÏî
     if (bindTableTypes_ == JProtoTreeView::BindOnlySend) {
         table = oldWorker->workerSend()->table();
         if (!table) {
@@ -1905,7 +1905,7 @@ bool JProtoTreeViewPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     }
     //
     TableItemWidget *itemWidget = qobject_cast<TableItemWidget *>(this->itemWidget(itemTable));
-    // å…ˆæ¢å¤çŠ¶æ€
+    // ÏÈ»Ö¸´×´Ì¬
     if (table) {
         restoreChannelItem(itemTable, table);
     }
@@ -1917,7 +1917,7 @@ bool JProtoTreeViewPrivate::bindChannel(QStandardItem *itemTable, const WorkerPt
     if (!table) {
         return false;
     }
-    // è®¾ç½®è¡¨é¡¹
+    // ÉèÖÃ±íÏî
     if (bindTableTypes_ == JProtoTreeView::BindOnlySend) {
         worker->workerSend()->setTable(table);
         if (treeModes_ & JProtoTreeView::TreeModeSimulator) {
@@ -3131,7 +3131,7 @@ bool JProtoTreeViewPrivate::exportData(const QStandardItem *item, bool exportAll
         return false;
     }
 
-    // è·å–æ•°æ®é¡¹ç±»å‹
+    // »ñÈ¡Êı¾İÏîÀàĞÍ
     QStringList filters;
 
     // common

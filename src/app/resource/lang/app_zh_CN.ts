@@ -853,9 +853,8 @@
         <translation>子表数量达到上限，不能再增加！</translation>
     </message>
     <message>
-        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="1589"/>
         <source>Data Item length：%1 B, Defined: %2 B, real: %3 B</source>
-        <translation>数据项长度：%1字节；已定义：%2字节；实际定义：%3字节</translation>
+        <translation type="vanished">数据项长度：%1字节；已定义：%2字节；实际定义：%3字节</translation>
     </message>
     <message>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="1697"/>
@@ -917,6 +916,11 @@ Confirm deletion?</source>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="236"/>
         <source>Not loaded yet and can&apos;t operate</source>
         <translation>尚未加载数据，不能进行操作</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="1589"/>
+        <source>Data Item length��%1 B, Defined: %2 B, real: %3 B</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../module/edit/old/view/DataEditWidget.cpp" line="2628"/>

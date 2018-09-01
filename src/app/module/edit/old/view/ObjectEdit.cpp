@@ -484,27 +484,27 @@ bool ObjectEdit::_validate()
         args.append(qVariantFromValue(reinterpret_cast<void*>(&command)));
         jnotify->send("edit.queryTableInformation", args);
         if (0 == lengthCheck) {
-            return true;    // ä¸è¿›è¡Œé•¿åº¦æ ¡éªŒ
+            return true;    // ²»½øĞĞ³¤¶ÈĞ£Ñé
         }
 
         const bool newItem = (property("option").toInt() == GlobalDefine::optNew);
-        // é•¿åº¦
+        // ³¤¶È
         int remains = 0;
         int offset = 0;
-        // å‰©ä½™å¯ç”¨é•¿åº¦
+        // Ê£Óà¿ÉÓÃ³¤¶È
         args.clear();
         args.append(qVariantFromValue(reinterpret_cast<void*>(&remains)));
         command = "remains";
         args.append(qVariantFromValue(reinterpret_cast<void*>(&command)));
         jnotify->send("edit.queryTableInformation", args);
 
-        // é•¿åº¦åç§»é‡
+        // ³¤¶ÈÆ«ÒÆÁ¿
         args.clear();
         args.append(qVariantFromValue(reinterpret_cast<void*>(&data_)));
         args.append(qVariantFromValue(reinterpret_cast<void*>(&offset)));
         jnotify->send("edit.queryLengthOffset", args);
         if (remains >= offset) {
-            if (newItem && remains < 0) {   // å¦‚æœæ˜¯æ–°å¢ï¼Œéœ€è¦åˆ¤å®šå‰©ä½™é•¿åº¦
+            if (newItem && remains < 0) {   // Èç¹ûÊÇĞÂÔö£¬ĞèÒªÅĞ¶¨Ê£Óà³¤¶È
                 setStatus(tr("Length of planned data is overflow!"));
                 return false;
             }

@@ -384,7 +384,7 @@ void BitValueEdit::enableConnect(bool enabled)
 
 bool BitValueEdit::validate()
 {
-    // æ ¡éªŒä¸Šä¸‹é™ä»¥åŠé»˜è®¤å€¼
+    // Ğ£ÑéÉÏÏÂÏŞÒÔ¼°Ä¬ÈÏÖµ
     if (checkLeftInf_->isChecked()) {
         if (checkRightInf_->isChecked()) {
             if (spinMinimum_->value() > spinMaximum_->value()) {
@@ -395,7 +395,7 @@ bool BitValueEdit::validate()
             } else {
                 spinMinimum_->setProperty("highlight", false);
             }
-            // æ ¡éªŒé»˜è®¤å€¼
+            // Ğ£ÑéÄ¬ÈÏÖµ
             if (spinDefault_->value() < spinMinimum_->value()
                     || spinDefault_->value() > spinMaximum_->value()) {
                 spinDefault_->setFocus();
@@ -407,7 +407,7 @@ bool BitValueEdit::validate()
             }
         } else {
             spinMinimum_->setProperty("highlight", false);
-            // æ ¡éªŒé»˜è®¤å€¼
+            // Ğ£ÑéÄ¬ÈÏÖµ
             if (spinDefault_->value() < spinMinimum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
@@ -417,10 +417,10 @@ bool BitValueEdit::validate()
                 spinDefault_->setProperty("highlight", false);
             }
         }
-    } else {    // æœªå¯ç”¨ä¸‹é™
+    } else {    // Î´ÆôÓÃÏÂÏŞ
         spinMinimum_->setProperty("highlight", false);
-        if (checkRightInf_->isChecked()) {    // å¯ç”¨ä¸Šé™
-            // æ ¡éªŒé»˜è®¤å€¼
+        if (checkRightInf_->isChecked()) {    // ÆôÓÃÉÏÏŞ
+            // Ğ£ÑéÄ¬ÈÏÖµ
             if (spinDefault_->value() > spinMaximum_->value()) {
                 spinDefault_->setFocus();
                 spinDefault_->setProperty("highlight", true);
@@ -431,7 +431,7 @@ bool BitValueEdit::validate()
             }
         }
     }
-    // ç‰¹å¾å€¼
+    // ÌØÕ÷Öµ
     QString value;
     QString desc;
     std::map<double, std::string> values;

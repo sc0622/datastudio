@@ -122,7 +122,7 @@ void LoggingWidget::slotConfirm(bool &result)
         return;
     }
 
-    // å¦‚æœæ˜¯è§„åˆ™æ•°æ®ï¼Œåˆ™é‡æ–°åˆå§‹åŒ–æ•°æ®ç±»å‹ä¸‹æ‹‰æ¡†
+    // Èç¹ûÊÇ¹æÔòÊı¾İ£¬ÔòÖØĞÂ³õÊ¼»¯Êı¾İÀàĞÍÏÂÀ­¿ò
     if (!currentEdit_) {
         return;
     }
@@ -157,7 +157,7 @@ void LoggingWidget::slotCancel()
 void LoggingWidget::slotTypeChanged(int index)
 {
     Q_UNUSED(index);
-    // åŸå§‹æ•°æ®
+    // Ô­Ê¼Êı¾İ
     if (!currentEdit_) {
         return;
     }
@@ -170,7 +170,7 @@ void LoggingWidget::slotTypeChanged(int index)
     bool newData = ((GlobalDefine::dtTotal - GlobalDefine::dtHead) == boxType_->count());
     stTableRules rule = ICDFactory::instance().convert2Rule(smtData);
     int windowType = ObjectEdit::wdItem;
-    // è·å–åŸå§‹æ•°æ®
+    // »ñÈ¡Ô­Ê¼Êı¾İ
     rule.uType = static_cast<unsigned short>(boxType_->currentData().toInt());
     switch (rule.uType) {
     case GlobalDefine::dtHead:
@@ -221,7 +221,7 @@ void LoggingWidget::slotTypeChanged(int index)
         data.type = GlobalDefine::optNew;
     }
 
-    // é‡æ–°åˆ·æ–°ç•Œé¢
+    // ÖØĞÂË¢ĞÂ½çÃæ
     initUIData(windowType, data);
     if (!newData && currentEdit_) {
         currentEdit_->changeType(rule.uType);
@@ -278,7 +278,7 @@ void LoggingWidget::initTypeInfo(const _UIData &data)
     }
     enableConnection(false);
 
-    // åˆå§‹åŒ–ä¸‹æ‹‰æ¡†
+    // ³õÊ¼»¯ÏÂÀ­¿ò
     boxType_->clear();
     for (size_t i = 0; i < count; ++i) {
         const stDictionary &dic = dics.at(i);

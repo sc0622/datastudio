@@ -298,12 +298,12 @@ bool WordGeneratorData::generateVehicle(const VehiclePtr &vehicle, bool exportAl
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // æ ‡é¢˜
+    // ±êÌâ
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(vehicle->name()))
                     .arg(QString::fromStdString(vehicle->objectTypeString()).toUpper()), level);
 
-    // æ­£æ–‡1
+    // ÕýÎÄ1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
@@ -396,12 +396,12 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // æ ‡é¢˜
+    // ±êÌâ
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(system->name()))
                     .arg(QString::fromStdString(system->objectTypeString()).toUpper()), level);
 
-    // æ­£æ–‡1
+    // ÕýÎÄ1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
@@ -511,13 +511,13 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // æ ‡é¢˜
+    // ±êÌâ
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(table->name()))
                     .arg(QString::fromStdString(table->typeName()).section('_', 0, 0).toUpper()),
                     level);
 
-    // æ­£æ–‡1
+    // ÕýÎÄ1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
@@ -530,10 +530,10 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
         selection_->dynamicCall("TypeText(QString)", tableDesc);
         selection_->dynamicCall("TypeParagraph()");
     }
-    // æ­£æ–‡2 - [1]
+    // ÕýÎÄ2 - [1]
     selection_->dynamicCall("TypeText(QString)", QObject::tr("View detail on "));
 
-    // è¡¨å•
+    // ±íµ¥
     QAxObject *axTable = tables_->querySubObject(
                 "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                 ->asVariant(), 1 + table->itemCount(), 5, 1, 2);
@@ -563,7 +563,7 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
     axTable->querySubObject("Columns(int)", 4)->setProperty("Width", 100);  // desc
     axTable->dynamicCall("AutoFitBehavior(int)", 2);
 
-    // æ­£æ–‡2 - [2]
+    // ÕýÎÄ2 - [2]
     selection_->dynamicCall("MoveUp(int,int)", 5, 1);
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
                             QObject::tr("Table"), 3, tables_->property("Count").toInt(),
@@ -584,7 +584,7 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
     //
     ++level;
 
-    // è¡¨ä¿¡æ¯
+    // ±íÐÅÏ¢
     const Icd::ItemPtrArray &items = table->allItem();
     Icd::ItemPtrArray::const_iterator citer = items.cbegin();
     for (; citer != items.cend(); ++citer) {
@@ -691,12 +691,12 @@ bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, int level)
     //
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // æ ‡é¢˜
+    // ±êÌâ
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(item->name()))
                     .arg(QString::fromStdString(item->typeName()).section('_', 0, 0).toUpper()), level);
 
-    // æ­£æ–‡1
+    // ÕýÎÄ1
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", 10);
     QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
@@ -709,10 +709,10 @@ bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, int level)
         selection_->dynamicCall("TypeText(QString)", itemDesc);
         selection_->dynamicCall("TypeParagraph()");
     }
-    // æ­£æ–‡2 - [1]
+    // ÕýÎÄ2 - [1]
     selection_->dynamicCall("TypeText(QString)", QObject::tr("View detail on "));
 
-    // è¡¨å•
+    // ±íµ¥
     QAxObject *axTable = tables_->querySubObject(
                 "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                 ->asVariant(), 2, 5, 1, 2);
@@ -727,7 +727,7 @@ bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, int level)
     axTable->querySubObject("Columns(int)", 4)->setProperty("Width", 100);  // desc
     axTable->dynamicCall("AutoFitBehavior(int)", 2);
 
-    // æ­£æ–‡2 - [2]
+    // ÕýÎÄ2 - [2]
     selection_->dynamicCall("MoveUp(int,int)", 5, 1);
     selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
                             QObject::tr("Table"), 3, tables_->property("Count").toInt(),
@@ -748,7 +748,7 @@ bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, int level)
     //
     ++level;
 
-    // æ•°æ®é¡¹ä¿¡æ¯
+    // Êý¾ÝÏîÐÅÏ¢
     if (!generateItem(item, axTable, 2, level)) {
         return false;
     }
@@ -780,7 +780,7 @@ bool WordGeneratorData::generateContents()
 
 bool WordGeneratorData::generateHeading(const QString &text, int level)
 {
-    // æ ‡é¢˜
+    // ±êÌâ
     QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
     paragraphs->setProperty("OutlineLevel", level);
     QAxObject *listFormat = selection_->querySubObject("Range")->querySubObject("ListFormat");
@@ -1071,7 +1071,7 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
 {
     selection_->dynamicCall("EndKey(int)", 6);
 
-    // æ ‡é¢˜
+    // ±êÌâ
     generateHeading(QString("%1 [%2]")
                     .arg(QString::fromStdString(frameItem->name()))
                     .arg(QString::fromStdString(frameItem->typeName()).section('_', 0, 0).toUpper()),
@@ -1088,7 +1088,7 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
     {
         const Icd::TablePtrMap &tables = frameItem->allTable();
 
-        // æ­£æ–‡1
+        // ÕýÎÄ1
         QAxObject *paragraphs = selection_->querySubObject("Range")->querySubObject("Paragraphs");
         paragraphs->setProperty("OutlineLevel", 10);
         QAxObject *paragraphFormat = selection_->querySubObject("Range")->querySubObject("ParagraphFormat");
@@ -1101,10 +1101,10 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
             selection_->dynamicCall("TypeText(QString)", frameDesc);
             selection_->dynamicCall("TypeParagraph()");
         }
-        // æ­£æ–‡2 - [1]
+        // ÕýÎÄ2 - [1]
         selection_->dynamicCall("TypeText(QString)", QObject::tr("View detail on "));
 
-        // è¡¨å•
+        // ±íµ¥
         QAxObject *axSubTable = tables_->querySubObject(
                     "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                     ->asVariant(), 1 + tables.size(), 5, 1, 2);
@@ -1121,7 +1121,7 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
         axSubTable->querySubObject("Columns(int)", 5)->setProperty("Width", 100);   // desc
         axSubTable->dynamicCall("AutoFitBehavior(int)", 2);
 
-        // æ­£æ–‡2 - [2]
+        // ÕýÎÄ2 - [2]
         selection_->dynamicCall("MoveUp(int,int)", 5, 1);
         selection_->dynamicCall("InsertCrossReference(QString,int,int,boolean,boolean,boolean,QString)",
                                 QObject::tr("Table"), 3, tables_->property("Count").toInt(),

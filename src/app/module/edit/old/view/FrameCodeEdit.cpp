@@ -74,7 +74,7 @@ bool FrameCodeEdit::init()
     QString command("idle");
     args.append(qVariantFromValue(static_cast<void*>(&command)));
     jnotify->send("edit.queryFrameData", args);
-    // å°†å·²ç»‘å®šæ•°æ®åŠ å…¥å¤‡é€‰
+    // ½«ÒÑ°ó¶¨Êý¾Ý¼ÓÈë±¸Ñ¡
     ICDComplexData::smtComplex complex = data()->data();
     if (complex) {
         frame[complex->serial()] = QString::fromStdString(complex->name());

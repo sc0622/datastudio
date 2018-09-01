@@ -75,7 +75,7 @@ bool ICDNavigation::init()
     return true;
 }
 
-// æŸ¥è¯¢èŠ‚ç‚¹æ•°æ®
+// ²éÑ¯½ÚµãÊı¾İ
 JLRESULT ICDNavigation::queryNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -97,7 +97,7 @@ JLRESULT ICDNavigation::queryNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢å½“å‰èŠ‚ç‚¹åŠç›´å±çˆ¶èŠ‚ç‚¹çš„å…³é”®ç é›†
+// ²éÑ¯µ±Ç°½Úµã¼°Ö±Êô¸¸½ÚµãµÄ¹Ø¼üÂë¼¯
 JLRESULT ICDNavigation::queryNodeKeys(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -115,7 +115,7 @@ JLRESULT ICDNavigation::queryNodeKeys(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢èŠ‚ç‚¹åŠ è½½çŠ¶æ€
+// ²éÑ¯½Úµã¼ÓÔØ×´Ì¬
 JLRESULT ICDNavigation::queryNodeFlag(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -137,7 +137,7 @@ JLRESULT ICDNavigation::queryNodeFlag(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢èŠ‚ç‚¹é¡¶å±‚è¡¨
+// ²éÑ¯½Úµã¶¥²ã±í
 JLRESULT ICDNavigation::queryTopTable(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -155,7 +155,7 @@ JLRESULT ICDNavigation::queryTopTable(const Icd::JNEvent &event)
     return 0;
 }
 
-// æŸ¥è¯¢åˆ†ç»„ID
+// ²éÑ¯·Ö×éID
 JLRESULT ICDNavigation::queryID(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -173,7 +173,7 @@ JLRESULT ICDNavigation::queryID(const Icd::JNEvent &event)
     return 0;
 }
 
-// æ›´æ–°èŠ‚ç‚¹æ•°æ®
+// ¸üĞÂ½ÚµãÊı¾İ
 JLRESULT ICDNavigation::updateNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -195,7 +195,7 @@ JLRESULT ICDNavigation::updateNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// æ’å…¥èŠ‚ç‚¹æ•°æ®
+// ²åÈë½ÚµãÊı¾İ
 JLRESULT ICDNavigation::insertNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -217,7 +217,7 @@ JLRESULT ICDNavigation::insertNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// åˆ é™¤èŠ‚ç‚¹
+// É¾³ı½Úµã
 JLRESULT ICDNavigation::deleteNode(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -239,7 +239,7 @@ JLRESULT ICDNavigation::deleteNode(const Icd::JNEvent &event)
     return 0;
 }
 
-// é‡æ–°è°ƒæ•´èŠ‚ç‚¹é¡ºåº
+// ÖØĞÂµ÷Õû½ÚµãË³Ğò
 JLRESULT ICDNavigation::reorderNodeData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -262,7 +262,7 @@ JLRESULT ICDNavigation::reorderNodeData(const Icd::JNEvent &event)
     return 0;
 }
 
-// ä¿å­˜ç²˜è´´æ•°æ®
+// ±£´æÕ³ÌùÊı¾İ
 JLRESULT ICDNavigation::savePastedData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -285,7 +285,7 @@ JLRESULT ICDNavigation::savePastedData(const Icd::JNEvent &event)
     return 0;
 }
 
-// ä¿å­˜æ•°æ®åˆ°æ•°æ®æº
+// ±£´æÊı¾İµ½Êı¾İÔ´
 JLRESULT ICDNavigation::saveMemoryData(const Icd::JNEvent &event)
 {
     const QVariantList args = event.argument().toList();
@@ -318,7 +318,7 @@ JLRESULT ICDNavigation::saveMemoryData(const Icd::JNEvent &event)
     return 0;
 }
 
-// é‡æ–°åŠ è½½ç•Œé¢æ•°æ®
+// ÖØĞÂ¼ÓÔØ½çÃæÊı¾İ
 JLRESULT ICDNavigation::reloadUiData(const Icd::JNEvent &event)
 {
     Q_UNUSED(event);
@@ -333,14 +333,14 @@ JLRESULT ICDNavigation::reloadUiData(const Icd::JNEvent &event)
     return 0;
 }
 
-// æ¨¡å¼åˆ‡æ¢
+// Ä£Ê½ÇĞ»»
 JLRESULT ICDNavigation::onModuleChanged(const Icd::JNEvent &event)
 {
     Q_UNUSED(event);
     return 0;
 }
 
-// é€€å‡ºç³»ç»Ÿ
+// ÍË³öÏµÍ³
 JLRESULT ICDNavigation::onSystemQuit(const Icd::JNEvent &event)
 {
     Q_UNUSED(event);
@@ -353,7 +353,7 @@ JLRESULT ICDNavigation::onSystemQuit(const Icd::JNEvent &event)
         return -1;
     }
 
-    // æ•°æ®å˜æ›´å°šæœªä¿å­˜
+    // Êı¾İ±ä¸üÉĞÎ´±£´æ
     int option = QMessageBox::warning(
         this,
         tr("Quit"),
@@ -363,14 +363,14 @@ JLRESULT ICDNavigation::onSystemQuit(const Icd::JNEvent &event)
         tr("Cancel"), 1);
     int result = -1;
     switch (option) {
-    case 0:     // æ³¨é”€ï¼ˆé‡å¯ï¼‰
+    case 0:     // ×¢Ïú£¨ÖØÆô£©
         result = -1;
         break;
-    case 1:     // é€€å‡º
+    case 1:     // ÍË³ö
         result = -1;
         break;
-    case 2:     // å–æ¶ˆ
-    default:    // å¿½ç•¥
+    case 2:     // È¡Ïû
+    default:    // ºöÂÔ
         result = -1;
         break;
     }
