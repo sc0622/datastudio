@@ -195,6 +195,9 @@ bool JSON_API merge(const std::string &filePath, const std::string &path,
 
 bool JSON_API merge(const Value &source, Value &target);
 
+std::string JSON_API fromJson(const std::string &text);
+std::string JSON_API toJson(const std::string &text);
+
 // class Serializable
 
 class JSON_API Serializable

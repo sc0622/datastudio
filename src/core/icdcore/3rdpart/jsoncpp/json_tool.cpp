@@ -19,6 +19,20 @@
 
 namespace Json {
 
+std::string &replaceString(std::string &str, const std::string &old_str,
+                           const std::string &new_str)
+{
+    std::string::size_type pos = 0;
+    const std::string::size_type old_length = old_str.size();
+    const std::string::size_type new_length = new_str.size();
+    while ((pos = str.find(old_str, pos)) != std::string::npos) {
+        str.replace(pos, old_length, new_str);
+        pos += new_length;
+    }
+
+    return str;
+}
+
 int createPath(const std::string &path)
 {
     std::string::size_type pathLength = path.length();
@@ -497,6 +511,40 @@ bool merge(const Value &source, Value &target)
     }
 
     return true;
+}
+
+std::string fromJson(const std::string &text)
+{
+    std::string _text = text;
+    replaceString(_text, "\\/\\/", "//");
+    replaceString(_text, "&quot;", "\"");
+    replaceString(_text, "&acute;", "'");
+    replaceString(_text, "\\r", "\r");
+    replaceString(_text, "\\n", "\n");
+    //replaceString(_text, "\\'", "\'");
+    //replaceString(_text, "\\\"", "\"");
+    //replaceString(_text, "\\&", "\&");
+    replaceString(_text, "\\t", "\t");
+    replaceString(_text, "\\b", "\b");
+    replaceString(_text, "\\f", "\f");
+    return _text;
+}
+
+std::string toJson(const std::string &text)
+{
+    std::string _text = text;
+    replaceString(_text, "//", "\\/\\/");
+    replaceString(_text, "\"", "&quot;");
+    replaceString(_text, "'", "&acute;");
+    replaceString(_text, "\r", "\\r");
+    replaceString(_text, "\n", "\\n");
+//    replaceString(_text, "\'", "\\'");
+//    replaceString(_text, "\"", "\\\"");
+//    replaceString(_text, "\&", "\\&");
+    replaceString(_text, "\t", "\\t");
+    replaceString(_text, "\b", "\\b");
+    replaceString(_text, "\f", "\\f");
+    return _text;
 }
 
 }
