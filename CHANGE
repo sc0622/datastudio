@@ -1,4 +1,13 @@
 
+-- V4.5.4
+    tools: VS2015，Qt5.11.1，Qbs>=1.9.1
+    depends:
+        1) jframework: v2.7.2
+    fixed:
+        1) core：增加外部缓存数据转换借口
+    next:
+        <inherit to v4.5.0>
+
 -- V4.5.3
     tools: VS2015，Qt5.11.1，Qbs>=1.9.1
     depends:
