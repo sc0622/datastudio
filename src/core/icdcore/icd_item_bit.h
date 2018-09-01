@@ -22,6 +22,7 @@ public:
     void setData(double d) override;
     bool testBit(int offset) const;
     std::string dataString() const override;
+    double dataFromBuffer(const char *buffer) const override;
 
     int bitStart() const;
     void setBitStart(int bitStart);

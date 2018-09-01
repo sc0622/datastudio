@@ -44,12 +44,7 @@ HeaderItem::~HeaderItem()
 
 double HeaderItem::data() const
 {
-    const char *buffer = this->buffer();
-    if (!buffer) {
-        return 0.0;
-    }
-
-    return *reinterpret_cast<const unsigned char*>(buffer);
+    return dataFromBuffer(buffer());
 }
 
 void HeaderItem::setData(double data)
@@ -67,6 +62,15 @@ std::string HeaderItem::dataString() const
     std::stringstream ss;
     ss << std::hex << static_cast<unsigned char>(data());
     return ss.str();
+}
+
+double HeaderItem::dataFromBuffer(const char *buffer) const
+{
+    if (!buffer) {
+        return 0.0;
+    }
+
+    return *reinterpret_cast<const unsigned char*>(buffer);
 }
 
 unsigned char HeaderItem::value() const

@@ -34,12 +34,13 @@ public:
     static std::string counterTypeString(CounterType type);
     static CounterType stringCounterType(const std::string &str);
 
-
     double data() const override;
     void setData(double data) override;
     std::string dataString() const override;
     unsigned char value() const;
     void setValue(unsigned char value);
+
+    double dataFromBuffer(const char *buffer) const override;
 
     std::string typeName() const override;
     virtual std::string typeString() const override;

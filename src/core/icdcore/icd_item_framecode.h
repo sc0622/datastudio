@@ -38,6 +38,7 @@ public:
     double data() const override;
     void setData(double data) override;
     std::string dataString() const override;
+    double dataFromBuffer(const char *buffer) const override;
 
     std::string frameId() const;
     void setFrameId(const std::string &id);

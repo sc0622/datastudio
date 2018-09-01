@@ -100,14 +100,7 @@ CounterType CounterItem::stringCounterType(const std::string &str)
 
 double CounterItem::data() const
 {
-    const char *buffer = this->buffer();
-    if (!buffer) {
-        return 0.0;
-    }
-
-    unsigned int value = 0;
-    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
-    return value;
+    return dataFromBuffer(buffer());
 }
 
 void CounterItem::setData(double data)
@@ -136,6 +129,17 @@ unsigned char CounterItem::value() const
 void CounterItem::setValue(unsigned char value)
 {
     (void)value;
+}
+
+double CounterItem::dataFromBuffer(const char *buffer) const
+{
+    if (!buffer) {
+        return 0.0;
+    }
+
+    unsigned int value = 0;
+    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
+    return value;
 }
 
 std::string CounterItem::typeName() const

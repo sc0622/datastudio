@@ -87,33 +87,7 @@ BitItem::~BitItem()
 
 double BitItem::data() const
 {
-    //
-    const char *buffer = this->buffer();
-    if (!buffer) {
-        return 0.0;
-    }
-
-    //
-    int bitEnd = d->bitStart + d->bitCount;
-    icd_uint64 value = 0;
-
-    //
-    if (bitEnd <= 8) {
-        value = *(icd_uint8 *)buffer;
-    } else if (bitEnd <= 16) {
-        value = *(icd_uint16 *)buffer;
-    } else if (bitEnd <= 32) {
-        value = *(icd_uint32 *)buffer;
-    } else if (bitEnd <= 64) {
-        value = *(icd_uint64 *)buffer;
-    } else {
-        assert(false);
-        // 不支持超过64位长度的bit类型
-    }
-    //
-    value = (value << (64 - d->bitStart - d->bitCount)) >> (64 - d->bitCount);
-
-    return (double)value;
+    return dataFromBuffer(buffer());
 }
 
 void BitItem::setData(double data)
@@ -192,6 +166,35 @@ std::string BitItem::dataString() const
     default:
         return "Invalid status";
     }
+}
+
+double BitItem::dataFromBuffer(const char *buffer) const
+{
+    if (!buffer) {
+        return 0.0;
+    }
+
+    //
+    int bitEnd = d->bitStart + d->bitCount;
+    icd_uint64 value = 0;
+
+    //
+    if (bitEnd <= 8) {
+        value = *(icd_uint8 *)buffer;
+    } else if (bitEnd <= 16) {
+        value = *(icd_uint16 *)buffer;
+    } else if (bitEnd <= 32) {
+        value = *(icd_uint32 *)buffer;
+    } else if (bitEnd <= 64) {
+        value = *(icd_uint64 *)buffer;
+    } else {
+        assert(false);
+        // 不支持超过64位长度的bit类型
+    }
+    //
+    value = (value << (64 - d->bitStart - d->bitCount)) >> (64 - d->bitCount);
+
+    return double(value);
 }
 
 int BitItem::bitStart() const

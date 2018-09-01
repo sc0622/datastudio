@@ -103,14 +103,7 @@ FrameCodeType FrameCodeItem::stringFrameCodeType(const std::string &str)
 
 double FrameCodeItem::data() const
 {
-    const char *buffer = this->buffer();
-    if (!buffer) {
-        return 0.0;
-    }
-
-    icd_uint64 value = 0;
-    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
-    return static_cast<double>(value);
+    return dataFromBuffer(buffer());
 }
 
 void FrameCodeItem::setData(double data)
@@ -129,6 +122,17 @@ std::string FrameCodeItem::dataString() const
     std::stringstream str;
     str << std::hex << static_cast<icd_uint64>(data());
     return str.str();
+}
+
+double FrameCodeItem::dataFromBuffer(const char *buffer) const
+{
+    if (!buffer) {
+        return 0.0;
+    }
+
+    icd_uint64 value = 0;
+    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
+    return static_cast<double>(value);
 }
 
 std::string FrameCodeItem::frameId() const

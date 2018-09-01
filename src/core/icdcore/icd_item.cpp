@@ -303,6 +303,12 @@ bool Item::fuzzyCompare(float p1, float p2)
     return std::fabs(p1 - p2) * 100000.f <= std::min(std::fabs(p1), std::fabs(p2));
 }
 
+double Item::dataFromBuffer(const char *buffer) const
+{
+    (void)buffer;
+    return 0.0;
+}
+
 void Item::setType(ItemType type)
 {
     d->type = type;

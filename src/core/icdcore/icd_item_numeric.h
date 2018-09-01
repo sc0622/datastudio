@@ -48,6 +48,9 @@ public:
     void setData(double data) override;
     std::string dataString() const override;
 
+    double originalDataFromBuffer(const char *buffer) const;
+    double dataFromBuffer(const char *buffer) const override;
+
     double scale() const;
     void setScale(double scale);
 

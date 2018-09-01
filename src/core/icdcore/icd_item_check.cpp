@@ -126,14 +126,7 @@ CheckType CheckItem::stringCheckType(const std::string &str)
 
 double CheckItem::data() const
 {
-    const char *buffer = this->buffer();
-    if (!buffer) {
-        return 0.0;
-    }
-
-    unsigned short value = 0;
-    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
-    return value;
+    return dataFromBuffer(buffer());
 }
 
 void CheckItem::setData(double data)
@@ -152,6 +145,17 @@ std::string CheckItem::dataString() const
     std::stringstream str;
     str << std::hex << static_cast<unsigned int>(data());
     return str.str();
+}
+
+double CheckItem::dataFromBuffer(const char *buffer) const
+{
+    if (!buffer) {
+        return 0.0;
+    }
+
+    unsigned short value = 0;
+    memcpy(&value, buffer, std::min<size_t>(sizeof(value), static_cast<size_t>(bufferSize())));
+    return value;
 }
 
 int CheckItem::startPos() const

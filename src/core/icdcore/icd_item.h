@@ -72,6 +72,8 @@ public:
     static bool fuzzyCompare(double p1, double p2);
     static bool fuzzyCompare(float p1, float p2);
 
+    virtual double dataFromBuffer(const char *buffer) const;
+
 protected:
     Item(const Item &other);
 

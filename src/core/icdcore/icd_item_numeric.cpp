@@ -136,46 +136,12 @@ NumericType NumericItem::stringNumericType(const std::string &str)
 
 double NumericItem::originalData() const
 {
-    const char *buffer = this->buffer();
-    if (!buffer) {
-        return 0.0;
-    }
-
-    double value = 0.0;
-    switch (d->numericType) {
-    case NumericI8: value = *reinterpret_cast<const icd_int8*>(buffer); break;
-    case NumericU8: value = *reinterpret_cast<const icd_uint8*>(buffer); break;
-    case NumericI16: value = *reinterpret_cast<const icd_int16*>(buffer); break;
-    case NumericU16: value = *reinterpret_cast<const icd_uint16*>(buffer); break;
-    case NumericI32: value = *reinterpret_cast<const icd_int32*>(buffer); break;
-    case NumericU32: value = *reinterpret_cast<const icd_uint32*>(buffer); break;
-    case NumericI64: value = static_cast<double>(*reinterpret_cast<const icd_int64*>(buffer)); break;
-    case NumericU64: value = static_cast<double>(*reinterpret_cast<const icd_uint64*>(buffer)); break;
-    case NumericF32: value = static_cast<double>(*reinterpret_cast<const icd_float32*>(buffer)); break;
-    case NumericF64: value = *reinterpret_cast<const icd_float64*>(buffer); break;
-    default: return 0.0;
-    }
-
-    return value;
+    return originalDataFromBuffer(buffer());
 }
 
 double NumericItem::data() const
 {
-    double value = originalData() * d->scale + d->offset;
-#if 0
-    if (!d->limit->leftInf()) {
-        if (value < d->limit->minimum()) {
-            value = d->limit->minimum();
-        }
-    }
-
-    if (!d->limit->rightInf()) {
-        if (value > d->limit->maximum()) {
-            value = d->limit->maximum();
-        }
-    }
-#endif
-    return value;
+    return dataFromBuffer(buffer());
 }
 
 void NumericItem::setData(double data)
@@ -221,6 +187,49 @@ std::string NumericItem::dataString() const
     std::ostringstream os;
     os << data();
     return os.str();
+}
+
+double NumericItem::originalDataFromBuffer(const char *buffer) const
+{
+    if (!buffer) {
+        return 0.0;
+    }
+
+    double value = 0.0;
+    switch (d->numericType) {
+    case NumericI8: value = *reinterpret_cast<const icd_int8*>(buffer); break;
+    case NumericU8: value = *reinterpret_cast<const icd_uint8*>(buffer); break;
+    case NumericI16: value = *reinterpret_cast<const icd_int16*>(buffer); break;
+    case NumericU16: value = *reinterpret_cast<const icd_uint16*>(buffer); break;
+    case NumericI32: value = *reinterpret_cast<const icd_int32*>(buffer); break;
+    case NumericU32: value = *reinterpret_cast<const icd_uint32*>(buffer); break;
+    case NumericI64: value = static_cast<double>(*reinterpret_cast<const icd_int64*>(buffer)); break;
+    case NumericU64: value = static_cast<double>(*reinterpret_cast<const icd_uint64*>(buffer)); break;
+    case NumericF32: value = static_cast<double>(*reinterpret_cast<const icd_float32*>(buffer)); break;
+    case NumericF64: value = *reinterpret_cast<const icd_float64*>(buffer); break;
+    default: return 0.0;
+    }
+
+    return value;
+}
+
+double NumericItem::dataFromBuffer(const char *buffer) const
+{
+    double value = originalDataFromBuffer(buffer) * d->scale + d->offset;
+#if 0
+    if (!d->limit->leftInf()) {
+        if (value < d->limit->minimum()) {
+            value = d->limit->minimum();
+        }
+    }
+
+    if (!d->limit->rightInf()) {
+        if (value > d->limit->maximum()) {
+            value = d->limit->maximum();
+        }
+    }
+#endif
+    return value;
 }
 
 double NumericItem::scale() const

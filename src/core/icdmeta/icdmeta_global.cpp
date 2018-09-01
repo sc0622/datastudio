@@ -32,13 +32,10 @@ JCallbackEvent::JCallbackEvent(QJSValue callback, const QJSValueList &arguments)
 {
     data->callback = callback;
     data->arguments = arguments;
-
-    Q_INIT_RESOURCE(resource);
 }
 
 JCallbackEvent::~JCallbackEvent()
 {
-    Q_CLEANUP_RESOURCE(resource);
     delete data;
 }
 
