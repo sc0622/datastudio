@@ -307,7 +307,7 @@ public:
     Q_ENUM(ArrayType)
 
     enum DomainType {
-        DomainValid = -1,
+        DomainInvalid = -1,
         DomainId,
         DomainName,
         DomainMark

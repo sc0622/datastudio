@@ -1586,7 +1586,7 @@ void DataEditWidget::setTipsVisible(bool visible)
         }
         int total = table->icdBase().nLength;
         int use = table->length();
-        QString tips = tr("Data Item length£º%1 B, Defined: %2 B, real: %3 B")
+        QString tips = tr("Data Item length: %1 B, Defined: %2 B, real: %3 B")
                 .arg(total).arg(table->length()).arg(table->realLength());
         editStatus_->setText(tips);
         if (-1 == newIndex_) {

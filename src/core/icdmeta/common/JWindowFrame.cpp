@@ -191,7 +191,7 @@ bool JWindowFrame::winEventFilter(void *message, long *result)
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
 #else
 #endif
-    qDebug() << msg->message << msg->wParam << msg->lParam;
+    //qDebug() << msg->message << msg->wParam << msg->lParam;
 
     switch (msg->message) {
 #if 0

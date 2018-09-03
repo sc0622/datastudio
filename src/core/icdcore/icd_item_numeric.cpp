@@ -215,6 +215,10 @@ double NumericItem::originalDataFromBuffer(const char *buffer) const
 
 double NumericItem::dataFromBuffer(const char *buffer) const
 {
+    if (!buffer) {
+        return 0.0;
+    }
+
     double value = originalDataFromBuffer(buffer) * d->scale + d->offset;
 #if 0
     if (!d->limit->leftInf()) {

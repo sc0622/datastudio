@@ -279,7 +279,7 @@ void IcdCore::registerSingletonRelease(SingletonReleaseCallback callback)
         return;
     }
 
-    return d->callbacks.append(callback);
+    d->callbacks.append(callback);
 }
 
 void IcdCore::initQuickEnv(const QString &configPath)

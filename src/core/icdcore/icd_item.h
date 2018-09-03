@@ -52,6 +52,8 @@ public:
     double defaultValue() const;
     void setDefaultValue(double value);
 
+    virtual double dataFromBuffer(const char *buffer) const;
+
     virtual std::string typeName() const;
     virtual std::string codeName() const;
 
@@ -71,8 +73,6 @@ public:
 
     static bool fuzzyCompare(double p1, double p2);
     static bool fuzzyCompare(float p1, float p2);
-
-    virtual double dataFromBuffer(const char *buffer) const;
 
 protected:
     Item(const Item &other);

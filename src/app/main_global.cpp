@@ -236,15 +236,23 @@ int JMain::execApp(QApplication *app)
     splashWidget->show();
 
     initFontDatabase();
+    IcdParser::instance()->init();
     IcdWidget::instance()->init();
     Logging::instance()->init();
+
+    auto releaseInstances = [=](){
+      IcdParser::releaseInstance();
+      IcdWidget::releaseInstance();
+      Logging::releaseInstance();
+      JMain::releaseInstance();
+    };
 
     // initialize models
     bool result = instance()->init();
     if (!result) {
         QMessageBox::critical(nullptr, QStringLiteral("Error"),
                               QStringLiteral("global config initialize failure!"));
-        releaseInstance();
+        releaseInstances();
         return -1;
     }
     //
@@ -280,7 +288,7 @@ int JMain::execApp(QApplication *app)
     if (!mainWindow) {
         delete mainWindow;
         mainWindow = nullptr;
-        releaseInstance();
+        releaseInstances();
         return -1;
     }
 
@@ -305,7 +313,7 @@ int JMain::execApp(QApplication *app)
                                 QStringList(), QCoreApplication::applicationDirPath());
     }
 
-    releaseInstance();
+    releaseInstances();
 
     return exitCode;
 }

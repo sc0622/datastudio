@@ -52,7 +52,7 @@ void IcdWidget::registerSingletonRelease(SingletonReleaseCallback callback)
         return;
     }
 
-    return d->callbacks.append(callback);
+    d->callbacks.append(callback);
 }
 
 IcdWidget::IcdWidget(QObject *parent)
