@@ -426,7 +426,11 @@ void Table::appendItem(const ItemPtr &item)
                     assert(false);
                     return;
                 }
+#if 0
                 offset = std::ceil(last->bufferOffset() + bitItem->calcSize());
+#else
+                offset = std::ceil(last->bufferOffset() + last->bufferSize());
+#endif
             } else {
                 offset = std::ceil(last->bufferOffset() + last->bufferSize());
             }
