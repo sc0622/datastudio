@@ -315,7 +315,7 @@ void JProtoTreeViewPrivate::init()
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(q);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
-    vertLayoutMain->setSpacing(1);
+    vertLayoutMain->setSpacing(0);
 
     searchEdit_ = new JSearchEdit(q);
     vertLayoutMain->addWidget(searchEdit_);

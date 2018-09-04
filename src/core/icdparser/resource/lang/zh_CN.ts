@@ -7,14 +7,16 @@
         <location filename="../../private/generate/c++/icdgenerator_cpp.cpp" line="38"/>
         <source>Query Table
 Table: %1</source>
-        <translation>获取表数据\n表：%1</translation>
+        <translation>获取表数据
+表：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/c++/icdgenerator_cpp_p.cpp" line="108"/>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="508"/>
         <source>Generate table document
 Table: %1</source>
-        <translation>生成表数据文档\n表：%1</translation>
+        <translation>生成表数据文档
+表：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/html/icdgenerator_html_p.cpp" line="26"/>
@@ -49,7 +51,8 @@ Table: %1</source>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="213"/>
         <source>Query all vehicles
 %1</source>
-        <translation>获取所有机型协议\n%1</translation>
+        <translation>获取所有机型协议
+%1</translation>
     </message>
     <message>
         <location filename="../../private/file/json/icdparser_json.cpp" line="858"/>
@@ -57,13 +60,15 @@ Table: %1</source>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="252"/>
         <source>Query vehicle
 Vehicle: %1</source>
-        <translation>获取机型协议\n机型：%1</translation>
+        <translation>获取机型协议
+机型：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="294"/>
         <source>Generate vehicle document
 Vehicle: %1</source>
-        <translation>生成机型协议文档\n机型：%1</translation>
+        <translation>生成机型协议文档
+机型：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="312"/>
@@ -94,19 +99,22 @@ Vehicle: %1</source>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="347"/>
         <source>Query system
 System: %1</source>
-        <translation>获取系统协议\n系统：%1</translation>
+        <translation>获取系统协议
+系统：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="392"/>
         <source>Generate system document
 System: %1</source>
-        <translation>生成系统协议文档\n系统：%1</translation>
+        <translation>生成系统协议文档
+系统：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="421"/>
         <source>Query all tables
 System: %1</source>
-        <translation>获取所有表协议\n系统：%1</translation>
+        <translation>获取所有表协议
+系统：%1</translation>
     </message>
     <message>
         <location filename="../../private/file/json/icdparser_json.cpp" line="975"/>
@@ -115,7 +123,8 @@ System: %1</source>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="646"/>
         <source>Query table
 Table: %1</source>
-        <translation>获取表协议\n表：%1</translation>
+        <translation>获取表协议
+表：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="540"/>
@@ -178,7 +187,8 @@ Table: %1</source>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="688"/>
         <source>Generate Data Item document
 Data Item: %1</source>
-        <translation>生成数据项协议文档\b数据项：%1</translation>
+        <translation>生成数据项协议文档
+数据项：%1</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="534"/>
@@ -198,7 +208,10 @@ Data Item: %1</source>
 2) Scale: %2; 
 3) Offset: %3; 
 4) Range: %4.</source>
-        <translation>1）单位：%1；\n2）比例尺：%2；\n3）偏移：%3；\n4）范围：%4。</translation>
+        <translation>1）单位：%1；
+2）比例尺：%2；
+3）偏移：%3；
+4）范围：%4。</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="980"/>
@@ -210,19 +223,23 @@ Data Item: %1</source>
         <source>
 2) Feature:
 </source>
-        <translation>\n2）特征值：\n</translation>
+        <translation>
+2）特征值：
+</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="992"/>
         <source> BIT%1: %2;
 </source>
-        <translation> BIT%1：%2；\n</translation>
+        <translation> BIT%1：%2；
+</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="1001"/>
         <source> %1: %2;
 </source>
-        <translation> %1：%2；\n</translation>
+        <translation> %1：%2；
+</translation>
     </message>
     <message>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="1050"/>
