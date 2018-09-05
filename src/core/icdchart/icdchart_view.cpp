@@ -60,7 +60,7 @@ void ChartView::changeWorker(const QString &domain, const Icd::WorkerPtr &worker
                         data->dataItem = Icd::ItemPtr(nullptr);
                         return;
                     }
-                    data->dataItem = JHandlePtrCast<Icd::Item, Icd::Object>(
+                    data->dataItem = JHandlePtrCast<Icd::Item>(
                                 table->itemByDomain(domain.section('/', 3).toStdString()));
                 } else {
                     data->dataItem = Icd::ItemPtr(nullptr);

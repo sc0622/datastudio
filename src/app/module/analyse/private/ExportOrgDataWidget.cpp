@@ -102,7 +102,7 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
     switch (d_objectItem->objectType()) {
     case Icd::ObjectTable:
     {
-        const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(d_objectItem);
+        const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(d_objectItem);
         if (!table) {
             return;
         }
@@ -112,7 +112,7 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
     }
     case Icd::ObjectItem:
     {
-        const Icd::ItemPtr item = JHandlePtrCast<Icd::Item, Icd::Object>(d_objectItem);
+        const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(d_objectItem);
         if (!item) {
             return;
         }

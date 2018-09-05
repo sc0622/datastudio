@@ -15,6 +15,10 @@ public:
         : bitStart(0)
         , bitCount(0)
         , typeSize(0)
+        , scale(1.0)
+        , decimals(0)
+        , offset(0.0)
+        , limit(new LimitItem())
     {
 
     }
@@ -23,9 +27,14 @@ public:
     static std::string trim(const std::string &str);
 
 private:
-    int bitStart;   // 起始比特位,从0开始
-    int bitCount;   // 比特长度
-    int typeSize;   // 数据类型字节数
+    int bitStart;               // 起始比特位,从0开始
+    int bitCount;               // 比特长度
+    int typeSize;               // 数据类型字节数
+    double scale;               // 比例尺
+    int decimals;               // 小数有效个数
+    double offset;              // 偏置
+    LimitItemPtr limit;         // 范围
+    std::string unit;           // 单位
     std::map<icd_uint64, std::string> specs;    // 特征点
 };
 
@@ -170,31 +179,13 @@ std::string BitItem::dataString() const
 
 double BitItem::dataFromBuffer(const char *buffer) const
 {
-    if (!buffer) {
-        return 0.0;
+    double value = originalDataFromBuffer(buffer);
+
+    if (type() == Icd::ItemBitValue) {
+        value = d->offset + value * d->scale;
     }
 
-    //
-    int bitEnd = d->bitStart + d->bitCount;
-    icd_uint64 value = 0;
-
-    //
-    if (bitEnd <= 8) {
-        value = *(icd_uint8 *)buffer;
-    } else if (bitEnd <= 16) {
-        value = *(icd_uint16 *)buffer;
-    } else if (bitEnd <= 32) {
-        value = *(icd_uint32 *)buffer;
-    } else if (bitEnd <= 64) {
-        value = *(icd_uint64 *)buffer;
-    } else {
-        assert(false);
-        // 不支持超过64位长度的bit类型
-    }
-    //
-    value = (value << (64 - d->bitStart - d->bitCount)) >> (64 - d->bitCount);
-
-    return double(value);
+    return value;
 }
 
 int BitItem::bitStart() const
@@ -374,13 +365,173 @@ BitItem &BitItem::operator =(const BitItem &other)
     return *this;
 }
 
+double BitItem::originalData() const
+{
+    return originalDataFromBuffer(buffer());
+}
+
+double BitItem::originalDataFromBuffer(const char *buffer) const
+{
+    if (!buffer) {
+        return 0.0;
+    }
+
+    //
+    int bitEnd = d->bitStart + d->bitCount;
+    icd_uint64 value = 0;
+
+    //
+    if (bitEnd <= 8) {
+        value = *(icd_uint8 *)buffer;
+    } else if (bitEnd <= 16) {
+        value = *(icd_uint16 *)buffer;
+    } else if (bitEnd <= 32) {
+        value = *(icd_uint32 *)buffer;
+    } else if (bitEnd <= 64) {
+        value = *(icd_uint64 *)buffer;
+    } else {
+        assert(false);
+        // 不支持超过64位长度的bit类型
+    }
+    //
+    value = (value << (64 - d->bitStart - d->bitCount)) >> (64 - d->bitCount);
+
+    return double(value);
+}
+
+double BitItem::scale() const
+{
+    return d->scale;
+}
+
+void BitItem::setScale(double scale)
+{
+    d->scale = scale;
+}
+
+int BitItem::decimals() const
+{
+    return d->decimals;
+}
+
+void BitItem::setDecimals(int value)
+{
+    d->decimals = value;
+}
+
+double BitItem::offset() const
+{
+    return d->offset;
+}
+
+void BitItem::setOffset(double offset)
+{
+    d->offset = offset;
+}
+
+LimitItemPtr BitItem::limit() const
+{
+    return d->limit;
+}
+
+void BitItem::setLimit(const LimitItemPtr &limit)
+{
+    d->limit = limit;
+}
+
+std::string BitItem::unit() const
+{
+    return d->unit;
+}
+
+void BitItem::setUnit(const std::string &unit)
+{
+    d->unit = unit;
+}
+
+std::pair<double, double> BitItem::dataRange() const
+{
+    std::pair<double, double> range = std::make_pair<double, double>
+            (0, (1UL << d->bitCount));
+
+    if (d->limit->leftInf()) {
+        range.first = 0;
+    } else {
+        range.first = (d->limit->maximum() - d->offset) / d->scale;
+    }
+
+    if (d->limit->rightInf()) {
+        range.second = (1UL << d->bitCount);
+    } else {
+        range.second = (d->limit->minimum() - d->offset) / d->scale;
+    }
+
+    return range;
+}
+
+std::pair<double, double> BitItem::valueRange() const
+{
+    std::pair<double, double> range = dataRange();
+    range.first = d->offset + range.first * d->scale;
+    range.second = d->offset + range.second * d->scale;
+    return range;
+}
+
+bool BitItem::outOfLimit() const
+{
+    double value = this->data();
+    if (!d->limit->leftInf()) {
+        double minimum = d->limit->minimum();
+        if (!fuzzyCompare(value, minimum) && value < minimum) {
+            return true;
+        }
+    }
+
+    if (!d->limit->rightInf()) {
+        double maximum = d->limit->maximum();
+        if (!fuzzyCompare(value, maximum) && value > maximum) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+std::string BitItem::prettyValue() const
+{
+    return prettyValue(data());
+}
+
+std::string BitItem::prettyValue(double value)
+{
+    std::ostringstream oss;
+    oss.precision(DBL_DIG);
+    oss << std::uppercase << value;
+    std::string str = oss.str();
+    return str;
+}
+
 Json::Value BitItem::save() const
 {
     Json::Value json = Item::save();
 
-    json["start"] = bitStart();
-    json["count"] = bitCount();
-    json["typeSize"] = typeSize();
+    json["start"] = d->bitStart;
+    json["count"] = d->bitCount;
+    json["scale"] = d->scale;
+    json["offset"] = d->offset;
+    // decimals
+    if (d->decimals > 0) {
+        json["decimals"] = d->decimals;
+    }
+    // limit
+    Json::Value limitJson = d->limit->save();
+    if (!limitJson.isNull()) {
+        json["limit"] = limitJson;
+    }
+    if (!d->unit.empty()) {
+        json["unit"] = d->unit;
+    }
+    // specs
     if (!d->specs.empty()) {
         Json::Value specsJson;
         for (std::map<icd_uint64, std::string>::const_iterator
@@ -401,9 +552,24 @@ bool BitItem::restore(const Json::Value &json, int deep)
         return false;
     }
 
+    // bitstart
     setBitStart(json["start"].asInt());
+    // bitcount
     setBitCount(json["count"].asInt());
-    setTypeSize(json["typeSize"].asInt());
+    // scale
+    if (json.isMember("scale")) {
+        setScale(json["scale"].asDouble());
+    }
+    // offset
+    setOffset(json["offset"].asDouble());
+    // decimals
+    setDecimals(json["decimals"].asDouble());
+    // limit
+    if (!d->limit->restore(json["limit"], deep)) {
+        return false;
+    }
+    // unit
+    setUnit(json["unit"].asString());
 
     clearSpec();
     if (json.isMember("specs")) {

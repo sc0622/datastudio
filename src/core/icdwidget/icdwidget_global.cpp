@@ -55,6 +55,28 @@ void IcdWidget::registerSingletonRelease(SingletonReleaseCallback callback)
     d->callbacks.append(callback);
 }
 
+QStringList IcdWidget::protoItemTypes()
+{
+    QStringList items;
+    items << tr("Header");
+    items << tr("Counter");
+    items << tr("Check");
+    items << tr("FrameCode");
+    items << tr("Numeric");
+    items << tr("Array");
+    items << tr("BitMap");
+    items << tr("BitValue");
+    items << tr("Complex");
+    items << tr("Frame");
+    return items;
+}
+
+QString IcdWidget::prettyValue(double value, bool isFloat)
+{
+    return QString::fromStdString(Icd::NumericItem::prettyValue(value, isFloat
+                                                                ? Icd::NumericF32 : Icd::NumericF64));
+}
+
 IcdWidget::IcdWidget(QObject *parent)
     : QObject(parent)
     , J_DPTR(new IcdWidgetPrivate(this))

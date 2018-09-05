@@ -378,7 +378,7 @@ TablePtr FrameItem::tableByDomain(const std::string &domain, DomainType domainTy
         return TablePtr();
     }
 
-    return JHandlePtrCast<Table, Object>(item);
+    return JHandlePtrCast<Table>(item);
 }
 
 icd_uint64 FrameItem::updateSend(icd_uint64 code)
@@ -430,6 +430,17 @@ icd_uint64 FrameItem::updateSend(icd_uint64 code)
     }
 
     return code;
+}
+
+ObjectPtr FrameItem::findByDomain(const std::string &domain, int domainType,
+                                  bool ignoreComplex) const
+{
+    return itemByDomain(domain, Icd::DomainType(domainType), ignoreComplex);
+}
+
+void FrameItem::clearChildren()
+{
+    d->tables.clear();
 }
 
 void FrameItem::updateRecv(icd_uint64 code)

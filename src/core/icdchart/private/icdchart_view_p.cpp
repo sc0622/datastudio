@@ -62,7 +62,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
     case Icd::ItemComplex:
     {
         //
-        const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem);
+        const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem>(dataItem);
         if (!complex) {
             return false;
         }
@@ -80,7 +80,7 @@ bool ChartViewPrivate::addDataItem(const WorkerPtr &worker, const Icd::ItemPtr &
     case Icd::ItemFrame:
     {
         //
-        const Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(dataItem);
+        const Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(dataItem);
         if (!frame) {
             return false;
         }
@@ -274,7 +274,7 @@ bool ChartViewPrivate::addDataItem(const QString &domain, const WorkerPtr &worke
     case Icd::ObjectTable:
     {
         //
-        const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(dataObject);
+        const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(dataObject);
         if (!table) {
             break;
         }
@@ -288,7 +288,7 @@ bool ChartViewPrivate::addDataItem(const QString &domain, const WorkerPtr &worke
     case Icd::ObjectItem:
     {
         //
-        const Icd::ItemPtr dataItem = JHandlePtrCast<Icd::Item, Icd::Object>(dataObject);
+        const Icd::ItemPtr dataItem = JHandlePtrCast<Icd::Item>(dataObject);
         if (!dataItem) {
             break;
         }
@@ -333,7 +333,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     case Icd::ItemBitMap:
     {
         // convert
-        Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
+        Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(dataItem);
         if (itemBit == nullptr) {
             Q_ASSERT(false);    //
             return nullptr;
@@ -356,7 +356,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     case Icd::ItemArray:
     {
         // convert
-        Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(dataItem);
+        Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem>(dataItem);
         if (!arrayItem) {
             Q_ASSERT(false);    //
             return nullptr;
@@ -376,7 +376,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     case Icd::ItemComplex:
     {
         // convert
-        Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem);
+        Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem>(dataItem);
         if (!complexItem) {
             Q_ASSERT(false);    //
             return nullptr;
@@ -531,8 +531,7 @@ void ChartViewPrivate::updateChart(JChart::Chart *chart)
             return;
         }
 
-        const Icd::BitItemPtr bitItem =
-                JHandlePtrCast<Icd::BitItem, Icd::Item>(chartData->bitmapData->dataItem);
+        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(chartData->bitmapData->dataItem);
         if (!bitItem) {
             return;
         }

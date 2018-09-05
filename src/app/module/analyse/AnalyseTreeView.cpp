@@ -378,7 +378,7 @@ void TreeView::exportData(const QStandardItem *item, const QString &filePath,
 
     QString bitName;
     if (bitOffset != -1) {
-        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Object>(objectItem);
+        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(objectItem);
         if (!bitItem) {
             return;
         }

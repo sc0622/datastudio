@@ -247,6 +247,20 @@ Object &Object::operator =(const Object &other)
     return *this;
 }
 
+Icd::ObjectPtr Object::findByDomain(const std::string &domain, int domainType,
+                                    bool ignoreComplex) const
+{
+    (void)domain;
+    (void)domainType;
+    (void)ignoreComplex;
+    return Icd::ObjectPtr();
+}
+
+void Object::clearChildren()
+{
+
+}
+
 Json::Value Object::save() const
 {
     Json::Value json;
@@ -272,7 +286,7 @@ Json::Value Object::save() const
 
 bool Object::restore(const Json::Value &json, int)
 {
-    if (d->id.empty()) {
+    if (json.isMember("id")) {
         setId(json["id"].asString());
     }
     setName(json["name"].asString());

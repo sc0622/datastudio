@@ -22,19 +22,13 @@ Window::Window(QWidget *parent)
     splitterMain_->setObjectName("edit.window.splitter.main");
     splitterMain_->setOpaqueResize(true);
     vertLayoutMain->addWidget(splitterMain_);
-#ifdef EDIT_OLD
-    nav_ = new ICDNavigation(this);
-    splitterMain_->addWidget(nav_);
 
-    view_ = new EditMainView(this);
-    splitterMain_->addWidget(view_);
-#else
     treeView_ = new TreeView(this);
     splitterMain_->addWidget(treeView_);
 
     setView_ = new SetView(this);
     splitterMain_->addWidget(setView_);
-#endif
+
     jnotify->on("edit.toolbar.settings", this, [=](JNEvent &){
         Edit::SettingsDlg settingsDlg(this);
         if (settingsDlg.exec() != QDialog::Accepted) {
@@ -53,13 +47,10 @@ bool Window::init()
     bool result = true;
 
     JMain::restoreWidgetState(splitterMain_);
-#ifdef EDIT_OLD
-    nav_->init();
-    view_->init();
-#else
+
     treeView_->init();
     setView_->init();
-#endif
+
     return result;
 }
 

@@ -13,7 +13,7 @@ class NumericItemData
 public:
     NumericItemData()
         : numericType(NumericInvalid)
-        , scale(0.0)
+        , scale(1.0)
         , decimals(0)
         , offset(0.0)
         , limit(new LimitItem())
@@ -24,7 +24,7 @@ public:
 private:
     NumericType numericType;    // 数据项类型
     double scale;               // 比例尺
-    double decimals;            // 小数有效位
+    int decimals;               // 小数有效个数
     double offset;              // 偏置
     LimitItemPtr limit;         // 范围
     std::string unit;           // 单位
@@ -246,12 +246,12 @@ void NumericItem::setScale(double scale)
     d->scale = scale;
 }
 
-double NumericItem::decimals() const
+int NumericItem::decimals() const
 {
     return d->decimals;
 }
 
-void NumericItem::setDecimals(double value)
+void NumericItem::setDecimals(int value)
 {
     d->decimals = value;
 }
@@ -462,21 +462,45 @@ NumericItem &NumericItem::operator =(const NumericItem &other)
     return *this;
 }
 
+std::string NumericItem::prettyValue() const
+{
+    return prettyValue(data(), d->numericType);
+}
+
+std::string NumericItem::prettyValue(double value, int numericType)
+{
+    std::ostringstream oss;
+    if (numericType == Icd::NumericF32) {
+        oss.precision(FLT_DIG);
+    } else {
+        oss.precision(DBL_DIG);
+    }
+    oss << std::uppercase << value;
+    std::string str = oss.str();
+    return str;
+}
+
 Json::Value NumericItem::save() const
 {
     Json::Value json = Item::save();
 
     json["numericType"] = numericTypeString();
-    json["scale"] = scale();
-    json["offset"] = offset();
-    json["decimals"] = decimals();
+    json["scale"] = d->scale;
+    json["offset"] = d->offset;
+    // decimals
+    if (d->decimals > 0) {
+        json["decimals"] = d->decimals;
+    }
+    // limit
     Json::Value limitJson = d->limit->save();
     if (!limitJson.isNull()) {
         json["limit"] = limitJson;
     }
+    // unit
     if (!d->unit.empty()) {
         json["unit"] = d->unit;
     }
+    // specs
     if (!d->specs.empty()) {
         Json::Value specsJson;
         for (std::map<double, std::string>::const_iterator
@@ -498,14 +522,21 @@ bool NumericItem::restore(const Json::Value &json, int deep)
     }
 
     setNumericType(stringNumericType(json["numericType"].asString()));
-    setScale(json["scale"].asDouble());
+    // scale
+    if (json.isMember("scale")) {
+        setScale(json["scale"].asDouble());
+    }
+    // offset
     setOffset(json["offset"].asDouble());
+    // decimals
     setDecimals(json["decimals"].asDouble());
+    // limit
     if (!d->limit->restore(json["limit"], deep)) {
         return false;
     }
+    // unit
     setUnit(json["unit"].asString());
-
+    // specs
     clearSpec();
     if (json.isMember("specs")) {
         Json::Value specsJson = json["specs"];

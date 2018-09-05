@@ -35,13 +35,13 @@ public slots:
     void onContentChanged(const QVariant &index, const QString &name);
 
 private:
-    JSplitter *d_splitterMain;
-    DetailTable *d_detailTable;
-    DetailEdit *d_detailEdit;
+    JSplitter *splitterMain_;
+    DetailTable *detailTable_;
+    DetailEdit *detailEdit_;
     struct {
         QStandardItem *item;
         Icd::ObjectPtr object;
-    } d_currentData;
+    } currentData_;
 };
 
 }

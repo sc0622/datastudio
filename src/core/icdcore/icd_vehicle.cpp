@@ -123,6 +123,11 @@ SystemPtr Vehicle::systemByMark(const std::string &mark) const
     return SystemPtr();
 }
 
+bool Vehicle::isEmpty() const
+{
+    return d->systems.empty();
+}
+
 int Vehicle::childCount() const
 {
     int count = int(d->systems.size());
@@ -169,6 +174,45 @@ Vehicle &Vehicle::operator =(const Vehicle &other)
     }
 
     return *this;
+}
+
+ObjectPtr Vehicle::findByDomain(const std::string &domain, int domainType,
+                                bool ignoreComplex) const
+{
+    if (domain.empty()) {
+        return Icd::ObjectPtr();
+    }
+
+    std::string::size_type index = domain.find_first_of('/');
+    std::string current, next;
+    if (index == std::string::npos) {
+        current = domain;
+    } else {
+        current = domain.substr(0, index);
+        next = domain.substr(index + 1);
+    }
+
+    for (SystemPtrArray::const_iterator citer = d->systems.cbegin();
+         citer != d->systems.cend(); ++citer) {
+        const SystemPtr &system = *citer;
+        if (system->domainOfType(domainType) == current) {
+            if (next.empty()) {
+                return system;
+            } else {
+                Icd::ObjectPtr object = system->findByDomain(next, domainType, ignoreComplex);
+                if (object) {
+                    return object;
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+void Vehicle::clearChildren()
+{
+    d->systems.clear();
 }
 
 Json::Value Vehicle::save() const

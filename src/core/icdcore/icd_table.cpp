@@ -70,7 +70,7 @@ void TableData::saveItem(const ItemPtr &item)
     switch (item->type()) {
     case Icd::ItemHead:
     {
-        Icd::HeaderItemPtr headerItem = JHandlePtrCast<Icd::HeaderItem, Icd::Item>(item);
+        Icd::HeaderItemPtr headerItem = JHandlePtrCast<Icd::HeaderItem>(item);
         if (!headerItem) {
             break;
         }
@@ -79,17 +79,17 @@ void TableData::saveItem(const ItemPtr &item)
     }
     case Icd::ItemCounter:
     {
-        itemCounter = JHandlePtrCast<Icd::CounterItem, Icd::Item>(item);
+        itemCounter = JHandlePtrCast<Icd::CounterItem>(item);
         break;
     }
     case Icd::ItemCheck:
     {
-        itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(item);
+        itemCheck = JHandlePtrCast<Icd::CheckItem>(item);
         break;
     }
     case Icd::ItemComplex:
     {
-        Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item);
+        Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem>(item);
         if (!complexItem) {
             break;
         }
@@ -98,7 +98,7 @@ void TableData::saveItem(const ItemPtr &item)
     }
     case Icd::ItemFrameCode:
     {
-        Icd::FrameCodeItemPtr frameCodeItem = JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(item);
+        Icd::FrameCodeItemPtr frameCodeItem = JHandlePtrCast<Icd::FrameCodeItem>(item);
         if (!frameCodeItem) {
             break;
         }
@@ -127,7 +127,7 @@ void TableData::removeItem(const ItemPtr &item)
     }
     case Icd::ItemComplex:
     {
-        const Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item);
+        const Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem>(item);
         if (!complexItem) {
             break;
         }
@@ -143,7 +143,7 @@ void TableData::removeItem(const ItemPtr &item)
     }
     case Icd::ItemFrameCode:
     {
-        const Icd::FrameCodeItemPtr frameCodeItem = JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(item);
+        const Icd::FrameCodeItemPtr frameCodeItem = JHandlePtrCast<Icd::FrameCodeItem>(item);
         if (!frameCodeItem) {
             break;
         }
@@ -241,7 +241,7 @@ double TableData::recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
         return std::ceil(offset);
     }
 
-    const Icd::BitItemPtr _bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+    const Icd::BitItemPtr _bitItem = JHandlePtrCast<Icd::BitItem>(item);
     if (!_bitItem) {
         return std::ceil(offset);
     }
@@ -250,10 +250,14 @@ double TableData::recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
         return std::ceil(offset);
     }
 
+    // update typeSize of previous bit item
+    _bitItem->setTypeSize(bitItem->typeSize());
+
     const int calcSize = bitItem->calcSize();
     const int _calcSize = _bitItem->calcSize();
     if (_calcSize == calcSize) {
-        return std::floor(offset - item->bufferSize());
+        //
+        return std::floor(offset - _bitItem->bufferSize());
     }
 
     ++citer;
@@ -398,11 +402,14 @@ void Table::appendItem(const ItemPtr &item)
         case Icd::ItemBitValue:
         {
             // bufferOffset
-            const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+            const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(item);
             if (!bitItem) {
                 assert(false);
                 return;
             }
+            //
+            bitItem->setTypeSize(bitItem->calcSize());
+            //
             if (bitItem->bitStart() == 0) {
                 // start from bit0
                 offset = std::ceil(last->bufferOffset() + last->bufferSize());
@@ -421,16 +428,12 @@ void Table::appendItem(const ItemPtr &item)
             // bufferOffset
             const ItemType lastType = last->type();
             if (lastType == Icd::ItemBitMap || lastType == Icd::ItemBitValue) {
-                const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(last);
+                const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(last);
                 if (!bitItem) {
                     assert(false);
                     return;
                 }
-#if 0
-                offset = std::ceil(last->bufferOffset() + bitItem->calcSize());
-#else
-                offset = std::ceil(last->bufferOffset() + last->bufferSize());
-#endif
+                offset = std::ceil(last->bufferOffset() + bitItem->typeSize());
             } else {
                 offset = std::ceil(last->bufferOffset() + last->bufferSize());
             }
@@ -503,7 +506,7 @@ ObjectPtr Table::itemByMark(const std::string &mark, bool deep) const
             switch (itemType) {
             case ItemComplex:
             {
-                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem, Item>(item);
+                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
                 if (!complex) {
                     break;
                 }
@@ -516,7 +519,7 @@ ObjectPtr Table::itemByMark(const std::string &mark, bool deep) const
             switch (itemType) {
             case ItemComplex:
             {
-                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem, Item>(item);
+                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
                 if (!complex) {
                     break;
                 }
@@ -528,7 +531,7 @@ ObjectPtr Table::itemByMark(const std::string &mark, bool deep) const
             }
             case ItemFrame:
             {
-                const FrameItemPtr frame = JHandlePtrCast<FrameItem, Item>(item);
+                const FrameItemPtr frame = JHandlePtrCast<FrameItem>(item);
                 if (!frame) {
                     break;
                 }
@@ -557,7 +560,7 @@ TablePtr Table::tableByMark(const std::string &mark, bool deep) const
             switch (itemType) {
             case ItemComplex:
             {
-                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem, Item>(item);
+                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
                 if (!complex) {
                     break;
                 }
@@ -570,7 +573,7 @@ TablePtr Table::tableByMark(const std::string &mark, bool deep) const
             switch (itemType) {
             case ItemComplex:
             {
-                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem, Item>(item);
+                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
                 if (!complex) {
                     break;
                 }
@@ -582,7 +585,7 @@ TablePtr Table::tableByMark(const std::string &mark, bool deep) const
             }
             case ItemFrame:
             {
-                const FrameItemPtr frame = JHandlePtrCast<FrameItem, Item>(item);
+                const FrameItemPtr frame = JHandlePtrCast<FrameItem>(item);
                 if (!frame) {
                     break;
                 }
@@ -626,7 +629,7 @@ ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType,
                 switch (itemType) {
                 case ItemComplex:
                 {
-                    const ComplexItemPtr complex = JHandlePtrCast<ComplexItem, Item>(item);
+                    const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
                     if (!complex) {
                         break;
                     }
@@ -643,7 +646,7 @@ ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType,
                 switch (itemType) {
                 case ItemComplex:
                 {
-                    const ComplexItemPtr complexItem = JHandlePtrCast<ComplexItem, Item>(item);
+                    const ComplexItemPtr complexItem = JHandlePtrCast<ComplexItem>(item);
                     if (!complexItem) {
                         break;
                     }
@@ -656,7 +659,7 @@ ObjectPtr Table::itemByDomain(const std::string &domain, DomainType domainType,
                 }
                 case ItemFrame:
                 {
-                    const FrameItemPtr frameItem = JHandlePtrCast<FrameItem, Item>(item);
+                    const FrameItemPtr frameItem = JHandlePtrCast<FrameItem>(item);
                     if (!frameItem) {
                         break;
                     }
@@ -701,7 +704,7 @@ TablePtr Table::tableByDomain(const std::string &domain, Icd::DomainType domainT
                 switch (itemType) {
                 case ItemComplex:
                 {
-                    const ComplexItemPtr complex = JHandlePtrCast<ComplexItem, Item>(item);
+                    const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
                     if (!complex) {
                         break;
                     }
@@ -714,7 +717,7 @@ TablePtr Table::tableByDomain(const std::string &domain, Icd::DomainType domainT
                 switch (itemType) {
                 case ItemComplex:
                 {
-                    const ComplexItemPtr complexItem = JHandlePtrCast<ComplexItem, Item>(item);
+                    const ComplexItemPtr complexItem = JHandlePtrCast<ComplexItem>(item);
                     if (!complexItem) {
                         break;
                     }
@@ -727,7 +730,7 @@ TablePtr Table::tableByDomain(const std::string &domain, Icd::DomainType domainT
                 }
                 case ItemFrame:
                 {
-                    const FrameItemPtr frameItem = JHandlePtrCast<FrameItem, Item>(item);
+                    const FrameItemPtr frameItem = JHandlePtrCast<FrameItem>(item);
                     if (!frameItem) {
                         break;
                     }
@@ -746,6 +749,16 @@ TablePtr Table::tableByDomain(const std::string &domain, Icd::DomainType domainT
     }
 
     return TablePtr();
+}
+
+ObjectPtr Table::findByDomain(const std::string &domain, int domainType, bool ignoreComplex) const
+{
+    return itemByDomain(domain, Icd::DomainType(domainType), ignoreComplex);
+}
+
+void Table::clearChildren()
+{
+    d->items.clear();
 }
 
 const std::vector<char> &Table::headers() const
@@ -1079,7 +1092,7 @@ bool Table::restore(const Json::Value &json, int deep)
                 continue;
             }
             // find frame
-            Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(itemById(frameId));
+            Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(itemById(frameId));
             if (!frame) {
                 continue;
             }

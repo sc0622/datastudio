@@ -30,6 +30,7 @@ public:
     int systemCount() const;
     SystemPtr systemAt(int index) const;
     SystemPtr systemByMark(const std::string &mark) const;
+    bool isEmpty() const;
 
     int childCount() const override;
     void resetData() override;
@@ -37,6 +38,10 @@ public:
 
     Object *clone() const override;
     Vehicle &operator =(const Vehicle &other);
+
+    Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
+                                bool ignoreComplex = true) const override;
+    void clearChildren() override;
 
     // Serializable interface
 public:

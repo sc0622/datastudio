@@ -64,8 +64,7 @@ FileRecvWidget::FileRecvWidget(QWidget *parent)
             return;
         }
         //
-        Icd::FileChannelPtr channel =
-                JHandlePtrCast<Icd::FileChannel, Icd::Channel>(d_worker->channel());
+        Icd::FileChannelPtr channel = JHandlePtrCast<Icd::FileChannel>(d_worker->channel());
         if (!channel) {
             return;
         }

@@ -84,7 +84,7 @@ bool DataTableWidget::addDataItem(const QString &domain, const Icd::WorkerPtr &w
         return false;
     }
     //
-    const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(object);
+    const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(object);
     if (!table) {
         return false;
     }

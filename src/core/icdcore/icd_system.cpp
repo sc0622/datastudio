@@ -123,6 +123,11 @@ TablePtr System::tableByMark(const std::string &mark) const
     return TablePtr();
 }
 
+bool System::isEmpty() const
+{
+    return d->tables.empty();
+}
+
 int System::childCount() const
 {
     int count = static_cast<int>(d->tables.size());
@@ -170,6 +175,45 @@ System &System::operator =(const System &other)
     }
 
     return *this;
+}
+
+ObjectPtr System::findByDomain(const std::string &domain, int domainType,
+                               bool ignoreComplex) const
+{
+    if (domain.empty()) {
+        return Icd::ObjectPtr();
+    }
+
+    std::string::size_type index = domain.find_first_of('/');
+    std::string current, next;
+    if (index == std::string::npos) {
+        current = domain;
+    } else {
+        current = domain.substr(0, index);
+        next = domain.substr(index + 1);
+    }
+
+    for (TablePtrArray::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.cend(); ++citer) {
+        const TablePtr &table = *citer;
+        if (table->domainOfType(domainType) == current) {
+            if (next.empty()) {
+                return table;
+            } else {
+                Icd::ObjectPtr object = table->findByDomain(next, domainType, ignoreComplex);
+                if (object) {
+                    return object;
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+void System::clearChildren()
+{
+    d->tables.clear();
 }
 
 Json::Value System::save() const

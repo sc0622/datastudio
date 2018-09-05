@@ -57,6 +57,10 @@ public:
                            bool ignoreComplex = true) const;
     TablePtr tableByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId) const;
 
+    ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
+                           bool ignoreComplex = true) const override;
+    void clearChildren() override;
+
     icd_uint64 updateSend(icd_uint64 code);
     void updateRecv(icd_uint64 code);
     void resetSend();

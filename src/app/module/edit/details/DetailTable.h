@@ -14,6 +14,8 @@ typedef std::shared_ptr<Object> ObjectPtr;
 
 namespace Edit {
 
+class ViewDelegate;
+
 class DetailTable : public QWidget
 {
     Q_OBJECT
@@ -43,6 +45,8 @@ private:
     bool updateCheck();
     bool updateFrameCode();
     bool updateNumeric();
+    bool updateArray();
+    bool updateBit();
     bool updateBitMap();
     bool updateBitValue();
     bool updateComplex();
@@ -58,6 +62,8 @@ private:
     bool saveCheck(QStandardItem *item);
     bool saveFrameCode(QStandardItem *item);
     bool saveNumeric(QStandardItem *item);
+    bool saveArray(QStandardItem *item);
+    bool saveBit(QStandardItem *item);
     bool saveBitMap(QStandardItem *item);
     bool saveBitValue(QStandardItem *item);
     bool saveComplex(QStandardItem *item);
@@ -67,8 +73,9 @@ private:
     void enableChangedNotify(bool enabled);
 
 private:
-    JTableView *d_tableView;
-    Icd::ObjectPtr d_object;
+    JTableView *tableView_;
+    ViewDelegate *delegate_;
+    Icd::ObjectPtr object_;
 };
 
 //// private

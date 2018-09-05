@@ -34,7 +34,7 @@ void JSerialChannelPrivate::init()
 Icd::SerialChannelPtr JSerialChannelPrivate::channel() const
 {
     Q_Q(const JSerialChannel);
-    return JHandlePtrCast<Icd::SerialChannel, Icd::Channel>(q->nativeChannel());
+    return JHandlePtrCast<Icd::SerialChannel>(q->nativeChannel());
 }
 
 }

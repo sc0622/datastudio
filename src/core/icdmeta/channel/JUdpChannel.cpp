@@ -33,7 +33,7 @@ void JUdpChannelPrivate::init()
 Icd::UdpChannelPtr JUdpChannelPrivate::channel() const
 {
     Q_Q(const JUdpChannel);
-    return JHandlePtrCast<Icd::UdpChannel, Icd::Channel>(q->nativeChannel());
+    return JHandlePtrCast<Icd::UdpChannel>(q->nativeChannel());
 }
 
 }

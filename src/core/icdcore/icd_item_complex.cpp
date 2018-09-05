@@ -164,7 +164,18 @@ TablePtr ComplexItem::tableByDomain(const std::string &domain,
         return nullptr;
     }
 
-    return JHandlePtrCast<Table, Object>(item);
+    return JHandlePtrCast<Table>(item);
+}
+
+ObjectPtr ComplexItem::findByDomain(const std::string &domain, int domainType,
+                                    bool ignoreComplex) const
+{
+    return itemByDomain(domain, Icd::DomainType(domainType), ignoreComplex);
+}
+
+void ComplexItem::clearChildren()
+{
+    d->table->clearChildren();
 }
 
 Json::Value ComplexItem::save() const

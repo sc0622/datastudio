@@ -58,34 +58,22 @@
             "sourceType" : "file"
          }
       },
-      "moitor" : {
-         "option" : {
-            "tree" : {
-               "showData" : false
-            }
-         }
-      },
       "monitor" : {
          "option" : {
             "chart" : {
-               "columnCount" : 1,
-               "flushEnabled" : true,
                "showYAlign" : true,
                "showYLabel" : true,
                "syncTrack" : true,
-               "xAxisSync" : true,
-               "yLabelWidth" : 10
+               "xAxisSync" : true
             },
             "flushEnabled" : true,
             "tree" : {
-               "flushEnabled" : true,
                "loadDeep" : 2,
                "showDesc" : true,
                "showOffset" : true,
-               "showOrignal" : 16,
+               "showOrignal" : 0,
                "showReal" : true,
-               "showType" : true,
-               "showValue" : true
+               "showType" : true
             },
             "window" : {
                "buffer" : false,
@@ -102,17 +90,12 @@
          "option" : {
             "flushEnabled" : true,
             "tree" : {
-               "flushEnabled" : true,
                "loadDeep" : 2,
                "showDesc" : true,
                "showOffset" : true,
-               "showOrignal" : 16,
+               "showOrignal" : 0,
                "showReal" : true,
-               "showType" : true,
-               "showValue" : true
-            },
-            "view" : {
-               "realtimeUpdate" : true
+               "showType" : true
             },
             "window" : {
                "modify" : true,

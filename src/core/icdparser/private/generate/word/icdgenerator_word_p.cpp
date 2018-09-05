@@ -660,7 +660,7 @@ bool WordGeneratorData::generateDataItem(const QStandardItem *itemData, bool exp
         return false;
     }
 
-    const Icd::ItemPtr item = JHandlePtrCast<Icd::Item, Icd::Object>(targetObject);
+    const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(targetObject);
     if (!item) {
         return false;
     }
@@ -815,26 +815,26 @@ bool WordGeneratorData::generateItem(const Icd::ItemPtr &item, QAxObject *axTabl
 
     switch (item->type()) {
     case Icd::ItemHead:
-        return generateHeaderItem(JHandlePtrCast<Icd::HeaderItem, Icd::Item>(item), axTable, row);
+        return generateHeaderItem(JHandlePtrCast<Icd::HeaderItem>(item), axTable, row);
     case Icd::ItemCounter:
-        return generateCounterItem(JHandlePtrCast<Icd::CounterItem, Icd::Item>(item), axTable, row);
+        return generateCounterItem(JHandlePtrCast<Icd::CounterItem>(item), axTable, row);
     case Icd::ItemCheck:
-        return generateCheckItem(JHandlePtrCast<Icd::CheckItem, Icd::Item>(item), axTable, row);
+        return generateCheckItem(JHandlePtrCast<Icd::CheckItem>(item), axTable, row);
     case Icd::ItemFrameCode:
-        return generateFrameCodeItem(JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(item), axTable, row);
+        return generateFrameCodeItem(JHandlePtrCast<Icd::FrameCodeItem>(item), axTable, row);
     case Icd::ItemNumeric:
-        return generateNumericItem(JHandlePtrCast<Icd::NumericItem, Icd::Item>(item), axTable, row);
+        return generateNumericItem(JHandlePtrCast<Icd::NumericItem>(item), axTable, row);
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
-        return generateBitItem(JHandlePtrCast<Icd::BitItem, Icd::Item>(item), axTable, row);
+        return generateBitItem(JHandlePtrCast<Icd::BitItem>(item), axTable, row);
     case Icd::ItemComplex:
-        return generateComplexItem(JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item), axTable, row, level);
+        return generateComplexItem(JHandlePtrCast<Icd::ComplexItem>(item), axTable, row, level);
     case Icd::ItemFrame:
-        return generateFrameItem(JHandlePtrCast<Icd::FrameItem, Icd::Item>(item), axTable, row, level);
+        return generateFrameItem(JHandlePtrCast<Icd::FrameItem>(item), axTable, row, level);
     case Icd::ItemDateTime:
-        return generateDateTimeItem(JHandlePtrCast<Icd::DateTimeItem, Icd::Item>(item), axTable, row);
+        return generateDateTimeItem(JHandlePtrCast<Icd::DateTimeItem>(item), axTable, row);
     case Icd::ItemArray:
-        return generateArrayItem(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item), axTable, row);
+        return generateArrayItem(JHandlePtrCast<Icd::ArrayItem>(item), axTable, row);
     default:
         return false;
     }

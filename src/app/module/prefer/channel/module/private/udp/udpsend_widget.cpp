@@ -74,8 +74,7 @@ UdpSendWidget::UdpSendWidget(QWidget *parent)
             return;
         }
         //
-        Icd::UdpChannelPtr channel =
-                JHandlePtrCast<Icd::UdpChannel, Icd::Channel>(d_worker->channel());
+        Icd::UdpChannelPtr channel = JHandlePtrCast<Icd::UdpChannel>(d_worker->channel());
         if (!channel) {
             return;
         }

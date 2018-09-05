@@ -223,7 +223,41 @@ QString JProtoTreeView::markDomain(QStandardItem *item)
 
 bool JProtoTreeView::loadTable(JTreeView *treeView, QStandardItem *itemParent, const TablePtr &table)
 {
-    return JProtoTreeViewPrivate::loadTable(treeView, itemParent, table, Icd::ObjectItem);
+    return JProtoTreeViewPrivate::loadSystem(treeView, itemParent, table, Icd::ObjectItem);
+}
+
+Icd::RootPtr JProtoTreeView::protoRoot() const
+{
+    Q_D(const JProtoTreeView);
+    return d->protoRoot_;
+}
+
+void JProtoTreeView::setProtoRoot(const RootPtr &root)
+{
+    Q_D(JProtoTreeView);
+    if (root == d->protoRoot_) {
+        return;
+    }
+
+    if (root) {
+        d->loadData();
+    } else {
+        d->clearData();
+    }
+}
+
+bool JProtoTreeView::isItemLoaded(QStandardItem *item) const
+{
+    if (!item) {
+        return false;
+    }
+
+    const QVariant varLoad = item->data(Icd::TreeLoadStatusRole);
+    if (varLoad.isValid()) {
+        return varLoad.toBool();
+    } else {
+        return false;
+    }
 }
 
 void JProtoTreeView::setRunning(bool value)

@@ -89,6 +89,33 @@ TreeView::TreeView(QWidget *parent)
     jnotify->on("edit.toolbar.window.tree", this, [=](JNEvent &event){
         setVisible(event.argument().toBool());
     });
+    jnotify->on("edit.tree.current.object", this, [=](JNEvent &event){
+        const QVariantList args = event.argument().toList();
+        Q_ASSERT(args.size() == 2);
+        if (args.size() != 2) {
+            return;
+        }
+        Icd::RootPtr root = treeView_->protoRoot();
+        if (!root) {
+            return;
+        }
+        Icd::JHandleScope<Icd::Object> *handle =
+                jVariantFromVoid<Icd::JHandleScope<Icd::Object> >(args[0]);
+        if (!handle) {
+            return;
+        }
+        const QString domain = args[1].toString();
+        if (domain.isEmpty()) {
+            handle->ptr = root;
+        } else {
+            const Icd::ObjectPtr object = root->findByDomain(domain.toStdString());
+            if (!object) {
+                return;
+            }
+            handle->ptr = object;
+        }
+        event.setReturnValue(true);
+    });
 }
 
 TreeView::~TreeView()

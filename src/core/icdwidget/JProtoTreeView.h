@@ -18,12 +18,14 @@ enum OptionType {
     //
 };
 
-class Parser;
-typedef std::shared_ptr<Parser> ParserPtr;
+class Root;
+typedef std::shared_ptr<Root> RootPtr;
 
-//
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
+
+class Parser;
+typedef std::shared_ptr<Parser> ParserPtr;
 
 // class JProtoTreeView
 
@@ -114,6 +116,11 @@ public:
     static QString markDomain(QStandardItem *item);
 
     static bool loadTable(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table);
+
+    Icd::RootPtr protoRoot() const;
+    void setProtoRoot(const Icd::RootPtr &root);
+
+    bool isItemLoaded(QStandardItem *item) const;
 
 signals:
     void itemPressed(QStandardItem *item);

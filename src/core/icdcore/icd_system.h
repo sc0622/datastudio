@@ -33,6 +33,7 @@ public:
     int tableCount() const;
     TablePtr tableAt(int index) const;
     TablePtr tableByMark(const std::string &mark) const;
+    bool isEmpty() const;
 
     int childCount() const override;
     void resetData() override;
@@ -40,6 +41,10 @@ public:
 
     Object *clone() const override;
     System &operator =(const System &other);
+
+    Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
+                                bool ignoreComplex = true) const override;
+    void clearChildren() override;
 
     // Serializable interface
 public:

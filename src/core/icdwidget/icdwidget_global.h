@@ -122,7 +122,29 @@ enum TreeItemDataRole {
     TreeFilePathRole,                    /**< */
     TreeHasTimeFormatRole,               /**< */
     TreeHeaderSizeRole,                  /**< */
+    TreeLoadStatusRole
 };
+
+//
+template<typename T>
+inline std::shared_ptr<T> handlescope_cast(const QVariant &variant)
+{
+    JHandleScope<T> *handleScope = jVariantFromVoid<JHandleScope<T> >(variant);
+    if (handleScope) {
+        return handleScope->ptr;
+    }
+    return nullptr;
+}
+
+template<typename T>
+inline std::weak_ptr<T> weakscope_cast(const QVariant &variant)
+{
+    JWeakScope<T> *weakScope = jVariantFromVoid<JWeakScope<T> >(variant);
+    if (weakScope) {
+        return weakScope->ptr;
+    }
+    return nullptr;
+}
 
 } // end of namespace Icd
 
@@ -138,6 +160,10 @@ public:
     bool init();
 
     void registerSingletonRelease(SingletonReleaseCallback callback);
+
+    static QStringList protoItemTypes();
+
+    static QString prettyValue(double value, bool isFloat = false);
 
 signals:
 

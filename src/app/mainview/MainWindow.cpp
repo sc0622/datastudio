@@ -8,6 +8,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    setWindowTitle("[*]");
+
     setObjectName(metaObject()->className());
     setDockOptions(QMainWindow::AnimatedDocks
                    | QMainWindow::AllowNestedDocks

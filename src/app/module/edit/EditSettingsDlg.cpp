@@ -7,26 +7,26 @@ namespace Edit {
 
 TreeViewSettings::TreeViewSettings(QWidget *parent)
     : QWidget(parent)
-    , d_modifyFlags(1)
+    , modifyFlags_(1)
 {
     QFormLayout *formLayoutMain = new QFormLayout(this);
     formLayoutMain->setLabelAlignment(Qt::AlignRight);
 
-    d_comboBoxDeep = new QComboBox(this);
-    d_comboBoxDeep->addItem(tr("Vehicle"), Icd::ObjectVehicle);
-    d_comboBoxDeep->addItem(tr("System"), Icd::ObjectSystem);
-    d_comboBoxDeep->addItem(tr("Table"), Icd::ObjectTable);
-    d_comboBoxDeep->addItem(tr("Item"), Icd::ObjectItem);
-    d_comboBoxDeep->setCurrentIndex(1);
-    formLayoutMain->addRow(tr("Loading deep:"), d_comboBoxDeep);
+    comboBoxDeep_ = new QComboBox(this);
+    comboBoxDeep_->addItem(tr("Vehicle"), Icd::ObjectVehicle);
+    comboBoxDeep_->addItem(tr("System"), Icd::ObjectSystem);
+    comboBoxDeep_->addItem(tr("Table"), Icd::ObjectTable);
+    comboBoxDeep_->addItem(tr("Item"), Icd::ObjectItem);
+    comboBoxDeep_->setCurrentIndex(2);
+    formLayoutMain->addRow(tr("Loading deep:"), comboBoxDeep_);
 
     if (!init()) {
         //
     }
 
-    connect(d_comboBoxDeep, static_cast<void(QComboBox::*)(int)>
+    connect(comboBoxDeep_, static_cast<void(QComboBox::*)(int)>
             (&QComboBox::currentIndexChanged), this, [=](){
-        d_modifyFlags.setBit(0, true);
+        modifyFlags_.setBit(0, true);
         emit contentChanged();
     });
 }
@@ -38,11 +38,11 @@ TreeViewSettings::~TreeViewSettings()
 
 bool TreeViewSettings::tryAccept()
 {
-    if (d_modifyFlags.testBit(0)) {
-        const int deep = d_comboBoxDeep->currentData().toInt();
+    if (modifyFlags_.testBit(0)) {
+        const int deep = comboBoxDeep_->currentData().toInt();
         if (deep == -1) {
             QMessageBox::warning(this, tr("Warning"), tr("Deep cannot be empty!"));
-            d_comboBoxDeep->setFocus();
+            comboBoxDeep_->setFocus();
             return false;
         }
 
@@ -62,10 +62,10 @@ bool TreeViewSettings::init()
 
     if (option.isMember("loadDeep")) {
         const int deep = qBound(0, option["loadDeep"].asInt() - Icd::ObjectVehicle,
-                d_comboBoxDeep->count() - 1);
-        d_comboBoxDeep->setCurrentIndex(deep);
+                comboBoxDeep_->count() - 1);
+        comboBoxDeep_->setCurrentIndex(deep);
     } else {
-        d_comboBoxDeep->setCurrentIndex(1);
+        comboBoxDeep_->setCurrentIndex(2);
     }
 
     return true;

@@ -2,6 +2,7 @@
 #define ICD_ITEM_BIT_H
 
 #include "icd_item.h"
+#include "icd_item_limit.h"
 #include <unordered_map>
 
 namespace Icd {
@@ -51,6 +52,33 @@ public:
 
     Object *clone() const override;
     BitItem &operator =(const BitItem &other);
+
+    // for bitvalue
+    double originalData() const;
+    double originalDataFromBuffer(const char *buffer) const;
+
+    double scale() const;
+    void setScale(double scale);
+
+    int decimals() const;
+    void setDecimals(int value);
+
+    double offset() const;
+    void setOffset(double offset);
+
+    LimitItemPtr limit() const;
+    void setLimit(const LimitItemPtr &limit);
+
+    std::string unit() const;
+    void setUnit(const std::string &unit);
+
+    std::pair<double, double> dataRange() const;
+    std::pair<double, double> valueRange() const;
+
+    bool outOfLimit() const;
+
+    std::string prettyValue() const;
+    static std::string prettyValue(double value);
 
     // Serializable interface
 public:

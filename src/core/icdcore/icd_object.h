@@ -63,6 +63,10 @@ public:
     virtual Object *clone() const;
     Object &operator =(const Object &other);
 
+    virtual Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
+                                        bool ignoreComplex = true) const;
+    virtual void clearChildren();
+
     // Serializable interface
 public:
     virtual Json::Value save() const override;

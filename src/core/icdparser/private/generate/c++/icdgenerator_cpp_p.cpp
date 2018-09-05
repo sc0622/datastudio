@@ -171,35 +171,35 @@ bool CppGeneratorData::generateDataItem(const ItemPtr &item,
 
     switch (item->type()) {
     case Icd::ItemHead:
-        return generateHeaderItem(JHandlePtrCast<Icd::HeaderItem, Icd::Item>(item),
+        return generateHeaderItem(JHandlePtrCast<Icd::HeaderItem>(item),
                                   tableStream, itemsStream);
     case Icd::ItemCounter:
-        return generateCounterItem(JHandlePtrCast<Icd::CounterItem, Icd::Item>(item),
+        return generateCounterItem(JHandlePtrCast<Icd::CounterItem>(item),
                                    tableStream, itemsStream);
     case Icd::ItemCheck:
-        return generateCheckItem(JHandlePtrCast<Icd::CheckItem, Icd::Item>(item),
+        return generateCheckItem(JHandlePtrCast<Icd::CheckItem>(item),
                                  tableStream, itemsStream);
     case Icd::ItemFrameCode:
-        return generateFrameCodeItem(JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(item),
+        return generateFrameCodeItem(JHandlePtrCast<Icd::FrameCodeItem>(item),
                                      tableStream, itemsStream);
     case Icd::ItemNumeric:
-        return generateNumericItem(JHandlePtrCast<Icd::NumericItem, Icd::Item>(item),
+        return generateNumericItem(JHandlePtrCast<Icd::NumericItem>(item),
                                    tableStream, itemsStream);
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
-        return generateBitItem(JHandlePtrCast<Icd::BitItem, Icd::Item>(item),
+        return generateBitItem(JHandlePtrCast<Icd::BitItem>(item),
                                tableStream, itemsStream);
     case Icd::ItemComplex:
-        return generateComplexItem(JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item),
+        return generateComplexItem(JHandlePtrCast<Icd::ComplexItem>(item),
                                    tableStream, itemsStream);
     case Icd::ItemFrame:
-        return generateFrameItem(JHandlePtrCast<Icd::FrameItem, Icd::Item>(item),
+        return generateFrameItem(JHandlePtrCast<Icd::FrameItem>(item),
                                  tableStream, itemsStream);
     case Icd::ItemDateTime:
-        return generateDateTimeItem(JHandlePtrCast<Icd::DateTimeItem, Icd::Item>(item),
+        return generateDateTimeItem(JHandlePtrCast<Icd::DateTimeItem>(item),
                                     tableStream, itemsStream);
     case Icd::ItemArray:
-        return generateArrayItem(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item),
+        return generateArrayItem(JHandlePtrCast<Icd::ArrayItem>(item),
                                  tableStream, itemsStream);
     default:
         return false;

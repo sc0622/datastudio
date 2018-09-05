@@ -174,8 +174,7 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
             return;
         }
         //
-        Icd::SerialChannelPtr channel =
-                JHandlePtrCast<Icd::SerialChannel, Icd::Channel>(d_worker->channel());
+        Icd::SerialChannelPtr channel = JHandlePtrCast<Icd::SerialChannel>(d_worker->channel());
         if (!channel) {
             return;
         }
@@ -255,8 +254,7 @@ void SerialSettingWidget::updateUi(const Icd::WorkerPtr &worker)
     if (d_worker) {
         d_worker->disconnect(this);
         //
-        Icd::SerialChannelPtr channel =
-                JHandlePtrCast<Icd::SerialChannel, Icd::Channel>(d_worker->channel());
+        Icd::SerialChannelPtr channel = JHandlePtrCast<Icd::SerialChannel>(d_worker->channel());
     }
 
     //
@@ -279,8 +277,7 @@ void SerialSettingWidget::updateUi(const Icd::WorkerPtr &worker)
     }
 
     //
-    Icd::SerialChannelPtr channel =
-            JHandlePtrCast<Icd::SerialChannel, Icd::Channel>(d_worker->channel());
+    Icd::SerialChannelPtr channel = JHandlePtrCast<Icd::SerialChannel>(d_worker->channel());
     if (!channel) {
         return;
     }

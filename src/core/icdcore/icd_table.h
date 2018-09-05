@@ -48,9 +48,14 @@ public:
     ItemPtr itemById(const std::string &id) const;
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
+
     ObjectPtr itemByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId,
                            bool ignoreComplex = true) const;
     TablePtr tableByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId) const;
+
+    ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
+                           bool ignoreComplex = true) const override;
+    void clearChildren() override;
 
     const std::vector<char> &headers() const;
     CounterItemPtr counterItem();

@@ -22,15 +22,13 @@ public:
 signals:
 
 public slots:
+    void onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous);
 
 protected:
 
 private:
-    void onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous);
-
-private:
-    QStackedWidget *d_stackedWidget;
-    DetailView *d_detailView;
+    QStackedWidget *stackedWidget_;
+    DetailView *detailView_;
 };
 
 }

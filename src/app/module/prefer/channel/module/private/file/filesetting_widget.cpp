@@ -175,8 +175,7 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
             return;
         }
         //
-        Icd::FileChannelPtr channel =
-                JHandlePtrCast<Icd::FileChannel, Icd::Channel>(d_worker->channel());
+        Icd::FileChannelPtr channel = JHandlePtrCast<Icd::FileChannel>(d_worker->channel());
         if (!channel) {
             return;
         }
@@ -312,8 +311,7 @@ void FileSettingWidget::updateUi(const Icd::WorkerPtr &worker)
     }
 
     //
-    Icd::FileChannelPtr channel =
-            JHandlePtrCast<Icd::FileChannel, Icd::Channel>(d_worker->channel());
+    Icd::FileChannelPtr channel = JHandlePtrCast<Icd::FileChannel>(d_worker->channel());
     if (!channel) {
         return;
     }

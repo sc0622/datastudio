@@ -31,11 +31,16 @@ public:
     int vehicleCount() const;
     VehiclePtr vehicleAt(int index) const;
     VehiclePtr vehicleByMark(const std::string &mark) const;
+    bool isEmpty() const;
     int childCount() const override;
     void resetData() override;
     void clearData() override;
     Object *clone() const override;
     Root &operator =(const Root &other);
+
+    Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
+                                bool ignoreComplex = true) const override;
+    void clearChildren() override;
 
     // Serializable interface
 public:

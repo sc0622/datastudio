@@ -17,7 +17,7 @@ TreeViewSettings::TreeViewSettings(QWidget *parent)
     comboBoxDeep_->addItem(tr("System"), Icd::ObjectSystem);
     comboBoxDeep_->addItem(tr("Table"), Icd::ObjectTable);
     comboBoxDeep_->addItem(tr("Item"), Icd::ObjectItem);
-    comboBoxDeep_->setCurrentIndex(1);
+    comboBoxDeep_->setCurrentIndex(2);
     formLayoutMain->addRow(tr("Loading deep:"), comboBoxDeep_);
 
     if (!init()) {
@@ -65,7 +65,7 @@ bool TreeViewSettings::init()
                 comboBoxDeep_->count() - 1);
         comboBoxDeep_->setCurrentIndex(deep);
     } else {
-        comboBoxDeep_->setCurrentIndex(1);
+        comboBoxDeep_->setCurrentIndex(2);
     }
 
     return true;

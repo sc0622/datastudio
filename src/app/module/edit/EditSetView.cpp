@@ -11,11 +11,11 @@ SetView::SetView(QWidget *parent)
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    d_stackedWidget = new QStackedWidget(this);
-    vertLayoutMain->addWidget(d_stackedWidget);
+    stackedWidget_ = new QStackedWidget(this);
+    vertLayoutMain->addWidget(stackedWidget_);
 
-    d_detailView = new DetailView(this);
-    d_stackedWidget->addWidget(d_detailView);
+    detailView_ = new DetailView(this);
+    stackedWidget_->addWidget(detailView_);
 
     jnotify->on("edit.toolbar.window.settings", this, [=](JNEvent &event){
         setVisible(event.argument().toBool());
@@ -39,7 +39,7 @@ bool SetView::init()
 {
     bool result = true;
 
-    d_detailView->init();
+    detailView_->init();
 
     return result;
 }
@@ -47,7 +47,7 @@ bool SetView::init()
 void SetView::onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous)
 {
     Q_UNUSED(previous);
-    d_detailView->updateView(current);
+    detailView_->updateView(current);
 }
 
 }

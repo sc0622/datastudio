@@ -28,12 +28,15 @@ bool JsonParser::parse(RootPtr &root, int deep) const
         return false;
     }
 
-    Icd::RootPtr _root(new Icd::Root());
-    if (!_root->restore(rootJson, deep)) {
-        return false;
+    if (root) {
+        root->clearVehicle();
+    } else {
+        root = std::make_shared<Icd::Root>(nullptr);
     }
 
-    root = _root;
+    if (!root->restore(rootJson, deep)) {
+        return false;
+    }
 
     return true;
 }
@@ -68,12 +71,15 @@ bool JsonParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle,
         return false;
     }
 
-    Icd::VehiclePtr _vehicle(new Icd::Vehicle());
-    if (!_vehicle->restore(vehicleJson, deep)) {
-        return false;
+    if (vehicle) {
+        vehicle->clearSystem();
+    } else {
+        vehicle = std::make_shared<Icd::Vehicle>(nullptr);
     }
 
-    vehicle = _vehicle;
+    if (!vehicle->restore(vehicleJson, deep)) {
+        return false;
+    }
 
     return true;
 }
@@ -109,12 +115,15 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
         return false;
     }
 
-    Icd::SystemPtr _system(new Icd::System());
-    if (!_system->restore(systemJson, deep)) {
-        return false;
+    if (system) {
+        system->clearTable();
+    } else {
+        system = std::make_shared<Icd::System>(nullptr);
     }
 
-    system = _system;
+    if (!system->restore(systemJson, deep)) {
+        return false;
+    }
 
     return true;
 }
@@ -153,12 +162,17 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
         return false;
     }
 
-    Icd::TablePtr _table(new Icd::Table());
-    if (!_table->restore(tableJson, deep)) {
+    if (table) {
+        table->clearItem();
+    } else {
+        table = std::make_shared<Icd::Table>(nullptr);
+    }
+
+    if (!table->restore(tableJson, deep)) {
         return false;
     }
-    _table->setDomain(vehicleId + '/' + systemId + '/' + tableId);
-    table = _table;
+
+    table->setDomain(vehicleId + '/' + systemId + '/' + tableId);
 
     return true;
 }
@@ -194,7 +208,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
             double offset = 0;
             const Icd::ItemType itemType = item->type();
             if (itemType == Icd::ItemBitMap || itemType == Icd::ItemBitValue) {
-                offset = Icd::Table::recalcBitBufferOffset(JHandlePtrCast<Icd::BitItem, Icd::Item>(item),
+                offset = Icd::Table::recalcBitBufferOffset(JHandlePtrCast<Icd::BitItem>(item),
                                                            items, items.crbegin());
                 if (offset < 0) {
                     offset = last->bufferOffset() + last->bufferSize();
@@ -269,13 +283,17 @@ bool JsonParser::parse(const std::string &tableId, TablePtr &table) const
         return false;
     }
 
-    Icd::TablePtr _table(new Icd::Table());
-    if (!_table->restore(tableJson, Icd::ObjectItem)) {
+    if (table) {
+        table->clearItem();
+    } else {
+        table = std::make_shared<Icd::Table>(nullptr);
+    }
+
+    if (!table->restore(tableJson, Icd::ObjectItem)) {
         return false;
     }
 
-    _table->setDomain(tableId);
-    table = _table;
+    table->setDomain(tableId);
 
     return true;
 }

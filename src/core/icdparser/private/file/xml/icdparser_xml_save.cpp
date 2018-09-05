@@ -40,28 +40,20 @@ bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object)
     const std::string id = object->id();
     if (!id.empty()) {
         switch (object->objectType()) {
-        case Icd::ObjectItem: break;
-#if 0
-        case Icd::ObjectTable:
-            emObject->SetAttribute("id", "ICDTable_" + QUuid::createUuid()
-                                   .toString().remove(QRegExp("[{}-]")).toStdString());
+        case Icd::ObjectItem:
             break;
-#endif
         default:
             emObject->SetAttribute("id", id);
             break;
         }
     }
-
     // name
     emObject->SetAttribute("name", object->name());
-
     // mark
     const std::string mark = object->mark();
     if (!mark.empty()) {
         emObject->SetAttribute("mark", mark);
     }
-
     // desc
     const std::string desc = object->desc();
     if (!desc.empty()) {
@@ -73,67 +65,63 @@ bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object)
 
 bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
 {
-    //
     if (!emItem || item == nullptr) {
-        return false;       //
+        return false;
     }
 
     // save object attributes
-    if (!saveObject(emItem, JHandlePtrCast<Icd::Object, Icd::Item>(item))) {
-        return false;   // save failure
+    if (!saveObject(emItem, item)) {
+        return false;
     }
-
     // type
     emItem->SetAttribute("type", item->Icd::Item::typeString());
-
     // defaultValue
     emItem->SetDoubleAttribute("defaultValue", item->defaultValue());
-
     //
     switch (item->type()) {
     case Icd::ItemHead:
-        if (!saveItemHead(emItem, JHandlePtrCast<Icd::HeaderItem, Icd::Item>(item))) {
+        if (!saveItemHead(emItem, JHandlePtrCast<Icd::HeaderItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemCounter:
-        if (!saveItemCounter(emItem, JHandlePtrCast<Icd::CounterItem, Icd::Item>(item))) {
+        if (!saveItemCounter(emItem, JHandlePtrCast<Icd::CounterItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemCheck:
-        if (!saveItemCheck(emItem, JHandlePtrCast<Icd::CheckItem, Icd::Item>(item))) {
+        if (!saveItemCheck(emItem, JHandlePtrCast<Icd::CheckItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemFrameCode:
-        if (!saveItemFrameCode(emItem, JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(item))) {
+        if (!saveItemFrameCode(emItem, JHandlePtrCast<Icd::FrameCodeItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemNumeric:
-        if (!saveItemNumeric(emItem, JHandlePtrCast<Icd::NumericItem, Icd::Item>(item))) {
+        if (!saveItemNumeric(emItem, JHandlePtrCast<Icd::NumericItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemArray:
-        if (!saveItemArray(emItem, JHandlePtrCast<Icd::ArrayItem, Icd::Item>(item))) {
+        if (!saveItemArray(emItem, JHandlePtrCast<Icd::ArrayItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
-        if (!saveItemBit(emItem, JHandlePtrCast<Icd::BitItem, Icd::Item>(item))) {
+        if (!saveItemBit(emItem, JHandlePtrCast<Icd::BitItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemComplex:
-        if (!saveItemComplex(emItem, JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item))) {
+        if (!saveItemComplex(emItem, JHandlePtrCast<Icd::ComplexItem>(item))) {
             return false;
         }
         break;
     case Icd::ItemFrame:
-        if (!saveItemFrame(emItem, JHandlePtrCast<Icd::FrameItem, Icd::Item>(item))) {
+        if (!saveItemFrame(emItem, JHandlePtrCast<Icd::FrameItem>(item))) {
             return false;
         }
         break;
@@ -194,14 +182,12 @@ bool XmlParser::saveItemCheck(TiXmlElement *emItem, const Icd::CheckItemPtr &che
 bool XmlParser::saveItemFrameCode(TiXmlElement *emItem,
                                   const Icd::FrameCodeItemPtr &frameCode) const
 {
-    //
     if (!emItem || frameCode == nullptr) {
-        return false;       //
+        return false;
     }
 
     // frameCodeType
     emItem->SetAttribute("frameCodeType", frameCode->frameCodeTypeString());
-
     // frameId
     const std::string frameId = frameCode->frameId();
     if (!frameId.empty()) {
@@ -214,41 +200,34 @@ bool XmlParser::saveItemFrameCode(TiXmlElement *emItem,
 bool XmlParser::saveItemNumeric(TiXmlElement *emItem,
                                 const Icd::NumericItemPtr &numeric) const
 {
-    //
     if (!emItem || numeric == nullptr) {
-        return false;       //
+        return false;
     }
 
     // numericType
     emItem->SetAttribute("numericType", numeric->numericTypeString());
-
     // scale
     QString sValue = QString::number(numeric->scale(), 'g', 16);
     emItem->SetAttribute("scale", sValue.toStdString());
-
     // offset
     emItem->SetDoubleAttribute("offset", numeric->offset());
-
     // decimals
-    emItem->SetDoubleAttribute("decimals", numeric->decimals());
-
+    if (numeric->decimals() > 0) {
+        emItem->SetDoubleAttribute("decimals", numeric->decimals());
+    }
     // min
-    if (numeric->limit()->leftInf()) {
-        emItem->SetAttribute("min", "");
-    } else {
+    if (!numeric->limit()->leftInf()) {
         emItem->SetDoubleAttribute("min", numeric->limit()->minimum());
     }
-
     // max
-    if (numeric->limit()->rightInf()) {
-        emItem->SetAttribute("max", "");
-    } else {
+    if (!numeric->limit()->rightInf()) {
         emItem->SetDoubleAttribute("max", numeric->limit()->maximum());
     }
-
     // unit
-    emItem->SetAttribute("unit", numeric->unit());
-
+    const std::string unit = numeric->unit();
+    if (!unit.empty()) {
+        emItem->SetAttribute("unit", numeric->unit());
+    }
     // spec
     const std::map<double, std::string> &specs = numeric->specs();
     for (std::map<double, std::string>::const_iterator citer = specs.cbegin();
@@ -282,20 +261,34 @@ bool XmlParser::saveItemArray(TiXmlElement *emItem, const ArrayItemPtr &array) c
 bool XmlParser::saveItemBit(TiXmlElement *emItem,
                             const Icd::BitItemPtr &bit) const
 {
-    //
     if (!emItem || bit == nullptr) {
-        return false;       //
+        return false;
     }
 
     // start
     emItem->SetAttribute("start", bit->bitStart());
-
     // count
     emItem->SetAttribute("count", bit->bitCount());
-
-    // typeSize
-    emItem->SetAttribute("typeSize", bit->typeSize());
-
+    // for bitvalue
+    if (bit->type() == Icd::ItemBitValue) {
+        // scale
+        QString sValue = QString::number(bit->scale(), 'g', 16);
+        emItem->SetAttribute("scale", sValue.toStdString());
+        // offset
+        emItem->SetDoubleAttribute("offset", bit->offset());
+        // decimals
+        emItem->SetDoubleAttribute("decimals", bit->decimals());
+        // min
+        if (!bit->limit()->leftInf()) {
+            emItem->SetDoubleAttribute("min", bit->limit()->minimum());
+        }
+        // max
+        if (bit->limit()->rightInf()) {
+            emItem->SetDoubleAttribute("max", bit->limit()->maximum());
+        }
+        // unit
+        emItem->SetAttribute("unit", bit->unit());
+    }
     // spec
     const std::map<icd_uint64, std::string> &specs = bit->specs();
     for (std::map<icd_uint64, std::string>::const_iterator citer = specs.cbegin();
@@ -315,15 +308,13 @@ bool XmlParser::saveItemBit(TiXmlElement *emItem,
 bool XmlParser::saveItemComplex(TiXmlElement *emItem,
                                 const Icd::ComplexItemPtr &complex) const
 {
-    //
     if (!emItem || complex == nullptr) {
-        return false;       //
+        return false;
     }
 
     // bufferSize
     emItem->SetDoubleAttribute("size", complex->bufferSize());
-
-    // creat a table element from document
+    // create a table element from document
     TiXmlElement *emTable = new TiXmlElement("table");
     emItem->LinkEndChild(emTable);
     if (!saveTable(emTable, complex->table())) {
@@ -333,26 +324,21 @@ bool XmlParser::saveItemComplex(TiXmlElement *emItem,
     return true;
 }
 
-bool XmlParser::saveItemFrame(TiXmlElement *emItem,
-                              const Icd::FrameItemPtr &frame) const
+bool XmlParser::saveItemFrame(TiXmlElement *emItem, const Icd::FrameItemPtr &frame) const
 {
-    //
     if (!emItem || frame == nullptr) {
-        return false;       //
+        return false;
     }
 
     // save object attributes
-    if (!saveObject(emItem, JHandlePtrCast<Icd::Object, Icd::FrameItem>(frame))) {
-        return false;   // save failure
+    if (!saveObject(emItem, frame)) {
+        return false;
     }
-
     // bufferSize
     emItem->SetDoubleAttribute("size", frame->bufferSize());
-
     // sequenceCount
     emItem->SetAttribute("sequenceCount", frame->sequenceCount());
-
-    //
+    // tables
     const Icd::TablePtrMap &allTable = frame->allTable();
     for (Icd::TablePtrMap::const_iterator citer = allTable.cbegin();
          citer != allTable.cend(); ++citer) {
@@ -369,22 +355,18 @@ bool XmlParser::saveItemFrame(TiXmlElement *emItem,
     return true;
 }
 
-bool XmlParser::saveTable(TiXmlElement *emTable,
-                          const Icd::TablePtr &table) const
+bool XmlParser::saveTable(TiXmlElement *emTable, const Icd::TablePtr &table) const
 {
-    //
     if (!emTable || table == nullptr) {
-        return false;       //
+        return false;
     }
 
     // save object attributes
-    if (!saveObject(emTable, JHandlePtrCast<Icd::Object, Icd::Table>(table))) {
-        return false;   // save failure
+    if (!saveObject(emTable, table)) {
+        return false;
     }
-
     // sequence
     emTable->SetAttribute("sequence", table->sequence());
-
     // save table elements
     const Icd::ItemPtrArray &items = table->allItem();
     for (Icd::ItemPtrArray::const_iterator citer = items.cbegin();
@@ -400,19 +382,16 @@ bool XmlParser::saveTable(TiXmlElement *emTable,
     return true;
 }
 
-bool XmlParser::saveSystem(TiXmlElement *emSystem,
-                           const Icd::SystemPtr &system) const
+bool XmlParser::saveSystem(TiXmlElement *emSystem, const Icd::SystemPtr &system) const
 {
-    //
     if (!emSystem || system == nullptr) {
-        return false;       //
+        return false;
     }
 
     // save object attributes
-    if (!saveObject(emSystem, JHandlePtrCast<Icd::Object, Icd::System>(system))) {
+    if (!saveObject(emSystem, system)) {
         return false;   // save failure
     }
-
     // save table elements
     const Icd::TablePtrArray &tables = system->allTable();
     for (Icd::TablePtrArray::const_iterator citer = tables.cbegin();
@@ -428,19 +407,16 @@ bool XmlParser::saveSystem(TiXmlElement *emSystem,
     return true;
 }
 
-bool XmlParser::saveVehicle(TiXmlElement *emVehicle,
-                            const Icd::VehiclePtr &vehicle) const
+bool XmlParser::saveVehicle(TiXmlElement *emVehicle, const Icd::VehiclePtr &vehicle) const
 {
-    //
     if (!emVehicle || vehicle == nullptr) {
-        return false;   //
+        return false;
     }
 
     // save object attributes
-    if (!saveObject(emVehicle, JHandlePtrCast<Icd::Object, Icd::Vehicle>(vehicle))) {
-        return false;   // save failure
+    if (!saveObject(emVehicle, vehicle)) {
+        return false;
     }
-
     // save system elements
     const Icd::SystemPtrArray &systems = vehicle->allSystem();
     for (Icd::SystemPtrArray::const_iterator citer = systems.cbegin();

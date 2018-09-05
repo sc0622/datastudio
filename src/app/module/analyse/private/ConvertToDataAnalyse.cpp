@@ -396,7 +396,7 @@ bool ConvertToDataAnalyse::appendVariable(QTextStream &ts, const ItemInfo &itemI
     }
 
     if (itemInfo.bitOffset >= 0) {
-        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(itemInfo.item);
+        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(itemInfo.item);
         if (!bitItem) {
             Q_ASSERT(false);
             return false;
@@ -482,15 +482,15 @@ bool ConvertToDataAnalyse::appendVariable(QTextStream &ts, const Icd::ItemPtr &i
 
     switch (item->type()) {
     case Icd::ItemComplex:
-        return appendVariable(ts, JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item));
+        return appendVariable(ts, JHandlePtrCast<Icd::ComplexItem>(item));
     case Icd::ItemFrame:
-        return appendVariable(ts, JHandlePtrCast<Icd::FrameItem, Icd::Item>(item));
+        return appendVariable(ts, JHandlePtrCast<Icd::FrameItem>(item));
     case Icd::ItemBitMap:
         if (d_checkSplitBit && !d_checkSplitBit->isChecked()) {
             // not split bit-item
             break;
         }
-        return appendVariable(ts, JHandlePtrCast<Icd::BitItem, Icd::Item>(item), -1);
+        return appendVariable(ts, JHandlePtrCast<Icd::BitItem>(item), -1);
     default:
         break;
     }
@@ -544,7 +544,7 @@ bool ConvertToDataAnalyse::parseValue(QTextStream &ts, const ItemInfo &itemInfo)
 
     if (itemInfo.bitOffset >= 0) {
         const Icd::BitItemPtr bitItem =
-                JHandlePtrCast<Icd::BitItem, Icd::Item>(itemInfo.item);
+                JHandlePtrCast<Icd::BitItem>(itemInfo.item);
         if (!bitItem) {
             Q_ASSERT(false);
             return false;
@@ -616,15 +616,15 @@ bool ConvertToDataAnalyse::parseValue(QTextStream &ts, const Icd::ItemPtr &item)
             // not split bit-item
             break;
         }
-        return parseValue(ts, JHandlePtrCast<Icd::BitItem, Icd::Item>(item));
+        return parseValue(ts, JHandlePtrCast<Icd::BitItem>(item));
     case Icd::ItemComplex:
-        return parseValue(ts, JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item));
+        return parseValue(ts, JHandlePtrCast<Icd::ComplexItem>(item));
     case Icd::ItemFrame:
-        return parseValue(ts, JHandlePtrCast<Icd::FrameItem, Icd::Item>(item));
+        return parseValue(ts, JHandlePtrCast<Icd::FrameItem>(item));
     case Icd::ItemNumeric:
     {
         const Icd::NumericItemPtr numericItem =
-                JHandlePtrCast<Icd::NumericItem, Icd::Item>(item);
+                JHandlePtrCast<Icd::NumericItem>(item);
         if (!numericItem) {
             Q_ASSERT(false);
             return false;
@@ -738,15 +738,15 @@ int ConvertToDataAnalyse::queryChildCount(const Icd::ItemPtr &item) const
     switch (item->type()) {
     case Icd::ItemFrame:
     {
-        return queryChildCount(JHandlePtrCast<Icd::FrameItem, Icd::Item>(item));
+        return queryChildCount(JHandlePtrCast<Icd::FrameItem>(item));
     }
     case Icd::ItemComplex:
     {
-        return queryChildCount(JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item));
+        return queryChildCount(JHandlePtrCast<Icd::ComplexItem>(item));
     }
     case Icd::ItemBitMap:
     {
-        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(item);
         if (!bitItem) {
             Q_ASSERT(false);
             return 0;

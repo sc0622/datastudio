@@ -11,6 +11,5 @@ SplashWidget::SplashWidget(QWidget *parent)
               .scaled(screenSize.width() / 2, screenSize.height() / 2,
                       Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
-    showMessage(tr("Initializing..."), Qt::AlignCenter,
-                QColor("lightgreen"));
+    showMessage(tr("Initializing..."), Qt::AlignCenter, QColor("lightgreen"));
 }

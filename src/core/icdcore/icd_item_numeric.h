@@ -54,8 +54,8 @@ public:
     double scale() const;
     void setScale(double scale);
 
-    double decimals() const;
-    void setDecimals(double value);
+    int decimals() const;
+    void setDecimals(int value);
 
     double offset() const;
     void setOffset(double offset);
@@ -83,6 +83,9 @@ public:
 
     Object *clone() const override;
     NumericItem &operator =(const NumericItem &other);
+
+    std::string prettyValue() const;
+    static std::string prettyValue(double value, int numericType);
 
     // Serializable interface
 public:

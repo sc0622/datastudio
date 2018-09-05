@@ -607,8 +607,7 @@ QString JMain::typeString(const Icd::ItemPtr &item)
     case Icd::ItemHead: return tr("Head");
     case Icd::ItemCounter:
     {
-        const Icd::CounterItemPtr counterItem =
-                JHandlePtrCast<Icd::CounterItem, Icd::Item>(item);
+        const Icd::CounterItemPtr counterItem = JHandlePtrCast<Icd::CounterItem>(item);
         if (!counterItem) {
             break;
         }
@@ -616,8 +615,7 @@ QString JMain::typeString(const Icd::ItemPtr &item)
     }
     case Icd::ItemCheck:
     {
-        const Icd::CheckItemPtr checkItem =
-                JHandlePtrCast<Icd::CheckItem, Icd::Item>(item);
+        const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem>(item);
         if (!checkItem) {
             break;
         }
@@ -625,8 +623,7 @@ QString JMain::typeString(const Icd::ItemPtr &item)
     }
     case Icd::ItemFrameCode:
     {
-        const Icd::FrameCodeItemPtr frameCodeItem =
-                JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(item);
+        const Icd::FrameCodeItemPtr frameCodeItem = JHandlePtrCast<Icd::FrameCodeItem>(item);
         if (!frameCodeItem) {
             break;
         }
@@ -634,8 +631,7 @@ QString JMain::typeString(const Icd::ItemPtr &item)
     }
     case Icd::ItemNumeric:
     {
-        const Icd::NumericItemPtr numericItem =
-                JHandlePtrCast<Icd::NumericItem, Icd::Item>(item);
+        const Icd::NumericItemPtr numericItem = JHandlePtrCast<Icd::NumericItem>(item);
         if (!numericItem) {
             break;
         }

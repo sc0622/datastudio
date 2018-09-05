@@ -16,11 +16,17 @@ Project {
         desc.fileDesc: project.projectDisplayName
         Qt.core.resourceFileBaseName: project.projectName
 
-        readonly property bool useOldEdit: true
+        cpp.defines: {
+            var defines = base.concat(['PROJECT_APP']);
+            if (qbs.buildVariant == 'debug') {
+                defines.push('TEST_STYLESHEET');
+            }
+            return defines;
+        }
+        cpp.includePaths: base.concat([ '.' ])
 
         Depends { name: 'Qt.concurrent' }
         Depends { name: 'Qt.network' }
-        Depends { name: 'Qt.sql'; linked: product.useOldEdit }
         Depends { name: 'Qt.serialport' }
         Depends { name: '3rdpart.jchart' }
         Depends { name: '3rdpart.jutraledit' }
@@ -35,15 +41,13 @@ Project {
         Group {
             name: 'Headers'
             files: [
-                '**/*.h'
+                '**/*.h',
             ]
-            excludeFiles: [ '**/precomp.h', 'common/old/**/*', 'module/edit/old/**/*' ]
         }
 
         Group {
             name: 'Sources'
             files: [ '**/*.cpp' ]
-            excludeFiles: [ 'common/old/**/*', 'module/edit/old/**/*' ]
         }
 
         Group {
@@ -54,64 +58,6 @@ Project {
             fileTags: [ 'qt.core.resource_data' ]
             Qt.core.resourcePrefix: '/' + project.projectName
             Qt.core.resourceSourceBase: 'resource'
-        }
-
-        cpp.defines: {
-            var defines = base.concat(['PROJECT_APP']);
-            if (qbs.buildVariant == 'debug') {
-                defines.push('TEST_STYLESHEET');
-            }
-            // old
-            if (useOldEdit) {
-                defines.push('EDIT_OLD');
-            }
-            return defines;
-        }
-        cpp.includePaths: {
-            var paths = base.concat(['.']);
-            if (useOldEdit) {
-                paths.push('common/old');
-                paths.push('common/old/DBAccess/parser');
-                paths.push('module/edit/old');
-            }
-            return paths;
-        }
-
-        // old
-
-        Group {
-            name: 'old.DBAccess'
-            condition: useOldEdit
-            prefix: 'common/old/DBAccess/'
-            files: [ '**/*.h', '**/*.cpp' ]
-        }
-
-        Group {
-            name: 'old.KernelClass.headers'
-            condition: useOldEdit
-            prefix: 'common/old/KernelClass/'
-            files: [ '**/*.h' ]
-        }
-
-        Group {
-            name: 'old.KernelClass.sources'
-            condition: useOldEdit
-            prefix: 'common/old/KernelClass/'
-            files: [ '**/*.cpp' ]
-        }
-
-        Group {
-            name: 'old.ui.headers'
-            condition: useOldEdit
-            prefix: 'module/edit/old/'
-            files: [ '**/*.h' ]
-        }
-
-        Group {
-            name: 'old.ui.sources'
-            condition: useOldEdit
-            prefix: 'module/edit/old/'
-            files: [ '**/*.cpp' ]
         }
     }
 }

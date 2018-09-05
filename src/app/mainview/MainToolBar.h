@@ -29,11 +29,7 @@ private:
     // edit
     void updateEdit();
     void addEditViewAction(const Json::Value &option);
-#ifdef EDIT_OLD
     void addEditItemAction(const Json::Value &option);
-    void addEditExportAction(const Json::Value &option);
-    void addEditToolAction(const Json::Value &option);
-#endif
     void addEditWindowAction(const Json::Value &option);
     void addEditSettingsAction();
 

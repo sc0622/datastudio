@@ -19,7 +19,7 @@ void _updateRelayer(Icd::ChannelPtr &channel, const Icd::TablePtr &table)
     }
 
     //
-    Icd::FileChannelPtr fileRelayer = JHandlePtrCast<Icd::FileChannel, Icd::Channel>(relayer);
+    Icd::FileChannelPtr fileRelayer = JHandlePtrCast<Icd::FileChannel>(relayer);
     if (!fileRelayer) {
         return;
     }

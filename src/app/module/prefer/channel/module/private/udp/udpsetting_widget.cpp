@@ -143,8 +143,7 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
             return;
         }
         //
-        Icd::UdpChannelPtr channel =
-                JHandlePtrCast<Icd::UdpChannel, Icd::Channel>(d_worker->channel());
+        Icd::UdpChannelPtr channel = JHandlePtrCast<Icd::UdpChannel>(d_worker->channel());
         if (!channel) {
             return;
         }
@@ -261,8 +260,7 @@ void UdpSettingWidget::updateUi(const Icd::WorkerPtr &worker)
     }
 
     //
-    Icd::UdpChannelPtr channel =
-            JHandlePtrCast<Icd::UdpChannel, Icd::Channel>(d_worker->channel());
+    Icd::UdpChannelPtr channel = JHandlePtrCast<Icd::UdpChannel>(d_worker->channel());
     if (!channel) {
         return;
     }

@@ -33,7 +33,7 @@ void JFileChannelPrivate::init()
 Icd::FileChannelPtr JFileChannelPrivate::channel() const
 {
     Q_Q(const JFileChannel);
-    return JHandlePtrCast<Icd::FileChannel, Icd::Channel>(q->nativeChannel());
+    return JHandlePtrCast<Icd::FileChannel>(q->nativeChannel());
 }
 
 }

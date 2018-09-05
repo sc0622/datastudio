@@ -24,7 +24,7 @@ class TreeItemDelegate : public JTreeItemDelegate
 {
     Q_OBJECT
 public:
-    explicit TreeItemDelegate(JTreeView *treeView, QObject *parent = Q_NULLPTR);
+    explicit TreeItemDelegate(JTreeView *treeView, QObject *parent = nullptr);
     ~TreeItemDelegate();
 
     QSize sizeHint(const QStyleOptionViewItem &option,
@@ -130,6 +130,8 @@ public:
     void runAllChannels();
     void stopAllChannels();
 
+    bool isEditMode() const;
+
 public:
     Q_INVOKABLE bool changeChannel(QStandardItem *itemTable);
     Q_INVOKABLE bool bindChannel(QStandardItem *itemTable);
@@ -156,6 +158,8 @@ public slots:
     void setValueColor(const QColor &color);
 
     void onTreeItemPressed(QStandardItem *item);
+    void onCurrentItemChanged(QStandardItem *current, QStandardItem *previous);
+
     void onWorkerRemoved(const Icd::WorkerPtr &worker);
     void onWorkerCleared();
 
@@ -173,17 +177,17 @@ private:
     void itemItemBitMapRightClicked(QStandardItem *item, int deep);
 
 private:
-    bool loadVehicle(QStandardItem *itemRoot, int deep);
-    bool loadSystem(QStandardItem *itemVehicle, int deep);
-    bool loadSystem(QStandardItem *itemVehicle, const Icd::SystemPtrArray &systems, int deep);
-    bool loadTable(QStandardItem *itemSystem, int deep);
-    bool loadTable(QStandardItem *itemSystem, const Icd::TablePtrArray &tables, int deep);
-    bool loadItem(QStandardItem *itemTable, int deep);
+    bool loadRoot(QStandardItem *itemRoot, int deep);
+    bool loadVehicle(QStandardItem *itemVehicle, int deep);
+    bool loadVehicle(QStandardItem *itemVehicle, const Icd::SystemPtrArray &systems, int deep);
+    bool loadSystem(QStandardItem *itemSystem, int deep);
+    bool loadSystem(QStandardItem *itemSystem, const Icd::TablePtrArray &tables, int deep);
+    bool loadTable(QStandardItem *itemTable, int deep);
 
-    static bool loadItem(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
+    static bool loadTable(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
 
-    static QStandardItem *loadTable(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table, int index = 0);
-    static bool loadItem(QObject *target, QStandardItem *itemTable, const Icd::ItemPtr &item);
+    static QStandardItem *loadSystem(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table, int index = 0);
+    static bool loadTable(QObject *target, QStandardItem *itemTable, const Icd::ItemPtr &item);
     static bool loadFrameCodeItem(QObject *target, QStandardItem *itemTable, const Icd::FrameCodeItemPtr &frameCodeItem);
     static bool loadComplexItem(QObject *target, QStandardItem *itemDataItem, const Icd::ComplexItemPtr &complexItem);
     static bool loadFrameItem(QObject *target, QStandardItem *itemDataItem, const Icd::FrameItemPtr &frameItem);
@@ -211,6 +215,10 @@ private:
     bool hasItemBound(QStandardItem *item);
     void clearItemBoundRole(QStandardItem *item, bool bEmit);
 
+    void clearItemChildren(QStandardItem *item);
+
+    void setItemLoadStatus(QStandardItem *item, bool loaded);
+
     QStandardItem *findItemTable(QStandardItem *item, const QString &filePath) const;
     QStandardItem *findItemTable(QStandardItem *item) const;
 
@@ -234,17 +242,20 @@ private:
     QStandardItem *findItemByDomain(QStandardItem *parentItem, const QString &domain, int domainType);
     void selectItem(const QString &domain, int domainType);
     QString itemDomain(QStandardItem *item, int domainType) const;
+    Icd::ObjectPtr findByDomain(const QString &domain) const;
+    template<typename T> inline std::shared_ptr<T> findByDomain(const QString &domain) const;
 
     ///
 
     static QString idDomain(QStandardItem *item);
     static QString markDomain(QStandardItem *item);
-    static bool loadTable(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
+    static bool loadSystem(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
 
 private:
     J_DECLARE_PUBLIC(JProtoTreeView)
     JSearchEdit *searchEdit_;
     Icd::ParserPtr parser_;
+    Icd::RootPtr protoRoot_;
     int loadingDeep_;
     int intervalUpdate_;
     JProtoTreeView::BindTableTypes bindTableTypes_;
@@ -259,6 +270,18 @@ private:
 };
 
 //
+template<typename T>
+std::shared_ptr<T> JProtoTreeViewPrivate::findByDomain(const QString &domain) const
+{
+    Icd::ObjectPtr object = findByDomain(domain);
+    if (object) {
+        return JHandlePtrCast<T>(object);
+    } else {
+        return std::shared_ptr<T>();
+    }
+}
+
+//
 struct BindingData
 {
     QString channelId;
@@ -268,7 +291,7 @@ struct BindingData
     Icd::WorkerPtr worker;
     Icd::TablePtr table;
 
-    BindingData():d(Q_NULLPTR){}
+    BindingData() : d(nullptr) {}
     BindingData(const QString &channelId, const QString &tableDomain,
                 JProtoTreeViewPrivate *d)
         : channelId(channelId)

@@ -95,7 +95,7 @@ bool IcdTabWidget::addDataItem(const QString &domain, const Icd::WorkerPtr &work
         return false;
     }
     //
-    const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(object);
+    const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(object);
     if (!table) {
         return false;
     }
@@ -111,7 +111,7 @@ bool IcdTabWidget::addDataItem(const QString &domain, const Icd::WorkerPtr &work
         const Icd::Item *const parentItem = dynamic_cast<Icd::Item *>(object->parent());
         if (parentItem && parentItem->type() == Icd::ItemFrame) {
             //
-            const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(object);
+            const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(object);
             if (!table) {
                 return false;
             }

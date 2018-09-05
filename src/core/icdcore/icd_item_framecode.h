@@ -44,6 +44,7 @@ public:
     void setFrameId(const std::string &id);
     FrameItemPtr frame() const;
     void setFrame(const FrameItemPtr &frame);
+    bool isFrameValid() const;
 
     void updateSend(bool period);
     void updateRecv();

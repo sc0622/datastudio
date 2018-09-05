@@ -362,7 +362,6 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
             case Icd::ItemBitMap:
             case Icd::ItemBitValue:
             {
-#if 1
                 const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
                 if (!itemBit) {
                     break;
@@ -373,7 +372,6 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
                             .arg((int)(item->bufferOffset() - tableOffset), 4, 10, QChar('0'))
                             .arg(itemBit->bitStart(), 2, 10, QChar('0')));
                 break;
-#endif
             }
             default:
                 text.append(QString("<font color=green size=2>[%1:%2:%3]</font> ")
@@ -383,9 +381,26 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
                 break;
             }
         } else {
-            text.append(QString("<font color=green size=2>[%1:%2]</font> ")
-                        .arg(item->itemOffset(), 4, 10, QChar('0'))
-                        .arg(int(item->bufferOffset()), 4, 10, QChar('0')));
+            switch (item->type()) {
+            case Icd::ItemBitMap:
+            case Icd::ItemBitValue:
+            {
+                const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+                if (!itemBit) {
+                    break;
+                }
+                text.append(QString("<font color=green size=2>[%1:%2.%3]</font> ")
+                            .arg(item->itemOffset(), 4, 10, QChar('0'))
+                            .arg(int(item->bufferOffset()), 4, 10, QChar('0'))
+                            .arg(itemBit->bitStart(), 2, 10, QChar('0')));
+                break;
+            }
+            default:
+                text.append(QString("<font color=green size=2>[%1:%2]</font> ")
+                            .arg(item->itemOffset(), 4, 10, QChar('0'))
+                            .arg(int(item->bufferOffset()), 4, 10, QChar('0')));
+                break;
+            }
         }
         break;
     }
@@ -528,7 +543,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
         {
             QStringList values;
             //
-            const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(dataItem);
+            const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem>(dataItem);
             if (!itemNumeric) {
                 break;
             }
@@ -559,21 +574,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
             }
             // value
             if (showAttris_ & JProtoTreeView::ShowValue) {
-                QString value;
-                switch (itemNumeric->numericType()) {
-                case Icd::NumericF32:
-                    value.append(QString("%1").arg(itemNumeric->data(), 0, 'g', FLT_DIG));
-                    break;
-                default:
-                    value.append(QString("%1").arg(itemNumeric->data(), 0, 'g', DBL_DIG));
-                    break;
-                }
-                std::string text = value.toStdString();
-                std::string::size_type pos = text.find_last_not_of("0");
-                if (std::string::npos != pos) {
-                    text = text.substr(0, ('.' == text[pos]) ? pos : pos + 1);
-                }
-                values.append(QString::fromStdString(text));
+                values.append(QString::fromStdString(itemNumeric->prettyValue()));
             }
             // join
             if (itemNumeric->outOfLimit()) {
@@ -623,7 +624,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             // spec
             if (showAttris_ & JProtoTreeView::ShowSpec) {
-                const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
+                const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(dataItem);
                 if (bitItem) {
                     std::string spec = bitItem->specAt(Icd::icd_uint64(dataItem->data()));
                     if (spec.empty()) {
@@ -640,7 +641,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
         }
         case Icd::ItemComplex:
         {
-            const Icd::ComplexItemPtr itemComplex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem);
+            const Icd::ComplexItemPtr itemComplex = JHandlePtrCast<Icd::ComplexItem>(dataItem);
             if (!itemComplex) {
                 break;
             }
@@ -693,7 +694,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
     switch (dataItem->type()) {
     case Icd::ItemBitMap:
     {
-        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem);
+        const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(dataItem);
         if (!bitItem) {
             break;
         }
@@ -702,7 +703,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
     }
     case Icd::ItemComplex:
     {
-        const Icd::ComplexItemPtr itemComplex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem);
+        const Icd::ComplexItemPtr itemComplex = JHandlePtrCast<Icd::ComplexItem>(dataItem);
         if (!itemComplex) {
             break;
         }
@@ -729,7 +730,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
     }
     case Icd::ItemFrame:
     {
-        const Icd::FrameItemPtr &itemFrame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(dataItem);
+        const Icd::FrameItemPtr &itemFrame = JHandlePtrCast<Icd::FrameItem>(dataItem);
         if (!itemFrame) {
             break;
         }

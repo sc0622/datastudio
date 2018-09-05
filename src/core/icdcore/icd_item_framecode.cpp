@@ -156,6 +156,11 @@ void FrameCodeItem::setFrame(const FrameItemPtr &frame)
     d->frame = frame;
 }
 
+bool FrameCodeItem::isFrameValid() const
+{
+    return (d->frame != nullptr);
+}
+
 void FrameCodeItem::updateSend(bool period)
 {
     if (!d->frame) {

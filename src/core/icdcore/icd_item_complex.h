@@ -18,7 +18,7 @@ class ICDCORE_EXPORT ComplexItem : public Item
 public:
     explicit ComplexItem(Object *parent = nullptr);
     explicit ComplexItem(const std::string &id, Object *parent = nullptr);
-     ~ComplexItem();
+    ~ComplexItem();
 
     bool isEmpty() const;
     TablePtr table() const;
@@ -44,6 +44,10 @@ public:
     ObjectPtr itemByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId,
                            bool ignoreComplex = true) const;
     TablePtr tableByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId) const;
+
+    ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
+                           bool ignoreComplex = true) const override;
+    void clearChildren() override;
 
     // Serializable interface
 public:

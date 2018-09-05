@@ -178,26 +178,26 @@ JIcdItem *JIcdItem::create(const Icd::ItemPtr &data, QObject *parent)
 
     switch (data->type()) {
     case Icd::ItemHead:
-        return new JIcdHeaderItem(JHandlePtrCast<Icd::HeaderItem, Icd::Item>(data), parent);
+        return new JIcdHeaderItem(JHandlePtrCast<Icd::HeaderItem>(data), parent);
     case Icd::ItemCounter:
-        return new JIcdCounterItem(JHandlePtrCast<Icd::CounterItem, Icd::Item>(data), parent);
+        return new JIcdCounterItem(JHandlePtrCast<Icd::CounterItem>(data), parent);
     case Icd::ItemCheck:
-        return new JIcdCheckItem(JHandlePtrCast<Icd::CheckItem, Icd::Item>(data), parent);
+        return new JIcdCheckItem(JHandlePtrCast<Icd::CheckItem>(data), parent);
     case Icd::ItemFrameCode:
-        return new JIcdFrameCodeItem(JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(data), parent);
+        return new JIcdFrameCodeItem(JHandlePtrCast<Icd::FrameCodeItem>(data), parent);
     case Icd::ItemNumeric:
-        return new JIcdNumericItem(JHandlePtrCast<Icd::NumericItem, Icd::Item>(data), parent);
+        return new JIcdNumericItem(JHandlePtrCast<Icd::NumericItem>(data), parent);
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
-        return new JIcdBitItem(JHandlePtrCast<Icd::BitItem, Icd::Item>(data), parent);
+        return new JIcdBitItem(JHandlePtrCast<Icd::BitItem>(data), parent);
     case Icd::ItemComplex:
-        return new JIcdComplexItem(JHandlePtrCast<Icd::ComplexItem, Icd::Item>(data), parent);
+        return new JIcdComplexItem(JHandlePtrCast<Icd::ComplexItem>(data), parent);
     case Icd::ItemFrame:
-        return new JIcdFrameItem(JHandlePtrCast<Icd::FrameItem, Icd::Item>(data), parent);
+        return new JIcdFrameItem(JHandlePtrCast<Icd::FrameItem>(data), parent);
     case Icd::ItemDateTime:
-        return new JIcdDateTimeItem(JHandlePtrCast<Icd::DateTimeItem, Icd::Item>(data), parent);
+        return new JIcdDateTimeItem(JHandlePtrCast<Icd::DateTimeItem>(data), parent);
     case Icd::ItemArray:
-        return new JIcdArrayItem(JHandlePtrCast<Icd::ArrayItem, Icd::Item>(data), parent);
+        return new JIcdArrayItem(JHandlePtrCast<Icd::ArrayItem>(data), parent);
     default:
         break;
     }

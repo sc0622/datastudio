@@ -118,9 +118,16 @@ typedef double float64_t;
 #endif // DEF_ICD_TYPE
 
 //
+// handlescope
 #ifndef J_HANDLE_SCOPE
 #define J_HANDLE_SCOPE
 template<typename T> struct JHandleScope { std::shared_ptr<T> ptr; };
+#endif
+
+// weakscope
+#ifndef J_WEAK_SCOPE
+#define J_WEAK_SCOPE
+template<typename T> struct JWeakScope { std::weak_ptr<T> ptr; };
 #endif
 
 //

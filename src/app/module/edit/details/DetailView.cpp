@@ -8,104 +8,83 @@ namespace Edit {
 DetailView::DetailView(QWidget *parent)
     : QWidget(parent)
 {
-    d_currentData.item = nullptr;
-    d_currentData.object = Icd::ObjectPtr();
+    currentData_.item = nullptr;
+    currentData_.object = Icd::ObjectPtr();
 
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    d_splitterMain = new JSplitter(QList<double>() << 3 << 1, Qt::Vertical, this);
-    d_splitterMain->setObjectName("Edit::detail::splitterMain");
-    vertLayoutMain->addWidget(d_splitterMain);
+    splitterMain_ = new JSplitter(QList<double>() << 3 << 1, this);
+    splitterMain_->setObjectName("Edit::detail::splitterMain");
+    vertLayoutMain->addWidget(splitterMain_);
 
-    d_detailTable = new DetailTable(this);
-    d_splitterMain->addWidget(d_detailTable);
+    detailTable_ = new DetailTable(this);
+    splitterMain_->addWidget(detailTable_);
 
-    d_detailEdit = new DetailEdit(this);
-    d_splitterMain->addWidget(d_detailEdit);
+    detailEdit_ = new DetailEdit(this);
+    splitterMain_->addWidget(detailEdit_);
 
-    connect(d_detailTable, &DetailTable::currentItemChanged,
+    connect(detailTable_, &DetailTable::currentItemChanged,
             this, &DetailView::onCurrentItemChanged);
-    connect(d_detailTable, &DetailTable::contentChanged,
+    connect(detailTable_, &DetailTable::contentChanged,
             this, &DetailView::onContentChanged);
 
-    d_detailEdit->hide();
+    detailEdit_->hide();
 }
 
 DetailView::~DetailView()
 {
-    JMain::saveWidgetState(d_splitterMain);
+    JMain::saveWidgetState(splitterMain_);
 }
 
 bool DetailView::init()
 {
     bool result = true;
 
-    JMain::restoreWidgetState(d_splitterMain);
+    JMain::restoreWidgetState(splitterMain_);
 
     return result;
 }
 
 void DetailView::updateView(QStandardItem *item)
 {
-    d_detailTable->resetView();
-    d_detailEdit->resetView();
+    detailTable_->resetView();
+    detailEdit_->resetView();
 
-    d_currentData.item = item;
-    d_currentData.object = nullptr;
+    currentData_.item = item;
+    currentData_.object = nullptr;
 
     if (!item) {
         return;
     }
 
-    const Icd::ParserPtr parser = JMain::instance()->parser("edit");
-    if (!parser) {
+    Icd::JHandleScope<Icd::Object> handle;
+    const QString domain = item->data(Icd::TreeItemDomainRole).toString();
+    QVariantList args;
+    args.append(qVariantFromValue(static_cast<void*>(&handle)));
+    args.append(domain);
+    if (!jnotify->send("edit.tree.current.object", args).toBool() || !handle.ptr) {
         return;
     }
-
-    int objectType = Icd::ObjectInvalid;
-    switch (item->type()) {
-    case Icd::TreeItemTypeRoot: objectType = Icd::ObjectRoot; break;
-    case Icd::TreeItemTypeVehicle: objectType = Icd::ObjectVehicle; break;
-    case Icd::TreeItemTypeSystem: objectType = Icd::ObjectSystem; break;
-    case Icd::TreeItemTypeTable: objectType = Icd::ObjectTable; break;
-    case Icd::TreeItemTypeDataItem: objectType = Icd::ObjectItem; break;
-    case Icd::TreeItemTypeItemTable: objectType = Icd::ObjectItem; break;
-    //case Icd::TreeItemTypeItemBitMap: objectType = Icd::ObjectItem; break;
-    default:
-        break;
-    }
-
-    if (objectType == Icd::ObjectInvalid) {
-        return;
-    }
-
-    const QString &domain = item->data(Icd::TreeItemDomainRole).toString();
-
-    Icd::ObjectPtr object = parser->parse(domain.toStdString(), objectType, 1);
-    if (!object) {
-        return;
-    }
-
-    d_detailTable->updateView(object);
-    d_detailEdit->updateView(object);
+    detailTable_->updateView(handle.ptr);
+    detailEdit_->updateView(handle.ptr);
 }
 
 void DetailView::onCurrentItemChanged(const QVariant &index)
 {
-    d_detailEdit->updateView(d_detailTable->object(), index);
+    detailEdit_->updateView(detailTable_->object(), index);
 }
 
 void DetailView::onContentChanged(const QVariant &index, const QString &name)
 {
     Q_UNUSED(index);
 
-    if (d_detailEdit->isHidden()) {
+    if (detailEdit_->isHidden()) {
         return;
     }
 
-    d_detailEdit->updateContent(name);
+    detailEdit_->updateContent(name);
 }
 
 }

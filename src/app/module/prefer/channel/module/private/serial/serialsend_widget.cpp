@@ -73,8 +73,7 @@ SerialSendWidget::SerialSendWidget(QWidget *parent)
             return;
         }
         //
-        Icd::SerialChannelPtr channel =
-                JHandlePtrCast<Icd::SerialChannel, Icd::Channel>(d_worker->channel());
+        Icd::SerialChannelPtr channel = JHandlePtrCast<Icd::SerialChannel>(d_worker->channel());
         if (!channel) {
             return;
         }

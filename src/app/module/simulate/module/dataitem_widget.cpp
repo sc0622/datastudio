@@ -46,7 +46,7 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
     switch (itemType_) {
     case ItemTypeComplex:
     {
-        const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem());
+        const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem>(dataItem());
         if (!complex) {
             break;
         }
@@ -405,7 +405,7 @@ void ItemWidgetHead::restoreUi(const Icd::ItemPtr &data)
     //
     DataItemWidget::restoreUi(data);
     //
-    const Icd::HeaderItemPtr itemHead = JHandlePtrCast<Icd::HeaderItem, Icd::Item>(data);
+    const Icd::HeaderItemPtr itemHead = JHandlePtrCast<Icd::HeaderItem>(data);
     if (!itemHead) {
         return;
     }
@@ -419,7 +419,7 @@ bool ItemWidgetHead::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    const Icd::HeaderItemPtr itemHead = JHandlePtrCast<Icd::HeaderItem, Icd::Item>(data);
+    const Icd::HeaderItemPtr itemHead = JHandlePtrCast<Icd::HeaderItem>(data);
     if (!itemHead) {
         return false;
     }
@@ -477,7 +477,7 @@ void ItemWidgetCounter::restoreUi(const Icd::ItemPtr &data)
     //
     DataItemWidget::restoreUi(data);
     //
-    const Icd::CounterItemPtr itemCounter = JHandlePtrCast<Icd::CounterItem, Icd::Item>(data);
+    const Icd::CounterItemPtr itemCounter = JHandlePtrCast<Icd::CounterItem>(data);
     if (!itemCounter) {
         return;
     }
@@ -491,7 +491,7 @@ bool ItemWidgetCounter::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    const Icd::CounterItemPtr itemCounter = JHandlePtrCast<Icd::CounterItem, Icd::Item>(data);
+    const Icd::CounterItemPtr itemCounter = JHandlePtrCast<Icd::CounterItem>(data);
     if (!itemCounter) {
         return false;
     }
@@ -567,7 +567,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
     connect(comboBoxCheckType_, static_cast<void(QComboBox::*)(int)>
             (&QComboBox::currentIndexChanged), this, [=](int index){
         Q_UNUSED(index);
-        const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(dataItem());
+        const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem>(dataItem());
         if (!itemCheck) {
             return;
         }
@@ -577,7 +577,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
     connect(spinStartPos_, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
         //
-        const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(dataItem());
+        const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem>(dataItem());
         if (!itemCheck) {
             return;
         }
@@ -592,7 +592,7 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
     connect(spinEndPos_, static_cast<void(QSpinBox::*)(int)>
             (&QSpinBox::valueChanged), this, [=](int value){
         //
-        const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(dataItem());
+        const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem>(dataItem());
         if (!itemCheck) {
             return;
         }
@@ -616,7 +616,7 @@ void ItemWidgetCheck::restoreUi(const Icd::ItemPtr &data)
     //
     DataItemWidget::restoreUi(data);
     //
-    const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem, Icd::Item>(data);
+    const Icd::CheckItemPtr itemCheck = JHandlePtrCast<Icd::CheckItem>(data);
     if (!itemCheck) {
         return;
     }
@@ -648,7 +648,7 @@ bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
     spinStartPos_->setRange(0, qCeil(tableSend->bufferSize()) - 1);
     spinEndPos_->setRange(0, qCeil(tableSend->bufferSize()) - 1);
     //
-    const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem, Icd::Item>(data);
+    const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem>(data);
     if (!checkItem) {
         return false;
     }
@@ -744,7 +744,7 @@ void ItemWidgetFrameCode::restoreUi(const Icd::ItemPtr &data)
     //
     DataItemWidget::restoreUi(data);
     //
-    const Icd::FrameCodeItemPtr itemFrameCode = JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(data);
+    const Icd::FrameCodeItemPtr itemFrameCode = JHandlePtrCast<Icd::FrameCodeItem>(data);
     if (!itemFrameCode) {
         return;
     }
@@ -762,7 +762,7 @@ bool ItemWidgetFrameCode::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    const Icd::FrameCodeItemPtr itemFrameCode = JHandlePtrCast<Icd::FrameCodeItem, Icd::Item>(data);
+    const Icd::FrameCodeItemPtr itemFrameCode = JHandlePtrCast<Icd::FrameCodeItem>(data);
     if (!itemFrameCode) {
         return false;
     }
@@ -875,7 +875,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
             return;
         }
         //
-        const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(dataItem());
+        const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem>(dataItem());
         if (!itemNumeric) {
             return;
         }
@@ -911,7 +911,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     });
     connect(spinData_, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){
-        const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(dataItem());
+        const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem>(dataItem());
         if (!itemNumeric) {
             return;
         }
@@ -945,7 +945,7 @@ void ItemWidgetNumeric::restoreUi(const Icd::ItemPtr &data)
     //
     DataItemWidget::restoreUi(data);
     //
-    const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(data);
+    const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem>(data);
     if (!itemNumeric) {
         return;
     }
@@ -959,7 +959,7 @@ bool ItemWidgetNumeric::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem, Icd::Item>(data);
+    const Icd::NumericItemPtr itemNumeric = JHandlePtrCast<Icd::NumericItem>(data);
     if (!itemNumeric) {
         return false;
     }
@@ -1033,7 +1033,7 @@ ItemWidgetArray::ItemWidgetArray(QWidget *parent)
     formLayout->addRow(tr("Describe:"), labelDesc_);
 
     connect(dataView_, &JUtralEdit::JView::textChanged, this, [=](){
-        const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(dataItem());
+        const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem>(dataItem());
         if (!arrayItem) {
             return;
         }
@@ -1067,7 +1067,7 @@ void ItemWidgetArray::restoreUi(const Icd::ItemPtr &data)
     //
     DataItemWidget::restoreUi(data);
     //
-    const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(data);
+    const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem>(data);
     if (!arrayItem) {
         return;
     }
@@ -1079,7 +1079,7 @@ bool ItemWidgetArray::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem, Icd::Item>(data);
+    const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem>(data);
     if (!arrayItem) {
         return false;
     }
@@ -1116,7 +1116,7 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
         if (!dataItem()) {
             return;
         }
-        const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem());
+        const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(dataItem());
         if (!itemBit) {
             return;
         }
@@ -1180,7 +1180,7 @@ void ItemWidgetBitMap::restoreUi(const Icd::ItemPtr &data)
     //
     DataItemWidget::restoreUi(data);
     //
-    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(data);
+    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(data);
     if (!itemBit) {
         return;
     }
@@ -1211,7 +1211,7 @@ bool ItemWidgetBitMap::updateUi(const Icd::ItemPtr &data)
         checkBox->deleteLater();
     }
     //
-    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(data);
+    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(data);
     if (!itemBit) {
         return false;
     }
@@ -1273,7 +1273,7 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
         if (!dataItem()) {
             return;
         }
-        const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(dataItem());
+        const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(dataItem());
         if (!itemBit) {
             return;
         }
@@ -1328,7 +1328,7 @@ void ItemWidgetBitValue::restoreUi(const Icd::ItemPtr &data)
     DataItemWidget::restoreUi(data);
 
     //
-    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(data);
+    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(data);
     if (!itemBit) {
         return;
     }
@@ -1343,7 +1343,7 @@ bool ItemWidgetBitValue::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(data);
+    const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(data);
     if (!itemBit) {
         return false;
     }
@@ -1384,7 +1384,7 @@ bool ItemWidgetComplex::addDataItem(const QString &domain)
         return false;
     }
 
-    const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(dataItem());
+    const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem>(dataItem());
     if (!complex) {
         return false;
     }
@@ -1465,7 +1465,7 @@ void ItemWidgetComplex::restoreUi(const Icd::ItemPtr &data)
     DataItemWidget::restoreUi(data);
 
     //
-    const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(data);
+    const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem>(data);
     if (!complex) {
         return;
     }
@@ -1479,7 +1479,7 @@ bool ItemWidgetComplex::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem, Icd::Item>(data);
+    const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem>(data);
     if (!complex) {
         return false;
     }
@@ -1531,7 +1531,7 @@ ItemWidgetFrame::~ItemWidgetFrame()
 bool ItemWidgetFrame::addDataItem(const QString &domain)
 {
     //
-    const Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(dataItem());
+    const Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(dataItem());
     if (!frame) {
         return false;
     }
@@ -1619,7 +1619,7 @@ void ItemWidgetFrame::restoreUi(const Icd::ItemPtr &data)
     DataItemWidget::restoreUi(data);
 
     //
-    const Icd::FrameItemPtr itemFrame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(data);
+    const Icd::FrameItemPtr itemFrame = JHandlePtrCast<Icd::FrameItem>(data);
     if (!itemFrame) {
         return;
     }
@@ -1633,7 +1633,7 @@ bool ItemWidgetFrame::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    const Icd::FrameItemPtr itemFrame = JHandlePtrCast<Icd::FrameItem, Icd::Item>(data);
+    const Icd::FrameItemPtr itemFrame = JHandlePtrCast<Icd::FrameItem>(data);
     if (!itemFrame) {
         return false;
     }

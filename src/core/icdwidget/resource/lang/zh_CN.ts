@@ -198,6 +198,14 @@
         <source>Export failure!</source>
         <translation>导出失败！</translation>
     </message>
+    <message>
+        <source>Insert item above</source>
+        <translation>在上方插入行</translation>
+    </message>
+    <message>
+        <source>Insert item below</source>
+        <translation>在下方插入行</translation>
+    </message>
 </context>
 <context>
     <name>Icd::JWorkerLabel</name>
@@ -240,6 +248,49 @@
     <message>
         <source>File Channel</source>
         <translation>文件通道</translation>
+    </message>
+</context>
+<context>
+    <name>IcdWidget</name>
+    <message>
+        <source>Header</source>
+        <translation>帧头</translation>
+    </message>
+    <message>
+        <source>Counter</source>
+        <translation>帧计数</translation>
+    </message>
+    <message>
+        <source>Check</source>
+        <translation>帧校验</translation>
+    </message>
+    <message>
+        <source>FrameCode</source>
+        <translation>帧码</translation>
+    </message>
+    <message>
+        <source>Numeric</source>
+        <translation>数值</translation>
+    </message>
+    <message>
+        <source>Array</source>
+        <translation>数组</translation>
+    </message>
+    <message>
+        <source>BitMap</source>
+        <translation>比特映射</translation>
+    </message>
+    <message>
+        <source>BitValue</source>
+        <translation>比特值</translation>
+    </message>
+    <message>
+        <source>Complex</source>
+        <translation>复合数据</translation>
+    </message>
+    <message>
+        <source>Frame</source>
+        <translation>帧数据</translation>
     </message>
 </context>
 </TS>

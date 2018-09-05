@@ -28,8 +28,8 @@ private:
     bool init();
 
 private:
-    QBitArray d_modifyFlags;
-    QComboBox *d_comboBoxDeep;
+    QBitArray modifyFlags_;
+    QComboBox *comboBoxDeep_;
 };
 
 // class SetViewSettings

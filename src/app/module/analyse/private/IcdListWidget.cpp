@@ -257,7 +257,7 @@ void IcdListWidget::onDropEvent(QDropEvent *event)
         }
 
         //
-        addItem(JHandlePtrCast<Icd::Item, Icd::Object>(dataItem), bitOffset);
+        addItem(JHandlePtrCast<Icd::Item>(dataItem), bitOffset);
 
         return;
     }
@@ -290,7 +290,7 @@ bool IcdListWidget::addItem(const Icd::ItemPtr &item, int bitOffset)
     case Icd::ItemComplex:
     {
         const Icd::ComplexItemPtr complexItem =
-                JHandlePtrCast<Icd::ComplexItem, Icd::Item>(item);
+                JHandlePtrCast<Icd::ComplexItem>(item);
         if (!complexItem) {
             return false;
         }
@@ -299,7 +299,7 @@ bool IcdListWidget::addItem(const Icd::ItemPtr &item, int bitOffset)
     case Icd::ItemFrame:
     {
         const Icd::FrameItemPtr frameItem =
-                JHandlePtrCast<Icd::FrameItem, Icd::Item>(item);
+                JHandlePtrCast<Icd::FrameItem>(item);
         if (!frameItem) {
             return false;
         }
@@ -373,7 +373,7 @@ bool IcdListWidget::addItem(const Icd::ObjectPtr &object, int bitOffset)
     switch (object->objectType()) {
     case Icd::ObjectTable:
     {
-        const Icd::TablePtr table = JHandlePtrCast<Icd::Table, Icd::Object>(object);
+        const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(object);
         if (!table) {
             return false;
         }
@@ -386,7 +386,7 @@ bool IcdListWidget::addItem(const Icd::ObjectPtr &object, int bitOffset)
     }
     case Icd::ObjectItem:
     {
-        const Icd::ItemPtr dataItem = JHandlePtrCast<Icd::Item, Icd::Object>(object);
+        const Icd::ItemPtr dataItem = JHandlePtrCast<Icd::Item>(object);
         if (!dataItem) {
             return false;
         }
