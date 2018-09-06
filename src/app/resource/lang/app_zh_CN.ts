@@ -609,17 +609,17 @@
         <translation>单位:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="27"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="28"/>
         <source>Minimum:</source>
         <translation>下限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="35"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="37"/>
         <source>Maximum:</source>
         <translation>上限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="38"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="40"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>
@@ -648,6 +648,19 @@
         <location filename="../../module/edit/itemedit/CounterEdit.cpp" line="12"/>
         <source>Counter type:</source>
         <translation>计数长度:</translation>
+    </message>
+</context>
+<context>
+    <name>Edit::DetailEdit</name>
+    <message>
+        <location filename="../../module/edit/details/DetailEdit.cpp" line="28"/>
+        <source>Apply</source>
+        <translation>应用</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/details/DetailEdit.cpp" line="35"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -900,17 +913,17 @@
         <translation>单位:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="28"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="29"/>
         <source>Minimum:</source>
         <translation>下限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="36"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="38"/>
         <source>Maximum:</source>
         <translation>上限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="39"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="41"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>

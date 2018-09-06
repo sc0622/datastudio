@@ -263,7 +263,7 @@ bool JProtoTreeView::isItemLoaded(QStandardItem *item) const
 bool JProtoTreeView::hasUnloadedItem() const
 {
     Q_D(const JProtoTreeView);
-    return d->hasUnloadedItem();
+    return d->hasUnloadedItem(d->invisibleRootItem());
 }
 
 void JProtoTreeView::setRunning(bool value)

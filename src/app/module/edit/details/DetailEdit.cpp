@@ -17,6 +17,33 @@ DetailEdit::DetailEdit(QWidget *parent)
     layoutEdit_->setContentsMargins(0, 0, 0, 0);
     layoutEdit_->setSpacing(3);
     vertLayoutMain->addLayout(layoutEdit_);
+
+    QHBoxLayout *layoutButton = new QHBoxLayout();
+    layoutButton->setContentsMargins(2, 2, 2, 2);
+    vertLayoutMain->addLayout(layoutButton);
+
+    layoutButton->addStretch();
+
+    buttonApply_ = new QPushButton(QIcon(":/datastudio/image/global/apply.png"),
+                                   tr("Apply"), this);
+    buttonApply_->setMinimumWidth(100);
+    layoutButton->addWidget(buttonApply_);
+
+    layoutButton->addStretch();
+
+    buttonCancel_ = new QPushButton(QIcon(":/datastudio/image/global/cancel.png"),
+                                    tr("Cancel"), this);
+    buttonCancel_->setMinimumWidth(100);
+    layoutButton->addWidget(buttonCancel_);
+
+    layoutButton->addStretch();
+
+    connect(buttonApply_, &QPushButton::clicked, this, [=](){
+        //TODO
+    });
+    connect(buttonCancel_, &QPushButton::clicked, this, [=](){
+        //TODO
+    });
 }
 
 void DetailEdit::resetView()

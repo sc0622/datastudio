@@ -20,6 +20,7 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
 
     QHBoxLayout *layoutMinimum = new QHBoxLayout();
     spinMinimum_ = new JDoubleSpinBox(this);
+    spinMinimum_->setReadOnly(true);
     layoutMinimum->addWidget(spinMinimum_);
     checkMinimumInf_ = new QCheckBox(this);
     checkMinimumInf_->setMaximumWidth(checkMinimumInf_->sizeHint().height());
@@ -28,6 +29,7 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
 
     QHBoxLayout *layoutMaximum = new QHBoxLayout();
     spinMaximum_ = new JDoubleSpinBox(this);
+    spinMaximum_->setReadOnly(true);
     layoutMaximum->addWidget(spinMaximum_);
     checkMaximumInf_ = new QCheckBox(this);
     checkMaximumInf_->setMaximumWidth(checkMaximumInf_->sizeHint().height());
@@ -36,6 +38,13 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
 
     spinDefaultValue_ = new JDoubleSpinBox(this);
     addRow(tr("Default value:"), spinDefaultValue_);
+
+    connect(checkMinimumInf_, &QCheckBox::toggled, this, [=](bool checked){
+        spinMinimum_->setReadOnly(!checked);
+    });
+    connect(checkMaximumInf_, &QCheckBox::toggled, this, [=](bool checked){
+        spinMaximum_->setReadOnly(!checked);
+    });
 
     // init
 

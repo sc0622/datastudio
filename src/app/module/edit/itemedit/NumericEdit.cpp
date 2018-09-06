@@ -21,6 +21,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
 
     QHBoxLayout *layoutMinimum = new QHBoxLayout();
     spinMinimum_ = new JDoubleSpinBox(this);
+    spinMinimum_->setReadOnly(true);
     layoutMinimum->addWidget(spinMinimum_);
     checkMinimumInf_ = new QCheckBox(this);
     checkMinimumInf_->setMaximumWidth(checkMinimumInf_->sizeHint().height());
@@ -29,6 +30,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
 
     QHBoxLayout *layoutMaximum = new QHBoxLayout();
     spinMaximum_ = new JDoubleSpinBox(this);
+    spinMaximum_->setReadOnly(true);
     layoutMaximum->addWidget(spinMaximum_);
     checkMaximumInf_ = new QCheckBox(this);
     checkMaximumInf_->setMaximumWidth(checkMaximumInf_->sizeHint().height());
@@ -40,6 +42,13 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
 
     tableSpecs_ = new SpecsTable(numeric, this);
     addWidget(tableSpecs_);
+
+    connect(checkMinimumInf_, &QCheckBox::toggled, this, [=](bool checked){
+        spinMinimum_->setReadOnly(!checked);
+    });
+    connect(checkMaximumInf_, &QCheckBox::toggled, this, [=](bool checked){
+        spinMaximum_->setReadOnly(!checked);
+    });
 
     // init
 

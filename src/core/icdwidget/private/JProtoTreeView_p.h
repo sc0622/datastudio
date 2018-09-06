@@ -133,7 +133,7 @@ public:
 
     bool isEditMode() const;
 
-    bool hasUnloadedItem() const;
+    bool hasUnloadedItem(QStandardItem *item = nullptr) const;
 
 public:
     Q_INVOKABLE bool changeChannel(QStandardItem *itemTable);

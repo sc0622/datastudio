@@ -51,6 +51,8 @@ class FrameItem;
 typedef std::shared_ptr<FrameItem> FrameItemPtr;
 }
 
+class QPushButton;
+
 namespace Edit {
 
 class ObjectEdit;
@@ -74,7 +76,10 @@ public slots:
 private:
     QVBoxLayout *layoutEdit_;
     ObjectEdit *objectEdit_;
+    QPushButton *buttonApply_;
+    QPushButton *buttonCancel_;
     Icd::ObjectPtr object_;
+
 };
 
 }

@@ -841,13 +841,30 @@ bool JProtoTreeViewPrivate::isEditMode() const
     return (treeModes_ == JProtoTreeView::TreeModeEdit);
 }
 
-bool JProtoTreeViewPrivate::hasUnloadedItem() const
+bool JProtoTreeViewPrivate::hasUnloadedItem(QStandardItem *item) const
 {
+    if (!item) {
+        item = invisibleRootItem();
+    } else if (item->type() > Icd::TreeItemTypeTable) {
+        return false;
+    }
+
     if (!isEditMode()) {
         return false;
     }
 
-    topLevelItem();
+    Q_Q(const JProtoTreeView);
+
+    const int count = item->rowCount();
+    for (int i = 0; i < count; ++i) {
+        QStandardItem *childItem = topLevelItem(i);
+        if (!q->isItemLoaded(childItem)) {
+            return true;
+        }
+        if (hasUnloadedItem(childItem)) {
+            return true;
+        }
+    }
 
     return false;
 }

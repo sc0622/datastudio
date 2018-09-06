@@ -622,10 +622,9 @@ QLineEdit:focus:!read-only {
     border-radius: 2px;
 }
 
-/** QComboBox, QSpinBox, QDoubleSpinBox **/
+/** QComboBox, QAbstractSpinBox **/
 
-QComboBox,QSpinBox,QDoubleSpinBox,
-QTimeEdit,QDateEdit,QDateTimeEdit {
+QComboBox,QAbstractSpinBox {
     border-radius: 2px;
     border: 1px solid #bbb;
     padding: 2px;
@@ -633,8 +632,7 @@ QTimeEdit,QDateEdit,QDateTimeEdit {
     outline: none;
 }
 
-QComboBox:disabled,QSpinBox:disabled,QDoubleSpinBox:disabled,
-QTimeEdit:disabled,QDateEdit:disabled,QDateTimeEdit:disabled {
+QComboBox:disabled,QAbstractSpinBox:disabled {
     background: #eee;
 }
 
@@ -642,23 +640,19 @@ QComboBox:editable {
     background: #fff;
 }
 
-QSpinBox:!editable, QDoubleSpinBox:!editable, QComboBox:!editable,
-QComboBox::drop-down:!editable {
+QComboBox::drop-down:!editable,QAbstractSpinBox:!editable {
 
 }
 
-QComboBox:disabled,QSpinBox:disabled,QDoubleSpinBox:disabled,
-QTimeEdit:disabled,QDateEdit:disabled,QDateTimeEdit:disabled {
+QComboBox:disabled,QAbstractSpinBox:disabled {
     color: #333;
 }
 
-QComboBox:hover,QSpinBox:hover,QDoubleSpinBox:hover,
-QTimeEdit:hover,QDateEdit:hover,QDateTimeEdit:hover {
+QComboBox:hover,QAbstractSpinBox:hover {
     border: 1px solid #205375;
 }
 
-QComboBox:focus:!read-only,QSpinBox:focus:!read-only,QDoubleSpinBox:focus:!read-only,
-QTimeEdit:focus:!read-only,QDateEdit:focus:!read-only,QDateTimeEdit:focus:!read-only {
+QComboBox:focus:!read-only,QAbstractSpinBox:focus:!read-only {
     
 }
 
@@ -666,8 +660,7 @@ QComboBox::down-arrow {
     image: url(:/datastudio/image/system/arrow/arrow_down.png);
 }
 
-QComboBox::drop-down,QSpinBox::drop-down,QDoubleSpinBox::drop-down,
-QTimeEdit::drop-down,QDateEdit::drop-down,QDateTimeEdit::drop-down {
+QComboBox::drop-down,QAbstractSpinBox::drop-down {
     width: 16px;
     background: #eee;
     subcontrol-origin: padding;
@@ -679,8 +672,7 @@ QTimeEdit::drop-down,QDateEdit::drop-down,QDateTimeEdit::drop-down {
     border-bottom-right-radius: 2px;
 }
 
-QComboBox::drop-down:hover,QSpinBox::drop-down:hover,QDoubleSpinBox::drop-down:hover,
-QTimeEdit::drop-down:hover,QDateEdit::drop-down:hover,QDateTimeEdit::drop-down:hover {
+QComboBox::drop-down:hover,QAbstractSpinBox::drop-down:hover {
     background: #ddd;
 }
 
@@ -692,8 +684,7 @@ QComboBox QAbstractItemView {
     outline: none;
 }
 
-QSpinBox::up-button,QDoubleSpinBox::up-button,
-QTimeEdit::up-button,QDateEdit::up-button,QDateTimeEdit::up-button {
+QAbstractSpinBox::up-button {
     margin: 1px 1px;
     background: #fff;
     subcontrol-origin: border;
@@ -702,34 +693,26 @@ QTimeEdit::up-button,QDateEdit::up-button,QDateTimeEdit::up-button {
     border: 1px solid #aaa;
 }
 
-QSpinBox::up-button:hover,QDoubleSpinBox::up-button:hover,
-QTimeEdit::up-button:hover,QDateEdit::up-button:hover,
-QDateTimeEdit::up-button:hover {
+QAbstractSpinBox::up-button:hover {
     background: #eee;
     border: 1px solid #aaa;
 }
 
-QSpinBox::up-button:pressed,QDoubleSpinBox::up-button:pressed,
-QTimeEdit::up-button:pressed,QDateEdit::up-button:pressed,
-QDateTimeEdit::up-button:pressed {
+QAbstractSpinBox::up-button:pressed {
     background: #ccc;
 }
 
-QSpinBox::up-arrow,QDoubleSpinBox::up-arrow,
-QTimeEdit::up-arrow,QDateEdit::up-arrow,QDateTimeEdit::up-arrow {
+QAbstractSpinBox::up-arrow {
     image: url(:/datastudio/image/system/spinbox/up_arrow.png);
     width: 7px;
     height: 7px;
 }
 
-QSpinBox::up-arrow:disabled,QDoubleSpinBox::up-arrow:disabled,
-QTimeEdit::up-arrow:disabled,QDateEdit::up-arrow:disabled,
-QDateTimeEdit::up-arrow:disabled {
+QAbstractSpinBox::up-arrow:disabled {
     image: url(:/datastudio/image/system/spinbox/up_arrow_disabled.png);
 }
 
-QSpinBox::down-button,QDoubleSpinBox::down-button,
-QTimeEdit::down-button,QDateEdit::down-button,QDateTimeEdit::down-button {
+QAbstractSpinBox::down-button {
     margin: 0 1px 1px;
     background: #fff;
     subcontrol-origin: border;
@@ -738,35 +721,28 @@ QTimeEdit::down-button,QDateEdit::down-button,QDateTimeEdit::down-button {
     border: 1px solid #aaa;
 }
 
-QSpinBox::down-button:hover,QDoubleSpinBox::down-button:hover,
-QTimeEdit::down-button:hover,QDateEdit::down-button:hover,
-QDateTimeEdit::down-button:hover {
+QAbstractSpinBox::down-button:hover {
     background: #eee;
     border: 1px solid #aaa;
 }
 
-QSpinBox::down-button:pressed,QDoubleSpinBox::down-button:pressed,
-QTimeEdit::down-button:pressed,QDateEdit::down-button:pressed,
-QDateTimeEdit::down-button:pressed {
+QAbstractSpinBox::down-button:pressed {
     background: #ccc;
 }
 
-QSpinBox::down-arrow,QDoubleSpinBox::down-arrow,
-QTimeEdit::down-arrow,QDateEdit::down-arrow,QDateTimeEdit::down-arrow {
+QAbstractSpinBox::down-arrow {
     image: url(:/datastudio/image/system/spinbox/down_arrow.png);
     margin-top: 2px;
     width: 7px;
     height: 7px;
 }
 
-QSpinBox::down-arrow:disabled,QDoubleSpinBox::down-arrow:disabled,
-QTimeEdit::down-arrow:disabled,QDateEdit::down-arrow:disabled,
-QDateTimeEdit::down-arrow:disabled {
+QAbstractSpinBox::down-arrow:disabled {
     image: url(:/datastudio/image/system/spinbox/down_arrow_disabled.png);
 }
 
-QSpinBox[buttonSymbols="2"]::up-button,
-QSpinBox[buttonSymbols="2"]::down-button {
+QAbstractSpinBox[buttonSymbols="2"]::up-button,
+QAbstractSpinBox[buttonSymbols="2"]::down-button {
     margin: 0;
     width: 0;
     border: none;
