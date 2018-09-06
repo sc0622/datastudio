@@ -316,7 +316,7 @@ JChart::Chart *ChartViewPrivate::createChart(const Icd::ItemPtr &dataItem)
     JChart::Chart *newChart = nullptr;
 
     switch (dataItem->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
     case Icd::ItemCounter:
     case Icd::ItemCheck:
     case Icd::ItemFrameCode:
@@ -563,7 +563,7 @@ void ChartViewPrivate::updateChart(JChart::Chart *chart)
                 continue;
             }
             switch (seriesData->dataItem->type()) {
-            case Icd::ItemHead:
+            case Icd::ItemHeader:
             case Icd::ItemCounter:
             case Icd::ItemCheck:
             case Icd::ItemFrameCode:

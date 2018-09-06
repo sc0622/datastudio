@@ -227,7 +227,7 @@ public:
 
     enum ItemType {
         ItemInvalid = -1,
-        ItemHead,
+        ItemHeader,
         ItemCounter,
         ItemCheck,
         ItemFrameCode,

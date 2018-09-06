@@ -350,8 +350,7 @@ QHeaderView::section:hover {
 
 QHeaderView::section:checked {
     background: #5599ee;
-    color: #ffffaa; 
-    font-style: italic;
+    color: #ffffaa;
 }
 
 /** QTreeView **/

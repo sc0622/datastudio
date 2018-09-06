@@ -327,7 +327,7 @@ std::pair<double, double> NumericItem::dataRange() const
             (-DBL_MAX, DBL_MAX);
     const int typeSize = (static_cast<int>(bufferSize()) << 3);
 
-    if (d->limit->leftInf()) {
+    if (d->limit->minimumInf()) {
         switch (d->numericType) {
         case NumericU8:
         case NumericU16:
@@ -349,7 +349,7 @@ std::pair<double, double> NumericItem::dataRange() const
         range.first = (d->limit->minimum() - d->offset) / d->scale;
     }
 
-    if (d->limit->rightInf()) {
+    if (d->limit->maximumInf()) {
         switch (d->numericType) {
         case NumericU8:
         case NumericU16:
@@ -411,7 +411,7 @@ std::string NumericItem::typeString() const
 bool NumericItem::outOfLimit() const
 {
     double value = this->data();
-    if (!d->limit->leftInf()) {
+    if (!d->limit->minimumInf()) {
         if (d->numericType == Icd::NumericF32) {
             float _value = float(value);
             float minimum = float(d->limit->minimum());
@@ -426,7 +426,7 @@ bool NumericItem::outOfLimit() const
         }
     }
 
-    if (!d->limit->rightInf()) {
+    if (!d->limit->maximumInf()) {
         if (d->numericType == Icd::NumericF32) {
             float _value = float(value);
             float maximum = float(d->limit->maximum());

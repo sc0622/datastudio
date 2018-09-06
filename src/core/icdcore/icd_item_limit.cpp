@@ -11,8 +11,8 @@ public:
     LimitItemData()
         : minimum(0.0)
         , maximum(0.0)
-        , leftInf(true)
-        , rightInf(true)
+        , minimumInf(true)
+        , maximumInf(true)
     {
 
     }
@@ -20,8 +20,8 @@ public:
 private:
     double minimum;     // 最小值
     double maximum;     // 最大值
-    bool leftInf;       // 是否最小值为-无穷
-    bool rightInf;      // 是否最大值为+无穷
+    bool minimumInf;    // 是否最小值为-无穷
+    bool maximumInf;    // 是否最大值为+无穷
 };
 
 LimitItem::LimitItem()
@@ -63,24 +63,24 @@ void LimitItem::setMaximum(double max)
     d->maximum = max;
 }
 
-bool LimitItem::leftInf() const
+bool LimitItem::minimumInf() const
 {
-    return d->leftInf;
+    return d->minimumInf;
 }
 
-void LimitItem::setLeftInf(bool leftInf)
+void LimitItem::setMinimumInf(bool inf)
 {
-    d->leftInf = leftInf;
+    d->minimumInf = inf;
 }
 
-bool LimitItem::rightInf() const
+bool LimitItem::maximumInf() const
 {
-    return d->rightInf;
+    return d->maximumInf;
 }
 
-void LimitItem::setRightInf(bool rightInf)
+void LimitItem::setMaximumInf(bool inf)
 {
-    d->rightInf = rightInf;
+    d->maximumInf = inf;
 }
 
 LimitItem *LimitItem::clone() const
@@ -92,8 +92,8 @@ LimitItem &LimitItem::operator =(const LimitItem &other)
 {
     d->minimum = other.d->minimum;
     d->maximum = other.d->maximum;
-    d->leftInf = other.d->leftInf;
-    d->rightInf = other.d->rightInf;
+    d->minimumInf = other.d->minimumInf;
+    d->maximumInf = other.d->maximumInf;
 
     return *this;
 }
@@ -102,11 +102,11 @@ Json::Value LimitItem::save() const
 {
     Json::Value json;
 
-    if (!d->leftInf) {
+    if (!d->minimumInf) {
         json["min"] = minimum();
     }
 
-    if (!d->rightInf) {
+    if (!d->maximumInf) {
         json["max"] = maximum();
     }
 
@@ -116,18 +116,18 @@ Json::Value LimitItem::save() const
 bool LimitItem::restore(const Json::Value &json, int)
 {
     if (json.isMember("min")) {
-        setLeftInf(false);
+        setMinimumInf(false);
         setMinimum(json["min"].asDouble());
     } else {
-        setLeftInf(true);
+        setMinimumInf(true);
         setMinimum(0);
     }
 
     if (json.isMember("max")) {
-        setRightInf(false);
+        setMaximumInf(false);
         setMaximum(json["max"].asDouble());
     } else {
-        setRightInf(true);
+        setMaximumInf(true);
         setMaximum(0);
     }
 
@@ -138,13 +138,13 @@ std::string LimitItem::toString() const
 {
     std::ostringstream os;
     os << '[';
-    if (d->leftInf) {
+    if (d->minimumInf) {
         os << "-Inf";
     } else {
         os << d->minimum;
     }
     os << ", ";
-    if (d->rightInf) {
+    if (d->maximumInf) {
         os << "Inf";
     } else {
         os << d->maximum;

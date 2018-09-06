@@ -21,11 +21,11 @@ public:
     double maximum() const;
     void setMaximum(double maximum);
 
-    bool leftInf() const;
-    void setLeftInf(bool leftInf);
+    bool minimumInf() const;
+    void setMinimumInf(bool inf);
 
-    bool rightInf() const;
-    void setRightInf(bool rightInf);
+    bool maximumInf() const;
+    void setMaximumInf(bool inf);
 
     std::string toString() const;
     virtual LimitItem *clone() const override;

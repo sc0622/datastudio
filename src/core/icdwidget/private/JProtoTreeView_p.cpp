@@ -559,9 +559,9 @@ void JProtoTreeViewPrivate::setDataFormat(int format)
     }
 }
 
-JProtoTreeView::TreeModes JProtoTreeViewPrivate::treeModes() const
+quint32 JProtoTreeViewPrivate::treeModes() const
 {
-    return treeModes_;
+    return quint32(treeModes_);
 }
 
 void JProtoTreeViewPrivate::setTreeMode(JProtoTreeView::TreeModes modes)
@@ -839,6 +839,17 @@ void JProtoTreeViewPrivate::stopAllChannels()
 bool JProtoTreeViewPrivate::isEditMode() const
 {
     return (treeModes_ == JProtoTreeView::TreeModeEdit);
+}
+
+bool JProtoTreeViewPrivate::hasUnloadedItem() const
+{
+    if (!isEditMode()) {
+        return false;
+    }
+
+    topLevelItem();
+
+    return false;
 }
 
 void JProtoTreeViewPrivate::onTreeItemPressed(QStandardItem *item)
@@ -1623,7 +1634,7 @@ void JProtoTreeViewPrivate::itemDataItemRightClicked(QStandardItem *item, int de
 
     //
     switch (dataType) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
     case Icd::ItemCounter:
     case Icd::ItemCheck:
     case Icd::ItemFrameCode:
@@ -2717,6 +2728,7 @@ bool JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *itemTable,
     //
     const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
     const QString path = itemTable->data(Icd::TreeItemPathRole).toString();
+    const quint32 treeModes = target->property("treeModes").toUInt();
     const quint32 showAttris = target->property("showAttris").toUInt();
 
     // name
@@ -2759,6 +2771,9 @@ bool JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *itemTable,
     // load ???
     switch (item->type()) {
     case Icd::ItemBitMap:
+        if (treeModes == JProtoTreeView::TreeModeEdit) {
+            break;
+        }
         if (!loadBitItem(target, itemDataItem, JHandlePtrCast<Icd::BitItem>(item))) {
             // load failure
         }

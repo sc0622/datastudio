@@ -8,7 +8,11 @@ class BitItem;
 typedef std::shared_ptr<BitItem> BitItemPtr;
 }
 
+class QSpinBox;
+
 namespace Edit {
+
+class SpecsTable;
 
 // class BitEdit
 
@@ -19,15 +23,20 @@ public:
     explicit BitEdit(const Icd::BitItemPtr &bit, QWidget *parent = nullptr);
     virtual ~BitEdit();
 
+    Icd::BitItemPtr bit() const;
+
     static BitEdit *create(const Icd::BitItemPtr &bit);
 
-    Icd::BitItemPtr bit() const;
+    virtual bool init() override;
 
 signals:
 
 public slots:
 
 private:
+    QSpinBox *spinBitStart_;
+    QSpinBox *spinBitCount_;
+    SpecsTable *tableSpecs_;
 };
 
 }

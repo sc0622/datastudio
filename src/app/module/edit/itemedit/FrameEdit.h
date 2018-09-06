@@ -8,6 +8,8 @@ class FrameItem;
 typedef std::shared_ptr<FrameItem> FrameItemPtr;
 }
 
+class QSpinBox;
+
 namespace Edit {
 
 // class FrameEdit
@@ -21,11 +23,14 @@ public:
 
     Icd::FrameItemPtr frame() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
 
 private:
+    QSpinBox *spinBoxSequence_;
 };
 
 }

@@ -215,7 +215,7 @@ bool XmlParser::parseItem(const TiXmlElement *emItem, Icd::ItemPtr &item, int de
 
     // parse self informations
     switch (item->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
         // parse head informations
         if (!parseItemHead(emItem, JHandlePtrCast<Icd::HeaderItem>(item))) {
             return false;
@@ -413,19 +413,19 @@ bool XmlParser::parseItemNumeric(const TiXmlElement *emItem,
     // min attribute
     if (emItem->QueryStringAttribute("min", &sVal) == TIXML_SUCCESS) {
         if (sVal.empty()) {
-            numeric->limit()->setLeftInf(true);
+            numeric->limit()->setMinimumInf(true);
         } else {
             numeric->limit()->setMinimum(QString::fromStdString(sVal).toDouble());
-            numeric->limit()->setLeftInf(false);
+            numeric->limit()->setMinimumInf(false);
         }
     }
     // max attribute
     if (emItem->QueryStringAttribute("max", &sVal) == TIXML_SUCCESS) {
         if (sVal.empty()) {
-            numeric->limit()->setRightInf(true);
+            numeric->limit()->setMaximumInf(true);
         } else {
             numeric->limit()->setMaximum(QString::fromStdString(sVal).toDouble());
-            numeric->limit()->setRightInf(false);
+            numeric->limit()->setMaximumInf(false);
         }
     }
     // unit attribute
@@ -518,19 +518,19 @@ bool XmlParser::parseItemBit(const TiXmlElement *emItem, const Icd::BitItemPtr &
         // min attribute
         if (emItem->QueryStringAttribute("min", &sVal) == TIXML_SUCCESS) {
             if (sVal.empty()) {
-                bit->limit()->setLeftInf(true);
+                bit->limit()->setMinimumInf(true);
             } else {
                 bit->limit()->setMinimum(QString::fromStdString(sVal).toDouble());
-                bit->limit()->setLeftInf(false);
+                bit->limit()->setMinimumInf(false);
             }
         }
         // max attribute
         if (emItem->QueryStringAttribute("max", &sVal) == TIXML_SUCCESS) {
             if (sVal.empty()) {
-                bit->limit()->setRightInf(true);
+                bit->limit()->setMaximumInf(true);
             } else {
                 bit->limit()->setMaximum(QString::fromStdString(sVal).toDouble());
-                bit->limit()->setRightInf(false);
+                bit->limit()->setMaximumInf(false);
             }
         }
         // unit attribute

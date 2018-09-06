@@ -89,7 +89,7 @@ JIcdFrameCodeItem *JIcdTablePrivate::frameCodeAt(QQmlListProperty<JIcdFrameCodeI
 void JIcdTablePrivate::saveItem(const QSharedPointer<JIcdItem> &item)
 {
     switch (item->itemType()) {
-    case IcdCore::ItemHead:
+    case IcdCore::ItemHeader:
         headers.append(char(qSharedPointerDynamicCast<JIcdHeaderItem>(item)->defaultValue()));
         break;
     case IcdCore::ItemCounter:
@@ -111,7 +111,7 @@ void JIcdTablePrivate::saveItem(const QSharedPointer<JIcdItem> &item)
 void JIcdTablePrivate::removeItem(const QSharedPointer<JIcdItem> &item)
 {
     switch (item->itemType()) {
-    case IcdCore::ItemHead:
+    case IcdCore::ItemHeader:
         break;
     case IcdCore::ItemCounter:
         counterItem = nullptr;

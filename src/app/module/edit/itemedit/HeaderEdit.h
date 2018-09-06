@@ -8,6 +8,8 @@ class HeaderItem;
 typedef std::shared_ptr<HeaderItem> HeaderItemPtr;
 }
 
+class JSpinBox;
+
 namespace Edit {
 
 // class HeaderEdit
@@ -21,11 +23,14 @@ public:
 
     Icd::HeaderItemPtr header() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
 
 private:
+    JSpinBox *spinDefault_;
 };
 
 }

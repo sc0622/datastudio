@@ -76,7 +76,7 @@ IcdCore::ItemType JIcdItem::itemType() const
 {
     Q_D(const JIcdItem);
     switch (d->data->type()) {
-    case Icd::ItemHead: return IcdCore::ItemHead;
+    case Icd::ItemHeader: return IcdCore::ItemHeader;
     case Icd::ItemCounter: return IcdCore::ItemCounter;
     case Icd::ItemCheck: return IcdCore::ItemCheck;
     case Icd::ItemFrameCode: return IcdCore::ItemFrameCode;
@@ -177,7 +177,7 @@ JIcdItem *JIcdItem::create(const Icd::ItemPtr &data, QObject *parent)
     }
 
     switch (data->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
         return new JIcdHeaderItem(JHandlePtrCast<Icd::HeaderItem>(data), parent);
     case Icd::ItemCounter:
         return new JIcdCounterItem(JHandlePtrCast<Icd::CounterItem>(data), parent);

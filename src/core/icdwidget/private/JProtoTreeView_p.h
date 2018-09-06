@@ -84,6 +84,7 @@ class JProtoTreeViewPrivate : public JTreeView
 {
     Q_OBJECT
     Q_PROPERTY(quint32 bindTableTypes READ bindTableTypes NOTIFY bindTableTypesChanged)
+    Q_PROPERTY(quint32 treeModes READ treeModes NOTIFY treeModesChanged)
     Q_PROPERTY(quint32 showAttris READ showAttris NOTIFY showAttrisChanged)
     Q_PROPERTY(QColor valueColor READ valueColor WRITE setValueColor NOTIFY valueColorChanged)
 public:
@@ -114,7 +115,7 @@ public:
     int dataFormat() const;
     void setDataFormat(int format);
 
-    JProtoTreeView::TreeModes treeModes() const;
+    quint32 treeModes() const;
     void setTreeMode(JProtoTreeView::TreeModes modes);
     void setTreeMode(JProtoTreeView::TreeMode mode, bool on = true);
     bool testTreeMode(JProtoTreeView::TreeMode mode) const;
@@ -132,6 +133,8 @@ public:
 
     bool isEditMode() const;
 
+    bool hasUnloadedItem() const;
+
 public:
     Q_INVOKABLE bool changeChannel(QStandardItem *itemTable);
     Q_INVOKABLE bool bindChannel(QStandardItem *itemTable);
@@ -145,6 +148,7 @@ public:
 
 signals:
     void bindTableTypesChanged();
+    void treeModesChanged();
     void showAttrisChanged();
     void valueColorChanged(const QColor &color);
 

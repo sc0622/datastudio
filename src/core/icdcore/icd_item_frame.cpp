@@ -508,7 +508,7 @@ bool FrameItem::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = tablesJson.begin();
              citer != tablesJson.end(); ++citer) {
             const Json::Value &tableJson = *citer;
-            Icd::TablePtr table(new Icd::Table());
+            Icd::TablePtr table = std::make_shared<Icd::Table>(nullptr);
             if (!table->restore(tableJson, deep)) {
                 continue;
             }

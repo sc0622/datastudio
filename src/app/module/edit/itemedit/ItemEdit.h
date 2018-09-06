@@ -8,6 +8,8 @@ class Item;
 typedef std::shared_ptr<Item> ItemPtr;
 }
 
+class QComboBox;
+
 namespace Edit {
 
 // class ItemEdit
@@ -19,15 +21,18 @@ public:
     explicit ItemEdit(const Icd::ItemPtr &item, QWidget *parent = nullptr);
     virtual ~ItemEdit();
 
+    Icd::ItemPtr item() const;
+
     static ItemEdit *create(const Icd::ItemPtr &item);
 
-    Icd::ItemPtr item() const;
+    bool init() override;
 
 signals:
 
 public slots:
 
 private:
+    QComboBox *comboType_;
 };
 
 }

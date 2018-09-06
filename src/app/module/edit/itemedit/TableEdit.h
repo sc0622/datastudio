@@ -8,6 +8,10 @@ class Table;
 typedef std::shared_ptr<Table> TablePtr;
 }
 
+class QComboBox;
+class JLargeSpinBox;
+class QSpinBox;
+
 namespace Edit {
 
 // class TableEdit
@@ -21,11 +25,16 @@ public:
 
     Icd::TablePtr table() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
 
 private:
+    QComboBox *comboCodeType_;
+    JLargeSpinBox *spinCode_;
+    QSpinBox *spinBoxSequence_;
 };
 
 }

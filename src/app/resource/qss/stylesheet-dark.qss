@@ -356,7 +356,6 @@ QHeaderView::section:hover {
 QHeaderView::section:checked {
     background: #3f3f46;
     color: #aaaa33;
-    font-style: italic;
 }
 
 /** QTreeView **/
@@ -642,7 +641,7 @@ QLineEdit {
     border-radius: 2px;
     padding: 2px;
     border: 1px solid #333;
-    color: #ccc;
+    color: white;
     outline: none;
 }
 
@@ -651,16 +650,14 @@ QLineEdit:read-only {
     color: #ccc;
 }
 
-QLineEdit:hover {
+QLineEdit:hover:!read-only {
     border: 1px solid #205375;
-    color: #ccc;
 }
 
 QLineEdit:focus:!read-only {
     border: 1px solid #205375;
     border-radius: 2px;
     background: #383838;
-    color: #eee;
 }
 
 /** QPlainTextEdit **/
@@ -669,7 +666,7 @@ QPlainTextEdit, QTextEdit {
     background: #303030;
     border: 1px solid #204335;
     border-radius: 3px;
-    color: #ccc;
+    color: lightgreen;
     selection-color: white;
     selection-background-color: #345;
     outline: none;
@@ -704,6 +701,10 @@ QTextEdit[frameShape="2"]:hover {
     border: none;
 }
 
+QTextEdit:!read-only,QLineEdit:!read-only {
+    color: lightgreen;
+}
+
 /** QComboBox, QSpinBox, QDoubleSpinBox **/
 
 QComboBox,QSpinBox,QDoubleSpinBox,
@@ -711,7 +712,7 @@ QTimeEdit,QDateEdit,QDateTimeEdit {
     border-radius: 2px;
     border: 1px solid #333;
     padding: 2px;
-    color: white;
+    color: lightgreen;
     outline: none;
 }
 
@@ -722,7 +723,6 @@ QComboBox:editable {
 QSpinBox:!editable, QDoubleSpinBox:!editable, QComboBox:!editable,
 QComboBox::drop-down:!editable {
     background: #303030;
-    color: white;
 }
 
 QComboBox:hover,QSpinBox:hover,QDoubleSpinBox:hover,

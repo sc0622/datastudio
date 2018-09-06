@@ -129,7 +129,7 @@ DataItemWidget *DataItemWidget::createWidget(const Icd::ItemPtr &dataItem, QWidg
 {
     DataItemWidget *itemWidget = nullptr;
     switch (dataItem->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
         itemWidget = new ItemWidgetHead(parent);
         break;
     case Icd::ItemCounter:

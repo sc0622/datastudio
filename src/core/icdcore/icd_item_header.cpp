@@ -17,14 +17,14 @@ private:
 };
 
 HeaderItem::HeaderItem(Object *parent)
-    : Item(ItemHead, parent)
+    : Item(ItemHeader, parent)
     , d(new HeaderItemData())
 {
     setBufferSize(1);
 }
 
 HeaderItem::HeaderItem(const std::string &id, Object *parent)
-    : Item(id, ItemHead, parent)
+    : Item(id, ItemHeader, parent)
     , d(new HeaderItemData())
 {
     setBufferSize(1);

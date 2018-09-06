@@ -475,7 +475,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
     //
     if (_showValue) {
         switch (dataItem->type()) {
-        case Icd::ItemHead:
+        case Icd::ItemHeader:
         {
             QStringList values;
             // data

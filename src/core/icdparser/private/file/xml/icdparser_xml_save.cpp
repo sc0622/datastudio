@@ -79,7 +79,7 @@ bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
     emItem->SetDoubleAttribute("defaultValue", item->defaultValue());
     //
     switch (item->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
         if (!saveItemHead(emItem, JHandlePtrCast<Icd::HeaderItem>(item))) {
             return false;
         }
@@ -216,11 +216,11 @@ bool XmlParser::saveItemNumeric(TiXmlElement *emItem,
         emItem->SetDoubleAttribute("decimals", numeric->decimals());
     }
     // min
-    if (!numeric->limit()->leftInf()) {
+    if (!numeric->limit()->minimumInf()) {
         emItem->SetDoubleAttribute("min", numeric->limit()->minimum());
     }
     // max
-    if (!numeric->limit()->rightInf()) {
+    if (!numeric->limit()->maximumInf()) {
         emItem->SetDoubleAttribute("max", numeric->limit()->maximum());
     }
     // unit
@@ -279,11 +279,11 @@ bool XmlParser::saveItemBit(TiXmlElement *emItem,
         // decimals
         emItem->SetDoubleAttribute("decimals", bit->decimals());
         // min
-        if (!bit->limit()->leftInf()) {
+        if (!bit->limit()->minimumInf()) {
             emItem->SetDoubleAttribute("min", bit->limit()->minimum());
         }
         // max
-        if (bit->limit()->rightInf()) {
+        if (bit->limit()->maximumInf()) {
             emItem->SetDoubleAttribute("max", bit->limit()->maximum());
         }
         // unit

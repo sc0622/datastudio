@@ -8,6 +8,8 @@ class CheckItem;
 typedef std::shared_ptr<CheckItem> CheckItemPtr;
 }
 
+class QSpinBox;
+
 namespace Edit {
 
 // class CheckEdit
@@ -21,11 +23,16 @@ public:
 
     Icd::CheckItemPtr check() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
 
 private:
+    QComboBox *comboCheckType_;
+    QSpinBox *spinStartPos_;
+    QSpinBox *spinEndPos_;
 };
 
 }

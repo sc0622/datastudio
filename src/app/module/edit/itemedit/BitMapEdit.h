@@ -3,6 +3,8 @@
 
 #include "BitEdit.h"
 
+class JLargeSpinBox;
+
 namespace Edit {
 
 // class BitMapEdit
@@ -14,11 +16,14 @@ public:
     explicit BitMapEdit(const Icd::BitItemPtr &bit, QWidget *parent = nullptr);
     ~BitMapEdit();
 
+    bool init() override;
+
 signals:
 
 public slots:
 
 private:
+    JLargeSpinBox *spinDefaultValue_;
 };
 
 }

@@ -814,7 +814,7 @@ bool WordGeneratorData::generateItem(const Icd::ItemPtr &item, QAxObject *axTabl
     }
 
     switch (item->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
         return generateHeaderItem(JHandlePtrCast<Icd::HeaderItem>(item), axTable, row);
     case Icd::ItemCounter:
         return generateCounterItem(JHandlePtrCast<Icd::CounterItem>(item), axTable, row);

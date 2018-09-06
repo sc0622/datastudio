@@ -13,10 +13,10 @@ DetailEdit::DetailEdit(QWidget *parent)
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    groupBox_ = new QGroupBox(tr("Details"), this);
-    vertLayoutMain->addWidget(groupBox_);
-
-    layoutEdit_ = new QVBoxLayout(groupBox_);
+    layoutEdit_ = new QVBoxLayout();
+    layoutEdit_->setContentsMargins(0, 0, 0, 0);
+    layoutEdit_->setSpacing(3);
+    vertLayoutMain->addLayout(layoutEdit_);
 }
 
 void DetailEdit::resetView()
@@ -32,42 +32,6 @@ void DetailEdit::resetView()
     hide();
 }
 
-void DetailEdit::updateView(const Icd::ObjectPtr &object)
-{
-    resetView();
-
-    object_ = object;
-
-    if (!object) {
-        return;
-    }
-
-    switch (object->objectType()) {
-    case Icd::ObjectRoot:
-    case Icd::ObjectVehicle:
-    case Icd::ObjectSystem:
-    case Icd::ObjectTable:
-        break;
-    case Icd::ObjectItem:
-    {
-        const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(object);
-        if (!item) {
-            break;
-        }
-        switch (item->type()) {
-        case Icd::ItemFrame:
-            break;
-        default:
-            show();
-            break;
-        }
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
 {
     resetView();
@@ -76,6 +40,8 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
         return;
     }
 
+    Icd::ObjectPtr subObject;
+
     switch (object->objectType()) {
     case Icd::ObjectRoot:
     {
@@ -83,7 +49,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
         if (!root) {
             return;
         }
-        object_ = root->vehicleAt(index.toInt());
+        subObject = root->vehicleAt(index.toInt());
         break;
     }
     case Icd::ObjectVehicle:
@@ -92,7 +58,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
         if (!vehicle) {
             return;
         }
-        object_ = vehicle->systemAt(index.toInt());
+        subObject = vehicle->systemAt(index.toInt());
         break;
     }
     case Icd::ObjectSystem:
@@ -101,7 +67,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
         if (!system) {
             return;
         }
-        object_ = system->tableAt(index.toInt());
+        subObject = system->tableAt(index.toInt());
         break;
     }
     case Icd::ObjectTable:
@@ -110,7 +76,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
         if (!table) {
             return;
         }
-        object_ = table->itemAt(index.toInt());
+        subObject = table->itemAt(index.toInt());
         break;
     }
     case Icd::ObjectItem:
@@ -126,7 +92,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
             if (!frame) {
                 return;
             }
-            object_ = frame->tableAt(index.toULongLong());
+            subObject = frame->tableAt(index.toULongLong());
             break;
         }
         default:
@@ -137,6 +103,21 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
     default:
         break;
     }
+
+    if (!subObject) {
+        return;
+    }
+
+    updateView(subObject, true);
+}
+
+void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub)
+{
+    if (!sub) {
+        resetView();
+    }
+
+    object_ = object;
 
     if (!object_) {
         return;
@@ -150,6 +131,10 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
     layoutEdit_->addWidget(objectEdit_);
 
     connect(objectEdit_, &ObjectEdit::contentChanged, this, &DetailEdit::contentChanged);
+
+    if (!objectEdit_->init()) {
+        //
+    }
 
     show();
 }

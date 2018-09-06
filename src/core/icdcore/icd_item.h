@@ -6,21 +6,20 @@
 
 namespace Icd {
 
-//
 enum ItemType {
-    ItemInvalid = -1,   /**<  */
-    ItemHead,           /**<  */
-    ItemCounter,        /**<  */
-    ItemCheck,          /**<  */
-    ItemFrameCode,      /**<  */
-    ItemNumeric,        /**<  */
-    ItemBitMap,         /**<  */
-    ItemBitValue,       /**<  */
-    ItemComplex,        /**<  */
-    ItemFrame,          /**<  */
-    ItemDateTime,       /**<  */
-    ItemArray,          /**<  */
-    ItemTotal           /**<  */
+    ItemInvalid = -1,
+    ItemHeader,
+    ItemCounter,
+    ItemCheck,
+    ItemFrameCode,
+    ItemNumeric,
+    ItemArray,
+    ItemBitMap,
+    ItemBitValue,
+    ItemDateTime,
+    ItemComplex,
+    ItemFrame,
+    ItemTotal
 };
 
 class Table;

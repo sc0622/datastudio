@@ -17,12 +17,31 @@ namespace Edit {
 ItemEdit::ItemEdit(const Icd::ItemPtr &item, QWidget *parent)
     : ObjectEdit(item, parent)
 {
+    comboType_ = new QComboBox(this);
+    insertRow(0, "<font color=red>*</font>" + tr("Type:"), comboType_);
 
+    connect(comboType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, [=](){
+        //
+    });
+
+    // init
+
+    // types
+    const auto mapTypes = IcdWidget::protoItemMapTypes();
+    for (auto citer = mapTypes.constBegin(); citer != mapTypes.constEnd(); ++citer) {
+        comboType_->addItem(citer.value(), citer.key());
+    }
 }
 
 ItemEdit::~ItemEdit()
 {
 
+}
+
+Icd::ItemPtr ItemEdit::item() const
+{
+    return JHandlePtrCast<Icd::Item>(object());
 }
 
 ItemEdit *ItemEdit::create(const Icd::ItemPtr &item)
@@ -32,7 +51,7 @@ ItemEdit *ItemEdit::create(const Icd::ItemPtr &item)
     }
 
     switch (item->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
         return new HeaderEdit(JHandlePtrCast<Icd::HeaderItem>(item));
     case Icd::ItemCounter:
         return new CounterEdit(JHandlePtrCast<Icd::CounterItem>(item));
@@ -58,9 +77,23 @@ ItemEdit *ItemEdit::create(const Icd::ItemPtr &item)
     return nullptr;
 }
 
-Icd::ItemPtr ItemEdit::item() const
+bool ItemEdit::init()
 {
-    return JHandlePtrCast<Icd::Item>(object());
+    if (!ObjectEdit::init()) {
+        return false;
+    }
+
+    lock();
+
+    const Icd::ItemPtr item = this->item();
+    if (item) {
+        // type
+        comboType_->setCurrentIndex(comboType_->findData(item->type()));
+    }
+
+    unlock();
+
+    return true;
 }
 
 }

@@ -76,6 +76,7 @@ public:
     int period() const;
     bool isFrameTable() const;
     bool isSubFrameTable() const;
+    int frameCodeType() const;
     std::string typeName() const;
     std::string codeName() const;
 

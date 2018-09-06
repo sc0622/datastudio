@@ -11,7 +11,7 @@ class JIcdHeaderItemPrivate
 public:
     JIcdHeaderItemPrivate(JIcdHeaderItem *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
+        , data(nullptr)
     {
 
     }

@@ -2,7 +2,7 @@
 -- V4.5.4
     tools: VS2015，Qt5.11.1，Qbs>=1.9.1
     depends:
-        1) jframework: v2.7.2
+        1) jframework: v2.7.3
     fixed:
         1) core：增加外部缓存数据转换接口
         2) 修复部分中文乱码的问题

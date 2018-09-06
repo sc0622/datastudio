@@ -292,5 +292,109 @@
         <source>Frame</source>
         <translation>帧数据</translation>
     </message>
+    <message>
+        <source>Int8</source>
+        <translation>有符号8位</translation>
+    </message>
+    <message>
+        <source>UInt8</source>
+        <translation>无符号8位</translation>
+    </message>
+    <message>
+        <source>Int16</source>
+        <translation>有符号16位</translation>
+    </message>
+    <message>
+        <source>UInt16</source>
+        <translation>无符号16位</translation>
+    </message>
+    <message>
+        <source>Int32</source>
+        <translation>有符号32位</translation>
+    </message>
+    <message>
+        <source>UInt32</source>
+        <translation>无符号32位</translation>
+    </message>
+    <message>
+        <source>Int64</source>
+        <translation>有符号64位</translation>
+    </message>
+    <message>
+        <source>UInt64</source>
+        <translation>无符号64位</translation>
+    </message>
+    <message>
+        <source>Float32</source>
+        <translation>32位浮点数</translation>
+    </message>
+    <message>
+        <source>Float64</source>
+        <translation>64位浮点数</translation>
+    </message>
+    <message>
+        <source>Counter U8</source>
+        <translation>8位帧计数</translation>
+    </message>
+    <message>
+        <source>Counter U16</source>
+        <translation>16位帧计数</translation>
+    </message>
+    <message>
+        <source>Counter U32</source>
+        <translation>32位帧计数</translation>
+    </message>
+    <message>
+        <source>Counter U64</source>
+        <translation>64位帧计数</translation>
+    </message>
+    <message>
+        <source>No check</source>
+        <translation>无校验</translation>
+    </message>
+    <message>
+        <source>Check sum8</source>
+        <translation>8位和校验</translation>
+    </message>
+    <message>
+        <source>Check sum16</source>
+        <translation>16位和校验</translation>
+    </message>
+    <message>
+        <source>Check crc8</source>
+        <translation>8位CRC和校验</translation>
+    </message>
+    <message>
+        <source>Check crc16</source>
+        <translation>16位CRC和校验</translation>
+    </message>
+    <message>
+        <source>Check xor8</source>
+        <translation>8位XOR校验</translation>
+    </message>
+    <message>
+        <source>Check xor16</source>
+        <translation>16位XOR校验</translation>
+    </message>
+    <message>
+        <source>FrameCode U8</source>
+        <translation>8位帧码</translation>
+    </message>
+    <message>
+        <source>FrameCode U16</source>
+        <translation>16位帧码</translation>
+    </message>
+    <message>
+        <source>FrameCode U32</source>
+        <translation>32位帧码</translation>
+    </message>
+    <message>
+        <source>FrameCode U64</source>
+        <translation>64位帧码</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>未知类型</translation>
+    </message>
 </context>
 </TS>

@@ -74,13 +74,13 @@ qreal JIcdLimitItem::maximum() const
 bool JIcdLimitItem::leftInf() const
 {
     Q_D(const JIcdLimitItem);
-    return d->data->leftInf();
+    return d->data->minimumInf();
 }
 
 bool JIcdLimitItem::rightInf() const
 {
     Q_D(const JIcdLimitItem);
-    return d->data->rightInf();
+    return d->data->maximumInf();
 }
 
 QString JIcdLimitItem::toString() const

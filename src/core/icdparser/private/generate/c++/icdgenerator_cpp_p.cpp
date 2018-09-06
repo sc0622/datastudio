@@ -170,7 +170,7 @@ bool CppGeneratorData::generateDataItem(const ItemPtr &item,
     }
 
     switch (item->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
         return generateHeaderItem(JHandlePtrCast<Icd::HeaderItem>(item),
                                   tableStream, itemsStream);
     case Icd::ItemCounter:

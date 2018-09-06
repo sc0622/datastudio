@@ -62,8 +62,8 @@ public:
     explicit DetailEdit(QWidget *parent = nullptr);
 
     void resetView();
-    void updateView(const Icd::ObjectPtr &object);
     void updateView(const Icd::ObjectPtr &object, const QVariant &index);
+    void updateView(const Icd::ObjectPtr &object, bool sub = false);
 
 signals:
     void contentChanged(const QString &name);
@@ -72,7 +72,6 @@ public slots:
     void updateContent(const QString &name);
 
 private:
-    QGroupBox *groupBox_;
     QVBoxLayout *layoutEdit_;
     ObjectEdit *objectEdit_;
     Icd::ObjectPtr object_;

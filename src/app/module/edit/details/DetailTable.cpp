@@ -13,9 +13,6 @@ DetailTable::DetailTable(QWidget *parent)
     vertLayoutMain->setSpacing(0);
 
     tableView_ = new JTableView(this);
-    tableView_->setEditTriggers(QAbstractItemView::CurrentChanged
-                                | QAbstractItemView::DoubleClicked
-                                | QAbstractItemView::SelectedClicked);
     delegate_ = new ViewDelegate(tableView_);
     tableView_->setItemDelegate(delegate_);
     vertLayoutMain->addWidget(tableView_);
@@ -309,7 +306,7 @@ bool DetailTable::updateTable()
                 tableView_->setItemData(row, 3, QString::number(item->bufferSize()));
                 break;
             }
-            tableView_->setItemData(row, 4, JMain::typeString(item));
+            tableView_->setItemData(row, 4, IcdWidget::typeString(item));
             tableView_->setItemData(row, 5, QString::fromStdString(item->desc()));
         }
     }
@@ -343,7 +340,7 @@ bool DetailTable::updateItem()
     // type of data
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Type of data"));
-    tableView_->setItemData(rowIndex, 1, JMain::typeString(item));
+    tableView_->setItemData(rowIndex, 1, IcdWidget::typeString(item));
     // name of data
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Name of data"));
@@ -362,7 +359,7 @@ bool DetailTable::updateItem()
     tableView_->setItemData(rowIndex, 1, QString::number(item->bufferSize()));
     // details
     switch (item->type()) {
-    case Icd::ItemHead: updateHead(); break;
+    case Icd::ItemHeader: updateHeader(); break;
     case Icd::ItemCounter: updateCounter(); break;
     case Icd::ItemCheck: updateCheck(); break;
     case Icd::ItemFrameCode: updateFrameCode(); break;
@@ -383,7 +380,7 @@ bool DetailTable::updateItem()
     return true;
 }
 
-bool DetailTable::updateHead()
+bool DetailTable::updateHeader()
 {
     const Icd::HeaderItemPtr headerItem = JHandlePtrCast<Icd::HeaderItem>(object_);
     if (!headerItem) {
@@ -551,7 +548,7 @@ bool DetailTable::updateBit()
     QStringList sections;
     for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
         if (bitItem->type() == Icd::ItemBitMap) {
-            sections.append(tr("%1: %2").arg(QString("%1 (%2)")
+            sections.append(tr("%1: %2").arg(QString("%1")
                                              .arg(uint(citer->first), bitItem->calcSize() * 2,
                                                   16, QChar('0')).toUpper())
                             .arg(QString::fromStdString(citer->second)));
@@ -660,7 +657,7 @@ bool DetailTable::updateFrame()
         if (table) {
             tableView_->setItemData(row, 0, QString::fromStdString(table->name()));
             tableView_->setItemData(row, 0, item.first, Qt::UserRole + 1);
-            tableView_->setItemData(row, 1, "0x" + QString("%1").arg(item.first, 0, 16).toUpper());
+            tableView_->setItemData(row, 1, "0x" + QString::fromStdString(table->mark()).toUpper());
             tableView_->setItemData(row, 2, QString::number(table->sequence()));
             tableView_->setItemData(row, 3, QString::fromStdString(table->desc()));
         }

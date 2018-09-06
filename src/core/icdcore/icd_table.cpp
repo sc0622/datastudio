@@ -68,7 +68,7 @@ private:
 void TableData::saveItem(const ItemPtr &item)
 {
     switch (item->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
     {
         Icd::HeaderItemPtr headerItem = JHandlePtrCast<Icd::HeaderItem>(item);
         if (!headerItem) {
@@ -356,10 +356,10 @@ void Table::setBuffer(char *buffer)
 
     ItemPtrArray::const_iterator citer = d->items.cbegin();
     if (buffer) {
-        char *_buffer = buffer - static_cast<int>(d->bufferOffset);
+        char *_buffer = buffer - int(d->bufferOffset);
         for (; citer != d->items.cend(); ++citer) {
             const ItemPtr &item = *citer;
-            item->setBuffer(_buffer + static_cast<int>(item->bufferOffset()));
+            item->setBuffer(_buffer + int(item->bufferOffset()));
         }
     } else {
         for (; citer != d->items.cend(); ++citer) {
@@ -383,35 +383,29 @@ const ItemPtrArray &Table::allItem() const
 void Table::appendItem(const ItemPtr &item)
 {
     item->setParent(this);
-    //
+
     double bufferSize = 0.0;
-    // append
     if (d->items.empty()) {
         item->setItemOffset(d->itemOffset);
         item->setBufferOffset(d->bufferOffset);
         d->items.push_back(item);
         bufferSize = item->bufferSize();
     } else {
-        //
         const ItemPtr &last = *d->items.crbegin();
         item->setItemOffset(last->itemOffset() + 1);
-        //
+
         double offset = 0.0;
         switch (item->type()) {
         case Icd::ItemBitMap:
         case Icd::ItemBitValue:
         {
-            // bufferOffset
             const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(item);
             if (!bitItem) {
                 assert(false);
                 return;
             }
-            //
-            bitItem->setTypeSize(bitItem->calcSize());
-            //
+
             if (bitItem->bitStart() == 0) {
-                // start from bit0
                 offset = std::ceil(last->bufferOffset() + last->bufferSize());
             } else {
                 offset = TableData::recalcBitBufferOffset(bitItem, d->items, d->items.crbegin());
@@ -419,13 +413,12 @@ void Table::appendItem(const ItemPtr &item)
                     offset = std::ceil(last->bufferOffset() + last->bufferSize());
                 }
             }
-            // bufferSize
+
             bufferSize = item->bufferSize();
             break;
         }
         default:
         {
-            // bufferOffset
             const ItemType lastType = last->type();
             if (lastType == Icd::ItemBitMap || lastType == Icd::ItemBitValue) {
                 const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(last);
@@ -437,7 +430,6 @@ void Table::appendItem(const ItemPtr &item)
             } else {
                 offset = std::ceil(last->bufferOffset() + last->bufferSize());
             }
-            // bufferSize
             bufferSize = std::ceil(item->bufferSize());
             break;
         }}
@@ -445,22 +437,15 @@ void Table::appendItem(const ItemPtr &item)
         d->items.push_back(item);
     }
 
-    // update self buffsetSize
     d->bufferSize += bufferSize;
 
-    // save special item
     d->saveItem(item);
 }
 
 void Table::clearItem()
 {
-    // clear
     d->items.clear();
-
-    // update bufferSize
     d->bufferSize = 0;
-
-    // clear special items
     d->clearItem();
 }
 
@@ -907,6 +892,21 @@ bool Table::isSubFrameTable() const
     }
 
     return true;
+}
+
+int Table::frameCodeType() const
+{
+    if (!isSubFrameTable()) {
+        return Icd::FrameCodeInvalid;
+    }
+
+    switch (mark().size()) {
+    case 2: return Icd::FrameCodeU8;
+    case 4: return Icd::FrameCodeU16;
+    case 8: return Icd::FrameCodeU32;
+    case 16: return Icd::FrameCodeU64;
+    default: return Icd::FrameCodeInvalid;
+    }
 }
 
 std::string Table::typeName() const

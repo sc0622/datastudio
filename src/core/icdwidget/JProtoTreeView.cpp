@@ -68,7 +68,7 @@ int JProtoTreeView::dataFormat() const
 JProtoTreeView::TreeModes JProtoTreeView::treeModes() const
 {
     Q_D(const JProtoTreeView);
-    return d->treeModes();
+    return JProtoTreeView::TreeModes(d->treeModes());
 }
 
 void JProtoTreeView::setTreeMode(TreeModes modes)
@@ -258,6 +258,12 @@ bool JProtoTreeView::isItemLoaded(QStandardItem *item) const
     } else {
         return false;
     }
+}
+
+bool JProtoTreeView::hasUnloadedItem() const
+{
+    Q_D(const JProtoTreeView);
+    return d->hasUnloadedItem();
 }
 
 void JProtoTreeView::setRunning(bool value)

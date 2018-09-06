@@ -21,11 +21,14 @@ public:
 
     Icd::CounterItemPtr counter() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
 
 private:
+    QComboBox *comboCounterType_;
 };
 
 }

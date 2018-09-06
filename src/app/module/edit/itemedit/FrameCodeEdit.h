@@ -21,11 +21,14 @@ public:
 
     Icd::FrameCodeItemPtr frameCode() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
 
 private:
+    QComboBox *comboFrameCodeType_;
 };
 
 }

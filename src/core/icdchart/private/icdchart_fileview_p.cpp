@@ -513,7 +513,7 @@ JChart::Chart *ChartFileViewPrivate::createChart(const Icd::ItemPtr &dataItem)
 
     //
     switch (dataItem->type()) {
-    case Icd::ItemHead:
+    case Icd::ItemHeader:
     case Icd::ItemCounter:
     case Icd::ItemCheck:
     case Icd::ItemFrameCode:

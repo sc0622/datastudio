@@ -45,10 +45,10 @@
     static void __ ## Class ## _releaseInstance() { \
         Class::releaseInstance(); \
     } \
-    Class *Class::_instance = 0; \
+    Class *Class::_instance = nullptr; \
     \
     Class *Class::instance() { \
-        if (Class::_instance == 0) { \
+        if (Class::_instance == nullptr) { \
             Class::_instance = new Class; \
         } \
         if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
@@ -58,9 +58,9 @@
     } \
     \
     void Class::releaseInstance() { \
-        if (Class::_instance != 0) { \
+        if (Class::_instance != nullptr) { \
             delete Class::_instance; \
-            Class::_instance = 0; \
+            Class::_instance = nullptr; \
         } \
     }
 #endif
@@ -89,12 +89,8 @@ T *jVariantFromVoid(const QVariant &value)
 
 namespace Icd {
 
-//
 #include <QStandardItem>
 
-/**
- * @brief The TreeItemType enum
- */
 enum TreeItemType {
     TreeItemTypeUserRole = QStandardItem::UserType + 1,
     TreeItemTypeRoot,
@@ -106,26 +102,22 @@ enum TreeItemType {
     TreeItemTypeItemBitMap
 };
 
-/**
- * @brief The TreeItemDataRole enum
- */
 enum TreeItemDataRole {
-    TreeItemUserRole = Qt::UserRole + 1, /**< ICD用户项标识 */
-    TreeItemIdRole,                      /**< ICD数据项标识 */
-    TreeItemDomainRole,                  /**< ICD数据项域名标识 */
-    TreeItemPathRole,                    /**<  */
-    TreeItemMarkRole,                    /**< ICD数据项mark */
-    TreeChannelIdRole,                   /**< ICD通道标识（绑定到数据表） */
-    TreeDataTypeRole,                    /**< ICD数据项类型 */
-    TreeBoundRole,                       /**< ICD绑定其他对象 */
-    TreeBitOffsetRole,                   /**< */
-    TreeFilePathRole,                    /**< */
-    TreeHasTimeFormatRole,               /**< */
-    TreeHeaderSizeRole,                  /**< */
+    TreeItemUserRole = Qt::UserRole + 1,
+    TreeItemIdRole,
+    TreeItemDomainRole,
+    TreeItemPathRole,
+    TreeItemMarkRole,
+    TreeChannelIdRole,
+    TreeDataTypeRole,
+    TreeBoundRole,
+    TreeBitOffsetRole,
+    TreeFilePathRole,
+    TreeHasTimeFormatRole,
+    TreeHeaderSizeRole,
     TreeLoadStatusRole
 };
 
-//
 template<typename T>
 inline std::shared_ptr<T> handlescope_cast(const QVariant &variant)
 {
@@ -161,7 +153,15 @@ public:
 
     void registerSingletonRelease(SingletonReleaseCallback callback);
 
+    // {{ for icdcore
     static QStringList protoItemTypes();
+    static QMap<int, QString> protoItemMapTypes();
+    static QString typeString(const Icd::ItemPtr &item);
+    static QString numericTypeString(int numericType);
+    static QString counterTypeString(int counterType);
+    static QString checkTypeString(int checkType);
+    static QString frameCodeTypeString(int frameCodeType);
+    // }} for icdcore
 
     static QString prettyValue(double value, bool isFloat = false);
 

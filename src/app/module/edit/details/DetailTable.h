@@ -40,7 +40,7 @@ private:
     bool updateSystem();
     bool updateTable();
     bool updateItem();
-    bool updateHead();
+    bool updateHeader();
     bool updateCounter();
     bool updateCheck();
     bool updateFrameCode();

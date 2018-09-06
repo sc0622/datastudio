@@ -121,6 +121,7 @@ public:
     void setProtoRoot(const Icd::RootPtr &root);
 
     bool isItemLoaded(QStandardItem *item) const;
+    bool hasUnloadedItem() const;
 
 signals:
     void itemPressed(QStandardItem *item);

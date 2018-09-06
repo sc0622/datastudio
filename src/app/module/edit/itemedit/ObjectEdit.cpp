@@ -12,19 +12,28 @@ namespace Edit {
 ObjectEdit::ObjectEdit(const Icd::ObjectPtr &object, QWidget *parent)
     : QWidget(parent)
     , object_(object)
+    , blocking_(false)
 {
-    QVBoxLayout *layoutMain = new QVBoxLayout(this);
-    layoutMain->setContentsMargins(0, 0, 0, 0);
+    layoutMain_ = new QVBoxLayout(this);
+    layoutMain_->setContentsMargins(0, 0, 0, 0);
+    layoutMain_->setSpacing(3);
 
-    formLayout_ = new QFormLayout();
+    splitter_ = new JSplitter({1, 2}, Qt::Vertical, this);
+    splitter_->setHandleWidth(3);
+    layoutMain_->addWidget(splitter_);
+
+    QGroupBox *groupBase = new QGroupBox(tr("Base informations"), this);
+    splitter_->addWidget(groupBase);
+
+    formLayout_ = new QFormLayout(groupBase);
+    formLayout_->setContentsMargins(3, 0, 3, 3);
     formLayout_->setLabelAlignment(Qt::AlignRight);
-    layoutMain->addLayout(formLayout_);
 
     editName_ = new QLineEdit(this);
     formLayout_->addRow("<font color=red>*</font>" + tr("Name:"), editName_);
 
     editMark_ = new QLineEdit(this);
-    formLayout_->addRow("<font color=red>*</font>" + tr("Mark:"), editMark_);
+    formLayout_->addRow(tr("Mark:"), editMark_);
 
     editDesc_ = new QPlainTextEdit(this);
     formLayout_->addRow(tr("Describe:"), editDesc_);
@@ -36,20 +45,19 @@ ObjectEdit::ObjectEdit(const Icd::ObjectPtr &object, QWidget *parent)
         editDesc_->setPlainText(QString::fromStdString(object->desc()));
         //
         connect(editName_, &QLineEdit::textChanged, this, [=](const QString &text){
+            Q_UNUSED(text);
             if (object_) {
-                object_->setName(text.toStdString());
                 emit contentChanged("name");
             }
         });
         connect(editMark_, &QLineEdit::textChanged, this, [=](const QString &text){
+            Q_UNUSED(text);
             if (object_) {
-                object_->setMark(text.toStdString());
                 emit contentChanged("mark");
             }
         });
         connect(editDesc_, &QPlainTextEdit::textChanged, this, [=](){
             if (object_) {
-                object_->setDesc(editDesc_->toPlainText().toStdString());
                 emit contentChanged("desc");
             }
         });
@@ -59,6 +67,11 @@ ObjectEdit::ObjectEdit(const Icd::ObjectPtr &object, QWidget *parent)
 ObjectEdit::~ObjectEdit()
 {
 
+}
+
+Icd::ObjectPtr ObjectEdit::object() const
+{
+    return object_;
 }
 
 ObjectEdit *ObjectEdit::create(const Icd::ObjectPtr &object)
@@ -83,9 +96,30 @@ ObjectEdit *ObjectEdit::create(const Icd::ObjectPtr &object)
     return nullptr;
 }
 
-Icd::ObjectPtr ObjectEdit::object() const
+bool ObjectEdit::init()
 {
-    return object_;
+    lock();
+
+    //
+
+    unlock();
+
+    return true;
+}
+
+void ObjectEdit::lock()
+{
+    blocking_ = true;
+}
+
+void ObjectEdit::unlock()
+{
+    blocking_ = false;
+}
+
+bool ObjectEdit::blocking() const
+{
+    return blocking_;
 }
 
 void ObjectEdit::updateContent(const QString &name)
@@ -103,14 +137,49 @@ void ObjectEdit::updateContent(const QString &name)
     }
 }
 
+void ObjectEdit::insertRow(int index, const QString &labelText, QWidget *field)
+{
+    formLayout_->insertRow(index, labelText, field);
+}
+
 void ObjectEdit::addRow(const QString &labelText, QWidget *field)
 {
-    formLayout_->insertRow(formLayout_->rowCount() - 2, labelText, field);
+    formLayout_->insertRow(formLayout_->rowCount() - 1, labelText, field);
 }
 
 void ObjectEdit::addRow(const QString &labelText, QLayout *field)
 {
-    formLayout_->insertRow(formLayout_->rowCount() - 2, labelText, field);
+    formLayout_->insertRow(formLayout_->rowCount() - 1, labelText, field);
+}
+
+void ObjectEdit::appendRow(const QString &labelText, QWidget *field)
+{
+    formLayout_->addRow(labelText, field);
+}
+
+void ObjectEdit::appendRow(const QString &labelText, QLayout *field)
+{
+    formLayout_->addRow(labelText, field);
+}
+
+void ObjectEdit::addWidget(QWidget *widget)
+{
+    splitter_->addWidget(widget);
+}
+
+bool ObjectEdit::validate()
+{
+    return true;
+}
+
+void ObjectEdit::setMarkReadOnly(bool readOnly)
+{
+    editMark_->setReadOnly(readOnly);
+}
+
+void ObjectEdit::setMark(const QString &text)
+{
+    editMark_->setText(text);
 }
 
 }

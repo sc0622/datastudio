@@ -25,12 +25,12 @@ public:
     }
 
 private:
-    ItemType type;          // Êý¾ÝÏîÀàÐÍ
-    int itemOffset;         // Êý¾ÝÏîÆ«ÒÆÁ¿£¨ÔÚËùÊô±íÖÐµÄÆ«ÒÆÁ¿£©
-    char *buffer;           // Êý¾ÝÖ¸Õë
-    double bufferSize;      // Êý¾Ý³¤¶È£¬ÒòÎªBitMapºÍbitValueÀàÐÍÊý¾Ý³¤¶È¿ÉÄÜÎªÐ¡Êý£¬ËùÒÔÊ¹ÓÃdoubleÀàÐÍ
+    ItemType type;          // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int itemOffset;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    char *buffer;           // ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+    double bufferSize;      // ï¿½ï¿½ï¿½Ý³ï¿½ï¿½È£ï¿½ï¿½ï¿½ÎªBitMapï¿½ï¿½bitValueï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½È¿ï¿½ï¿½ï¿½ÎªÐ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½doubleï¿½ï¿½ï¿½ï¿½
     double bufferOffset;    //
-    double defaultValue;    // Ä¬ÈÏÖµ
+    double defaultValue;    // Ä¬ï¿½ï¿½Öµ
 };
 
 // class Item
@@ -149,7 +149,7 @@ std::string Item::typeString(ItemType type)
     case ItemBitMap: return "bitmap";
     case ItemBitValue: return "bitvalue";
     case ItemComplex: return "complex";
-    case ItemHead: return "head";
+    case ItemHeader: return "head";
     case ItemCounter: return "counter";
     case ItemCheck: return "check";
     case ItemFrameCode: return "framecode";
@@ -168,7 +168,7 @@ ItemType Item::stringType(const std::string &str)
         map_strtype::value_type("bitmap", ItemBitMap),
         map_strtype::value_type("bitvalue", ItemBitValue),
         map_strtype::value_type("complex", ItemComplex),
-        map_strtype::value_type("head", ItemHead),
+        map_strtype::value_type("head", ItemHeader),
         map_strtype::value_type("counter", ItemCounter),
         map_strtype::value_type("check", ItemCheck),
         map_strtype::value_type("framecode", ItemFrameCode),
@@ -221,7 +221,7 @@ ItemPtr Item::create(const std::string &id, ItemType type)
     case Icd::ItemBitMap:
     case Icd::ItemBitValue: return Icd::ItemPtr(new Icd::BitItem(id, type));
     case Icd::ItemComplex: return Icd::ItemPtr(new Icd::ComplexItem(id));
-    case Icd::ItemHead: return Icd::ItemPtr(new Icd::HeaderItem(id));
+    case Icd::ItemHeader: return Icd::ItemPtr(new Icd::HeaderItem(id));
     case Icd::ItemCounter: return Icd::ItemPtr(new Icd::CounterItem(id));
     case Icd::ItemCheck: return Icd::ItemPtr(new Icd::CheckItem(id));
     case Icd::ItemFrameCode: return Icd::ItemPtr(new Icd::FrameCodeItem(id));

@@ -200,6 +200,7 @@ void BitItem::setBitStart(int bitStart)
     } else {
         d->bitStart = bitStart;
     }
+    d->typeSize = calcSize();
 }
 
 int BitItem::bitCount() const
@@ -454,13 +455,13 @@ std::pair<double, double> BitItem::dataRange() const
     std::pair<double, double> range = std::make_pair<double, double>
             (0, (1UL << d->bitCount));
 
-    if (d->limit->leftInf()) {
+    if (d->limit->minimumInf()) {
         range.first = 0;
     } else {
         range.first = (d->limit->maximum() - d->offset) / d->scale;
     }
 
-    if (d->limit->rightInf()) {
+    if (d->limit->maximumInf()) {
         range.second = (1UL << d->bitCount);
     } else {
         range.second = (d->limit->minimum() - d->offset) / d->scale;
@@ -480,14 +481,14 @@ std::pair<double, double> BitItem::valueRange() const
 bool BitItem::outOfLimit() const
 {
     double value = this->data();
-    if (!d->limit->leftInf()) {
+    if (!d->limit->minimumInf()) {
         double minimum = d->limit->minimum();
         if (!fuzzyCompare(value, minimum) && value < minimum) {
             return true;
         }
     }
 
-    if (!d->limit->rightInf()) {
+    if (!d->limit->maximumInf()) {
         double maximum = d->limit->maximum();
         if (!fuzzyCompare(value, maximum) && value > maximum) {
             return true;
