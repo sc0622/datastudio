@@ -571,6 +571,19 @@
     </message>
 </context>
 <context>
+    <name>Edit::ArrayEdit</name>
+    <message>
+        <location filename="../../module/edit/itemedit/ArrayEdit.cpp" line="12"/>
+        <source>Array type:</source>
+        <translation>数组类型:</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/itemedit/ArrayEdit.cpp" line="16"/>
+        <source>Count:</source>
+        <translation>长度:</translation>
+    </message>
+</context>
+<context>
     <name>Edit::BitEdit</name>
     <message>
         <location filename="../../module/edit/itemedit/BitEdit.cpp" line="16"/>
@@ -609,17 +622,17 @@
         <translation>单位:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="28"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="29"/>
         <source>Minimum:</source>
         <translation>下限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="37"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="39"/>
         <source>Maximum:</source>
         <translation>上限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="40"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="42"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>
@@ -647,7 +660,7 @@
     <message>
         <location filename="../../module/edit/itemedit/CounterEdit.cpp" line="12"/>
         <source>Counter type:</source>
-        <translation>计数长度:</translation>
+        <translation>计数类型:</translation>
     </message>
 </context>
 <context>
@@ -658,7 +671,7 @@
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/edit/details/DetailEdit.cpp" line="35"/>
+        <location filename="../../module/edit/details/DetailEdit.cpp" line="36"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -870,6 +883,21 @@
         <source>FrameCode type:</source>
         <translation>帧码类型:</translation>
     </message>
+    <message>
+        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="15"/>
+        <source>Binding:</source>
+        <translation>帧数据:</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="107"/>
+        <source>No binding</source>
+        <translation>不绑定</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="129"/>
+        <source>Binding&lt;</source>
+        <translation>绑定&lt;</translation>
+    </message>
 </context>
 <context>
     <name>Edit::FrameEdit</name>
@@ -892,38 +920,43 @@
     <message>
         <location filename="../../module/edit/itemedit/ItemEdit.cpp" line="21"/>
         <source>Type:</source>
-        <translation>类型:</translation>
+        <translation>数据类型:</translation>
     </message>
 </context>
 <context>
     <name>Edit::NumericEdit</name>
     <message>
         <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="13"/>
+        <source>Numeric type:</source>
+        <translation>数值类型:</translation>
+    </message>
+    <message>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="16"/>
         <source>Offset:</source>
         <translation>偏移量:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="16"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="19"/>
         <source>Scale:</source>
         <translation>比例:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="20"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="23"/>
         <source>Unit:</source>
         <translation>单位:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="29"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="33"/>
         <source>Minimum:</source>
         <translation>下限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="38"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="43"/>
         <source>Maximum:</source>
         <translation>上限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="41"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="46"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>
@@ -941,12 +974,12 @@
         <translation>名称:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="36"/>
+        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="37"/>
         <source>Mark:</source>
         <translation>标识:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="39"/>
+        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="40"/>
         <source>Describe:</source>
         <translation>描述:</translation>
     </message>
@@ -988,7 +1021,7 @@
     </message>
     <message>
         <location filename="../../module/edit/details/SpecsTable.cpp" line="44"/>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="261"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="118"/>
         <source>Add</source>
         <translation>增加</translation>
     </message>
@@ -998,35 +1031,35 @@
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="222"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="84"/>
         <source>Bit</source>
         <translation>比特</translation>
     </message>
     <message>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="222"/>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="248"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="84"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="105"/>
         <source>Describe</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="222"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="84"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="222"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="84"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
         <location filename="../../module/edit/details/SpecsTable.cpp" line="52"/>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="238"/>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="266"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="95"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="123"/>
         <source>Clean</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="../../module/edit/details/SpecsTable.cpp" line="248"/>
+        <location filename="../../module/edit/details/SpecsTable.cpp" line="105"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
@@ -1034,17 +1067,17 @@
 <context>
     <name>Edit::TableEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="19"/>
+        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="20"/>
         <source>Code Type:</source>
         <translation>帧码长度:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="25"/>
+        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="26"/>
         <source>Code:</source>
         <translation>帧码:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="29"/>
+        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="30"/>
         <source>Sequence:</source>
         <translation>时序:</translation>
     </message>
@@ -2004,7 +2037,7 @@
     <message>
         <location filename="../../main.cpp" line="47"/>
         <source>Data Studio</source>
-        <translation>数据工作室</translation>
+        <translation>Data Studio</translation>
     </message>
 </context>
 <context>

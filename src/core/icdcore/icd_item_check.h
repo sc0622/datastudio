@@ -28,6 +28,7 @@ class ICDCORE_EXPORT CheckItem : public Item
 public:
     explicit CheckItem(Object *parent = nullptr);
     explicit CheckItem(const std::string &id, Object *parent = nullptr);
+    CheckItem(const CheckItem &other);
     ~CheckItem();
 
     bool isValid() const;
@@ -54,16 +55,14 @@ public:
     std::string typeName() const override;
     std::string typeString() const override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     CheckItem &operator =(const CheckItem &other);
 
     // Serializable interface
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    CheckItem(const CheckItem &other);
 
 private:
     CheckItemData *d;

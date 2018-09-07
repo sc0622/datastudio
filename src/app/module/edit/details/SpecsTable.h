@@ -21,15 +21,17 @@ class SpecsTable : public QWidget
 public:
     explicit SpecsTable(const Icd::ItemPtr &item, QWidget *parent = nullptr);
 
-    bool init();
-
     Icd::ItemPtr item() const;
+
+    bool init();
 
     void lock();
     void unlock();
     bool blocking() const;
 
     bool validate();
+    void restoreContent();
+    void saveContent();
 
 signals:
     void contentChanged();
@@ -38,9 +40,6 @@ public slots:
     void onAdd();
     void onRemove();
     void onClean();
-
-private:
-    void updateContext();
 
 private:
     Icd::ItemPtr item_;

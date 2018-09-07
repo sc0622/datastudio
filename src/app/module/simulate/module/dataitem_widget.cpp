@@ -236,7 +236,7 @@ bool DataItemWidget::setDataItem(const Icd::ItemPtr &dataItem)
         return false;
     }
 
-    defaultData_ = Icd::ItemPtr(dynamic_cast<Icd::Item *>(dataItem->clone()));
+    defaultData_ = JHandlePtrCast<Icd::Item>(dataItem->clone());
     dataItem_ = dataItem;
 
     return true;

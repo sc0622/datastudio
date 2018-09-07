@@ -30,6 +30,7 @@ class ICDCORE_EXPORT ArrayItem : public Item
 public:
     explicit ArrayItem(Object *parent = nullptr);
     explicit ArrayItem(const std::string &id, Object *parent = nullptr);
+    ArrayItem(const ArrayItem &other);
     ~ArrayItem();
 
     ArrayType arrayType() const;
@@ -45,7 +46,8 @@ public:
     std::string typeString() const override;
     int typeSize() const;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     ArrayItem &operator =(const ArrayItem &other);
 
     std::string dataString() const override;
@@ -71,9 +73,6 @@ public:
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    ArrayItem(const ArrayItem &other);
 
 private:
     ArrayItemData *d;

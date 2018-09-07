@@ -294,35 +294,35 @@
     </message>
     <message>
         <source>Int8</source>
-        <translation>有符号8位</translation>
+        <translation>8位有符号</translation>
     </message>
     <message>
         <source>UInt8</source>
-        <translation>无符号8位</translation>
+        <translation>8位无符号</translation>
     </message>
     <message>
         <source>Int16</source>
-        <translation>有符号16位</translation>
+        <translation>16位有符号</translation>
     </message>
     <message>
         <source>UInt16</source>
-        <translation>无符号16位</translation>
+        <translation>16位无符号</translation>
     </message>
     <message>
         <source>Int32</source>
-        <translation>有符号32位</translation>
+        <translation>32位有符号</translation>
     </message>
     <message>
         <source>UInt32</source>
-        <translation>无符号32位</translation>
+        <translation>32位无符号</translation>
     </message>
     <message>
         <source>Int64</source>
-        <translation>有符号64位</translation>
+        <translation>64位有符号</translation>
     </message>
     <message>
         <source>UInt64</source>
-        <translation>无符号64位</translation>
+        <translation>64位无符号</translation>
     </message>
     <message>
         <source>Float32</source>

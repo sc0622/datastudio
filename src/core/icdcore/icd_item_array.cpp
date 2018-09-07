@@ -171,13 +171,25 @@ int ArrayItem::typeSize() const
     return 0;
 }
 
-Object *ArrayItem::clone() const
+ObjectPtr ArrayItem::copy() const
 {
-    return new ArrayItem(*this);
+    ArrayItemPtr newArray = std::make_shared<ArrayItem>(*this);
+    newArray->setParent(nullptr);
+    return newArray;
+}
+
+ObjectPtr ArrayItem::clone() const
+{
+    ArrayItemPtr newArray = std::make_shared<ArrayItem>(*this);
+    newArray->setParent(nullptr);
+    return newArray;
 }
 
 ArrayItem &ArrayItem::operator =(const ArrayItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
     d->arrayType = other.d->arrayType;
     d->count = other.d->count;

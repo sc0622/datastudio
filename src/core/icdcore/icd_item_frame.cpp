@@ -119,6 +119,7 @@ void FrameItem::addTable(const TablePtr &table)
     }
 
     table->setParent(this);
+    table->setSubFrameTableFlag(true);
     d->tables[code] = table;
     d->tableSeq.insert(std::pair<icd_uint64, TablePtr>(table->sequence(), table));
 
@@ -274,26 +275,35 @@ void FrameItem::clearData()
     }
 }
 
-Object *FrameItem::clone() const
+ObjectPtr FrameItem::copy() const
 {
-    return new FrameItem(*this);
+    FrameItemPtr newFrame = std::make_shared<FrameItem>(*this);
+    newFrame->setParent(nullptr);
+    return newFrame;
+}
+
+ObjectPtr FrameItem::clone() const
+{
+    FrameItemPtr newFrame = std::make_shared<FrameItem>(*this);
+    newFrame->setParent(nullptr);
+    // children
+    const TablePtrMap tables = d->tables;
+    TablePtrMap::const_iterator citer = tables.cbegin();
+    for (; citer != tables.cend(); ++citer) {
+        newFrame->addTable(JHandlePtrCast<Table>(citer->second->clone()));
+    }
+    return newFrame;
 }
 
 FrameItem &FrameItem::operator =(const FrameItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
-
     d->sequenceCount = other.d->sequenceCount;
     d->currentSequence = other.d->currentSequence;
-
-    //
     d->tables.clear();
-    const TablePtrMap tables = other.d->tables;
-    TablePtrMap::const_iterator citer = tables.cbegin();
-    for (; citer != tables.cend(); ++citer) {
-        addTable(TablePtr(reinterpret_cast<Table *>(citer->second->clone())));
-    }
-
     return *this;
 }
 

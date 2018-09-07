@@ -12,19 +12,35 @@ BitEdit::BitEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     : ItemEdit(bit, parent)
 {
     spinBitStart_ = new QSpinBox(this);
-    spinBitStart_->setRange(0, 127);
+    spinBitStart_->setRange(0, 63);
     addRow("<font color=red>*</font>" + tr("Start of bit:"), spinBitStart_);
 
     spinBitCount_ = new QSpinBox(this);
-    spinBitCount_->setRange(0, 128);
+    spinBitCount_->setRange(0, 64);
     addRow("<font color=red>*</font>" + tr("Count of bit:"), spinBitCount_);
 
     tableSpecs_ = new SpecsTable(bit, this);
     addWidget(tableSpecs_);
 
-    // init
-
-    //
+    connect(spinBitStart_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, [=](int value){
+        emit bitStartChanged(value);
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
+    connect(spinBitCount_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, [=](int value){
+        emit bitCountChanged(value);
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
+    connect(tableSpecs_, &SpecsTable::contentChanged, this, [=](){
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
 }
 
 BitEdit::~BitEdit()
@@ -59,6 +75,21 @@ bool BitEdit::init()
         return false;
     }
 
+    if (!tableSpecs_->init()) {
+        return false;
+    }
+
+    BitEdit::restoreContent(false);
+
+    return true;
+}
+
+void BitEdit::restoreContent(bool recursive)
+{
+    if (recursive) {
+        ItemEdit::restoreContent(recursive);
+    }
+
     lock();
 
     const Icd::BitItemPtr bit = this->bit();
@@ -68,15 +99,50 @@ bool BitEdit::init()
         // bit-count
         spinBitCount_->setValue(bit->bitCount());
         // specs
-        if (!tableSpecs_->init()) {
-            unlock();
-            return false;
-        }
+        tableSpecs_->restoreContent();
     }
 
     unlock();
+}
+
+bool BitEdit::validate()
+{
+    if (!ItemEdit::validate()) {
+        return false;
+    }
+
+    if (!tableSpecs_->validate()) {
+        return false;
+    }
 
     return true;
+}
+
+void BitEdit::saveContent()
+{
+    ItemEdit::saveContent();
+
+    const Icd::BitItemPtr bit = this->bit();
+    if (!bit) {
+        return;
+    }
+
+    // bit-start
+    bit->setBitStart(spinBitStart_->value());
+    // bit-count
+    bit->setBitCount(spinBitCount_->value());
+    // specs
+    tableSpecs_->saveContent();
+}
+
+int BitEdit::bitStart() const
+{
+    return spinBitStart_->value();
+}
+
+int BitEdit::bitCount() const
+{
+    return spinBitCount_->value();
 }
 
 }

@@ -14,6 +14,7 @@ class QVBoxLayout;
 class QFormLayout;
 class QLineEdit;
 class QPlainTextEdit;
+class QValidator;
 
 namespace Edit {
 
@@ -27,6 +28,7 @@ public:
     virtual ~ObjectEdit();
 
     Icd::ObjectPtr object() const;
+    virtual int itemType() const;
 
     static ObjectEdit *create(const Icd::ObjectPtr &object);
 
@@ -36,11 +38,17 @@ public:
     void unlock();
     bool blocking() const;
 
+    bool trySaveContent();
+    virtual void restoreContent(bool recursive = true);
+
+    const QStringList &primaryModified() const;
+    bool existsPrimaryModified(const QString &key) const;
+
 signals:
-    void contentChanged(const QString &name);
+    void contentChanged(const QString &key = QString(), const QVariant &value = QVariant());
+    void itemTypeChanged(int type);
 
 public slots:
-    virtual void updateContent(const QString &name);
 
 protected:
     void insertRow(int index, const QString &labelText, QWidget *field);
@@ -51,8 +59,12 @@ protected:
     void addWidget(QWidget *widget);
 
     virtual bool validate();
+    virtual void saveContent();
+    void addPrimaryModified(const QString &key);
+    void removePrimaryModified(const QString &key);
 
     void setMarkReadOnly(bool readOnly);
+    void setMarkValidator(const QValidator *validator);
     void setMark(const QString &text);
 
 private:
@@ -63,6 +75,7 @@ private:
     QLineEdit *editName_;
     QLineEdit *editMark_;
     QPlainTextEdit *editDesc_;
+    QStringList primaryModified_;
     bool blocking_;
 };
 

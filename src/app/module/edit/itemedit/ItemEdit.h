@@ -22,6 +22,7 @@ public:
     virtual ~ItemEdit();
 
     Icd::ItemPtr item() const;
+    int itemType() const override;
 
     static ItemEdit *create(const Icd::ItemPtr &item);
 
@@ -30,6 +31,11 @@ public:
 signals:
 
 public slots:
+
+protected:
+    virtual void restoreContent(bool recursive = true) override;
+    virtual bool validate() override;
+    virtual void saveContent() override;
 
 private:
     QComboBox *comboType_;

@@ -83,18 +83,26 @@ void LimitItem::setMaximumInf(bool inf)
     d->maximumInf = inf;
 }
 
-LimitItem *LimitItem::clone() const
+ObjectPtr LimitItem::copy() const
 {
-    return new LimitItem(*this);
+    return std::make_shared<LimitItem>(*this);
+}
+
+ObjectPtr LimitItem::clone() const
+{
+    LimitItemPtr newLimit = std::make_shared<LimitItem>(*this);
+    return newLimit;
 }
 
 LimitItem &LimitItem::operator =(const LimitItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     d->minimum = other.d->minimum;
     d->maximum = other.d->maximum;
     d->minimumInf = other.d->minimumInf;
     d->maximumInf = other.d->maximumInf;
-
     return *this;
 }
 

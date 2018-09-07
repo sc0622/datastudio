@@ -8,16 +8,18 @@ namespace Edit {
 HeaderEdit::HeaderEdit(const Icd::HeaderItemPtr &header, QWidget *parent)
     : ItemEdit(header, parent)
 {
-    spinDefault_ = new JSpinBox(this);
-    spinDefault_->setPrefix("0x");
-    spinDefault_->setRadix(16);
-    spinDefault_->setFillChar(QChar('0'));
-    spinDefault_->setRange(0, 0xFF);
-    addRow(tr("Default value:"), spinDefault_);
+    spinDefaultValue_ = new JSpinBox(this);
+    spinDefaultValue_->setPrefix("0x");
+    spinDefaultValue_->setRadix(16);
+    spinDefaultValue_->setFillChar(QChar('0'));
+    spinDefaultValue_->setRange(0, 0xFF);
+    addRow(tr("Default value:"), spinDefaultValue_);
 
-    connect(spinDefault_, static_cast<void(JSpinBox::*)(int)>(&JSpinBox::valueChanged),
+    connect(spinDefaultValue_, static_cast<void(JSpinBox::*)(int)>(&JSpinBox::valueChanged),
             this, [=](int){
-        //
+        if (!blocking()) {
+            emit contentChanged();
+        }
     });
 }
 
@@ -33,8 +35,19 @@ Icd::HeaderItemPtr HeaderEdit::header() const
 
 bool HeaderEdit::init()
 {
-    if (!ObjectEdit::init()) {
+    if (!ItemEdit::init()) {
         return false;
+    }
+
+    HeaderEdit::restoreContent(false);
+
+    return true;
+}
+
+void HeaderEdit::restoreContent(bool recursive)
+{
+    if (recursive) {
+        ItemEdit::restoreContent(recursive);
     }
 
     lock();
@@ -42,12 +55,32 @@ bool HeaderEdit::init()
     const Icd::HeaderItemPtr header = this->header();
     if (header) {
         // default value
-        spinDefault_->setValue(int(header->defaultValue()));
+        spinDefaultValue_->setValue(int(header->defaultValue()));
     }
 
     unlock();
+}
+
+bool HeaderEdit::validate()
+{
+    if (!ItemEdit::validate()) {
+        return false;
+    }
 
     return true;
+}
+
+void HeaderEdit::saveContent()
+{
+    ItemEdit::saveContent();
+
+    const Icd::HeaderItemPtr header = this->header();
+    if (!header) {
+        return;
+    }
+
+    // default type
+    header->setDefaultValue(spinDefaultValue_->value());
 }
 
 }

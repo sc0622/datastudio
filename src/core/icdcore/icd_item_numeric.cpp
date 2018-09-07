@@ -236,6 +236,16 @@ double NumericItem::dataFromBuffer(const char *buffer) const
     return value;
 }
 
+double NumericItem::offset() const
+{
+    return d->offset;
+}
+
+void NumericItem::setOffset(double offset)
+{
+    d->offset = offset;
+}
+
 double NumericItem::scale() const
 {
     return d->scale;
@@ -254,16 +264,6 @@ int NumericItem::decimals() const
 void NumericItem::setDecimals(int value)
 {
     d->decimals = value;
-}
-
-double NumericItem::offset() const
-{
-    return d->offset;
-}
-
-void NumericItem::setOffset(double offset)
-{
-    d->offset = offset;
 }
 
 LimitItemPtr NumericItem::limit() const
@@ -444,19 +444,32 @@ bool NumericItem::outOfLimit() const
     return false;
 }
 
-Object *NumericItem::clone() const
+ObjectPtr NumericItem::copy() const
 {
-    return new NumericItem(*this);
+    NumericItemPtr newNumeric = std::make_shared<NumericItem>(*this);
+    newNumeric->setParent(nullptr);
+    return newNumeric;
+}
+
+ObjectPtr NumericItem::clone() const
+{
+    NumericItemPtr newNumeric = std::make_shared<NumericItem>(*this);
+    newNumeric->setParent(nullptr);
+    // children
+    newNumeric->setLimit(JHandlePtrCast<LimitItem>(d->limit->clone()));
+    return newNumeric;
 }
 
 NumericItem &NumericItem::operator =(const NumericItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
     d->numericType = other.d->numericType;
+    d->offset = other.d->offset;
     d->scale = other.d->scale;
     d->decimals = other.d->decimals;
-    d->offset = other.d->offset;
-    d->limit = LimitItemPtr(other.d->limit->clone());
     d->unit = other.d->unit;
     d->specs = other.d->specs;
     return *this;
@@ -485,8 +498,8 @@ Json::Value NumericItem::save() const
     Json::Value json = Item::save();
 
     json["numericType"] = numericTypeString();
-    json["scale"] = d->scale;
     json["offset"] = d->offset;
+    json["scale"] = d->scale;
     // decimals
     if (d->decimals > 0) {
         json["decimals"] = d->decimals;
@@ -522,12 +535,12 @@ bool NumericItem::restore(const Json::Value &json, int deep)
     }
 
     setNumericType(stringNumericType(json["numericType"].asString()));
+    // offset
+    setOffset(json["offset"].asDouble());
     // scale
     if (json.isMember("scale")) {
         setScale(json["scale"].asDouble());
     }
-    // offset
-    setOffset(json["offset"].asDouble());
     // decimals
     setDecimals(json["decimals"].asDouble());
     // limit

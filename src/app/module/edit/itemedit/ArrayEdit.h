@@ -8,6 +8,8 @@ class ArrayItem;
 typedef std::shared_ptr<ArrayItem> ArrayItemPtr;
 }
 
+class QSpinBox;
+
 namespace Edit {
 
 // class ArrayEdit
@@ -21,11 +23,20 @@ public:
 
     Icd::ArrayItemPtr array() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
 
+protected:
+    void restoreContent(bool recursive = true) override;
+    bool validate() override;
+    void saveContent() override;
+
 private:
+    QComboBox *comboArrayType_;
+    QSpinBox *spinCount_;
 };
 
 }

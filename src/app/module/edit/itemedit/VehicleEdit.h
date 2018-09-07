@@ -21,9 +21,16 @@ public:
 
     Icd::VehiclePtr vehicle() const;
 
+    bool init() override;
+
 signals:
 
 public slots:
+
+protected:
+    void restoreContent(bool recursive = true) override;
+    bool validate() override;
+    void saveContent() override;
 
 private:
 };

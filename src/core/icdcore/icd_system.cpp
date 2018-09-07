@@ -157,23 +157,33 @@ void System::clearData()
     }
 }
 
-Object *System::clone() const
+ObjectPtr System::copy() const
 {
-    return new System(*this);
+    SystemPtr newSystem = std::make_shared<System>(*this);
+    newSystem->setParent(nullptr);
+    return newSystem;
+}
+
+ObjectPtr System::clone() const
+{
+    SystemPtr newSystem = std::make_shared<System>(*this);
+    newSystem->setParent(nullptr);
+    // children
+    const TablePtrArray &tables = d->tables;
+    for (TablePtrArray::const_iterator citer = tables.cbegin();
+         citer != tables.cend(); ++citer) {
+        newSystem->appendTable(JHandlePtrCast<Table>((*citer)->clone()));
+    }
+    return newSystem;
 }
 
 System &System::operator =(const System &other)
 {
-    Object::operator =(other);
-
-    //
-    d->tables.clear();
-    const TablePtrArray &tables = other.d->tables;
-    for (TablePtrArray::const_iterator citer = tables.cbegin();
-         citer != tables.cend(); ++citer) {
-        appendTable(TablePtr(reinterpret_cast<Table *>((*citer)->clone())));
+    if (this == &other) {
+        return *this;
     }
-
+    Object::operator =(other);
+    d->tables.clear();
     return *this;
 }
 

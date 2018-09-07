@@ -35,6 +35,7 @@ public:
     explicit Item(ItemType type = ItemInvalid, Object *parent = nullptr);
     explicit Item(const std::string &id, ItemType type = ItemInvalid,
                   Object *parent = nullptr);
+    Item(const Item &other);
     virtual ~Item();
 
     ItemType type() const;
@@ -63,7 +64,8 @@ public:
     virtual void resetData() override;
     virtual void clearData() override;
 
-    virtual Object *clone() const override;
+    virtual ObjectPtr copy() const override;
+    virtual ObjectPtr clone() const override;
     Item &operator =(const Item &other);
     static ItemPtr create(const std::string &id, ItemType type);
 
@@ -74,8 +76,6 @@ public:
     static bool fuzzyCompare(float p1, float p2);
 
 protected:
-    Item(const Item &other);
-
     void setType(ItemType type);
 
     virtual void setBuffer(char *buffer);

@@ -26,6 +26,7 @@ class ICDCORE_EXPORT CounterItem : public Item
 public:
     explicit CounterItem(Object *parent = nullptr);
     explicit CounterItem(const std::string &id, Object *parent = nullptr);
+    CounterItem(const CounterItem &other);
     virtual ~CounterItem();
 
     CounterType counterType() const;
@@ -45,16 +46,14 @@ public:
     std::string typeName() const override;
     virtual std::string typeString() const override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     CounterItem &operator =(const CounterItem &other);
 
     // Serializable interface
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    CounterItem(const CounterItem &other);
 
 private:
     CounterItemData *d;

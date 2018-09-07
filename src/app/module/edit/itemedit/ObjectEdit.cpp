@@ -33,35 +33,30 @@ ObjectEdit::ObjectEdit(const Icd::ObjectPtr &object, QWidget *parent)
     formLayout_->addRow("<font color=red>*</font>" + tr("Name:"), editName_);
 
     editMark_ = new QLineEdit(this);
+    editMark_->setValidator(new QRegExpValidator(QRegExp("^[a-zA-Z_][a-zA-Z0-9_]{0,256}$")));
     formLayout_->addRow(tr("Mark:"), editMark_);
 
     editDesc_ = new QPlainTextEdit(this);
     formLayout_->addRow(tr("Describe:"), editDesc_);
 
-    if (object) {
-        //
-        editName_->setText(QString::fromStdString(object->name()));
-        editMark_->setText(QString::fromStdString(object->mark()));
-        editDesc_->setPlainText(QString::fromStdString(object->desc()));
-        //
-        connect(editName_, &QLineEdit::textChanged, this, [=](const QString &text){
-            Q_UNUSED(text);
-            if (object_) {
-                emit contentChanged("name");
-            }
-        });
-        connect(editMark_, &QLineEdit::textChanged, this, [=](const QString &text){
-            Q_UNUSED(text);
-            if (object_) {
-                emit contentChanged("mark");
-            }
-        });
-        connect(editDesc_, &QPlainTextEdit::textChanged, this, [=](){
-            if (object_) {
-                emit contentChanged("desc");
-            }
-        });
-    }
+    connect(editName_, &QLineEdit::textChanged, this, [=](){
+        if (blocking()) {
+            return;
+        }
+        emit contentChanged();
+    });
+    connect(editMark_, &QLineEdit::textChanged, this, [=](){
+        if (blocking()) {
+            return;
+        }
+        emit contentChanged();
+    });
+    connect(editDesc_, &QPlainTextEdit::textChanged, this, [=](){
+        if (blocking()) {
+            return;
+        }
+        emit contentChanged();
+    });
 }
 
 ObjectEdit::~ObjectEdit()
@@ -72,6 +67,11 @@ ObjectEdit::~ObjectEdit()
 Icd::ObjectPtr ObjectEdit::object() const
 {
     return object_;
+}
+
+int ObjectEdit::itemType() const
+{
+    return Icd::ItemInvalid;
 }
 
 ObjectEdit *ObjectEdit::create(const Icd::ObjectPtr &object)
@@ -98,11 +98,7 @@ ObjectEdit *ObjectEdit::create(const Icd::ObjectPtr &object)
 
 bool ObjectEdit::init()
 {
-    lock();
-
-    //
-
-    unlock();
+    ObjectEdit::restoreContent(false);
 
     return true;
 }
@@ -122,19 +118,51 @@ bool ObjectEdit::blocking() const
     return blocking_;
 }
 
-void ObjectEdit::updateContent(const QString &name)
+bool ObjectEdit::trySaveContent()
 {
+    if (!object_) {
+        return false;
+    }
+
+    if (!validate()) {
+        return false;
+    }
+
+    saveContent();
+
+    return true;
+}
+
+void ObjectEdit::restoreContent(bool recursive)
+{
+    Q_UNUSED(recursive);
     if (!object_) {
         return;
     }
 
-    if (name == "name") {
-        editName_->setText(QString::fromStdString(object_->name()));
-    } else if (name == "mark") {
-        editMark_->setText(QString::fromStdString(object_->mark()));
-    } else if (name == "desc") {
-        editDesc_->setPlainText(QString::fromStdString(object_->desc()));
+    lock();
+
+    const Icd::ObjectPtr object = this->object();
+    if (object) {
+        // name
+        editName_->setText(QString::fromStdString(object->name()));
+        // mark
+        editMark_->setText(QString::fromStdString(object->mark()));
+        // desc
+        editDesc_->setPlainText(QString::fromStdString(object->desc()));
     }
+
+    unlock();
+}
+
+const QStringList &ObjectEdit::primaryModified() const
+{
+    return primaryModified_;
+}
+
+bool ObjectEdit::existsPrimaryModified(const QString &key) const
+{
+    return primaryModified_.contains(key);
 }
 
 void ObjectEdit::insertRow(int index, const QString &labelText, QWidget *field)
@@ -169,12 +197,45 @@ void ObjectEdit::addWidget(QWidget *widget)
 
 bool ObjectEdit::validate()
 {
+    // name
+    if (editName_->text().trimmed().isEmpty()) {
+        editName_->setFocus();
+        return false;
+    }
+
     return true;
+}
+
+void ObjectEdit::saveContent()
+{
+    // name
+    object_->setName(editName_->text().trimmed().toStdString());
+    // mark
+    object_->setMark(editMark_->text().trimmed().toStdString());
+    // desc
+    object_->setDesc(editDesc_->toPlainText().trimmed().toStdString());
+}
+
+void ObjectEdit::addPrimaryModified(const QString &key)
+{
+    if (!primaryModified_.contains(key)) {
+        primaryModified_.append(key);
+    }
+}
+
+void ObjectEdit::removePrimaryModified(const QString &key)
+{
+    primaryModified_.removeAll(key);
 }
 
 void ObjectEdit::setMarkReadOnly(bool readOnly)
 {
     editMark_->setReadOnly(readOnly);
+}
+
+void ObjectEdit::setMarkValidator(const QValidator *validator)
+{
+    editMark_->setValidator(validator);
 }
 
 void ObjectEdit::setMark(const QString &text)

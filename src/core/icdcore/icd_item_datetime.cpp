@@ -52,13 +52,25 @@ std::string DateTimeItem::typeName() const
     return ss.str();
 }
 
-Object *DateTimeItem::clone() const
+ObjectPtr DateTimeItem::copy() const
 {
-    return new DateTimeItem(*this);
+    DateTimeItemPtr newDateTime = std::make_shared<DateTimeItem>(*this);
+    newDateTime->setParent(nullptr);
+    return newDateTime;
+}
+
+ObjectPtr DateTimeItem::clone() const
+{
+    DateTimeItemPtr newDateTime = std::make_shared<DateTimeItem>(*this);
+    newDateTime->setParent(nullptr);
+    return newDateTime;
 }
 
 DateTimeItem &DateTimeItem::operator =(const DateTimeItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
     //TODO
     return *this;

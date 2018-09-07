@@ -20,9 +20,9 @@ public:
     }
 
 private:
-    CheckType checkType;    // 校验类型
-    int startPos;           // 校验起始位置
-    int endPos;             // 校验终止位置
+    CheckType checkType;
+    int startPos;
+    int endPos;
 };
 
 CheckItem::CheckItem(Object *parent)
@@ -203,13 +203,25 @@ std::string CheckItem::typeString() const
     return Item::typeString() + "#" + checkTypeString();
 }
 
-Object *CheckItem::clone() const
+ObjectPtr CheckItem::copy() const
 {
-    return new CheckItem(*this);
+    CheckItemPtr newCheck = std::make_shared<CheckItem>(*this);
+    newCheck->setParent(nullptr);
+    return newCheck;
+}
+
+ObjectPtr CheckItem::clone() const
+{
+    CheckItemPtr newCheck = std::make_shared<CheckItem>(*this);
+    newCheck->setParent(nullptr);
+    return newCheck;
 }
 
 CheckItem &CheckItem::operator =(const CheckItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
     d->checkType = other.d->checkType;
     d->startPos = other.d->startPos;

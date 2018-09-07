@@ -17,6 +17,7 @@ class ICDCORE_EXPORT Root : public Object
 public:
     explicit Root(Object *parent = nullptr);
     explicit Root(const std::string &id, Object *parent = nullptr);
+    Root(const Root &other);
     ~Root();
 
     VehiclePtrArray allVehicle();
@@ -35,7 +36,9 @@ public:
     int childCount() const override;
     void resetData() override;
     void clearData() override;
-    Object *clone() const override;
+
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     Root &operator =(const Root &other);
 
     Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
@@ -46,9 +49,6 @@ public:
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    Root(const Root &other);
 
 private:
     RootData *d;

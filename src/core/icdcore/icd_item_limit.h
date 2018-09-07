@@ -13,6 +13,7 @@ class ICDCORE_EXPORT LimitItem : public Object
 {
 public:
     explicit LimitItem();
+    LimitItem(const LimitItem &other);
     ~LimitItem();
 
     double minimum() const;
@@ -28,15 +29,14 @@ public:
     void setMaximumInf(bool inf);
 
     std::string toString() const;
-    virtual LimitItem *clone() const override;
+
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     LimitItem &operator =(const LimitItem &other);
 
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int /*deep*/ = -1) override;
-
-protected:
-    LimitItem(const LimitItem &other);
 
 private:
     LimitItemData *d;

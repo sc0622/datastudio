@@ -21,4 +21,45 @@ Icd::ComplexItemPtr ComplexEdit::complex() const
     return JHandlePtrCast<Icd::ComplexItem>(item());
 }
 
+bool ComplexEdit::init()
+{
+    if (!ItemEdit::init()) {
+        return false;
+    }
+
+    ComplexEdit::restoreContent(false);
+
+    return true;
+}
+
+void ComplexEdit::restoreContent(bool recursive)
+{
+    if (recursive) {
+        ItemEdit::restoreContent(recursive);
+    }
+
+    lock();
+
+    const Icd::ComplexItemPtr complex = this->complex();
+    if (complex) {
+        //
+    }
+
+    unlock();
+}
+
+bool ComplexEdit::validate()
+{
+    if (!ItemEdit::validate()) {
+        return false;
+    }
+
+    return true;
+}
+
+void ComplexEdit::saveContent()
+{
+    ItemEdit::saveContent();
+}
+
 }

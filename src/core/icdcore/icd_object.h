@@ -35,6 +35,7 @@ public:
     explicit Object(ObjectType type = ObjectInvalid, Object *parent = nullptr);
     explicit Object(const std::string &id, ObjectType type = ObjectInvalid,
                     Object *parent = nullptr);
+    Object(const Object &other);
     virtual ~Object();
 
     ObjectType objectType() const;
@@ -60,7 +61,8 @@ public:
     virtual void resetData();
     virtual void clearData();
 
-    virtual Object *clone() const;
+    virtual ObjectPtr copy() const;
+    virtual ObjectPtr clone() const;
     Object &operator =(const Object &other);
 
     virtual Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
@@ -71,9 +73,6 @@ public:
 public:
     virtual Json::Value save() const override;
     virtual bool restore(const Json::Value &json, int /*deep*/ = -1) override;
-
-protected:
-    Object(const Object &other);
 
 private:
     ObjectData *d;

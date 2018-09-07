@@ -30,8 +30,18 @@ public:
     virtual bool init() override;
 
 signals:
+    void bitStartChanged(int value);
+    void bitCountChanged(int value);
 
 public slots:
+
+protected:
+    virtual void restoreContent(bool recursive = true) override;
+    virtual bool validate() override;
+    virtual void saveContent() override;
+
+    int bitStart() const;
+    int bitCount() const;
 
 private:
     QSpinBox *spinBitStart_;

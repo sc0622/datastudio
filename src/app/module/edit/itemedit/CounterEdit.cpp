@@ -11,18 +11,18 @@ CounterEdit::CounterEdit(const Icd::CounterItemPtr &counter, QWidget *parent)
     comboCounterType_ = new QComboBox(this);
     addRow("<font color=red>*</font>" + tr("Counter type:"), comboCounterType_);
 
-    connect(comboCounterType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this, [=](){
-        //
-    });
-
-    // init
-
     // countertypes
     comboCounterType_->addItem(IcdWidget::counterTypeString(Icd::CounterU8), Icd::CounterU8);
     comboCounterType_->addItem(IcdWidget::counterTypeString(Icd::CounterU16), Icd::CounterU16);
     comboCounterType_->addItem(IcdWidget::counterTypeString(Icd::CounterU32), Icd::CounterU32);
     comboCounterType_->addItem(IcdWidget::counterTypeString(Icd::CounterU64), Icd::CounterU64);
+
+    connect(comboCounterType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, [=](){
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
 }
 
 CounterEdit::~CounterEdit()
@@ -41,6 +41,18 @@ bool CounterEdit::init()
         return false;
     }
 
+    //
+    CounterEdit::restoreContent(false);
+
+    return true;
+}
+
+void CounterEdit::restoreContent(bool recursive)
+{
+    if (recursive) {
+        ItemEdit::restoreContent(recursive);
+    }
+
     lock();
 
     const Icd::CounterItemPtr counter = this->counter();
@@ -50,8 +62,30 @@ bool CounterEdit::init()
     }
 
     unlock();
+}
+
+bool CounterEdit::validate()
+{
+    if (!ItemEdit::validate()) {
+        return false;
+    }
+
+    //TODO
 
     return true;
+}
+
+void CounterEdit::saveContent()
+{
+    ItemEdit::saveContent();
+
+    const Icd::CounterItemPtr counter = this->counter();
+    if (!counter) {
+        return;
+    }
+
+    // counter-type
+    counter->setCounterType(Icd::CounterType(comboCounterType_->currentData().toInt()));
 }
 
 }

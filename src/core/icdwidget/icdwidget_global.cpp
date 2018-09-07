@@ -138,26 +138,6 @@ QString IcdWidget::typeString(const Icd::ItemPtr &item)
     return tr("Unknown");
 }
 
-QString IcdWidget::numericTypeString(int numericType)
-{
-    switch (numericType) {
-    case Icd::NumericI8: return tr("Int8");
-    case Icd::NumericU8: return tr("UInt8");
-    case Icd::NumericI16: return tr("Int16");
-    case Icd::NumericU16: return tr("UInt16");
-    case Icd::NumericI32: return tr("Int32");
-    case Icd::NumericU32: return tr("UInt32");
-    case Icd::NumericI64: return tr("Int64");
-    case Icd::NumericU64: return tr("UInt64");
-    case Icd::NumericF32: return tr("Float32");
-    case Icd::NumericF64: return tr("Float64");
-    default:
-        break;
-    }
-
-    return tr("Unknown");
-}
-
 QString IcdWidget::counterTypeString(int counterType)
 {
     switch (counterType) {
@@ -182,6 +162,46 @@ QString IcdWidget::checkTypeString(int checkType)
     case Icd::CheckCrc16: return tr("Check crc16");
     case Icd::CheckXor8: return tr("Check xor8");
     case Icd::CheckXor16: return tr("Check xor16");
+    default:
+        break;
+    }
+
+    return tr("Unknown");
+}
+
+QString IcdWidget::numericTypeString(int numericType)
+{
+    switch (numericType) {
+    case Icd::NumericI8: return tr("Int8");
+    case Icd::NumericU8: return tr("UInt8");
+    case Icd::NumericI16: return tr("Int16");
+    case Icd::NumericU16: return tr("UInt16");
+    case Icd::NumericI32: return tr("Int32");
+    case Icd::NumericU32: return tr("UInt32");
+    case Icd::NumericI64: return tr("Int64");
+    case Icd::NumericU64: return tr("UInt64");
+    case Icd::NumericF32: return tr("Float32");
+    case Icd::NumericF64: return tr("Float64");
+    default:
+        break;
+    }
+
+    return tr("Unknown");
+}
+
+QString IcdWidget::arrayTypeString(int arrayType)
+{
+    switch (arrayType) {
+    case Icd::ArrayI8: return tr("Int8");
+    case Icd::ArrayU8: return tr("UInt8");
+    case Icd::ArrayI16: return tr("Int16");
+    case Icd::ArrayU16: return tr("UInt16");
+    case Icd::ArrayI32: return tr("Int32");
+    case Icd::ArrayU32: return tr("UInt32");
+    case Icd::ArrayI64: return tr("Int64");
+    case Icd::ArrayU64: return tr("UInt64");
+    case Icd::ArrayF32: return tr("Float32");
+    case Icd::ArrayF64: return tr("Float64");
     default:
         break;
     }

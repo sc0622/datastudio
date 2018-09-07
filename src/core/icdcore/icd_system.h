@@ -21,6 +21,7 @@ class ICDCORE_EXPORT System : public Object
 public:
     explicit System(Vehicle *parent = nullptr);
     explicit System(const std::string &id, Vehicle *parent = nullptr);
+    System(const System &other);
     ~System();
 
     TablePtrArray allTable();
@@ -39,7 +40,8 @@ public:
     void resetData() override;
     void clearData() override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     System &operator =(const System &other);
 
     Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
@@ -50,9 +52,6 @@ public:
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    System(const System &other);
 
 private:
     SystemData *d;

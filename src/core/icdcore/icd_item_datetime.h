@@ -14,20 +14,19 @@ class ICDCORE_EXPORT DateTimeItem : public Item
 public:
     explicit DateTimeItem(Object *parent = nullptr);
     explicit DateTimeItem(const std::string &id, Object *parent = nullptr);
+    DateTimeItem(const DateTimeItem &other);
     ~DateTimeItem();
 
     std::string typeName() const override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     DateTimeItem &operator =(const DateTimeItem &other);
 
     // Serializable interface
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    DateTimeItem(const DateTimeItem &other);
 
 private:
     DateTimeItemData *d;

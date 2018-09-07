@@ -32,19 +32,6 @@ ComplexItem::ComplexItem(const std::string &id, Object *parent)
     d->table->setParent(this);
 }
 
-ComplexItem::ComplexItem(const ComplexItem &other)
-    : Item(other)
-    , d(new ComplexItemData())
-{
-    operator =(other);
-}
-
-void ComplexItem::setBufferOffset(double offset)
-{
-    Item::setBufferOffset(offset);
-    d->table->setBufferOffset(offset);
-}
-
 ComplexItem::~ComplexItem()
 {
     delete d;
@@ -106,16 +93,29 @@ void ComplexItem::clearData()
     d->table->clearData();
 }
 
-Object *ComplexItem::clone() const
+ObjectPtr ComplexItem::copy() const
 {
-    return new ComplexItem(*this);
+    ComplexItemPtr newComplex = std::make_shared<ComplexItem>(*this);
+    newComplex->setParent(nullptr);
+    return newComplex;
+}
+
+ObjectPtr ComplexItem::clone() const
+{
+    ComplexItemPtr newComplex = std::make_shared<ComplexItem>(*this);
+    newComplex->setParent(nullptr);
+    // children
+    newComplex->setTable(JHandlePtrCast<Table>(d->table->clone()));
+    return newComplex;
 }
 
 ComplexItem &ComplexItem::operator =(const ComplexItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
-    d->table = TablePtr(reinterpret_cast<Table *>(other.table()->clone()));
-
+    d->table.reset();
     return *this;
 }
 
@@ -213,6 +213,24 @@ bool ComplexItem::restore(const Json::Value &json, int deep)
     }
 
     return true;
+}
+
+ComplexItem::ComplexItem(const ComplexItem &other)
+    : Item(other)
+    , d(new ComplexItemData())
+{
+    operator =(other);
+}
+
+void ComplexItem::setBufferOffset(double offset)
+{
+    Item::setBufferOffset(offset);
+    d->table->setBufferOffset(offset);
+}
+
+void ComplexItem::setTable(const TablePtr &table)
+{
+    d->table = table;
 }
 
 } // end of namespace Icd

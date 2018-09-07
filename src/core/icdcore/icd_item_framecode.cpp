@@ -13,7 +13,7 @@ class FrameCodeItemData
     friend class FrameCodeItem;
 public:
     FrameCodeItemData()
-        : frameCodeType(FrameCodeInvalid)
+        : frameCodeType(FrameCodeU8)
     {
 
     }
@@ -221,21 +221,32 @@ std::string FrameCodeItem::typeString() const
     return Item::typeString() + "#" + frameCodeTypeString();
 }
 
-Object *FrameCodeItem::clone() const
+ObjectPtr FrameCodeItem::copy() const
 {
-    return new FrameCodeItem(*this);
+    FrameCodeItemPtr newFrameCode = std::make_shared<FrameCodeItem>(*this);
+    newFrameCode->setParent(nullptr);
+    return newFrameCode;
+}
+
+ObjectPtr FrameCodeItem::clone() const
+{
+    FrameCodeItemPtr newFrameCode = std::make_shared<FrameCodeItem>(*this);
+    newFrameCode->setParent(nullptr);
+    // children
+    if (d->frame) {
+        newFrameCode->setFrame(JHandlePtrCast<FrameItem>(d->frame->clone()));
+    }
+    return newFrameCode;
 }
 
 FrameCodeItem &FrameCodeItem::operator =(const FrameCodeItem &other)
 {
-    Item::operator =(other);
-
-    d->frameId = other.d->frameId;
-
-    if (other.d->frame) {
-        d->frame = FrameItemPtr(reinterpret_cast<FrameItem *>(other.d->frame->clone()));
+    if (this == &other) {
+        return *this;
     }
-
+    Item::operator =(other);
+    d->frameId = other.d->frameId;
+    d->frame.reset();
     return *this;
 }
 

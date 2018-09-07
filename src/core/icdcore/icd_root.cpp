@@ -154,22 +154,33 @@ void Root::clearData()
     }
 }
 
-Object *Root::clone() const
+ObjectPtr Root::copy() const
 {
-    return new Root(*this);
+    RootPtr newRoot = std::make_shared<Root>(*this);
+    newRoot->setParent(nullptr);
+    return newRoot;
+}
+
+ObjectPtr Root::clone() const
+{
+    RootPtr newRoot = std::make_shared<Root>(*this);
+    newRoot->setParent(nullptr);
+    // children
+    const VehiclePtrArray &vehicles = d->vehicles;
+    for (VehiclePtrArray::const_iterator citer = vehicles.cbegin();
+         citer != vehicles.cend(); ++citer) {
+        newRoot->appendVehicle(JHandlePtrCast<Vehicle>((*citer)->clone()));
+    }
+    return newRoot;
 }
 
 Root &Root::operator =(const Root &other)
 {
-    Object::operator =(other);
-
-    d->vehicles.clear();
-    const VehiclePtrArray &vehicles = other.d->vehicles;
-    for (VehiclePtrArray::const_iterator citer = vehicles.cbegin();
-         citer != vehicles.cend(); ++citer) {
-        appendVehicle(VehiclePtr(reinterpret_cast<Vehicle *>((*citer)->clone())));
+    if (this == &other) {
+        return *this;
     }
-
+    Object::operator =(other);
+    d->vehicles.clear();
     return *this;
 }
 

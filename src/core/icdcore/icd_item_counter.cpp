@@ -12,7 +12,7 @@ class CounterItemData
     friend class CounterItem;
 public:
     CounterItemData()
-        : counterType(CounterInvalid)
+        : counterType(CounterU8)
     {
 
     }
@@ -154,13 +154,25 @@ std::string CounterItem::typeString() const
     return Item::typeString() + "#" + counterTypeString();
 }
 
-Object *CounterItem::clone() const
+ObjectPtr CounterItem::copy() const
 {
-    return new CounterItem(*this);
+    CounterItemPtr newCounter = std::make_shared<CounterItem>(*this);
+    newCounter->setParent(nullptr);
+    return newCounter;
+}
+
+ObjectPtr CounterItem::clone() const
+{
+    CounterItemPtr newCounter = std::make_shared<CounterItem>(*this);
+    newCounter->setParent(nullptr);
+    return newCounter;
 }
 
 CounterItem &CounterItem::operator =(const CounterItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
     d->counterType = other.d->counterType;
     return *this;

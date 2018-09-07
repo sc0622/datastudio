@@ -18,6 +18,7 @@ class ICDCORE_EXPORT ComplexItem : public Item
 public:
     explicit ComplexItem(Object *parent = nullptr);
     explicit ComplexItem(const std::string &id, Object *parent = nullptr);
+    ComplexItem(const ComplexItem &other);
     ~ComplexItem();
 
     bool isEmpty() const;
@@ -36,7 +37,8 @@ public:
     void resetData() override;
     void clearData() override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     ComplexItem &operator =(const ComplexItem &other);
 
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
@@ -55,9 +57,10 @@ public:
     bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
-    ComplexItem(const ComplexItem &other);
-
     void setBufferOffset(double offset) override;
+
+private:
+    void setTable(const Icd::TablePtr &table);
 
 private:
     ComplexItemData *d;

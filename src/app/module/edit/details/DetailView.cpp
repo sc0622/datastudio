@@ -27,8 +27,6 @@ DetailView::DetailView(QWidget *parent)
 
     connect(detailTable_, &DetailTable::currentItemChanged,
             this, &DetailView::onCurrentItemChanged);
-    connect(detailTable_, &DetailTable::contentChanged,
-            this, &DetailView::onContentChanged);
 
     detailEdit_->hide();
 }
@@ -74,17 +72,6 @@ void DetailView::updateView(QStandardItem *item)
 void DetailView::onCurrentItemChanged(const QVariant &index)
 {
     detailEdit_->updateView(detailTable_->object(), index);
-}
-
-void DetailView::onContentChanged(const QVariant &index, const QString &name)
-{
-    Q_UNUSED(index);
-
-    if (detailEdit_->isHidden()) {
-        return;
-    }
-
-    detailEdit_->updateContent(name);
 }
 
 }

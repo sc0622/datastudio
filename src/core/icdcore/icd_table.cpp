@@ -28,6 +28,7 @@ public:
         , bufferOffset(0.0)
         , buffer(nullptr)
         , isFrameTable(false)
+        , isSubFrameTable(false)
         , period(0)
         , itemCounter(nullptr)
         , itemCheck(nullptr)
@@ -53,7 +54,8 @@ private:
     double bufferSize;
     double bufferOffset;        //
     char *buffer;
-    bool isFrameTable;
+    bool isFrameTable;          //
+    bool isSubFrameTable;       //
     icd_int64 period;
     std::deque<icd_int64> times;
     ItemPtrArray items;         // 数据项列表
@@ -343,6 +345,11 @@ void Table::setBufferOffset(double offset)
         const ItemPtr &item = *citer;
         item->setBufferOffset(item->bufferOffset() + delta);
     }
+}
+
+void Table::setSubFrameTableFlag(bool flag)
+{
+    d->isSubFrameTable = flag;
 }
 
 char *Table::buffer() const
@@ -873,25 +880,7 @@ bool Table::isFrameTable() const
 
 bool Table::isSubFrameTable() const
 {
-    Icd::Object *_parent = parent();
-    if (!_parent) {
-        return false;
-    }
-
-    if (_parent->objectType() != Icd::ObjectItem) {
-        return false;
-    }
-
-    Icd::Item *item = dynamic_cast<Icd::Item*>(_parent);
-    if (!item) {
-        return false;
-    }
-
-    if (item->type() != Icd::ItemFrame) {
-        return false;
-    }
-
-    return true;
+    return d->isSubFrameTable;
 }
 
 int Table::frameCodeType() const
@@ -992,33 +981,44 @@ void Table::clearData()
     }
 }
 
-Object *Table::clone() const
+ObjectPtr Table::copy() const
 {
-    return new Table(*this);
+    TablePtr newTable = std::make_shared<Table>(*this);
+    newTable->setParent(nullptr);
+    return newTable;
 }
 
-Table &Table::operator =(const Table &other)
+ObjectPtr Table::clone() const
 {
-    Object::operator =(other);
-
-    d->sequence = other.d->sequence;
-    d->itemOffset = other.d->itemOffset;
-    d->bufferOffset = other.d->bufferOffset;
-    d->isFrameTable = other.d->isFrameTable;
-
-    d->bufferSize = 0;
-    d->buffer = nullptr;
-    d->items.clear();
-    const ItemPtrArray &items = other.d->items;
+    TablePtr newTable = std::make_shared<Table>(*this);
+    newTable->setParent(nullptr);
+    // children
+    const ItemPtrArray &items = d->items;
     for (ItemPtrArray::const_iterator citer = items.cbegin();
          citer != items.cend(); ++citer) {
         const ItemPtr &item = *citer;
         if (item->type() == Icd::ItemFrame) {
             continue;
         }
-        appendItem(ItemPtr(reinterpret_cast<Item *>((*citer)->clone())));
+        newTable->appendItem(JHandlePtrCast<Item>((*citer)->clone()));
     }
+    return newTable;
+}
 
+Table &Table::operator =(const Table &other)
+{
+    if (this == &other) {
+        return *this;
+    }
+    Object::operator =(other);
+    d->sequence = other.d->sequence;
+    d->itemOffset = other.d->itemOffset;
+    d->bufferOffset = other.d->bufferOffset;
+    d->isFrameTable = other.d->isFrameTable;
+    d->isSubFrameTable = other.d->isSubFrameTable;
+    d->bufferSize = 0;
+    d->buffer = nullptr;
+    d->items.clear();
     return *this;
 }
 

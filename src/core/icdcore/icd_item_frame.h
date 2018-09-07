@@ -20,6 +20,7 @@ class ICDCORE_EXPORT FrameItem : public Item
 public:
     explicit FrameItem(Object *parent = nullptr);
     explicit FrameItem(const std::string &id, Object *parent = nullptr);
+    FrameItem(const FrameItem &other);
 
     ~FrameItem();
 
@@ -48,7 +49,8 @@ public:
     void resetData() override;
     void clearData() override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     FrameItem &operator =(const FrameItem &other);
 
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
@@ -71,8 +73,6 @@ public:
     bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
-    FrameItem(const FrameItem &other);
-
     void setBufferOffset(double offset) override;
 
 private:

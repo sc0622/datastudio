@@ -17,6 +17,7 @@ public:
     explicit BitItem(Object *parent = nullptr);
     explicit BitItem(ItemType type, Object *parent = nullptr);
     explicit BitItem(const std::string &id, ItemType type, Object *parent = nullptr);
+    BitItem(const BitItem &other);
     ~BitItem();
 
     double data() const override;
@@ -50,21 +51,22 @@ public:
 
     std::string typeName() const override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     BitItem &operator =(const BitItem &other);
 
     // for bitvalue
     double originalData() const;
     double originalDataFromBuffer(const char *buffer) const;
 
+    double offset() const;
+    void setOffset(double offset);
+
     double scale() const;
     void setScale(double scale);
 
     int decimals() const;
     void setDecimals(int value);
-
-    double offset() const;
-    void setOffset(double offset);
 
     LimitItemPtr limit() const;
     void setLimit(const LimitItemPtr &limit);
@@ -84,9 +86,6 @@ public:
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    BitItem(const BitItem &other);
 
 private:
     BitItemData *d;

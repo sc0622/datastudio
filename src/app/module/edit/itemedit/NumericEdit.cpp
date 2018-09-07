@@ -9,6 +9,9 @@ namespace Edit {
 NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     : ItemEdit(numeric, parent)
 {
+    comboNumericType_ = new QComboBox(this);
+    addRow("<font color=red>*</font>" + tr("Numeric type:"), comboNumericType_);
+
     spinOffset_ = new JDoubleSpinBox(this);
     addRow(tr("Offset:"), spinOffset_);
 
@@ -26,6 +29,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     checkMinimumInf_ = new QCheckBox(this);
     checkMinimumInf_->setMaximumWidth(checkMinimumInf_->sizeHint().height());
     layoutMinimum->addWidget(checkMinimumInf_);
+    layoutMinimum->addSpacing(3);
     addRow(tr("Minimum:"), layoutMinimum);
 
     QHBoxLayout *layoutMaximum = new QHBoxLayout();
@@ -35,6 +39,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     checkMaximumInf_ = new QCheckBox(this);
     checkMaximumInf_->setMaximumWidth(checkMaximumInf_->sizeHint().height());
     layoutMaximum->addWidget(checkMaximumInf_);
+    layoutMaximum->addSpacing(3);
     addRow(tr("Maximum:"), layoutMaximum);
 
     spinDefaultValue_ = new JDoubleSpinBox(this);
@@ -43,16 +48,109 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     tableSpecs_ = new SpecsTable(numeric, this);
     addWidget(tableSpecs_);
 
+    // numeric-type
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericI8), Icd::NumericI8);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericU8), Icd::NumericU8);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericI16), Icd::NumericI16);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericU16), Icd::NumericU16);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericI32), Icd::NumericI32);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericU32), Icd::NumericU32);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericI64), Icd::NumericI64);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericU64), Icd::NumericU64);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericF32), Icd::NumericF32);
+    comboNumericType_->addItem(IcdWidget::arrayTypeString(Icd::NumericF64), Icd::NumericF64);
+
+    connect(comboNumericType_, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, [=](){
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
+    connect(spinOffset_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
+            this, [=](){
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
+    connect(spinScale_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
+            this, [=](){
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
+    connect(editUnit_, &QLineEdit::textChanged, this, [=](){
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
+    connect(spinMinimum_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
+            this, [=](double value){
+        if (checkMaximumInf_->isChecked()) {
+            const double maximum = spinMaximum_->value();
+            if (value > maximum) {
+                spinMaximum_->setValue(value);
+            }
+        }
+        if (spinDefaultValue_->value() < value) {
+            spinDefaultValue_->setValue(value);
+        }
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
     connect(checkMinimumInf_, &QCheckBox::toggled, this, [=](bool checked){
         spinMinimum_->setReadOnly(!checked);
+        if (checked) {
+            spinMinimum_->setValue(qMin(spinMaximum_->value(), spinDefaultValue_->value()));
+        } else {
+            spinMinimum_->clear();
+        }
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
+    connect(spinMaximum_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
+            this, [=](double value){
+        if (checkMinimumInf_->isChecked()) {
+            const double minimum = spinMinimum_->value();
+            if (value < minimum) {
+                spinMinimum_->setValue(value);
+            }
+        }
+        if (spinDefaultValue_->value() > value) {
+            spinDefaultValue_->setValue(value);
+        }
+        if (!blocking()) {
+            emit contentChanged();
+        }
     });
     connect(checkMaximumInf_, &QCheckBox::toggled, this, [=](bool checked){
         spinMaximum_->setReadOnly(!checked);
+        if (checked) {
+            spinMaximum_->setValue(qMax(spinMinimum_->value(), spinDefaultValue_->value()));
+        } else {
+            spinMaximum_->clear();
+        }
+        if (!blocking()) {
+            emit contentChanged();
+        }
     });
-
-    // init
-
-    //
+    connect(spinDefaultValue_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
+            this, [=](double value){
+        if (checkMinimumInf_->isChecked()) {
+            if (value < spinMinimum_->value()) {
+                spinMinimum_->setValue(value);
+            }
+        }
+        if (checkMaximumInf_->isChecked()) {
+            if (value > spinMaximum_->value()) {
+                spinMaximum_->setValue(value);
+            }
+        }
+        if (!blocking()) {
+            emit contentChanged();
+        }
+    });
 }
 
 NumericEdit::~NumericEdit()
@@ -71,36 +169,114 @@ bool NumericEdit::init()
         return false;
     }
 
+    //
+    if (!tableSpecs_->init()) {
+        return false;
+    }
+
+    //
+    NumericEdit::restoreContent(false);
+
+    return true;
+}
+
+void NumericEdit::restoreContent(bool recursive)
+{
+    if (recursive) {
+        ItemEdit::restoreContent(recursive);
+    }
+
     lock();
 
     const Icd::NumericItemPtr numeric = this->numeric();
     if (numeric) {
+        // numeric-type
+        comboNumericType_->setCurrentIndex(comboNumericType_->findData(numeric->numericType()));
         // offset
         spinOffset_->setValue(numeric->offset());
         // scale
         spinScale_->setValue(numeric->scale());
         // unit
         editUnit_->setText(QString::fromStdString(numeric->unit()));
-        // minimum
-        spinMinimum_->setValue(numeric->limit()->minimum());
         // mnimum-inf
         checkMinimumInf_->setChecked(!numeric->limit()->minimumInf());
-        // maximum
-        spinMaximum_->setValue(numeric->limit()->maximum());
+        // minimum
+        if (checkMinimumInf_->isChecked()) {
+            spinMinimum_->setValue(numeric->limit()->minimum());
+        } else {
+            spinMinimum_->clear();
+        }
         // maximum-inf
         checkMaximumInf_->setChecked(!numeric->limit()->maximumInf());
+        // maximum
+        if (checkMaximumInf_->isChecked()) {
+            spinMaximum_->setValue(numeric->limit()->maximum());
+        } else {
+            spinMaximum_->clear();
+        }
         // default value
         spinDefaultValue_->setValue(numeric->defaultValue());
         // specs
-        if (!tableSpecs_->init()) {
-            unlock();
-            return false;
-        }
+        tableSpecs_->restoreContent();
     }
 
     unlock();
+}
+
+bool NumericEdit::validate()
+{
+    if (!ItemEdit::validate()) {
+        return false;
+    }
+
+    if (!tableSpecs_->validate()) {
+        return false;
+    }
+
+    // numeric-type
+    if (comboNumericType_->currentIndex() == -1) {
+        comboNumericType_->setFocus();
+        return false;
+    }
 
     return true;
+}
+
+void NumericEdit::saveContent()
+{
+    ItemEdit::saveContent();
+
+    tableSpecs_->saveContent();
+
+    const Icd::NumericItemPtr numeric = this->numeric();
+    if (!numeric) {
+        return;
+    }
+
+    // numeric-type
+    numeric->setNumericType(Icd::NumericType(comboNumericType_->currentData().toInt()));
+    // offset
+    numeric->setOffset(spinOffset_->value());
+    // scale
+    numeric->setScale(spinScale_->value());
+    // unit
+    numeric->setUnit(editUnit_->text().trimmed().toStdString());
+    // minimumInf
+    numeric->limit()->setMinimumInf(checkMinimumInf_->isChecked());
+    // minimum
+    if (checkMinimumInf_->isChecked()) {
+        numeric->limit()->setMinimum(spinMinimum_->value());
+    }
+    // maximumInf
+    numeric->limit()->setMaximumInf(checkMaximumInf_->isChecked());
+    // maximum
+    if (checkMaximumInf_->isChecked()) {
+        numeric->limit()->setMaximum(spinMaximum_->value());
+    }
+    // default value
+    numeric->setDefaultValue(spinDefaultValue_->value());
+    // specs
+    tableSpecs_->saveContent();
 }
 
 }

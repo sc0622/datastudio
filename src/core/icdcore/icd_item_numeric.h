@@ -33,6 +33,7 @@ class ICDCORE_EXPORT NumericItem : public Item
 public:
     explicit NumericItem(Object *parent = nullptr);
     explicit NumericItem(const std::string &id, Object *parent = nullptr);
+    NumericItem(const NumericItem &other);
     ~NumericItem();
 
     bool isValid() const;
@@ -51,14 +52,14 @@ public:
     double originalDataFromBuffer(const char *buffer) const;
     double dataFromBuffer(const char *buffer) const override;
 
+    double offset() const;
+    void setOffset(double offset);
+
     double scale() const;
     void setScale(double scale);
 
     int decimals() const;
     void setDecimals(int value);
-
-    double offset() const;
-    void setOffset(double offset);
 
     LimitItemPtr limit() const;
     void setLimit(const LimitItemPtr &limit);
@@ -81,7 +82,8 @@ public:
 
     bool outOfLimit() const;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     NumericItem &operator =(const NumericItem &other);
 
     std::string prettyValue() const;
@@ -91,9 +93,6 @@ public:
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    NumericItem(const NumericItem &other);
 
 private:
     NumericItemData *d;

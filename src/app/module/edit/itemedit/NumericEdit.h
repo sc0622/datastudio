@@ -32,7 +32,13 @@ signals:
 
 public slots:
 
+protected:
+    void restoreContent(bool recursive = true) override;
+    bool validate() override;
+    void saveContent() override;
+
 private:
+    QComboBox *comboNumericType_;
     JDoubleSpinBox *spinOffset_;
     JDoubleSpinBox *spinScale_;
     QLineEdit *editUnit_;

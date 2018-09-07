@@ -88,13 +88,25 @@ std::string HeaderItem::typeName() const
     return "icd_uint8";
 }
 
-Object *HeaderItem::clone() const
+ObjectPtr HeaderItem::copy() const
 {
-    return new HeaderItem(*this);
+    HeaderItemPtr newHeader = std::make_shared<HeaderItem>(*this);
+    newHeader->setParent(nullptr);
+    return newHeader;
+}
+
+ObjectPtr HeaderItem::clone() const
+{
+    HeaderItemPtr newHeader = std::make_shared<HeaderItem>(*this);
+    newHeader->setParent(nullptr);
+    return newHeader;
 }
 
 HeaderItem &HeaderItem::operator =(const HeaderItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
     return *this;
 }

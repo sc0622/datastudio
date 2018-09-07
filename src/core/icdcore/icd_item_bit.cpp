@@ -13,11 +13,11 @@ class BitItemData
 public:
     BitItemData()
         : bitStart(0)
-        , bitCount(0)
-        , typeSize(0)
+        , bitCount(8)
+        , typeSize(1)
+        , offset(0.0)
         , scale(1.0)
         , decimals(0)
-        , offset(0.0)
         , limit(new LimitItem())
     {
 
@@ -30,9 +30,9 @@ private:
     int bitStart;               // 起始比特位,从0开始
     int bitCount;               // 比特长度
     int typeSize;               // 数据类型字节数
+    double offset;              // 偏置
     double scale;               // 比例尺
     int decimals;               // 小数有效个数
-    double offset;              // 偏置
     LimitItemPtr limit;         // 范围
     std::string unit;           // 单位
     std::map<icd_uint64, std::string> specs;    // 特征点
@@ -351,17 +351,35 @@ std::string BitItem::typeName() const
     return "icd_uint" + os.str();
 }
 
-Object *BitItem::clone() const
+ObjectPtr BitItem::copy() const
 {
-    return new BitItem(*this);
+    BitItemPtr newBit = std::make_shared<BitItem>(*this);
+    newBit->setParent(nullptr);
+    return newBit;
+}
+
+ObjectPtr BitItem::clone() const
+{
+    BitItemPtr newBit = std::make_shared<BitItem>(*this);
+    newBit->setParent(nullptr);
+    // children
+    newBit->setLimit(JHandlePtrCast<LimitItem>(d->limit->clone()));
+    return newBit;
 }
 
 BitItem &BitItem::operator =(const BitItem &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Item::operator =(other);
     d->bitStart = other.d->bitStart;
     d->bitCount = other.d->bitCount;
     d->typeSize = other.d->typeSize;
+    d->offset = other.d->offset;
+    d->scale = other.d->scale;
+    d->decimals = other.d->decimals;
+    d->unit = other.d->unit;
     d->specs = other.d->specs;
     return *this;
 }
@@ -400,6 +418,16 @@ double BitItem::originalDataFromBuffer(const char *buffer) const
     return double(value);
 }
 
+double BitItem::offset() const
+{
+    return d->offset;
+}
+
+void BitItem::setOffset(double offset)
+{
+    d->offset = offset;
+}
+
 double BitItem::scale() const
 {
     return d->scale;
@@ -418,16 +446,6 @@ int BitItem::decimals() const
 void BitItem::setDecimals(int value)
 {
     d->decimals = value;
-}
-
-double BitItem::offset() const
-{
-    return d->offset;
-}
-
-void BitItem::setOffset(double offset)
-{
-    d->offset = offset;
 }
 
 LimitItemPtr BitItem::limit() const
@@ -518,8 +536,8 @@ Json::Value BitItem::save() const
 
     json["start"] = d->bitStart;
     json["count"] = d->bitCount;
-    json["scale"] = d->scale;
     json["offset"] = d->offset;
+    json["scale"] = d->scale;
     // decimals
     if (d->decimals > 0) {
         json["decimals"] = d->decimals;
@@ -557,12 +575,12 @@ bool BitItem::restore(const Json::Value &json, int deep)
     setBitStart(json["start"].asInt());
     // bitcount
     setBitCount(json["count"].asInt());
+    // offset
+    setOffset(json["offset"].asDouble());
     // scale
     if (json.isMember("scale")) {
         setScale(json["scale"].asDouble());
     }
-    // offset
-    setOffset(json["offset"].asDouble());
     // decimals
     setDecimals(json["decimals"].asDouble());
     // limit

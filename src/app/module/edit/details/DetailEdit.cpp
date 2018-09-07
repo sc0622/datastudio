@@ -27,6 +27,7 @@ DetailEdit::DetailEdit(QWidget *parent)
     buttonApply_ = new QPushButton(QIcon(":/datastudio/image/global/apply.png"),
                                    tr("Apply"), this);
     buttonApply_->setMinimumWidth(100);
+    buttonApply_->setEnabled(false);
     layoutButton->addWidget(buttonApply_);
 
     layoutButton->addStretch();
@@ -34,27 +35,38 @@ DetailEdit::DetailEdit(QWidget *parent)
     buttonCancel_ = new QPushButton(QIcon(":/datastudio/image/global/cancel.png"),
                                     tr("Cancel"), this);
     buttonCancel_->setMinimumWidth(100);
+    buttonCancel_->setEnabled(false);
     layoutButton->addWidget(buttonCancel_);
 
     layoutButton->addStretch();
 
     connect(buttonApply_, &QPushButton::clicked, this, [=](){
-        //TODO
+        if (!objectEdit_ || isHidden()) {
+            return;
+        }
+        if (!objectEdit_->trySaveContent()) {
+            return;
+        }
+        setButtonsEnabled(false);
+        //TODO notify
     });
     connect(buttonCancel_, &QPushButton::clicked, this, [=](){
-        //TODO
+        if (!objectEdit_ || isHidden()) {
+            return;
+        }
+        if (newObject_) {
+            resetView();
+            newObject_.reset();
+        } else {
+            objectEdit_->restoreContent();
+        }
+        setButtonsEnabled(false);
     });
 }
 
 void DetailEdit::resetView()
 {
-    if (objectEdit_) {
-        layoutEdit_->removeWidget(objectEdit_);
-        objectEdit_->disconnect();
-        objectEdit_->deleteLater();
-        objectEdit_ = nullptr;
-    }
-
+    removeEdit();
     object_ = nullptr;
     hide();
 }
@@ -150,29 +162,116 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub)
         return;
     }
 
-    objectEdit_ = ObjectEdit::create(object_);
+    const Icd::ObjectPtr copiedObject = object_->copy();
+    copiedObject->setParent(object_->parent());
+
+    objectEdit_ = ObjectEdit::create(copiedObject);
     if (!objectEdit_) {
         return;
     }
 
     layoutEdit_->addWidget(objectEdit_);
 
-    connect(objectEdit_, &ObjectEdit::contentChanged, this, &DetailEdit::contentChanged);
+    connect(objectEdit_, &ObjectEdit::contentChanged, this, &DetailEdit::onContentChanged);
+    if (object_->objectType() == Icd::ObjectItem) {
+        connect(objectEdit_, &ObjectEdit::itemTypeChanged, this, &DetailEdit::changeEdit);
+    }
 
     if (!objectEdit_->init()) {
-        //
+        Q_ASSERT(false);
+        //return;
     }
 
     show();
 }
 
-void DetailEdit::updateContent(const QString &name)
+void DetailEdit::onContentChanged(const QString &key, const QVariant &value)
+{
+    Q_UNUSED(key);
+    Q_UNUSED(value);
+    if (!objectEdit_ || isHidden()) {
+        return;
+    }
+
+    if (objectEdit_->blocking()) {
+        return;
+    }
+
+    setButtonsEnabled(true);
+}
+
+void DetailEdit::restoreContent()
 {
     if (!objectEdit_ || isHidden()) {
         return;
     }
 
-    return objectEdit_->updateContent(name);
+    return objectEdit_->restoreContent();
+}
+
+void DetailEdit::setButtonsEnabled(bool enabled)
+{
+    buttonApply_->setEnabled(enabled);
+    buttonCancel_->setEnabled(enabled);
+}
+
+void DetailEdit::removeEdit()
+{
+    if (objectEdit_) {
+        layoutEdit_->removeWidget(objectEdit_);
+        objectEdit_->disconnect();
+        objectEdit_->deleteLater();
+        objectEdit_ = nullptr;
+    }
+
+    setButtonsEnabled(false);
+}
+
+void DetailEdit::changeEdit(int itemType)
+{
+    if (!object_ || object_->objectType() != Icd::ObjectItem) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    removeEdit();
+
+    const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(object_);
+    Icd::ItemPtr newItem;
+    if (itemType == item->type()) {
+        newItem = JHandlePtrCast<Icd::Item>(item->copy());
+    } else {
+        newItem = Icd::Item::create(item->id(), Icd::ItemType(itemType));
+        if (!newItem) {
+            Q_ASSERT(false);
+            return;
+        }
+        *dynamic_cast<Icd::Object*>(newItem.get()) = *dynamic_cast<Icd::Object*>(item.get());
+    }
+
+    if (!newItem) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    newItem->setParent(object_->parent());
+
+    objectEdit_ = ObjectEdit::create(newItem);
+    if (!objectEdit_) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    connect(objectEdit_, &ObjectEdit::contentChanged, this, &DetailEdit::onContentChanged);
+    if (object_->objectType() == Icd::ObjectItem) {
+        connect(objectEdit_, &ObjectEdit::itemTypeChanged, this, &DetailEdit::changeEdit);
+    }
+
+    layoutEdit_->addWidget(objectEdit_);
+
+    if (!objectEdit_->init()) {
+        Q_ASSERT(false);
+    }
 }
 
 }

@@ -30,6 +30,7 @@ class ICDCORE_EXPORT Table : public Object
 public:
     explicit Table(Object *parent = nullptr);
     explicit Table(const std::string &id, Object *parent = nullptr);
+    Table(const Table &other);
     ~Table();
 
     int itemOffset() const;
@@ -85,7 +86,8 @@ public:
     void resetData() override;
     void clearData() override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     Table &operator =(const Table &other);
 
     static double recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
@@ -97,12 +99,10 @@ public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
 
-protected:
-    Table(const Table &other);
-
 private:
     void setItemOffset(int offset);
     void setBufferOffset(double offset);
+    void setSubFrameTableFlag(bool flag);
 
 private:
     TableData *d;

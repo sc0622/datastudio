@@ -157,22 +157,33 @@ void Vehicle::clearData()
     }
 }
 
-Object *Vehicle::clone() const
+ObjectPtr Vehicle::copy() const
 {
-    return new Vehicle(*this);
+    VehiclePtr newVehicle = std::make_shared<Vehicle>(*this);
+    newVehicle->setParent(nullptr);
+    return newVehicle;
+}
+
+ObjectPtr Vehicle::clone() const
+{
+    VehiclePtr newVehicle = std::make_shared<Vehicle>(*this);
+    newVehicle->setParent(nullptr);
+    // children
+    const SystemPtrArray &systems = d->systems;
+    for (SystemPtrArray::const_iterator citer = systems.cbegin();
+         citer != systems.cend(); ++citer) {
+        newVehicle->appendSystem(JHandlePtrCast<System>((*citer)->clone()));
+    }
+    return newVehicle;
 }
 
 Vehicle &Vehicle::operator =(const Vehicle &other)
 {
-    Object::operator =(other);
-
-    d->systems.clear();
-    const SystemPtrArray &systems = other.d->systems;
-    for (SystemPtrArray::const_iterator citer = systems.cbegin();
-         citer != systems.cend(); ++citer) {
-        appendSystem(SystemPtr(reinterpret_cast<System *>((*citer)->clone())));
+    if (this == &other) {
+        return *this;
     }
-
+    Object::operator =(other);
+    d->systems.clear();
     return *this;
 }
 

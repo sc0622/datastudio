@@ -31,10 +31,15 @@ signals:
 
 public slots:
 
+protected:
+    void restoreContent(bool recursive = true) override;
+    bool validate() override;
+    void saveContent() override;
+
 private:
     QComboBox *comboCodeType_;
     JLargeSpinBox *spinCode_;
-    QSpinBox *spinBoxSequence_;
+    QSpinBox *spinSequence_;
 };
 
 }

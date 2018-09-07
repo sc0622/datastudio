@@ -68,10 +68,15 @@ public:
     void updateView(const Icd::ObjectPtr &object, bool sub = false);
 
 signals:
-    void contentChanged(const QString &name);
 
 public slots:
-    void updateContent(const QString &name);
+    void onContentChanged(const QString &key, const QVariant &value);
+    void restoreContent();
+
+private:
+    void setButtonsEnabled(bool enabled);
+    void removeEdit();
+    void changeEdit(int itemType);
 
 private:
     QVBoxLayout *layoutEdit_;
@@ -79,7 +84,7 @@ private:
     QPushButton *buttonApply_;
     QPushButton *buttonCancel_;
     Icd::ObjectPtr object_;
-
+    Icd::ObjectPtr newObject_;
 };
 
 }

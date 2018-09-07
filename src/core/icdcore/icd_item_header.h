@@ -16,6 +16,7 @@ class ICDCORE_EXPORT HeaderItem : public Item
 public:
     explicit HeaderItem(Object *parent = nullptr);
     explicit HeaderItem(const std::string &id, Object *parent = nullptr);
+    HeaderItem(const HeaderItem &other);
     virtual ~HeaderItem();
 
     double data() const override;
@@ -28,16 +29,14 @@ public:
 
     std::string typeName() const override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     HeaderItem &operator =(const HeaderItem &other);
 
     // Serializable interface
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    HeaderItem(const HeaderItem &other);
 
 private:
     HeaderItemData *d;

@@ -54,79 +54,86 @@ SpecsTable::SpecsTable(const Icd::ItemPtr &item, QWidget *parent)
             menu.exec(QCursor::pos());
         }
     });
+}
 
-    updateContext();
+Icd::ItemPtr SpecsTable::item() const
+{
+    return item_;
 }
 
 bool SpecsTable::init()
 {
     lock();
 
-    if (item_) {
-        switch (item_->type()) {
-        case Icd::ItemNumeric:
-        {
-            tableView_->clearContents();
+    tableView_->clear();
 
-            const Icd::NumericItemPtr numeric = JHandlePtrCast<Icd::NumericItem>(item_);
-            if (!numeric) {
-                break;
-            }
-            const auto &specs = numeric->specs();
-            tableView_->setRowCount(specs.size());
-            int rowIndex = 0;
-            for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer, ++rowIndex) {
-                tableView_->setItemData(rowIndex, 0, IcdWidget::prettyValue(citer->first));
-                tableView_->setItemData(rowIndex, 1, QString::fromStdString(citer->second));
-            }
-            break;
-        }
-        case Icd::ItemBitMap:
-        {
-            const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
-            if (!bit) {
-                break;
-            }
-            const auto &specs = bit->specs();
-            for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
-                const quint32 index = quint32(citer->first);
-                if (index >= bit->bitCount()) {
-                    continue;
-                }
-                tableView_->setItemData(int(index), 1, QString::fromStdString(citer->second));
-            }
-            break;
-        }
-        case Icd::ItemBitValue:
-        {
-            tableView_->clearContents();
+    if (!item_) {
+        unlock();
+        return false;
+    }
 
-            const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
-            if (!bit) {
-                break;
-            }
-            const auto &specs = bit->specs();
-            tableView_->setRowCount(specs.size());
-            int rowIndex = 0;
-            for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer, ++rowIndex) {
-                tableView_->setItemData(rowIndex, 0, QString::number(citer->first));
-                tableView_->setItemData(rowIndex, 1, QString::fromStdString(citer->second));
-            }
+    switch (item_->type()) {
+    case Icd::ItemBitMap:
+    {
+        const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
+        if (!bit) {
             break;
         }
-        default:
-            break;
+        // header
+        QStringList labels;
+        labels << tr("Bit") << tr("Describe") << tr("0") << tr("1");
+        tableView_->setHorizontalHeaderLabels(labels);
+        tableView_->setColumnWidth(0, 40);
+        tableView_->setColumnWidth(1, 150);
+        tableView_->setColumnWidth(2, 100);
+        tableView_->setColumnWidth(3, 100);
+        // delegate
+        tableView_->setItemDelegateForColumn(0, new JReadOnlyItemDelegate(item_));
+        // actions
+        // - clean
+        QAction *actionClean = new QAction(QIcon(":/datastudio/image/toolbar/clean.png"),
+                                           tr("Clean"), tableView_);
+        connect(actionClean, &QAction::triggered, this,  &SpecsTable::onClean);
+        tableView_->addAction(actionClean);
+        break;
+    }
+    case Icd::ItemNumeric:
+    case Icd::ItemBitValue:
+    {
+        // header
+        QStringList labels;
+        labels << tr("Value") << tr("Describe");
+        tableView_->setHorizontalHeaderLabels(labels);
+        tableView_->setColumnWidth(0, 100);
+        tableView_->setColumnWidth(1, 100);
+        // delegate
+        if (item_->type() == Icd::ItemNumeric) {
+            tableView_->setItemDelegateForColumn(0, new JDoubleItemDelegate(item_));
+        } else {
+            tableView_->setItemDelegateForColumn(0, new JULongLongItemDelegate(item_));
         }
+        // actions
+        // - add
+        QAction *actionAdd = new QAction(QIcon(":/datastudio/image/global/add.png"),
+                                         tr("Add"), tableView_);
+        connect(actionAdd, &QAction::triggered, this, &SpecsTable::onAdd);
+        tableView_->addAction(actionAdd);
+        // - clean
+        QAction *actionClean = new QAction(QIcon(":/datastudio/image/toolbar/clean.png"),
+                                           tr("Clean"), tableView_);
+        connect(actionClean, &QAction::triggered, this, &SpecsTable::onClean);
+        tableView_->addAction(actionClean);
+        break;
+    }
+    default:
+        break;
     }
 
     unlock();
 
-    return true;
-}
+    restoreContent();
 
-Icd::ItemPtr SpecsTable::item() const
-{
-    return item_;
+    return true;
 }
 
 void SpecsTable::lock()
@@ -147,6 +154,165 @@ bool SpecsTable::blocking() const
 bool SpecsTable::validate()
 {
     return true;
+}
+
+void SpecsTable::restoreContent()
+{
+    lock();
+
+    tableView_->clearContents();
+
+    if (item_) {
+        switch (item_->type()) {
+        case Icd::ItemNumeric:
+        {
+            const Icd::NumericItemPtr numeric = JHandlePtrCast<Icd::NumericItem>(item_);
+            if (!numeric) {
+                break;
+            }
+            // specs
+            const auto &specs = numeric->specs();
+            tableView_->setRowCount(specs.size());
+            int rowIndex = 0;
+            for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer, ++rowIndex) {
+                tableView_->setItemData(rowIndex, 0, IcdWidget::prettyValue(citer->first));
+                tableView_->setItemData(rowIndex, 1, QString::fromStdString(citer->second));
+            }
+            break;
+        }
+        case Icd::ItemBitMap:
+        {
+            const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
+            if (!bit) {
+                break;
+            }
+            // rows
+            tableView_->setRowCount(bit->bitCount());
+            for (int i = 0; i < bit->bitCount(); ++i) {
+                tableView_->setItemData(i, 0, bit->bitStart() + i);
+            }
+            // specs
+            const auto &specs = bit->specs();
+            for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
+                const quint32 index = quint32(citer->first);
+                if (index >= bit->bitCount()) {
+                    continue;
+                }
+                const QString spec = QString::fromStdString(citer->second).trimmed();
+                const QString desc = spec.section(':', 1).trimmed();
+                // name
+                tableView_->setItemData(int(index), 1, spec.section(':', 0, 0).trimmed());
+                // desc - 0
+                tableView_->setItemData(int(index), 2, desc.section(';', 0, 0).trimmed());
+                // desc - 1
+                tableView_->setItemData(int(index), 3, desc.section(';', 1).trimmed());
+            }
+            break;
+        }
+        case Icd::ItemBitValue:
+        {
+            const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
+            if (!bit) {
+                break;
+            }
+            // specs
+            const auto &specs = bit->specs();
+            tableView_->setRowCount(specs.size());
+            int rowIndex = 0;
+            for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer, ++rowIndex) {
+                tableView_->setItemData(rowIndex, 0, QString::number(citer->first));
+                tableView_->setItemData(rowIndex, 1, QString::fromStdString(citer->second));
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    unlock();
+}
+
+void SpecsTable::saveContent()
+{
+    if (!item_) {
+        return;
+    }
+
+    switch (item_->type()) {
+    case Icd::ItemNumeric:
+    {
+        const Icd::NumericItemPtr numeric = JHandlePtrCast<Icd::NumericItem>(item_);
+        if (!numeric) {
+            break;
+        }
+        numeric->clearSpec();
+        const int rowCount = tableView_->rowCount();
+        for (int i = 0; i < rowCount; ++i) {
+            const QVariant varKey = tableView_->itemData(i, 0);
+            if (!varKey.isValid()) {
+                continue;
+            }
+            const QString spec = tableView_->itemData(i, 1).toString().trimmed();
+            if (spec.isEmpty()) {
+                continue;
+            }
+            numeric->addSpec(varKey.toDouble(), spec.toStdString());
+        }
+        break;
+    }
+    case Icd::ItemBitMap:
+    {
+        const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
+        if (!bit) {
+            break;
+        }
+        bit->clearSpec();
+        const int rowCount = tableView_->rowCount();
+        for (int i = 0; i < rowCount; ++i) {
+            const QVariant varKey = tableView_->itemData(i, 0);
+            if (!varKey.isValid()) {
+                continue;
+            }
+            const QString name = tableView_->itemData(i, 1).toString().trimmed();
+            if (name.isEmpty()) {
+                continue;
+            }
+            const QString desc0 = tableView_->itemData(i, 2).toString().trimmed();
+            const QString desc1 = tableView_->itemData(i, 3).toString().trimmed();
+            if (desc0.isEmpty() && desc1.isEmpty()) {
+                bit->addSpec(varKey.toDouble(), name.toStdString());
+            } else {
+                const QString spec = QString("%1:%2;%3").arg(desc0).arg(desc1);
+                bit->addSpec(varKey.toDouble(), spec.toStdString());
+            }
+        }
+        break;
+    }
+    case Icd::ItemBitValue:
+    {
+        const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
+        if (!bit) {
+            break;
+        }
+        bit->clearSpec();
+        const int rowCount = tableView_->rowCount();
+        for (int i = 0; i < rowCount; ++i) {
+            const QVariant varKey = tableView_->itemData(i, 0);
+            if (!varKey.isValid()) {
+                continue;
+            }
+            const QString spec = tableView_->itemData(i, 1).toString().trimmed();
+            if (spec.isEmpty()) {
+                continue;
+            }
+            bit->addSpec(varKey.toULongLong(), spec.toStdString());
+        }
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void SpecsTable::onAdd()
@@ -200,77 +366,6 @@ void SpecsTable::onClean()
     }
     unlock();
     emit contentChanged();
-}
-
-void SpecsTable::updateContext()
-{
-    tableView_->clear();
-
-    if (!item_) {
-        return;
-    }
-
-    switch (item_->type()) {
-    case Icd::ItemBitMap:
-    {
-        const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
-        if (!bit) {
-            break;
-        }
-        // header
-        QStringList labels;
-        labels << tr("Bit") << tr("Describe") << tr("0") << tr("1");
-        tableView_->setHorizontalHeaderLabels(labels);
-        tableView_->setColumnWidth(0, 40);
-        tableView_->setColumnWidth(1, 150);
-        tableView_->setColumnWidth(2, 100);
-        tableView_->setColumnWidth(3, 100);
-        // delegate
-        tableView_->setItemDelegateForColumn(0, new JReadOnlyItemDelegate(item_));
-        // rows
-        tableView_->setRowCount(bit->bitCount());
-        for (int i = 0; i < bit->bitCount(); ++i) {
-            tableView_->setItemData(i, 0, bit->bitStart() + i);
-        }
-        // actions
-        // - clean
-        QAction *actionClean = new QAction(QIcon(":/datastudio/image/toolbar/clean.png"),
-                                           tr("Clean"), tableView_);
-        connect(actionClean, &QAction::triggered, this,  &SpecsTable::onClean);
-        tableView_->addAction(actionClean);
-        break;
-    }
-    case Icd::ItemNumeric:
-    case Icd::ItemBitValue:
-    {
-        // header
-        QStringList labels;
-        labels << tr("Value") << tr("Describe");
-        tableView_->setHorizontalHeaderLabels(labels);
-        tableView_->setColumnWidth(0, 100);
-        tableView_->setColumnWidth(1, 100);
-        // delegate
-        if (item_->type() == Icd::ItemNumeric) {
-            tableView_->setItemDelegateForColumn(0, new JDoubleItemDelegate(item_));
-        } else {
-            tableView_->setItemDelegateForColumn(0, new JULongLongItemDelegate(item_));
-        }
-        // actions
-        // - add
-        QAction *actionAdd = new QAction(QIcon(":/datastudio/image/global/add.png"),
-                                         tr("Add"), tableView_);
-        connect(actionAdd, &QAction::triggered, this, &SpecsTable::onAdd);
-        tableView_->addAction(actionAdd);
-        // - clean
-        QAction *actionClean = new QAction(QIcon(":/datastudio/image/toolbar/clean.png"),
-                                           tr("Clean"), tableView_);
-        connect(actionClean, &QAction::triggered, this, &SpecsTable::onClean);
-        tableView_->addAction(actionClean);
-        break;
-    }
-    default:
-        break;
-    }
 }
 
 // class JReadOnlyItemDelegate

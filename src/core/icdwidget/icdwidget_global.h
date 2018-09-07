@@ -157,9 +157,10 @@ public:
     static QStringList protoItemTypes();
     static QMap<int, QString> protoItemMapTypes();
     static QString typeString(const Icd::ItemPtr &item);
-    static QString numericTypeString(int numericType);
     static QString counterTypeString(int counterType);
     static QString checkTypeString(int checkType);
+    static QString numericTypeString(int numericType);
+    static QString arrayTypeString(int arrayType);
     static QString frameCodeTypeString(int frameCodeType);
     // }} for icdcore
 

@@ -226,9 +226,18 @@ void Object::clearData()
 
 }
 
-Object *Object::clone() const
+ObjectPtr Object::copy() const
 {
-    return new Object(*this);
+    ObjectPtr newObject = std::make_shared<Object>(*this);
+    newObject->setParent(nullptr);
+    return newObject;
+}
+
+ObjectPtr Object::clone() const
+{
+    ObjectPtr newObject = std::make_shared<Object>(*this);
+    newObject->setParent(nullptr);
+    return newObject;
 }
 
 Object &Object::operator =(const Object &other)
@@ -236,14 +245,11 @@ Object &Object::operator =(const Object &other)
     if (this == &other) {
         return *this;
     }
-
-    d->parent = nullptr;
     d->objectType  = other.d->objectType;
     d->id  = other.d->id;
     d->name = other.d->name;
     d->mark = other.d->mark;
     d->desc = other.d->desc;
-
     return *this;
 }
 

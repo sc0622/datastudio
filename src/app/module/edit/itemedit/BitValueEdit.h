@@ -23,6 +23,11 @@ signals:
 
 public slots:
 
+protected:
+    void restoreContent(bool recursive = true) override;
+    bool validate() override;
+    void saveContent() override;
+
 private:
     JDoubleSpinBox *spinOffset_;
     JDoubleSpinBox *spinScale_;

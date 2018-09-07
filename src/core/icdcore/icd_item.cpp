@@ -25,12 +25,12 @@ public:
     }
 
 private:
-    ItemType type;          // ����������
-    int itemOffset;         // ������ƫ���������������е�ƫ������
-    char *buffer;           // ����ָ��
-    double bufferSize;      // ���ݳ��ȣ���ΪBitMap��bitValue�������ݳ��ȿ���ΪС��������ʹ��double����
-    double bufferOffset;    //
-    double defaultValue;    // Ĭ��ֵ
+    ItemType type;
+    int itemOffset;
+    char *buffer;
+    double bufferSize;
+    double bufferOffset;
+    double defaultValue;
 };
 
 // class Item
@@ -195,13 +195,25 @@ void Item::clearData()
     setData(0);
 }
 
-Object *Item::clone() const
+ObjectPtr Item::copy() const
 {
-    return new Item(*this);
+    ItemPtr newItem = std::make_shared<Item>(*this);
+    newItem->setParent(nullptr);
+    return newItem;
+}
+
+ObjectPtr Item::clone() const
+{
+    ItemPtr newItem = std::make_shared<Item>(*this);
+    newItem->setParent(nullptr);
+    return newItem;
 }
 
 Item &Item::operator =(const Item &other)
 {
+    if (this == &other) {
+        return *this;
+    }
     Object::operator =(other);
     d->type  = other.d->type;
     d->bufferSize = other.d->bufferSize;
@@ -212,10 +224,6 @@ Item &Item::operator =(const Item &other)
 
 ItemPtr Item::create(const std::string &id, ItemType type)
 {
-    if (id.empty()) {
-        return ItemPtr();
-    }
-
     switch (type) {
     case Icd::ItemNumeric: return Icd::ItemPtr(new Icd::NumericItem(id));
     case Icd::ItemBitMap:

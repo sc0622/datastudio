@@ -32,7 +32,6 @@ signals:
 
 public slots:
     void onCurrentItemChanged(const QVariant &index);
-    void onContentChanged(const QVariant &index, const QString &name);
 
 private:
     JSplitter *splitterMain_;

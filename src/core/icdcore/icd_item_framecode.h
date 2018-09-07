@@ -27,6 +27,7 @@ class ICDCORE_EXPORT FrameCodeItem : public Item
 public:
     explicit FrameCodeItem(Object *parent = nullptr);
     explicit FrameCodeItem(const std::string &id, Object *parent = nullptr);
+    FrameCodeItem(const FrameCodeItem &other);
     ~FrameCodeItem();
 
     FrameCodeType frameCodeType() const;
@@ -55,16 +56,14 @@ public:
     std::string typeName() const override;
     std::string typeString() const override;
 
-    Object *clone() const override;
+    ObjectPtr copy() const override;
+    ObjectPtr clone() const override;
     FrameCodeItem &operator =(const FrameCodeItem &other);
 
     // Serializable interface
 public:
     Json::Value save() const override;
     bool restore(const Json::Value &json, int deep = -1) override;
-
-protected:
-    FrameCodeItem(const FrameCodeItem &other);
 
 private:
     FrameCodeItemData *d;

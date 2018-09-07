@@ -27,8 +27,18 @@ signals:
 
 public slots:
 
+protected:
+    void restoreContent(bool recursive = true) override;
+    bool validate() override;
+    void saveContent() override;
+
+private:
+    bool initBinding();
+    bool restoreBinding();
+
 private:
     QComboBox *comboFrameCodeType_;
+    QComboBox *comboBinding_;
 };
 
 }
