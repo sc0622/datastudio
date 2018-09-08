@@ -33,6 +33,8 @@ public:
     void restoreContent();
     void saveContent();
 
+    void updateContent(int bitStart, int bitCount);
+
 signals:
     void contentChanged();
 

@@ -17,6 +17,12 @@ DetailTable::DetailTable(QWidget *parent)
     tableView_->setItemDelegate(delegate_);
     vertLayoutMain->addWidget(tableView_);
 
+    labelTip_ = new QLabel(this);
+    labelTip_->setProperty("_tip_", true);
+    labelTip_->setFixedHeight(22);
+    labelTip_->hide();
+    vertLayoutMain->addWidget(labelTip_);
+
     connect(tableView_, &JTableView::currentCellChanged, this,
             [=](int currentRow, int currentColumn, int previousRow, int previuosColumn){
         Q_UNUSED(currentColumn);
@@ -54,9 +60,9 @@ DetailTable::DetailTable(QWidget *parent)
 
 void DetailTable::resetView()
 {
-    enableChangedNotify(false);
     tableView_->clear();
     object_ = nullptr;
+    setTip(QString());
 }
 
 void DetailTable::updateView(const Icd::ObjectPtr &object)
@@ -93,10 +99,6 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
     default:
         break;
     }
-
-    if (result) {
-        enableChangedNotify(true);
-    }
 }
 
 Icd::ObjectPtr DetailTable::object() const
@@ -104,58 +106,10 @@ Icd::ObjectPtr DetailTable::object() const
     return object_;
 }
 
-void DetailTable::onContentChanged(QStandardItem *item)
+void DetailTable::setTip(const QString &text) const
 {
-    if (!item) {
-        return;
-    }
-
-    const int row = item->row();
-    const int column = item->column();
-    QStandardItem *headerItem = tableView_->horizontalHeaderItem(column);
-    if (!headerItem) {
-        return;
-    }
-
-    const QString name = headerItem->data().toString();
-
-    switch (object_->objectType()) {
-    case Icd::ObjectItem:
-    {
-        const Icd::ItemPtr icdItem = JHandlePtrCast<Icd::Item>(object_);
-        if (!icdItem) {
-            return;
-        }
-        switch (icdItem->type()) {
-        case Icd::ItemFrame:
-            if (saveFrame(item)) {
-                emit contentChanged(tableView_->itemData(row, 0, Qt::UserRole + 1), name);
-            }
-            break;
-        default:
-            break;
-        }
-        break;
-    }
-    default:
-    {
-        QStandardItem *headerItem = tableView_->horizontalHeaderItem(column);
-        if (headerItem) {
-            bool changed = false;
-            switch (object_->objectType()) {
-            case Icd::ObjectRoot: changed = saveRoot(item); break;
-            case Icd::ObjectVehicle: changed = saveVehicle(item); break;
-            case Icd::ObjectSystem: changed = saveSystem(item); break;
-            case Icd::ObjectTable: changed = saveTable(item); break;
-            default:
-                break;
-            }
-            if (changed) {
-                emit contentChanged(row, name);
-            }
-        }
-        break;
-    }}
+    labelTip_->setText(text);
+    labelTip_->setVisible(!text.isEmpty());
 }
 
 bool DetailTable::updateRoot()
@@ -184,9 +138,6 @@ bool DetailTable::updateRoot()
             tableView_->setItemData(row, 2, QString::fromStdString(vehicle->desc()));
         }
     }
-
-    //
-    //d_tableView->setItemDelegateForColumn(0, new NameItemDelegate());
 
     return true;
 }
@@ -310,6 +261,8 @@ bool DetailTable::updateTable()
             tableView_->setItemData(row, 5, QString::fromStdString(item->desc()));
         }
     }
+
+    setTip(tr("Size: %1").arg(table->bufferSize()));
 
     return true;
 }
@@ -512,6 +465,10 @@ bool DetailTable::updateArray()
 
     int rowIndex = tableView_->rowCount() - 1;
 
+    // count
+    //tableView_->insertRow(++rowIndex);
+    //tableView_->setItem();
+
     return true;
 }
 
@@ -667,192 +624,6 @@ bool DetailTable::updateFrame()
     }
 
     return true;
-}
-
-bool DetailTable::saveRoot(QStandardItem *item)
-{
-    if (!item) {
-        return false;
-    }
-
-    const Icd::RootPtr root = JHandlePtrCast<Icd::Root>(object_);
-    if (!root) {
-        return false;
-    }
-
-    const Icd::VehiclePtr vehicle = root->vehicleAt(item->row());
-    if (!vehicle) {
-        return false;
-    }
-
-    switch (item->column()) {
-    case 0:
-        vehicle->setName(item->text().toStdString());
-        break;
-    case 1:
-        vehicle->setMark(item->text().toStdString());
-        break;
-    case 2:
-        vehicle->setDesc(item->text().toStdString());
-        break;
-    default:
-        return false;
-    }
-
-    return true;
-}
-
-bool DetailTable::saveVehicle(QStandardItem *item)
-{
-    if (!item) {
-        return false;
-    }
-
-    const Icd::VehiclePtr vehicle = JHandlePtrCast<Icd::Vehicle>(object_);
-    if (!vehicle) {
-        return false;
-    }
-
-    const Icd::SystemPtr system = vehicle->systemAt(item->row());
-    if (!system) {
-        return false;
-    }
-
-    switch (item->column()) {
-    case 0:
-        system->setName(item->text().toStdString());
-        break;
-    case 1:
-        system->setMark(item->text().toStdString());
-        break;
-    case 2:
-        system->setDesc(item->text().toStdString());
-        break;
-    default:
-        return false;
-    }
-
-    return true;
-}
-
-bool DetailTable::saveSystem(QStandardItem *item)
-{
-    if (!item) {
-        return false;
-    }
-
-    const Icd::SystemPtr system = JHandlePtrCast<Icd::System>(object_);
-    if (!system) {
-        return false;
-    }
-
-    const Icd::TablePtr table = system->tableAt(item->row());
-    if (!table) {
-        return false;
-    }
-
-    switch (item->column()) {
-    case 0:
-        table->setName(item->text().toStdString());
-        break;
-    case 1:
-        table->setMark(item->text().toStdString());
-        break;
-    case 3:
-        table->setDesc(item->text().toStdString());
-        break;
-    default:
-        return false;
-    }
-
-    return true;
-}
-
-bool DetailTable::saveTable(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveItem(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveHead(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveCounter(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveCheck(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveFrameCode(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveNumeric(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveArray(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveBit(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveBitMap(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveBitValue(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveComplex(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-bool DetailTable::saveFrame(QStandardItem *item)
-{
-    Q_UNUSED(item);
-    return true;
-}
-
-void DetailTable::enableChangedNotify(bool enabled)
-{
-    disconnect(tableView_, &JTableView::itemChanged, this, &DetailTable::onContentChanged);
-
-    if (enabled) {
-        connect(tableView_, &JTableView::itemChanged, this, &DetailTable::onContentChanged);
-    }
 }
 
 }

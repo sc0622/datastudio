@@ -25,6 +25,7 @@ public:
     bool testBit(int offset) const;
     std::string dataString() const override;
     double dataFromBuffer(const char *buffer) const override;
+    bool testBitFromBuffer(int offset, const char *buffer) const;
 
     int bitStart() const;
     void setBitStart(int bitStart);

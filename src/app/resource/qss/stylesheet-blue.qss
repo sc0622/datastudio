@@ -799,50 +799,62 @@ QCheckBox {
     outline: none;
 }
 
+QGroupBox::indicator:unchecked,
 QCheckBox::indicator:unchecked {
     image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-normal.png);
 }
 
+QGroupBox::indicator:unchecked:hover,
 QCheckBox::indicator:unchecked:hover {
     image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-hover.png);
 }
 
+QGroupBox::indicator:unchecked:pressed,
 QCheckBox::indicator:unchecked:pressed {
     image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-pressed.png);
 }
 
+QGroupBox::indicator:unchecked:disabled,
 QCheckBox::indicator:unchecked:disabled {
     image: url(:/datastudio/image/system/checkbox/chkbox-uchkd-disabled.png);
 }
 
+QGroupBox::indicator:indeterminate,
 QCheckBox::indicator:indeterminate {
     image: url(:/datastudio/image/system/checkbox/chkbox-part-normal.png);
 }
 
+QGroupBox::indicator:indeterminate:hover,
 QCheckBox::indicator:indeterminate:hover {
     image: url(:/datastudio/image/system/checkbox/chkbox-part-hover.png);
 }
 
+QGroupBox::indicator:indeterminate:pressed,
 QCheckBox::indicator:indeterminate:pressed {
     image: url(:/datastudio/image/system/checkbox/chkbox-part-pressed.png);
 }
 
+QGroupBox::indicator:indeterminate:disabled,
 QCheckBox::indicator:indeterminate:disabled {
     image: url(:/datastudio/image/system/checkbox/chkbox-part-disabled.png);
 }
 
+QGroupBox::indicator:checked,
 QCheckBox::indicator:checked {
     image: url(:/datastudio/image/system/checkbox/chkbox-chkd-normal.png);
 }
 
+QGroupBox::indicator:checked:hover,
 QCheckBox::indicator:checked:hover {
     image: url(:/datastudio/image/system/checkbox/chkbox-chkd-hover.png);
 }
 
+QGroupBox::indicator:checked:pressed,
 QCheckBox::indicator:checked:pressed {
     image: url(:/datastudio/image/system/checkbox/chkbox-chkd-pressed.png);
 }
 
+QGroupBox::indicator:checked:disabled,
 QCheckBox::indicator:checked:disabled {
     image: url(:/datastudio/image/system/checkbox/chkbox-chkd-disabled.png);
 }

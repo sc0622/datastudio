@@ -78,6 +78,17 @@ TreeView::TreeView(QWidget *parent)
         //
     });
     jnotify->on("edit.toolbar.tree.save", this, [=](JNEvent &){
+        // check unloaded any protocol
+        if (treeView_->hasUnloadedItem()) {
+            int result = QMessageBox::warning(this, tr("Warning"),
+                                              tr("The protocol is not fully loaded, "
+                                                 "and saving will lose part of the protocol."),
+                                              QMessageBox::Yes | QMessageBox::No);
+            if (result != QMessageBox::Yes) {
+                return;
+            }
+        }
+        //
         Icd::ParserPtr parser = treeView_->parser();
         if (parser) {
             parser->commitModify();

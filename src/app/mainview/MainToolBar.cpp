@@ -193,14 +193,12 @@ void ToolBar::addEditItemAction(const Json::Value &option)
     // save
     QAction *actionSave = addAction(QIcon(":/datastudio/image/toolbar/save.png"),
                                             tr("Save data"));
-    actionSave->setEnabled(false);
     connect(actionSave, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tree.save");
     });
     // save as
     QAction *actionSaveAs = addAction(QIcon(":/datastudio/image/toolbar/save-as.png"),
                                             tr("Save as"));
-    actionSaveAs->setEnabled(false);
     connect(actionSaveAs, &QAction::triggered, this, [=](){
         jnotify->send("edit.toolbar.tree.saveas");
     });

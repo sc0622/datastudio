@@ -12,6 +12,8 @@ class Object;
 typedef std::shared_ptr<Object> ObjectPtr;
 }
 
+class QLabel;
+
 namespace Edit {
 
 class ViewDelegate;
@@ -27,12 +29,13 @@ public:
 
     Icd::ObjectPtr object() const;
 
+    void setTip(const QString &text) const;
+
 signals:
     void currentItemChanged(const QVariant &index);
     void contentChanged(const QVariant &index, const QString &name);
 
 public slots:
-    void onContentChanged(QStandardItem *item);
 
 private:
     bool updateRoot();
@@ -52,28 +55,9 @@ private:
     bool updateComplex();
     bool updateFrame();
 
-    bool saveRoot(QStandardItem *item);
-    bool saveVehicle(QStandardItem *item);
-    bool saveSystem(QStandardItem *item);
-    bool saveTable(QStandardItem *item);
-    bool saveItem(QStandardItem *item);
-    bool saveHead(QStandardItem *item);
-    bool saveCounter(QStandardItem *item);
-    bool saveCheck(QStandardItem *item);
-    bool saveFrameCode(QStandardItem *item);
-    bool saveNumeric(QStandardItem *item);
-    bool saveArray(QStandardItem *item);
-    bool saveBit(QStandardItem *item);
-    bool saveBitMap(QStandardItem *item);
-    bool saveBitValue(QStandardItem *item);
-    bool saveComplex(QStandardItem *item);
-    bool saveFrame(QStandardItem *item);
-
-private:
-    void enableChangedNotify(bool enabled);
-
 private:
     JTableView *tableView_;
+    QLabel *labelTip_;
     ViewDelegate *delegate_;
     Icd::ObjectPtr object_;
 };

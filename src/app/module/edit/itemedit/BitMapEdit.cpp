@@ -14,13 +14,13 @@ BitMapEdit::BitMapEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     spinDefaultValue_->setFillChar(QChar('0'));
     addRow(tr("Default value:"), spinDefaultValue_);
 
-    spinDefaultValue_->setRange(0, (1ULL << bit->bitCount()));
+    spinDefaultValue_->setRange(0, (1ULL << bit->bitCount()) - 1);
 
     connect(this, &BitMapEdit::bitStartChanged, this, [=](){
-        spinDefaultValue_->setRange(0, (1ULL << bitCount()));
+        spinDefaultValue_->setRange(0, (1ULL << bitCount()) - 1);
     });
     connect(this, &BitMapEdit::bitCountChanged, this, [=](int value){
-        spinDefaultValue_->setRange(0, (1ULL << value));
+        spinDefaultValue_->setRange(0, (1ULL << value) - 1);
     });
     connect(spinDefaultValue_, &JLargeSpinBox::valueChanged, this, [=](){
         if (!blocking()) {

@@ -16,7 +16,7 @@ BitEdit::BitEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     addRow("<font color=red>*</font>" + tr("Start of bit:"), spinBitStart_);
 
     spinBitCount_ = new QSpinBox(this);
-    spinBitCount_->setRange(0, 64);
+    spinBitCount_->setRange(1, 64);
     addRow("<font color=red>*</font>" + tr("Count of bit:"), spinBitCount_);
 
     tableSpecs_ = new SpecsTable(bit, this);
@@ -24,6 +24,10 @@ BitEdit::BitEdit(const Icd::BitItemPtr &bit, QWidget *parent)
 
     connect(spinBitStart_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             this, [=](int value){
+        if (value + spinBitCount_->value() > 63) {
+            spinBitCount_->setValue(64 - value);
+        }
+        updateTableSpecs();
         emit bitStartChanged(value);
         if (!blocking()) {
             emit contentChanged();
@@ -31,6 +35,10 @@ BitEdit::BitEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     });
     connect(spinBitCount_, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             this, [=](int value){
+        if (spinBitStart_->value() + value > 63) {
+            spinBitStart_->setValue(64 - value);
+        }
+        updateTableSpecs();
         emit bitCountChanged(value);
         if (!blocking()) {
             emit contentChanged();
@@ -143,6 +151,20 @@ int BitEdit::bitStart() const
 int BitEdit::bitCount() const
 {
     return spinBitCount_->value();
+}
+
+void BitEdit::updateTableSpecs()
+{
+    const Icd::BitItemPtr bit = this->bit();
+    if (!bit) {
+        return;
+    }
+
+    if (bit->type() != Icd::ItemBitMap) {
+        return;
+    }
+
+    tableSpecs_->updateContent(spinBitStart_->value(), spinBitCount_->value());
 }
 
 }

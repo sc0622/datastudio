@@ -43,6 +43,8 @@ protected:
     int bitStart() const;
     int bitCount() const;
 
+    void updateTableSpecs();
+
 private:
     QSpinBox *spinBitStart_;
     QSpinBox *spinBitCount_;

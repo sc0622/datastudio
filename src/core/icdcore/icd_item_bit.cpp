@@ -188,6 +188,12 @@ double BitItem::dataFromBuffer(const char *buffer) const
     return value;
 }
 
+bool BitItem::testBitFromBuffer(int offset, const char *buffer) const
+{
+    const uint32_t data = (uint32_t)this->dataFromBuffer(buffer);
+    return ((data & (1ull << offset)) != 0);
+}
+
 int BitItem::bitStart() const
 {
     return d->bitStart;

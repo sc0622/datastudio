@@ -315,6 +315,44 @@ void SpecsTable::saveContent()
     }
 }
 
+void SpecsTable::updateContent(int bitStart, int bitCount)
+{
+    if (item_->type() != Icd::ItemBitMap) {
+        return;
+    }
+
+    const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item_);
+    if (!bit) {
+        return;
+    }
+
+    lock();
+
+    // rows
+    tableView_->setRowCount(bitCount);
+    for (int i = 0; i < bitCount; ++i) {
+        tableView_->setItemData(i, 0, bitStart + i);
+    }
+    // specs
+    const auto &specs = bit->specs();
+    for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
+        const quint32 index = quint32(citer->first);
+        if (index >= bitCount) {
+            continue;
+        }
+        const QString spec = QString::fromStdString(citer->second).trimmed();
+        const QString desc = spec.section(':', 1).trimmed();
+        // name
+        tableView_->setItemData(int(index), 1, spec.section(':', 0, 0).trimmed());
+        // desc - 0
+        tableView_->setItemData(int(index), 2, desc.section(';', 0, 0).trimmed());
+        // desc - 1
+        tableView_->setItemData(int(index), 3, desc.section(';', 1).trimmed());
+    }
+
+    unlock();
+}
+
 void SpecsTable::onAdd()
 {
     if (item_->type() == Icd::ItemBitMap) {

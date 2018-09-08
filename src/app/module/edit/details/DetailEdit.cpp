@@ -48,7 +48,10 @@ DetailEdit::DetailEdit(QWidget *parent)
             return;
         }
         setButtonsEnabled(false);
-        //TODO notify
+        // notify
+        QVariantList args;
+        args.append("apply");
+        //jnotify->send("edit.detail.changed", args);
     });
     connect(buttonCancel_, &QPushButton::clicked, this, [=](){
         if (!objectEdit_ || isHidden()) {
@@ -57,6 +60,11 @@ DetailEdit::DetailEdit(QWidget *parent)
         if (newObject_) {
             resetView();
             newObject_.reset();
+            // notify
+            QVariantList args;
+            args.append("cancel");
+            args.append("add");
+            //jnotify->send("edit.detail.changed", args);
         } else {
             objectEdit_->restoreContent();
         }
