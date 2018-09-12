@@ -61,6 +61,15 @@ public:
     };
     Q_DECLARE_FLAGS(ShowAttributes, ShowAttribute)
 
+    enum EditAction {
+        AddAction,
+        InsertAboveAction,
+        InsertBelowAction,
+        RemoveAction,
+        CleanAction
+    };
+    Q_ENUM(EditAction)
+
     explicit JProtoTreeView(QWidget *parent = nullptr);
     virtual ~JProtoTreeView();
 
@@ -137,6 +146,10 @@ signals:
     void runningChanged(bool value);
     void exportAnalyseData(QStandardItem *item, const QString &filePath,
                            bool hasTimeFormat, int headerSize);
+
+    // {{ for editor
+    void editItemTriggered(QStandardItem *item, EditAction action, const QVariant &data = QVariant());
+    // }}
 
 public slots:
     void setRunning(bool value);

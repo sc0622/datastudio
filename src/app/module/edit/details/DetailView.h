@@ -27,6 +27,7 @@ public:
     bool init();
 
     void updateView(QStandardItem *item);
+    void triggerEdit(QStandardItem *item, int editAction, const QVariant &data);
 
 signals:
 

@@ -1263,3 +1263,9 @@ Icd--JProtoTreeViewPrivate {
 JChart--Chart {
     qproperty-zoomerColor: blue;
 }
+
+/*QLabel[_tip_="true"]*/
+
+QLabel[_tip_="true"] {
+    background: #007acc;
+}

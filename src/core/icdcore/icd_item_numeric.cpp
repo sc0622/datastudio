@@ -311,6 +311,25 @@ std::string NumericItem::specAt(double key) const
     }
 }
 
+double NumericItem::keyOf(const std::string &info, bool *ok)
+{
+    std::map<double, std::string>::const_iterator citer = d->specs.cbegin();
+    for (; citer != d->specs.cend(); ++citer) {
+        if (citer->second == info) {
+            if (ok) {
+                *ok = true;
+            }
+            return citer->first;
+        }
+    }
+
+    if (ok) {
+        *ok = false;
+    }
+
+    return 0.0;
+}
+
 void NumericItem::removeSpec(double key)
 {
     d->specs.erase(key);

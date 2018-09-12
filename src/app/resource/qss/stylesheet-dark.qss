@@ -312,7 +312,6 @@ QMenu::indicator:exclusive:checked:selected {
     image: url(:/datastudio/image/system/radiobutton/radiobutton_checked_hover.png);
 }
 */
-
 /** QToolTip **/
 
 QToolTip {
@@ -1366,5 +1365,5 @@ JChart--Chart {
 /* QLabel[_tip_="true"] */
 
 QLabel[_tip_="true"] {
-    background: steelblue;
+    background: #364f36;
 }

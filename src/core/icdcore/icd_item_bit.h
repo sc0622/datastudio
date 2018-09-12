@@ -46,6 +46,7 @@ public:
     void removeSpec(icd_uint64 key);
     void clearSpec();
     std::string specAt(icd_uint64 key) const;
+    icd_uint64 keyOf(const std::string &info, bool *ok = nullptr);
     std::string nameAt(int offset) const;
     static std::string nameOf(const std::string &spec);
     std::string descAt(int offset) const;

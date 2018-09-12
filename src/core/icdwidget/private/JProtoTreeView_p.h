@@ -255,6 +255,9 @@ private:
     static QString markDomain(QStandardItem *item);
     static bool loadSystem(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
 
+    //
+    QMenu *createAddItemMenu(QStandardItem *item, QAction *action, JProtoTreeView::EditAction editAction);
+
 private:
     J_DECLARE_PUBLIC(JProtoTreeView)
     JSearchEdit *searchEdit_;

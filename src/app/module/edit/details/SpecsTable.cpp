@@ -368,7 +368,7 @@ void SpecsTable::onAdd()
         tableView_->setItemData(rowCount, 0, 0);
     }
     tableView_->clearSelection();
-    tableView_->setCurrentCell(rowCount, 1);
+    tableView_->setCurrentCell(rowCount, 0);
     unlock();
 
     emit contentChanged();

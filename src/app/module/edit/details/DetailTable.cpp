@@ -7,12 +7,14 @@ namespace Edit {
 DetailTable::DetailTable(QWidget *parent)
     : QWidget(parent)
     , object_(nullptr)
+    , editing_(false)
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
     tableView_ = new JTableView(this);
+    tableView_->setContextMenuPolicy(Qt::ActionsContextMenu);
     delegate_ = new ViewDelegate(tableView_);
     tableView_->setItemDelegate(delegate_);
     vertLayoutMain->addWidget(tableView_);
@@ -20,9 +22,12 @@ DetailTable::DetailTable(QWidget *parent)
     labelTip_ = new QLabel(this);
     labelTip_->setProperty("_tip_", true);
     labelTip_->setFixedHeight(22);
+    labelTip_->setAlignment(Qt::AlignCenter);
     labelTip_->hide();
     vertLayoutMain->addWidget(labelTip_);
 
+    connect(tableView_, &JTableView::customContextMenuRequested,
+            this, &DetailTable::showContextMenu);
     connect(tableView_, &JTableView::currentCellChanged, this,
             [=](int currentRow, int currentColumn, int previousRow, int previuosColumn){
         Q_UNUSED(currentColumn);
@@ -110,6 +115,59 @@ void DetailTable::setTip(const QString &text) const
 {
     labelTip_->setText(text);
     labelTip_->setVisible(!text.isEmpty());
+}
+
+bool DetailTable::isEditing() const
+{
+    return editing_;
+}
+
+void DetailTable::setEditing(bool editing)
+{
+    editing_ = editing;
+}
+
+void DetailTable::showContextMenu(const QPoint &pos)
+{
+    if (editing_) {
+        return;
+    }
+
+    QStandardItem *selectedItem = tableView_->itemAt(pos);
+
+    QMenu menu(this);
+
+    // append
+    // remove/copy
+    if (selectedItem) {
+        // remove
+        QAction *actionRemove = menu.addAction(QIcon(":icdwidget/tree/remove.png"),
+                                               tr("Remove"));
+        connect(actionRemove, &QAction::triggered, this, [=](){
+            //
+        });
+        // copy
+    }
+    // past
+    if (false) {
+
+    }
+    // insert above
+    // insert below
+    // clean
+    if (tableView_->rowCount() > 0) {
+        QAction *actionClean = menu.addAction(QIcon(":/icdwidget/tree/clean.png"),
+                                              tr("Clean"));
+        connect(actionClean, &QAction::triggered, this, [=](){
+            //
+        });
+    }
+
+    if (menu.isEmpty()) {
+        return;
+    }
+
+    menu.exec(pos);
 }
 
 bool DetailTable::updateRoot()
@@ -625,5 +683,6 @@ bool DetailTable::updateFrame()
 
     return true;
 }
+
 
 }

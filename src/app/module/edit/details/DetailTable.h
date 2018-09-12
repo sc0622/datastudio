@@ -31,11 +31,14 @@ public:
 
     void setTip(const QString &text) const;
 
+    bool isEditing() const;
+    void setEditing(bool editing);
+
 signals:
     void currentItemChanged(const QVariant &index);
-    void contentChanged(const QVariant &index, const QString &name);
 
 public slots:
+    void showContextMenu(const QPoint &pos);
 
 private:
     bool updateRoot();
@@ -57,9 +60,11 @@ private:
 
 private:
     JTableView *tableView_;
+    QList<QAction*> actions_;
     QLabel *labelTip_;
     ViewDelegate *delegate_;
     Icd::ObjectPtr object_;
+    bool editing_;
 };
 
 //// private

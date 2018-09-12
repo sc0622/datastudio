@@ -28,6 +28,16 @@ SetView::SetView(QWidget *parent)
         onTreeCurrentChanged(jVariantFromVoid<QStandardItem>(args.at(0)),
                              jVariantFromVoid<QStandardItem>(args.at(1)));
     });
+    jnotify->on("edit.tree.edit.triggered", this, [=](JNEvent &event){
+        const QVariantList args = event.argument().toList();
+        if (args.size() != 3) {
+            return;
+        }
+        QStandardItem *item = jVariantFromVoid<QStandardItem>(args[0]);
+        const int editAction = args[1].toInt();
+        const QVariant &data = args[2].data();
+        onEditTriggered(item, editAction, data);
+    });
 }
 
 SetView::~SetView()
@@ -48,6 +58,11 @@ void SetView::onTreeCurrentChanged(QStandardItem *current, QStandardItem *previo
 {
     Q_UNUSED(previous);
     detailView_->updateView(current);
+}
+
+void SetView::onEditTriggered(QStandardItem *item, int editAction, const QVariant &data)
+{
+    detailView_->triggerEdit(item, editAction, data);
 }
 
 }

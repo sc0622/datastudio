@@ -48,6 +48,18 @@ TreeView::TreeView(QWidget *parent)
         args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("edit.tree.item.unloaded", args);
     });
+    connect(treeView_, &Icd::JProtoTreeView::editItemTriggered, this,
+            [=](QStandardItem *item, Icd::JProtoTreeView::EditAction action, const QVariant &data){
+        if (!item) {
+            return;
+        }
+        //
+        QVariantList args;
+        args.append(qVariantFromValue(static_cast<void*>(item)));   // item
+        args.append(int(action)); // EditAction
+        args.append(data);  // data
+        jnotify->send("edit.tree.edit.triggered", args);
+    });
 
     jnotify->on("edit.parser.changed", this, [=](JNEvent &){
         if (!updateParser()) {
@@ -82,17 +94,30 @@ TreeView::TreeView(QWidget *parent)
         if (treeView_->hasUnloadedItem()) {
             int result = QMessageBox::warning(this, tr("Warning"),
                                               tr("The protocol is not fully loaded, "
-                                                 "and saving will lose part of the protocol."),
+                                                 "and saving will lose part of the protocol.\n"
+                                                 "Continue saving?"),
                                               QMessageBox::Yes | QMessageBox::No);
             if (result != QMessageBox::Yes) {
                 return;
             }
         }
         //
-        Icd::ParserPtr parser = treeView_->parser();
-        if (parser) {
-            parser->commitModify();
+        const Icd::RootPtr root = treeView_->protoRoot();
+        if (!root) {
+            return;
         }
+        //
+        Icd::ParserPtr parser = treeView_->parser();
+        if (!parser) {
+            Q_ASSERT(false);
+            return;
+        }
+        //
+        if (!parser->save(root)) {
+            QMessageBox::warning(this, tr("Warning"), tr("Protocol is saved failed!"));
+            return;
+        }
+        QMessageBox::information(this, tr("Notice"), tr("Protocol is saved successfully!"));
     });
     jnotify->on("edit.toolbar.tree.saveas", this, [=](JNEvent &){
         //

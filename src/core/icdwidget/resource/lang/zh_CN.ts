@@ -200,11 +200,95 @@
     </message>
     <message>
         <source>Insert item above</source>
-        <translation>在上方插入行</translation>
+        <translation>在上方插入项</translation>
     </message>
     <message>
         <source>Insert item below</source>
-        <translation>在下方插入行</translation>
+        <translation>在下方插入项</translation>
+    </message>
+    <message>
+        <source>Add vehicle</source>
+        <translation>增加机型</translation>
+    </message>
+    <message>
+        <source>Clear vehicle</source>
+        <translation>清空机型</translation>
+    </message>
+    <message>
+        <source>Add system</source>
+        <translation>增加系统</translation>
+    </message>
+    <message>
+        <source>Remove system</source>
+        <translation>删除系统</translation>
+    </message>
+    <message>
+        <source>Clear system</source>
+        <translation>清空系统</translation>
+    </message>
+    <message>
+        <source>Insert vehicle above</source>
+        <translation>在上方插入机型</translation>
+    </message>
+    <message>
+        <source>Insert vehicle below</source>
+        <translation>在下方插入机型</translation>
+    </message>
+    <message>
+        <source>Add table</source>
+        <translation>增加表项</translation>
+    </message>
+    <message>
+        <source>Remove table</source>
+        <translation>删除表项</translation>
+    </message>
+    <message>
+        <source>Clear table</source>
+        <translation>清空表项</translation>
+    </message>
+    <message>
+        <source>Insert system above</source>
+        <translation>在上方插入系统</translation>
+    </message>
+    <message>
+        <source>Insert system below</source>
+        <translation>在下方插入系统</translation>
+    </message>
+    <message>
+        <source>Add item</source>
+        <translation>增加数据项</translation>
+    </message>
+    <message>
+        <source>Clear item</source>
+        <translation>清空数据项</translation>
+    </message>
+    <message>
+        <source>Insert table above</source>
+        <translation>在上方插入表项</translation>
+    </message>
+    <message>
+        <source>Insert table below</source>
+        <translation>在下方插入表项</translation>
+    </message>
+    <message>
+        <source>Remove vehicle</source>
+        <translation>删除机型</translation>
+    </message>
+    <message>
+        <source>Add %1</source>
+        <translation>增加%1</translation>
+    </message>
+    <message>
+        <source>table</source>
+        <translation>表项</translation>
+    </message>
+    <message>
+        <source>item</source>
+        <translation>数据项</translation>
+    </message>
+    <message>
+        <source>Clear %1</source>
+        <translation>清空%1</translation>
     </message>
 </context>
 <context>

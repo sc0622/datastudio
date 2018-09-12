@@ -69,6 +69,13 @@ void DetailView::updateView(QStandardItem *item)
     detailEdit_->updateView(handle.ptr);
 }
 
+void DetailView::triggerEdit(QStandardItem *item, int editAction, const QVariant &data)
+{
+    if (!item) {
+        return;
+    }
+}
+
 void DetailView::onCurrentItemChanged(const QVariant &index)
 {
     detailEdit_->updateView(detailTable_->object(), index);

@@ -23,6 +23,7 @@ signals:
 
 public slots:
     void onTreeCurrentChanged(QStandardItem *current, QStandardItem *previous);
+    void onEditTriggered(QStandardItem *item, int editAction, const QVariant &data);
 
 protected:
 

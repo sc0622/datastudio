@@ -71,6 +71,7 @@ public:
     const std::map<double, std::string> &specs() const;
     void addSpec(double key, const std::string info);
     std::string specAt(double key) const;
+    double keyOf(const std::string &info, bool *ok = nullptr);
     void removeSpec(double key);
     void clearSpec();
 

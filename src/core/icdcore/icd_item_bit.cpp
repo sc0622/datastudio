@@ -280,6 +280,25 @@ std::string BitItem::specAt(icd_uint64 key) const
     }
 }
 
+icd_uint64 BitItem::keyOf(const std::string &info, bool *ok)
+{
+    std::map<icd_uint64, std::string>::const_iterator citer = d->specs.cbegin();
+    for (; citer != d->specs.cend(); ++citer) {
+        if (citer->second == info) {
+            if (ok) {
+                *ok = true;
+            }
+            return citer->first;
+        }
+    }
+
+    if (ok) {
+        *ok = false;
+    }
+
+    return icd_uint64(-1);
+}
+
 std::string BitItem::nameAt(int offset) const
 {
     const std::string spec = BitItem::nameOf(specAt(offset));
