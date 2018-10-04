@@ -120,7 +120,7 @@ int JCmdModelSim::currentWorkMode() const
 
 QQmlListProperty<icdmeta::JCmdChannelSim> JCmdModelSim::channels()
 {
-    return QQmlListProperty<icdmeta::JCmdChannelSim>(this, 0,
+    return QQmlListProperty<icdmeta::JCmdChannelSim>(this, nullptr,
                                                      &JCmdModelSimPrivate::channelsCount,
                                                      &JCmdModelSimPrivate::channelsAt);
 }
@@ -134,7 +134,7 @@ icdmeta::JCmdChannelSim *JCmdModelSim::findItem(const QString &identity) const
         }
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void JCmdModelSim::setWorkMode(int value)
@@ -199,12 +199,14 @@ bool JCmdModelSim::open()
         channel->reset();
     }
 
-    auto future = QtConcurrent::mapped(d->channels, d->mapTask);
-    QObject::connect(&d->watcher, &QFutureWatcher<QSharedPointer<JCmdChannelSim> >::finished,
-                     this, [=](){
-        qDebug() << "command.simulate result:" << d->watcher.result();
-    });
-    d->watcher.setFuture(future);
+    if (!d->channels.isEmpty()) {
+        auto future = QtConcurrent::mapped(d->channels, d->mapTask);
+        QObject::connect(&d->watcher, &QFutureWatcher<QSharedPointer<JCmdChannelSim> >::finished,
+                         this, [=](){
+            qDebug() << "command.simulate result:" << d->watcher.result();
+        });
+        d->watcher.setFuture(future);
+    }
 
     return true;
 }

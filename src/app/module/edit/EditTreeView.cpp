@@ -41,6 +41,15 @@ TreeView::TreeView(QWidget *parent)
         args.append(qVariantFromValue(static_cast<void*>(previous)));
         jnotify->send("edit.tree.item.currentchanged", args);
     });
+    connect(treeView_, &Icd::JProtoTreeView::itemUpdated, this,
+            [=](QStandardItem *item, bool unloaded, bool removed){
+        QVariantList args;
+        args.append(qVariantFromValue(static_cast<void*>(item)));
+        args.append(unloaded);
+        args.append(removed);
+        args.append(qVariantFromValue(static_cast<void*>(treeView_->currentItem())));
+        jnotify->send("edit.tree.item.updated", args);
+    });
     connect(treeView_, &Icd::JProtoTreeView::itemUnloaded, this,
             [=](QStandardItem *item, QStandardItem *tableItem){
         QVariantList args;
@@ -48,17 +57,16 @@ TreeView::TreeView(QWidget *parent)
         args.append(qVariantFromValue(static_cast<void*>(tableItem)));
         jnotify->send("edit.tree.item.unloaded", args);
     });
-    connect(treeView_, &Icd::JProtoTreeView::editItemTriggered, this,
-            [=](QStandardItem *item, Icd::JProtoTreeView::EditAction action, const QVariant &data){
+    connect(treeView_, &Icd::JProtoTreeView::requestAdd, this,
+            [=](QStandardItem *item, const QVariant &data){
         if (!item) {
             return;
         }
         //
         QVariantList args;
         args.append(qVariantFromValue(static_cast<void*>(item)));   // item
-        args.append(int(action)); // EditAction
         args.append(data);  // data
-        jnotify->send("edit.tree.edit.triggered", args);
+        jnotify->send("edit.tree.request.add", args);
     });
 
     jnotify->on("edit.parser.changed", this, [=](JNEvent &){
@@ -67,8 +75,7 @@ TreeView::TreeView(QWidget *parent)
         }
     });
     jnotify->on("edit.parser.inst", this, [=](JNEvent &event){
-        Icd::JParserPtrHandle *handle =
-                jVariantFromVoid<Icd::JParserPtrHandle>(event.argument());
+        Icd::JParserPtrHandle *handle = jVariantFromVoid<Icd::JParserPtrHandle>(event.argument());
         if (!handle) {
             return;
         }
@@ -90,44 +97,16 @@ TreeView::TreeView(QWidget *parent)
         //
     });
     jnotify->on("edit.toolbar.tree.save", this, [=](JNEvent &){
-        // check unloaded any protocol
-        if (treeView_->hasUnloadedItem()) {
-            int result = QMessageBox::warning(this, tr("Warning"),
-                                              tr("The protocol is not fully loaded, "
-                                                 "and saving will lose part of the protocol.\n"
-                                                 "Continue saving?"),
-                                              QMessageBox::Yes | QMessageBox::No);
-            if (result != QMessageBox::Yes) {
-                return;
-            }
-        }
-        //
-        const Icd::RootPtr root = treeView_->protoRoot();
-        if (!root) {
-            return;
-        }
-        //
-        Icd::ParserPtr parser = treeView_->parser();
-        if (!parser) {
-            Q_ASSERT(false);
-            return;
-        }
-        //
-        if (!parser->save(root)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Protocol is saved failed!"));
-            return;
-        }
-        QMessageBox::information(this, tr("Notice"), tr("Protocol is saved successfully!"));
+        save(false);
     });
     jnotify->on("edit.toolbar.tree.saveas", this, [=](JNEvent &){
-        //
+        save(true);
     });
     jnotify->on("edit.toolbar.window.tree", this, [=](JNEvent &event){
         setVisible(event.argument().toBool());
     });
     jnotify->on("edit.tree.current.object", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
-        Q_ASSERT(args.size() == 2);
         if (args.size() != 2) {
             return;
         }
@@ -135,31 +114,44 @@ TreeView::TreeView(QWidget *parent)
         if (!root) {
             return;
         }
-        Icd::JHandleScope<Icd::Object> *handle =
-                jVariantFromVoid<Icd::JHandleScope<Icd::Object> >(args[0]);
-        if (!handle) {
+        Icd::ObjectPtr *objectPtr = jVariantFromVoid<Icd::ObjectPtr>(args[0]);
+        if (!objectPtr) {
             return;
         }
-        const QString domain = args[1].toString();
-        if (domain.isEmpty()) {
-            handle->ptr = root;
-        } else {
-            const Icd::ObjectPtr object = root->findByDomain(domain.toStdString());
-            if (!object) {
-                return;
-            }
-            handle->ptr = object;
+        QStandardItem *item = jVariantFromVoid<QStandardItem>(args[1]);
+        if (!item) {
+            return;
         }
+        *objectPtr = treeView_->findObject(item);
         event.setReturnValue(true);
+    });
+    jnotify->on("edit.detail.changed", this, [=](JNEvent &event){
+        const QVariantList args = event.argument().toList();
+        if (args.size() != 4) {
+            return;
+        }
+        const QString action = args[0].toString();
+        const int currentRow = args[1].toInt();
+        Icd::ObjectPtr *object = jVariantFromVoid<Icd::ObjectPtr>(args[2]);
+        const QVariant data = args[3];
+        //
+        if (action == "insert") {
+            treeView_->insertRow(currentRow, *object, data);
+        } else if (action == "update") {
+            treeView_->updateRow(currentRow, *object, data);
+        } else if (action == "apply") {
+            treeView_->applyInsert(*object);
+        } else if (action == "cancel") {
+            treeView_->cancelInsert();
+        } else if (action == "remove") {
+            treeView_->removeRow(currentRow, *object, data);
+        }
     });
 }
 
 TreeView::~TreeView()
 {
-    Icd::ParserPtr parser = treeView_->parser();
-    if (parser) {
-        parser->endModify();
-    }
+
 }
 
 bool TreeView::init()
@@ -202,12 +194,61 @@ bool TreeView::updateParser()
         return false;
     }
 
-    //
-    parser->beginModify();
-
     treeView_->setParser(parser);
 
     return treeView_->loadData();
+}
+
+void TreeView::save(bool saveAs)
+{
+    // check unloaded any protocol
+    if (treeView_->hasUnloadedItem()) {
+        int result = QMessageBox::warning(this, tr("Warning"),
+                                          tr("The protocol is not fully loaded, "
+                                             "and saving will lose part of the protocol.\n"
+                                             "Continue saving?"),
+                                          QMessageBox::Yes | QMessageBox::No);
+        if (result != QMessageBox::Yes) {
+            return;
+        }
+    }
+
+    Icd::ParserPtr parser;
+
+    if (saveAs) {
+        QString selected("JSON file (*.json)");
+        const QString filePath = QFileDialog::getSaveFileName(
+                    this, tr("Save as (Notice: will save you selected item and children)"),
+                    QStandardPaths::locate(QStandardPaths::DesktopLocation, QString(), QStandardPaths::LocateDirectory)
+                    + "untitled.json",
+                    QString("JSON file (*.json);;XML file (*.xml)"), &selected);
+        if (filePath.isEmpty()) {
+            return;
+        }
+        Json::Value config;
+        config["sourceType"] = "file";
+        config["filePath"] = filePath.toStdString();
+        parser = Icd::Parser::create(config);
+    } else {
+        parser = treeView_->parser();
+    }
+
+    if (!parser) {
+        Q_ASSERT(false);
+        return;
+    }
+
+    const Icd::RootPtr root = treeView_->protoRoot();
+    if (!root) {
+        return;
+    }
+
+    if (!parser->save(root)) {
+        QMessageBox::warning(this, tr("Warning"), tr("Protocol is saved failed!"));
+        return;
+    }
+
+    QMessageBox::information(this, tr("Notice"), tr("Protocol is saved successfully!"));
 }
 
 }

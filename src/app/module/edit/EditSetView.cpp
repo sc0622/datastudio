@@ -28,15 +28,24 @@ SetView::SetView(QWidget *parent)
         onTreeCurrentChanged(jVariantFromVoid<QStandardItem>(args.at(0)),
                              jVariantFromVoid<QStandardItem>(args.at(1)));
     });
-    jnotify->on("edit.tree.edit.triggered", this, [=](JNEvent &event){
+    jnotify->on("edit.tree.item.updated", this, [=](JNEvent &event){
+        QVariantList args = event.argument().toList();
+        if (args.count() != 4) {
+            return;
+        }
+        onTreeItemUpdated(jVariantFromVoid<QStandardItem>(args.at(0)),
+                          args.at(1).toBool(),
+                          args.at(2).toBool(),
+                          jVariantFromVoid<QStandardItem>(args.at(3)));
+    });
+    jnotify->on("edit.tree.request.add", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
-        if (args.size() != 3) {
+        if (args.size() != 2) {
             return;
         }
         QStandardItem *item = jVariantFromVoid<QStandardItem>(args[0]);
-        const int editAction = args[1].toInt();
-        const QVariant &data = args[2].data();
-        onEditTriggered(item, editAction, data);
+        const QVariant &data = args[1].data();
+        onRequestAdd(item, data);
     });
 }
 
@@ -60,9 +69,21 @@ void SetView::onTreeCurrentChanged(QStandardItem *current, QStandardItem *previo
     detailView_->updateView(current);
 }
 
-void SetView::onEditTriggered(QStandardItem *item, int editAction, const QVariant &data)
+void SetView::onTreeItemUpdated(QStandardItem *item, bool unloaded, bool removed, QStandardItem *current)
 {
-    detailView_->triggerEdit(item, editAction, data);
+    Q_UNUSED(unloaded);
+    if (current) {
+        if (removed) {
+            detailView_->removeRow(item);
+        } else {
+            detailView_->updateView(item);
+        }
+    }
+}
+
+void SetView::onRequestAdd(QStandardItem *item, const QVariant &data)
+{
+    detailView_->requestAdd(item, data);
 }
 
 }

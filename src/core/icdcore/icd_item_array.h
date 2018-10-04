@@ -31,7 +31,9 @@ public:
     explicit ArrayItem(Object *parent = nullptr);
     explicit ArrayItem(const std::string &id, Object *parent = nullptr);
     ArrayItem(const ArrayItem &other);
-    ~ArrayItem();
+    ~ArrayItem() override;
+
+    int rtti() const override;
 
     ArrayType arrayType() const;
     void setArrayType(ArrayType type);

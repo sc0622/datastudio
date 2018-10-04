@@ -28,7 +28,9 @@ public:
     explicit FrameCodeItem(Object *parent = nullptr);
     explicit FrameCodeItem(const std::string &id, Object *parent = nullptr);
     FrameCodeItem(const FrameCodeItem &other);
-    ~FrameCodeItem();
+    ~FrameCodeItem() override;
+
+    int rtti() const override;
 
     FrameCodeType frameCodeType() const;
     void setFrameCodeType(FrameCodeType type);

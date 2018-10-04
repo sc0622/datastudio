@@ -29,7 +29,9 @@ public:
     explicit CheckItem(Object *parent = nullptr);
     explicit CheckItem(const std::string &id, Object *parent = nullptr);
     CheckItem(const CheckItem &other);
-    ~CheckItem();
+    ~CheckItem() override;
+
+    int rtti() const override;
 
     bool isValid() const;
 

@@ -57,18 +57,7 @@ void IcdWidget::registerSingletonRelease(SingletonReleaseCallback callback)
 
 QStringList IcdWidget::protoItemTypes()
 {
-    QStringList items;
-    items << tr("Header");
-    items << tr("Counter");
-    items << tr("Check");
-    items << tr("FrameCode");
-    items << tr("Numeric");
-    items << tr("Array");
-    items << tr("BitMap");
-    items << tr("BitValue");
-    items << tr("Complex");
-    items << tr("Frame");
-    return items;
+    return protoItemMapTypes().values();
 }
 
 QMap<int, QString> IcdWidget::protoItemMapTypes()

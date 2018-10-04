@@ -43,6 +43,11 @@ LimitItem::~LimitItem()
     delete d;
 }
 
+int LimitItem::rtti() const
+{
+    return ObjectLimit;
+}
+
 double LimitItem::minimum() const
 {
     return d->minimum;

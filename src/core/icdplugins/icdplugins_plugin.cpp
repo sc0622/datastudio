@@ -15,13 +15,12 @@ static int registerQmlType(const char *path, const char *uri, const char *typeNa
 IcdPluginsPlugin::IcdPluginsPlugin(QObject *parent)
     : QQmlExtensionPlugin(parent)
 {
-    //Q_INIT_RESOURCE(resource);
     Q_INIT_RESOURCE(icdplugins);
+    // translators
 }
 
 IcdPluginsPlugin::~IcdPluginsPlugin()
 {
-    //Q_CLEANUP_RESOURCE(resource);
     Q_CLEANUP_RESOURCE(icdplugins);
 }
 
@@ -29,7 +28,7 @@ void IcdPluginsPlugin::registerTypes(const char *uri)
 {
     // @uri Icd.Core
     IcdCore::registerQmlType();
-    // utilityb
+    // utility
     registerQmlType("utility/CircualProgress.qml", uri, "CircualProgress");
     registerQmlType("utility/DataChannelButton.qml", uri, "DataChannelButton");
     registerQmlType("utility/HScrollBar.qml", uri, "HScrollBar");

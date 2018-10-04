@@ -27,7 +27,9 @@ public:
     explicit CounterItem(Object *parent = nullptr);
     explicit CounterItem(const std::string &id, Object *parent = nullptr);
     CounterItem(const CounterItem &other);
-    virtual ~CounterItem();
+    ~CounterItem() override;
+
+    int rtti() const override;
 
     CounterType counterType() const;
     void setCounterType(CounterType type);

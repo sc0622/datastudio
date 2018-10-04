@@ -50,6 +50,11 @@ ArrayItem::~ArrayItem()
     delete d;
 }
 
+int ArrayItem::rtti() const
+{
+    return ObjectArray;
+}
+
 ArrayType ArrayItem::arrayType() const
 {
     return d->arrayType;

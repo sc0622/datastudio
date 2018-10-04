@@ -38,7 +38,7 @@ bool UdpChannelPrivate::open()
     d_socket = new QUdpSocket(this);
     connect(d_socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     if (!d_buffer) {
-        d_buffer = new JCircularBuffer(20480);
+        d_buffer = new JCircularBuffer(10240);
     }
 
     // bind

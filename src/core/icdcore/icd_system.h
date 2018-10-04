@@ -19,10 +19,12 @@ typedef std::shared_ptr<Vehicle> VehiclePtr;
 class ICDCORE_EXPORT System : public Object
 {
 public:
-    explicit System(Vehicle *parent = nullptr);
-    explicit System(const std::string &id, Vehicle *parent = nullptr);
+    explicit System(Object *parent = nullptr);
+    explicit System(const std::string &id, Object *parent = nullptr);
     System(const System &other);
-    ~System();
+    ~System() override;
+
+    int rtti() const override;
 
     TablePtrArray allTable();
     const TablePtrArray &allTable() const;
@@ -33,6 +35,7 @@ public:
     void clearTable();
     int tableCount() const;
     TablePtr tableAt(int index) const;
+    TablePtr tableByName(const std::string &name) const;
     TablePtr tableByMark(const std::string &mark) const;
     bool isEmpty() const;
 
@@ -46,6 +49,11 @@ public:
 
     Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                                 bool ignoreComplex = true) const override;
+    bool hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    ObjectPtr childAt(icd_uint64 index) const override;
+    ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    void removeChild(icd_uint64 index) override;
     void clearChildren() override;
 
     // Serializable interface

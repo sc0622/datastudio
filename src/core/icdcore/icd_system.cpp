@@ -18,14 +18,14 @@ private:
     TablePtrArray tables;
 };
 
-System::System(Vehicle *parent)
+System::System(Object *parent)
     : Object(ObjectSystem, parent)
     , d(new SystemData())
 {
 
 }
 
-System::System(const std::string &id, Vehicle *parent)
+System::System(const std::string &id, Object *parent)
     : Object(id, ObjectSystem, parent)
     , d(new SystemData())
 {
@@ -42,6 +42,11 @@ System::System(const System &other)
 System::~System()
 {
     delete d;
+}
+
+int System::rtti() const
+{
+    return ObjectSystem;
 }
 
 TablePtrArray System::allTable()
@@ -62,10 +67,7 @@ void System::appendTable(const TablePtr &table)
 
 void System::insertTable(int index, const TablePtr &table)
 {
-    if (index < 0 || index >= static_cast<int>(d->tables.size())) {
-        return;
-    }
-
+    index = jBound(0, index, int(d->tables.size()));
     table->setParent(this);
     d->tables.insert(d->tables.cbegin() + index, table);
 }
@@ -108,6 +110,19 @@ TablePtr System::tableAt(int index) const
     }
 
     return d->tables.at(static_cast<size_t>(index));
+}
+
+TablePtr System::tableByName(const std::string &name) const
+{
+    for (TablePtrArray::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.cend(); ++citer) {
+        const TablePtr &table = *citer;
+        if(table->name() == name) {
+            return table;
+        }
+    }
+
+    return TablePtr();
 }
 
 TablePtr System::tableByMark(const std::string &mark) const
@@ -183,7 +198,7 @@ System &System::operator =(const System &other)
         return *this;
     }
     Object::operator =(other);
-    d->tables.clear();
+    d->tables = other.allTable();
     return *this;
 }
 
@@ -219,6 +234,69 @@ ObjectPtr System::findByDomain(const std::string &domain, int domainType,
     }
 
     return nullptr;
+}
+
+bool System::hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude) const
+{
+    for (TablePtrArray::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.cend(); ++citer) {
+        const TablePtr &table = *citer;
+        if (exclude && table->id() == exclude->id()) {
+            continue;
+        }
+        if (table->name() == name) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool System::hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude) const
+{
+    for (TablePtrArray::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.cend(); ++citer) {
+        const TablePtr &table = *citer;
+        if (exclude && table->id() == exclude->id()) {
+            continue;
+        }
+        if (table->mark() == mark) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+ObjectPtr System::childAt(icd_uint64 index) const
+{
+    return tableAt(int(index));
+}
+
+ObjectPtr System::replaceChild(icd_uint64 index, ObjectPtr &other)
+{
+    if (index >= d->tables.size()) {
+        return ObjectPtr();
+    }
+
+    if (!other || other->objectType() != ObjectTable) {
+        return ObjectPtr();
+    }
+
+    TablePtrArray::iterator iter = d->tables.begin() + int(index);
+    TablePtr old = *iter;
+    *iter = JHandlePtrCast<Table>(other);
+
+    return old;
+}
+
+void System::removeChild(icd_uint64 index)
+{
+    if (index >= d->tables.size()) {
+        return;
+    }
+
+    d->tables.erase(d->tables.cbegin() + int(index));
 }
 
 void System::clearChildren()

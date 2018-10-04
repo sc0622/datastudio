@@ -57,6 +57,8 @@ ObjectEdit::ObjectEdit(const Icd::ObjectPtr &object, QWidget *parent)
         }
         emit contentChanged();
     });
+
+    editName_->setFocus();
 }
 
 ObjectEdit::~ObjectEdit()
@@ -165,6 +167,11 @@ bool ObjectEdit::existsPrimaryModified(const QString &key) const
     return primaryModified_.contains(key);
 }
 
+void ObjectEdit::focusName()
+{
+    editName_->setFocus();
+}
+
 void ObjectEdit::insertRow(int index, const QString &labelText, QWidget *field)
 {
     formLayout_->insertRow(index, labelText, field);
@@ -197,9 +204,29 @@ void ObjectEdit::addWidget(QWidget *widget)
 
 bool ObjectEdit::validate()
 {
-    // name
-    if (editName_->text().trimmed().isEmpty()) {
+    auto parentObject = object_->parent();
+
+    // name [empty check]
+    const QString name = editName_->text().trimmed();
+    if (name.isEmpty()) {
         editName_->setFocus();
+        return false;
+    }
+    // name [unique check]
+    if (parentObject && parentObject->hasChildByName(name.toStdString(), object_)) {
+        editName_->setFocus();
+        editName_->selectAll();
+        QToolTip::showText(editName_->mapToGlobal(QPoint(0, 8)),
+                           tr("There is already a name called %1").arg(name));
+        return false;
+    }
+    // mark [unique check]
+    const QString mark = editMark_->text().trimmed();
+    if (parentObject && parentObject->hasChildByMark(mark.toStdString(), object_)) {
+        editMark_->setFocus();
+        editMark_->selectAll();
+        QToolTip::showText(editMark_->mapToGlobal(QPoint(0, 8)),
+                           tr("There is already a mark called %1").arg(mark));
         return false;
     }
 

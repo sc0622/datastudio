@@ -15,7 +15,9 @@ public:
     explicit DateTimeItem(Object *parent = nullptr);
     explicit DateTimeItem(const std::string &id, Object *parent = nullptr);
     DateTimeItem(const DateTimeItem &other);
-    ~DateTimeItem();
+    ~DateTimeItem() override;
+
+    int rtti() const override;
 
     std::string typeName() const override;
 

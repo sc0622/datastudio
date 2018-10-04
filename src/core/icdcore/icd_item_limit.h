@@ -14,7 +14,9 @@ class ICDCORE_EXPORT LimitItem : public Object
 public:
     explicit LimitItem();
     LimitItem(const LimitItem &other);
-    ~LimitItem();
+    ~LimitItem() override;
+
+    virtual int rtti() const override;
 
     double minimum() const;
     void setMinimum(double minimum);

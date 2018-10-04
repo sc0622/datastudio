@@ -47,6 +47,11 @@ CounterItem::~CounterItem()
     delete d;
 }
 
+int CounterItem::rtti() const
+{
+    return ObjectCounter;
+}
+
 CounterType CounterItem::counterType() const
 {
     return d->counterType;

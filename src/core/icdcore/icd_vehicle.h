@@ -19,7 +19,9 @@ public:
     explicit Vehicle(Object *parent = nullptr);
     explicit Vehicle(const std::string &id, Object *parent = nullptr);
     Vehicle(const Vehicle &other);
-    ~Vehicle();
+    ~Vehicle() override;
+
+    int rtti() const override;
 
     SystemPtrArray allSystem();
     const SystemPtrArray &allSystem() const;
@@ -30,6 +32,7 @@ public:
     void clearSystem();
     int systemCount() const;
     SystemPtr systemAt(int index) const;
+    SystemPtr systemByName(const std::string &name) const;
     SystemPtr systemByMark(const std::string &mark) const;
     bool isEmpty() const;
 
@@ -43,6 +46,11 @@ public:
 
     Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                                 bool ignoreComplex = true) const override;
+    bool hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    ObjectPtr childAt(icd_uint64 index) const override;
+    ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    void removeChild(icd_uint64 index) override;
     void clearChildren() override;
 
     // Serializable interface

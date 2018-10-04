@@ -106,9 +106,14 @@ FrameItem::~FrameItem()
     delete d;
 }
 
+int FrameItem::rtti() const
+{
+    return ObjectFrame;
+}
+
 void FrameItem::addTable(const TablePtr &table)
 {
-    icd_uint64 code = Icd::strtou64(table->mark().c_str(), 16);
+    const icd_uint64 code = table->frameCode();
     if (code <= 0) {
         //return;
     }
@@ -156,21 +161,20 @@ void FrameItem::clearTable()
 
 bool FrameItem::replaceCode(icd_uint64 oldCode, icd_uint64 newCode)
 {
-    // 
-    if (d->tables.find(newCode) != d->tables.end()) {
-        return false;   // 
+    if (oldCode == newCode) {
+        return true;
     }
 
-    // 
+    if (d->tables.find(newCode) != d->tables.end()) {
+        return false;
+    }
+
     TablePtrMap::const_iterator citerOld = d->tables.find(oldCode);
     if (citerOld == d->tables.end()) {
-        return false;   // 
+        return false;
     }
 
-    // I
     d->tables[newCode] = citerOld->second;
-
-    // 
     d->tables.erase(citerOld);
 
     return true;
@@ -191,7 +195,7 @@ int FrameItem::tableCount() const
     return static_cast<int>(d->tables.size());
 }
 
-TablePtr FrameItem::tableAt(icd_uint64 code)
+TablePtr FrameItem::tableAt(icd_uint64 code) const
 {
     TablePtrMap::const_iterator citer = d->tables.find(code);
     if (citer != d->tables.end()) {
@@ -303,8 +307,26 @@ FrameItem &FrameItem::operator =(const FrameItem &other)
     Item::operator =(other);
     d->sequenceCount = other.d->sequenceCount;
     d->currentSequence = other.d->currentSequence;
-    d->tables.clear();
+    d->tables = other.allTable();
     return *this;
+}
+
+ObjectPtr FrameItem::itemByName(const std::string &name, bool deep) const
+{
+    for (TablePtrMap::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.end(); ++citer) {
+        const TablePtr &table = citer->second;
+        if (table->name() == name) {
+            return table;
+        } else if (deep) {
+            const ObjectPtr childItem = table->itemByName(name, deep);
+            if (childItem) {
+                return childItem;
+            }
+        }
+    }
+
+    return ObjectPtr();
 }
 
 ObjectPtr FrameItem::itemByMark(const std::string &mark, bool deep) const
@@ -429,7 +451,7 @@ icd_uint64 FrameItem::updateSend(icd_uint64 code)
 
             if (table) {
                 d->updateSend(this, table, true);
-                code = static_cast<icd_uint64>(Icd::strtou64(table->mark().c_str(), 16));
+                code = table->frameCode();
             }
         }
 
@@ -446,6 +468,70 @@ ObjectPtr FrameItem::findByDomain(const std::string &domain, int domainType,
                                   bool ignoreComplex) const
 {
     return itemByDomain(domain, Icd::DomainType(domainType), ignoreComplex);
+}
+
+bool FrameItem::hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude) const
+{
+    for (TablePtrMap::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.end(); ++citer) {
+        const TablePtr &table = citer->second;
+        if (exclude && table->id() == exclude->id()) {
+            continue;
+        }
+        if (table->name() == name) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool FrameItem::hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude) const
+{
+    for (TablePtrMap::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.end(); ++citer) {
+        const TablePtr &table = citer->second;
+        if (exclude && table->id() == exclude->id()) {
+            continue;
+        }
+        if (table->mark() == mark) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+ObjectPtr FrameItem::childAt(icd_uint64 index) const
+{
+    return tableAt(index);
+}
+
+ObjectPtr FrameItem::replaceChild(icd_uint64 index, ObjectPtr &other)
+{
+    if (!other || other->objectType() != ObjectTable) {
+        return ObjectPtr();
+    }
+
+    TablePtrMap::iterator iter = d->tables.find(index);
+    if (iter == d->tables.end()) {
+        return ObjectPtr();
+    }
+
+    TablePtr old = iter->second;
+    iter->second = JHandlePtrCast<Table>(other);
+
+    return old;
+}
+
+void FrameItem::removeChild(icd_uint64 index)
+{
+    TablePtrMap::iterator iter = d->tables.find(index);
+    if (iter == d->tables.end()) {
+        return;
+    }
+
+    d->tables.erase(iter);
 }
 
 void FrameItem::clearChildren()

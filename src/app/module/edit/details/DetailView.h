@@ -26,22 +26,30 @@ public:
 
     bool init();
 
+    void requestAdd(QStandardItem *item, const QVariant &data);
     void updateView(QStandardItem *item);
-    void triggerEdit(QStandardItem *item, int editAction, const QVariant &data);
+    void removeRow(QStandardItem *item);
+    void cleanItem(QStandardItem *item);
 
 signals:
 
 public slots:
-    void onCurrentItemChanged(const QVariant &index);
+    void onCurrentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
+    void onApplied();
+    void onCanceled();
+
+private:
+    void insertRow(int row, QStandardItem *item, const QVariant &data);
+
+    bool saveObject();
 
 private:
     JSplitter *splitterMain_;
     DetailTable *detailTable_;
     DetailEdit *detailEdit_;
-    struct {
-        QStandardItem *item;
-        Icd::ObjectPtr object;
-    } currentData_;
+    QStandardItem *treeItem_;
+    Icd::ObjectPtr object_;
+    Icd::ObjectPtr newObject_;
 };
 
 }

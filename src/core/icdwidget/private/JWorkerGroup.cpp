@@ -672,7 +672,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
         text.append(JWorkerGroup::generateItemOffset(dataItem));
     }
     // name
-    text.append(QString::fromStdString(dataItem->name().empty() ? "<?>" : dataItem->name()));
+    text.append(QString::fromStdString(dataItem->name().empty() ? "?" : dataItem->name()));
     // type, value
     if (showAttris_ & JProtoTreeView::ShowType) {
         text.append(" <font color=green size=2>[")
@@ -715,7 +715,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
         }
         // name
         const std::string name = itemComplex->name();
-        text.append(QString::fromStdString(name.empty() ? "<?>" : name));
+        text.append(QString::fromStdString(name.empty() ? "?" : name));
         // type
         if (showAttris_ & JProtoTreeView::ShowType) {
             text.append(" <font color=green size=2>[COMPLEX]</font>");
@@ -833,7 +833,7 @@ void JWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, 
         QString text;
         // name
         const std::string name = table->name();
-        text.append(QString::fromStdString(name.empty() ? "<?>" : name));
+        text.append(QString::fromStdString(name.empty() ? "?" : name));
         // type
         if (showAttris_ & JProtoTreeView::ShowType) {
             text.append(" <font color=green size=2>[TABLE]</font>");
@@ -859,7 +859,7 @@ void JWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, 
         }
         // name
         const std::string name = table->name();
-        text.append(QString::fromStdString(name.empty() ? "<?>" : name));
+        text.append(QString::fromStdString(name.empty() ? "?" : name));
         // type
         if (showAttris_ & JProtoTreeView::ShowType) {
             text.append(" <font color=green size=2>[TABLE]</font>");

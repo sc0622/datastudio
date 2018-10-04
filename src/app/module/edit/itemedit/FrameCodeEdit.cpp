@@ -123,7 +123,7 @@ bool FrameCodeEdit::initBinding()
     }
 
     const Icd::ItemPtrArray &items = table->allItem();
-    for (auto &citer = items.cbegin(); citer != items.cend(); ++citer) {
+    for (auto citer = items.cbegin(); citer != items.cend(); ++citer) {
         const Icd::ItemPtr item = *citer;
         if (item && item->type() == Icd::ItemFrame) {
             comboBinding_->addItem(tr("Binding<") + QString::fromStdString(item->name()) + ">",

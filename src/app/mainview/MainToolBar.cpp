@@ -203,25 +203,18 @@ void ToolBar::addEditItemAction(const Json::Value &option)
         jnotify->send("edit.toolbar.tree.saveas");
     });
     //
-    jnotify->on("edit.toolbar.item.action.enabled", this, [=](JNEvent &event){
+    jnotify->on("edit.toolbar.item.action", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
-        if (args.count() != 2) {
+        if (args.size() < 3) {
             return;
         }
-        const QString name = args[0].toString();
-        const bool enabled = args[1].toBool();
-        if (name == "add") {
-            actionAddItem->setEnabled(enabled);
-        } else if (name == "up") {
-            actionUpItem->setEnabled(enabled);
-        } else if (name == "down") {
-            actionDownItem->setEnabled(enabled);
-        } else if (name == "copy") {
-            actionCopy->setEnabled(enabled);
-        } else if (name == "save") {
-            actionSave->setEnabled(enabled);
-        } else if (name == "saveas") {
-            actionSaveAs->setEnabled(enabled);
+        actionAddItem->setEnabled(args[0].toBool());
+        actionUpItem->setEnabled(args[1].toBool());
+        actionDownItem->setEnabled(args[2].toBool());
+        if (args.size() >= 6) {
+            actionCopy->setEnabled(args[3].toBool());
+            actionSave->setEnabled(args[4].toBool());
+            actionSaveAs->setEnabled(args[5].toBool());
         }
     });
 }

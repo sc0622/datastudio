@@ -48,10 +48,10 @@ DetailEdit::DetailEdit(QWidget *parent)
             return;
         }
         setButtonsEnabled(false);
-        // notify
-        QVariantList args;
-        args.append("apply");
-        //jnotify->send("edit.detail.changed", args);
+        //
+        emit applied();
+        //
+        newObject_.reset();
     });
     connect(buttonCancel_, &QPushButton::clicked, this, [=](){
         if (!objectEdit_ || isHidden()) {
@@ -60,11 +60,8 @@ DetailEdit::DetailEdit(QWidget *parent)
         if (newObject_) {
             resetView();
             newObject_.reset();
-            // notify
-            QVariantList args;
-            args.append("cancel");
-            args.append("add");
-            //jnotify->send("edit.detail.changed", args);
+            //
+            emit canceled();
         } else {
             objectEdit_->restoreContent();
         }
@@ -83,7 +80,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
 {
     resetView();
 
-    if (!object || index.type() != QVariant::ULongLong && index.toInt() == -1) {
+    if (!object || (index.type() != QVariant::ULongLong && index.toInt() == -1)) {
         return;
     }
 
@@ -155,10 +152,10 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
         return;
     }
 
-    updateView(subObject, true);
+    updateView(subObject, true, false);
 }
 
-void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub)
+void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub, bool add)
 {
     if (!sub) {
         resetView();
@@ -170,8 +167,16 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub)
         return;
     }
 
-    const Icd::ObjectPtr copiedObject = object_->copy();
-    copiedObject->setParent(object_->parent());
+    Icd::ObjectPtr copiedObject;
+    if (add) {
+        newObject_ = object_;
+        copiedObject = object_;
+        setButtonsEnabled(true);
+    } else {
+        newObject_ = nullptr;
+        copiedObject = object_->copy();
+        copiedObject->setParent(object_->parent());
+    }
 
     objectEdit_ = ObjectEdit::create(copiedObject);
     if (!objectEdit_) {
@@ -190,7 +195,18 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub)
         //return;
     }
 
+    objectEdit_->focusName();
+
     show();
+}
+
+Icd::ObjectPtr DetailEdit::target() const
+{
+    if (objectEdit_) {
+        return objectEdit_->object();
+    } else {
+        return Icd::ObjectPtr();
+    }
 }
 
 void DetailEdit::onContentChanged(const QString &key, const QVariant &value)
@@ -244,6 +260,7 @@ void DetailEdit::changeEdit(int itemType)
 
     removeEdit();
 
+    //TODO [notify another module]
     const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(object_);
     Icd::ItemPtr newItem;
     if (itemType == item->type()) {
@@ -254,7 +271,7 @@ void DetailEdit::changeEdit(int itemType)
             Q_ASSERT(false);
             return;
         }
-        *dynamic_cast<Icd::Object*>(newItem.get()) = *dynamic_cast<Icd::Object*>(item.get());
+        *static_cast<Icd::Object*>(newItem.get()) = *static_cast<Icd::Object*>(item.get());
     }
 
     if (!newItem) {

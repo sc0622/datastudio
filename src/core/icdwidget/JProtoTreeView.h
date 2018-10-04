@@ -18,9 +18,10 @@ enum OptionType {
     //
 };
 
+class Object;
+typedef std::shared_ptr<Object> ObjectPtr;
 class Root;
 typedef std::shared_ptr<Root> RootPtr;
-
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
 
@@ -61,15 +62,6 @@ public:
     };
     Q_DECLARE_FLAGS(ShowAttributes, ShowAttribute)
 
-    enum EditAction {
-        AddAction,
-        InsertAboveAction,
-        InsertBelowAction,
-        RemoveAction,
-        CleanAction
-    };
-    Q_ENUM(EditAction)
-
     explicit JProtoTreeView(QWidget *parent = nullptr);
     virtual ~JProtoTreeView();
 
@@ -100,10 +92,8 @@ public:
     void clearContents();
     bool loadData();
     bool loadData(const Icd::TablePtr &table, const QString &domain = QString());
-    bool loadData(const Icd::TablePtr &table,
-                  const QString &filePath,
-                  bool hasTimeFormat, int headerSize,
-                  const QString &domain = QString());
+    bool loadData(const Icd::TablePtr &table, const QString &filePath,
+                  bool hasTimeFormat, int headerSize, const QString &domain = QString());
 
     QStandardItem *currentItem() const;
 
@@ -132,6 +122,19 @@ public:
     bool isItemLoaded(QStandardItem *item) const;
     bool hasUnloadedItem() const;
 
+    Icd::ObjectPtr findObject(QStandardItem *item) const;
+
+    // for edit module {{{
+
+    void insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+    void updateRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+    void removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+
+    void applyInsert(const Icd::ObjectPtr &target);
+    void cancelInsert();
+
+    // }}}
+
 signals:
     void itemPressed(QStandardItem *item);
     void itemClicked(QStandardItem *item);
@@ -148,7 +151,8 @@ signals:
                            bool hasTimeFormat, int headerSize);
 
     // {{ for editor
-    void editItemTriggered(QStandardItem *item, EditAction action, const QVariant &data = QVariant());
+    void requestAdd(QStandardItem *item, const QVariant &data = QVariant());
+    void itemUpdated(QStandardItem *item, bool unloaded, bool removed);
     // }}
 
 public slots:

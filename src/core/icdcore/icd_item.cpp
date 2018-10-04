@@ -61,6 +61,11 @@ Item::~Item()
     delete d;
 }
 
+int Item::rtti() const
+{
+    return ObjectItem;
+}
+
 ItemType Item::type() const
 {
     return static_cast<ItemType>(d->type);
@@ -236,6 +241,25 @@ ItemPtr Item::create(const std::string &id, ItemType type)
     case Icd::ItemFrame: return Icd::ItemPtr(new Icd::FrameItem(id));
     case Icd::ItemDateTime: return Icd::ItemPtr(new Icd::DateTimeItem(id));
     case Icd::ItemArray: return Icd::ItemPtr(new Icd::ArrayItem(id));
+    default:
+        return Icd::ItemPtr();  // not supported data type
+    }
+}
+
+ItemPtr Item::create(ItemType type)
+{
+    switch (type) {
+    case Icd::ItemNumeric: return Icd::ItemPtr(new Icd::NumericItem());
+    case Icd::ItemBitMap:
+    case Icd::ItemBitValue: return Icd::ItemPtr(new Icd::BitItem(type));
+    case Icd::ItemComplex: return Icd::ItemPtr(new Icd::ComplexItem());
+    case Icd::ItemHeader: return Icd::ItemPtr(new Icd::HeaderItem());
+    case Icd::ItemCounter: return Icd::ItemPtr(new Icd::CounterItem());
+    case Icd::ItemCheck: return Icd::ItemPtr(new Icd::CheckItem());
+    case Icd::ItemFrameCode: return Icd::ItemPtr(new Icd::FrameCodeItem());
+    case Icd::ItemFrame: return Icd::ItemPtr(new Icd::FrameItem());
+    case Icd::ItemDateTime: return Icd::ItemPtr(new Icd::DateTimeItem());
+    case Icd::ItemArray: return Icd::ItemPtr(new Icd::ArrayItem());
     default:
         return Icd::ItemPtr();  // not supported data type
     }

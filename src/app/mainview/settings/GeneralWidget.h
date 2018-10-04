@@ -19,7 +19,8 @@ public slots:
     void setTheme(const QString &theme);
 
 private:
-    QComboBox *d_comboBoxColorTheme;
+    QComboBox *comboBoxColorTheme_;
+    QString previousTheme_;
 };
 
 #endif // GENERALWIDGET_H

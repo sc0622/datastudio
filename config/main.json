@@ -54,7 +54,7 @@
             }
          },
          "parser" : {
-            "filePath" : "@ConfigDir@/protocol.json",
+            "filePath" : "C:/Users/iclosure/Desktop/test1/untitled1.json",
             "sourceType" : "file"
          }
       },

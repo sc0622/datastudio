@@ -44,6 +44,8 @@ public:
     const QStringList &primaryModified() const;
     bool existsPrimaryModified(const QString &key) const;
 
+    void focusName();
+
 signals:
     void contentChanged(const QString &key = QString(), const QVariant &value = QVariant());
     void itemTypeChanged(int type);

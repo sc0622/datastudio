@@ -31,7 +31,9 @@ public:
     explicit Table(Object *parent = nullptr);
     explicit Table(const std::string &id, Object *parent = nullptr);
     Table(const Table &other);
-    ~Table();
+    ~Table() override;
+
+    int rtti() const override;
 
     int itemOffset() const;
     double bufferSize() const;
@@ -47,15 +49,20 @@ public:
     int itemCount() const;
     ItemPtr itemAt(int index) const;
     ItemPtr itemById(const std::string &id) const;
+    ObjectPtr itemByName(const std::string &name, bool deep = true) const;
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
 
     ObjectPtr itemByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId,
                            bool ignoreComplex = true) const;
     TablePtr tableByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId) const;
-
     ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                            bool ignoreComplex = true) const override;
+    bool hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    ObjectPtr childAt(icd_uint64 index) const override;
+    ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    void removeChild(icd_uint64 index) override;
     void clearChildren() override;
 
     const std::vector<char> &headers() const;
@@ -78,6 +85,7 @@ public:
     bool isFrameTable() const;
     bool isSubFrameTable() const;
     int frameCodeType() const;
+    icd_uint64 frameCode() const;
     std::string typeName() const;
     std::string codeName() const;
 

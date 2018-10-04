@@ -11,6 +11,11 @@ QmlPluginLibrary {
 
     dynamicLibraryPaths: base.concat([project.sourceDirectory + '/lib/3rdpart/moxa'])
     Qt.core.resourceFileBaseName: name
+    langPath: sourceDirectory + '/imports/lang'
+    translationFileTags: base.concat([ 'qml', 'js' ])
+    translations: [ 'zh_CN.ts' ]
+    recursivePaths: [ sourceDirectory + '/imports' ]
+    defaultTranslation: false //TODO
 
     Depends { name: "Qt.qminimal"; condition: Qt.core.staticBuild; }
     Depends { name: 'Qt.widgets' }
@@ -45,7 +50,7 @@ QmlPluginLibrary {
         id: qml
         name: 'qml'
         prefix: 'imports/'
-        files: [ '**/*.qml', '**/*.js', '**/*.png' ]
+        files: [ '**/*.qml', '**/*.js', '**/*.png', '**/*.ts' ]
         //fileTags: [ 'qml', 'qml.in' ]
         fileTags: [ 'qt.core.resource_data' ]
         Qt.core.resourcePrefix: '/imports'

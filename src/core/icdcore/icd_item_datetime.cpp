@@ -45,6 +45,11 @@ DateTimeItem::~DateTimeItem()
     delete d;
 }
 
+int DateTimeItem::rtti() const
+{
+    return ObjectDateTime;
+}
+
 std::string DateTimeItem::typeName() const
 {
     std::stringstream ss;

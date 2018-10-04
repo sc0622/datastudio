@@ -68,7 +68,7 @@ int JProtoTreeView::dataFormat() const
 JProtoTreeView::TreeModes JProtoTreeView::treeModes() const
 {
     Q_D(const JProtoTreeView);
-    return JProtoTreeView::TreeModes(d->treeModes());
+    return d->treeModes_;
 }
 
 void JProtoTreeView::setTreeMode(TreeModes modes)
@@ -248,22 +248,49 @@ void JProtoTreeView::setProtoRoot(const RootPtr &root)
 
 bool JProtoTreeView::isItemLoaded(QStandardItem *item) const
 {
-    if (!item) {
-        return false;
-    }
-
-    const QVariant varLoad = item->data(Icd::TreeLoadStatusRole);
-    if (varLoad.isValid()) {
-        return varLoad.toBool();
-    } else {
-        return false;
-    }
+    return JProtoTreeViewPrivate::isItemLoaded(item);
 }
 
 bool JProtoTreeView::hasUnloadedItem() const
 {
     Q_D(const JProtoTreeView);
     return d->hasUnloadedItem(d->invisibleRootItem());
+}
+
+ObjectPtr JProtoTreeView::findObject(QStandardItem *item) const
+{
+    Q_D(const JProtoTreeView);
+    return d->findObject(item);
+}
+
+void JProtoTreeView::insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data)
+{
+    Q_D(JProtoTreeView);
+    d->insertRow(row, target, data);
+}
+
+void JProtoTreeView::updateRow(int row, const Icd::ObjectPtr &target, const QVariant &data)
+{
+    Q_D(JProtoTreeView);
+    d->updateRow(row, target, data);
+}
+
+void JProtoTreeView::removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data)
+{
+    Q_D(JProtoTreeView);
+    d->removeRow(row, target, data);
+}
+
+void JProtoTreeView::applyInsert(const Icd::ObjectPtr &target)
+{
+    Q_D(JProtoTreeView);
+    d->applyInsert(target);
+}
+
+void JProtoTreeView::cancelInsert()
+{
+    Q_D(JProtoTreeView);
+    d->cancelInsert();
 }
 
 void JProtoTreeView::setRunning(bool value)

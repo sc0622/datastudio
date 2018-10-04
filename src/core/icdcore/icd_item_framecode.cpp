@@ -50,6 +50,11 @@ FrameCodeItem::~FrameCodeItem()
     delete d;
 }
 
+int FrameCodeItem::rtti() const
+{
+    return ObjectFrameCode;
+}
+
 FrameCodeType FrameCodeItem::frameCodeType() const
 {
     return d->frameCodeType;

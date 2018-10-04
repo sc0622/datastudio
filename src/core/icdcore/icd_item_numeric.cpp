@@ -59,6 +59,11 @@ NumericItem::~NumericItem()
     delete d;
 }
 
+int NumericItem::rtti() const
+{
+    return ObjectNumeric;
+}
+
 bool NumericItem::isValid() const
 {
     return d->numericType != NumericInvalid;

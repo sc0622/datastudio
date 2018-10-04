@@ -37,6 +37,11 @@ ComplexItem::~ComplexItem()
     delete d;
 }
 
+int ComplexItem::rtti() const
+{
+    return ObjectComplex;
+}
+
 bool ComplexItem::isEmpty() const
 {
     return (d->table->itemCount() == 0);
@@ -115,7 +120,7 @@ ComplexItem &ComplexItem::operator =(const ComplexItem &other)
         return *this;
     }
     Item::operator =(other);
-    d->table.reset();
+    *d->table = *other.table();
     return *this;
 }
 

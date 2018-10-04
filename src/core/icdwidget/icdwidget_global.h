@@ -107,6 +107,7 @@ enum TreeItemDataRole {
     TreeItemIdRole,
     TreeItemDomainRole,
     TreeItemPathRole,
+    TreeItemNewRole,
     TreeItemMarkRole,
     TreeChannelIdRole,
     TreeDataTypeRole,
@@ -119,7 +120,7 @@ enum TreeItemDataRole {
 };
 
 template<typename T>
-inline std::shared_ptr<T> handlescope_cast(const QVariant &variant)
+inline ::std::shared_ptr<T> handlescope_cast(const QVariant &variant)
 {
     JHandleScope<T> *handleScope = jVariantFromVoid<JHandleScope<T> >(variant);
     if (handleScope) {
@@ -129,7 +130,7 @@ inline std::shared_ptr<T> handlescope_cast(const QVariant &variant)
 }
 
 template<typename T>
-inline std::weak_ptr<T> weakscope_cast(const QVariant &variant)
+inline ::std::weak_ptr<T> weakscope_cast(const QVariant &variant)
 {
     JWeakScope<T> *weakScope = jVariantFromVoid<JWeakScope<T> >(variant);
     if (weakScope) {
@@ -137,6 +138,10 @@ inline std::weak_ptr<T> weakscope_cast(const QVariant &variant)
     }
     return nullptr;
 }
+
+//
+class Item;
+typedef ::std::shared_ptr<Item> ItemPtr;
 
 } // end of namespace Icd
 

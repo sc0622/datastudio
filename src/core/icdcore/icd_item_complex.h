@@ -19,7 +19,9 @@ public:
     explicit ComplexItem(Object *parent = nullptr);
     explicit ComplexItem(const std::string &id, Object *parent = nullptr);
     ComplexItem(const ComplexItem &other);
-    ~ComplexItem();
+    ~ComplexItem() override;
+
+    int rtti() const override;
 
     bool isEmpty() const;
     TablePtr table() const;

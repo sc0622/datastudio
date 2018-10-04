@@ -25,7 +25,7 @@ class TreeItemDelegate : public JTreeItemDelegate
     Q_OBJECT
 public:
     explicit TreeItemDelegate(JTreeView *treeView, QObject *parent = nullptr);
-    ~TreeItemDelegate();
+    ~TreeItemDelegate() override;
 
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -88,6 +88,13 @@ class JProtoTreeViewPrivate : public JTreeView
     Q_PROPERTY(quint32 showAttris READ showAttris NOTIFY showAttrisChanged)
     Q_PROPERTY(QColor valueColor READ valueColor WRITE setValueColor NOTIFY valueColorChanged)
 public:
+    enum EditAction {
+        AddAction,
+        InsertAboveAction,
+        InsertBelowAction
+    };
+    Q_ENUM(EditAction)
+
     explicit JProtoTreeViewPrivate(JProtoTreeView *q);
     ~JProtoTreeViewPrivate();
 
@@ -132,8 +139,9 @@ public:
     void stopAllChannels();
 
     bool isEditMode() const;
-
     bool hasUnloadedItem(QStandardItem *item = nullptr) const;
+    static bool isItemLoaded(QStandardItem *item);
+    Icd::ObjectPtr findObject(QStandardItem *item) const;
 
 public:
     Q_INVOKABLE bool changeChannel(QStandardItem *itemTable);
@@ -181,17 +189,23 @@ private:
     void itemItemBitMapRightClicked(QStandardItem *item, int deep);
 
 private:
-    bool loadRoot(QStandardItem *itemRoot, int deep);
-    bool loadVehicle(QStandardItem *itemVehicle, int deep);
+    bool loadRoot(QStandardItem *itemRoot, int deep, bool force = false);
+    bool loadVehicle(QStandardItem *itemVehicle, int deep, bool force = false);
     bool loadVehicle(QStandardItem *itemVehicle, const Icd::SystemPtrArray &systems, int deep);
-    bool loadSystem(QStandardItem *itemSystem, int deep);
+    bool loadSystem(QStandardItem *itemSystem, int deep, bool force = false);
     bool loadSystem(QStandardItem *itemSystem, const Icd::TablePtrArray &tables, int deep);
-    bool loadTable(QStandardItem *itemTable, int deep);
+    bool loadTable(QStandardItem *itemTable, int deep, bool force = false);
+
+    QStandardItem *insertVehicle(int row, QStandardItem *itemRoot, const Icd::VehiclePtr &vehicle, int deep);
+    QStandardItem *insertSystem(int row, QStandardItem *itemVehicle, const Icd::SystemPtr &system,
+                                const QString &domain, const QString &path, int deep);
+    QStandardItem *insertTable(int row, QStandardItem *itemSystem, const Icd::TablePtr &table,
+                               const QString &domain, const QString &path, int deep);
 
     static bool loadTable(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
 
     static QStandardItem *loadSystem(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table, int index = 0);
-    static bool loadTable(QObject *target, QStandardItem *itemTable, const Icd::ItemPtr &item);
+    static QStandardItem *insertItem(QObject *target, int row, QStandardItem *itemTable, const Icd::ItemPtr &item);
     static bool loadFrameCodeItem(QObject *target, QStandardItem *itemTable, const Icd::FrameCodeItemPtr &frameCodeItem);
     static bool loadComplexItem(QObject *target, QStandardItem *itemDataItem, const Icd::ComplexItemPtr &complexItem);
     static bool loadFrameItem(QObject *target, QStandardItem *itemDataItem, const Icd::FrameItemPtr &frameItem);
@@ -202,6 +216,7 @@ private:
 
     Icd::WorkerPtr queryWorker(const QStandardItem *itemTable) const;
 
+    void updateVehicleData(QStandardItem *item, const Icd::VehiclePtr &vehicle);
     void updateItemData(QStandardItem *item);
     void updateBitItemData(QStandardItem *itemDataItem, const Icd::BitItemPtr &bitItem);
     void updateItemData(QStandardItem *itemDataItem, const Icd::ItemPtr &dataItem);
@@ -256,7 +271,17 @@ private:
     static bool loadSystem(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
 
     //
-    QMenu *createAddItemMenu(QStandardItem *item, QAction *action, JProtoTreeView::EditAction editAction);
+    QMenu *createAddItemMenu(QStandardItem *item, QAction *action, EditAction editAction);
+
+    void insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+    void updateRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+    void removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+
+    void insertNewRow(QStandardItem *item, int editAction, const QVariant &data = QVariant());
+    void applyInsert(const Icd::ObjectPtr &target);
+    void cancelInsert();
+    void removeRow(QStandardItem *item);
+    void cleanItem(QStandardItem *item);
 
 private:
     J_DECLARE_PUBLIC(JProtoTreeView)
@@ -271,9 +296,11 @@ private:
     JProtoTreeView::TreeModes treeModes_;
     QHash<QStandardItem * /*itemTable*/, JWorkerGroup*> workerGroups_;
     QFutureWatcher<BindingData> watcher_;
-
     // qss
     QColor valueColor_;
+    // for edit module
+    QStandardItem *newItem_;
+    Icd::ObjectPtr newObject_;
 };
 
 //
@@ -328,8 +355,8 @@ struct BindingData
     }
 };
 
-Q_DECLARE_METATYPE(BindingData)
-
 } // end of namespace Icd
+
+Q_DECLARE_METATYPE(Icd::BindingData)
 
 #endif // JPROTOTREEVIEW_P_H

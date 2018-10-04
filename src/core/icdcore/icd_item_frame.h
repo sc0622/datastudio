@@ -21,8 +21,9 @@ public:
     explicit FrameItem(Object *parent = nullptr);
     explicit FrameItem(const std::string &id, Object *parent = nullptr);
     FrameItem(const FrameItem &other);
+    ~FrameItem() override;
 
-    ~FrameItem();
+    int rtti() const override;
 
     void addTable(const TablePtr &table);
     void removeTable(icd_uint64 code);
@@ -31,7 +32,7 @@ public:
     TablePtrMap allTable();
     const TablePtrMap &allTable() const;
     int tableCount() const;
-    TablePtr tableAt(icd_uint64 code);
+    TablePtr tableAt(icd_uint64 code) const;
 
     double data() const override { return 0.0; }
     void setData(double) override { }
@@ -53,6 +54,7 @@ public:
     ObjectPtr clone() const override;
     FrameItem &operator =(const FrameItem &other);
 
+    ObjectPtr itemByName(const std::string &name, bool deep = true) const;
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
     ObjectPtr itemByDomain(const std::string &domain, Icd::DomainType domainType = Icd::DomainId,
@@ -61,6 +63,11 @@ public:
 
     ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                            bool ignoreComplex = true) const override;
+    bool hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    ObjectPtr childAt(icd_uint64 index) const override;
+    ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    void removeChild(icd_uint64 index) override;
     void clearChildren() override;
 
     icd_uint64 updateSend(icd_uint64 code);

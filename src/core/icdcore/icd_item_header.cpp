@@ -42,6 +42,11 @@ HeaderItem::~HeaderItem()
     delete d;
 }
 
+int HeaderItem::rtti() const
+{
+    return ObjectHeader;
+}
+
 double HeaderItem::data() const
 {
     return dataFromBuffer(buffer());

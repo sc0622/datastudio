@@ -24,6 +24,7 @@ public slots:
 
 private:
     bool updateParser();
+    void save(bool saveAs);
 
 private:
     Icd::JProtoTreeView *treeView_;

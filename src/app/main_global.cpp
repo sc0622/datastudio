@@ -85,6 +85,10 @@ void JMainPrivate::init()
     //
     JUtralEdit::JUtralEditCore::instance()->setLanguage("zh_CN");
     JChart::JChartCore::instance()->setLanguage("zh_CN");
+    //
+    notify->on("app.theme", q, [=](JNEvent &event){
+        q->setTheme(event.argument().toString());
+    });
 }
 
 QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
@@ -616,7 +620,7 @@ void JMain::setTheme(const QString &value)
     } else {
         const QString filePath(":/datastudio/qss/stylesheet-" + value + ".qss");
         if (!QFile::exists(filePath)) {
-            qWarning() << "Theme" <<value << "is invalid!";
+            qWarning() << "Theme" << value << "is invalid!";
             return;
         }
         JMainPrivate::setStyleSheet(filePath);

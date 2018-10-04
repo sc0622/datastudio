@@ -17,7 +17,9 @@ public:
     explicit HeaderItem(Object *parent = nullptr);
     explicit HeaderItem(const std::string &id, Object *parent = nullptr);
     HeaderItem(const HeaderItem &other);
-    virtual ~HeaderItem();
+    ~HeaderItem() override;
+
+    int rtti() const override;
 
     double data() const override;
     void setData(double data) override;

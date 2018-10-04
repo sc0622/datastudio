@@ -18,7 +18,9 @@ public:
     explicit BitItem(ItemType type, Object *parent = nullptr);
     explicit BitItem(const std::string &id, ItemType type, Object *parent = nullptr);
     BitItem(const BitItem &other);
-    ~BitItem();
+    ~BitItem() override;
+
+    int rtti() const override;
 
     double data() const override;
     void setData(double d) override;

@@ -34,7 +34,9 @@ public:
     explicit NumericItem(Object *parent = nullptr);
     explicit NumericItem(const std::string &id, Object *parent = nullptr);
     NumericItem(const NumericItem &other);
-    ~NumericItem();
+    ~NumericItem() override;
+
+    int rtti() const override;
 
     bool isValid() const;
 

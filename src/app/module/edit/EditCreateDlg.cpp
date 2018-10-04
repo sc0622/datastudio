@@ -63,6 +63,11 @@ EditCreateDlg::EditCreateDlg(QWidget *parent)
     connect(buttonCancel, &QPushButton::clicked, this, [=](){
         this->reject();
     });
+
+    //
+    editFilePath_->setText(QStandardPaths::locate(QStandardPaths::DesktopLocation,
+                                                  QString(),  QStandardPaths::LocateDirectory)
+                           + "untitled1.json");
 }
 
 QString EditCreateDlg::filePath() const

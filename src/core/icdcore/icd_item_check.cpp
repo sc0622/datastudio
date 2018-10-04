@@ -51,6 +51,11 @@ CheckItem::~CheckItem()
     delete d;
 }
 
+int CheckItem::rtti() const
+{
+    return ObjectCheck;
+}
+
 bool CheckItem::isValid() const
 {
     return checkLength() > 0;

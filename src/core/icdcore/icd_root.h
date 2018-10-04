@@ -18,7 +18,9 @@ public:
     explicit Root(Object *parent = nullptr);
     explicit Root(const std::string &id, Object *parent = nullptr);
     Root(const Root &other);
-    ~Root();
+    ~Root() override;
+
+    int rtti() const override;
 
     VehiclePtrArray allVehicle();
     const VehiclePtrArray &allVehicle() const;
@@ -31,6 +33,7 @@ public:
     void clearVehicle();
     int vehicleCount() const;
     VehiclePtr vehicleAt(int index) const;
+    VehiclePtr vehicleByName(const std::string &name) const;
     VehiclePtr vehicleByMark(const std::string &mark) const;
     bool isEmpty() const;
     int childCount() const override;
@@ -43,6 +46,11 @@ public:
 
     Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                                 bool ignoreComplex = true) const override;
+    bool hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
+    ObjectPtr childAt(icd_uint64 index) const override;
+    ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    void removeChild(icd_uint64 index) override;
     void clearChildren() override;
 
     // Serializable interface

@@ -31,13 +31,21 @@ public:
         : parent(parent)
         , objectType(ObjectInvalid)
     {
-
+        char c[8];
+#ifdef _MSC_VER
+        _ultoa_s(uid, c, 16);
+#else
+        _ultoa_(uid, c, 16);
+#endif
+        id = std::string(c);
+        uid++;
     }
 
     bool startsWith(const std::string &str, const std::string &prefix, bool caseSensitivity = true);
     bool endsWith(const std::string &str, const std::string &suffix, bool caseSensitivity = true);
 
 private:
+    static unsigned long uid;
     Object *parent;
     ObjectType objectType;
     std::string id;
@@ -46,6 +54,8 @@ private:
     std::string mark;
     std::string desc;
 };
+
+unsigned long ObjectData::uid = 1;
 
 bool ObjectData::startsWith(const std::string &str, const std::string &prefix, bool caseSensitivity)
 {
@@ -105,6 +115,11 @@ Object::Object(const Object &other)
 Object::~Object()
 {
     delete d;
+}
+
+int Object::rtti() const
+{
+    return ObjectInvalid;
 }
 
 ObjectType Object::objectType() const
@@ -262,6 +277,38 @@ Icd::ObjectPtr Object::findByDomain(const std::string &domain, int domainType,
     return Icd::ObjectPtr();
 }
 
+bool Object::hasChildByName(const std::string &name, const ObjectPtr &exclude) const
+{
+    (void)name;
+    (void)exclude;
+    return false;
+}
+
+bool Object::hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude) const
+{
+    (void)mark;
+    (void)exclude;
+    return false;
+}
+
+ObjectPtr Object::childAt(icd_uint64 index) const
+{
+    (void)index;
+    return ObjectPtr();
+}
+
+ObjectPtr Object::replaceChild(icd_uint64 index, ObjectPtr &other)
+{
+    (void)index;
+    (void)other;
+    return ObjectPtr();
+}
+
+void Object::removeChild(icd_uint64 index)
+{
+    (void)index;
+}
+
 void Object::clearChildren()
 {
 
@@ -285,7 +332,7 @@ Json::Value Object::save() const
     }
     // desc
     if (!d->desc.empty()) {
-        json["desc"] = desc();
+        json["desc"] = Json::toJson(desc());
     }
     return json;
 }
@@ -297,7 +344,7 @@ bool Object::restore(const Json::Value &json, int)
     }
     setName(json["name"].asString());
     setMark(json["mark"].asString());
-    setDesc(json["desc"].asString());
+    setDesc(Json::fromJson(json["desc"].asString()));
     return true;
 }
 

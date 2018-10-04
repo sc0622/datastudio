@@ -36,7 +36,9 @@ public:
     explicit Item(const std::string &id, ItemType type = ItemInvalid,
                   Object *parent = nullptr);
     Item(const Item &other);
-    virtual ~Item();
+    virtual ~Item() override;
+
+    virtual int rtti() const override;
 
     ItemType type() const;
 
@@ -68,6 +70,7 @@ public:
     virtual ObjectPtr clone() const override;
     Item &operator =(const Item &other);
     static ItemPtr create(const std::string &id, ItemType type);
+    static ItemPtr create(ItemType type);
 
     bool isSubFrameItem() const;
     Icd::Table *subFrameTable() const;

@@ -14,7 +14,20 @@ enum ObjectType {
     ObjectSystem,
     ObjectTable,
     ObjectItem,
-    ObjectLimit
+    ObjectLimit,
+    // extern
+    ObjectHeader,
+    ObjectCounter,
+    ObjectCheck,
+    ObjectFrameCode,
+    ObjectNumeric,
+    ObjectArray,
+    ObjectBitMap,
+    ObjectBitValue,
+    ObjectDateTime,
+    ObjectComplex,
+    ObjectFrame,
+    ObjectTotal
 };
 
 //
@@ -36,7 +49,9 @@ public:
     explicit Object(const std::string &id, ObjectType type = ObjectInvalid,
                     Object *parent = nullptr);
     Object(const Object &other);
-    virtual ~Object();
+    virtual ~Object() override;
+
+    virtual int rtti() const;
 
     ObjectType objectType() const;
     std::string id() const;
@@ -67,6 +82,11 @@ public:
 
     virtual Icd::ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                                         bool ignoreComplex = true) const;
+    virtual bool hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const;
+    virtual bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const;
+    virtual ObjectPtr childAt(icd_uint64 index) const;
+    virtual ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other);
+    virtual void removeChild(icd_uint64 index);
     virtual void clearChildren();
 
     // Serializable interface

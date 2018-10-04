@@ -43,6 +43,11 @@ Vehicle::~Vehicle()
     delete d;
 }
 
+int Vehicle::rtti() const
+{
+    return ObjectVehicle;
+}
+
 SystemPtrArray Vehicle::allSystem()
 {
     return d->systems;
@@ -61,10 +66,7 @@ void Vehicle::appendSystem(const SystemPtr &system)
 
 void Vehicle::insertSystem(int index, const SystemPtr &system)
 {
-    if (index < 0 || index >= static_cast<int>(d->systems.size())) {
-        return;
-    }
-
+    index = jBound(0, index, int(d->systems.size()));
     system->setParent(this);
     d->systems.insert(d->systems.cbegin() + index, system);
 }
@@ -108,6 +110,19 @@ SystemPtr Vehicle::systemAt(int index) const
     }
 
     return d->systems.at(static_cast<size_t>(index));
+}
+
+SystemPtr Vehicle::systemByName(const std::string &name) const
+{
+    for (SystemPtrArray::const_iterator citer = d->systems.cbegin();
+         citer != d->systems.end(); ++citer) {
+        const SystemPtr &system = *citer;
+        if(system->name() == name) {
+            return system;
+        }
+    }
+
+    return SystemPtr();
 }
 
 SystemPtr Vehicle::systemByMark(const std::string &mark) const
@@ -183,7 +198,7 @@ Vehicle &Vehicle::operator =(const Vehicle &other)
         return *this;
     }
     Object::operator =(other);
-    d->systems.clear();
+    d->systems = other.allSystem();
     return *this;
 }
 
@@ -219,6 +234,69 @@ ObjectPtr Vehicle::findByDomain(const std::string &domain, int domainType,
     }
 
     return nullptr;
+}
+
+bool Vehicle::hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude) const
+{
+    for (SystemPtrArray::const_iterator citer = d->systems.cbegin();
+         citer != d->systems.end(); ++citer) {
+        const SystemPtr &system = *citer;
+        if (exclude && system->id() == exclude->id()) {
+            continue;
+        }
+        if(system->name() == name) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Vehicle::hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude) const
+{
+    for (SystemPtrArray::const_iterator citer = d->systems.cbegin();
+         citer != d->systems.end(); ++citer) {
+        const SystemPtr &system = *citer;
+        if (exclude && system->id() == exclude->id()) {
+            continue;
+        }
+        if(system->mark() == mark) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+ObjectPtr Vehicle::childAt(icd_uint64 index) const
+{
+    return systemAt(int(index));
+}
+
+ObjectPtr Vehicle::replaceChild(icd_uint64 index, ObjectPtr &other)
+{
+    if (index >= d->systems.size()) {
+        return ObjectPtr();
+    }
+
+    if (!other || other->objectType() != ObjectSystem) {
+        return ObjectPtr();
+    }
+
+    SystemPtrArray::iterator iter = d->systems.begin() + int(index);
+    SystemPtr old = *iter;
+    *iter = JHandlePtrCast<System>(other);
+
+    return old;
+}
+
+void Vehicle::removeChild(icd_uint64 index)
+{
+    if (index >= d->systems.size()) {
+        return;
+    }
+
+    d->systems.erase(d->systems.cbegin() + int(index));
 }
 
 void Vehicle::clearChildren()

@@ -43,6 +43,11 @@ Root::~Root()
     delete d;
 }
 
+int Root::rtti() const
+{
+    return ObjectRoot;
+}
+
 VehiclePtrArray Root::allVehicle()
 {
     return d->vehicles;
@@ -105,6 +110,19 @@ VehiclePtr Root::vehicleAt(int index) const
     }
 
     return d->vehicles.at(static_cast<size_t>(index));
+}
+
+VehiclePtr Root::vehicleByName(const std::string &name) const
+{
+    for (VehiclePtrArray::const_iterator citer = d->vehicles.cbegin();
+         citer != d->vehicles.end(); ++citer) {
+        const VehiclePtr &vehicle = *citer;
+        if(vehicle->name() == name) {
+            return vehicle;
+        }
+    }
+
+    return VehiclePtr();
 }
 
 VehiclePtr Root::vehicleByMark(const std::string &mark) const
@@ -180,7 +198,7 @@ Root &Root::operator =(const Root &other)
         return *this;
     }
     Object::operator =(other);
-    d->vehicles.clear();
+    d->vehicles = other.allVehicle();
     return *this;
 }
 
@@ -218,6 +236,69 @@ ObjectPtr Root::findByDomain(const std::string &domain, int domainType,
     return nullptr;
 }
 
+bool Root::hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude) const
+{
+    for (VehiclePtrArray::const_iterator citer = d->vehicles.cbegin();
+         citer != d->vehicles.end(); ++citer) {
+        const VehiclePtr &vehicle = *citer;
+        if (exclude && vehicle->id() == exclude->id()) {
+            continue;
+        }
+        if(vehicle->name() == name) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Root::hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude) const
+{
+    for (VehiclePtrArray::const_iterator citer = d->vehicles.cbegin();
+         citer != d->vehicles.end(); ++citer) {
+        const VehiclePtr &vehicle = *citer;
+        if (exclude && vehicle->id() == exclude->id()) {
+            continue;
+        }
+        if(vehicle->mark() == mark) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+ObjectPtr Root::childAt(icd_uint64 index) const
+{
+    return vehicleAt(int(index));
+}
+
+ObjectPtr Root::replaceChild(icd_uint64 index, ObjectPtr &other)
+{
+    if (index >= d->vehicles.size()) {
+        return ObjectPtr();
+    }
+
+    if (!other || other->objectType() != ObjectVehicle) {
+        return ObjectPtr();
+    }
+
+    VehiclePtrArray::iterator iter = d->vehicles.begin() + int(index);
+    VehiclePtr old = *iter;
+    *iter = JHandlePtrCast<Vehicle>(other);
+
+    return old;
+}
+
+void Root::removeChild(icd_uint64 index)
+{
+    if (index >= d->vehicles.size()) {
+        return;
+    }
+
+    d->vehicles.erase(d->vehicles.cbegin() + int(index));
+}
+
 void Root::clearChildren()
 {
     d->vehicles.clear();
@@ -225,8 +306,11 @@ void Root::clearChildren()
 
 Json::Value Root::save() const
 {
+#if 0
     Json::Value json = Object::save();
-
+#else
+    Json::Value json(Json::objectValue);
+#endif
     if (!d->vehicles.empty()) {
         Json::Value vehiclesJson(Json::arrayValue);
         for (VehiclePtrArray::const_iterator citer = d->vehicles.cbegin();
@@ -244,10 +328,11 @@ Json::Value Root::save() const
 
 bool Root::restore(const Json::Value &json, int deep)
 {
+#if 0
     if (!Object::restore(json, deep)) {
         return false;
     }
-
+#endif
     if (deep <= ObjectRoot) {
         return true;
     }

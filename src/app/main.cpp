@@ -43,7 +43,6 @@ int main(int argc, char **argv)
 
     JMain::initTranslators();
 
-    //QApplication::setApplicationDisplayName(QObject::tr("Data Studio"));
     QApplication::setApplicationDisplayName(QObject::tr("Data Studio")
                                             + ' ' + QCoreApplication::applicationVersion());
 

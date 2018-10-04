@@ -305,6 +305,11 @@ Table::~Table()
     delete d;
 }
 
+int Table::rtti() const
+{
+    return ObjectTable;
+}
+
 int Table::itemOffset() const
 {
     return d->itemOffset;
@@ -486,6 +491,60 @@ ItemPtr Table::itemById(const std::string &id) const
     }
 
     return ItemPtr();
+}
+
+ObjectPtr Table::itemByName(const std::string &name, bool deep) const
+{
+    for (ItemPtrArray::const_iterator citer = d->items.cbegin();
+         citer != d->items.cend(); ++citer) {
+        const ItemPtr &item = *citer;
+        const ItemType itemType = item->type();
+        if(item->name() == name) {
+            switch (itemType) {
+            case ItemComplex:
+            {
+                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
+                if (!complex) {
+                    break;
+                }
+                return complex->table();
+            }
+            default:
+                return item;
+            }
+        } else if (deep) {
+            switch (itemType) {
+            case ItemComplex:
+            {
+                const ComplexItemPtr complex = JHandlePtrCast<ComplexItem>(item);
+                if (!complex) {
+                    break;
+                }
+                const ObjectPtr childItem = complex->table()->itemByName(name, deep);
+                if (childItem) {
+                    return childItem;
+                }
+                break;
+            }
+            case ItemFrame:
+            {
+                const FrameItemPtr frame = JHandlePtrCast<FrameItem>(item);
+                if (!frame) {
+                    break;
+                }
+                const ObjectPtr childItem = frame->itemByName(name, deep);
+                if (childItem) {
+                    return childItem;
+                }
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    }
+
+    return ObjectPtr();
 }
 
 ObjectPtr Table::itemByMark(const std::string &mark, bool deep) const
@@ -748,6 +807,71 @@ ObjectPtr Table::findByDomain(const std::string &domain, int domainType, bool ig
     return itemByDomain(domain, Icd::DomainType(domainType), ignoreComplex);
 }
 
+bool Table::hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude) const
+{
+    for (ItemPtrArray::const_iterator citer = d->items.cbegin();
+         citer != d->items.cend(); ++citer) {
+        const ItemPtr &item = *citer;
+        if (exclude && item->id() == exclude->id()) {
+            continue;
+        }
+        if (item->name() == name) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Table::hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude) const
+{
+    for (ItemPtrArray::const_iterator citer = d->items.cbegin();
+         citer != d->items.cend(); ++citer) {
+        const ItemPtr &item = *citer;
+        if (exclude && item->id() == exclude->id()) {
+            continue;
+        }
+        if (item->mark() == mark) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+ObjectPtr Table::childAt(icd_uint64 index) const
+{
+    return itemAt(int(index));
+}
+
+ObjectPtr Table::replaceChild(icd_uint64 index, ObjectPtr &other)
+{
+    if (index >= d->items.size()) {
+        return ObjectPtr();
+    }
+
+    if (!other || other->objectType() != ObjectItem) {
+        return ObjectPtr();
+    }
+
+    ItemPtrArray::iterator iter = d->items.begin() + int(index);
+    ItemPtr old = *iter;
+    *iter = JHandlePtrCast<Item>(other);
+
+    //TODO update offset ...
+
+    return old;
+}
+
+void Table::removeChild(icd_uint64 index)
+{
+    if (index >= d->items.size()) {
+        return;
+    }
+
+    d->items.erase(d->items.cbegin() + int(index));
+}
+
 void Table::clearChildren()
 {
     d->items.clear();
@@ -898,6 +1022,11 @@ int Table::frameCodeType() const
     }
 }
 
+icd_uint64 Table::frameCode() const
+{
+    return Icd::strtou64(mark().c_str(), 16);
+}
+
 std::string Table::typeName() const
 {
     std::string prefix;
@@ -1018,7 +1147,7 @@ Table &Table::operator =(const Table &other)
     d->isSubFrameTable = other.d->isSubFrameTable;
     d->bufferSize = 0;
     d->buffer = nullptr;
-    d->items.clear();
+    d->items = other.allItem();
     return *this;
 }
 

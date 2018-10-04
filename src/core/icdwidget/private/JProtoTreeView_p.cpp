@@ -286,6 +286,7 @@ JProtoTreeViewPrivate::JProtoTreeViewPrivate(JProtoTreeView *q)
     , showAttris_(JProtoTreeView::ShowType | JProtoTreeView::ShowValue)
     , dataFormat_(16)
     , treeModes_(nullptr)
+    , newItem_(nullptr)
 {
 
 }
@@ -869,13 +870,48 @@ bool JProtoTreeViewPrivate::hasUnloadedItem(QStandardItem *item) const
     return false;
 }
 
+bool JProtoTreeViewPrivate::isItemLoaded(QStandardItem *item)
+{
+    if (!item) {
+        return false;
+    }
+
+    const QVariant varLoad = item->data(Icd::TreeLoadStatusRole);
+    if (varLoad.isValid()) {
+        return varLoad.toBool();
+    } else {
+        return false;
+    }
+}
+
+ObjectPtr JProtoTreeViewPrivate::findObject(QStandardItem *item) const
+{
+    if (!item) {
+        return Icd::ObjectPtr();
+    }
+
+    if (item == newItem_) {
+        return newObject_;
+    }
+
+    const QString domain = item->data(Icd::TreeItemDomainRole).toString();
+    if (domain.isEmpty()) {
+        return protoRoot_;
+    }
+
+    if (!protoRoot_) {
+        return Icd::ObjectPtr();
+    }
+
+    return protoRoot_->findByDomain(domain.toStdString());
+}
+
 void JProtoTreeViewPrivate::onTreeItemPressed(QStandardItem *item)
 {
     if (!item) {
         return;
     }
 
-    //
     Qt::MouseButtons mouseButtons = QApplication::mouseButtons();
     switch (mouseButtons) {
     case Qt::LeftButton:
@@ -963,6 +999,10 @@ void JProtoTreeViewPrivate::onCurrentItemChanged(QStandardItem *current, QStanda
 
     Q_UNUSED(previous);
     if (!current || current->hasChildren()) {
+        return;
+    }
+
+    if (isEditMode() && isItemLoaded(current)) {
         return;
     }
 
@@ -1174,6 +1214,15 @@ void JProtoTreeViewPrivate::itemRootRightClicked(QStandardItem *item, int deep)
 
     Q_Q(JProtoTreeView);
 
+    //
+    if (isEditMode()) {
+        if (!item->hasChildren() && !isItemLoaded(item)) {
+            if (loadRoot(item, deep, true)) {
+                expandItem(item, true, 3);
+            }
+        }
+    }
+
     QMenu menu(this);
     switch (treeModes_) {
     case JProtoTreeView::TreeModeTableSel:
@@ -1197,7 +1246,7 @@ void JProtoTreeViewPrivate::itemRootRightClicked(QStandardItem *item, int deep)
     default:
     {
         auto loadVehicleFunc = [=](){
-            if (loadRoot(item, deep)) {
+            if (loadRoot(item, deep, true)) {
                 expandItem(item, true, 2);
             }
         };
@@ -1208,22 +1257,23 @@ void JProtoTreeViewPrivate::itemRootRightClicked(QStandardItem *item, int deep)
             //
             if (isEditMode()) {
                 setItemLoadStatus(item, false);
+                emit q->itemUpdated(item, true, false);
             }
         };
         //
-        if (treeModes_ == JProtoTreeView::TreeModeEdit) {
+        if (isEditMode()) {
             // add vehicle
             QAction *actionAddVehicle = menu.addAction(QIcon(":/icdwidget/image/tree/add.png"),
                                                        tr("Add vehicle"));
             connect(actionAddVehicle, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::AddAction);
+                emit q->requestAdd(item);
             });
             // clear vehicle
             if (item->hasChildren()) {
                 QAction *actionClearVehicle = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
                                                              tr("Clear vehicle"));
                 connect(actionClearVehicle, &QAction::triggered, this, [=](){
-                    emit q->editItemTriggered(item, JProtoTreeView::CleanAction);
+                    cleanItem(item);
                 });
             }
         }
@@ -1290,6 +1340,15 @@ void JProtoTreeViewPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
 
     Q_Q(JProtoTreeView);
 
+    //
+    if (isEditMode()) {
+        if (!item->hasChildren() && !isItemLoaded(item)) {
+            if (loadVehicle(item, deep, true)) {
+                expandItem(item, true, 2);
+            }
+        }
+    }
+
     QMenu menu(this);
     switch (treeModes_) {
     case JProtoTreeView::TreeModeTableSel:
@@ -1313,7 +1372,7 @@ void JProtoTreeViewPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
     default:
     {
         auto loadSystemFunc = [=](){
-            if (loadVehicle(item, deep)) {
+            if (loadVehicle(item, deep, true)) {
                 expandItem(item, true, 2);
             }
         };
@@ -1324,41 +1383,42 @@ void JProtoTreeViewPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
             //
             if (isEditMode()) {
                 setItemLoadStatus(item, false);
+                emit q->itemUpdated(item, true, false);
             }
         };
         //
-        if (treeModes_ == JProtoTreeView::TreeModeEdit) {
+        if (isEditMode()) {
             // add system
             QAction *actionAddSystem = menu.addAction(QIcon(":/icdwidget/image/tree/add.png"),
                                                       tr("Add system"));
             connect(actionAddSystem, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::AddAction);
+                emit q->requestAdd(item);
             });
             // clean system
             if (item->hasChildren()) {
                 QAction *actionClearSystem = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
                                                             tr("Clear system"));
                 connect(actionClearSystem, &QAction::triggered, this, [=](){
-                    emit q->editItemTriggered(item, JProtoTreeView::CleanAction);
+                    cleanItem(item);
                 });
             }
             // remove vehicle
             QAction *actionRemoveVehicle = menu.addAction(QIcon(":/icdwidget/image/tree/remove.png"),
                                                           tr("Remove vehicle"));
             connect(actionRemoveVehicle, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::RemoveAction);
+                removeRow(item);
             });
             // insert vehicle [before]
             QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                         tr("Insert vehicle above"));
             connect(actionInsertAbove, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::InsertAboveAction);
+                insertNewRow(item, InsertAboveAction);
             });
             // insert vehicle [after]
             QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                        tr("Insert vehicle below"));
             connect(actionInserBelow, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::InsertBelowAction);
+                insertNewRow(item, InsertBelowAction);
             });
         }
         //
@@ -1424,6 +1484,15 @@ void JProtoTreeViewPrivate::itemSystemRightClicked(QStandardItem *item, int deep
 
     Q_Q(JProtoTreeView);
 
+    //
+    if (isEditMode()) {
+        if (!item->hasChildren() && !isItemLoaded(item)) {
+            if (loadSystem(item, deep, true)) {
+                expandItem(item, true, 2);
+            }
+        }
+    }
+
     QMenu menu(this);
     switch (treeModes_) {
     case JProtoTreeView::TreeModeTableSel:
@@ -1447,7 +1516,7 @@ void JProtoTreeViewPrivate::itemSystemRightClicked(QStandardItem *item, int deep
     default:
     {
         auto loadTableFunc = [=](){
-            if (loadSystem(item, deep)) {
+            if (loadSystem(item, deep, true)) {
                 expandItem(item, true, 2);
             }
         };
@@ -1458,41 +1527,42 @@ void JProtoTreeViewPrivate::itemSystemRightClicked(QStandardItem *item, int deep
             //
             if (isEditMode()) {
                 setItemLoadStatus(item, false);
+                emit q->itemUpdated(item, true, false);
             }
         };
         //
-        if (treeModes_ == JProtoTreeView::TreeModeEdit) {
+        if (isEditMode()) {
             // add table
             QAction *actionAddTable = menu.addAction(QIcon(":/icdwidget/image/tree/add.png"),
                                                      tr("Add table"));
             connect(actionAddTable, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::AddAction);
+                emit q->requestAdd(item);
             });
             // clean table
             if (item->hasChildren()) {
                 QAction *actionClearTable = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
                                                            tr("Clear table"));
                 connect(actionClearTable, &QAction::triggered, this, [=](){
-                    emit q->editItemTriggered(item, JProtoTreeView::CleanAction);
+                    cleanItem(item);
                 });
             }
             // remove system
             QAction *actionRemoveSystem = menu.addAction(QIcon(":/icdwidget/image/tree/remove.png"),
                                                          tr("Remove system"));
             connect(actionRemoveSystem, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::RemoveAction);
+                removeRow(item);
             });
             // insert system [before]
             QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                         tr("Insert system above"));
             connect(actionInsertAbove, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::InsertAboveAction);
+                insertNewRow(item, InsertAboveAction);
             });
             // insert system [after]
             QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                        tr("Insert system below"));
             connect(actionInserBelow, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::InsertBelowAction);
+                insertNewRow(item, InsertBelowAction);
             });
         }
         //
@@ -1557,6 +1627,15 @@ void JProtoTreeViewPrivate::itemTableRightClicked(QStandardItem *item, int deep)
 
     Q_Q(JProtoTreeView);
 
+    //
+    if (isEditMode()) {
+        if (!item->hasChildren() && !isItemLoaded(item)) {
+            if (loadTable(item, deep, true)) {
+                expandItem(item, true, 1);
+            }
+        }
+    }
+
     QMenu menu(this);
     switch (treeModes_) {
     case JProtoTreeView::TreeModeAnalyse:
@@ -1600,7 +1679,7 @@ void JProtoTreeViewPrivate::itemTableRightClicked(QStandardItem *item, int deep)
     default:
     {
         auto loadItemFunc = [=](){
-            if (loadTable(item, deep)) {
+            if (loadTable(item, deep, true)) {
                 expandItem(item, true, 1);
             }
         };
@@ -1611,42 +1690,43 @@ void JProtoTreeViewPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             //
             if (isEditMode()) {
                 setItemLoadStatus(item, false);
+                emit q->itemUpdated(item, true, false);
             }
         };
         //
-        if (treeModes_ == JProtoTreeView::TreeModeEdit) {
+        if (isEditMode()) {
             // add item
             QAction *actionAddItem = menu.addAction(QIcon(":/icdwidget/image/tree/add.png"),
                                                     tr("Add item"));
-            createAddItemMenu(item, actionAddItem, JProtoTreeView::AddAction);
+            createAddItemMenu(item, actionAddItem, AddAction);
             // clean item
             if (item->hasChildren()) {
                 QAction *actionClearItem = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
                                                           tr("Clear item"));
                 connect(actionClearItem, &QAction::triggered, this, [=](){
-                    emit q->editItemTriggered(item, JProtoTreeView::CleanAction);
+                    cleanItem(item);
                 });
             }
             // remove table
             QAction *actionRemoveTable = menu.addAction(QIcon(":/icdwidget/image/tree/remove.png"),
                                                         tr("Remove table"));
             connect(actionRemoveTable, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::RemoveAction);
+                removeRow(item);
             });
             // insert table [before]
             QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                         tr("Insert table above"));
             connect(actionInsertAbove, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::InsertAboveAction);
+                insertNewRow(item, InsertAboveAction);
             });
-            createAddItemMenu(item, actionInsertAbove, JProtoTreeView::InsertAboveAction);
+            createAddItemMenu(item, actionInsertAbove, InsertAboveAction);
             // insert table [after]
             QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                        tr("Insert table below"));
             connect(actionInserBelow, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::InsertBelowAction);
+                insertNewRow(item, InsertBelowAction);
             });
-            createAddItemMenu(item, actionInserBelow, JProtoTreeView::InsertBelowAction);
+            createAddItemMenu(item, actionInserBelow, InsertBelowAction);
         }
         //
         if (item->hasChildren()) {
@@ -1736,11 +1816,13 @@ void JProtoTreeViewPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             });
         } else {
             // load item
-            QAction *actionLoadItem = menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
-                                                     tr("Load item"));
-            connect(actionLoadItem, &QAction::triggered, this, [=](){
-                loadItemFunc();
-            });
+            if (!isEditMode() || !isItemLoaded(item)) {
+                QAction *actionLoadItem = menu.addAction(QIcon(":/icdwidget/image/tree/load.png"),
+                                                         tr("Load item"));
+                connect(actionLoadItem, &QAction::triggered, this, [=](){
+                    loadItemFunc();
+                });
+            }
         }
         // export all
         QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
@@ -1779,36 +1861,39 @@ void JProtoTreeViewPrivate::itemDataItemRightClicked(QStandardItem *item, int de
     }
 
     //
-    if (treeModes_ == JProtoTreeView::TreeModeEdit) {
+    if (isEditMode()) {
         QString targetName = dataType == Icd::ItemFrame ? tr("table") : tr("item");
         // add table
         QAction *actionAdd = menu.addAction(QIcon(":/icdwidget/image/tree/add.png"),
-                                                 tr("Add %1").arg(targetName));
+                                            tr("Add %1").arg(targetName));
         connect(actionAdd, &QAction::triggered, this, [=](){
-            emit q->editItemTriggered(item, JProtoTreeView::AddAction);
+            emit q->requestAdd(item);
         });
+        if (dataType != Icd::ItemFrame) {
+            createAddItemMenu(item, actionAdd, AddAction);
+        }
         // remove item
         QAction *actionRemoveItem = menu.addAction(QIcon(":/icdwidget/image/tree/remove.png"),
                                                    tr("Remove item"));
         connect(actionRemoveItem, &QAction::triggered, this, [=](){
-            emit q->editItemTriggered(item, JProtoTreeView::RemoveAction);
+            cleanItem(item);
         });
         // clean table/item
         if (item->hasChildren()) {
             QAction *actionClear = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
-                                                      tr("Clear %1").arg(targetName));
+                                                  tr("Clear %1").arg(targetName));
             connect(actionClear, &QAction::triggered, this, [=](){
-                emit q->editItemTriggered(item, JProtoTreeView::CleanAction);
+                removeRow(item);
             });
         }
         // insert item [before]
         QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                     tr("Insert item above"));
-        createAddItemMenu(item, actionInsertAbove, JProtoTreeView::InsertAboveAction);
+        createAddItemMenu(item, actionInsertAbove, InsertAboveAction);
         // insert item [after]
         QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                    tr("Insert item below"));
-        createAddItemMenu(item, actionInserBelow, JProtoTreeView::InsertBelowAction);
+        createAddItemMenu(item, actionInserBelow, InsertBelowAction);
     }
     // bound
     const QVariant varBound = item->data(Icd::TreeBoundRole);
@@ -1891,15 +1976,17 @@ void JProtoTreeViewPrivate::itemItemTableRightClicked(QStandardItem *item, int d
     switch (treeModes_) {
     case JProtoTreeView::TreeModeAnalyse:
     default:
-        if (bound || item->hasChildren()) {
-            // delete view
-            QAction *actionDeleteView = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
-                                                       tr("Remove view"));
-            actionDeleteView->setToolTip(tr("Remove chart from view with identity"));
-            connect(actionDeleteView, &QAction::triggered, this, [=](){
-                QStandardItem *itemTable = findItemTable(item);
-                emit unbindItem(item, itemTable);
-            });
+        if (treeModes_ != JProtoTreeView::TreeModeEdit) {
+            if (bound || item->hasChildren()) {
+                // delete view
+                QAction *actionDeleteView = menu.addAction(QIcon(":/icdwidget/image/tree/view_off.png"),
+                                                           tr("Remove view"));
+                actionDeleteView->setToolTip(tr("Remove chart from view with identity"));
+                connect(actionDeleteView, &QAction::triggered, this, [=](){
+                    QStandardItem *itemTable = findItemTable(item);
+                    emit unbindItem(item, itemTable);
+                });
+            }
         }
         if (treeModes_ == JProtoTreeView::TreeModeAnalyse) {
             QAction *actionExport = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
@@ -1910,7 +1997,41 @@ void JProtoTreeViewPrivate::itemItemTableRightClicked(QStandardItem *item, int d
         }
         break;
     }
-
+    //
+    if (isEditMode()) {
+        // add item
+        QAction *actionAddItem = menu.addAction(QIcon(":/icdwidget/image/tree/add.png"),
+                                                tr("Add item"));
+        createAddItemMenu(item, actionAddItem, AddAction);
+        // clean item
+        if (item->hasChildren()) {
+            QAction *actionClearItem = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
+                                                      tr("Clear item"));
+            connect(actionClearItem, &QAction::triggered, this, [=](){
+                cleanItem(item);
+            });
+        }
+        // remove table
+        QAction *actionRemoveTable = menu.addAction(QIcon(":/icdwidget/image/tree/remove.png"),
+                                                    tr("Remove table"));
+        connect(actionRemoveTable, &QAction::triggered, this, [=](){
+            removeRow(item);
+        });
+        // insert table [before]
+        QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
+                                                    tr("Insert table above"));
+        connect(actionInsertAbove, &QAction::triggered, this, [=](){
+            insertNewRow(item, InsertAboveAction);
+        });
+        createAddItemMenu(item, actionInsertAbove, InsertAboveAction);
+        // insert table [after]
+        QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
+                                                   tr("Insert table below"));
+        connect(actionInserBelow, &QAction::triggered, this, [=](){
+            insertNewRow(item, InsertBelowAction);
+        });
+        createAddItemMenu(item, actionInserBelow, InsertBelowAction);
+    }
     //
     if (item->hasChildren()) {
         if (isItemSelected(item)) {
@@ -2352,10 +2473,18 @@ void JProtoTreeViewPrivate::setValueColor(const QColor &color)
     }
 }
 
-bool JProtoTreeViewPrivate::loadRoot(QStandardItem *itemRoot, int deep)
+bool JProtoTreeViewPrivate::loadRoot(QStandardItem *itemRoot, int deep, bool force)
 {
     if (!parser_ || !itemRoot) {
         return false;
+    }
+
+    if (isEditMode()) {
+        if (!force && isItemLoaded(itemRoot)) {
+            return true;
+        }
+
+        setItemLoadStatus(itemRoot, true);
     }
 
     JAutoCursor cursor(Qt::BusyCursor);
@@ -2370,57 +2499,31 @@ bool JProtoTreeViewPrivate::loadRoot(QStandardItem *itemRoot, int deep)
 
     for (Icd::VehiclePtrArray::const_iterator citer = vehicles.cbegin();
          citer != vehicles.cend(); ++citer) {
-        const Icd::VehiclePtr &vehicle = *citer;
-        // name
-        const QString name = (QString::fromStdString(vehicle->name().empty()
-                                                     ? "<?>" : vehicle->name()));
-        //
-        QString text = name;
-        // type
-        if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>[VEHICLE]</font>");
-        }
-        // create item
-        JTreeViewItem *itemVehicle = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
-                                                       text, Icd::TreeItemTypeVehicle);
-        // add item
-        itemRoot->appendRow(itemVehicle);
-        // drag disabled
-        itemVehicle->setFlags(itemVehicle->flags() & (~Qt::ItemIsDragEnabled));
-        // set tooltip
-        itemVehicle->setToolTip(QString::fromStdString(vehicle->desc()));
-        // bind id property
-        itemVehicle->setData(QString::fromStdString(vehicle->id()), Icd::TreeItemIdRole);
-        // bind domain property
-        itemVehicle->setData(QString::fromStdString(vehicle->id()), Icd::TreeItemDomainRole);
-        // bind path property
-        itemVehicle->setData(name, Icd::TreeItemPathRole);
-        // bind mark property
-        itemVehicle->setData(QString::fromStdString(vehicle->mark()), Icd::TreeItemMarkRole);
-        // load systems
-        if (deep >= Icd::ObjectSystem) {
-            if (!loadVehicle(itemVehicle, vehicle->allSystem(), deep)) {
-                continue;   // load failure
-            }
-            //
-            if (isEditMode()) {
-                setItemLoadStatus(itemVehicle, true);
-            }
-        }
+        insertVehicle(itemRoot->rowCount(), itemRoot, *citer, deep);
     }
 
     if (isEditMode()) {
         protoRoot_ = root;  // save to local
-        setItemLoadStatus(itemRoot, true);
+        //
+        Q_Q(JProtoTreeView);
+        emit q->itemUpdated(itemRoot, false, false);
     }
 
     return true;
 }
 
-bool JProtoTreeViewPrivate::loadVehicle(QStandardItem *itemVehicle, int deep)
+bool JProtoTreeViewPrivate::loadVehicle(QStandardItem *itemVehicle, int deep, bool force)
 {
     if (!parser_ || !itemVehicle) {
         return false;
+    }
+
+    if (isEditMode()) {
+        if (!force && isItemLoaded(itemVehicle)) {
+            return true;
+        }
+
+        setItemLoadStatus(itemVehicle, true);
     }
 
     JAutoCursor cursor(Qt::BusyCursor);
@@ -2440,7 +2543,8 @@ bool JProtoTreeViewPrivate::loadVehicle(QStandardItem *itemVehicle, int deep)
     }
 
     if (isEditMode()) {
-        setItemLoadStatus(itemVehicle, true);
+        Q_Q(JProtoTreeView);
+        emit q->itemUpdated(itemVehicle, false, false);
     }
 
     return true;
@@ -2448,8 +2552,12 @@ bool JProtoTreeViewPrivate::loadVehicle(QStandardItem *itemVehicle, int deep)
 
 bool JProtoTreeViewPrivate::loadVehicle(QStandardItem *itemVehicle, const SystemPtrArray &systems, int deep)
 {
-    if (!itemVehicle || systems.empty()) {
+    if (!itemVehicle) {
         return false;
+    }
+
+    if (systems.empty()) {
+        return true;
     }
 
     const QString domain = itemVehicle->data(Icd::TreeItemDomainRole).toString();
@@ -2457,52 +2565,24 @@ bool JProtoTreeViewPrivate::loadVehicle(QStandardItem *itemVehicle, const System
 
     for (Icd::SystemPtrArray::const_iterator citer = systems.cbegin();
          citer != systems.cend(); ++citer) {
-        const Icd::SystemPtr &system = *citer;
-        // name
-        const QString name = QString::fromStdString(system->name().empty() ? "<?>" : system->name());
-        //
-        QString text = name;
-        // type
-        if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>[SYSTEM]</font>");
-        }
-        // create item
-        JTreeViewItem *itemSystem = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-system.png"),
-                                                      text, Icd::TreeItemTypeSystem);
-        // add item
-        itemVehicle->appendRow(itemSystem);
-        // drag disabled
-        itemSystem->setFlags(itemSystem->flags() & (~Qt::ItemIsDragEnabled));
-        // set tooltip
-        itemSystem->setToolTip(QString::fromStdString(system->desc()));
-        // bind id property
-        itemSystem->setData(QString::fromStdString(system->id()), Icd::TreeItemIdRole);
-        // bind domain property
-        itemSystem->setData(domain + "/" + QString::fromStdString(system->id()),
-                            Icd::TreeItemDomainRole);
-        // bind path property
-        itemSystem->setData(name + "@" + path, Icd::TreeItemPathRole);
-        // bind mark property
-        itemSystem->setData(QString::fromStdString(system->mark()), Icd::TreeItemMarkRole);
-        // load systems
-        if (deep >= Icd::ObjectTable) {
-            if (!loadSystem(itemSystem, system->allTable(), deep)) {
-                continue;   // load failure
-            }
-            //
-            if (isEditMode()) {
-                setItemLoadStatus(itemSystem, true);
-            }
-        }
+        insertSystem(itemVehicle->rowCount(), itemVehicle, *citer, domain, path, deep);
     }
 
     return true;
 }
 
-bool JProtoTreeViewPrivate::loadSystem(QStandardItem *itemSystem, int deep)
+bool JProtoTreeViewPrivate::loadSystem(QStandardItem *itemSystem, int deep, bool force)
 {
     if (!parser_ || !itemSystem) {
         return false;
+    }
+
+    if (isEditMode()) {
+        if (!force && isItemLoaded(itemSystem)) {
+            return true;
+        }
+
+        setItemLoadStatus(itemSystem, true);
     }
 
     JAutoCursor cursor(Qt::BusyCursor);
@@ -2525,7 +2605,8 @@ bool JProtoTreeViewPrivate::loadSystem(QStandardItem *itemSystem, int deep)
     }
 
     if (isEditMode()) {
-        setItemLoadStatus(itemSystem, true);
+        Q_Q(JProtoTreeView);
+        emit q->itemUpdated(itemSystem, false, false);
     }
 
     return true;
@@ -2542,60 +2623,24 @@ bool JProtoTreeViewPrivate::loadSystem(QStandardItem *itemSystem, const TablePtr
 
     for (Icd::TablePtrArray::const_iterator citer = tables.cbegin();
          citer != tables.cend(); ++citer) {
-        const Icd::TablePtr &table = *citer;
-        // name
-        const QString name = QString::fromStdString(table->name().empty() ? "<?>" : table->name());
-        //
-        QString text = name;
-        // type
-        if (showAttris_ & JProtoTreeView::ShowType) {
-            text.append(" <font color=green size=2>[TABLE]</font>");
-        }
-        // create item
-        JTreeViewItem *itemTable = new JTreeViewItem(QIcon(QString(":/icdwidget/image/tree/%1.png")
-                                                           .arg(isEditMode() ? "circle-gray" : "icon-table")),
-                                                     text, Icd::TreeItemTypeTable);
-        // add item
-        itemSystem->appendRow(itemTable);
-        //
-        if (bindTableTypes_ == JProtoTreeView::BindOnlySend
-                || bindTableTypes_ == JProtoTreeView::BindOnlyRecv) {
-            // itemWidget
-            TableItemWidget *itemWidget = new TableItemWidget(bindTableTypes_, this);
-            setItemWidget(itemTable, itemWidget);
-            connect(itemWidget, &TableItemWidget::clicked, this, [=](){
-                emit itemClicked(itemTable);
-            });
-        }
-        // set tooltip
-        itemTable->setToolTip(QString::fromStdString(table->desc()));
-        // bind id property
-        itemTable->setData(QString::fromStdString(table->id()), Icd::TreeItemIdRole);
-        // bind domain property
-        itemTable->setData(domain + '/' + QString::fromStdString(table->id()),
-                           Icd::TreeItemDomainRole);
-        // bind path property
-        itemTable->setData(name + '@' + path, Icd::TreeItemPathRole);
-        // bind mark property
-        itemTable->setData(QString::fromStdString(table->mark()), Icd::TreeItemMarkRole);
-        // load table
-        if (deep >= Icd::ObjectItem) {
-            if (!loadTable(this, itemTable, table->allItem(), deep)) {
-                continue;   // load failure
-            }
-            if (isEditMode()) {
-                setItemLoadStatus(itemTable, true);
-            }
-        }
+        insertTable(itemSystem->rowCount(), itemSystem, *citer, domain, path, deep);
     }
 
     return true;
 }
 
-bool JProtoTreeViewPrivate::loadTable(QStandardItem *itemTable, int deep)
+bool JProtoTreeViewPrivate::loadTable(QStandardItem *itemTable, int deep, bool force)
 {
     if (!parser_ || !itemTable) {
         return false;
+    }
+
+    if (isEditMode()) {
+        if (!force && isItemLoaded(itemTable)) {
+            return true;
+        }
+
+        setItemLoadStatus(itemTable, true);
     }
 
     JAutoCursor cursor(Qt::BusyCursor);
@@ -2621,10 +2666,160 @@ bool JProtoTreeViewPrivate::loadTable(QStandardItem *itemTable, int deep)
     }
 
     if (isEditMode()) {
-        setItemLoadStatus(itemTable, true);
+        Q_Q(JProtoTreeView);
+        emit q->itemUpdated(itemTable, false, false);
     }
 
     return true;
+}
+
+QStandardItem *JProtoTreeViewPrivate::insertVehicle(int row, QStandardItem *itemRoot,
+                                                    const VehiclePtr &vehicle, int deep)
+{
+    if (!itemRoot || !vehicle) {
+        return nullptr;
+    }
+
+    // name
+    const QString name = (QString::fromStdString(vehicle->name().empty()
+                                                 ? "?" : vehicle->name()));
+    //
+    QString text = name;
+    // type
+    if (showAttris_ & JProtoTreeView::ShowType) {
+        text.append(" <font color=green size=2>[VEHICLE]</font>");
+    }
+    // create item
+    JTreeViewItem *itemVehicle = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-vehicle.png"),
+                                                   QString(), Icd::TreeItemTypeVehicle);
+    // add item
+    itemRoot->insertRow(row, itemVehicle);
+    // base properties
+    updateVehicleData(itemVehicle, vehicle);
+    // drag disabled
+    itemVehicle->setFlags(itemVehicle->flags() & (~Qt::ItemIsDragEnabled));
+    // bind id property
+    itemVehicle->setData(QString::fromStdString(vehicle->id()), Icd::TreeItemIdRole);
+    // bind domain property
+    itemVehicle->setData(QString::fromStdString(vehicle->id()), Icd::TreeItemDomainRole);
+    // load systems
+    if (deep >= Icd::ObjectSystem) {
+        //
+        if (isEditMode()) {
+            setItemLoadStatus(itemVehicle, true);
+        }
+        //
+        if (!loadVehicle(itemVehicle, vehicle->allSystem(), deep)) {
+            return nullptr;   // load failure
+        }
+    }
+
+    return itemVehicle;
+}
+
+QStandardItem *JProtoTreeViewPrivate::insertSystem(int row, QStandardItem *itemVehicle, const SystemPtr &system,
+                                                   const QString &domain, const QString &path, int deep)
+{
+    if (!itemVehicle || !system) {
+        return nullptr;
+    }
+
+    // name
+    const QString name = QString::fromStdString(system->name().empty() ? "?" : system->name());
+    //
+    QString text = name;
+    // type
+    if (showAttris_ & JProtoTreeView::ShowType) {
+        text.append(" <font color=green size=2>[SYSTEM]</font>");
+    }
+    // create item
+    JTreeViewItem *itemSystem = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-system.png"),
+                                                  text, Icd::TreeItemTypeSystem);
+    // add item
+    itemVehicle->insertRow(row, itemSystem);
+    // drag disabled
+    itemSystem->setFlags(itemSystem->flags() & (~Qt::ItemIsDragEnabled));
+    // set tooltip
+    itemSystem->setToolTip(QString::fromStdString(system->desc()));
+    // bind id property
+    itemSystem->setData(QString::fromStdString(system->id()), Icd::TreeItemIdRole);
+    // bind domain property
+    itemSystem->setData(domain + "/" + QString::fromStdString(system->id()),
+                        Icd::TreeItemDomainRole);
+    // bind path property
+    itemSystem->setData(name + "@" + path, Icd::TreeItemPathRole);
+    // bind mark property
+    itemSystem->setData(QString::fromStdString(system->mark()), Icd::TreeItemMarkRole);
+    // load systems
+    if (deep >= Icd::ObjectTable) {
+        //
+        if (isEditMode()) {
+            setItemLoadStatus(itemSystem, true);
+        }
+        //
+        if (!loadSystem(itemSystem, system->allTable(), deep)) {
+            return nullptr;   // load failure
+        }
+    }
+
+    return itemSystem;
+}
+
+QStandardItem *JProtoTreeViewPrivate::insertTable(int row, QStandardItem *itemSystem, const TablePtr &table,
+                                                  const QString &domain, const QString &path, int deep)
+{
+    if (!itemSystem || !table) {
+        return nullptr;
+    }
+
+    // name
+    const QString name = QString::fromStdString(table->name().empty() ? "?" : table->name());
+    //
+    QString text = name;
+    // type
+    if (showAttris_ & JProtoTreeView::ShowType) {
+        text.append(" <font color=green size=2>[TABLE]</font>");
+    }
+    // create item
+    JTreeViewItem *itemTable = new JTreeViewItem(QIcon(QString(":/icdwidget/image/tree/%1.png")
+                                                       .arg(isEditMode() ? "circle-gray" : "icon-table")),
+                                                 text, Icd::TreeItemTypeTable);
+    // add item
+    itemSystem->insertRow(row, itemTable);
+    //
+    if (bindTableTypes_ == JProtoTreeView::BindOnlySend
+            || bindTableTypes_ == JProtoTreeView::BindOnlyRecv) {
+        // itemWidget
+        TableItemWidget *itemWidget = new TableItemWidget(bindTableTypes_, this);
+        setItemWidget(itemTable, itemWidget);
+        connect(itemWidget, &TableItemWidget::clicked, this, [=](){
+            emit itemClicked(itemTable);
+        });
+    }
+    // set tooltip
+    itemTable->setToolTip(QString::fromStdString(table->desc()));
+    // bind id property
+    itemTable->setData(QString::fromStdString(table->id()), Icd::TreeItemIdRole);
+    // bind domain property
+    itemTable->setData(domain + '/' + QString::fromStdString(table->id()),
+                       Icd::TreeItemDomainRole);
+    // bind path property
+    itemTable->setData(name + '@' + path, Icd::TreeItemPathRole);
+    // bind mark property
+    itemTable->setData(QString::fromStdString(table->mark()), Icd::TreeItemMarkRole);
+    // load table
+    if (deep >= Icd::ObjectItem) {
+        //
+        if (isEditMode()) {
+            setItemLoadStatus(itemTable, true);
+        }
+        //
+        if (!loadTable(this, itemTable, table->allItem(), deep)) {
+            return nullptr;   // load failure
+        }
+    }
+
+    return itemTable;
 }
 
 bool JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *itemTable,
@@ -2643,7 +2838,7 @@ bool JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *itemTable,
          citer != dataItems.cend(); ++citer) {
         const Icd::ItemPtr &dataItem = *citer;
         //
-        if (!loadTable(target, itemTable, dataItem)) {
+        if (!insertItem(target, itemTable->rowCount(), itemTable, dataItem)) {
             continue;
         }
     }
@@ -2682,7 +2877,7 @@ QStandardItem *JProtoTreeViewPrivate::loadSystem(QObject *target, QStandardItem 
         text.append(JWorkerGroup::generateItemOffset(table, index));
     }
     // name
-    const QString name = QString::fromStdString(table->name().empty() ? "<?>" : table->name());
+    const QString name = QString::fromStdString(table->name().empty() ? "?" : table->name());
     text.append(name);
     // type
     if (showAttris & JProtoTreeView::ShowType) {
@@ -2732,12 +2927,96 @@ QStandardItem *JProtoTreeViewPrivate::loadSystem(QObject *target, QStandardItem 
          citer != dataItems.cend(); ++citer) {
         const Icd::ItemPtr &dataItem = *citer;
         //
-        if (!loadTable(target, itemTable, dataItem)) {
+        if (!insertItem(target, itemTable->rowCount(), itemTable, dataItem)) {
             continue;
         }
     }
 
     return itemTable;
+}
+
+QStandardItem *JProtoTreeViewPrivate::insertItem(QObject *target, int row, QStandardItem *itemTable,
+                                                 const ItemPtr &item)
+{
+    if (!target || !itemTable || !item) {
+        return nullptr;
+    }
+
+    //
+    const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
+    const QString path = itemTable->data(Icd::TreeItemPathRole).toString();
+    const quint32 treeModes = target->property("treeModes").toUInt();
+    const quint32 showAttris = target->property("showAttris").toUInt();
+
+    // name
+    const QString name = [=]() -> QString {
+        const std::string name = item->name();
+        if (name.empty()) {
+            return QString::fromStdString("--");
+        } else {
+            return QString::fromStdString(name);
+        }
+    }();
+
+    QString text = name;
+    // offset
+    if (showAttris & JProtoTreeView::ShowOffset) {
+        text.prepend(JWorkerGroup::generateItemOffset(item));
+    }
+    // type
+    if (showAttris & JProtoTreeView::ShowType) {
+        text.append(" <font color=green size=2>[" + QString::fromStdString(
+                        item->typeString()).toUpper() + "]</font>");
+    }
+    // create item
+    JTreeViewItem *itemDataItem = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-item.png"),
+                                                    text, Icd::TreeItemTypeDataItem);
+    // add item
+    itemTable->insertRow(row, itemDataItem);
+    // set tooltip
+    itemDataItem->setToolTip(QString::fromStdString(item->desc()));
+    // bind id property
+    itemDataItem->setData(domain + '/' + QString::fromStdString(item->id()),
+                          Icd::TreeItemDomainRole);
+    //
+    itemDataItem->setData(uint(item->type()), Icd::TreeDataTypeRole);
+    //
+    // bind path property
+    itemDataItem->setData(name + '@' + path, Icd::TreeItemPathRole);
+    // bind mark property
+    itemDataItem->setData(QString::fromStdString(item->mark()), Icd::TreeItemMarkRole);
+    // load ???
+    switch (item->type()) {
+    case Icd::ItemBitMap:
+        if (treeModes == JProtoTreeView::TreeModeEdit) {
+            break;
+        }
+        if (!loadBitItem(target, itemDataItem, JHandlePtrCast<Icd::BitItem>(item))) {
+            // load failure
+        }
+        break;
+    case Icd::ItemFrameCode:
+        if (!loadFrameCodeItem(target, itemTable, JHandlePtrCast<Icd::FrameCodeItem>(item))) {
+            // load failure
+        }
+        break;
+    case Icd::ItemComplex:
+        // icon
+        itemDataItem->setIcon(QIcon(":/icdwidget/image/tree/icon-complex.png"));
+        if (!loadComplexItem(target, itemDataItem, JHandlePtrCast<Icd::ComplexItem>(item))) {
+            // load failure
+        }
+        break;
+    case Icd::ItemFrame:
+        if (!loadFrameItem(target, itemDataItem, JHandlePtrCast<Icd::FrameItem>(item))) {
+            // load failure
+        }
+        break;
+    default:
+        break;
+    }
+
+    return itemDataItem;
 }
 
 bool JProtoTreeViewPrivate::loadFrameCodeItem(QObject *target, QStandardItem *itemTable,
@@ -2855,89 +3134,6 @@ void JProtoTreeViewPrivate::removeTableItem(QStandardItem *item)
     }
 }
 
-bool JProtoTreeViewPrivate::loadTable(QObject *target, QStandardItem *itemTable, const ItemPtr &item)
-{
-    if (!target || !itemTable || !item) {
-        return false;
-    }
-
-    //
-    const QString domain = itemTable->data(Icd::TreeItemDomainRole).toString();
-    const QString path = itemTable->data(Icd::TreeItemPathRole).toString();
-    const quint32 treeModes = target->property("treeModes").toUInt();
-    const quint32 showAttris = target->property("showAttris").toUInt();
-
-    // name
-    const QString name = [=]() -> QString {
-        const std::string name = item->name();
-        if (name.empty()) {
-            return QString::fromStdString("--");
-        } else {
-            return QString::fromStdString(name);
-        }
-    }();
-
-    QString text = name;
-    // offset
-    if (showAttris & JProtoTreeView::ShowOffset) {
-        text.prepend(JWorkerGroup::generateItemOffset(item));
-    }
-    // type
-    if (showAttris & JProtoTreeView::ShowType) {
-        text.append(" <font color=green size=2>[" + QString::fromStdString(
-                        item->typeString()).toUpper() + "]</font>");
-    }
-    // create item
-    JTreeViewItem *itemDataItem = new JTreeViewItem(QIcon(":/icdwidget/image/tree/icon-item.png"),
-                                                    text, Icd::TreeItemTypeDataItem);
-    // add item
-    itemTable->appendRow(itemDataItem);
-    // set tooltip
-    itemDataItem->setToolTip(QString::fromStdString(item->desc()));
-    // bind id property
-    itemDataItem->setData(domain + '/' + QString::fromStdString(item->id()),
-                          Icd::TreeItemDomainRole);
-    //
-    itemDataItem->setData(uint(item->type()), Icd::TreeDataTypeRole);
-    //
-    // bind path property
-    itemDataItem->setData(name + '@' + path, Icd::TreeItemPathRole);
-    // bind mark property
-    itemDataItem->setData(QString::fromStdString(item->mark()), Icd::TreeItemMarkRole);
-    // load ???
-    switch (item->type()) {
-    case Icd::ItemBitMap:
-        if (treeModes == JProtoTreeView::TreeModeEdit) {
-            break;
-        }
-        if (!loadBitItem(target, itemDataItem, JHandlePtrCast<Icd::BitItem>(item))) {
-            // load failure
-        }
-        break;
-    case Icd::ItemFrameCode:
-        if (!loadFrameCodeItem(target, itemTable, JHandlePtrCast<Icd::FrameCodeItem>(item))) {
-            // load failure
-        }
-        break;
-    case Icd::ItemComplex:
-        // icon
-        itemDataItem->setIcon(QIcon(":/icdwidget/image/tree/icon-complex.png"));
-        if (!loadComplexItem(target, itemDataItem, JHandlePtrCast<Icd::ComplexItem>(item))) {
-            // load failure
-        }
-        break;
-    case Icd::ItemFrame:
-        if (!loadFrameItem(target, itemDataItem, JHandlePtrCast<Icd::FrameItem>(item))) {
-            // load failure
-        }
-        break;
-    default:
-        break;
-    }
-
-    return true;
-}
-
 Icd::WorkerPtr JProtoTreeViewPrivate::queryWorker(const QStandardItem *itemTable) const
 {
     if (!itemTable) {
@@ -2966,6 +3162,28 @@ Icd::WorkerPtr JProtoTreeViewPrivate::queryWorker(const QStandardItem *itemTable
     }
 
     return worker;
+}
+
+void JProtoTreeViewPrivate::updateVehicleData(QStandardItem *item, const VehiclePtr &vehicle)
+{
+    if (!item || !vehicle) {
+        return;
+    }
+
+    // name
+    const QString name = (QString::fromStdString(vehicle->name().empty()
+                                                 ? "?" : vehicle->name()));
+    QString text = name;
+    if (showAttris_ & JProtoTreeView::ShowType) {
+        text.append(" <font color=green size=2>[VEHICLE]</font>");
+    }
+    item->setText(text);
+    // set tooltip
+    item->setToolTip(QString::fromStdString(vehicle->desc()));
+    // bind path property
+    item->setData(name, Icd::TreeItemPathRole);
+    // bind mark property
+    item->setData(QString::fromStdString(vehicle->mark()), Icd::TreeItemMarkRole);
 }
 
 void JProtoTreeViewPrivate::updateItemData(QStandardItem *item)
@@ -3086,7 +3304,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *itemDataItem, const Ic
         text.append(JWorkerGroup::generateItemOffset(dataItem));
     }
     // name
-    text.append(QString::fromStdString(dataItem->name().empty() ? "<?>" : dataItem->name()));
+    text.append(QString::fromStdString(dataItem->name().empty() ? "?" : dataItem->name()));
     // type
     if (showAttris_ & JProtoTreeView::ShowType) {
         text.append(" <font color=green size=2>[" + QString::fromStdString(
@@ -3167,7 +3385,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *itemDataItem, const Co
         text.append(JWorkerGroup::generateItemOffset(complex));
     }
     // name
-    text.append(QString::fromStdString(complex->name().empty() ? "<?>" : complex->name()));
+    text.append(QString::fromStdString(complex->name().empty() ? "?" : complex->name()));
     // type
     if (showAttris_ & JProtoTreeView::ShowType) {
         text.append(" <font color=green size=2>[COMPLEX]</font>");
@@ -3213,7 +3431,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *itemTable, const Table
         text.append(JWorkerGroup::generateItemOffset(table));
     }
     // name
-    text.append(QString::fromStdString(table->name().empty() ? "<?>" : table->name()));
+    text.append(QString::fromStdString(table->name().empty() ? "?" : table->name()));
     // type
     if (showAttris_ & JProtoTreeView::ShowType) {
         text.append(" <font color=green size=2>[TABLE]</font>");
@@ -3412,11 +3630,7 @@ QStandardItem *JProtoTreeViewPrivate::findItemTable(QStandardItem *item) const
 
 bool JProtoTreeViewPrivate::exportData(const QStandardItem *item, bool exportAll)
 {
-    if (!item) {
-        return false;
-    }
-
-    if (!parser_) {
+    if (!item || !parser_) {
         return false;
     }
 
@@ -3690,7 +3904,7 @@ void JProtoTreeViewPrivate::restoreChannelItem(QStandardItem *itemTable, const I
     //
     QString text;
     // name
-    const QString name = QString::fromStdString(table->name().empty() ? "<?>" : table->name());
+    const QString name = QString::fromStdString(table->name().empty() ? "?" : table->name());
     text.append(name);
     // type
     if (showAttris_ & JProtoTreeView::ShowType) {
@@ -3937,7 +4151,7 @@ bool JProtoTreeViewPrivate::loadSystem(JTreeView *treeView, QStandardItem *itemP
 }
 
 QMenu *JProtoTreeViewPrivate::createAddItemMenu(QStandardItem *item, QAction *action,
-                                                JProtoTreeView::EditAction editAction)
+                                                EditAction editAction)
 {
     if (!item) {
         return nullptr;
@@ -3949,17 +4163,254 @@ QMenu *JProtoTreeViewPrivate::createAddItemMenu(QStandardItem *item, QAction *ac
     QMenu *menu = new QMenu(this);
     const auto items = IcdWidget::protoItemMapTypes();
     for (auto citer = items.constBegin(); citer != items.constEnd(); ++citer) {
-        QAction *newAction = menu->addAction(citer.value());
+        const QString icon = ":/icdwidget/image/tree/item-"
+                + QString::fromStdString(Icd::Item::typeString(Icd::ItemType(citer.key())))
+                + ".png";
+        QAction *newAction = menu->addAction(QIcon(icon), citer.value());
         newAction->setData(citer.key());
     }
 
     // event
     action->setMenu(menu);
     connect(menu, &QMenu::triggered, this, [=](QAction *action){
-        emit q->editItemTriggered(item, editAction, action->data());
+        switch (editAction) {
+        case InsertAboveAction:
+        case InsertBelowAction:
+            insertNewRow(item, editAction, action->data());
+            break;
+        default:
+            emit q->requestAdd(item, action->data());
+            break;
+        }
     });
 
     return menu;
+}
+
+void JProtoTreeViewPrivate::insertRow(int row, const ObjectPtr &target, const QVariant &data)
+{
+    Q_UNUSED(data);
+
+    if (!target) {
+        return;
+    }
+
+    QStandardItem *parentItem = this->currentItem();
+    if (!parentItem) {
+        return;
+    }
+
+    switch (target->rtti()) {
+    case Icd::ObjectVehicle:
+    {
+        auto vehicle = JHandlePtrCast<Icd::Vehicle>(target);
+        if (!vehicle) {
+            break;
+        }
+
+        insertVehicle(row, parentItem, vehicle, Icd::ObjectSystem);
+
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void JProtoTreeViewPrivate::updateRow(int row, const ObjectPtr &target, const QVariant &data)
+{
+    Q_UNUSED(data);
+
+    if (!target) {
+        return;
+    }
+
+    QStandardItem *targetItem = this->currentItem();
+    if (row >= 0) {
+        targetItem = this->currentItem();
+        if (targetItem) {
+            targetItem = targetItem->child(row);
+        }
+    }
+
+    if (!targetItem) {
+        return;
+    }
+
+    switch (target->rtti()) {
+    case Icd::ObjectVehicle:
+    {
+        auto vehicle = JHandlePtrCast<Icd::Vehicle>(target);
+        if (!vehicle) {
+            break;
+        }
+
+        updateVehicleData(targetItem, vehicle);
+
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void JProtoTreeViewPrivate::removeRow(int row, const ObjectPtr &target, const QVariant &data)
+{
+    Q_UNUSED(row);
+    Q_UNUSED(target);
+    Q_UNUSED(data);
+}
+
+void JProtoTreeViewPrivate::insertNewRow(QStandardItem *item, int editAction, const QVariant &data)
+{
+    Q_UNUSED(data);
+
+    newItem_ = nullptr;
+    newObject_.reset();
+
+    if (!item) {
+        return;
+    }
+
+    const Icd::ObjectPtr object = findObject(item);
+    if (!object) {
+        return;
+    }
+
+    QStandardItem *parentItem = item->parent();
+    if (!parentItem) {
+        return;
+    }
+
+    int row = -1;
+
+    switch (editAction) {
+    case InsertAboveAction: row = item->row(); break;
+    case InsertBelowAction: row = item->row() + 1; break;
+    default: return;
+    }
+
+    switch (item->type()) {
+    case Icd::TreeItemTypeVehicle:
+    {
+        auto newVehicle = std::make_shared<Icd::Vehicle>(object->parent());
+        newObject_ = newVehicle;
+        newItem_ = insertVehicle(row, parentItem, newVehicle, Icd::ObjectSystem);
+        break;
+    }
+    case Icd::TreeItemTypeSystem:
+    {
+        const QString domain = parentItem->data(Icd::TreeItemDomainRole).toString();
+        const QString path = parentItem->data(Icd::TreeItemPathRole).toString();
+        auto newSystem = std::make_shared<Icd::System>(object->parent());
+        newObject_ = newSystem;
+        newItem_ = insertSystem(row, parentItem, newSystem, domain, path, Icd::ObjectTable);
+        break;
+    }
+    case Icd::TreeItemTypeTable:
+    {
+        const QString domain = parentItem->data(Icd::TreeItemDomainRole).toString();
+        const QString path = parentItem->data(Icd::TreeItemPathRole).toString();
+        auto newTable = std::make_shared<Icd::Table>(object->parent());
+        newObject_ = newTable;
+        newItem_ = insertTable(row, parentItem, newTable, domain, path, Icd::ObjectItem);
+        break;
+    }
+    case Icd::TreeItemTypeDataItem:
+    {
+        auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()));
+        newObject_ = newItem;
+        newItem_ = insertItem(this, row, parentItem, newItem);
+        break;
+    }
+    default:
+        break;
+    }
+
+    if (newItem_) {
+        newItem_->setData(true, Icd::TreeItemNewRole);
+        setCurrentItem(newItem_);
+    }
+}
+
+void JProtoTreeViewPrivate::applyInsert(const Icd::ObjectPtr &target)
+{
+    if (!newItem_ || !newObject_ || !target) {
+        return;
+    }
+
+    updateRow(-1, target);
+
+    newItem_->setData(QVariant::Invalid, Icd::TreeItemNewRole);
+    newItem_ = nullptr;
+    newObject_.reset();
+}
+
+void JProtoTreeViewPrivate::cancelInsert()
+{
+    if (!newItem_ || !newObject_) {
+        return;
+    }
+
+    newItem_->setData(QVariant::Invalid, Icd::TreeItemNewRole);
+
+    if (newItem_->parent()) {
+        newItem_->parent()->removeRow(newItem_->row());
+    }
+
+    newItem_ = nullptr;
+    newObject_.reset();
+}
+
+void JProtoTreeViewPrivate::removeRow(QStandardItem *item)
+{
+    if (!item || item == newItem_) {
+        return;
+    }
+
+    setCurrentItem(nullptr);
+
+    auto object = findByDomain(item->data(Icd::TreeItemDomainRole).toString());
+    if (object && object->parent()) {
+        auto parent = object->parent();
+        if (parent->rtti() == Icd::ObjectFrame) {
+            if (object->rtti() != Icd::ObjectTable) {
+                return;
+            }
+            auto table = dynamic_cast<Icd::Table*>(parent);
+            if (!table) {
+                return;
+            }
+            parent->removeChild(table->frameCode());
+        } else {
+            parent->removeChild(Icd::icd_uint64(item->row()));
+        }
+    }
+
+    Q_Q(JProtoTreeView);
+    emit q->itemUpdated(item, false, true);
+
+    QStandardItem *parent = item->parent();
+    if (parent) {
+        parent->removeRow(item->row());
+    }
+}
+
+void JProtoTreeViewPrivate::cleanItem(QStandardItem *item)
+{
+    if (!item || !item->hasChildren() || item == newItem_) {
+        return;
+    }
+
+    clearChildren(item);
+
+    auto object = findByDomain(item->data(Icd::TreeItemDomainRole).toString());
+    if (object) {
+        object->clearChildren();
+    }
+
+    Q_Q(JProtoTreeView);
+    emit q->itemUpdated(item, true, false);
 }
 
 } // end of namespace Icd
