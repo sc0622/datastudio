@@ -43,9 +43,9 @@ private:
     JDoubleSpinBox *spinScale_;
     QLineEdit *editUnit_;
     JDoubleSpinBox *spinMinimum_;
-    QCheckBox *checkMinimumInf_;
+    QCheckBox *checkMinimum_;
     JDoubleSpinBox *spinMaximum_;
-    QCheckBox *checkMaximumInf_;
+    QCheckBox *checkMaximum_;
     JDoubleSpinBox *spinDefaultValue_;
     SpecsTable *tableSpecs_;
 };

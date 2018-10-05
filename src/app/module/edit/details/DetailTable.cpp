@@ -33,7 +33,9 @@ void DetailTableView::keyPressEvent(QKeyEvent *event)
 {
     Qt::KeyboardModifiers modifiers = event->modifiers();
     if ((modifiers & Qt::ControlModifier) || (modifiers & Qt::ShiftModifier)) {
-        setSelectionMode(QAbstractItemView::ExtendedSelection);
+        if (selectionMode_ != QAbstractItemView::NoSelection) {
+            setSelectionMode(QAbstractItemView::ExtendedSelection);
+        }
     }
 
     JTableView::keyPressEvent(event);
@@ -43,8 +45,9 @@ void DetailTableView::keyReleaseEvent(QKeyEvent *event)
 {
     Qt::KeyboardModifiers modifiers = event->modifiers();
     if (!((modifiers & Qt::ControlModifier) && (modifiers & Qt::ShiftModifier))) {
-        setSelectionMode(selectionMode_);
-        //clearSelection();
+        if (selectionMode_ != QAbstractItemView::NoSelection) {
+            setSelectionMode(selectionMode_);
+        }
     }
 
     JTableView::keyReleaseEvent(event);
@@ -91,7 +94,7 @@ DetailTable::DetailTable(QWidget *parent)
 
 void DetailTable::resetView()
 {
-    cancelInsert();
+    cancel();
     tableView_->clearSelection();
     tableView_->clear();
     object_.reset();
@@ -355,16 +358,23 @@ void DetailTable::updateRow(int row)
     }
 }
 
-void DetailTable::applyInsert()
+void DetailTable::apply(const Icd::ObjectPtr &target)
 {
     if (newObject_) {
         newObject_.reset();
     }
 
-    updateRow(currentRow());
+    if (object_ && object_->objectType() == Icd::ObjectItem
+            && object_->rtti() != Icd::ObjectFrame) {
+        object_ = target;
+        tableView_->clearContents();
+        updateItem(JHandlePtrCast<Icd::Item>(object_));
+    } else {
+        updateRow(currentRow());
+    }
 }
 
-void DetailTable::cancelInsert()
+void DetailTable::cancel()
 {
     if (newObject_) {
         tableView_->clearSelection();

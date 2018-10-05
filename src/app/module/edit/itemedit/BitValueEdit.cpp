@@ -22,9 +22,9 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     spinMinimum_ = new JDoubleSpinBox(this);
     spinMinimum_->setReadOnly(true);
     layoutMinimum->addWidget(spinMinimum_);
-    checkMinimumInf_ = new QCheckBox(this);
-    checkMinimumInf_->setMaximumWidth(checkMinimumInf_->sizeHint().height());
-    layoutMinimum->addWidget(checkMinimumInf_);
+    checkMinimum_ = new QCheckBox(this);
+    checkMinimum_->setMaximumWidth(checkMinimum_->sizeHint().height());
+    layoutMinimum->addWidget(checkMinimum_);
     layoutMinimum->addSpacing(3);
     addRow(tr("Minimum:"), layoutMinimum);
 
@@ -32,9 +32,9 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     spinMaximum_ = new JDoubleSpinBox(this);
     spinMaximum_->setReadOnly(true);
     layoutMaximum->addWidget(spinMaximum_);
-    checkMaximumInf_ = new QCheckBox(this);
-    checkMaximumInf_->setMaximumWidth(checkMaximumInf_->sizeHint().height());
-    layoutMaximum->addWidget(checkMaximumInf_);
+    checkMaximum_ = new QCheckBox(this);
+    checkMaximum_->setMaximumWidth(checkMaximum_->sizeHint().height());
+    layoutMaximum->addWidget(checkMaximum_);
     layoutMaximum->addSpacing(3);
     addRow(tr("Maximum:"), layoutMaximum);
 
@@ -60,7 +60,7 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     });
     connect(spinMinimum_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
             this, [=](double value){
-        if (checkMaximumInf_->isChecked()) {
+        if (checkMaximum_->isChecked()) {
             const double maximum = spinMaximum_->value();
             if (value > maximum) {
                 spinMaximum_->setValue(value);
@@ -73,7 +73,7 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
             emit contentChanged();
         }
     });
-    connect(checkMinimumInf_, &QCheckBox::toggled, this, [=](bool checked){
+    connect(checkMinimum_, &QCheckBox::toggled, this, [=](bool checked){
         spinMinimum_->setReadOnly(!checked);
         if (checked) {
             spinMinimum_->setValue(qMin(spinMaximum_->value(), spinDefaultValue_->value()));
@@ -86,7 +86,7 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     });
     connect(spinMaximum_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
             this, [=](double value){
-        if (checkMinimumInf_->isChecked()) {
+        if (checkMinimum_->isChecked()) {
             const double minimum = spinMinimum_->value();
             if (value < minimum) {
                 spinMinimum_->setValue(value);
@@ -99,7 +99,7 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
             emit contentChanged();
         }
     });
-    connect(checkMaximumInf_, &QCheckBox::toggled, this, [=](bool checked){
+    connect(checkMaximum_, &QCheckBox::toggled, this, [=](bool checked){
         spinMaximum_->setReadOnly(!checked);
         if (checked) {
             spinMaximum_->setValue(qMax(spinMinimum_->value(), spinDefaultValue_->value()));
@@ -112,12 +112,12 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     });
     connect(spinDefaultValue_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
             this, [=](double value){
-        if (checkMinimumInf_->isChecked()) {
+        if (checkMinimum_->isChecked()) {
             if (value < spinMinimum_->value()) {
                 spinMinimum_->setValue(value);
             }
         }
-        if (checkMaximumInf_->isChecked()) {
+        if (checkMaximum_->isChecked()) {
             if (value > spinMaximum_->value()) {
                 spinMaximum_->setValue(value);
             }
@@ -161,17 +161,17 @@ void BitValueEdit::restoreContent(bool recursive)
         // unit
         editUnit_->setText(QString::fromStdString(bit->unit()));
         // mnimum-inf
-        checkMinimumInf_->setChecked(!bit->limit()->minimumInf());
+        checkMinimum_->setChecked(!bit->limit()->minimumInf());
         // minimum
-        if (checkMinimumInf_->isChecked()) {
+        if (checkMinimum_->isChecked()) {
             spinMinimum_->setValue(bit->limit()->minimum());
         } else {
             spinMinimum_->clear();
         }
         // maximum-inf
-        checkMaximumInf_->setChecked(!bit->limit()->maximumInf());
+        checkMaximum_->setChecked(!bit->limit()->maximumInf());
         // maximum
-        if (checkMaximumInf_->isChecked()) {
+        if (checkMaximum_->isChecked()) {
             spinMaximum_->setValue(bit->limit()->maximum());
         } else {
             spinMaximum_->clear();
@@ -210,15 +210,15 @@ void BitValueEdit::saveContent()
     // unit
     bit->setUnit(editUnit_->text().trimmed().toStdString());
     // minimumInf
-    bit->limit()->setMinimumInf(checkMinimumInf_->isChecked());
+    bit->limit()->setMinimumInf(!checkMinimum_->isChecked());
     // minimum
-    if (checkMinimumInf_->isChecked()) {
+    if (checkMinimum_->isChecked()) {
         bit->limit()->setMinimum(spinMinimum_->value());
     }
     // maximumInf
-    bit->limit()->setMaximumInf(checkMaximumInf_->isChecked());
+    bit->limit()->setMaximumInf(!checkMaximum_->isChecked());
     // maximum
-    if (checkMaximumInf_->isChecked()) {
+    if (checkMaximum_->isChecked()) {
         bit->limit()->setMaximum(spinMaximum_->value());
     }
     // default value

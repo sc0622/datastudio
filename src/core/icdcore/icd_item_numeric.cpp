@@ -347,9 +347,8 @@ void NumericItem::clearSpec()
 
 std::pair<double, double> NumericItem::dataRange() const
 {
-    std::pair<double, double> range = std::make_pair<double, double>
-            (-DBL_MAX, DBL_MAX);
-    const int typeSize = (static_cast<int>(bufferSize()) << 3);
+    std::pair<double, double> range = std::make_pair<double, double>(-DBL_MAX, DBL_MAX);
+    const int bits = (static_cast<int>(bufferSize()) << 3);
 
     if (d->limit->minimumInf()) {
         switch (d->numericType) {
@@ -364,7 +363,7 @@ std::pair<double, double> NumericItem::dataRange() const
         case NumericI32:
         case NumericF32:
         case NumericF64:
-            range.first = double(-(1ll << (typeSize - 1)));
+            range.first = double(-(1ll << (bits - 1)));
             break;
         default:
             break;
@@ -379,14 +378,14 @@ std::pair<double, double> NumericItem::dataRange() const
         case NumericU16:
         case NumericU32:
         case NumericU64:
-            range.second = double((1ll << typeSize) - 1);
+            range.second = double((1ll << bits) - 1);
             break;
         case NumericI8:
         case NumericI16:
         case NumericI32:
         case NumericF32:
         case NumericF64:
-            range.second = double((1ll << (typeSize - 1)) - 1);
+            range.second = double((1ll << (bits - 1)) - 1);
             break;
         default:
             break;

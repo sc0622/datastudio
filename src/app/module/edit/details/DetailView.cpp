@@ -51,7 +51,7 @@ void DetailView::requestAdd(QStandardItem *item, const QVariant &data)
         return;
     }
 
-    detailTable_->cancelInsert();
+    detailTable_->cancel();
     newObject_.reset();
 
     insertRow(detailTable_->rowCount(), item, data);
@@ -177,7 +177,7 @@ void DetailView::onApplied()
     Icd::ObjectPtr target = detailEdit_->target();
 
     // update tableview
-    detailTable_->applyInsert();
+    detailTable_->apply(target);
 
     // update treeview
     QVariantList args;
@@ -199,7 +199,7 @@ void DetailView::onCanceled()
         return;
     }
 
-    detailTable_->cancelInsert();
+    detailTable_->cancel();
     detailEdit_->resetView();
     newObject_.reset();
 

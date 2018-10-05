@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     //QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
 
     QApplication app(argc, argv);
-    QApplication::setFont(QFont("Microsoft Yahei", 9));
+    QApplication::setFont(QFont("Microsoft YaHei", 9));
     QApplication::setWindowIcon(QIcon(":/datastudio/image/app.png"));
     QCoreApplication::setOrganizationName("Smartsoft");
     QCoreApplication::setApplicationName("Data Studio");

@@ -92,8 +92,8 @@ public:
     void insertRow(int row, const Icd::SystemPtr &system);
     void insertRow(int row, const Icd::TablePtr &table);
     void insertRow(int row, const Icd::ItemPtr &item);
-    void applyInsert();
-    void cancelInsert();
+    void apply(const Icd::ObjectPtr &target);
+    void cancel();
 
 signals:
     void currentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject);

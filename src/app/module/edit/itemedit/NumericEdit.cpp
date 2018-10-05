@@ -26,9 +26,9 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     spinMinimum_ = new JDoubleSpinBox(this);
     spinMinimum_->setReadOnly(true);
     layoutMinimum->addWidget(spinMinimum_);
-    checkMinimumInf_ = new QCheckBox(this);
-    checkMinimumInf_->setMaximumWidth(checkMinimumInf_->sizeHint().height());
-    layoutMinimum->addWidget(checkMinimumInf_);
+    checkMinimum_ = new QCheckBox(this);
+    checkMinimum_->setMaximumWidth(checkMinimum_->sizeHint().height());
+    layoutMinimum->addWidget(checkMinimum_);
     layoutMinimum->addSpacing(3);
     addRow(tr("Minimum:"), layoutMinimum);
 
@@ -36,9 +36,9 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     spinMaximum_ = new JDoubleSpinBox(this);
     spinMaximum_->setReadOnly(true);
     layoutMaximum->addWidget(spinMaximum_);
-    checkMaximumInf_ = new QCheckBox(this);
-    checkMaximumInf_->setMaximumWidth(checkMaximumInf_->sizeHint().height());
-    layoutMaximum->addWidget(checkMaximumInf_);
+    checkMaximum_ = new QCheckBox(this);
+    checkMaximum_->setMaximumWidth(checkMaximum_->sizeHint().height());
+    layoutMaximum->addWidget(checkMaximum_);
     layoutMaximum->addSpacing(3);
     addRow(tr("Maximum:"), layoutMaximum);
 
@@ -85,7 +85,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     });
     connect(spinMinimum_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
             this, [=](double value){
-        if (checkMaximumInf_->isChecked()) {
+        if (checkMaximum_->isChecked()) {
             const double maximum = spinMaximum_->value();
             if (value > maximum) {
                 spinMaximum_->setValue(value);
@@ -98,7 +98,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
             emit contentChanged();
         }
     });
-    connect(checkMinimumInf_, &QCheckBox::toggled, this, [=](bool checked){
+    connect(checkMinimum_, &QCheckBox::toggled, this, [=](bool checked){
         spinMinimum_->setReadOnly(!checked);
         if (checked) {
             spinMinimum_->setValue(qMin(spinMaximum_->value(), spinDefaultValue_->value()));
@@ -111,7 +111,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     });
     connect(spinMaximum_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
             this, [=](double value){
-        if (checkMinimumInf_->isChecked()) {
+        if (checkMinimum_->isChecked()) {
             const double minimum = spinMinimum_->value();
             if (value < minimum) {
                 spinMinimum_->setValue(value);
@@ -124,7 +124,7 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
             emit contentChanged();
         }
     });
-    connect(checkMaximumInf_, &QCheckBox::toggled, this, [=](bool checked){
+    connect(checkMaximum_, &QCheckBox::toggled, this, [=](bool checked){
         spinMaximum_->setReadOnly(!checked);
         if (checked) {
             spinMaximum_->setValue(qMax(spinMinimum_->value(), spinDefaultValue_->value()));
@@ -137,12 +137,12 @@ NumericEdit::NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent)
     });
     connect(spinDefaultValue_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),
             this, [=](double value){
-        if (checkMinimumInf_->isChecked()) {
+        if (checkMinimum_->isChecked()) {
             if (value < spinMinimum_->value()) {
                 spinMinimum_->setValue(value);
             }
         }
-        if (checkMaximumInf_->isChecked()) {
+        if (checkMaximum_->isChecked()) {
             if (value > spinMaximum_->value()) {
                 spinMaximum_->setValue(value);
             }
@@ -199,17 +199,17 @@ void NumericEdit::restoreContent(bool recursive)
         // unit
         editUnit_->setText(QString::fromStdString(numeric->unit()));
         // mnimum-inf
-        checkMinimumInf_->setChecked(!numeric->limit()->minimumInf());
+        checkMinimum_->setChecked(!numeric->limit()->minimumInf());
         // minimum
-        if (checkMinimumInf_->isChecked()) {
+        if (checkMinimum_->isChecked()) {
             spinMinimum_->setValue(numeric->limit()->minimum());
         } else {
             spinMinimum_->clear();
         }
         // maximum-inf
-        checkMaximumInf_->setChecked(!numeric->limit()->maximumInf());
+        checkMaximum_->setChecked(!numeric->limit()->maximumInf());
         // maximum
-        if (checkMaximumInf_->isChecked()) {
+        if (checkMaximum_->isChecked()) {
             spinMaximum_->setValue(numeric->limit()->maximum());
         } else {
             spinMaximum_->clear();
@@ -262,15 +262,15 @@ void NumericEdit::saveContent()
     // unit
     numeric->setUnit(editUnit_->text().trimmed().toStdString());
     // minimumInf
-    numeric->limit()->setMinimumInf(checkMinimumInf_->isChecked());
+    numeric->limit()->setMinimumInf(!checkMinimum_->isChecked());
     // minimum
-    if (checkMinimumInf_->isChecked()) {
+    if (checkMinimum_->isChecked()) {
         numeric->limit()->setMinimum(spinMinimum_->value());
     }
     // maximumInf
-    numeric->limit()->setMaximumInf(checkMaximumInf_->isChecked());
+    numeric->limit()->setMaximumInf(!checkMaximum_->isChecked());
     // maximum
-    if (checkMaximumInf_->isChecked()) {
+    if (checkMaximum_->isChecked()) {
         numeric->limit()->setMaximum(spinMaximum_->value());
     }
     // default value
