@@ -257,6 +257,12 @@ bool JProtoTreeView::hasUnloadedItem() const
     return d->hasUnloadedItem(d->invisibleRootItem());
 }
 
+QStandardItem *JProtoTreeView::unloadedItem() const
+{
+    Q_D(const JProtoTreeView);
+    return d->unloadedItem(d->invisibleRootItem());
+}
+
 ObjectPtr JProtoTreeView::findObject(QStandardItem *item) const
 {
     Q_D(const JProtoTreeView);

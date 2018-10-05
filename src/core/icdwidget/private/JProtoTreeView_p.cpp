@@ -844,14 +844,19 @@ bool JProtoTreeViewPrivate::isEditMode() const
 
 bool JProtoTreeViewPrivate::hasUnloadedItem(QStandardItem *item) const
 {
+    return (unloadedItem(item) != nullptr);
+}
+
+QStandardItem *JProtoTreeViewPrivate::unloadedItem(QStandardItem *item) const
+{
     if (!item) {
         item = invisibleRootItem();
     } else if (item->type() > Icd::TreeItemTypeTable) {
-        return false;
+        return nullptr;
     }
 
     if (!isEditMode()) {
-        return false;
+        return nullptr;
     }
 
     Q_Q(const JProtoTreeView);
@@ -859,15 +864,19 @@ bool JProtoTreeViewPrivate::hasUnloadedItem(QStandardItem *item) const
     const int count = item->rowCount();
     for (int i = 0; i < count; ++i) {
         QStandardItem *childItem = item->child(i);
-        if (!q->isItemLoaded(childItem)) {
-            return true;
+        if (childItem->type() > Icd::TreeItemTypeTable) {
+            continue;
         }
-        if (hasUnloadedItem(childItem)) {
-            return true;
+        if (!q->isItemLoaded(childItem)) {
+            return childItem;
+        }
+        QStandardItem *ret = unloadedItem(childItem);
+        if (ret) {
+            return ret;
         }
     }
 
-    return false;
+    return nullptr;
 }
 
 bool JProtoTreeViewPrivate::isItemLoaded(QStandardItem *item)

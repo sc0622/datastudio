@@ -121,6 +121,7 @@ public:
 
     bool isItemLoaded(QStandardItem *item) const;
     bool hasUnloadedItem() const;
+    QStandardItem *unloadedItem() const;
 
     Icd::ObjectPtr findObject(QStandardItem *item) const;
 

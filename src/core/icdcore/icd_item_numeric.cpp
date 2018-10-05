@@ -565,7 +565,7 @@ bool NumericItem::restore(const Json::Value &json, int deep)
         setScale(json["scale"].asDouble());
     }
     // decimals
-    setDecimals(json["decimals"].asDouble());
+    setDecimals(json["decimals"].asInt());
     // limit
     if (!d->limit->restore(json["limit"], deep)) {
         return false;

@@ -140,6 +140,7 @@ public:
 
     bool isEditMode() const;
     bool hasUnloadedItem(QStandardItem *item = nullptr) const;
+    QStandardItem *unloadedItem(QStandardItem *item = nullptr) const;
     static bool isItemLoaded(QStandardItem *item);
     Icd::ObjectPtr findObject(QStandardItem *item) const;
 

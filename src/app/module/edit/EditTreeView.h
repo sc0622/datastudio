@@ -2,8 +2,13 @@
 #define EDITTREEVIEW_H
 
 #include <QWidget>
+#include <memory>
 
-namespace Icd { class JProtoTreeView; }
+namespace Icd {
+class JProtoTreeView;
+class Object;
+typedef std::shared_ptr<Object> ObjectPtr;
+}
 
 namespace Edit {
 
@@ -25,6 +30,7 @@ public slots:
 private:
     bool updateParser();
     void save(bool saveAs);
+    QString nameDomainOfObject(const Icd::ObjectPtr &object) const;
 
 private:
     Icd::JProtoTreeView *treeView_;

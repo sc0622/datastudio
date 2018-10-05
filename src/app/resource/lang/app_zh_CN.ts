@@ -1110,37 +1110,39 @@
 <context>
     <name>Edit::TreeView</name>
     <message>
-        <location filename="../../module/edit/EditTreeView.cpp" line="206"/>
-        <location filename="../../module/edit/EditTreeView.cpp" line="247"/>
+        <location filename="../../module/edit/EditTreeView.cpp" line="208"/>
+        <location filename="../../module/edit/EditTreeView.cpp" line="249"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditTreeView.cpp" line="207"/>
-        <source>The protocol is not fully loaded, and saving will lose part of the protocol.
-Continue saving?</source>
-        <translation>协议未完全加载，继续保存将丢失部分协议
-是否继续保存？</translation>
+        <location filename="../../module/edit/EditTreeView.cpp" line="209"/>
+        <source>The protocol is not fully loaded, and saving will lose part of the protocol.Continue saving?
+
+%1</source>
+        <translation>协议未完全加载，继续保存将丢失部分协议！是否继续保存？
+
+%1</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditTreeView.cpp" line="221"/>
+        <location filename="../../module/edit/EditTreeView.cpp" line="223"/>
         <source>Save as (Notice: will save you selected item and children)</source>
         <translation>另存为（注意：将只导出选中的树节点及其所有子节点协议）</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditTreeView.cpp" line="247"/>
+        <location filename="../../module/edit/EditTreeView.cpp" line="249"/>
         <source>Protocol is saved failed!</source>
-        <translation>协议保存失败！</translation>
+        <translation>协议保存失败！                                             </translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditTreeView.cpp" line="251"/>
+        <location filename="../../module/edit/EditTreeView.cpp" line="253"/>
         <source>Notice</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditTreeView.cpp" line="251"/>
+        <location filename="../../module/edit/EditTreeView.cpp" line="253"/>
         <source>Protocol is saved successfully!</source>
-        <translation>协议保存成功！</translation>
+        <translation>协议保存成功！                                             </translation>
     </message>
 </context>
 <context>

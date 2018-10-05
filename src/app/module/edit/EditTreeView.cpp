@@ -202,11 +202,13 @@ bool TreeView::updateParser()
 void TreeView::save(bool saveAs)
 {
     // check unloaded any protocol
-    if (treeView_->hasUnloadedItem()) {
+    QStandardItem *unloadedItem = treeView_->unloadedItem();
+    if (unloadedItem) {
+        const Icd::ObjectPtr object = treeView_->findObject(unloadedItem);
         int result = QMessageBox::warning(this, tr("Warning"),
                                           tr("The protocol is not fully loaded, "
-                                             "and saving will lose part of the protocol.\n"
-                                             "Continue saving?"),
+                                             "and saving will lose part of the protocol."
+                                             "Continue saving?\n\n%1").arg(nameDomainOfObject(object)),
                                           QMessageBox::Yes | QMessageBox::No);
         if (result != QMessageBox::Yes) {
             return;
@@ -249,6 +251,25 @@ void TreeView::save(bool saveAs)
     }
 
     QMessageBox::information(this, tr("Notice"), tr("Protocol is saved successfully!"));
+}
+
+QString TreeView::nameDomainOfObject(const Icd::ObjectPtr &object) const
+{
+    if (!object) {
+        return QString("<?>");
+    }
+
+    std::string name = object->name();
+    QStringList sections(QString::fromStdString(name.empty() ? "?" : name));
+
+    Icd::Object *parent = object->parent();
+    while (parent && parent->objectType() > Icd::ObjectRoot) {
+        name = parent->name();
+        sections.append(QString::fromStdString(name.empty() ? "?" : name));
+        parent = parent->parent();
+    }
+
+    return sections.join("@");
 }
 
 }

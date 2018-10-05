@@ -275,10 +275,6 @@
         <translation>删除机型</translation>
     </message>
     <message>
-        <source>Add %1</source>
-        <translation type="vanished">增加%1</translation>
-    </message>
-    <message>
         <source>table</source>
         <translation>表项</translation>
     </message>
