@@ -4,6 +4,54 @@
 
 namespace Edit {
 
+// class DetaiLTableView
+
+DetailTableView::DetailTableView(QWidget *parent)
+    : JTableView(parent)
+    , selectionMode_(QAbstractItemView::NoSelection)
+{
+    setFocusPolicy(Qt::StrongFocus);
+}
+
+void DetailTableView::enableSelect(bool enabled)
+{
+    if (enabled) {
+        const Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
+        if ((modifiers & Qt::ControlModifier) || (modifiers & Qt::ShiftModifier)) {
+            selectionMode_ = QAbstractItemView::ExtendedSelection;
+        } else {
+            selectionMode_ = QAbstractItemView::SingleSelection;
+        }
+    } else {
+        selectionMode_ = QAbstractItemView::NoSelection;
+    }
+
+    setSelectionMode(selectionMode_);
+}
+
+void DetailTableView::keyPressEvent(QKeyEvent *event)
+{
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+    if ((modifiers & Qt::ControlModifier) || (modifiers & Qt::ShiftModifier)) {
+        setSelectionMode(QAbstractItemView::ExtendedSelection);
+    }
+
+    JTableView::keyPressEvent(event);
+}
+
+void DetailTableView::keyReleaseEvent(QKeyEvent *event)
+{
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+    if (!((modifiers & Qt::ControlModifier) && (modifiers & Qt::ShiftModifier))) {
+        setSelectionMode(selectionMode_);
+        //clearSelection();
+    }
+
+    JTableView::keyReleaseEvent(event);
+}
+
+// class DetailTable
+
 DetailTable::DetailTable(QWidget *parent)
     : QWidget(parent)
     , object_(nullptr)
@@ -13,7 +61,7 @@ DetailTable::DetailTable(QWidget *parent)
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
-    tableView_ = new JTableView(this);
+    tableView_ = new DetailTableView(this);
     tableView_->setContextMenuPolicy(Qt::ActionsContextMenu);
     delegate_ = new ViewDelegate(tableView_);
     tableView_->setItemDelegate(delegate_);
@@ -28,21 +76,15 @@ DetailTable::DetailTable(QWidget *parent)
 
     connect(tableView_, &JTableView::customContextMenuRequested,
             this, &DetailTable::showContextMenu);
-    connect(tableView_, &JTableView::currentCellChanged, this,
-            [=](int currentRow, int currentColumn, int previousRow, int previuosColumn){
-        Q_UNUSED(currentColumn);
-        Q_UNUSED(previuosColumn);
-        if (currentRow == previousRow) {
-            return;
-        }
+    connect(tableView_, &JTableView::itemSelectionChanged, this, [=](){
         if (!object_) {
             emit currentItemChanged(QVariant::Invalid, newObject_);
             return;
         }
         if (object_->rtti() == Icd::ObjectFrame) {
-            emit currentItemChanged(tableView_->itemData(currentRow, 0, Qt::UserRole + 1), newObject_);
+            emit currentItemChanged(tableView_->itemData(currentRow(), 0, Qt::UserRole + 1), newObject_);
         } else {
-            emit currentItemChanged(currentRow, newObject_);
+            emit currentItemChanged(currentRow(), newObject_);
         }
     });
 }
@@ -50,6 +92,7 @@ DetailTable::DetailTable(QWidget *parent)
 void DetailTable::resetView()
 {
     cancelInsert();
+    tableView_->clearSelection();
     tableView_->clear();
     object_.reset();
     newObject_.reset();
@@ -68,13 +111,18 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
 
     bool result = false;
 
+    tableView_->enableSelect(true);
+
     switch (object->rtti()) {
     case Icd::ObjectRoot: result = updateRoot(); break;
     case Icd::ObjectVehicle: result = updateVehicle(); break;
     case Icd::ObjectSystem: result = updateSystem(); break;
     case Icd::ObjectTable: result = updateTable(); break;
-    case Icd::ObjectFrame: result = updateFrame(); break;
-    default: result = updateItem(); break;
+    case Icd::ObjectFrame: result = updateFrame(JHandlePtrCast<Icd::FrameItem>(object)); break;
+    default:
+        tableView_->enableSelect(false);
+        result = updateItem();
+        break;
     }
 }
 
@@ -106,18 +154,42 @@ int DetailTable::rowCount() const
 
 int DetailTable::currentRow() const
 {
-    return tableView_->currentRow();
+    const QList<JTableViewSelectionRange> selected = tableView_->selectRanges();
+    if (selected.isEmpty()) {
+        return -1;
+    } else if (selected.size() > 1) {
+        return -1;
+    } else {
+        const JTableViewSelectionRange &first = selected.first();
+        if (first.rowCount() > 1) {
+            return -1;
+        } else {
+            return first.topRow();
+        }
+    }
 }
 
 Icd::icd_uint64 DetailTable::currentIndex() const
 {
-    const int currentRow = tableView_->currentRow();
+    const int currentRow = this->currentRow();
 
     if (object_ && object_->rtti() == Icd::ObjectFrame) {
         return tableView_->itemData(currentRow, 0, Qt::UserRole + 1).toULongLong();
     }
 
     return Icd::icd_uint64(currentRow);
+}
+
+bool DetailTable::isMultiRowSelected() const
+{
+    const QList<JTableViewSelectionRange> selected = tableView_->selectRanges();
+    if (selected.isEmpty()) {
+        return false;
+    } else if (selected.size() > 1) {
+        return true;
+    } else {
+        return (selected.first().rowCount() > 1);
+    }
 }
 
 void DetailTable::insertRow(int row, const Icd::VehiclePtr &vehicle)
@@ -159,13 +231,37 @@ void DetailTable::insertRow(int row, const Icd::TablePtr &table)
     tableView_->selectRow(row);
 }
 
+void DetailTable::insertRow(int row, const Icd::ItemPtr &item)
+{
+    if (!item) {
+        return;
+    }
+
+    row = insertRow(row, JHandlePtrCast<Icd::Object>(item));
+
+    double offset = 0;
+    Icd::Object *parent = item->parent();
+    if (parent && parent->objectType() == Icd::ObjectTable) {
+        Icd::Table *table = dynamic_cast<Icd::Table*>(parent);
+        if (table) {
+            offset = table->bufferOffset();
+        }
+    }
+
+    setRowData(row, item, offset);
+
+    tableView_->selectRow(row);
+}
+
 void DetailTable::updateRow(int row)
 {
     if (!object_ || row < 0) {
         return;
     }
 
-    switch (object_->rtti()) {
+    tableView_->enableSelect(true);
+
+    switch (object_->objectType()) {
     case Icd::ObjectRoot:
     {
         auto root = JHandlePtrCast<Icd::Root>(object_);
@@ -218,29 +314,40 @@ void DetailTable::updateRow(int row)
         setRowData(row, item, table->bufferOffset());
         break;
     }
-    case Icd::ObjectFrame:
+    case Icd::ObjectItem:
     {
-        auto frame = JHandlePtrCast<Icd::FrameItem>(object_);
-        if (!frame) {
-            break;
-        }
+        auto item = JHandlePtrCast<Icd::Item>(object_);
+        switch (item->type()) {
+        case Icd::ItemFrame:
+        {
+            auto frame = JHandlePtrCast<Icd::FrameItem>(item);
+            if (!frame) {
+                break;
+            }
 #if 0 //TODO
-        auto item = frame->tableAt(row);
-        if (!item) {
-            break;
-        }
-        setRowData(row, item, table->bufferOffset());
+            auto item = frame->tableAt(row);
+            if (!item) {
+                break;
+            }
+            setRowData(row, item, table->bufferOffset());
 #endif
-        break;
-    }
-    case Icd::ObjectComplex:
-    {
-        auto complex = JHandlePtrCast<Icd::ComplexItem>(object_);
-        if (!complex) {
             break;
         }
-        //TODO
-        setRowData(row, complex->table());
+        case Icd::ItemComplex:
+        {
+            auto complex = JHandlePtrCast<Icd::ComplexItem>(item);
+            if (!complex) {
+                break;
+            }
+            //TODO
+            setRowData(row, complex->table());
+            break;
+        }
+        default:
+            tableView_->enableSelect(false);
+            updateItem(item);
+            break;
+        }
         break;
     }
     default:
@@ -254,14 +361,14 @@ void DetailTable::applyInsert()
         newObject_.reset();
     }
 
-    updateRow(tableView_->currentRow());
+    updateRow(currentRow());
 }
 
 void DetailTable::cancelInsert()
 {
     if (newObject_) {
         tableView_->clearSelection();
-        tableView_->removeRow(tableView_->currentRow());
+        tableView_->removeRow(currentRow());
         newObject_.reset();
         //TODO restore offset and size
     }
@@ -436,6 +543,17 @@ bool DetailTable::updateItem()
         return false;
     }
 
+    updateItem(item);
+
+    return true;
+}
+
+bool DetailTable::updateItem(const Icd::ItemPtr &item)
+{
+    if (!item) {
+        return false;
+    }
+
     double bufferOffset = item->bufferOffset();
     Icd::Table *table = dynamic_cast<Icd::Table*>(item->parent());
     if (table) {
@@ -466,14 +584,14 @@ bool DetailTable::updateItem()
     tableView_->setItemData(rowIndex, 1, QString::number(item->bufferSize()));
     // details
     switch (item->type()) {
-    case Icd::ItemHeader: updateHeader(); break;
-    case Icd::ItemCounter: updateCounter(); break;
-    case Icd::ItemCheck: updateCheck(); break;
-    case Icd::ItemFrameCode: updateFrameCode(); break;
-    case Icd::ItemNumeric: updateNumeric(); break;
-    case Icd::ItemArray: updateArray(); break;
+    case Icd::ItemHeader: updateHeader(JHandlePtrCast<Icd::HeaderItem>(item)); break;
+    case Icd::ItemCounter: updateCounter(JHandlePtrCast<Icd::CounterItem>(item)); break;
+    case Icd::ItemCheck: updateCheck(JHandlePtrCast<Icd::CheckItem>(item)); break;
+    case Icd::ItemFrameCode: updateFrameCode(JHandlePtrCast<Icd::FrameCodeItem>(item)); break;
+    case Icd::ItemNumeric: updateNumeric(JHandlePtrCast<Icd::NumericItem>(item)); break;
+    case Icd::ItemArray: updateArray(JHandlePtrCast<Icd::ArrayItem>(item)); break;
     case Icd::ItemBitMap:
-    case Icd::ItemBitValue: updateBit(); break;
+    case Icd::ItemBitValue: updateBit(JHandlePtrCast<Icd::BitItem>(item)); break;
     default:
         break;
     }
@@ -487,10 +605,9 @@ bool DetailTable::updateItem()
     return true;
 }
 
-bool DetailTable::updateHeader()
+bool DetailTable::updateHeader(const Icd::HeaderItemPtr &header)
 {
-    const Icd::HeaderItemPtr headerItem = JHandlePtrCast<Icd::HeaderItem>(object_);
-    if (!headerItem) {
+    if (!header) {
         return false;
     }
 
@@ -500,17 +617,16 @@ bool DetailTable::updateHeader()
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Default value"));
     tableView_->setItemData(rowIndex, 1, "0x" + QString("%1 (%2)")
-                            .arg(uint(headerItem->defaultValue()),
+                            .arg(uint(header->defaultValue()),
                                  2, 16, QChar('0')).toUpper()
-                            .arg(uint(headerItem->defaultValue())));
+                            .arg(uint(header->defaultValue())));
 
     return true;
 }
 
-bool DetailTable::updateCounter()
+bool DetailTable::updateCounter(const Icd::CounterItemPtr &counter)
 {
-    const Icd::CounterItemPtr counterItem = JHandlePtrCast<Icd::CounterItem>(object_);
-    if (!counterItem) {
+    if (!counter) {
         return false;
     }
 
@@ -519,10 +635,9 @@ bool DetailTable::updateCounter()
     return true;
 }
 
-bool DetailTable::updateCheck()
+bool DetailTable::updateCheck(const Icd::CheckItemPtr &check)
 {
-    const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem>(object_);
-    if (!checkItem) {
+    if (!check) {
         return false;
     }
 
@@ -531,19 +646,18 @@ bool DetailTable::updateCheck()
     // Begin at
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Begin at"));
-    tableView_->setItemData(rowIndex, 1, QString::number(checkItem->startPos()));
+    tableView_->setItemData(rowIndex, 1, QString::number(check->startPos()));
     // End at
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("End at"));
-    tableView_->setItemData(rowIndex, 1, QString::number(checkItem->endPos()));
+    tableView_->setItemData(rowIndex, 1, QString::number(check->endPos()));
 
     return true;
 }
 
-bool DetailTable::updateFrameCode()
+bool DetailTable::updateFrameCode(const Icd::FrameCodeItemPtr &frameCode)
 {
-    const Icd::FrameCodeItemPtr frameCodeItem = JHandlePtrCast<Icd::FrameCodeItem>(object_);
-    if (!frameCodeItem) {
+    if (!frameCode) {
         return false;
     }
 
@@ -552,7 +666,7 @@ bool DetailTable::updateFrameCode()
     // binding
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Binding frame"));
-    const Icd::FrameItemPtr frame = frameCodeItem->frame();
+    const Icd::FrameItemPtr frame = frameCode->frame();
     if (frame) {
         tableView_->setItemData(rowIndex, 1, tr("Binding <%1>")
                                 .arg(QString::fromStdString(frame->name())));
@@ -563,10 +677,9 @@ bool DetailTable::updateFrameCode()
     return true;
 }
 
-bool DetailTable::updateNumeric()
+bool DetailTable::updateNumeric(const Icd::NumericItemPtr &numeric)
 {
-    const Icd::NumericItemPtr numericItem = JHandlePtrCast<Icd::NumericItem>(object_);
-    if (!numericItem) {
+    if (!numeric) {
         return false;
     }
 
@@ -575,30 +688,30 @@ bool DetailTable::updateNumeric()
     // offset
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Offset"));
-    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(numericItem->offset()));
+    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(numeric->offset()));
     // scale
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Scale"));
-    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(numericItem->scale()));
+    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(numeric->scale()));
     // unit
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Unit"));
-    tableView_->setItemData(rowIndex, 1, QString::fromStdString(numericItem->unit()));
+    tableView_->setItemData(rowIndex, 1, QString::fromStdString(numeric->unit()));
     // range
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Range"));
-    auto range = numericItem->valueRange();
+    auto range = numeric->valueRange();
     tableView_->setItemData(rowIndex, 1, QString("[%1, %2]")
                             .arg(IcdWidget::prettyValue(range.first))
                             .arg(IcdWidget::prettyValue(range.second)));
     // default value
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Default value"));
-    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(numericItem->defaultValue()));
+    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(numeric->defaultValue()));
     // specs
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Specs"));
-    const auto &specs = numericItem->specs();
+    const auto &specs = numeric->specs();
     QStringList sections;
     for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
         sections.append(tr("%1: %2").arg(IcdWidget::prettyValue(citer->first))
@@ -610,10 +723,9 @@ bool DetailTable::updateNumeric()
     return true;
 }
 
-bool DetailTable::updateArray()
+bool DetailTable::updateArray(const Icd::ArrayItemPtr &array)
 {
-    const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem>(object_);
-    if (!arrayItem) {
+    if (!array) {
         return false;
     }
 
@@ -626,10 +738,9 @@ bool DetailTable::updateArray()
     return true;
 }
 
-bool DetailTable::updateBit()
+bool DetailTable::updateBit(const Icd::BitItemPtr &bit)
 {
-    const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(object_);
-    if (!bitItem) {
+    if (!bit) {
         return false;
     }
 
@@ -637,17 +748,17 @@ bool DetailTable::updateBit()
 
     // Length of data
     tableView_->setItemData(rowIndex, 1, QString("%1/%2")
-                            .arg(bitItem->bitCount()).arg(bitItem->typeSize() * 8));
+                            .arg(bit->bitCount()).arg(bit->typeSize() * 8));
     // range of bit
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Range of bit"));
     tableView_->setItemData(rowIndex, 1, QString("%1 ~ %2")
-                            .arg(bitItem->bitStart())
-                            .arg(bitItem->bitStart() + bitItem->bitCount() - 1));
+                            .arg(bit->bitStart())
+                            .arg(bit->bitStart() + bit->bitCount() - 1));
     // details
-    switch (bitItem->type()) {
-    case Icd::ItemBitMap: updateBitMap(); break;
-    case Icd::ItemBitValue: updateBitValue(); break;
+    switch (bit->type()) {
+    case Icd::ItemBitMap: updateBitMap(bit); break;
+    case Icd::ItemBitValue: updateBitValue(bit); break;
     default:
         break;
     }
@@ -655,12 +766,12 @@ bool DetailTable::updateBit()
     rowIndex = tableView_->rowCount() - 1;
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Specs"));
-    const auto &specs = bitItem->specs();
+    const auto &specs = bit->specs();
     QStringList sections;
     for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
-        if (bitItem->type() == Icd::ItemBitMap) {
+        if (bit->type() == Icd::ItemBitMap) {
             sections.append(tr("%1: %2").arg(QString("%1")
-                                             .arg(uint(citer->first), bitItem->calcSize() * 2,
+                                             .arg(uint(citer->first), bit->calcSize() * 2,
                                                   16, QChar('0')).toUpper())
                             .arg(QString::fromStdString(citer->second)));
         } else {
@@ -674,10 +785,9 @@ bool DetailTable::updateBit()
     return true;
 }
 
-bool DetailTable::updateBitMap()
+bool DetailTable::updateBitMap(const Icd::BitItemPtr &bit)
 {
-    const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(object_);
-    if (!bitItem) {
+    if (!bit) {
         return false;
     }
 
@@ -687,17 +797,16 @@ bool DetailTable::updateBitMap()
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Default value"));
     tableView_->setItemData(rowIndex, 1, "0x" + QString("%1 (%2)")
-                            .arg(uint(bitItem->defaultValue()),
-                                 bitItem->calcSize() * 2, 16, QChar('0')).toUpper()
-                            .arg(uint(bitItem->defaultValue())));
+                            .arg(uint(bit->defaultValue()),
+                                 bit->calcSize() * 2, 16, QChar('0')).toUpper()
+                            .arg(uint(bit->defaultValue())));
 
     return true;
 }
 
-bool DetailTable::updateBitValue()
+bool DetailTable::updateBitValue(const Icd::BitItemPtr &bit)
 {
-    const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(object_);
-    if (!bitItem) {
+    if (!bit) {
         return false;
     }
 
@@ -706,34 +815,33 @@ bool DetailTable::updateBitValue()
     // offset
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Offset"));
-    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(bitItem->offset()));
+    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(bit->offset()));
     // scale
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Scale"));
-    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(bitItem->scale()));
+    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(bit->scale()));
     // unit
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Unit"));
-    tableView_->setItemData(rowIndex, 1, QString::fromStdString(bitItem->unit()));
+    tableView_->setItemData(rowIndex, 1, QString::fromStdString(bit->unit()));
     // range
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Range"));
-    auto range = bitItem->valueRange();
+    auto range = bit->valueRange();
     tableView_->setItemData(rowIndex, 1, QString("[%1, %2]")
                             .arg(IcdWidget::prettyValue(range.first))
                             .arg(IcdWidget::prettyValue(range.second)));
     // default value
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Default value"));
-    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(bitItem->defaultValue()));
+    tableView_->setItemData(rowIndex, 1, IcdWidget::prettyValue(bit->defaultValue()));
 
     return true;
 }
 
-bool DetailTable::updateComplex()
+bool DetailTable::updateComplex(const Icd::ComplexItemPtr &complex)
 {
-    const Icd::ComplexItemPtr complexItem = JHandlePtrCast<Icd::ComplexItem>(object_);
-    if (!complexItem) {
+    if (!complex) {
         return false;
     }
 
@@ -742,8 +850,12 @@ bool DetailTable::updateComplex()
     return true;
 }
 
-bool DetailTable::updateFrame()
+bool DetailTable::updateFrame(const Icd::FrameItemPtr &frame)
 {
+    if (!frame) {
+        return false;
+    }
+
     // header
     QStringList labels;
     labels << tr("Name") << tr("Frame code") << tr("Sequence") << tr("Describe");
@@ -753,12 +865,7 @@ bool DetailTable::updateFrame()
     tableView_->horizontalHeaderItem(2)->setData("sequence");
     tableView_->horizontalHeaderItem(3)->setData("desc");
 
-    const Icd::FrameItemPtr frameItem = JHandlePtrCast<Icd::FrameItem>(object_);
-    if (!frameItem) {
-        return false;
-    }
-
-    const Icd::TablePtrMap &tables = frameItem->allTable();
+    const Icd::TablePtrMap &tables = frame->allTable();
 
     tableView_->setRowCount(static_cast<int>(tables.size()));
     const int rowCount = tableView_->rowCount();

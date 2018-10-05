@@ -276,7 +276,7 @@
     </message>
     <message>
         <source>Add %1</source>
-        <translation>增加%1</translation>
+        <translation type="vanished">增加%1</translation>
     </message>
     <message>
         <source>table</source>

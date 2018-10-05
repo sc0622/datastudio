@@ -74,10 +74,9 @@ void Vehicle::insertSystem(int index, const SystemPtr &system)
 void Vehicle::removeSystem(int index)
 {
     if (index < 0 || index >= static_cast<int>(d->systems.size())) {
-        return;     // overflow
+        return;
     }
 
-    //
     d->systems.erase(d->systems.cbegin() + index);
 }
 

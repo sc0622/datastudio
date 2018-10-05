@@ -413,7 +413,7 @@ void Table::appendItem(const ItemPtr &item)
         {
             const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(item);
             if (!bitItem) {
-                assert(false);
+                //assert(false);
                 return;
             }
 
@@ -435,7 +435,7 @@ void Table::appendItem(const ItemPtr &item)
             if (lastType == Icd::ItemBitMap || lastType == Icd::ItemBitValue) {
                 const Icd::BitItemPtr bitItem = JHandlePtrCast<Icd::BitItem>(last);
                 if (!bitItem) {
-                    assert(false);
+                    //assert(false);
                     return;
                 }
                 offset = std::ceil(last->bufferOffset() + bitItem->typeSize());
@@ -452,6 +452,26 @@ void Table::appendItem(const ItemPtr &item)
     d->bufferSize += bufferSize;
 
     d->saveItem(item);
+}
+
+void Table::insertItem(int index, const ItemPtr &item)
+{
+    index = jBound(0, index, int(d->items.size()));
+    item->setParent(this);
+    d->items.insert(d->items.cbegin() + index, item);
+    //TODO update offset
+}
+
+void Table::removeItem(int index)
+{
+    Q_UNUSED(index);
+    //TODO
+}
+
+void Table::removeItemByMark(const std::string &mark)
+{
+    Q_UNUSED(mark);
+    //TODO
 }
 
 void Table::clearItem()

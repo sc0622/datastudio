@@ -86,7 +86,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
 
     Icd::ObjectPtr subObject;
 
-    switch (object->objectType()) {
+    switch (object->rtti()) {
     case Icd::ObjectRoot:
     {
         const Icd::RootPtr root = JHandlePtrCast<Icd::Root>(object);
@@ -123,25 +123,13 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
         subObject = table->itemAt(index.toInt());
         break;
     }
-    case Icd::ObjectItem:
+    case Icd::ObjectFrame:
     {
-        const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(object);
-        if (!item) {
-            break;
+        const Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(object);
+        if (!frame) {
+            return;
         }
-        switch (item->type()) {
-        case Icd::ItemFrame:
-        {
-            const Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(object);
-            if (!frame) {
-                return;
-            }
-            subObject = frame->tableAt(index.toULongLong());
-            break;
-        }
-        default:
-            break;
-        }
+        subObject = frame->tableAt(index.toULongLong());
         break;
     }
     default:
@@ -195,7 +183,9 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub, bool add)
         //return;
     }
 
-    objectEdit_->focusName();
+    if (!sub) {
+        objectEdit_->focusName();
+    }
 
     show();
 }

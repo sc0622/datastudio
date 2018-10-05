@@ -43,9 +43,7 @@ SetView::SetView(QWidget *parent)
         if (args.size() != 2) {
             return;
         }
-        QStandardItem *item = jVariantFromVoid<QStandardItem>(args[0]);
-        const QVariant &data = args[1].data();
-        onRequestAdd(item, data);
+        onRequestAdd(jVariantFromVoid<QStandardItem>(args[0]), args[1]);
     });
 }
 

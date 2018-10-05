@@ -12,7 +12,7 @@ class NumericItemData
     friend class NumericItem;
 public:
     NumericItemData()
-        : numericType(NumericInvalid)
+        : numericType(NumericI8)
         , scale(1.0)
         , decimals(0)
         , offset(0.0)

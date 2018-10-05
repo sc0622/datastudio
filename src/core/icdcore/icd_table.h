@@ -44,6 +44,9 @@ public:
     ItemPtrArray allItem();
     const ItemPtrArray &allItem() const;
     void appendItem(const ItemPtr &item);
+    void insertItem(int index, const ItemPtr &item);
+    void removeItem(int index);
+    void removeItemByMark(const std::string &mark);
     void clearItem();
     bool isEmpty() const;
     int itemCount() const;

@@ -5,6 +5,7 @@
 #include "main_global.h"
 #include <QStyledItemDelegate>
 #include "icdcore/icdcore_global.h"
+#include "jwt/jtableview.h"
 
 class JTableView;
 
@@ -19,11 +20,49 @@ class Table;
 typedef std::shared_ptr<Table> TablePtr;
 class Item;
 typedef std::shared_ptr<Item> ItemPtr;
+class HeaderItem;
+typedef std::shared_ptr<HeaderItem> HeaderItemPtr;
+class CounterItem;
+typedef std::shared_ptr<CounterItem> CounterItemPtr;
+class CheckItem;
+typedef std::shared_ptr<CheckItem> CheckItemPtr;
+class FrameCodeItem;
+typedef std::shared_ptr<FrameCodeItem> FrameCodeItemPtr;
+class NumericItem;
+typedef std::shared_ptr<NumericItem> NumericItemPtr;
+class ArrayItem;
+typedef std::shared_ptr<ArrayItem> ArrayItemPtr;
+class BitItem;
+typedef std::shared_ptr<BitItem> BitItemPtr;
+class ComplexItem;
+typedef std::shared_ptr<ComplexItem> ComplexItemPtr;
+class FrameItem;
+typedef std::shared_ptr<FrameItem> FrameItemPtr;
 }
 
 class QLabel;
 
 namespace Edit {
+
+// class DetailTableView
+
+class DetailTableView : public JTableView
+{
+    Q_OBJECT
+public:
+    explicit DetailTableView(QWidget *parent = nullptr);
+
+    void enableSelect(bool enabled);
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+
+private:
+    QAbstractItemView::SelectionMode selectionMode_;
+};
+
+// class DetailTable
 
 class ViewDelegate;
 
@@ -46,11 +85,13 @@ public:
     int rowCount() const;
     int currentRow() const;
     Icd::icd_uint64 currentIndex() const;
+    bool isMultiRowSelected() const;
     void updateRow(int row);
 
     void insertRow(int row, const Icd::VehiclePtr &vehicle);
     void insertRow(int row, const Icd::SystemPtr &system);
     void insertRow(int row, const Icd::TablePtr &table);
+    void insertRow(int row, const Icd::ItemPtr &item);
     void applyInsert();
     void cancelInsert();
 
@@ -66,17 +107,19 @@ private:
     bool updateSystem();
     bool updateTable();
     bool updateItem();
-    bool updateHeader();
-    bool updateCounter();
-    bool updateCheck();
-    bool updateFrameCode();
-    bool updateNumeric();
-    bool updateArray();
-    bool updateBit();
-    bool updateBitMap();
-    bool updateBitValue();
-    bool updateComplex();
-    bool updateFrame();
+
+    bool updateItem(const Icd::ItemPtr &item);
+    bool updateHeader(const Icd::HeaderItemPtr &header);
+    bool updateCounter(const Icd::CounterItemPtr &counter);
+    bool updateCheck(const Icd::CheckItemPtr &check);
+    bool updateFrameCode(const Icd::FrameCodeItemPtr &frameCode);
+    bool updateNumeric(const Icd::NumericItemPtr &numeric);
+    bool updateArray(const Icd::ArrayItemPtr &array);
+    bool updateBit(const Icd::BitItemPtr &bit);
+    bool updateBitMap(const Icd::BitItemPtr &bit);
+    bool updateBitValue(const Icd::BitItemPtr &bit);
+    bool updateComplex(const Icd::ComplexItemPtr &complex);
+    bool updateFrame(const Icd::FrameItemPtr &frame);
 
     void setRowData(int row, const Icd::VehiclePtr &vehicle);
     void setRowData(int row, const Icd::SystemPtr &system);
@@ -86,7 +129,7 @@ private:
     int insertRow(int row, const Icd::ObjectPtr &object);
 
 private:
-    JTableView *tableView_;
+    DetailTableView *tableView_;
     QList<QAction*> actions_;
     QLabel *labelTip_;
     ViewDelegate *delegate_;

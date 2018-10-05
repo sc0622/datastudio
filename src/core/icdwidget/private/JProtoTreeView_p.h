@@ -199,8 +199,10 @@ private:
     QStandardItem *insertVehicle(int row, QStandardItem *itemRoot, const Icd::VehiclePtr &vehicle, int deep);
     QStandardItem *insertSystem(int row, QStandardItem *itemVehicle, const Icd::SystemPtr &system,
                                 const QString &domain, const QString &path, int deep);
+    QStandardItem *insertSystem(int row, QStandardItem *itemVehicle, const Icd::SystemPtr &system, int deep);
     QStandardItem *insertTable(int row, QStandardItem *itemSystem, const Icd::TablePtr &table,
                                const QString &domain, const QString &path, int deep);
+    QStandardItem *insertTable(int row, QStandardItem *itemSystem, const Icd::TablePtr &table, int deep);
 
     static bool loadTable(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
 
@@ -217,6 +219,10 @@ private:
     Icd::WorkerPtr queryWorker(const QStandardItem *itemTable) const;
 
     void updateVehicleData(QStandardItem *item, const Icd::VehiclePtr &vehicle);
+    void updateSystemData(QStandardItem *item, const Icd::SystemPtr &system, const QString &path);
+    void updateSystemData(QStandardItem *item, const Icd::SystemPtr &system);
+    void updateTableData(QStandardItem *item, const Icd::TablePtr &table, const QString &path);
+    void updateTableData(QStandardItem *item, const Icd::TablePtr &table);
     void updateItemData(QStandardItem *item);
     void updateBitItemData(QStandardItem *itemDataItem, const Icd::BitItemPtr &bitItem);
     void updateItemData(QStandardItem *itemDataItem, const Icd::ItemPtr &dataItem);

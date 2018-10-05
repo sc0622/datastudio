@@ -105,18 +105,24 @@ void DetailView::cleanItem(QStandardItem *item)
 
 void DetailView::onCurrentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject)
 {
-    if (newObject && newObject == newObject_) {
-        detailEdit_->updateView(newObject, false, true);
+    const bool isMultiRowSelected = detailTable_->isMultiRowSelected();
+    if (isMultiRowSelected) {
+        detailEdit_->resetView();
     } else {
-        detailEdit_->updateView(detailTable_->object(), index);
+        if (newObject && newObject == newObject_) {
+            detailEdit_->updateView(newObject, false, true);
+        } else {
+            detailEdit_->updateView(detailTable_->object(), index);
+        }
     }
 
     // update status of toolbar
 
-    bool addFlag = false, upFlag = false, downFlag = false;
+    bool addFlag = true, upFlag = false, downFlag = false;
 
-    if (object_ && object_->objectType() != Icd::ObjectItem) {
-        addFlag = true;
+    if (isMultiRowSelected) {
+        addFlag = false;
+    } else {
         const int rowCount = detailTable_->rowCount();
         const int currentRow = detailTable_->currentRow();
         if (currentRow >= 0) {
@@ -245,6 +251,14 @@ void DetailView::insertRow(int row, QStandardItem *item, const QVariant &data)
         detailTable_->insertRow(row, newTable);
         break;
     }
+    case Icd::TreeItemTypeTable:
+    {
+        auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()));
+        newItem->setParent(object_.get());
+        newObject_ = newItem;
+        detailTable_->insertRow(row, newItem);
+        break;
+    }
     default:
         break;
     }
@@ -263,15 +277,25 @@ bool DetailView::saveObject()
         } else {
             currentRow = detailTable_->currentRow();
         }
+
         Icd::ObjectPtr target = detailEdit_->target();
-        switch (target->rtti()) {
+        if (!target) {
+            return false;
+        }
+
+        Icd::Object *parent = target->parent();
+        if (!parent) {
+            return false;
+        }
+
+        switch (target->objectType()) {
         case Icd::ObjectVehicle:
         {
             auto vehicle = JHandlePtrCast<Icd::Vehicle>(target);
             if (!vehicle) {
                 return false;
             }
-            auto root = dynamic_cast<Icd::Root*>(vehicle->parent());
+            auto root = dynamic_cast<Icd::Root*>(parent);
             if (!root) {
                 return false;
             }
@@ -284,7 +308,7 @@ bool DetailView::saveObject()
             if (!system) {
                 return false;
             }
-            auto vehicle = dynamic_cast<Icd::Vehicle*>(system->parent());
+            auto vehicle = dynamic_cast<Icd::Vehicle*>(parent);
             if (!vehicle) {
                 return false;
             }
@@ -297,11 +321,32 @@ bool DetailView::saveObject()
             if (!table) {
                 return false;
             }
-            auto system = dynamic_cast<Icd::System*>(table->parent());
-            if (!system) {
+            if (parent->rtti() == Icd::ObjectSystem) {
+                auto system = dynamic_cast<Icd::System*>(parent);
+                if (!system) {
+                    return false;
+                }
+                system->insertTable(currentRow, table);
+            } else if (parent->rtti() == Icd::ObjectFrame) {
+                auto frame = dynamic_cast<Icd::FrameItem*>(parent);
+                if (!frame) {
+                    return false;
+                }
+                frame->addTable(table);
+            }
+            break;
+        }
+        case Icd::ObjectItem:
+        {
+            auto item = JHandlePtrCast<Icd::Item>(target);
+            if (!item) {
                 return false;
             }
-            system->insertTable(currentRow, table);
+            auto table = dynamic_cast<Icd::Table*>(parent);
+            if (!table) {
+                return false;
+            }
+            table->insertItem(currentRow, item);
             break;
         }
         default:

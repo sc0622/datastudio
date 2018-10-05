@@ -29,13 +29,13 @@ public:
     void insertVehicle(int index, const VehiclePtr &vehicle);
     void removeVehicle(int index);
     void removeVehicleByMark(const std::string &mark);
-
     void clearVehicle();
     int vehicleCount() const;
     VehiclePtr vehicleAt(int index) const;
     VehiclePtr vehicleByName(const std::string &name) const;
     VehiclePtr vehicleByMark(const std::string &mark) const;
     bool isEmpty() const;
+
     int childCount() const override;
     void resetData() override;
     void clearData() override;
