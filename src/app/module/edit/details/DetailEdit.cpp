@@ -164,6 +164,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub, bool add)
         newObject_ = nullptr;
         copiedObject = object_->copy();
         copiedObject->setParent(object_->parent());
+        copiedObject->setId(object_->id());
     }
 
     objectEdit_ = ObjectEdit::create(copiedObject);
@@ -255,8 +256,10 @@ void DetailEdit::changeEdit(int itemType)
     Icd::ItemPtr newItem;
     if (itemType == item->type()) {
         newItem = JHandlePtrCast<Icd::Item>(item->copy());
+        newItem->setParent(item->parent());
+        newItem->setId(item->id());
     } else {
-        newItem = Icd::Item::create(item->id(), Icd::ItemType(itemType));
+        newItem = Icd::Item::create(item->id(), Icd::ItemType(itemType), item->parent());
         if (!newItem) {
             Q_ASSERT(false);
             return;
@@ -268,8 +271,6 @@ void DetailEdit::changeEdit(int itemType)
         Q_ASSERT(false);
         return;
     }
-
-    newItem->setParent(object_->parent());
 
     objectEdit_ = ObjectEdit::create(newItem);
     if (!objectEdit_) {

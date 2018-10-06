@@ -1052,7 +1052,7 @@ std::string Table::typeName() const
         if (parentItem->type() == Icd::ItemComplex) {
             prefix = "Complex_";
         } else {
-            prefix = "Table_";//parentItem->typeName() + "_";
+            prefix = "Table_";
         }
     } else {
         prefix = "Table_";
@@ -1223,7 +1223,7 @@ bool Table::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = itemsJson.begin();
              citer != itemsJson.end(); ++citer) {
             const Json::Value &itemJson = *citer;
-            Icd::ItemPtr item = Item::create(Item::stringType(itemJson["type"].asString()));
+            Icd::ItemPtr item = Item::create(Item::stringType(itemJson["type"].asString()), this);
             if (!item) {
                 continue;
             }

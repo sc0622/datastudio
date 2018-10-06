@@ -284,7 +284,7 @@ private:
     void updateRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
     void removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
 
-    void insertNewRow(QStandardItem *item, int editAction, const QVariant &data = QVariant());
+    void insertNewBeside(QStandardItem *item, int editAction, const QVariant &data = QVariant());
     void applyInsert(const Icd::ObjectPtr &target);
     void cancelInsert();
     void removeRow(QStandardItem *item);

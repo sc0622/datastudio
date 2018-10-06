@@ -1421,13 +1421,13 @@ void JProtoTreeViewPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
             QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                         tr("Insert vehicle above"));
             connect(actionInsertAbove, &QAction::triggered, this, [=](){
-                insertNewRow(item, InsertAboveAction);
+                insertNewBeside(item, InsertAboveAction);
             });
             // insert vehicle [after]
             QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                        tr("Insert vehicle below"));
             connect(actionInserBelow, &QAction::triggered, this, [=](){
-                insertNewRow(item, InsertBelowAction);
+                insertNewBeside(item, InsertBelowAction);
             });
         }
         //
@@ -1565,13 +1565,13 @@ void JProtoTreeViewPrivate::itemSystemRightClicked(QStandardItem *item, int deep
             QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                         tr("Insert system above"));
             connect(actionInsertAbove, &QAction::triggered, this, [=](){
-                insertNewRow(item, InsertAboveAction);
+                insertNewBeside(item, InsertAboveAction);
             });
             // insert system [after]
             QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                        tr("Insert system below"));
             connect(actionInserBelow, &QAction::triggered, this, [=](){
-                insertNewRow(item, InsertBelowAction);
+                insertNewBeside(item, InsertBelowAction);
             });
         }
         //
@@ -1726,13 +1726,13 @@ void JProtoTreeViewPrivate::itemTableRightClicked(QStandardItem *item, int deep)
             QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                         tr("Insert table above"));
             connect(actionInsertAbove, &QAction::triggered, this, [=](){
-                insertNewRow(item, InsertAboveAction);
+                insertNewBeside(item, InsertAboveAction);
             });
             // insert table [after]
             QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                        tr("Insert table below"));
             connect(actionInserBelow, &QAction::triggered, this, [=](){
-                insertNewRow(item, InsertBelowAction);
+                insertNewBeside(item, InsertBelowAction);
             });
         }
         //
@@ -2044,13 +2044,13 @@ void JProtoTreeViewPrivate::itemItemTableRightClicked(QStandardItem *item, int d
         QAction *actionInsertAbove = menu.addAction(QIcon(":/icdwidget/image/tree/insert-above.png"),
                                                     tr("Insert table above"));
         connect(actionInsertAbove, &QAction::triggered, this, [=](){
-            insertNewRow(item, InsertAboveAction);
+            insertNewBeside(item, InsertAboveAction);
         });
         // insert table [after]
         QAction *actionInserBelow = menu.addAction(QIcon(":/icdwidget/image/tree/insert-below.png"),
                                                    tr("Insert table below"));
         connect(actionInserBelow, &QAction::triggered, this, [=](){
-            insertNewRow(item, InsertBelowAction);
+            insertNewBeside(item, InsertBelowAction);
         });
     }
     //
@@ -4247,7 +4247,7 @@ QMenu *JProtoTreeViewPrivate::createAddItemMenu(QStandardItem *item, QAction *ac
         switch (editAction) {
         case InsertAboveAction:
         case InsertBelowAction:
-            insertNewRow(item, editAction, action->data());
+            insertNewBeside(item, editAction, action->data());
             break;
         default:
             emit q->requestAdd(item, action->data());
@@ -4382,7 +4382,7 @@ void JProtoTreeViewPrivate::removeRow(int row, const ObjectPtr &target, const QV
     Q_UNUSED(data);
 }
 
-void JProtoTreeViewPrivate::insertNewRow(QStandardItem *item, int editAction, const QVariant &data)
+void JProtoTreeViewPrivate::insertNewBeside(QStandardItem *item, int editAction, const QVariant &data)
 {
     Q_UNUSED(data);
 
@@ -4411,31 +4411,33 @@ void JProtoTreeViewPrivate::insertNewRow(QStandardItem *item, int editAction, co
     default: return;
     }
 
+    Icd::Object *parentObject = object->parent();
+
     switch (item->type()) {
     case Icd::TreeItemTypeVehicle:
     {
-        auto newVehicle = std::make_shared<Icd::Vehicle>(object->parent());
+        auto newVehicle = std::make_shared<Icd::Vehicle>(parentObject);
         newObject_ = newVehicle;
         newItem_ = insertVehicle(row, parentItem, newVehicle, Icd::ObjectSystem);
         break;
     }
     case Icd::TreeItemTypeSystem:
     {
-        auto newSystem = std::make_shared<Icd::System>(object->parent());
+        auto newSystem = std::make_shared<Icd::System>(parentObject);
         newObject_ = newSystem;
         newItem_ = insertSystem(row, parentItem, newSystem, Icd::ObjectTable);
         break;
     }
     case Icd::TreeItemTypeTable:
     {
-        auto newTable = std::make_shared<Icd::Table>(object->parent());
+        auto newTable = std::make_shared<Icd::Table>(parentObject);
         newObject_ = newTable;
         newItem_ = insertTable(row, parentItem, newTable, Icd::ObjectItem);
         break;
     }
     case Icd::TreeItemTypeDataItem:
     {
-        auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()));
+        auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()), parentObject);
         newObject_ = newItem;
         newItem_ = insertItem(this, row, parentItem, newItem);
         break;
