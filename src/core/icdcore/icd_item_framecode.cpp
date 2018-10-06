@@ -157,7 +157,6 @@ FrameItemPtr FrameCodeItem::frame() const
 
 void FrameCodeItem::setFrame(const FrameItemPtr &frame)
 {
-    frame->setParent(this);
     d->frame = frame;
 }
 
@@ -228,18 +227,17 @@ std::string FrameCodeItem::typeString() const
 
 ObjectPtr FrameCodeItem::copy() const
 {
-    FrameCodeItemPtr newFrameCode = std::make_shared<FrameCodeItem>(*this);
-    newFrameCode->setParent(nullptr);
-    return newFrameCode;
+    return std::make_shared<FrameCodeItem>(*this);
 }
 
 ObjectPtr FrameCodeItem::clone() const
 {
     FrameCodeItemPtr newFrameCode = std::make_shared<FrameCodeItem>(*this);
-    newFrameCode->setParent(nullptr);
     // children
     if (d->frame) {
-        newFrameCode->setFrame(JHandlePtrCast<FrameItem>(d->frame->clone()));
+        FrameItemPtr newFrame = JHandlePtrCast<FrameItem>(d->frame->clone());
+        newFrame->setParent(newFrameCode.get());
+        newFrameCode->setFrame(newFrame);
     }
     return newFrameCode;
 }

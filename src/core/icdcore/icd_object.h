@@ -54,10 +54,11 @@ public:
     virtual int rtti() const;
 
     ObjectType objectType() const;
+
     std::string id() const;
+    void setId(const std::string &id);
     std::string domain() const;
     void setDomain(const std::string &domain);
-    void setId(const std::string &id);
     std::string name() const;
     void setName(const std::string &name);
     std::string mark() const;

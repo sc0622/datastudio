@@ -114,16 +114,11 @@ int FrameItem::rtti() const
 void FrameItem::addTable(const TablePtr &table)
 {
     const icd_uint64 code = table->frameCode();
-    if (code <= 0) {
-        //return;
-    }
-
     TablePtrMap::const_iterator citer = d->tables.find(code);
     if (citer != d->tables.end()) {
         return;
     }
 
-    table->setParent(this);
     table->setSubFrameTableFlag(true);
     d->tables[code] = table;
     d->tableSeq.insert(std::pair<icd_uint64, TablePtr>(table->sequence(), table));
@@ -281,20 +276,19 @@ void FrameItem::clearData()
 
 ObjectPtr FrameItem::copy() const
 {
-    FrameItemPtr newFrame = std::make_shared<FrameItem>(*this);
-    newFrame->setParent(nullptr);
-    return newFrame;
+    return std::make_shared<FrameItem>(*this);
 }
 
 ObjectPtr FrameItem::clone() const
 {
     FrameItemPtr newFrame = std::make_shared<FrameItem>(*this);
-    newFrame->setParent(nullptr);
     // children
     const TablePtrMap tables = d->tables;
     TablePtrMap::const_iterator citer = tables.cbegin();
     for (; citer != tables.cend(); ++citer) {
-        newFrame->addTable(JHandlePtrCast<Table>(citer->second->clone()));
+        TablePtr newTable = JHandlePtrCast<Table>(citer->second->clone());
+        newTable->setParent(newFrame.get());
+        newFrame->addTable(newTable);
     }
     return newFrame;
 }
@@ -595,7 +589,6 @@ bool FrameItem::restore(const Json::Value &json, int deep)
         return false;
     }
 
-    setBufferSize(json["size"].asDouble());
     setSequenceCount(json["sequenceCount"].asInt());
 
     clearTable();
@@ -604,7 +597,7 @@ bool FrameItem::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = tablesJson.begin();
              citer != tablesJson.end(); ++citer) {
             const Json::Value &tableJson = *citer;
-            Icd::TablePtr table = std::make_shared<Icd::Table>(nullptr);
+            Icd::TablePtr table = std::make_shared<Icd::Table>(tableJson["id"].asString(), this);
             if (!table->restore(tableJson, deep)) {
                 continue;
             }

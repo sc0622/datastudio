@@ -202,16 +202,12 @@ void Item::clearData()
 
 ObjectPtr Item::copy() const
 {
-    ItemPtr newItem = std::make_shared<Item>(*this);
-    newItem->setParent(nullptr);
-    return newItem;
+    return std::make_shared<Item>(*this);
 }
 
 ObjectPtr Item::clone() const
 {
-    ItemPtr newItem = std::make_shared<Item>(*this);
-    newItem->setParent(nullptr);
-    return newItem;
+    return std::make_shared<Item>(*this);
 }
 
 Item &Item::operator =(const Item &other)
@@ -221,45 +217,47 @@ Item &Item::operator =(const Item &other)
     }
     Object::operator =(other);
     d->type  = other.d->type;
+    d->itemOffset = other.d->itemOffset;
+    d->buffer = other.d->buffer;
     d->bufferSize = other.d->bufferSize;
     d->bufferOffset = other.d->bufferOffset;
     d->defaultValue = other.d->defaultValue;
     return *this;
 }
 
-ItemPtr Item::create(const std::string &id, ItemType type)
+ItemPtr Item::create(const std::string &id, ItemType type, Object *parent)
 {
     switch (type) {
-    case Icd::ItemNumeric: return Icd::ItemPtr(new Icd::NumericItem(id));
+    case Icd::ItemNumeric: return std::make_shared<NumericItem>(id, parent);
     case Icd::ItemBitMap:
-    case Icd::ItemBitValue: return Icd::ItemPtr(new Icd::BitItem(id, type));
-    case Icd::ItemComplex: return Icd::ItemPtr(new Icd::ComplexItem(id));
-    case Icd::ItemHeader: return Icd::ItemPtr(new Icd::HeaderItem(id));
-    case Icd::ItemCounter: return Icd::ItemPtr(new Icd::CounterItem(id));
-    case Icd::ItemCheck: return Icd::ItemPtr(new Icd::CheckItem(id));
-    case Icd::ItemFrameCode: return Icd::ItemPtr(new Icd::FrameCodeItem(id));
-    case Icd::ItemFrame: return Icd::ItemPtr(new Icd::FrameItem(id));
-    case Icd::ItemDateTime: return Icd::ItemPtr(new Icd::DateTimeItem(id));
-    case Icd::ItemArray: return Icd::ItemPtr(new Icd::ArrayItem(id));
+    case Icd::ItemBitValue: return std::make_shared<BitItem>(id, type, parent);
+    case Icd::ItemComplex: return std::make_shared<ComplexItem>(id, parent);
+    case Icd::ItemHeader: return std::make_shared<HeaderItem>(id, parent);
+    case Icd::ItemCounter: return std::make_shared<CounterItem>(id, parent);
+    case Icd::ItemCheck: return std::make_shared<CheckItem>(id, parent);
+    case Icd::ItemFrameCode: return std::make_shared<FrameCodeItem>(id, parent);
+    case Icd::ItemFrame: return std::make_shared<FrameItem>(id, parent);
+    case Icd::ItemDateTime: return std::make_shared<DateTimeItem>(id, parent);
+    case Icd::ItemArray: return std::make_shared<ArrayItem>(id, parent);
     default:
         return Icd::ItemPtr();  // not supported data type
     }
 }
 
-ItemPtr Item::create(ItemType type)
+ItemPtr Item::create(ItemType type, Object *parent)
 {
     switch (type) {
-    case Icd::ItemNumeric: return Icd::ItemPtr(new Icd::NumericItem());
+    case Icd::ItemNumeric: return std::make_shared<NumericItem>(parent);
     case Icd::ItemBitMap:
-    case Icd::ItemBitValue: return Icd::ItemPtr(new Icd::BitItem(type));
-    case Icd::ItemComplex: return Icd::ItemPtr(new Icd::ComplexItem());
-    case Icd::ItemHeader: return Icd::ItemPtr(new Icd::HeaderItem());
-    case Icd::ItemCounter: return Icd::ItemPtr(new Icd::CounterItem());
-    case Icd::ItemCheck: return Icd::ItemPtr(new Icd::CheckItem());
-    case Icd::ItemFrameCode: return Icd::ItemPtr(new Icd::FrameCodeItem());
-    case Icd::ItemFrame: return Icd::ItemPtr(new Icd::FrameItem());
-    case Icd::ItemDateTime: return Icd::ItemPtr(new Icd::DateTimeItem());
-    case Icd::ItemArray: return Icd::ItemPtr(new Icd::ArrayItem());
+    case Icd::ItemBitValue: return std::make_shared<BitItem>(type, parent);
+    case Icd::ItemComplex: return std::make_shared<ComplexItem>(parent);
+    case Icd::ItemHeader: return std::make_shared<HeaderItem>(parent);
+    case Icd::ItemCounter: return std::make_shared<CounterItem>(parent);
+    case Icd::ItemCheck: return std::make_shared<CheckItem>(parent);
+    case Icd::ItemFrameCode: return std::make_shared<FrameCodeItem>(parent);
+    case Icd::ItemFrame: return std::make_shared<FrameItem>(parent);
+    case Icd::ItemDateTime: return std::make_shared<DateTimeItem>(parent);
+    case Icd::ItemArray: return std::make_shared<ArrayItem>(parent);
     default:
         return Icd::ItemPtr();  // not supported data type
     }

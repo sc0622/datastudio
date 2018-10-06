@@ -377,15 +377,12 @@ std::string BitItem::typeName() const
 
 ObjectPtr BitItem::copy() const
 {
-    BitItemPtr newBit = std::make_shared<BitItem>(*this);
-    newBit->setParent(nullptr);
-    return newBit;
+    return std::make_shared<BitItem>(*this);
 }
 
 ObjectPtr BitItem::clone() const
 {
     BitItemPtr newBit = std::make_shared<BitItem>(*this);
-    newBit->setParent(nullptr);
     // children
     newBit->setLimit(JHandlePtrCast<LimitItem>(d->limit->clone()));
     return newBit;

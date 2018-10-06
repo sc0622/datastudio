@@ -9,7 +9,6 @@ class ComplexItemData
     friend class ComplexItem;
 public:
     ComplexItemData()
-        : table(new Table())
     {
 
     }
@@ -22,14 +21,14 @@ ComplexItem::ComplexItem(Object *parent)
     : Item(ItemComplex, parent)
     , d(new ComplexItemData())
 {
-    d->table->setParent(this);
+    d->table = std::make_shared<Table>(this);
 }
 
 ComplexItem::ComplexItem(const std::string &id, Object *parent)
     : Item(id, ItemComplex, parent)
     , d(new ComplexItemData())
 {
-    d->table->setParent(this);
+    d->table = std::make_shared<Table>(id, this);
 }
 
 ComplexItem::~ComplexItem()
@@ -100,17 +99,16 @@ void ComplexItem::clearData()
 
 ObjectPtr ComplexItem::copy() const
 {
-    ComplexItemPtr newComplex = std::make_shared<ComplexItem>(*this);
-    newComplex->setParent(nullptr);
-    return newComplex;
+    return std::make_shared<ComplexItem>(*this);
 }
 
 ObjectPtr ComplexItem::clone() const
 {
     ComplexItemPtr newComplex = std::make_shared<ComplexItem>(*this);
-    newComplex->setParent(nullptr);
     // children
-    newComplex->setTable(JHandlePtrCast<Table>(d->table->clone()));
+    TablePtr newTable = JHandlePtrCast<Table>(d->table->clone());
+    newTable->setParent(newComplex.get());
+    newComplex->setTable(newTable);
     return newComplex;
 }
 
@@ -186,12 +184,8 @@ void ComplexItem::clearChildren()
 Json::Value ComplexItem::save() const
 {
     Json::Value json = Item::save();
-
-    json["size"] = bufferSize();
-
-    if (d->table) {
-        json["table"] = d->table->save();
-    }
+    // table
+    json["table"] = d->table->save();
 
     return json;
 }
@@ -202,19 +196,19 @@ bool ComplexItem::restore(const Json::Value &json, int deep)
         return false;
     }
 
-    setBufferSize(json["size"].asInt());
-
-    if (d->table) {
+    // table
+    if (json.isMember("table")) {
         if (!d->table->restore(json["table"], deep)) {
             return false;
         }
-        // ignore table attributes
-        d->table->setName(name());
-        d->table->setMark(mark());
-        //
-        if (!d->table->isEmpty()) {
-            setBufferSize(std::ceil(d->table->bufferSize()));
-        }
+    }
+    // ignore table attributes
+    d->table->setName(name());
+    d->table->setMark(mark());
+    d->table->setDesc(desc());
+    // size
+    if (!d->table->isEmpty()) {
+        setBufferSize(std::ceil(d->table->bufferSize()));
     }
 
     return true;

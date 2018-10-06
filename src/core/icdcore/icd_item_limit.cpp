@@ -95,8 +95,7 @@ ObjectPtr LimitItem::copy() const
 
 ObjectPtr LimitItem::clone() const
 {
-    LimitItemPtr newLimit = std::make_shared<LimitItem>(*this);
-    return newLimit;
+    return std::make_shared<LimitItem>(*this);
 }
 
 LimitItem &LimitItem::operator =(const LimitItem &other)

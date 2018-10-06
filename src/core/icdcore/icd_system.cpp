@@ -61,21 +61,19 @@ const TablePtrArray &System::allTable() const
 
 void System::appendTable(const TablePtr &table)
 {
-    table->setParent(this);
     d->tables.push_back(table);
 }
 
 void System::insertTable(int index, const TablePtr &table)
 {
     index = jBound(0, index, int(d->tables.size()));
-    table->setParent(this);
     d->tables.insert(d->tables.cbegin() + index, table);
 }
 
 void System::removeTable(int index)
 {
-    if (index < 0 || index >= static_cast<int>(d->tables.size())) {
-        return;     // overflow
+    if (index < 0 || index >= int(d->tables.size())) {
+        return;
     }
 
     d->tables.erase(d->tables.cbegin() + index);
@@ -100,16 +98,16 @@ void System::clearTable()
 
 int System::tableCount() const
 {
-    return static_cast<int>(d->tables.size());
+    return int(d->tables.size());
 }
 
 TablePtr System::tableAt(int index) const
 {
-    if (index < 0 || index >= static_cast<int>(d->tables.size())) {
+    if (index < 0 || index >= int(d->tables.size())) {
         return TablePtr();
     }
 
-    return d->tables.at(static_cast<size_t>(index));
+    return d->tables.at(size_t(index));
 }
 
 TablePtr System::tableByName(const std::string &name) const
@@ -146,7 +144,6 @@ bool System::isEmpty() const
 int System::childCount() const
 {
     int count = static_cast<int>(d->tables.size());
-
     // children
     for (TablePtrArray::const_iterator citer = d->tables.cbegin();
          citer != d->tables.end(); ++citer) {
@@ -174,20 +171,19 @@ void System::clearData()
 
 ObjectPtr System::copy() const
 {
-    SystemPtr newSystem = std::make_shared<System>(*this);
-    newSystem->setParent(nullptr);
-    return newSystem;
+    return std::make_shared<System>(*this);
 }
 
 ObjectPtr System::clone() const
 {
     SystemPtr newSystem = std::make_shared<System>(*this);
-    newSystem->setParent(nullptr);
     // children
     const TablePtrArray &tables = d->tables;
     for (TablePtrArray::const_iterator citer = tables.cbegin();
          citer != tables.cend(); ++citer) {
-        newSystem->appendTable(JHandlePtrCast<Table>((*citer)->clone()));
+        TablePtr newTable = JHandlePtrCast<Table>((*citer)->clone());
+        newTable->setParent(newSystem.get());
+        newSystem->appendTable(newTable);
     }
     return newSystem;
 }
@@ -339,7 +335,7 @@ bool System::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = tablesJson.begin();
              citer != tablesJson.end(); ++citer) {
             const Json::Value &tableJson = *citer;
-            TablePtr table(new Table(this));
+            TablePtr table = std::make_shared<Table>(tableJson["id"].asString(), this);
             if (!table->restore(tableJson, deep)) {
                 continue;
             }

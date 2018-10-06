@@ -14,7 +14,7 @@ public:
     }
 
 private:
-    VehiclePtrArray vehicles;  //
+    VehiclePtrArray vehicles;
 };
 
 Root::Root(Object *parent)
@@ -60,24 +60,21 @@ const VehiclePtrArray &Root::allVehicle() const
 
 void Root::appendVehicle(const VehiclePtr &vehicle)
 {
-    vehicle->setParent(this);
     d->vehicles.push_back(vehicle);
 }
 
 void Root::insertVehicle(int index, const VehiclePtr &vehicle)
 {
     index = jBound(0, index, int(d->vehicles.size()));
-    vehicle->setParent(this);
     d->vehicles.insert(d->vehicles.cbegin() + index, vehicle);
 }
 
 void Root::removeVehicle(int index)
 {
-    if (index < 0 || index >= static_cast<int>(d->vehicles.size())) {
-        return;     // overflow
+    if (index < 0 || index >= int(d->vehicles.size())) {
+        return;
     }
 
-    //
     d->vehicles.erase(d->vehicles.cbegin() + index);
 }
 
@@ -100,7 +97,7 @@ void Root::clearVehicle()
 
 int Root::vehicleCount() const
 {
-    return static_cast<int>(d->vehicles.size());
+    return int(d->vehicles.size());
 }
 
 VehiclePtr Root::vehicleAt(int index) const
@@ -109,7 +106,7 @@ VehiclePtr Root::vehicleAt(int index) const
         return VehiclePtr();
     }
 
-    return d->vehicles.at(static_cast<size_t>(index));
+    return d->vehicles.at(size_t(index));
 }
 
 VehiclePtr Root::vehicleByName(const std::string &name) const
@@ -174,20 +171,19 @@ void Root::clearData()
 
 ObjectPtr Root::copy() const
 {
-    RootPtr newRoot = std::make_shared<Root>(*this);
-    newRoot->setParent(nullptr);
-    return newRoot;
+    return std::make_shared<Root>(*this);
 }
 
 ObjectPtr Root::clone() const
 {
     RootPtr newRoot = std::make_shared<Root>(*this);
-    newRoot->setParent(nullptr);
     // children
     const VehiclePtrArray &vehicles = d->vehicles;
     for (VehiclePtrArray::const_iterator citer = vehicles.cbegin();
          citer != vehicles.cend(); ++citer) {
-        newRoot->appendVehicle(JHandlePtrCast<Vehicle>((*citer)->clone()));
+        VehiclePtr newVehicle = JHandlePtrCast<Vehicle>((*citer)->clone());
+        newVehicle->setParent(newRoot.get());
+        newRoot->appendVehicle(newVehicle);
     }
     return newRoot;
 }
@@ -306,11 +302,8 @@ void Root::clearChildren()
 
 Json::Value Root::save() const
 {
-#if 0
-    Json::Value json = Object::save();
-#else
     Json::Value json(Json::objectValue);
-#endif
+
     if (!d->vehicles.empty()) {
         Json::Value vehiclesJson(Json::arrayValue);
         for (VehiclePtrArray::const_iterator citer = d->vehicles.cbegin();
@@ -328,11 +321,6 @@ Json::Value Root::save() const
 
 bool Root::restore(const Json::Value &json, int deep)
 {
-#if 0
-    if (!Object::restore(json, deep)) {
-        return false;
-    }
-#endif
     if (deep <= ObjectRoot) {
         return true;
     }
@@ -343,7 +331,7 @@ bool Root::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = vehiclesJson.begin();
              citer != vehiclesJson.end(); ++citer) {
             const Json::Value &vehicleJson = *citer;
-            VehiclePtr vehicle(new Vehicle(this));
+            VehiclePtr vehicle = std::make_shared<Vehicle>(vehicleJson["id"].asString(), this);
             if (!vehicle->restore(vehicleJson, deep)) {
                 continue;
             }

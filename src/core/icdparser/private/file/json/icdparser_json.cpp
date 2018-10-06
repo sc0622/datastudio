@@ -41,19 +41,19 @@ bool JsonParser::parse(RootPtr &root, int deep) const
     return true;
 }
 
-bool JsonParser::parse(Icd::VehiclePtrArray &vehicles, int deep) const
+bool JsonParser::parse(Icd::VehiclePtrArray &vehicles, int deep, Icd::Object *parent) const
 {
     vehicles.clear();
 
     const Json::Value vehiclesJson = queryVehicles();
     if (vehiclesJson == Json::Value::null) {
-        return true;//TODO
+        return false;
     }
 
     for (Json::ValueConstIterator citer = vehiclesJson.begin();
          citer != vehiclesJson.end(); ++citer) {
         const Json::Value &vehicleJson = *citer;
-        Icd::VehiclePtr vehicle(new Icd::Vehicle());
+        Icd::VehiclePtr vehicle = std::make_shared<Icd::Vehicle>(vehicleJson["id"].asString(), parent);
         if (!vehicle->restore(vehicleJson, deep)) {
             continue;
         }
@@ -64,7 +64,7 @@ bool JsonParser::parse(Icd::VehiclePtrArray &vehicles, int deep) const
 }
 
 bool JsonParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle,
-                       int deep) const
+                       int deep, Icd::Object *parent) const
 {
     const Json::Value vehicleJson = queryVehicle(vehicleId);
     if (vehicleJson == Json::Value::null) {
@@ -74,7 +74,7 @@ bool JsonParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle,
     if (vehicle) {
         vehicle->clearSystem();
     } else {
-        vehicle = std::make_shared<Icd::Vehicle>(nullptr);
+        vehicle = std::make_shared<Icd::Vehicle>(vehicleId, parent);
     }
 
     if (!vehicle->restore(vehicleJson, deep)) {
@@ -85,7 +85,7 @@ bool JsonParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle,
 }
 
 bool JsonParser::parse(const std::string &vehicleId, Icd::SystemPtrArray &systems,
-                       int deep) const
+                       int deep, Icd::Object *parent) const
 {
     const Json::Value systemsJson = querySystems(vehicleId);
     if (systemsJson == Json::Value::null) {
@@ -97,7 +97,7 @@ bool JsonParser::parse(const std::string &vehicleId, Icd::SystemPtrArray &system
     for (Json::ValueConstIterator citer = systemsJson.begin();
          citer != systemsJson.end(); ++citer) {
         const Json::Value &systemJson = *citer;
-        Icd::SystemPtr system(new Icd::System());
+        Icd::SystemPtr system = std::make_shared<Icd::System>(systemJson["id"].asString(), parent);
         if (!system->restore(systemJson, deep)) {
             continue;
         }
@@ -108,7 +108,7 @@ bool JsonParser::parse(const std::string &vehicleId, Icd::SystemPtrArray &system
 }
 
 bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
-                       Icd::SystemPtr &system, int deep) const
+                       Icd::SystemPtr &system, int deep, Icd::Object *parent) const
 {
     const Json::Value systemJson = querySystem(vehicleId, systemId);
     if (systemJson == Json::Value::null) {
@@ -118,7 +118,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     if (system) {
         system->clearTable();
     } else {
-        system = std::make_shared<Icd::System>(nullptr);
+        system = std::make_shared<Icd::System>(systemId, parent);
     }
 
     if (!system->restore(systemJson, deep)) {
@@ -129,7 +129,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
 }
 
 bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
-                       Icd::TablePtrArray &tables, int deep) const
+                       Icd::TablePtrArray &tables, int deep, Icd::Object *parent) const
 {
     const Json::Value tablesJson = queryTables(vehicleId, systemId);
     if (tablesJson == Json::Value::null) {
@@ -143,7 +143,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     for (Json::ValueConstIterator citer = tablesJson.begin();
          citer != tablesJson.end(); ++citer) {
         const Json::Value &tableJson = *citer;
-        Icd::TablePtr table(new Icd::Table());
+        Icd::TablePtr table = std::make_shared<Icd::Table>(tableJson["id"].asString(), parent);
         if (!table->restore(tableJson, deep)) {
             continue;
         }
@@ -154,8 +154,8 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     return true;
 }
 
-bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
-                       const std::string &tableId, Icd::TablePtr &table, int deep) const
+bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
+                       Icd::TablePtr &table, int deep, Icd::Object *parent) const
 {
     const Json::Value tableJson = queryTable(vehicleId, systemId, tableId);
     if (tableJson == Json::Value::null) {
@@ -165,7 +165,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     if (table) {
         table->clearItem();
     } else {
-        table = std::make_shared<Icd::Table>(nullptr);
+        table = std::make_shared<Icd::Table>(tableId, parent);
     }
 
     if (!table->restore(tableJson, deep)) {
@@ -177,8 +177,8 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     return true;
 }
 
-bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
-                       const std::string &tableId, Icd::ItemPtrArray &items, int deep) const
+bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
+                       Icd::ItemPtrArray &items, int deep, Icd::Object *parent) const
 {
     const Json::Value itemsJson = queryItems(vehicleId, systemId, tableId);
     if (itemsJson == Json::Value::null) {
@@ -190,12 +190,11 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     for (Json::ValueConstIterator citer = itemsJson.begin();
          citer != itemsJson.end(); ++citer) {
         const Json::Value &itemJson = *citer;
-        Icd::ItemPtr item = Icd::Item::create(Icd::itoa(int(items.size() + 1)),
-                                              Icd::Item::stringType(itemJson["type"].asString()));
+        Icd::ItemPtr item = Icd::Item::create(Icd::Item::stringType(itemJson["type"].asString()), parent);
         if (!item) {
             continue;
         }
-
+        //
         if (!item->restore(itemJson, deep)) {
             continue;
         }
@@ -225,30 +224,6 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     return true;
 }
 
-bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId,
-                       const std::string &tableId, const std::string &itemId,
-                       Icd::ItemPtr &item, int deep) const
-{
-    const Json::Value itemJson = queryItem(vehicleId, systemId, tableId, itemId);
-    if (itemJson.isNull()) {
-        return false;
-    }
-
-    Icd::ItemPtr _item = Icd::Item::create(itemJson["id"].asString(),
-            Icd::Item::stringType(itemJson["type"].asString()));
-    if (!_item) {
-        return false;
-    }
-
-    if (!_item->restore(itemJson, deep)) {
-        return false;
-    }
-
-    item = _item;
-
-    return true;
-}
-
 bool JsonParser::parse(TablePtrArray &tables) const
 {
     const Json::Value tableJson = queryTables();
@@ -265,7 +240,7 @@ bool JsonParser::parse(TablePtrArray &tables) const
     for (Json::ValueConstIterator citer = tableJson.begin();
          citer != tableJson.end(); ++citer) {
         const Json::Value &tableJson = *citer;
-        Icd::TablePtr table(new Icd::Table());
+        Icd::TablePtr table = std::make_shared<Icd::Table>(tableJson["id"].asString(), nullptr);
         if (!table->restore(tableJson, Icd::ObjectItem)) {
             continue;
         }
@@ -286,7 +261,7 @@ bool JsonParser::parse(const std::string &tableId, TablePtr &table) const
     if (table) {
         table->clearItem();
     } else {
-        table = std::make_shared<Icd::Table>(nullptr);
+        table = std::make_shared<Icd::Table>(tableJson["id"].asString(), nullptr);
     }
 
     if (!table->restore(tableJson, Icd::ObjectItem)) {
@@ -330,8 +305,7 @@ bool JsonParser::save(const std::string &vehicleId, const VehiclePtr &vehicle) c
         return false;
     }
 
-    return Json::make(filePath(), ".vehicles[id=" + vehicleId + "]",
-                      vehicle->save(), true, true);
+    return Json::make(filePath(), ".vehicles[id=" + vehicleId + "]", vehicle->save(), true, true);
 }
 
 bool JsonParser::save(const std::string &vehicleId, const SystemPtrArray &systems) const
@@ -405,19 +379,6 @@ bool JsonParser::save(const std::string &vehicleId, const std::string &systemId,
 
     return Json::make(filePath(), ".vehicles[id=" + vehicleId + "].systems[id="
                       + systemId + "].tables[id=" + tableId, itemsJson, true, true);
-}
-
-bool JsonParser::save(const std::string &vehicleId, const std::string &systemId,
-                      const std::string &tableId, const std::string &itemId,
-                      const ItemPtr &item) const
-{
-    if (!item) {
-        return false;
-    }
-
-    return Json::make(filePath(), ".vehicles[id=" + vehicleId + "].systems[id="
-                      + systemId + "].tables[id=" + tableId + "].items[id=" + itemId,
-                      item->save(), true, true);
 }
 
 bool JsonParser::save(const TablePtrArray &tables) const
@@ -1023,10 +984,10 @@ bool JsonParser::generateDataItem(const QStandardItem *itemDataItem, bool export
     if (!exportAll && itemDataItem->rowCount() == 0) {
         return false;
     }
-
     //
     const QString domain = itemDataItem->data(TreeItemDomainRole).toString();
     Icd::ItemPtr item;
+#if 0
     if (!parser()->parse(domain.section('/', 0, 0).toStdString(),
                          domain.section('/', 1, 1).toStdString(),
                          domain.section('/', 2, 2).toStdString(),
@@ -1034,7 +995,9 @@ bool JsonParser::generateDataItem(const QStandardItem *itemDataItem, bool export
                          item, Icd::ObjectItem)) {
         return false;
     }
-
+#else
+    return false;
+#endif
     Json::Value itemJson = item->save();
 
     const Json::Value rootJson = generateJson(itemDataItem, itemJson);

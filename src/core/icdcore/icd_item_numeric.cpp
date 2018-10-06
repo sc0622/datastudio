@@ -469,15 +469,12 @@ bool NumericItem::outOfLimit() const
 
 ObjectPtr NumericItem::copy() const
 {
-    NumericItemPtr newNumeric = std::make_shared<NumericItem>(*this);
-    newNumeric->setParent(nullptr);
-    return newNumeric;
+    return std::make_shared<NumericItem>(*this);
 }
 
 ObjectPtr NumericItem::clone() const
 {
     NumericItemPtr newNumeric = std::make_shared<NumericItem>(*this);
-    newNumeric->setParent(nullptr);
     // children
     newNumeric->setLimit(JHandlePtrCast<LimitItem>(d->limit->clone()));
     return newNumeric;

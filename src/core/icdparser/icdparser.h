@@ -48,23 +48,22 @@ public:
     static ParserPtr create(const Json::Value &config);
 
     virtual bool parse(RootPtr &root, int deep) const = 0;
-    virtual bool parse(Icd::VehiclePtrArray &vehicles, int deep) const = 0;
-    virtual bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const = 0;
-    virtual bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const = 0;
-    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
-                       Icd::SystemPtr &system, int deep) const = 0;
-    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
-                       Icd::TablePtrArray &tables, int deep) const = 0;
-    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
-                       const std::string &tableId, Icd::TablePtr &table, int deep) const = 0;
-    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
-                       const std::string &tableId, Icd::ItemPtrArray &items, int deep) const = 0;
-    virtual bool parse(const std::string &vehicleId, const std::string &systemId,
-                       const std::string &tableId, const std::string &itemId,
-                       Icd::ItemPtr &item, int deep) const = 0;
+    virtual bool parse(Icd::VehiclePtrArray &vehicles, int deep, Icd::Object *parent = nullptr) const = 0;
+    virtual bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep,
+                       Icd::Object *parent = nullptr) const = 0;
+    virtual bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep,
+                       Icd::Object *parent = nullptr) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId, Icd::SystemPtr &system,
+                       int deep, Icd::Object *parent = nullptr) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId, Icd::TablePtrArray &tables,
+                       int deep, Icd::Object *parent = nullptr) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
+                       Icd::TablePtr &table, int deep, Icd::Object *parent = nullptr) const = 0;
+    virtual bool parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
+                       Icd::ItemPtrArray &items, int deep, Icd::Object *parent = nullptr) const = 0;
     virtual bool parse(Icd::TablePtrArray &tables) const = 0;
     virtual bool parse(const std::string &tableId, Icd::TablePtr &table) const = 0;
-    Icd::ObjectPtr parse(const std::string &domain, int objectType, int deep = 1) const;
+    Icd::ObjectPtr parse(const std::string &domain, int objectType, int deep = 1, Object *parent = nullptr) const;
 
     virtual bool save(const RootPtr &root) const = 0;
     virtual bool save(const Icd::VehiclePtrArray &vehicles) const = 0;
@@ -78,9 +77,6 @@ public:
                       const std::string &tableId, const Icd::TablePtr &table) const = 0;
     virtual bool save(const std::string &vehicleId, const std::string &systemId,
                       const std::string &tableId, const Icd::ItemPtrArray &items) const = 0;
-    virtual bool save(const std::string &vehicleId, const std::string &systemId,
-                      const std::string &tableId, const std::string &itemId,
-                      const Icd::ItemPtr &item) const = 0;
     virtual bool save(const Icd::TablePtrArray &tables) const = 0;
     virtual bool save(const std::string &tableId, const Icd::TablePtr &table) const = 0;
     virtual bool save(const Icd::TablePtr &table) const = 0;

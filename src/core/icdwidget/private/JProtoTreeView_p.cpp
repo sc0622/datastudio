@@ -2181,7 +2181,7 @@ bool JProtoTreeViewPrivate::changeChannel(QStandardItem *itemTable)
     }
 
     // find table object
-    Icd::TablePtr table = Icd::TablePtr();
+    Icd::TablePtr table;
     auto funcParseTable = [=,&table]() -> bool {
         if (!parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
                             sections.at(2).toStdString(), table, Icd::ObjectItem)) {
@@ -2877,11 +2877,6 @@ QStandardItem *JProtoTreeViewPrivate::loadSystem(QObject *target, QStandardItem 
     }
 
     const QVariant varBindTableTypes = target->property("bindTableTypes");
-    if (varBindTableTypes.isValid()) {
-
-    } else {
-        //
-    }
 
     //
     const QString domain = itemDataItem->data(Icd::TreeItemDomainRole).toString();
@@ -3956,10 +3951,8 @@ BindingData JProtoTreeViewPrivate::bindingMapTask(BindingData data)
         return data;
     }
     // find table object
-    if (!data.d->parser_->parse(sections.at(0).toStdString(),
-                                sections.at(1).toStdString(),
-                                sections.at(2).toStdString(),
-                                data.table, Icd::ObjectItem)) {
+    if (!data.d->parser_->parse(sections.at(0).toStdString(), sections.at(1).toStdString(),
+                                sections.at(2).toStdString(), data.table, Icd::ObjectItem)) {
         return data;
     }
 

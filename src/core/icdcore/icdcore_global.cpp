@@ -275,4 +275,28 @@ int asciiCountOfSize(int format, int size)
     return 0;
 }
 
+std::string createUuid()
+{
+    std::string ret;
+    createUuid(ret);
+    return ret;
+}
+
+void createUuid(std::string &uuid)
+{
+#ifdef QT_CORE_LIB
+    uuid = QUuid::createUuid().toString().remove(QRegExp("[{}-]")).toStdString();
+#else
+#ifdef _MSC_VER
+    //GUID guid;
+    //::CoCreateGuid(&guid);
+#error "not implement"
+#elif defined(__unix__)
+#error "not implement"
+#elif defined(__APPLE__)
+#error "not implement"
+#endif
+#endif
+}
+
 }

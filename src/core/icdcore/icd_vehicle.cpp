@@ -14,7 +14,7 @@ public:
     }
 
 private:
-    SystemPtrArray systems;  //
+    SystemPtrArray systems;
 };
 
 Vehicle::Vehicle(Object *parent)
@@ -60,20 +60,18 @@ const SystemPtrArray &Vehicle::allSystem() const
 
 void Vehicle::appendSystem(const SystemPtr &system)
 {
-    system->setParent(this);
     d->systems.push_back(system);
 }
 
 void Vehicle::insertSystem(int index, const SystemPtr &system)
 {
     index = jBound(0, index, int(d->systems.size()));
-    system->setParent(this);
     d->systems.insert(d->systems.cbegin() + index, system);
 }
 
 void Vehicle::removeSystem(int index)
 {
-    if (index < 0 || index >= static_cast<int>(d->systems.size())) {
+    if (index < 0 || index >= int(d->systems.size())) {
         return;
     }
 
@@ -99,16 +97,16 @@ void Vehicle::clearSystem()
 
 int Vehicle::systemCount() const
 {
-    return static_cast<int>(d->systems.size());
+    return int(d->systems.size());
 }
 
 SystemPtr Vehicle::systemAt(int index) const
 {
-    if (index < 0 || index >= static_cast<int>(d->systems.size())) {
+    if (index < 0 || index >= int(d->systems.size())) {
         return SystemPtr();
     }
 
-    return d->systems.at(static_cast<size_t>(index));
+    return d->systems.at(size_t(index));
 }
 
 SystemPtr Vehicle::systemByName(const std::string &name) const
@@ -173,20 +171,19 @@ void Vehicle::clearData()
 
 ObjectPtr Vehicle::copy() const
 {
-    VehiclePtr newVehicle = std::make_shared<Vehicle>(*this);
-    newVehicle->setParent(nullptr);
-    return newVehicle;
+    return std::make_shared<Vehicle>(*this);
 }
 
 ObjectPtr Vehicle::clone() const
 {
     VehiclePtr newVehicle = std::make_shared<Vehicle>(*this);
-    newVehicle->setParent(nullptr);
     // children
     const SystemPtrArray &systems = d->systems;
     for (SystemPtrArray::const_iterator citer = systems.cbegin();
          citer != systems.cend(); ++citer) {
-        newVehicle->appendSystem(JHandlePtrCast<System>((*citer)->clone()));
+        SystemPtr newSystem = JHandlePtrCast<System>((*citer)->clone());
+        newSystem->setParent(newVehicle.get());
+        newVehicle->appendSystem(newSystem);
     }
     return newVehicle;
 }
@@ -338,7 +335,7 @@ bool Vehicle::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = systemsJson.begin();
              citer != systemsJson.end(); ++citer) {
             const Json::Value &systemJson = *citer;
-            SystemPtr system(new System(this));
+            SystemPtr system = std::make_shared<System>(systemJson["id"].asString(), this);
             if (!system->restore(systemJson, deep)) {
                 continue;
             }

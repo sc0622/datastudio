@@ -67,56 +67,58 @@ ParserPtr Parser::create(const Json::Value &config)
     return ParserPtr();
 }
 
-ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep) const
+ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep, Icd::Object *parent) const
 {
     switch (objectType) {
     case Icd::ObjectRoot:
     {
         Icd::RootPtr root;
-        if (!parse(root, qMin<int>(objectType + deep, Icd::ObjectItem))) {
+        if (!parse(root, std::min<int>(objectType + deep, Icd::ObjectItem))) {
             return Icd::ObjectPtr();
         }
         return root;
     }
     case Icd::ObjectVehicle:
     {
+        if (parent && parent->objectType() != Icd::ObjectRoot) {
+            return Icd::ObjectPtr();
+        }
         Icd::VehiclePtr vehicle;
-        if (!parse(domain, vehicle, qMin<int>(objectType + deep, Icd::ObjectItem))) {
+        if (!parse(domain, vehicle, std::min<int>(objectType + deep, Icd::ObjectItem), parent)) {
             return Icd::ObjectPtr();
         }
         return vehicle;
     }
     case Icd::ObjectSystem:
     {
+        if (parent && parent->objectType() != Icd::ObjectVehicle) {
+            return Icd::ObjectPtr();
+        }
         Icd::SystemPtr system;
         if (!parse(Icd::stringSection(domain, '/', 0, 0),
                    Icd::stringSection(domain, '/', 1, 1),
-                   system, qMin<int>(objectType + deep, Icd::ObjectItem))) {
+                   system,
+                   std::min<int>(objectType + deep, Icd::ObjectItem),
+                   parent)) {
             return Icd::ObjectPtr();
         }
         return system;
     }
     case Icd::ObjectTable:
     {
+        if (parent && parent->objectType() != Icd::ObjectSystem) {
+            return Icd::ObjectPtr();
+        }
         Icd::TablePtr table;
         if (!parse(Icd::stringSection(domain, '/', 0, 0),
                    Icd::stringSection(domain, '/', 1, 1),
                    Icd::stringSection(domain, '/', 2, 2),
-                   table, qMin<int>(objectType + deep, Icd::ObjectItem))) {
+                   table,
+                   std::min<int>(objectType + deep, Icd::ObjectItem),
+                   parent)) {
             return Icd::ObjectPtr();
         }
         return table;
-    }
-    case Icd::ObjectItem:
-    {
-        Icd::TablePtr table;
-        if (!parse(Icd::stringSection(domain, '/', 0, 0),
-                   Icd::stringSection(domain, '/', 1, 1),
-                   Icd::stringSection(domain, '/', 2, 2),
-                   table, qMin<int>(objectType + deep, Icd::ObjectItem))) {
-            return Icd::ObjectPtr();
-        }
-        return table->itemByDomain(Icd::stringSection(domain, '/', 3));
     }
     default:
         break;

@@ -24,23 +24,22 @@ class JsonParser : public FileParser
 {
 public:
     explicit JsonParser(const Json::Value &config);
-    ~JsonParser();
+    ~JsonParser() override;
 
     bool parse(RootPtr &root, int deep) const override;
-    bool parse(Icd::VehiclePtrArray &vehicles, int deep) const override;
-    bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep) const override;
-    bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep) const override;
-    bool parse(const std::string &vehicleId, const std::string &systemId,
-               Icd::SystemPtr &system, int deep) const override;
-    bool parse(const std::string &vehicleId, const std::string &systemId,
-               Icd::TablePtrArray &tables, int deep) const override;
-    bool parse(const std::string &vehicleId, const std::string &systemId,
-               const std::string &tableId, Icd::TablePtr &table, int deep) const override;
-    bool parse(const std::string &vehicleId, const std::string &systemId,
-               const std::string &tableId, Icd::ItemPtrArray &items, int deep) const override;
-    bool parse(const std::string &vehicleId, const std::string &systemId,
-               const std::string &tableId, const std::string &itemId,
-               Icd::ItemPtr &item, int deep) const override;
+    bool parse(Icd::VehiclePtrArray &vehicles, int deep, Icd::Object *parent) const override;
+    bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep,
+               Icd::Object *parent) const override;
+    bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep,
+               Icd::Object *parent) const override;
+    bool parse(const std::string &vehicleId, const std::string &systemId, Icd::SystemPtr &system,
+               int deep, Icd::Object *parent) const override;
+    bool parse(const std::string &vehicleId, const std::string &systemId, Icd::TablePtrArray &tables,
+               int deep, Icd::Object *parent) const override;
+    bool parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
+               Icd::TablePtr &table, int deep, Icd::Object *parent) const override;
+    bool parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
+               Icd::ItemPtrArray &items, int deep, Icd::Object *parent) const override;
     bool parse(Icd::TablePtrArray &tables) const override;
     bool parse(const std::string &tableId, Icd::TablePtr &table) const override;
 
@@ -56,9 +55,6 @@ public:
               const std::string &tableId, const Icd::TablePtr &table) const override;
     bool save(const std::string &vehicleId, const std::string &systemId,
               const std::string &tableId, const Icd::ItemPtrArray &items) const override;
-    bool save(const std::string &vehicleId, const std::string &systemId,
-              const std::string &tableId, const std::string &itemId,
-              const Icd::ItemPtr &item) const override;
     bool save(const Icd::TablePtrArray &tables) const override;
     bool save(const std::string &tableId, const Icd::TablePtr &table) const override;
     bool save(const Icd::TablePtr &table) const override;
@@ -98,12 +94,12 @@ public:
 #if defined(_MSC_VER)
     // Generator interface
 public:
-    bool startup();
-    void shutdown();
-    bool generate(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath);
-    bool generate(const TablePtr &table, const std::string &filePath);
-    Icd::Parser *parser();
-    const Icd::Parser *parser() const;
+    bool startup() override;
+    void shutdown() override;
+    bool generate(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath) override;
+    bool generate(const TablePtr &table, const std::string &filePath) override;
+    Icd::Parser *parser() override;
+    const Icd::Parser *parser() const override;
 
 private:
     bool generateRoot(const QStandardItem *itemRoot, bool exportAll, bool rt,

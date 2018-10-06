@@ -33,31 +33,31 @@ bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object)
 {
     //
     if (!emObject|| !object) {
-        return false;       //
+        return false;
     }
 
     // id
-    const std::string id = object->id();
-    if (!id.empty()) {
-        switch (object->objectType()) {
-        case Icd::ObjectItem:
-            break;
-        default:
+    if (object->objectType() != Icd::ObjectItem) {
+        const std::string id = object->id();
+        if (!id.empty()) {
             emObject->SetAttribute("id", id);
-            break;
         }
     }
-    // name
-    emObject->SetAttribute("name", object->name());
-    // mark
-    const std::string mark = object->mark();
-    if (!mark.empty()) {
-        emObject->SetAttribute("mark", mark);
-    }
-    // desc
-    const std::string desc = object->desc();
-    if (!desc.empty()) {
-        emObject->SetAttribute("desc", desc);
+    //
+    Icd::Object *parent = object->parent();
+    if (!parent || parent->rtti() != Icd::ObjectComplex) {
+        // name
+        emObject->SetAttribute("name", object->name());
+        // mark
+        const std::string mark = object->mark();
+        if (!mark.empty()) {
+            emObject->SetAttribute("mark", mark);
+        }
+        // desc
+        const std::string desc = object->desc();
+        if (!desc.empty()) {
+            emObject->SetAttribute("desc", desc);
+        }
     }
 
     return true;
@@ -312,8 +312,6 @@ bool XmlParser::saveItemComplex(TiXmlElement *emItem,
         return false;
     }
 
-    // bufferSize
-    emItem->SetDoubleAttribute("size", complex->bufferSize());
     // create a table element from document
     TiXmlElement *emTable = new TiXmlElement("table");
     emItem->LinkEndChild(emTable);

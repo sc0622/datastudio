@@ -69,8 +69,8 @@ public:
     virtual ObjectPtr copy() const override;
     virtual ObjectPtr clone() const override;
     Item &operator =(const Item &other);
-    static ItemPtr create(const std::string &id, ItemType type);
-    static ItemPtr create(ItemType type);
+    static ItemPtr create(const std::string &id, ItemType type, Object *parent = nullptr);
+    static ItemPtr create(ItemType type, Object *parent = nullptr);
 
     bool isSubFrameItem() const;
     Icd::Table *subFrameTable() const;

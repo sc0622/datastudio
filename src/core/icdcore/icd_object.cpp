@@ -31,16 +31,10 @@ public:
         : parent(parent)
         , objectType(ObjectInvalid)
     {
-        char c[8];
-#ifdef _MSC_VER
-        _ultoa_s(uid, c, 16);
-#else
-        _ultoa_(uid, c, 16);
-#endif
-        id = std::string(c);
-        uid++;
+
     }
 
+    void generateId();
     bool startsWith(const std::string &str, const std::string &prefix, bool caseSensitivity = true);
     bool endsWith(const std::string &str, const std::string &suffix, bool caseSensitivity = true);
 
@@ -56,6 +50,22 @@ private:
 };
 
 unsigned long ObjectData::uid = 1;
+
+void ObjectData::generateId()
+{
+    if (objectType == Icd::ObjectItem) {
+        char c[8];
+#ifdef _MSC_VER
+        _ultoa_s(uid, c, 16);
+#else
+        _ultoa_(uid, c, 16);
+#endif
+        id = std::string(c);
+        uid++;
+    } else {
+        createUuid(id);
+    }
+}
 
 bool ObjectData::startsWith(const std::string &str, const std::string &prefix, bool caseSensitivity)
 {
@@ -97,18 +107,24 @@ Object::Object(ObjectType type, Object *parent)
     : d(new ObjectData(parent))
 {
     d->objectType = type;
+    d->generateId();
 }
 
 Object::Object(const std::string &id, ObjectType type, Object *parent)
     : d(new ObjectData(parent))
 {
     d->objectType = type;
-    d->id = id;
+    if (id.empty()) {
+        d->generateId();
+    } else {
+        d->id = id;
+    }
 }
 
 Object::Object(const Object &other)
-    : d(new ObjectData(other.parent()))
+    : d(new ObjectData(nullptr))
 {
+    d->generateId();
     *this = other;
 }
 
@@ -132,6 +148,11 @@ std::string Object::id() const
     return d->id;
 }
 
+void Object::setId(const std::string &id)
+{
+    d->id = id;
+}
+
 std::string Object::domain() const
 {
     return d->domain;
@@ -140,11 +161,6 @@ std::string Object::domain() const
 void Object::setDomain(const std::string &domain)
 {
     d->domain = domain;
-}
-
-void Object::setId(const std::string &id)
-{
-    d->id = id;
 }
 
 std::string Object::name() const
@@ -179,17 +195,11 @@ void Object::setDesc(const std::string &desc)
 
 bool Object::isPrivateMark() const
 {
-#if 0
-    if (d->startsWith(d->mark, "_")) {
-        return true;
-    }
-#else
     if (d->mark.empty()) {
         return false;
     } else if (d->mark.at(0) == '_') {
         return true;
     }
-#endif
 
     return false;
 }
@@ -243,16 +253,12 @@ void Object::clearData()
 
 ObjectPtr Object::copy() const
 {
-    ObjectPtr newObject = std::make_shared<Object>(*this);
-    newObject->setParent(nullptr);
-    return newObject;
+    return std::make_shared<Object>(*this);
 }
 
 ObjectPtr Object::clone() const
 {
-    ObjectPtr newObject = std::make_shared<Object>(*this);
-    newObject->setParent(nullptr);
-    return newObject;
+    return std::make_shared<Object>(*this);
 }
 
 Object &Object::operator =(const Object &other)
@@ -261,7 +267,6 @@ Object &Object::operator =(const Object &other)
         return *this;
     }
     d->objectType  = other.d->objectType;
-    d->id  = other.d->id;
     d->name = other.d->name;
     d->mark = other.d->mark;
     d->desc = other.d->desc;
@@ -318,33 +323,34 @@ Json::Value Object::save() const
 {
     Json::Value json;
     // id
-    if (!d->id.empty()) {
-        switch (d->objectType) {
-        case Icd::ObjectItem: break;
-        default: json["id"] = id(); break;
+    if (d->objectType != Icd::ObjectItem && !d->id.empty()) {
+        json["id"] = d->id;
+    }
+    //
+    if (!d->parent || d->parent->rtti() != Icd::ObjectComplex) {
+        // name
+        json["name"] = d->name;
+        // mark
+        if (!d->mark.empty()) {
+            json["mark"] = d->mark;
+        }
+        // desc
+        if (!d->desc.empty()) {
+            json["desc"] = Json::toJson(d->desc);
         }
     }
-    // name
-    json["name"] = name();
-    // mark
-    if (!d->mark.empty()) {
-        json["mark"] = mark();
-    }
-    // desc
-    if (!d->desc.empty()) {
-        json["desc"] = Json::toJson(desc());
-    }
+
     return json;
 }
 
 bool Object::restore(const Json::Value &json, int)
 {
-    if (json.isMember("id")) {
-        setId(json["id"].asString());
+    if (!d->parent || d->parent->rtti() != Icd::ObjectComplex) {
+        setName(json["name"].asString());
+        setMark(json["mark"].asString());
+        setDesc(Json::fromJson(json["desc"].asString()));
     }
-    setName(json["name"].asString());
-    setMark(json["mark"].asString());
-    setDesc(Json::fromJson(json["desc"].asString()));
+
     return true;
 }
 

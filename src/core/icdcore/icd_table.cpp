@@ -30,8 +30,8 @@ public:
         , isFrameTable(false)
         , isSubFrameTable(false)
         , period(0)
-        , itemCounter(nullptr)
-        , itemCheck(nullptr)
+        , counter(nullptr)
+        , check(nullptr)
     {
 
     }
@@ -59,8 +59,8 @@ private:
     icd_int64 period;
     std::deque<icd_int64> times;
     ItemPtrArray items;         // 数据项列表
-    CounterItemPtr itemCounter;
-    CheckItemPtr itemCheck;
+    CounterItemPtr counter;
+    CheckItemPtr check;
     FrameCodeItemPtrArray frameCodes;
     ComplexItemPtrArray complexes;
     std::vector<char> headers;
@@ -81,12 +81,12 @@ void TableData::saveItem(const ItemPtr &item)
     }
     case Icd::ItemCounter:
     {
-        itemCounter = JHandlePtrCast<Icd::CounterItem>(item);
+        counter = JHandlePtrCast<Icd::CounterItem>(item);
         break;
     }
     case Icd::ItemCheck:
     {
-        itemCheck = JHandlePtrCast<Icd::CheckItem>(item);
+        check = JHandlePtrCast<Icd::CheckItem>(item);
         break;
     }
     case Icd::ItemComplex:
@@ -119,12 +119,12 @@ void TableData::removeItem(const ItemPtr &item)
     switch (item->type()) {
     case Icd::ItemCounter:
     {
-        itemCounter = Icd::CounterItemPtr();
+        counter = Icd::CounterItemPtr();
         break;
     }
     case Icd::ItemCheck:
     {
-        itemCheck = Icd::CheckItemPtr();
+        check = Icd::CheckItemPtr();
         break;
     }
     case Icd::ItemComplex:
@@ -168,8 +168,8 @@ void TableData::removeItem(const ItemPtr &item)
 
 void TableData::clearItem()
 {
-    itemCounter = Icd::CounterItemPtr();
-    itemCheck = Icd::CheckItemPtr();
+    counter = Icd::CounterItemPtr();
+    check = Icd::CheckItemPtr();
     frameCodes.clear();
     complexes.clear();
     headers.clear();
@@ -394,8 +394,6 @@ const ItemPtrArray &Table::allItem() const
 
 void Table::appendItem(const ItemPtr &item)
 {
-    item->setParent(this);
-
     double bufferSize = 0.0;
     if (d->items.empty()) {
         item->setItemOffset(d->itemOffset);
@@ -457,7 +455,6 @@ void Table::appendItem(const ItemPtr &item)
 void Table::insertItem(int index, const ItemPtr &item)
 {
     index = jBound(0, index, int(d->items.size()));
-    item->setParent(this);
     d->items.insert(d->items.cbegin() + index, item);
     //TODO update offset
 }
@@ -488,16 +485,16 @@ bool Table::isEmpty() const
 
 int Table::itemCount() const
 {
-    return static_cast<int>(d->items.size());
+    return int(d->items.size());
 }
 
 ItemPtr Table::itemAt(int index) const
 {
-    if (index < 0 || index >= static_cast<int>(d->items.size())) {
+    if (index < 0 || index >= int(d->items.size())) {
         return ItemPtr();
     }
 
-    return d->items.at(static_cast<size_t>(index));
+    return d->items.at(size_t(index));
 }
 
 ItemPtr Table::itemById(const std::string &id) const
@@ -904,24 +901,24 @@ const std::vector<char> &Table::headers() const
 
 CounterItemPtr Table::counterItem()
 {
-    return d->itemCounter;
+    return d->counter;
 }
 
 bool Table::isCheckValid() const
 {
-    return (d->itemCheck)
-            && (d->itemCheck->isValid())
-            && (d->itemCheck->endPos() < (this->bufferSize() - 1));
+    return (d->check)
+            && (d->check->isValid())
+            && (d->check->endPos() < (this->bufferSize() - 1));
 }
 
 CheckItemPtr Table::checkItem()
 {
-    return d->itemCheck;
+    return d->check;
 }
 
 const CheckItemPtr &Table::checkItem() const
 {
-    return d->itemCheck;
+    return d->check;
 }
 
 const Icd::FrameCodeItemPtrArray &Icd::Table::allFrameCode() const
@@ -1116,7 +1113,7 @@ void Table::resetData()
 void Table::clearData()
 {
     if (d->buffer) {
-        memset(d->buffer, 0, static_cast<size_t>(bufferSize()));
+        memset(d->buffer, 0, size_t(std::ceil(bufferSize())));
     }
 
     for (FrameCodeItemPtrArray::const_iterator citer = d->frameCodes.cbegin();
@@ -1132,15 +1129,12 @@ void Table::clearData()
 
 ObjectPtr Table::copy() const
 {
-    TablePtr newTable = std::make_shared<Table>(*this);
-    newTable->setParent(nullptr);
-    return newTable;
+    return std::make_shared<Table>(*this);
 }
 
 ObjectPtr Table::clone() const
 {
     TablePtr newTable = std::make_shared<Table>(*this);
-    newTable->setParent(nullptr);
     // children
     const ItemPtrArray &items = d->items;
     for (ItemPtrArray::const_iterator citer = items.cbegin();
@@ -1149,7 +1143,9 @@ ObjectPtr Table::clone() const
         if (item->type() == Icd::ItemFrame) {
             continue;
         }
-        newTable->appendItem(JHandlePtrCast<Item>((*citer)->clone()));
+        ItemPtr newItem = JHandlePtrCast<Item>((*citer)->clone());
+        newItem->setParent(newTable.get());
+        newTable->appendItem(newItem);
     }
     return newTable;
 }
@@ -1162,12 +1158,17 @@ Table &Table::operator =(const Table &other)
     Object::operator =(other);
     d->sequence = other.d->sequence;
     d->itemOffset = other.d->itemOffset;
+    d->bufferSize = other.d->bufferSize;
     d->bufferOffset = other.d->bufferOffset;
+    d->buffer = other.d->buffer;
     d->isFrameTable = other.d->isFrameTable;
     d->isSubFrameTable = other.d->isSubFrameTable;
-    d->bufferSize = 0;
-    d->buffer = nullptr;
     d->items = other.allItem();
+    d->counter = other.d->counter;
+    d->check = other.d->check;
+    d->frameCodes = other.d->frameCodes;
+    d->complexes = other.d->complexes;
+    d->headers = other.d->headers;
     return *this;
 }
 
@@ -1222,8 +1223,7 @@ bool Table::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = itemsJson.begin();
              citer != itemsJson.end(); ++citer) {
             const Json::Value &itemJson = *citer;
-            Icd::ItemPtr item = Item::create(Icd::itoa(itemCount() + 1),
-                                             Item::stringType(itemJson["type"].asString()));
+            Icd::ItemPtr item = Item::create(Item::stringType(itemJson["type"].asString()));
             if (!item) {
                 continue;
             }

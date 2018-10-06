@@ -169,6 +169,9 @@ std::string ICDCORE_EXPORT pathOfFile(const std::string &filePath);
 
 int ICDCORE_EXPORT asciiCountOfSize(int format, int size);
 
+std::string ICDCORE_EXPORT createUuid();
+void ICDCORE_EXPORT createUuid(std::string &uuid);
+
 } // end of namespace Icd
 
 #endif // ICDCORE_GLOBAL_H
