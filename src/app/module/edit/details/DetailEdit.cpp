@@ -89,7 +89,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
     switch (object->rtti()) {
     case Icd::ObjectRoot:
     {
-        const Icd::RootPtr root = JHandlePtrCast<Icd::Root>(object);
+        auto root = JHandlePtrCast<Icd::Root>(object);
         if (!root) {
             return;
         }
@@ -98,7 +98,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
     }
     case Icd::ObjectVehicle:
     {
-        const Icd::VehiclePtr vehicle = JHandlePtrCast<Icd::Vehicle>(object);
+        auto vehicle = JHandlePtrCast<Icd::Vehicle>(object);
         if (!vehicle) {
             return;
         }
@@ -107,7 +107,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
     }
     case Icd::ObjectSystem:
     {
-        const Icd::SystemPtr system = JHandlePtrCast<Icd::System>(object);
+        auto system = JHandlePtrCast<Icd::System>(object);
         if (!system) {
             return;
         }
@@ -116,7 +116,20 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
     }
     case Icd::ObjectTable:
     {
-        const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(object);
+        auto table = JHandlePtrCast<Icd::Table>(object);
+        if (!table) {
+            return;
+        }
+        subObject = table->itemAt(index.toInt());
+        break;
+    }
+    case Icd::ObjectComplex:
+    {
+        auto complex = JHandlePtrCast<Icd::ComplexItem>(object);
+        if (!complex) {
+            return;
+        }
+        auto table = complex->table();
         if (!table) {
             return;
         }
@@ -125,7 +138,7 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
     }
     case Icd::ObjectFrame:
     {
-        const Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(object);
+        auto frame = JHandlePtrCast<Icd::FrameItem>(object);
         if (!frame) {
             return;
         }
@@ -288,6 +301,8 @@ void DetailEdit::changeEdit(int itemType)
     if (!objectEdit_->init()) {
         Q_ASSERT(false);
     }
+
+    setButtonsEnabled(true);
 }
 
 }

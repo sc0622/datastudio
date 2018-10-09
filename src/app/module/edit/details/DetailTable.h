@@ -86,13 +86,13 @@ public:
     int currentRow() const;
     Icd::icd_uint64 currentIndex() const;
     bool isMultiRowSelected() const;
-    void updateRow(int row);
+    void updateRow(int row, const QVariant &data = QVariant::Invalid);
 
     void insertRow(int row, const Icd::VehiclePtr &vehicle);
     void insertRow(int row, const Icd::SystemPtr &system);
     void insertRow(int row, const Icd::TablePtr &table);
     void insertRow(int row, const Icd::ItemPtr &item);
-    void apply(const Icd::ObjectPtr &target);
+    bool apply(const Icd::ObjectPtr &target, int row);
     void cancel();
 
 signals:
@@ -108,6 +108,7 @@ private:
     bool updateTable();
     bool updateItem();
 
+    bool updateTable(const Icd::TablePtr &table);
     bool updateItem(const Icd::ItemPtr &item);
     bool updateHeader(const Icd::HeaderItemPtr &header);
     bool updateCounter(const Icd::CounterItemPtr &counter);

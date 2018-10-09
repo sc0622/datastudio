@@ -142,7 +142,7 @@ public:
     bool hasUnloadedItem(QStandardItem *item = nullptr) const;
     QStandardItem *unloadedItem(QStandardItem *item = nullptr) const;
     static bool isItemLoaded(QStandardItem *item);
-    Icd::ObjectPtr findObject(QStandardItem *item) const;
+    Icd::ObjectPtr findObject(QStandardItem *item, bool ignoreComplex = true) const;
 
 public:
     Q_INVOKABLE bool changeChannel(QStandardItem *itemTable);
@@ -201,13 +201,13 @@ private:
     QStandardItem *insertSystem(int row, QStandardItem *itemVehicle, const Icd::SystemPtr &system,
                                 const QString &domain, const QString &path, int deep);
     QStandardItem *insertSystem(int row, QStandardItem *itemVehicle, const Icd::SystemPtr &system, int deep);
-    QStandardItem *insertTable(int row, QStandardItem *itemSystem, const Icd::TablePtr &table,
+    QStandardItem *insertTable(int row, QStandardItem *itemParent, const Icd::TablePtr &table,
                                const QString &domain, const QString &path, int deep);
-    QStandardItem *insertTable(int row, QStandardItem *itemSystem, const Icd::TablePtr &table, int deep);
+    QStandardItem *insertTable(int row, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
 
-    static bool loadTable(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
+    static bool loadItems(QObject *target, QStandardItem *itemTable, const Icd::ItemPtrArray &items, int deep);
 
-    static QStandardItem *loadSystem(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table, int index = 0);
+    static QStandardItem *loadIndexTable(QObject *target, QStandardItem *itemDataItem, const Icd::TablePtr &table, int index = 0);
     static QStandardItem *insertItem(QObject *target, int row, QStandardItem *itemTable, const Icd::ItemPtr &item);
     static bool loadFrameCodeItem(QObject *target, QStandardItem *itemTable, const Icd::FrameCodeItemPtr &frameCodeItem);
     static bool loadComplexItem(QObject *target, QStandardItem *itemDataItem, const Icd::ComplexItemPtr &complexItem);
@@ -275,7 +275,7 @@ private:
 
     static QString idDomain(QStandardItem *item);
     static QString markDomain(QStandardItem *item);
-    static bool loadSystem(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
+    static bool loadDeepTable(JTreeView *treeView, QStandardItem *itemParent, const Icd::TablePtr &table, int deep);
 
     //
     QMenu *createAddItemMenu(QStandardItem *item, QAction *action, EditAction editAction);

@@ -223,7 +223,7 @@ QString JProtoTreeView::markDomain(QStandardItem *item)
 
 bool JProtoTreeView::loadTable(JTreeView *treeView, QStandardItem *itemParent, const TablePtr &table)
 {
-    return JProtoTreeViewPrivate::loadSystem(treeView, itemParent, table, Icd::ObjectItem);
+    return JProtoTreeViewPrivate::loadDeepTable(treeView, itemParent, table, Icd::ObjectItem);
 }
 
 Icd::RootPtr JProtoTreeView::protoRoot() const
@@ -263,10 +263,10 @@ QStandardItem *JProtoTreeView::unloadedItem() const
     return d->unloadedItem(d->invisibleRootItem());
 }
 
-ObjectPtr JProtoTreeView::findObject(QStandardItem *item) const
+ObjectPtr JProtoTreeView::findObject(QStandardItem *item, bool ignoreComplex) const
 {
     Q_D(const JProtoTreeView);
-    return d->findObject(item);
+    return d->findObject(item, ignoreComplex);
 }
 
 void JProtoTreeView::insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data)

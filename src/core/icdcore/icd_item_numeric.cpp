@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "icd_item_numeric.h"
 #include <sstream>
+#include <limits.h>
 #include <unordered_map>
 
 namespace Icd {
@@ -348,25 +349,21 @@ void NumericItem::clearSpec()
 std::pair<double, double> NumericItem::dataRange() const
 {
     std::pair<double, double> range = std::make_pair<double, double>(-DBL_MAX, DBL_MAX);
-    const int bits = (static_cast<int>(bufferSize()) << 3);
+    //const int bits = (static_cast<int>(bufferSize()) << 3);
 
     if (d->limit->minimumInf()) {
         switch (d->numericType) {
         case NumericU8:
         case NumericU16:
         case NumericU32:
-        case NumericU64:
-            range.first = 0.0;
-            break;
-        case NumericI8:
-        case NumericI16:
-        case NumericI32:
-        case NumericF32:
-        case NumericF64:
-            range.first = double(-(1ll << (bits - 1)));
-            break;
-        default:
-            break;
+        case NumericU64: range.first = 0.0; break;
+        case NumericI8: range.first = SCHAR_MIN; break;
+        case NumericI16: range.first = SHRT_MIN; break;
+        case NumericI32: range.first = LONG_MIN; break;
+        case NumericI64: range.first = LLONG_MIN; break;
+        case NumericF32: range.first = double(-FLT_MAX); break;
+        case NumericF64: range.first = -DBL_MAX; break;
+        default: break;
         }
     } else {
         range.first = (d->limit->minimum() - d->offset) / d->scale;
@@ -374,21 +371,17 @@ std::pair<double, double> NumericItem::dataRange() const
 
     if (d->limit->maximumInf()) {
         switch (d->numericType) {
-        case NumericU8:
-        case NumericU16:
-        case NumericU32:
-        case NumericU64:
-            range.second = double((1ll << bits) - 1);
-            break;
-        case NumericI8:
-        case NumericI16:
-        case NumericI32:
-        case NumericF32:
-        case NumericF64:
-            range.second = double((1ll << (bits - 1)) - 1);
-            break;
-        default:
-            break;
+        case NumericI8: range.second = SCHAR_MAX; break;
+        case NumericU8: range.second = UCHAR_MAX; break;
+        case NumericI16: range.second = SHRT_MAX; break;
+        case NumericU16: range.second = USHRT_MAX; break;
+        case NumericI32: range.second = LONG_MAX; break;
+        case NumericU32: range.second = ULONG_MAX; break;
+        case NumericI64: range.second = LLONG_MAX; break;
+        case NumericU64: range.second = ULLONG_MAX; break;
+        case NumericF32: range.second = double(FLT_MAX); break;
+        case NumericF64: range.second = DBL_MAX; break;
+        default: break;
         }
     } else {
         range.second = (d->limit->maximum() - d->offset) / d->scale;

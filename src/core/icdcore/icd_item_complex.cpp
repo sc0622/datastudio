@@ -118,7 +118,7 @@ ComplexItem &ComplexItem::operator =(const ComplexItem &other)
         return *this;
     }
     Item::operator =(other);
-    *d->table = *other.table();
+    d->table = other.d->table;
     return *this;
 }
 

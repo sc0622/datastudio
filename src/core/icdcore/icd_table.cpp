@@ -28,7 +28,6 @@ public:
         , bufferOffset(0.0)
         , buffer(nullptr)
         , isFrameTable(false)
-        , isSubFrameTable(false)
         , period(0)
         , counter(nullptr)
         , check(nullptr)
@@ -55,7 +54,6 @@ private:
     double bufferOffset;        //
     char *buffer;
     bool isFrameTable;          //
-    bool isSubFrameTable;       //
     icd_int64 period;
     std::deque<icd_int64> times;
     ItemPtrArray items;         // 数据项列表
@@ -350,11 +348,6 @@ void Table::setBufferOffset(double offset)
         const ItemPtr &item = *citer;
         item->setBufferOffset(item->bufferOffset() + delta);
     }
-}
-
-void Table::setSubFrameTableFlag(bool flag)
-{
-    d->isSubFrameTable = flag;
 }
 
 char *Table::buffer() const
@@ -1021,7 +1014,12 @@ bool Table::isFrameTable() const
 
 bool Table::isSubFrameTable() const
 {
-    return d->isSubFrameTable;
+    Object *parent = this->parent();
+    if (parent && parent->rtti() == Icd::ObjectFrame) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 int Table::frameCodeType() const
@@ -1162,7 +1160,6 @@ Table &Table::operator =(const Table &other)
     d->bufferOffset = other.d->bufferOffset;
     d->buffer = other.d->buffer;
     d->isFrameTable = other.d->isFrameTable;
-    d->isSubFrameTable = other.d->isSubFrameTable;
     d->items = other.allItem();
     d->counter = other.d->counter;
     d->check = other.d->check;

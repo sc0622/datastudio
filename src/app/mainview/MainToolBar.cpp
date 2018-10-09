@@ -208,13 +208,37 @@ void ToolBar::addEditItemAction(const Json::Value &option)
         if (args.size() < 3) {
             return;
         }
-        actionAddItem->setEnabled(args[0].toBool());
-        actionUpItem->setEnabled(args[1].toBool());
-        actionDownItem->setEnabled(args[2].toBool());
+        // add
+        const QVariant &vAdd = args[0];
+        if (vAdd.isValid()) {
+            actionAddItem->setEnabled(vAdd.toBool());
+        }
+        // up
+        const QVariant &vUp = args[1];
+        if (vUp.isValid()) {
+            actionUpItem->setEnabled(vUp.toBool());
+        }
+        // down
+        const QVariant &vDown = args[2];
+        if (vDown.isValid()) {
+            actionDownItem->setEnabled(vDown.toBool());
+        }
         if (args.size() >= 6) {
-            actionCopy->setEnabled(args[3].toBool());
-            actionSave->setEnabled(args[4].toBool());
-            actionSaveAs->setEnabled(args[5].toBool());
+            // copy
+            const QVariant &vCopy = args[3];
+            if (vCopy.isValid()) {
+                actionCopy->setEnabled(vCopy.toBool());
+            }
+            // save
+            const QVariant &vSave = args[4];
+            if (vSave.isValid()) {
+                actionSave->setEnabled(vSave.toBool());
+            }
+            // saveas
+            const QVariant &vSaveAs = args[5];
+            if (vSaveAs.isValid()) {
+                actionSaveAs->setEnabled(vSaveAs.toBool());
+            }
         }
     });
 }

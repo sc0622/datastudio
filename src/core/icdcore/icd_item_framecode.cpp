@@ -248,6 +248,7 @@ FrameCodeItem &FrameCodeItem::operator =(const FrameCodeItem &other)
         return *this;
     }
     Item::operator =(other);
+    d->frameCodeType = other.d->frameCodeType;
     d->frameId = other.d->frameId;
     d->frame.reset();
     return *this;

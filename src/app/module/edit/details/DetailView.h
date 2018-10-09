@@ -40,7 +40,6 @@ public slots:
 
 private:
     void insertRow(int row, QStandardItem *item, const QVariant &data);
-
     bool saveObject();
 
 private:

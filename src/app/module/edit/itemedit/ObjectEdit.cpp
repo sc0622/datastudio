@@ -213,7 +213,8 @@ bool ObjectEdit::validate()
         return false;
     }
     // name [unique check]
-    if (parentObject && parentObject->hasChildByName(name.toStdString(), object_)) {
+    if (parentObject
+            && parentObject->hasChildByName(name.toStdString(), object_)) {
         editName_->setFocus();
         editName_->selectAll();
         QToolTip::showText(editName_->mapToGlobal(QPoint(0, 8)),
@@ -222,7 +223,9 @@ bool ObjectEdit::validate()
     }
     // mark [unique check]
     const QString mark = editMark_->text().trimmed();
-    if (parentObject && parentObject->hasChildByMark(mark.toStdString(), object_)) {
+    if (!mark.isEmpty()
+            && parentObject
+            && parentObject->hasChildByMark(mark.toStdString(), object_)) {
         editMark_->setFocus();
         editMark_->selectAll();
         QToolTip::showText(editMark_->mapToGlobal(QPoint(0, 8)),

@@ -113,7 +113,6 @@ public:
 private:
     void setItemOffset(int offset);
     void setBufferOffset(double offset);
-    void setSubFrameTableFlag(bool flag);
 
 private:
     TableData *d;

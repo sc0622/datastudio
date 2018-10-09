@@ -123,7 +123,7 @@ public:
     bool hasUnloadedItem() const;
     QStandardItem *unloadedItem() const;
 
-    Icd::ObjectPtr findObject(QStandardItem *item) const;
+    Icd::ObjectPtr findObject(QStandardItem *item, bool ignoreComplex = true) const;
 
     // for edit module {{{
 

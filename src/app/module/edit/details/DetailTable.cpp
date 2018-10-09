@@ -121,6 +121,7 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
     case Icd::ObjectVehicle: result = updateVehicle(); break;
     case Icd::ObjectSystem: result = updateSystem(); break;
     case Icd::ObjectTable: result = updateTable(); break;
+    case Icd::ObjectComplex: result = updateComplex(JHandlePtrCast<Icd::ComplexItem>(object)); break;
     case Icd::ObjectFrame: result = updateFrame(JHandlePtrCast<Icd::FrameItem>(object)); break;
     default:
         tableView_->enableSelect(false);
@@ -256,7 +257,7 @@ void DetailTable::insertRow(int row, const Icd::ItemPtr &item)
     tableView_->selectRow(row);
 }
 
-void DetailTable::updateRow(int row)
+void DetailTable::updateRow(int row, const QVariant &data)
 {
     if (!object_ || row < 0) {
         return;
@@ -271,10 +272,12 @@ void DetailTable::updateRow(int row)
         if (!root) {
             break;
         }
+
         auto vehicle = root->vehicleAt(row);
         if (!vehicle) {
             break;
         }
+
         setRowData(row, vehicle);
         break;
     }
@@ -284,10 +287,12 @@ void DetailTable::updateRow(int row)
         if (!vehicle) {
             break;
         }
+
         auto system = vehicle->systemAt(row);
         if (!system) {
             break;
         }
+
         setRowData(row, system);
         break;
     }
@@ -297,23 +302,28 @@ void DetailTable::updateRow(int row)
         if (!system) {
             break;
         }
+
         auto table = system->tableAt(row);
         if (!table) {
             break;
         }
+
         setRowData(row, table);
         break;
     }
     case Icd::ObjectTable:
     {
         auto table = JHandlePtrCast<Icd::Table>(object_);
+
         if (!table) {
             break;
         }
+
         auto item = table->itemAt(row);
         if (!item) {
             break;
         }
+
         setRowData(row, item, table->bufferOffset());
         break;
     }
@@ -327,13 +337,13 @@ void DetailTable::updateRow(int row)
             if (!frame) {
                 break;
             }
-#if 0 //TODO
-            auto item = frame->tableAt(row);
-            if (!item) {
+
+            auto table = frame->tableAt(data.toULongLong());
+            if (!table) {
                 break;
             }
-            setRowData(row, item, table->bufferOffset());
-#endif
+            setRowData(row, table);
+
             break;
         }
         case Icd::ItemComplex:
@@ -342,8 +352,18 @@ void DetailTable::updateRow(int row)
             if (!complex) {
                 break;
             }
-            //TODO
-            setRowData(row, complex->table());
+
+            auto table = complex->table();
+            if (!table) {
+                break;
+            }
+
+            auto item = table->itemAt(row);
+            if (!item) {
+                break;
+            }
+
+            setRowData(row, item, table->bufferOffset());
             break;
         }
         default:
@@ -358,20 +378,51 @@ void DetailTable::updateRow(int row)
     }
 }
 
-void DetailTable::apply(const Icd::ObjectPtr &target)
+bool DetailTable::apply(const Icd::ObjectPtr &target, int row)
 {
+    if (!object_ || !target) {
+        return false;
+    }
+
     if (newObject_) {
         newObject_.reset();
     }
 
-    if (object_ && object_->objectType() == Icd::ObjectItem
-            && object_->rtti() != Icd::ObjectFrame) {
-        object_ = target;
-        tableView_->clearContents();
-        updateItem(JHandlePtrCast<Icd::Item>(object_));
-    } else {
-        updateRow(currentRow());
+    switch (object_->objectType()) {
+    case Icd::ObjectItem:
+    {
+        switch (object_->rtti()) {
+        case Icd::ObjectComplex:
+        {
+            updateRow(row);
+            break;
+        }
+        case Icd::ObjectFrame:
+        {
+            if (target->objectType() != Icd::ObjectTable) {
+                return false;
+            }
+            auto table = JHandlePtrCast<Icd::Table>(target);
+            if (!table) {
+                return false;
+            }
+            updateRow(row, table->frameCode());
+            break;
+        }
+        default:
+            object_ = target;
+            tableView_->clearContents();
+            updateItem(JHandlePtrCast<Icd::Item>(object_));
+            break;
+        }
+        break;
     }
+    default:
+        updateRow(row);
+        break;
+    }
+
+    return true;
 }
 
 void DetailTable::cancel()
@@ -506,36 +557,7 @@ bool DetailTable::updateSystem()
 
 bool DetailTable::updateTable()
 {
-    QStringList labels;
-    labels << tr("Name") << tr("Mark") << tr("Byte index") << tr("Length")
-           << tr("Type") << tr("Describe");
-    tableView_->setHorizontalHeaderLabels(labels);
-    tableView_->setColumnWidth(2, 80);
-    tableView_->setColumnWidth(3, 80);
-    tableView_->setColumnWidth(4, 100);
-    tableView_->horizontalHeaderItem(0)->setData("name");
-    tableView_->horizontalHeaderItem(1)->setData("mark");
-    tableView_->horizontalHeaderItem(2)->setData("byteIndex");
-    tableView_->horizontalHeaderItem(3)->setData("length");
-    tableView_->horizontalHeaderItem(4)->setData("type");
-    tableView_->horizontalHeaderItem(5)->setData("desc");
-
-    const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(object_);
-    if (!table) {
-        return false;
-    }
-
-    const Icd::ItemPtrArray &items = table->allItem();
-
-    tableView_->setRowCount(static_cast<int>(items.size()));
-    const int rowCount = tableView_->rowCount();
-    for (int row = 0; row < rowCount; ++row) {
-        setRowData(row, items.at(size_t(row)), table->bufferOffset());
-    }
-
-    setTip(tr("Size: %1").arg(table->bufferSize()));
-
-    return true;
+    return updateTable(JHandlePtrCast<Icd::Table>(object_));
 }
 
 bool DetailTable::updateItem()
@@ -554,6 +576,39 @@ bool DetailTable::updateItem()
     }
 
     updateItem(item);
+
+    return true;
+}
+
+bool DetailTable::updateTable(const Icd::TablePtr &table)
+{
+    if (!table) {
+        return false;
+    }
+
+    QStringList labels;
+    labels << tr("Name") << tr("Mark") << tr("Byte index") << tr("Length")
+           << tr("Type") << tr("Describe");
+    tableView_->setHorizontalHeaderLabels(labels);
+    tableView_->setColumnWidth(2, 80);
+    tableView_->setColumnWidth(3, 80);
+    tableView_->setColumnWidth(4, 100);
+    tableView_->horizontalHeaderItem(0)->setData("name");
+    tableView_->horizontalHeaderItem(1)->setData("mark");
+    tableView_->horizontalHeaderItem(2)->setData("byteIndex");
+    tableView_->horizontalHeaderItem(3)->setData("length");
+    tableView_->horizontalHeaderItem(4)->setData("type");
+    tableView_->horizontalHeaderItem(5)->setData("desc");
+
+    const Icd::ItemPtrArray &items = table->allItem();
+
+    tableView_->setRowCount(static_cast<int>(items.size()));
+    const int rowCount = tableView_->rowCount();
+    for (int row = 0; row < rowCount; ++row) {
+        setRowData(row, items.at(size_t(row)), table->bufferOffset());
+    }
+
+    setTip(tr("Size: %1").arg(table->bufferSize()));
 
     return true;
 }
@@ -739,11 +794,12 @@ bool DetailTable::updateArray(const Icd::ArrayItemPtr &array)
         return false;
     }
 
-    //int rowIndex = tableView_->rowCount() - 1;
+    int rowIndex = tableView_->rowCount() - 1;
 
     // count
-    //tableView_->insertRow(++rowIndex);
-    //tableView_->setItem();
+    tableView_->insertRow(++rowIndex);
+    tableView_->setItemData(rowIndex, 0, tr("Count of array"));
+    tableView_->setItemData(rowIndex, 1, array->count());
 
     return true;
 }
@@ -855,9 +911,7 @@ bool DetailTable::updateComplex(const Icd::ComplexItemPtr &complex)
         return false;
     }
 
-    //int rowIndex = tableView_->rowCount() - 1;
-
-    return true;
+    return updateTable(complex->table());
 }
 
 bool DetailTable::updateFrame(const Icd::FrameItemPtr &frame)

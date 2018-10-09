@@ -87,6 +87,27 @@ void DetailView::updateView(QStandardItem *item)
 
     detailTable_->updateView(object_);
     detailEdit_->updateView(object_, false, isNew);
+
+    //
+    QVariant vAdd(false);
+    //
+    if (object_) {
+        if (object_->objectType() != Icd::ObjectItem
+                || (object_->rtti() == Icd::ObjectFrame
+                || object_->rtti() == Icd::ObjectComplex)) {
+            vAdd = true;
+        }
+    }
+    //
+    args.clear();
+    // add
+    args.append(vAdd);
+    // up
+    args.append(QVariant::Invalid);
+    // down
+    args.append(QVariant::Invalid);
+    // send
+    jnotify->send("edit.toolbar.item.action", args);
 }
 
 void DetailView::removeRow(QStandardItem *item)
@@ -118,7 +139,7 @@ void DetailView::onCurrentItemChanged(const QVariant &index, const Icd::ObjectPt
 
     // update status of toolbar
 
-    bool addFlag = true, upFlag = false, downFlag = false;
+    QVariant addFlag(true), upFlag(false), downFlag(false);
 
     if (isMultiRowSelected) {
         addFlag = false;
@@ -177,7 +198,9 @@ void DetailView::onApplied()
     Icd::ObjectPtr target = detailEdit_->target();
 
     // update tableview
-    detailTable_->apply(target);
+    if (!detailTable_->apply(target, currentRow)) {
+        return;
+    }
 
     // update treeview
     QVariantList args;
@@ -224,44 +247,53 @@ void DetailView::insertRow(int row, QStandardItem *item, const QVariant &data)
 {
     Q_UNUSED(data);
 
-    if (!item) {
+    if (!item || !object_) {
         return;
     }
 
-    const int itemType = item->type();
-    switch (itemType) {
-    case Icd::TreeItemTypeRoot:
+    switch (object_->rtti()) {
+    case Icd::ObjectRoot:
     {
         auto newVehicle = std::make_shared<Icd::Vehicle>(object_.get());
         newObject_ = newVehicle;
         detailTable_->insertRow(row, newVehicle);
         break;
     }
-    case Icd::TreeItemTypeVehicle:
+    case Icd::ObjectVehicle:
     {
         auto newSystem = std::make_shared<Icd::System>(object_.get());
         newObject_ = newSystem;
         detailTable_->insertRow(row, newSystem);
         break;
     }
-    case Icd::TreeItemTypeSystem:
+    case Icd::ObjectSystem:
+    case Icd::ObjectFrame:
     {
         auto newTable = std::make_shared<Icd::Table>(object_.get());
         newObject_ = newTable;
         detailTable_->insertRow(row, newTable);
         break;
     }
-    case Icd::TreeItemTypeTable:
+    case Icd::ObjectComplex:
     {
-        auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()));
-        newItem->setParent(object_.get());
+        auto complex = JHandlePtrCast<Icd::ComplexItem>(object_);
+        if (!complex) {
+            break;
+        }
+
+        auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()), complex->table().get());
         newObject_ = newItem;
         detailTable_->insertRow(row, newItem);
         break;
     }
+    case Icd::ObjectTable:
     default:
+    {
+        auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()), object_.get());
+        newObject_ = newItem;
+        detailTable_->insertRow(row, newItem);
         break;
-    }
+    }}
 }
 
 bool DetailView::saveObject()

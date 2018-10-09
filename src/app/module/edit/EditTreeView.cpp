@@ -122,7 +122,7 @@ TreeView::TreeView(QWidget *parent)
         if (!item) {
             return;
         }
-        *objectPtr = treeView_->findObject(item);
+        *objectPtr = treeView_->findObject(item, false);
         event.setReturnValue(true);
     });
     jnotify->on("edit.detail.changed", this, [=](JNEvent &event){
@@ -146,6 +146,22 @@ TreeView::TreeView(QWidget *parent)
         } else if (action == "remove") {
             treeView_->removeRow(currentRow, *object, data);
         }
+    });
+    jnotify->on("edit.toolbar.item.add", this, [=](JNEvent &){
+        QStandardItem *currentItem = treeView_->currentItem();
+        if (!currentItem) {
+            return;
+        }
+        //
+        QVariant data;
+        if (currentItem->type() == Icd::TreeItemTypeTable) {
+            data = Icd::NumericI8;
+        }
+        //
+        QVariantList args;
+        args.append(qVariantFromValue(static_cast<void*>(currentItem)));   // item
+        args.append(data);  // data
+        jnotify->send("edit.tree.request.add", args);
     });
 }
 

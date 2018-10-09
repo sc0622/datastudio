@@ -104,7 +104,12 @@ void TableEdit::restoreContent(bool recursive)
     if (table) {
         if (table->isSubFrameTable()) {
             // codeType
-            comboCodeType_->setCurrentIndex(comboCodeType_->findData(table->frameCodeType()));
+            int frameCodeType = table->frameCodeType();
+            if (frameCodeType == Icd::FrameCodeInvalid) {
+                comboCodeType_->setCurrentIndex(0);
+            } else {
+                comboCodeType_->setCurrentIndex(comboCodeType_->findData(frameCodeType));
+            }
             // code
             spinCode_->setValue(QString::fromStdString(table->mark()).toULongLong(nullptr, 16));
             //sequence
@@ -127,6 +132,14 @@ bool TableEdit::validate()
             // code-type
             if (comboCodeType_->currentIndex() == -1) {
                 comboCodeType_->setFocus();
+                return false;
+            }
+            // code [unique check]
+            auto parentObject = table->parent();
+            if (parentObject && parentObject->childAt(spinCode_->value())) {
+                spinCode_->setFocus();
+                QToolTip::showText(spinCode_->mapToGlobal(QPoint(0, 8)),
+                                   tr("There is already a code with %1").arg(spinCode_->text()));
                 return false;
             }
         }

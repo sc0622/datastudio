@@ -93,6 +93,7 @@ FrameItem::FrameItem(const FrameItem &other)
 void FrameItem::setBufferOffset(double offset)
 {
     Item::setBufferOffset(offset);
+
     for (Icd::TablePtrMap::const_iterator citer = d->tables.cbegin();
          citer != d->tables.cend(); ++citer) {
         citer->second->setBufferOffset(offset);
@@ -113,15 +114,20 @@ int FrameItem::rtti() const
 
 void FrameItem::addTable(const TablePtr &table)
 {
+    if (!table) {
+        return;
+    }
+
     const icd_uint64 code = table->frameCode();
     TablePtrMap::const_iterator citer = d->tables.find(code);
     if (citer != d->tables.end()) {
         return;
     }
 
-    table->setSubFrameTableFlag(true);
     d->tables[code] = table;
     d->tableSeq.insert(std::pair<icd_uint64, TablePtr>(table->sequence(), table));
+
+    table->setBufferOffset(bufferOffset());
 
     if (bufferSize() < table->bufferSize()) {
         setBufferSize(table->bufferSize());

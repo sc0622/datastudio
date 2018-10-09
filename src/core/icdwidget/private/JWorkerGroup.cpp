@@ -290,7 +290,6 @@ void JWorkerGroup::setBindTableType(JProtoTreeView::BindTableTypes type)
 
 void JWorkerGroup::setDirty()
 {
-    //
     stop();
 
     if (worker_) {
@@ -368,8 +367,8 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
                 }
                 text.append(QString("<font color=green size=2>[%1:%2:%3.%4]</font> ")
                             .arg(item->itemOffset(), 4, 10, QChar('0'))
-                            .arg((int)item->bufferOffset(), 4, 10, QChar('0'))
-                            .arg((int)(item->bufferOffset() - tableOffset), 4, 10, QChar('0'))
+                            .arg(int(item->bufferOffset()), 4, 10, QChar('0'))
+                            .arg(int(item->bufferOffset() - tableOffset), 4, 10, QChar('0'))
                             .arg(itemBit->bitStart(), 2, 10, QChar('0')));
                 break;
             }
@@ -553,15 +552,17 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
                 switch (itemNumeric->numericType()) {
                 case Icd::NumericF32:
                 {
-                    float _originalData = float(originalData);
-                    qint32 data = *(qint32*)&_originalData;
-                    values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
+                    float fOriginalData = float(originalData);
+                    qint32 iOriginalData;
+                    memcpy(&iOriginalData, &fOriginalData, 4);
+                    values.append(QString("%1").arg(iOriginalData, asciiCount, dataFormat_, QChar('0')).toUpper());
                     break;
                 }
                 case Icd::NumericF64:
                 {
-                    qint64 data = *(qint64*)&originalData;
-                    values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
+                    qint64 iOriginalData = static_cast<qint64>(originalData);
+                    memcpy(&iOriginalData, &originalData, 8);
+                    values.append(QString("%1").arg(iOriginalData, asciiCount, dataFormat_, QChar('0')).toUpper());
                     break;
                 }
                 default:
