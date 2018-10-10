@@ -57,6 +57,11 @@ void DetailView::requestAdd(QStandardItem *item, const QVariant &data)
     insertRow(detailTable_->rowCount(), item, data);
 }
 
+void DetailView::moveCurrentRow(bool up)
+{
+    detailTable_->moveCurrentRow(up);
+}
+
 void DetailView::updateView(QStandardItem *item)
 {
     detailTable_->resetView();

@@ -1,4 +1,13 @@
 
+-- V4.6.0
+    tools: VS2015，Qt5.11.1，Qbs>=1.9.1
+    depends:
+        1) jframework: v2.7.4
+    fixed:
+        1) 升级core、parser、widget核心部件，完善部分编辑系统功能
+    next:
+        <inherit to v4.5.0>
+
 -- V4.5.4
     tools: VS2015，Qt5.11.1，Qbs>=1.9.1
     depends:

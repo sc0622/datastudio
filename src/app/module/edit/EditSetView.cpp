@@ -45,6 +45,12 @@ SetView::SetView(QWidget *parent)
         }
         onRequestAdd(jVariantFromVoid<QStandardItem>(args[0]), args[1]);
     });
+    jnotify->on("edit.toolbar.item.up", this, [=](JNEvent &){
+        detailView_->moveCurrentRow(true);
+    });
+    jnotify->on("edit.toolbar.item.down", this, [=](JNEvent &){
+        detailView_->moveCurrentRow(false);
+    });
 }
 
 SetView::~SetView()

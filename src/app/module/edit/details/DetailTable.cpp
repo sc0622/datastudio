@@ -65,7 +65,7 @@ DetailTable::DetailTable(QWidget *parent)
     vertLayoutMain->setSpacing(0);
 
     tableView_ = new DetailTableView(this);
-    tableView_->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tableView_->setContextMenuPolicy(Qt::CustomContextMenu);
     delegate_ = new ViewDelegate(tableView_);
     tableView_->setItemDelegate(delegate_);
     vertLayoutMain->addWidget(tableView_);
@@ -257,6 +257,21 @@ void DetailTable::insertRow(int row, const Icd::ItemPtr &item)
     tableView_->selectRow(row);
 }
 
+void DetailTable::moveCurrentRow(bool up)
+{
+    int currentRow = tableView_->currentRow();
+    if (currentRow == -1) {
+        return;
+    }
+
+    tableView_->clearSelection();
+
+    const QList<QStandardItem*> items = tableView_->takeRow(currentRow);
+    currentRow = currentRow + (up ? -1 : 1);
+    tableView_->insertRow(currentRow, items);
+    tableView_->setCurrentCell(currentRow, 0);
+}
+
 void DetailTable::updateRow(int row, const QVariant &data)
 {
     if (!object_ || row < 0) {
@@ -422,6 +437,8 @@ bool DetailTable::apply(const Icd::ObjectPtr &target, int row)
         break;
     }
 
+    // update offset and size
+
     return true;
 }
 
@@ -431,7 +448,6 @@ void DetailTable::cancel()
         tableView_->clearSelection();
         tableView_->removeRow(currentRow());
         newObject_.reset();
-        //TODO restore offset and size
     }
 }
 
@@ -475,7 +491,7 @@ void DetailTable::showContextMenu(const QPoint &pos)
         return;
     }
 
-    menu.exec(pos);
+    menu.exec(QCursor::pos());
 }
 
 bool DetailTable::updateRoot()

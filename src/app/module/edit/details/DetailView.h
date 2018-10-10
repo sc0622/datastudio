@@ -27,6 +27,7 @@ public:
     bool init();
 
     void requestAdd(QStandardItem *item, const QVariant &data);
+    void moveCurrentRow(bool up);
     void updateView(QStandardItem *item);
     void removeRow(QStandardItem *item);
     void cleanItem(QStandardItem *item);

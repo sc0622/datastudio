@@ -92,6 +92,7 @@ public:
     void insertRow(int row, const Icd::SystemPtr &system);
     void insertRow(int row, const Icd::TablePtr &table);
     void insertRow(int row, const Icd::ItemPtr &item);
+    void moveCurrentRow(bool up);
     bool apply(const Icd::ObjectPtr &target, int row);
     void cancel();
 
