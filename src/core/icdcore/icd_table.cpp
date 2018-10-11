@@ -375,6 +375,11 @@ void Table::setBuffer(char *buffer)
     }
 }
 
+void Table::adjustBufferOffset()
+{
+    //TODO
+}
+
 ItemPtrArray Table::allItem()
 {
     return d->items;
@@ -490,12 +495,12 @@ ItemPtr Table::itemAt(int index) const
     return d->items.at(size_t(index));
 }
 
-ItemPtr Table::itemById(const std::string &id) const
+ItemPtr Table::itemById(const std::string &id, int rtti) const
 {
     for (ItemPtrArray::const_iterator citer = d->items.cbegin();
          citer != d->items.cend(); ++citer) {
         const ItemPtr &item = *citer;
-        if(item->id() == id) {
+        if ((rtti == ObjectInvalid || item->rtti() == rtti) && item->id() == id) {
             return item;
         }
     }
@@ -509,7 +514,7 @@ ObjectPtr Table::itemByName(const std::string &name, bool deep) const
          citer != d->items.cend(); ++citer) {
         const ItemPtr &item = *citer;
         const ItemType itemType = item->type();
-        if(item->name() == name) {
+        if (item->name() == name) {
             switch (itemType) {
             case ItemComplex:
             {
@@ -871,6 +876,29 @@ ObjectPtr Table::replaceChild(icd_uint64 index, ObjectPtr &other)
     //TODO update offset ...
 
     return old;
+}
+
+void Table::moveChild(int sourceIndex, int targetIndex)
+{
+    if (sourceIndex == targetIndex) {
+        return;
+    }
+
+    if (sourceIndex < 0 || sourceIndex >= int(d->items.size())) {
+        return;
+    }
+
+    if (targetIndex < 0 || targetIndex >= int(d->items.size())) {
+        return;
+    }
+
+    ItemPtrArray::const_iterator citer = d->items.cbegin() + sourceIndex;
+    ItemPtr item = *citer;
+    d->items.erase(citer);
+    d->items.insert(d->items.begin() + targetIndex, item);
+
+    // update offset
+    adjustBufferOffset();
 }
 
 void Table::removeChild(icd_uint64 index)
@@ -1238,7 +1266,7 @@ bool Table::restore(const Json::Value &json, int deep)
                 continue;
             }
             // find frame
-            Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(itemById(frameId));
+            Icd::FrameItemPtr frame = JHandlePtrCast<Icd::FrameItem>(itemById(frameId, ObjectFrame));
             if (!frame) {
                 continue;
             }

@@ -305,7 +305,7 @@ void JWorkerGroup::setDirty()
     }
 }
 
-QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offset)
+QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
 {
     if (!object) {
         Q_ASSERT(false);
@@ -317,14 +317,14 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
     switch (object->objectType()) {
     case Icd::ObjectTable:
     {
-        const Icd::TablePtr table = JHandlePtrCast<Icd::Table>(object);
+        Icd::Table *table = dynamic_cast<Icd::Table*>(object);
         if (!table) {
             break;
         }
 
         qreal itemOffset = -1;
         if (table->parent() && table->parent()->objectType() == Icd::ObjectItem) {
-            const Icd::Item *item = dynamic_cast<Icd::Item *>(table->parent());
+            Icd::Item *item = dynamic_cast<Icd::Item*>(table->parent());
             if (item && item->parent() && item->type() != Icd::ItemFrame) {
                 itemOffset = item->bufferOffset();
             }
@@ -344,14 +344,14 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
     }
     case Icd::ObjectItem:
     {
-        const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(object);
+        Icd::Item *item = dynamic_cast<Icd::Item*>(object);
         if (!item) {
             break;
         }
 
         qreal tableOffset = -1;
         if (item->parent() && item->parent()->objectType() == Icd::ObjectTable) {
-            const Icd::Table *table = dynamic_cast<Icd::Table *>(item->parent());
+            Icd::Table *table = dynamic_cast<Icd::Table *>(item->parent());
             if (table && table->parent() && table->parent()->objectType() != Icd::ObjectSystem) {
                 tableOffset = table->bufferOffset();
             }
@@ -361,7 +361,7 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
             case Icd::ItemBitMap:
             case Icd::ItemBitValue:
             {
-                const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+                Icd::BitItem *itemBit = dynamic_cast<Icd::BitItem*>(item);
                 if (!itemBit) {
                     break;
                 }
@@ -384,7 +384,7 @@ QString JWorkerGroup::generateItemOffset(const Icd::ObjectPtr &object, int offse
             case Icd::ItemBitMap:
             case Icd::ItemBitValue:
             {
-                const Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem, Icd::Item>(item);
+                Icd::BitItem *itemBit = dynamic_cast<Icd::BitItem*>(item);
                 if (!itemBit) {
                     break;
                 }
@@ -670,7 +670,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
     QString text;
     // offset
     if (showAttris_ & JProtoTreeView::ShowOffset) {
-        text.append(JWorkerGroup::generateItemOffset(dataItem));
+        text.append(JWorkerGroup::generateItemOffset(dataItem.get()));
     }
     // name
     text.append(QString::fromStdString(dataItem->name().empty() ? "?" : dataItem->name()));
@@ -712,7 +712,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
         QString text;
         // offset
         if (showAttris_ & JProtoTreeView::ShowOffset) {
-            text.append(JWorkerGroup::generateItemOffset(itemComplex));
+            text.append(JWorkerGroup::generateItemOffset(itemComplex.get()));
         }
         // name
         const std::string name = itemComplex->name();
@@ -856,7 +856,7 @@ void JWorkerGroup::updateFrameTable(QStandardItem *item, const TablePtr &table, 
         QString text;
         // offset
         if (showAttris_ & JProtoTreeView::ShowOffset) {
-            text.append(JWorkerGroup::generateItemOffset(table, index));
+            text.append(JWorkerGroup::generateItemOffset(table.get(), index));
         }
         // name
         const std::string name = table->name();

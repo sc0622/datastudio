@@ -286,6 +286,26 @@ ObjectPtr Vehicle::replaceChild(icd_uint64 index, ObjectPtr &other)
     return old;
 }
 
+void Vehicle::moveChild(int sourceIndex, int targetIndex)
+{
+    if (sourceIndex == targetIndex) {
+        return;
+    }
+
+    if (sourceIndex < 0 || sourceIndex >= int(d->systems.size())) {
+        return;
+    }
+
+    if (targetIndex < 0 || targetIndex >= int(d->systems.size())) {
+        return;
+    }
+
+    SystemPtrArray::const_iterator citer = d->systems.cbegin() + sourceIndex;
+    SystemPtr system = *citer;
+    d->systems.erase(citer);
+    d->systems.insert(d->systems.begin() + targetIndex, system);
+}
+
 void Vehicle::removeChild(icd_uint64 index)
 {
     if (index >= d->systems.size()) {

@@ -100,6 +100,15 @@ void FrameItem::setBufferOffset(double offset)
     }
 }
 
+void FrameItem::adjustBufferOffset()
+{
+    const double offset = bufferOffset();
+    for (Icd::TablePtrMap::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.cend(); ++citer) {
+        citer->second->setBufferOffset(offset);
+    }
+}
+
 FrameItem::~FrameItem()
 {
     d->clearBuffer();
@@ -206,6 +215,19 @@ TablePtr FrameItem::tableAt(icd_uint64 code) const
     }
 }
 
+TablePtr FrameItem::tableById(const std::string &id) const
+{
+    for (TablePtrMap::const_iterator citer = d->tables.cbegin();
+         citer != d->tables.cend(); ++citer) {
+        const TablePtr &table = citer->second;
+        if (table->id() == id) {
+            return table;
+        }
+    }
+
+    return TablePtr();
+}
+
 std::string FrameItem::dataString() const
 {
     return "";
@@ -289,7 +311,7 @@ ObjectPtr FrameItem::clone() const
 {
     FrameItemPtr newFrame = std::make_shared<FrameItem>(*this);
     // children
-    const TablePtrMap tables = d->tables;
+    const TablePtrMap &tables = d->tables;
     TablePtrMap::const_iterator citer = tables.cbegin();
     for (; citer != tables.cend(); ++citer) {
         TablePtr newTable = JHandlePtrCast<Table>(citer->second->clone());
@@ -519,7 +541,16 @@ ObjectPtr FrameItem::replaceChild(icd_uint64 index, ObjectPtr &other)
     }
 
     TablePtr old = iter->second;
-    iter->second = JHandlePtrCast<Table>(other);
+    if (old == other) {
+        iter->second = JHandlePtrCast<Table>(other);
+        // children
+        const ItemPtrArray &items = iter->second->allItem();
+        ItemPtrArray::const_iterator citer = items.cbegin();
+        for (; citer != items.cend(); ++citer) {
+            const ItemPtr &item = *citer;
+            item->setParent(iter->second.get());
+        }
+    }
 
     return old;
 }

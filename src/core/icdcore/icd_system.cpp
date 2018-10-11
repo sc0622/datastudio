@@ -286,6 +286,26 @@ ObjectPtr System::replaceChild(icd_uint64 index, ObjectPtr &other)
     return old;
 }
 
+void System::moveChild(int sourceIndex, int targetIndex)
+{
+    if (sourceIndex == targetIndex) {
+        return;
+    }
+
+    if (sourceIndex < 0 || sourceIndex >= int(d->tables.size())) {
+        return;
+    }
+
+    if (targetIndex < 0 || targetIndex >= int(d->tables.size())) {
+        return;
+    }
+
+    TablePtrArray::const_iterator citer = d->tables.cbegin() + sourceIndex;
+    TablePtr table = *citer;
+    d->tables.erase(citer);
+    d->tables.insert(d->tables.begin() + targetIndex, table);
+}
+
 void System::removeChild(icd_uint64 index)
 {
     if (index >= d->tables.size()) {

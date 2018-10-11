@@ -275,10 +275,10 @@ void JProtoTreeView::insertRow(int row, const Icd::ObjectPtr &target, const QVar
     d->insertRow(row, target, data);
 }
 
-void JProtoTreeView::updateRow(int row, const Icd::ObjectPtr &target, const QVariant &data)
+void JProtoTreeView::updateRow(int sourceRow, int targetRow, const Icd::ObjectPtr &target, const QVariant &data)
 {
     Q_D(JProtoTreeView);
-    d->updateRow(row, target, data);
+    d->updateRow(sourceRow, targetRow, target, data);
 }
 
 void JProtoTreeView::removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data)

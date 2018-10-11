@@ -21,7 +21,7 @@ class TableEdit : public ObjectEdit
     Q_OBJECT
 public:
     explicit TableEdit(const Icd::TablePtr &table, QWidget *parent = nullptr);
-    ~TableEdit();
+    ~TableEdit() override;
 
     Icd::TablePtr table() const;
 

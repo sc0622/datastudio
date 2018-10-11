@@ -99,6 +99,15 @@ void FrameCodeEdit::saveContent()
     frameCode->setFrameCodeType(Icd::FrameCodeType(comboFrameCodeType_->currentData().toInt()));
     // binding
     frameCode->setFrameId(comboBinding_->currentData().toString().toStdString());
+    //
+    Icd::Object *parent = frameCode->parent();
+    if (parent && parent->objectType() == Icd::ObjectTable) {
+        Icd::Table *table = dynamic_cast<Icd::Table*>(parent);
+        if (table) {
+            const Icd::ObjectPtr item = table->itemById(frameCode->frameId(), Icd::ObjectFrame);
+            frameCode->setFrame(JHandlePtrCast<Icd::FrameItem>(item));
+        }
+    }
 }
 
 bool FrameCodeEdit::initBinding()

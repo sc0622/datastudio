@@ -309,6 +309,12 @@ ObjectPtr Object::replaceChild(icd_uint64 index, ObjectPtr &other)
     return ObjectPtr();
 }
 
+void Object::moveChild(int sourceIndex, int targetIndex)
+{
+    (void)sourceIndex;
+    (void)targetIndex;
+}
+
 void Object::removeChild(icd_uint64 index)
 {
     (void)index;

@@ -42,7 +42,7 @@ public:
     void setBindTableType(JProtoTreeView::BindTableTypes type);
     void setDirty();
 
-    static QString generateItemOffset(const ObjectPtr &object, int offset = 0);
+    static QString generateItemOffset(Icd::Object *object, int offset = 0);
 
 signals:
 

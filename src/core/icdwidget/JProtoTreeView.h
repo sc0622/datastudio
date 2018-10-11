@@ -128,7 +128,7 @@ public:
     // for edit module {{{
 
     void insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
-    void updateRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+    void updateRow(int sourceRow, int targetRow, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
     void removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
 
     void applyInsert(const Icd::ObjectPtr &target);

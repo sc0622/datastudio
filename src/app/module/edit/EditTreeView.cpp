@@ -127,24 +127,25 @@ TreeView::TreeView(QWidget *parent)
     });
     jnotify->on("edit.detail.changed", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
-        if (args.size() != 4) {
+        if (args.size() != 5) {
             return;
         }
         const QString action = args[0].toString();
-        const int currentRow = args[1].toInt();
-        Icd::ObjectPtr *object = jVariantFromVoid<Icd::ObjectPtr>(args[2]);
-        const QVariant data = args[3];
+        const int sourceRow = args[1].toInt();
+        const int targetRow = args[2].toInt();
+        Icd::ObjectPtr *object = jVariantFromVoid<Icd::ObjectPtr>(args[3]);
+        const QVariant data = args[4];
         //
         if (action == "insert") {
-            treeView_->insertRow(currentRow, *object, data);
+            treeView_->insertRow(sourceRow, *object, data);
         } else if (action == "update") {
-            treeView_->updateRow(currentRow, *object, data);
+            treeView_->updateRow(sourceRow, targetRow, *object, data);
         } else if (action == "apply") {
             treeView_->applyInsert(*object);
         } else if (action == "cancel") {
             treeView_->cancelInsert();
         } else if (action == "remove") {
-            treeView_->removeRow(currentRow, *object, data);
+            treeView_->removeRow(sourceRow, *object, data);
         }
     });
     jnotify->on("edit.toolbar.item.add", this, [=](JNEvent &){

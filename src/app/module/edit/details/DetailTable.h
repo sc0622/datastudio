@@ -8,6 +8,7 @@
 #include "jwt/jtableview.h"
 
 class JTableView;
+class QStandardItem;
 
 namespace Icd {
 class Object;
@@ -52,11 +53,19 @@ class DetailTableView : public JTableView
 public:
     explicit DetailTableView(QWidget *parent = nullptr);
 
-    void enableSelect(bool enabled);
+    void enableSelection(bool enabled);
+    void enableDragAndDrop(bool enabled);
+
+    bool isMultiRowSelected() const;
+
+signals:
+    void movingDropped(int sourceRow, int targetRow);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
 private:
     QAbstractItemView::SelectionMode selectionMode_;
@@ -79,12 +88,14 @@ public:
 
     void setTip(const QString &text) const;
 
-    bool isEditing() const;
-    void setEditing(bool editing);
+    bool isModified() const;
+    bool isMoving() const;
+    bool isMoved() const;
 
     int rowCount() const;
     int currentRow() const;
     Icd::icd_uint64 currentIndex() const;
+    int originalRow() const;
     bool isMultiRowSelected() const;
     void updateRow(int row, const QVariant &data = QVariant::Invalid);
 
@@ -98,11 +109,14 @@ public:
 
 signals:
     void currentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
+    void rowMoved(int previousRow, int currentRow, bool restore);
 
 public slots:
     void showContextMenu(const QPoint &pos);
 
 private:
+    void setContextMenuEnabled(bool enabled);
+
     bool updateRoot();
     bool updateVehicle();
     bool updateSystem();
@@ -130,6 +144,13 @@ private:
 
     int insertRow(int row, const Icd::ObjectPtr &object);
 
+    void moveBegin();
+    void moveEnd();
+    void moveRow(int sourceRow, int targetRow);
+
+    void updateOffsetAndSize();
+    void updateOffsetAndSize(const Icd::TablePtr &table);
+
 private:
     DetailTableView *tableView_;
     QList<QAction*> actions_;
@@ -137,7 +158,8 @@ private:
     ViewDelegate *delegate_;
     Icd::ObjectPtr object_;
     Icd::ObjectPtr newObject_;
-    bool editing_;
+    bool moving_;
+    int originalRow_;
 };
 
 //// private

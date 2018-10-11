@@ -87,6 +87,7 @@ public:
     virtual bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const;
     virtual ObjectPtr childAt(icd_uint64 index) const;
     virtual ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other);
+    virtual void moveChild(int sourceIndex, int targetIndex);
     virtual void removeChild(icd_uint64 index);
     virtual void clearChildren();
 

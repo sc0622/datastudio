@@ -359,6 +359,11 @@ void Item::setBufferOffset(double offset)
     d->bufferOffset = offset;
 }
 
+void Item::adjustBufferOffset()
+{
+
+}
+
 Json::Value Item::save() const
 {
     Json::Value json = Object::save();

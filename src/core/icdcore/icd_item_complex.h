@@ -51,6 +51,8 @@ public:
 
     ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                            bool ignoreComplex = true) const override;
+    ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    void moveChild(int sourceIndex, int targetIndex) override;
     void clearChildren() override;
 
     // Serializable interface
@@ -60,6 +62,7 @@ public:
 
 protected:
     void setBufferOffset(double offset) override;
+    void adjustBufferOffset() override;
 
 private:
     void setTable(const Icd::TablePtr &table);

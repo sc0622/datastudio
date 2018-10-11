@@ -176,6 +176,18 @@ ObjectPtr ComplexItem::findByDomain(const std::string &domain, int domainType,
     return itemByDomain(domain, Icd::DomainType(domainType), ignoreComplex);
 }
 
+ObjectPtr ComplexItem::replaceChild(icd_uint64 index, ObjectPtr &other)
+{
+    (void)index;
+    (void)other;
+    return ObjectPtr();
+}
+
+void ComplexItem::moveChild(int sourceIndex, int targetIndex)
+{
+    d->table->moveChild(sourceIndex, targetIndex);
+}
+
 void ComplexItem::clearChildren()
 {
     d->table->clearChildren();
@@ -225,6 +237,11 @@ void ComplexItem::setBufferOffset(double offset)
 {
     Item::setBufferOffset(offset);
     d->table->setBufferOffset(offset);
+}
+
+void ComplexItem::adjustBufferOffset()
+{
+    d->table->setBufferOffset(bufferOffset());
 }
 
 void ComplexItem::setTable(const TablePtr &table)

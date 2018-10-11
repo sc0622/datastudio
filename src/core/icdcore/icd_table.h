@@ -40,6 +40,7 @@ public:
     double bufferOffset() const;
     char *buffer() const;
     void setBuffer(char *buffer);
+    void adjustBufferOffset();
 
     ItemPtrArray allItem();
     const ItemPtrArray &allItem() const;
@@ -51,7 +52,7 @@ public:
     bool isEmpty() const;
     int itemCount() const;
     ItemPtr itemAt(int index) const;
-    ItemPtr itemById(const std::string &id) const;
+    ItemPtr itemById(const std::string &id, int rtti = ObjectInvalid) const;
     ObjectPtr itemByName(const std::string &name, bool deep = true) const;
     ObjectPtr itemByMark(const std::string &mark, bool deep = true) const;
     TablePtr tableByMark(const std::string &mark, bool deep = true) const;
@@ -65,6 +66,7 @@ public:
     bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
     ObjectPtr childAt(icd_uint64 index) const override;
     ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    void moveChild(int sourceIndex, int targetIndex) override;
     void removeChild(icd_uint64 index) override;
     void clearChildren() override;
 
@@ -104,6 +106,8 @@ public:
     static double recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
                                         const Icd::ItemPtrArray &items,
                                         Icd::ItemPtrArray::const_reverse_iterator citer);
+
+
 
     // Serializable interface
 public:

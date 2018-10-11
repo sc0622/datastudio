@@ -7,7 +7,6 @@ namespace Edit {
 DetailEdit::DetailEdit(QWidget *parent)
     : QWidget(parent)
     , objectEdit_(nullptr)
-    , object_(nullptr)
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -168,19 +167,14 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub, bool add)
         return;
     }
 
-    Icd::ObjectPtr copiedObject;
     if (add) {
         newObject_ = object_;
-        copiedObject = object_;
         setButtonsEnabled(true);
     } else {
         newObject_ = nullptr;
-        copiedObject = object_->copy();
-        copiedObject->setParent(object_->parent());
-        copiedObject->setId(object_->id());
     }
 
-    objectEdit_ = ObjectEdit::create(copiedObject);
+    objectEdit_ = ObjectEdit::create(object_);
     if (!objectEdit_) {
         return;
     }
@@ -202,6 +196,12 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub, bool add)
     }
 
     show();
+}
+
+void DetailEdit::setButtonsEnabled(bool enabled)
+{
+    buttonApply_->setEnabled(enabled);
+    buttonCancel_->setEnabled(enabled);
 }
 
 Icd::ObjectPtr DetailEdit::target() const
@@ -237,12 +237,6 @@ void DetailEdit::restoreContent()
     return objectEdit_->restoreContent();
 }
 
-void DetailEdit::setButtonsEnabled(bool enabled)
-{
-    buttonApply_->setEnabled(enabled);
-    buttonCancel_->setEnabled(enabled);
-}
-
 void DetailEdit::removeEdit()
 {
     if (objectEdit_) {
@@ -264,7 +258,6 @@ void DetailEdit::changeEdit(int itemType)
 
     removeEdit();
 
-    //TODO [notify another module]
     const Icd::ItemPtr item = JHandlePtrCast<Icd::Item>(object_);
     Icd::ItemPtr newItem;
     if (itemType == item->type()) {

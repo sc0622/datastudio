@@ -36,6 +36,11 @@
         <file alias="record_stop.png">image/tree/record_stop.png</file>
         <file alias="channel.png">image/tree/channel.png</file>
         <file alias="channel_exchange.png">image/tree/channel_exchange.png</file>
+        <file alias="copy.png">image/tree/copy.png</file>
+        <file alias="clone.png">image/tree/clone.png</file>
+        <file alias="past.png">image/tree/past.png</file>
+        <file alias="past-above.png">image/tree/past-above.png</file>
+        <file alias="past-below.png">image/tree/past-below.png</file>
     </qresource>
     <qresource prefix="/icdwidget/lang">
         <file alias="qt_zh_CN.qm">lang/qt_zh_CN.qm</file>

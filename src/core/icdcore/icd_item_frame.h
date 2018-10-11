@@ -33,6 +33,7 @@ public:
     const TablePtrMap &allTable() const;
     int tableCount() const;
     TablePtr tableAt(icd_uint64 code) const;
+    TablePtr tableById(const std::string &id) const;
 
     double data() const override { return 0.0; }
     void setData(double) override { }
@@ -81,6 +82,7 @@ public:
 
 protected:
     void setBufferOffset(double offset) override;
+    void adjustBufferOffset() override;
 
 private:
     FrameItemData *d;

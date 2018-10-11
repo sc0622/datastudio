@@ -86,6 +86,7 @@ class JProtoTreeViewPrivate : public JTreeView
     Q_PROPERTY(quint32 bindTableTypes READ bindTableTypes NOTIFY bindTableTypesChanged)
     Q_PROPERTY(quint32 treeModes READ treeModes NOTIFY treeModesChanged)
     Q_PROPERTY(quint32 showAttris READ showAttris NOTIFY showAttrisChanged)
+    Q_PROPERTY(bool editMode READ isEditMode NOTIFY editModeChanged)
     Q_PROPERTY(QColor valueColor READ valueColor WRITE setValueColor NOTIFY valueColorChanged)
 public:
     enum EditAction {
@@ -96,7 +97,7 @@ public:
     Q_ENUM(EditAction)
 
     explicit JProtoTreeViewPrivate(JProtoTreeView *q);
-    ~JProtoTreeViewPrivate();
+    ~JProtoTreeViewPrivate() override;
 
     quint32 bindTableTypes() const { return quint32(bindTableTypes_); }
     quint32 showAttris() { return quint32(showAttris_); }
@@ -159,6 +160,7 @@ signals:
     void bindTableTypesChanged();
     void treeModesChanged();
     void showAttrisChanged();
+    void editModeChanged();
     void valueColorChanged(const QColor &color);
 
     void itemUnloaded(QStandardItem *item, QStandardItem *itemTable);
@@ -177,8 +179,9 @@ public slots:
     void onWorkerCleared();
 
 protected:
-    QStringList mimeTypes() const;
-    QMimeData *mimeData(const QList<QStandardItem *> &items) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QList<QStandardItem *> &items) const override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     void itemRootRightClicked(QStandardItem *item, int deep);
@@ -188,6 +191,9 @@ private:
     void itemDataItemRightClicked(QStandardItem *item, int deep);
     void itemItemTableRightClicked(QStandardItem *item, int deep);
     void itemItemBitMapRightClicked(QStandardItem *item, int deep);
+
+    void triggerCopyItem(QStandardItem *item);
+    void triggerCloneItem(QStandardItem *item);
 
 private:
     bool loadRoot(QStandardItem *itemRoot, int deep, bool force = false);
@@ -281,7 +287,7 @@ private:
     QMenu *createAddItemMenu(QStandardItem *item, QAction *action, EditAction editAction);
 
     void insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
-    void updateRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+    void updateRow(int sourceRow, int targetRow, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
     void removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
 
     void insertNewBeside(QStandardItem *item, int editAction, const QVariant &data = QVariant());
@@ -289,6 +295,13 @@ private:
     void cancelInsert();
     void removeRow(QStandardItem *item);
     void cleanItem(QStandardItem *item);
+
+    void updateOffset(QStandardItem *item, Icd::Object *object, int startRow);
+    void updateOffset(QStandardItem *item, Icd::Object *object);
+    void updateOffset(QStandardItem *item, Table *table, int startRow = 0);
+    void updateOffset(QStandardItem *item, Icd::Item *dataItem);
+    void updateOffset(QStandardItem *item, Icd::FrameItem *frame);
+    void updateOffset(QStandardItem *item, Icd::ComplexItem *complex);
 
 private:
     J_DECLARE_PUBLIC(JProtoTreeView)

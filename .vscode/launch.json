@@ -1,0 +1,16 @@
+{
+ "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "CDB",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "datastudiod.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceRoot}/../build-datastudio-Qt_5_11_2-Debug/qtc_Qt_5_11_2_Debug/install-root/datastudio/bin",
+      "environment": [],
+      "externalConsole": true
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "main_global.h"
+#include <memory>
 
 class QGroupBox;
 class QVBoxLayout;
@@ -53,6 +54,7 @@ public:
     void resetView();
     void updateView(const Icd::ObjectPtr &object, const QVariant &index);
     void updateView(const Icd::ObjectPtr &object, bool sub = false, bool add = false);
+    void setButtonsEnabled(bool enabled);
 
     Icd::ObjectPtr target() const;
 
@@ -65,7 +67,6 @@ public slots:
     void restoreContent();
 
 private:
-    void setButtonsEnabled(bool enabled);
     void removeEdit();
     void changeEdit(int itemType);
 

@@ -205,39 +205,54 @@ void ToolBar::addEditItemAction(const Json::Value &option)
     //
     jnotify->on("edit.toolbar.item.action", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
-        if (args.size() < 3) {
-            return;
-        }
-        // add
-        const QVariant &vAdd = args[0];
-        if (vAdd.isValid()) {
-            actionAddItem->setEnabled(vAdd.toBool());
-        }
-        // up
-        const QVariant &vUp = args[1];
-        if (vUp.isValid()) {
-            actionUpItem->setEnabled(vUp.toBool());
-        }
-        // down
-        const QVariant &vDown = args[2];
-        if (vDown.isValid()) {
-            actionDownItem->setEnabled(vDown.toBool());
-        }
-        if (args.size() >= 6) {
-            // copy
-            const QVariant &vCopy = args[3];
-            if (vCopy.isValid()) {
-                actionCopy->setEnabled(vCopy.toBool());
+        if (args.size() >= 3) {
+            // add
+            const QVariant &vAdd = args[0];
+            if (vAdd.isValid()) {
+                actionAddItem->setEnabled(vAdd.toBool());
             }
-            // save
-            const QVariant &vSave = args[4];
-            if (vSave.isValid()) {
-                actionSave->setEnabled(vSave.toBool());
+            // up
+            const QVariant &vUp = args[1];
+            if (vUp.isValid()) {
+                actionUpItem->setEnabled(vUp.toBool());
             }
-            // saveas
-            const QVariant &vSaveAs = args[5];
-            if (vSaveAs.isValid()) {
-                actionSaveAs->setEnabled(vSaveAs.toBool());
+            // down
+            const QVariant &vDown = args[2];
+            if (vDown.isValid()) {
+                actionDownItem->setEnabled(vDown.toBool());
+            }
+            if (args.size() >= 6) {
+                // copy
+                const QVariant &vCopy = args[3];
+                if (vCopy.isValid()) {
+                    actionCopy->setEnabled(vCopy.toBool());
+                }
+                // save
+                const QVariant &vSave = args[4];
+                if (vSave.isValid()) {
+                    actionSave->setEnabled(vSave.toBool());
+                }
+                // saveas
+                const QVariant &vSaveAs = args[5];
+                if (vSaveAs.isValid()) {
+                    actionSaveAs->setEnabled(vSaveAs.toBool());
+                }
+            }
+        } else if (args.size() == 2) {
+            const QString action = args[0].toString();
+            const bool enabled = args[1].toBool();
+            if (action == "add") {
+                actionAddItem->setEnabled(enabled);
+            } else if (action == "up") {
+                actionUpItem->setEnabled(enabled);
+            } else if (action == "down") {
+                actionDownItem->setEnabled(enabled);
+            } else if (action == "copy") {
+                actionCopy->setEnabled(enabled);
+            } else if (action == "save") {
+                actionSave->setEnabled(enabled);
+            } else if (action == "saveAs") {
+                actionSaveAs->setEnabled(enabled);
             }
         }
     });

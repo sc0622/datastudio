@@ -85,6 +85,7 @@ protected:
     virtual void setItemOffset(int offset);
     virtual void setBufferSize(double size);
     virtual void setBufferOffset(double offset);
+    virtual void adjustBufferOffset();
 
     // Serializable interface
 public:

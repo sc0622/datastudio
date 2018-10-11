@@ -286,6 +286,14 @@
         <source>Clear %1</source>
         <translation>清空%1</translation>
     </message>
+    <message>
+        <source>Copy item</source>
+        <translation>复制选中项（浅层）</translation>
+    </message>
+    <message>
+        <source>Clone item</source>
+        <translation>复制选中项（深层）</translation>
+    </message>
 </context>
 <context>
     <name>Icd::JWorkerLabel</name>

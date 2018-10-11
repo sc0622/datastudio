@@ -11,9 +11,10 @@ DetailTableView::DetailTableView(QWidget *parent)
     , selectionMode_(QAbstractItemView::NoSelection)
 {
     setFocusPolicy(Qt::StrongFocus);
+    setDragDropMode(QAbstractItemView::DragDrop);
 }
 
-void DetailTableView::enableSelect(bool enabled)
+void DetailTableView::enableSelection(bool enabled)
 {
     if (enabled) {
         const Qt::KeyboardModifiers modifiers = QApplication::keyboardModifiers();
@@ -27,6 +28,25 @@ void DetailTableView::enableSelect(bool enabled)
     }
 
     setSelectionMode(selectionMode_);
+}
+
+void DetailTableView::enableDragAndDrop(bool enabled)
+{
+    setDropIndicatorShown(enabled);
+    setDragEnabled(enabled);
+    setAcceptDrops(enabled);
+}
+
+bool DetailTableView::isMultiRowSelected() const
+{
+    const QList<JTableViewSelectionRange> selected = selectRanges();
+    if (selected.isEmpty()) {
+        return false;
+    } else if (selected.size() > 1) {
+        return true;
+    } else {
+        return (selected.first().rowCount() > 1);
+    }
 }
 
 void DetailTableView::keyPressEvent(QKeyEvent *event)
@@ -44,7 +64,7 @@ void DetailTableView::keyPressEvent(QKeyEvent *event)
 void DetailTableView::keyReleaseEvent(QKeyEvent *event)
 {
     Qt::KeyboardModifiers modifiers = event->modifiers();
-    if (!((modifiers & Qt::ControlModifier) && (modifiers & Qt::ShiftModifier))) {
+    if (!((modifiers & Qt::ControlModifier) || (modifiers & Qt::ShiftModifier))) {
         if (selectionMode_ != QAbstractItemView::NoSelection) {
             setSelectionMode(selectionMode_);
         }
@@ -53,19 +73,58 @@ void DetailTableView::keyReleaseEvent(QKeyEvent *event)
     JTableView::keyReleaseEvent(event);
 }
 
+void DetailTableView::mousePressEvent(QMouseEvent *event)
+{
+    if (!indexAt(event->pos()).isValid()) {
+        clearSelection();
+    }
+
+    JTableView::mousePressEvent(event);
+}
+
+void DetailTableView::dropEvent(QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+    QByteArray mimeType = mimeData->data("application/x-qabstractitemmodeldatalist");
+    if (mimeType.isEmpty()) {
+        return;
+    }
+
+    QDataStream stream(&mimeType, QIODevice::ReadOnly);
+    if (stream.atEnd()) {
+        return;
+    }
+
+    QStandardItem* dropItem = itemAt(event->pos());
+    if(!dropItem) {
+        return;
+    }
+
+    int row, column;
+    QMap<int, QVariant> roleDataMap;
+    stream >> row >> column >> roleDataMap;
+
+    const int targetRow = dropItem->row();
+    if (targetRow == row) {
+        return;
+    }
+
+    emit movingDropped(row, targetRow);
+}
+
 // class DetailTable
 
 DetailTable::DetailTable(QWidget *parent)
     : QWidget(parent)
     , object_(nullptr)
-    , editing_(false)
+    , moving_(false)
+    , originalRow_(-1)
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
     vertLayoutMain->setSpacing(0);
 
     tableView_ = new DetailTableView(this);
-    tableView_->setContextMenuPolicy(Qt::CustomContextMenu);
     delegate_ = new ViewDelegate(tableView_);
     tableView_->setItemDelegate(delegate_);
     vertLayoutMain->addWidget(tableView_);
@@ -77,9 +136,15 @@ DetailTable::DetailTable(QWidget *parent)
     labelTip_->hide();
     vertLayoutMain->addWidget(labelTip_);
 
-    connect(tableView_, &JTableView::customContextMenuRequested,
+    connect(tableView_, &DetailTableView::customContextMenuRequested,
             this, &DetailTable::showContextMenu);
     connect(tableView_, &JTableView::itemSelectionChanged, this, [=](){
+        if (isMoving()) {
+            return;
+        }
+        //
+        tableView_->enableDragAndDrop(!tableView_->isMultiRowSelected());
+        //
         if (!object_) {
             emit currentItemChanged(QVariant::Invalid, newObject_);
             return;
@@ -90,6 +155,7 @@ DetailTable::DetailTable(QWidget *parent)
             emit currentItemChanged(currentRow(), newObject_);
         }
     });
+    connect(tableView_, &DetailTableView::movingDropped, this, &DetailTable::moveRow);
 }
 
 void DetailTable::resetView()
@@ -99,6 +165,7 @@ void DetailTable::resetView()
     tableView_->clear();
     object_.reset();
     newObject_.reset();
+    originalRow_ = -1;
     setTip(QString());
 }
 
@@ -114,7 +181,9 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
 
     bool result = false;
 
-    tableView_->enableSelect(true);
+    setContextMenuEnabled(true);
+    tableView_->enableSelection(true);
+    tableView_->enableDragAndDrop(true);
 
     switch (object->rtti()) {
     case Icd::ObjectRoot: result = updateRoot(); break;
@@ -124,7 +193,9 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
     case Icd::ObjectComplex: result = updateComplex(JHandlePtrCast<Icd::ComplexItem>(object)); break;
     case Icd::ObjectFrame: result = updateFrame(JHandlePtrCast<Icd::FrameItem>(object)); break;
     default:
-        tableView_->enableSelect(false);
+        setContextMenuEnabled(false);
+        tableView_->enableSelection(false);
+        tableView_->enableDragAndDrop(false);
         result = updateItem();
         break;
     }
@@ -141,14 +212,24 @@ void DetailTable::setTip(const QString &text) const
     labelTip_->setVisible(!text.isEmpty());
 }
 
-bool DetailTable::isEditing() const
+bool DetailTable::isModified() const
 {
-    return editing_;
+    if (parent()) {
+        return parent()->property("modified").toBool();
+    } else {
+        return false;
+    }
 }
 
-void DetailTable::setEditing(bool editing)
+
+bool DetailTable::isMoving() const
 {
-    editing_ = editing;
+    return moving_;
+}
+
+bool DetailTable::isMoved() const
+{
+    return (originalRow_ != -1);
 }
 
 int DetailTable::rowCount() const
@@ -184,16 +265,14 @@ Icd::icd_uint64 DetailTable::currentIndex() const
     return Icd::icd_uint64(currentRow);
 }
 
+int DetailTable::originalRow() const
+{
+    return originalRow_;
+}
+
 bool DetailTable::isMultiRowSelected() const
 {
-    const QList<JTableViewSelectionRange> selected = tableView_->selectRanges();
-    if (selected.isEmpty()) {
-        return false;
-    } else if (selected.size() > 1) {
-        return true;
-    } else {
-        return (selected.first().rowCount() > 1);
-    }
+    return tableView_->isMultiRowSelected();
 }
 
 void DetailTable::insertRow(int row, const Icd::VehiclePtr &vehicle)
@@ -264,12 +343,7 @@ void DetailTable::moveCurrentRow(bool up)
         return;
     }
 
-    tableView_->clearSelection();
-
-    const QList<QStandardItem*> items = tableView_->takeRow(currentRow);
-    currentRow = currentRow + (up ? -1 : 1);
-    tableView_->insertRow(currentRow, items);
-    tableView_->setCurrentCell(currentRow, 0);
+    moveRow(currentRow, currentRow + (up ? -1 : 1));
 }
 
 void DetailTable::updateRow(int row, const QVariant &data)
@@ -278,7 +352,8 @@ void DetailTable::updateRow(int row, const QVariant &data)
         return;
     }
 
-    tableView_->enableSelect(true);
+    tableView_->enableSelection(true);
+    tableView_->enableDragAndDrop(true);
 
     switch (object_->objectType()) {
     case Icd::ObjectRoot:
@@ -382,7 +457,8 @@ void DetailTable::updateRow(int row, const QVariant &data)
             break;
         }
         default:
-            tableView_->enableSelect(false);
+            tableView_->enableSelection(false);
+            tableView_->enableDragAndDrop(false);
             updateItem(item);
             break;
         }
@@ -403,32 +479,41 @@ bool DetailTable::apply(const Icd::ObjectPtr &target, int row)
         newObject_.reset();
     }
 
+    if (object_ == target) {
+        return true;
+    }
+
     switch (object_->objectType()) {
     case Icd::ObjectItem:
     {
-        switch (object_->rtti()) {
-        case Icd::ObjectComplex:
-        {
-            updateRow(row);
-            break;
-        }
-        case Icd::ObjectFrame:
-        {
-            if (target->objectType() != Icd::ObjectTable) {
-                return false;
+        if (row == -1 && object_->rtti() != target->rtti()) {    // type changed
+            updateView(target);
+            return true;
+        } else {
+            switch (object_->rtti()) {
+            case Icd::ObjectComplex:
+            {
+                updateRow(row);
+                break;
             }
-            auto table = JHandlePtrCast<Icd::Table>(target);
-            if (!table) {
-                return false;
+            case Icd::ObjectFrame:
+            {
+                if (target->objectType() != Icd::ObjectTable) {
+                    return false;
+                }
+                auto table = JHandlePtrCast<Icd::Table>(target);
+                if (!table) {
+                    return false;
+                }
+                updateRow(row, table->frameCode());
+                break;
             }
-            updateRow(row, table->frameCode());
-            break;
-        }
-        default:
-            object_ = target;
-            tableView_->clearContents();
-            updateItem(JHandlePtrCast<Icd::Item>(object_));
-            break;
+            default:
+                object_ = target;
+                tableView_->clearContents();
+                updateItem(JHandlePtrCast<Icd::Item>(object_));
+                break;
+            }
         }
         break;
     }
@@ -438,49 +523,120 @@ bool DetailTable::apply(const Icd::ObjectPtr &target, int row)
     }
 
     // update offset and size
+    updateOffsetAndSize();
+
+    //
+    originalRow_ = -1;
 
     return true;
 }
 
 void DetailTable::cancel()
 {
-    if (newObject_) {
+    if (newObject_) {               // just remove addded row
         tableView_->clearSelection();
         tableView_->removeRow(currentRow());
         newObject_.reset();
+    } else if (originalRow_ >= 0) { // restore original row of moved row
+        moveRow(currentRow(), originalRow_);
     }
+
+    originalRow_ = -1;
 }
 
 void DetailTable::showContextMenu(const QPoint &pos)
 {
-    if (editing_) {
+    Q_UNUSED(pos);
+    if (isModified() || !object_) {
         return;
     }
 
-    QStandardItem *selectedItem = tableView_->itemAt(pos);
+    if (object_->objectType() == Icd::ObjectItem
+            && (object_->rtti() != Icd::ObjectFrame
+                && object_->rtti() != Icd::ObjectComplex)) {
+        return;
+    }
+
+    const QList<JTableViewSelectionRange> selected = tableView_->selectRanges();
 
     QMenu menu(this);
 
-    // append
-    // remove/copy
-    if (selectedItem) {
-        // remove
-        QAction *actionRemove = menu.addAction(QIcon(":icdwidget/tree/remove.png"),
+    // add
+    QAction *actionAdd = menu.addAction(QIcon(":icdwidget/image/tree/add.png"),
+                                        tr("Add"));
+    connect(actionAdd, &QAction::triggered, this, [=](){
+        //
+    });
+    if (!selected.isEmpty()) {
+        // insert above
+        QAction *actionInsertAbove = menu.addAction(QIcon(":icdwidget/image/tree/insert-above.png"),
+                                                    tr("Insert above"));
+        connect(actionInsertAbove, &QAction::triggered, this, [=](){
+            //
+        });
+        // insert below
+        QAction *actionInsertBelow = menu.addAction(QIcon(":icdwidget/image/tree/insert-below.png"),
+                                                    tr("Insert below"));
+        connect(actionInsertBelow, &QAction::triggered, this, [=](){
+            //
+        });
+    }
+    //
+    bool hasPast = false;
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    if (clipboard && clipboard->ownsClipboard()) {
+        const QMimeData *mimeData = clipboard->mimeData();
+        if (mimeData) {
+            if (mimeData->hasFormat("icdwidget/domain")
+                    || mimeData->hasFormat("detailtable/domain")) {
+                hasPast = true;
+                // past - append
+                QAction *actionPast = menu.addAction(QIcon(":icdwidget/image/tree/past.png"),
+                                                     tr("Past"));
+                connect(actionPast, &QAction::triggered, this, [=](){
+                    //
+                });
+                // past - above
+                QAction *actionPastAbove = menu.addAction(QIcon(":icdwidget/image/tree/past-above.png"),
+                                                          tr("Past above"));
+                connect(actionPastAbove, &QAction::triggered, this, [=](){
+                    //
+                });
+                // past - below
+                QAction *actionPastBelow = menu.addAction(QIcon(":icdwidget/image/tree/past-below.png"),
+                                                          tr("Past below"));
+                connect(actionPastBelow, &QAction::triggered, this, [=](){
+                    //
+                });
+            }
+        }
+    }
+    // copy
+    if (!hasPast && selected.size() == 1) {
+        // copy
+        QAction *actionCopy = menu.addAction(QIcon(":icdwidget/image/tree/copy.png"),
+                                             tr("Copy"));
+        connect(actionCopy, &QAction::triggered, this, [=](){
+            //
+        });
+        // clone
+        QAction *actionClone = menu.addAction(QIcon(":icdwidget/image/tree/clone.png"),
+                                              tr("Clone"));
+        connect(actionClone, &QAction::triggered, this, [=](){
+            //
+        });
+    }
+    // remove
+    if (!selected.isEmpty()) {
+        QAction *actionRemove = menu.addAction(QIcon(":icdwidget/image/tree/remove.png"),
                                                tr("Remove"));
         connect(actionRemove, &QAction::triggered, this, [=](){
             //
         });
-        // copy
     }
-    // past
-    if (false) {
-
-    }
-    // insert above
-    // insert below
     // clean
     if (tableView_->rowCount() > 0) {
-        QAction *actionClean = menu.addAction(QIcon(":/icdwidget/tree/clean.png"),
+        QAction *actionClean = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
                                               tr("Clean"));
         connect(actionClean, &QAction::triggered, this, [=](){
             //
@@ -492,6 +648,15 @@ void DetailTable::showContextMenu(const QPoint &pos)
     }
 
     menu.exec(QCursor::pos());
+}
+
+void DetailTable::setContextMenuEnabled(bool enabled)
+{
+    if (enabled) {
+        tableView_->setContextMenuPolicy(Qt::CustomContextMenu);
+    } else {
+        tableView_->setContextMenuPolicy(Qt::NoContextMenu);
+    }
 }
 
 bool DetailTable::updateRoot()
@@ -986,12 +1151,111 @@ int DetailTable::insertRow(int row, const Icd::ObjectPtr &object)
     return row;
 }
 
+void DetailTable::moveBegin()
+{
+    moving_ = true;
+}
+
+void DetailTable::moveEnd()
+{
+    moving_ = false;
+}
+
+void DetailTable::moveRow(int sourceRow, int targetRow)
+{
+    if (sourceRow < 0 || targetRow < 0) {
+        return;
+    }
+
+    moveBegin();
+
+    const QList<QStandardItem*> items = tableView_->takeRow(sourceRow);
+    tableView_->insertRow(targetRow, items);
+    tableView_->selectRow(targetRow);
+
+    bool restore = false;
+
+    if (originalRow_ == targetRow) {  // back to original status
+        originalRow_ = -1;
+        restore = true;
+    } else if (originalRow_ == -1) {  // first moving
+        originalRow_ = sourceRow;
+    }
+
+    moveEnd();
+
+    emit rowMoved(sourceRow, targetRow, restore);
+}
+
+void DetailTable::updateOffsetAndSize()
+{
+    if (!object_) {
+        return;
+    }
+
+    switch (object_->rtti()) {
+    case Icd::ObjectTable:
+    {
+        updateOffsetAndSize(JHandlePtrCast<Icd::Table>(object_));
+        break;
+    }
+    case Icd::ObjectComplex:
+    {
+        const Icd::ComplexItemPtr complex = JHandlePtrCast<Icd::ComplexItem>(object_);
+        if (!complex) {
+            return;
+        }
+        updateOffsetAndSize(complex->table());
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void DetailTable::updateOffsetAndSize(const Icd::TablePtr &table)
+{
+    if (!table) {
+        return;
+    }
+
+    const Icd::ItemPtrArray &items = table->allItem();
+    const int rowCount = tableView_->rowCount();
+    for (int row = 0; row < rowCount && row < int(items.size()); ++row) {
+        const Icd::ItemPtr item = items[size_t(row)];
+        const double bufferOffset = item->bufferOffset() - table->bufferOffset();
+        // offset and size
+        switch (item->type()) {
+        case Icd::ItemBitMap:
+        case Icd::ItemBitValue:
+        {
+            const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item);
+            if (!bit) {
+                break;
+            }
+            tableView_->setItemData(row, 2, QString("%1 (%2)").arg(bufferOffset)
+                                    .arg(bit->bitStart(), 2, 10, QChar('0')));
+            tableView_->setItemData(row, 3, QString("%1/%2").arg(bit->bitCount())
+                                    .arg(bit->typeSize() * 8));
+            break;
+        }
+        default:
+            tableView_->setItemData(row, 2, QString::number(bufferOffset));
+            tableView_->setItemData(row, 3, QString::number(item->bufferSize()));
+            break;
+        }
+    }
+
+    setTip(tr("Size: %1").arg(table->bufferSize()));
+}
+
 void DetailTable::setRowData(int row, const Icd::VehiclePtr &vehicle)
 {
     if (!vehicle) {
         return;
     }
 
+    tableView_->setItemData(row, 0, QString::fromStdString(vehicle->id()), Qt::UserRole);
     tableView_->setItemData(row, 0, QString::fromStdString(vehicle->name()));
     tableView_->setItemData(row, 1, QString::fromStdString(vehicle->mark()));
     tableView_->setItemData(row, 2, QString::fromStdString(vehicle->desc()));
@@ -1003,6 +1267,7 @@ void DetailTable::setRowData(int row, const Icd::SystemPtr &system)
         return;
     }
 
+    tableView_->setItemData(row, 0, QString::fromStdString(system->id()), Qt::UserRole);
     tableView_->setItemData(row, 0, QString::fromStdString(system->name()));
     tableView_->setItemData(row, 1, QString::fromStdString(system->mark()));
     tableView_->setItemData(row, 2, QString::fromStdString(system->desc()));
@@ -1014,6 +1279,7 @@ void DetailTable::setRowData(int row, const Icd::TablePtr &table)
         return;
     }
 
+    tableView_->setItemData(row, 0, QString::fromStdString(table->id()), Qt::UserRole);
     tableView_->setItemData(row, 0, QString::fromStdString(table->name()));
     tableView_->setItemData(row, 1, QString::fromStdString(table->mark()));
     tableView_->setItemData(row, 2, QString::number(table->bufferSize()));
@@ -1027,10 +1293,11 @@ void DetailTable::setRowData(int row, const Icd::ItemPtr &item, double offset)
     }
 
     const double bufferOffset = item->bufferOffset() - offset;
-    //
+
+    tableView_->setItemData(row, 0, QString::fromStdString(item->id()), Qt::UserRole);
     tableView_->setItemData(row, 0, QString::fromStdString(item->name()));
     tableView_->setItemData(row, 1, QString::fromStdString(item->mark()));
-    // size
+    // offset and size
     switch (item->type()) {
     case Icd::ItemBitMap:
     case Icd::ItemBitValue:
