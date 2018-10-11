@@ -734,7 +734,7 @@
     </message>
     <message>
         <location filename="../../module/edit/details/DetailTable.cpp" line="792"/>
-        <location filename="../../module/edit/details/DetailTable.cpp" line="1249"/>
+        <location filename="../../module/edit/details/DetailTable.cpp" line="1228"/>
         <source>Size: %1</source>
         <translation>长度：%1</translation>
     </message>

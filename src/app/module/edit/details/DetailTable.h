@@ -141,6 +141,7 @@ private:
     void setRowData(int row, const Icd::SystemPtr &system);
     void setRowData(int row, const Icd::TablePtr &table);
     void setRowData(int row, const Icd::ItemPtr &item, double offset);
+    void setRowOffsetAndSize(int row, const Icd::ItemPtr &item, double offset);
 
     int insertRow(int row, const Icd::ObjectPtr &object);
 

@@ -1222,28 +1222,7 @@ void DetailTable::updateOffsetAndSize(const Icd::TablePtr &table)
     const Icd::ItemPtrArray &items = table->allItem();
     const int rowCount = tableView_->rowCount();
     for (int row = 0; row < rowCount && row < int(items.size()); ++row) {
-        const Icd::ItemPtr item = items[size_t(row)];
-        const double bufferOffset = item->bufferOffset() - table->bufferOffset();
-        // offset and size
-        switch (item->type()) {
-        case Icd::ItemBitMap:
-        case Icd::ItemBitValue:
-        {
-            const Icd::BitItemPtr bit = JHandlePtrCast<Icd::BitItem>(item);
-            if (!bit) {
-                break;
-            }
-            tableView_->setItemData(row, 2, QString("%1 (%2)").arg(bufferOffset)
-                                    .arg(bit->bitStart(), 2, 10, QChar('0')));
-            tableView_->setItemData(row, 3, QString("%1/%2").arg(bit->bitCount())
-                                    .arg(bit->typeSize() * 8));
-            break;
-        }
-        default:
-            tableView_->setItemData(row, 2, QString::number(bufferOffset));
-            tableView_->setItemData(row, 3, QString::number(item->bufferSize()));
-            break;
-        }
+        setRowOffsetAndSize(row, items[size_t(row)], table->bufferOffset());
     }
 
     setTip(tr("Size: %1").arg(table->bufferSize()));
@@ -1292,11 +1271,22 @@ void DetailTable::setRowData(int row, const Icd::ItemPtr &item, double offset)
         return;
     }
 
-    const double bufferOffset = item->bufferOffset() - offset;
-
     tableView_->setItemData(row, 0, QString::fromStdString(item->id()), Qt::UserRole);
     tableView_->setItemData(row, 0, QString::fromStdString(item->name()));
     tableView_->setItemData(row, 1, QString::fromStdString(item->mark()));
+    setRowOffsetAndSize(row, item, offset);
+    tableView_->setItemData(row, 4, IcdWidget::typeString(item));
+    tableView_->setItemData(row, 5, QString::fromStdString(item->desc()));
+}
+
+void DetailTable::setRowOffsetAndSize(int row, const Icd::ItemPtr &item, double offset)
+{
+    if (!item) {
+        return;
+    }
+
+    const double bufferOffset = item->bufferOffset() - offset;
+
     // offset and size
     switch (item->type()) {
     case Icd::ItemBitMap:
@@ -1317,8 +1307,6 @@ void DetailTable::setRowData(int row, const Icd::ItemPtr &item, double offset)
         tableView_->setItemData(row, 3, QString::number(item->bufferSize()));
         break;
     }
-    tableView_->setItemData(row, 4, IcdWidget::typeString(item));
-    tableView_->setItemData(row, 5, QString::fromStdString(item->desc()));
 }
 
 }
