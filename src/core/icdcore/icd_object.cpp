@@ -315,9 +315,15 @@ void Object::moveChild(int sourceIndex, int targetIndex)
     (void)targetIndex;
 }
 
-void Object::removeChild(icd_uint64 index)
+void Object::removeChild(icd_uint64 beginIndex, int endIndex)
 {
-    (void)index;
+    (void)beginIndex;
+    (void)endIndex;
+}
+
+void Object::removeChild(const std::list<icd_uint64> &indexes)
+{
+    (void)indexes;
 }
 
 void Object::clearChildren()

@@ -79,7 +79,12 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
 {
     resetView();
 
-    if (!object || (index.type() != QVariant::ULongLong && index.toInt() == -1)) {
+    if (!object) {
+        return;
+    }
+
+    if ((index.type() != QVariant::ULongLong && index.toInt() == -1)) {
+        updateView(object, false, false);
         return;
     }
 

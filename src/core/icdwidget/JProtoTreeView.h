@@ -124,12 +124,16 @@ public:
     QStandardItem *unloadedItem() const;
 
     Icd::ObjectPtr findObject(QStandardItem *item, bool ignoreComplex = true) const;
+    Icd::ObjectPtr findObject(const QString &domain, int domainType, bool ignoreComplex = true) const;
 
     // for edit module {{{
 
     void insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
     void updateRow(int sourceRow, int targetRow, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
     void removeRow(int row, const Icd::ObjectPtr &target, const QVariant &data = QVariant());
+    void removeRows(QStandardItem *parentItem, const QList<int> &rows);
+    void removeRows(QStandardItem *parentItem, int beginRow, int endRow);
+    void clearItem(QStandardItem *parentItem);
 
     void applyInsert(const Icd::ObjectPtr &target);
     void cancelInsert();

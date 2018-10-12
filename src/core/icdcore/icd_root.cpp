@@ -306,13 +306,32 @@ void Root::moveChild(int sourceIndex, int targetIndex)
     d->vehicles.insert(d->vehicles.begin() + targetIndex, vehicle);
 }
 
-void Root::removeChild(icd_uint64 index)
+void Root::removeChild(icd_uint64 beginIndex, int endIndex)
 {
-    if (index >= d->vehicles.size()) {
+    if (beginIndex >= d->vehicles.size()) {
         return;
     }
 
-    d->vehicles.erase(d->vehicles.cbegin() + int(index));
+    if (endIndex >= 0 && int(beginIndex) < endIndex && endIndex < int(d->vehicles.size())) {
+        d->vehicles.erase(d->vehicles.cbegin() + int(beginIndex),
+                          d->vehicles.cbegin() + endIndex);
+    } else {
+        d->vehicles.erase(d->vehicles.cbegin() + int(beginIndex));
+    }
+}
+
+void Root::removeChild(const std::list<icd_uint64> &indexes)
+{
+    std::list<icd_uint64> sortedIndexes = indexes;
+    sortedIndexes.sort(std::greater<icd_uint64>());
+
+    for (std::list<icd_uint64>::const_iterator citer = sortedIndexes.cbegin();
+         citer != sortedIndexes.cend(); ++citer) {
+        const icd_uint64 index = *citer;
+        if (index < d->vehicles.size()) {
+            d->vehicles.erase(d->vehicles.cbegin() + int(index));
+        }
+    }
 }
 
 void Root::clearChildren()

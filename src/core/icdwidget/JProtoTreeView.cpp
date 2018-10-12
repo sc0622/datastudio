@@ -269,6 +269,12 @@ ObjectPtr JProtoTreeView::findObject(QStandardItem *item, bool ignoreComplex) co
     return d->findObject(item, ignoreComplex);
 }
 
+ObjectPtr JProtoTreeView::findObject(const QString &domain, int domainType, bool ignoreComplex) const
+{
+    Q_D(const JProtoTreeView);
+    return d->findObject(domain, domainType, ignoreComplex);
+}
+
 void JProtoTreeView::insertRow(int row, const Icd::ObjectPtr &target, const QVariant &data)
 {
     Q_D(JProtoTreeView);
@@ -285,6 +291,24 @@ void JProtoTreeView::removeRow(int row, const Icd::ObjectPtr &target, const QVar
 {
     Q_D(JProtoTreeView);
     d->removeRow(row, target, data);
+}
+
+void JProtoTreeView::removeRows(QStandardItem *parentItem, const QList<int> &rows)
+{
+    Q_D(JProtoTreeView);
+    d->removeRows(parentItem, rows);
+}
+
+void JProtoTreeView::removeRows(QStandardItem *parentItem, int beginRow, int endRow)
+{
+    Q_D(JProtoTreeView);
+    d->removeRows(parentItem, beginRow, endRow);
+}
+
+void JProtoTreeView::clearItem(QStandardItem *parentItem)
+{
+    Q_D(JProtoTreeView);
+    d->clearItem(parentItem);
 }
 
 void JProtoTreeView::applyInsert(const Icd::ObjectPtr &target)

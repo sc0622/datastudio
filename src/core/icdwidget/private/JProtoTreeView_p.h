@@ -144,6 +144,8 @@ public:
     QStandardItem *unloadedItem(QStandardItem *item = nullptr) const;
     static bool isItemLoaded(QStandardItem *item);
     Icd::ObjectPtr findObject(QStandardItem *item, bool ignoreComplex = true) const;
+    Icd::ObjectPtr findObject(const QString &domain, int domainType = Icd::DomainId,
+                              bool ignoreComplex = true) const;
 
 public:
     Q_INVOKABLE bool changeChannel(QStandardItem *itemTable);
@@ -293,15 +295,17 @@ private:
     void insertNewBeside(QStandardItem *item, int editAction, const QVariant &data = QVariant());
     void applyInsert(const Icd::ObjectPtr &target);
     void cancelInsert();
-    void removeRow(QStandardItem *item);
-    void cleanItem(QStandardItem *item);
+    void removeRows(QStandardItem *parentItem, const QList<int> &rows);
+    void removeRows(QStandardItem *parentItem, int beginRow, int endRow);
+    void removeRow(QStandardItem *item, bool clearSelection = true);
+    void clearItem(QStandardItem *parentItem);
 
     void updateOffset(QStandardItem *item, Icd::Object *object, int startRow);
     void updateOffset(QStandardItem *item, Icd::Object *object);
     void updateOffset(QStandardItem *item, Table *table, int startRow = 0);
     void updateOffset(QStandardItem *item, Icd::Item *dataItem);
     void updateOffset(QStandardItem *item, Icd::FrameItem *frame);
-    void updateOffset(QStandardItem *item, Icd::ComplexItem *complex);
+    void updateOffset(QStandardItem *item, Icd::ComplexItem *complex, int startRow = 0);
 
 private:
     J_DECLARE_PUBLIC(JProtoTreeView)

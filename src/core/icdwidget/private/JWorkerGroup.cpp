@@ -314,6 +314,11 @@ QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
 
     QString text;
 
+    if (object->rtti() == Icd::ObjectComplex) {
+        int i = 0;
+        ++i;
+    }
+
     switch (object->objectType()) {
     case Icd::ObjectTable:
     {
@@ -323,9 +328,11 @@ QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
         }
 
         qreal itemOffset = -1;
-        if (table->parent() && table->parent()->objectType() == Icd::ObjectItem) {
-            Icd::Item *item = dynamic_cast<Icd::Item*>(table->parent());
-            if (item && item->parent() && item->type() != Icd::ItemFrame) {
+        Icd::Object *parentObject = table->parent();
+        if (parentObject && parentObject->objectType() == Icd::ObjectItem
+                && parentObject->rtti() != Icd::ObjectFrame) {
+            Icd::Item *item = dynamic_cast<Icd::Item*>(parentObject);
+            if (item && item->parent()) {
                 itemOffset = item->bufferOffset();
             }
         }
@@ -350,8 +357,9 @@ QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
         }
 
         qreal tableOffset = -1;
-        if (item->parent() && item->parent()->objectType() == Icd::ObjectTable) {
-            Icd::Table *table = dynamic_cast<Icd::Table *>(item->parent());
+        Icd::Object *parentObject = item->parent();
+        if (parentObject && parentObject->objectType() == Icd::ObjectTable) {
+            Icd::Table *table = dynamic_cast<Icd::Table *>(parentObject);
             if (table && table->parent() && table->parent()->objectType() != Icd::ObjectSystem) {
                 tableOffset = table->bufferOffset();
             }

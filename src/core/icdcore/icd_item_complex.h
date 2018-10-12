@@ -53,6 +53,8 @@ public:
                            bool ignoreComplex = true) const override;
     ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
     void moveChild(int sourceIndex, int targetIndex) override;
+    void removeChild(icd_uint64 beginIndex, int endIndex = -1) override;
+    void removeChild(const std::list<icd_uint64> &indexes) override;
     void clearChildren() override;
 
     // Serializable interface

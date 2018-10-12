@@ -43,11 +43,14 @@ public slots:
 
     void onCurrentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
     void onRowMoved(int previousRow, int currentRow, bool restore);
+    void onRequestInsert(int row, const QVariant &data);
+    void onRequestPast(int row, const Icd::ObjectPtr &object, bool clone);
     void onApplied();
     void onCanceled();
 
 private:
-    void insertRow(int row, QStandardItem *item, const QVariant &data);
+    void insertRow(int row, const QVariant &data);
+    void insertRow(int row, const Icd::ObjectPtr &object, bool clone);
     bool saveObject();
 
     void setAddEnabled(bool enabled);

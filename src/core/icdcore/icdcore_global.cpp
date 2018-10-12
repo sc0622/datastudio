@@ -285,7 +285,7 @@ std::string createUuid()
 void createUuid(std::string &uuid)
 {
 #ifdef QT_CORE_LIB
-    uuid = QUuid::createUuid().toString().remove(QRegExp("[{}-]")).toStdString();
+    uuid = QUuid::createUuid().toString().remove(QRegExp("[-]")).toStdString();
 #else
 #ifdef _MSC_VER
     //GUID guid;

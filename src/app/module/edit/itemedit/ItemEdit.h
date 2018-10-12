@@ -19,7 +19,7 @@ class ItemEdit : public ObjectEdit
     Q_OBJECT
 public:
     explicit ItemEdit(const Icd::ItemPtr &item, QWidget *parent = nullptr);
-    virtual ~ItemEdit();
+    virtual ~ItemEdit() override;
 
     Icd::ItemPtr item() const;
     int itemType() const override;

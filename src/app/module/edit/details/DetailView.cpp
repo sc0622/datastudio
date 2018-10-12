@@ -26,6 +26,8 @@ DetailView::DetailView(QWidget *parent)
 
     connect(detailTable_, &DetailTable::currentItemChanged, this, &DetailView::onCurrentItemChanged);
     connect(detailTable_, &DetailTable::rowMoved, this, &DetailView::onRowMoved);
+    connect(detailTable_, &DetailTable::requestInsert, this, &DetailView::onRequestInsert);
+    connect(detailTable_, &DetailTable::requestPast, this, &DetailView::onRequestPast);
     connect(detailEdit_, &DetailEdit::applied, this, &DetailView::onApplied);
     connect(detailEdit_, &DetailEdit::canceled, this, &DetailView::onCanceled);
 
@@ -53,15 +55,11 @@ bool DetailView::init()
 
 void DetailView::requestAdd(QStandardItem *item, const QVariant &data)
 {
-    Q_UNUSED(data);
     if (!object_ || !item) {
         return;
     }
 
-    detailTable_->cancel();
-    newObject_.reset();
-
-    insertRow(detailTable_->rowCount(), item, data);
+    insertRow(detailTable_->rowCount(), data);
 }
 
 void DetailView::moveCurrentRow(bool up)
@@ -116,22 +114,34 @@ void DetailView::updateView(QStandardItem *item)
 
 void DetailView::removeRow(QStandardItem *item)
 {
-    if (!item) {
+    if (!item || !object_) {
         return;
     }
 
-    //TODO
+    if (object_->objectType() == Icd::ObjectItem
+            && (object_->rtti() != Icd::ObjectFrame
+                && object_->rtti() != Icd::ObjectComplex)) {
+        return;
+    }
+
+    detailTable_->removeRow(item->row());
 
     setModified(false);
 }
 
 void DetailView::cleanItem(QStandardItem *item)
 {
-    if (!item) {
+    if (!item || !object_) {
         return;
     }
 
-    //TODO
+    if (object_->objectType() == Icd::ObjectItem
+            && (object_->rtti() != Icd::ObjectFrame
+                && object_->rtti() != Icd::ObjectComplex)) {
+        return;
+    }
+
+    detailTable_->cleanItem();
 
     setModified(false);
 }
@@ -172,6 +182,16 @@ void DetailView::onRowMoved(int previousRow, int currentRow, bool restore)
     detailEdit_->setButtonsEnabled(true);
     setModified(true);
     updateMoveActionState();
+}
+
+void DetailView::onRequestInsert(int row, const QVariant &data)
+{
+    insertRow(row, data);
+}
+
+void DetailView::onRequestPast(int row, const Icd::ObjectPtr &object, bool clone)
+{
+    insertRow(row, object, clone);
 }
 
 void DetailView::onApplied()
@@ -221,7 +241,7 @@ void DetailView::onApplied()
     // currentIndex
     args.append(currentIndex);
     // send
-    jnotify->send("edit.detail.changed", args);
+    jnotify->send("edit.detail.apply", args);
 
     setModified(false);
 }
@@ -239,31 +259,21 @@ void DetailView::onCanceled()
     // notify treeview
     if (treeItem_->data(Icd::TreeItemNewRole).toBool()) {
         // update treeview
-        QVariantList args;
-        // action
-        args.append("cancel");
-        // sourceRow
-        args.append(-1);
-        // targetRow
-        args.append(-1);
-        // object handle
-        args.append(QVariant::Invalid);
-        // currentIndex
-        args.append(QVariant::Invalid);
-        // send
-        jnotify->send("edit.detail.changed", args);
+        jnotify->send("edit.detail.cancel");
     }
 
     setModified(false);
 }
 
-void DetailView::insertRow(int row, QStandardItem *item, const QVariant &data)
+void DetailView::insertRow(int row, const QVariant &data)
 {
-    Q_UNUSED(data);
-
-    if (!item || !object_) {
+    if (!object_) {
         return;
     }
+
+    detailTable_->cancel();
+    detailTable_->clearSelection();
+    newObject_.reset();
 
     switch (object_->rtti()) {
     case Icd::ObjectRoot:
@@ -304,6 +314,88 @@ void DetailView::insertRow(int row, QStandardItem *item, const QVariant &data)
     default:
     {
         auto newItem = Icd::Item::create(Icd::ItemType(data.toInt()), object_.get());
+        newObject_ = newItem;
+        detailTable_->insertRow(row, newItem);
+        break;
+    }}
+
+    setModified(true);
+}
+
+void DetailView::insertRow(int row, const Icd::ObjectPtr &object, bool clone)
+{
+    if (!object_ || !object) {
+        return;
+    }
+
+    detailTable_->cancel();
+    detailTable_->clearSelection();
+    newObject_.reset();
+
+    switch (object_->rtti()) {
+    case Icd::ObjectRoot:
+    {
+        if (object->objectType() != Icd::ObjectVehicle) {
+            return;
+        }
+
+        auto newVehicle = JHandlePtrCast<Icd::Vehicle>(clone ? object->clone() : object->copy());
+        newVehicle->setParent(object_.get());
+        newObject_ = newVehicle;
+        detailTable_->insertRow(row, newVehicle);
+        break;
+    }
+    case Icd::ObjectVehicle:
+    {
+        if (object->objectType() != Icd::ObjectSystem) {
+            return;
+        }
+
+        auto newSystem = JHandlePtrCast<Icd::System>(clone ? object->clone() : object->copy());
+        newSystem->setParent(object_.get());
+        newObject_ = newSystem;
+        detailTable_->insertRow(row, newSystem);
+        break;
+    }
+    case Icd::ObjectSystem:
+    case Icd::ObjectFrame:
+    {
+        if (object->objectType() != Icd::ObjectTable) {
+            return;
+        }
+
+        auto newTable = JHandlePtrCast<Icd::Table>(clone ? object->clone() : object->copy());
+        newTable->setParent(object_.get());
+        newObject_ = newTable;
+        detailTable_->insertRow(row, newTable);
+        break;
+    }
+    case Icd::ObjectComplex:
+    {
+        auto complex = JHandlePtrCast<Icd::ComplexItem>(object_);
+        if (!complex) {
+            return;
+        }
+
+        if (object->objectType() != Icd::ObjectItem) {
+            return;
+        }
+
+        auto newItem = JHandlePtrCast<Icd::Table>(clone ? object->clone() : object->copy());
+        newItem->setParent(complex->table().get());
+        newObject_ = newItem;
+        detailTable_->insertRow(row, newItem);
+        break;
+    }
+    case Icd::ObjectTable:
+    default:
+    {
+        if (object->objectType() != Icd::ObjectItem) {
+            return;
+        }
+
+        auto newItem = JHandlePtrCast<Icd::Table>(clone ? object->clone() : object->copy());
+        newItem->setParent(object_.get());
         newObject_ = newItem;
         detailTable_->insertRow(row, newItem);
         break;
@@ -440,9 +532,9 @@ bool DetailView::saveObject()
         } else {
             const int originalRow = detailTable_->originalRow();
             if (originalRow == -1) {
-                currentIndex = Icd::icd_uint64(originalRow);
-            } else {
                 currentIndex = detailTable_->currentIndex();
+            } else {
+                currentIndex = Icd::icd_uint64(originalRow);
             }
         }
 

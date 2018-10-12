@@ -125,28 +125,38 @@ TreeView::TreeView(QWidget *parent)
         *objectPtr = treeView_->findObject(item, false);
         event.setReturnValue(true);
     });
-    jnotify->on("edit.detail.changed", this, [=](JNEvent &event){
+    jnotify->on("edit.tree.find.object", this, [=](JNEvent &event){
         const QVariantList args = event.argument().toList();
-        if (args.size() != 5) {
+        if (args.size() != 2) {
             return;
         }
-        const QString action = args[0].toString();
-        const int sourceRow = args[1].toInt();
-        const int targetRow = args[2].toInt();
-        Icd::ObjectPtr *object = jVariantFromVoid<Icd::ObjectPtr>(args[3]);
-        const QVariant data = args[4];
-        //
-        if (action == "insert") {
-            treeView_->insertRow(sourceRow, *object, data);
-        } else if (action == "update") {
-            treeView_->updateRow(sourceRow, targetRow, *object, data);
-        } else if (action == "apply") {
-            treeView_->applyInsert(*object);
-        } else if (action == "cancel") {
-            treeView_->cancelInsert();
-        } else if (action == "remove") {
-            treeView_->removeRow(sourceRow, *object, data);
+        Icd::RootPtr root = treeView_->protoRoot();
+        if (!root) {
+            return;
         }
+        Icd::ObjectPtr *objectPtr = jVariantFromVoid<Icd::ObjectPtr>(args[0]);
+        if (!objectPtr) {
+            return;
+        }
+        const QString domain = args[1].toString();
+        *objectPtr = treeView_->findObject(domain, Icd::DomainId, false);
+        event.setReturnValue(true);
+    });
+    jnotify->on("edit.tree.row.domain", this, [=](JNEvent &event){
+        const int row = event.argument().toInt();
+        if (row < 0) {
+            return;
+        }
+        QStandardItem *currentItem = treeView_->currentItem();
+        if (!currentItem || row >= currentItem->rowCount()) {
+            return;
+        }
+        QStandardItem *childItem = currentItem->child(row);
+        if (!childItem) {
+            return;
+        }
+        const QString domain = currentItem->data(Icd::TreeItemDomainRole).toString();
+        event.setReturnValue(domain);
     });
     jnotify->on("edit.toolbar.item.add", this, [=](JNEvent &){
         QStandardItem *currentItem = treeView_->currentItem();
@@ -163,6 +173,44 @@ TreeView::TreeView(QWidget *parent)
         args.append(qVariantFromValue(static_cast<void*>(currentItem)));   // item
         args.append(data);  // data
         jnotify->send("edit.tree.request.add", args);
+    });
+    jnotify->on("edit.detail.apply", this, [=](JNEvent &event){
+        const QVariantList args = event.argument().toList();
+        if (args.size() != 5) {
+            return;
+        }
+        const QString action = args[0].toString();
+        const int sourceRow = args[1].toInt();
+        const int targetRow = args[2].toInt();
+        Icd::ObjectPtr *object = jVariantFromVoid<Icd::ObjectPtr>(args[3]);
+        const QVariant data = args[4];
+        //
+        if (action == "insert") {
+            treeView_->insertRow(sourceRow, *object, data);
+        } else if (action == "update") {
+            treeView_->updateRow(sourceRow, targetRow, *object, data);
+        } else if (action == "apply") {
+            treeView_->applyInsert(*object);
+        }
+    });
+    jnotify->on("edit.detail.cancel", this, [=](JNEvent &){
+        treeView_->cancelInsert();
+    });
+    jnotify->on("edit.detail.remove", this, [=](JNEvent &event){
+        const QVariantList args = event.argument().toList();
+        if (args.size() == 1) {
+            const QList<int> *rows = jVariantFromVoid<QList<int> >(args[0]);
+            if (rows) {
+                treeView_->removeRows(treeView_->currentItem(), *rows);
+            }
+        } else if (args.size() == 2) {
+            const int beginRow = args[0].toInt();
+            const int endRow = args[1].toInt();
+            treeView_->removeRows(treeView_->currentItem(), beginRow, endRow);
+        }
+    });
+    jnotify->on("edit.detail.clean", this, [=](JNEvent &){
+        treeView_->clearItem(treeView_->currentItem());
     });
 }
 

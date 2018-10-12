@@ -275,6 +275,11 @@ bool DetailTable::isMultiRowSelected() const
     return tableView_->isMultiRowSelected();
 }
 
+void DetailTable::clearSelection()
+{
+    tableView_->clearSelection();
+}
+
 void DetailTable::insertRow(int row, const Icd::VehiclePtr &vehicle)
 {
     if (!vehicle) {
@@ -334,6 +339,16 @@ void DetailTable::insertRow(int row, const Icd::ItemPtr &item)
     setRowData(row, item, offset);
 
     tableView_->selectRow(row);
+}
+
+void DetailTable::removeRow(int row)
+{
+    tableView_->removeRow(row);
+}
+
+void DetailTable::cleanItem()
+{
+    tableView_->clearContents();
 }
 
 void DetailTable::moveCurrentRow(bool up)
@@ -544,6 +559,50 @@ void DetailTable::cancel()
     originalRow_ = -1;
 }
 
+bool DetailTable::isSameType(const Icd::ObjectPtr &object) const
+{
+    if (!object_ || !object) {
+        return false;
+    }
+
+    switch (object_->rtti()) {
+    case Icd::ObjectRoot:
+    {
+        if (object->objectType() == Icd::ObjectVehicle) {
+            return true;
+        }
+        break;
+    }
+    case Icd::ObjectVehicle:
+    {
+        if (object->objectType() == Icd::ObjectSystem) {
+            return true;
+        }
+        break;
+    }
+    case Icd::ObjectSystem:
+    case Icd::ObjectFrame:
+    {
+        if (object->objectType() == Icd::ObjectTable) {
+            return true;
+        }
+        break;
+    }
+    case Icd::ObjectComplex:
+    case Icd::ObjectTable:
+    {
+        if (object->objectType() == Icd::ObjectItem) {
+            return true;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    return false;
+}
+
 void DetailTable::showContextMenu(const QPoint &pos)
 {
     Q_UNUSED(pos);
@@ -559,79 +618,166 @@ void DetailTable::showContextMenu(const QPoint &pos)
 
     const QList<JTableViewSelectionRange> selected = tableView_->selectRanges();
 
+    // calculate vertical range
+    int topRow = -1, bottomRow = -1;
+    calcVerticalRange(selected, topRow, bottomRow);
+
+    //
+    bool isInsertItem = false;
+    const int rtti = object_->rtti();
+    if (rtti == Icd::ObjectTable || rtti == Icd::ObjectComplex) {
+        isInsertItem = true;
+    }
+
     QMenu menu(this);
 
     // add
     QAction *actionAdd = menu.addAction(QIcon(":icdwidget/image/tree/add.png"),
                                         tr("Add"));
-    connect(actionAdd, &QAction::triggered, this, [=](){
-        //
-    });
+    if (isInsertItem) {
+        createAddItemMenu(tableView_->rowCount(), actionAdd, AddAction);
+    } else {
+        connect(actionAdd, &QAction::triggered, this, [=](){
+            emit requestInsert(tableView_->rowCount(), QVariant::Invalid);
+        });
+    }
+    // insert
     if (!selected.isEmpty()) {
+        //
         // insert above
         QAction *actionInsertAbove = menu.addAction(QIcon(":icdwidget/image/tree/insert-above.png"),
                                                     tr("Insert above"));
-        connect(actionInsertAbove, &QAction::triggered, this, [=](){
-            //
-        });
+        if (isInsertItem) {
+            createAddItemMenu(topRow, actionInsertAbove, InsertAboveAction);
+        } else {
+            connect(actionInsertAbove, &QAction::triggered, this, [=](){
+                emit requestInsert(topRow, QVariant::Invalid);
+            });
+        }
         // insert below
         QAction *actionInsertBelow = menu.addAction(QIcon(":icdwidget/image/tree/insert-below.png"),
                                                     tr("Insert below"));
-        connect(actionInsertBelow, &QAction::triggered, this, [=](){
-            //
-        });
+        if (isInsertItem) {
+            createAddItemMenu(bottomRow + 1, actionInsertBelow, InsertBelowAction);
+        } else {
+            connect(actionInsertBelow, &QAction::triggered, this, [=](){
+                emit requestInsert(bottomRow + 1, QVariant::Invalid);
+            });
+        }
     }
-    //
+    // past
     bool hasPast = false;
     QClipboard *clipboard = QGuiApplication::clipboard();
     if (clipboard && clipboard->ownsClipboard()) {
         const QMimeData *mimeData = clipboard->mimeData();
         if (mimeData) {
-            if (mimeData->hasFormat("icdwidget/domain")
-                    || mimeData->hasFormat("detailtable/domain")) {
-                hasPast = true;
-                // past - append
-                QAction *actionPast = menu.addAction(QIcon(":icdwidget/image/tree/past.png"),
-                                                     tr("Past"));
-                connect(actionPast, &QAction::triggered, this, [=](){
+            if (mimeData->hasFormat("icd-edit/domain-list")) {
+                const QString domainList = mimeData->data("icd-edit/domain-list");
+                // find object
+                QList<Icd::ObjectPtr> objects;
+                const QStringList domains = domainList.split(';');
+                foreach (auto &domain, domains) {
+                    Icd::ObjectPtr object;
+                    QVariantList args;
+                    args.append(qVariantFromValue(static_cast<void*>(&object)));
+                    args.append(domain);
+                    if (jnotify->send("edit.tree.find.object", args).toBool() && object) {
+                        objects.append(object);
+                    }
+                }
+                //
+                if (objects.size() == 1 && isSameType(objects.first())) {   // Now only supports copying one
                     //
-                });
-                // past - above
-                QAction *actionPastAbove = menu.addAction(QIcon(":icdwidget/image/tree/past-above.png"),
-                                                          tr("Past above"));
-                connect(actionPastAbove, &QAction::triggered, this, [=](){
+                    hasPast = true;
                     //
-                });
-                // past - below
-                QAction *actionPastBelow = menu.addAction(QIcon(":icdwidget/image/tree/past-below.png"),
-                                                          tr("Past below"));
-                connect(actionPastBelow, &QAction::triggered, this, [=](){
-                    //
-                });
+                    const bool clone = mimeData->data("icd-edit/action") == "clone";
+                    // past - above
+                    QAction *actionPastAbove = menu.addAction(QIcon(":icdwidget/image/tree/past-above.png"),
+                                                              tr("Past above"));
+                    connect(actionPastAbove, &QAction::triggered, this, [=](){
+                        emit requestPast(topRow, objects.first(), clone);
+                    });
+                    // past - below
+                    QAction *actionPastBelow = menu.addAction(QIcon(":icdwidget/image/tree/past-below.png"),
+                                                              tr("Past below"));
+                    connect(actionPastBelow, &QAction::triggered, this, [=](){
+                        emit requestPast(bottomRow + 1, objects.first(), clone);
+                    });
+                    // past - append
+                    QAction *actionPast = menu.addAction(QIcon(":icdwidget/image/tree/past.png"),
+                                                         tr("Past"));
+                    connect(actionPast, &QAction::triggered, this, [=](){
+                        emit requestPast(tableView_->rowCount(), objects.first(), clone);
+                    });
+                }
             }
         }
     }
     // copy
     if (!hasPast && selected.size() == 1) {
-        // copy
-        QAction *actionCopy = menu.addAction(QIcon(":icdwidget/image/tree/copy.png"),
-                                             tr("Copy"));
-        connect(actionCopy, &QAction::triggered, this, [=](){
+        //
+        QClipboard *clipboard = QGuiApplication::clipboard();
+        if (clipboard) {
             //
-        });
-        // clone
-        QAction *actionClone = menu.addAction(QIcon(":icdwidget/image/tree/clone.png"),
-                                              tr("Clone"));
-        connect(actionClone, &QAction::triggered, this, [=](){
-            //
-        });
+            const QString domain = jnotify->send("edit.tree.row.domain",
+                                                 QVariant(tableView_->currentRow())).toString();
+            if (!domain.isEmpty()) {
+                //
+                QMimeData *mimeData = new QMimeData();
+                // domain-list
+                QByteArray domainList;
+                domainList.append(domain);
+                mimeData->setData("icd-edit/domain-list", domainList);
+                // action
+                clipboard->setMimeData(mimeData);
+                // copy
+                QAction *actionCopy = menu.addAction(QIcon(":icdwidget/image/tree/copy.png"),
+                                                     tr("Copy"));
+                connect(actionCopy, &QAction::triggered, this, [=](){
+                    mimeData->setData("icd-edit/action", "copy");
+                });
+                // clone
+                QAction *actionClone = menu.addAction(QIcon(":icdwidget/image/tree/clone.png"),
+                                                      tr("Clone"));
+                connect(actionClone, &QAction::triggered, this, [=](){
+                    mimeData->setData("icd-edit/action", "clone");
+                });
+            }
+        }
     }
     // remove
     if (!selected.isEmpty()) {
         QAction *actionRemove = menu.addAction(QIcon(":icdwidget/image/tree/remove.png"),
                                                tr("Remove"));
         connect(actionRemove, &QAction::triggered, this, [=](){
+            QList<JTableViewSelectionRange> ranges = tableView_->selectRanges();
+            if (ranges.isEmpty()) {
+                return;
+            }
+            qSort(ranges.begin(), ranges.end(), [](const JTableViewSelectionRange &first,
+                  const JTableViewSelectionRange &second) -> bool {
+                return first.topRow() > second.topRow();    // reverse sorted
+            });
             //
+            if (ranges.size() == 1) {
+                const JTableViewSelectionRange &range = ranges.first();
+                tableView_->removeRow(range.topRow(), range.rowCount());
+                jnotify->send("edit.detail.remove", QVariantList() << range.topRow() << range.bottomRow());
+            } else {
+                QList<int> rows;
+                foreach (auto &range, ranges) {
+                    for (int i = range.bottomRow(); i >= range.topRow(); --i) {
+                        rows.append(i);
+                    }
+                    tableView_->removeRow(range.topRow(), range.rowCount());
+                }
+                if (!rows.isEmpty()) {
+                    jnotify->send("edit.detail.remove",
+                                  QVariantList() << qVariantFromValue(static_cast<void*>(&rows)));
+                }
+            }
+            //
+            tableView_->clearSelection();
         });
     }
     // clean
@@ -639,7 +785,8 @@ void DetailTable::showContextMenu(const QPoint &pos)
         QAction *actionClean = menu.addAction(QIcon(":/icdwidget/image/tree/clean.png"),
                                               tr("Clean"));
         connect(actionClean, &QAction::triggered, this, [=](){
-            //
+            tableView_->clearContents();
+            jnotify->post("edit.detail.clean");
         });
     }
 
@@ -1226,6 +1373,62 @@ void DetailTable::updateOffsetAndSize(const Icd::TablePtr &table)
     }
 
     setTip(tr("Size: %1").arg(table->bufferSize()));
+}
+
+bool DetailTable::calcVerticalRange(const QList<JTableViewSelectionRange> &ranges,
+                                    int &topRow, int &bottomRow)
+{
+    if (ranges.isEmpty()) {
+        return false;
+    }
+
+    const JTableViewSelectionRange &first = ranges.first();
+    topRow = first.topRow();
+    bottomRow = first.bottomRow();
+
+    for (auto citer = ranges.cbegin() + 1; citer != ranges.cend(); ++citer) {
+        const JTableViewSelectionRange &range = *citer;
+        if (range.topRow() < topRow) {
+            topRow = range.topRow();
+        }
+        if (range.bottomRow() > bottomRow) {
+            bottomRow = range.bottomRow();
+        }
+    }
+
+    return (topRow >= 0 && bottomRow >= 0 && topRow <= bottomRow);
+}
+
+QMenu *DetailTable::createAddItemMenu(int row, QAction *action, int editAction)
+{
+    if (row < 0 || !action) {
+        return nullptr;
+    }
+
+    // create menu
+    QMenu *menu = new QMenu(this);
+    const auto items = IcdWidget::protoItemMapTypes();
+    for (auto citer = items.constBegin(); citer != items.constEnd(); ++citer) {
+        const QString icon = ":/icdwidget/image/tree/item-"
+                + QString::fromStdString(Icd::Item::typeString(Icd::ItemType(citer.key())))
+                + ".png";
+        QAction *newAction = menu->addAction(QIcon(icon), citer.value());
+        newAction->setData(citer.key());
+    }
+
+    // event
+    action->setMenu(menu);
+    connect(menu, &QMenu::triggered, this, [=](QAction *action){
+        switch (editAction) {
+        case AddAction:
+        case InsertAboveAction:
+        case InsertBelowAction:
+            emit requestInsert(row, action->data());
+            break;
+        }
+    });
+
+    return menu;
 }
 
 void DetailTable::setRowData(int row, const Icd::VehiclePtr &vehicle)

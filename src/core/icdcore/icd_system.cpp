@@ -306,13 +306,32 @@ void System::moveChild(int sourceIndex, int targetIndex)
     d->tables.insert(d->tables.begin() + targetIndex, table);
 }
 
-void System::removeChild(icd_uint64 index)
+void System::removeChild(icd_uint64 beginIndex, int endIndex)
 {
-    if (index >= d->tables.size()) {
+    if (beginIndex >= d->tables.size()) {
         return;
     }
 
-    d->tables.erase(d->tables.cbegin() + int(index));
+    if (endIndex >= 0 && int(beginIndex) < endIndex && endIndex < int(d->tables.size())) {
+        d->tables.erase(d->tables.cbegin() + int(beginIndex),
+                        d->tables.cbegin() + endIndex);
+    } else {
+        d->tables.erase(d->tables.cbegin() + int(beginIndex));
+    }
+}
+
+void System::removeChild(const std::list<icd_uint64> &indexes)
+{
+    std::list<icd_uint64> sortedIndexes = indexes;
+    sortedIndexes.sort(std::greater<icd_uint64>());
+
+    for (std::list<icd_uint64>::const_iterator citer = sortedIndexes.cbegin();
+         citer != sortedIndexes.cend(); ++citer) {
+        const icd_uint64 index = *citer;
+        if (index < d->tables.size()) {
+            d->tables.erase(d->tables.cbegin() + int(index));
+        }
+    }
 }
 
 void System::clearChildren()

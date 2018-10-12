@@ -136,11 +136,14 @@ bool TableEdit::validate()
             }
             // code [unique check]
             auto parentObject = table->parent();
-            if (parentObject && parentObject->childAt(spinCode_->value())) {
-                spinCode_->setFocus();
-                QToolTip::showText(spinCode_->mapToGlobal(QPoint(0, 8)),
-                                   tr("There is already a code with %1").arg(spinCode_->text()));
-                return false;
+            if (parentObject) {
+                const Icd::ObjectPtr childObject = parentObject->childAt(spinCode_->value());
+                if (childObject && table->id() != childObject->id()) {
+                    spinCode_->setFocus();
+                    QToolTip::showText(spinCode_->mapToGlobal(QPoint(0, 8)),
+                                       tr("There is already a code with %1").arg(spinCode_->text()));
+                    return false;
+                }
             }
         }
     }

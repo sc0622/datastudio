@@ -306,13 +306,32 @@ void Vehicle::moveChild(int sourceIndex, int targetIndex)
     d->systems.insert(d->systems.begin() + targetIndex, system);
 }
 
-void Vehicle::removeChild(icd_uint64 index)
+void Vehicle::removeChild(icd_uint64 beginIndex, int endIndex)
 {
-    if (index >= d->systems.size()) {
+    if (beginIndex >= d->systems.size()) {
         return;
     }
 
-    d->systems.erase(d->systems.cbegin() + int(index));
+    if (endIndex >= 0 && int(beginIndex) < endIndex && endIndex < int(d->systems.size())) {
+        d->systems.erase(d->systems.cbegin() + int(beginIndex),
+                         d->systems.cbegin() + endIndex);
+    } else {
+        d->systems.erase(d->systems.cbegin() + int(beginIndex));
+    }
+}
+
+void Vehicle::removeChild(const std::list<icd_uint64> &indexes)
+{
+    std::list<icd_uint64> sortedIndexes = indexes;
+    sortedIndexes.sort(std::greater<icd_uint64>());
+
+    for (std::list<icd_uint64>::const_iterator citer = sortedIndexes.cbegin();
+         citer != sortedIndexes.cend(); ++citer) {
+        const icd_uint64 index = *citer;
+        if (index < d->systems.size()) {
+            d->systems.erase(d->systems.cbegin() + int(index));
+        }
+    }
 }
 
 void Vehicle::clearChildren()

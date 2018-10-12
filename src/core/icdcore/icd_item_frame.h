@@ -68,7 +68,8 @@ public:
     bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const override;
     ObjectPtr childAt(icd_uint64 index) const override;
     ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
-    void removeChild(icd_uint64 index) override;
+    void removeChild(icd_uint64 beginIndex, int endIndex = -1) override;
+    void removeChild(const std::list<icd_uint64> &indexes) override;
     void clearChildren() override;
 
     icd_uint64 updateSend(icd_uint64 code);

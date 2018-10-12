@@ -555,14 +555,24 @@ ObjectPtr FrameItem::replaceChild(icd_uint64 index, ObjectPtr &other)
     return old;
 }
 
-void FrameItem::removeChild(icd_uint64 index)
+void FrameItem::removeChild(icd_uint64 beginIndex, int endIndex)
 {
-    TablePtrMap::iterator iter = d->tables.find(index);
+    (void)endIndex;
+    TablePtrMap::iterator iter = d->tables.find(beginIndex);
     if (iter == d->tables.end()) {
         return;
     }
 
     d->tables.erase(iter);
+}
+
+void FrameItem::removeChild(const std::list<icd_uint64> &indexes)
+{
+    for (std::list<icd_uint64>::const_iterator citer = indexes.cbegin();
+         citer != indexes.cend(); ++citer) {
+        const icd_uint64 index = *citer;
+        removeChild(index, -1);
+    }
 }
 
 void FrameItem::clearChildren()

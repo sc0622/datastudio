@@ -79,6 +79,13 @@ class DetailTable : public QWidget
 {
     Q_OBJECT
 public:
+    enum EditAction {
+        AddAction,
+        InsertAboveAction,
+        InsertBelowAction
+    };
+    Q_ENUM(EditAction)
+
     explicit DetailTable(QWidget *parent = nullptr);
 
     void resetView();
@@ -97,19 +104,26 @@ public:
     Icd::icd_uint64 currentIndex() const;
     int originalRow() const;
     bool isMultiRowSelected() const;
+    void clearSelection();
     void updateRow(int row, const QVariant &data = QVariant::Invalid);
 
     void insertRow(int row, const Icd::VehiclePtr &vehicle);
     void insertRow(int row, const Icd::SystemPtr &system);
     void insertRow(int row, const Icd::TablePtr &table);
     void insertRow(int row, const Icd::ItemPtr &item);
+    void removeRow(int row);
+    void cleanItem();
     void moveCurrentRow(bool up);
     bool apply(const Icd::ObjectPtr &target, int row);
     void cancel();
 
+    bool isSameType(const Icd::ObjectPtr &object) const;
+
 signals:
     void currentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
     void rowMoved(int previousRow, int currentRow, bool restore);
+    void requestInsert(int row, const QVariant &data);
+    void requestPast(int row, const Icd::ObjectPtr &object, bool clone);
 
 public slots:
     void showContextMenu(const QPoint &pos);
@@ -151,6 +165,9 @@ private:
 
     void updateOffsetAndSize();
     void updateOffsetAndSize(const Icd::TablePtr &table);
+
+    bool calcVerticalRange(const QList<JTableViewSelectionRange> &ranges, int &topRow, int &bottomRow);
+    QMenu *createAddItemMenu(int row, QAction *action, int editAction);
 
 private:
     DetailTableView *tableView_;

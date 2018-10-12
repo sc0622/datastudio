@@ -188,6 +188,16 @@ void ComplexItem::moveChild(int sourceIndex, int targetIndex)
     d->table->moveChild(sourceIndex, targetIndex);
 }
 
+void ComplexItem::removeChild(icd_uint64 beginIndex, int endIndex)
+{
+    d->table->removeChild(beginIndex, endIndex);
+}
+
+void ComplexItem::removeChild(const std::list<icd_uint64> &indexes)
+{
+    d->table->removeChild(indexes);
+}
+
 void ComplexItem::clearChildren()
 {
     d->table->clearChildren();

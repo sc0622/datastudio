@@ -3,6 +3,7 @@
 
 #include "icdcore_global.h"
 #include "./3rdpart/jsoncpp/json_tool.h"
+#include <list>
 
 namespace Icd {
 
@@ -88,7 +89,8 @@ public:
     virtual ObjectPtr childAt(icd_uint64 index) const;
     virtual ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other);
     virtual void moveChild(int sourceIndex, int targetIndex);
-    virtual void removeChild(icd_uint64 index);
+    virtual void removeChild(icd_uint64 beginIndex, int endIndex = -1);
+    virtual void removeChild(const std::list<icd_uint64> &indexes);
     virtual void clearChildren();
 
     // Serializable interface
