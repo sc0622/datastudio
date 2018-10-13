@@ -333,8 +333,11 @@ bool XmlParser::parse(const std::string &tableId, TablePtr &table) const
 
 bool XmlParser::save(const RootPtr &root) const
 {
-    Q_UNUSED(root);
-    return false;
+    if (!root) {
+        return false;
+    }
+
+    return save(root->allVehicle());
 }
 
 bool XmlParser::save(const Icd::VehiclePtrArray &vehicles) const

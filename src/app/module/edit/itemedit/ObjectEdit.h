@@ -25,7 +25,7 @@ class ObjectEdit : public QWidget
     Q_OBJECT
 public:
     explicit ObjectEdit(const Icd::ObjectPtr &object, QWidget *parent = nullptr);
-    virtual ~ObjectEdit();
+    virtual ~ObjectEdit() override;
 
     Icd::ObjectPtr object() const;
     virtual int itemType() const;
@@ -60,7 +60,8 @@ protected:
     void appendRow(const QString &labelText, QLayout *field);
     void addWidget(QWidget *widget);
 
-    virtual bool validate();
+    virtual bool validate() const;
+    virtual bool validateMark() const;
     virtual void saveContent();
     void addPrimaryModified(const QString &key);
     void removePrimaryModified(const QString &key);

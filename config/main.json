@@ -54,7 +54,7 @@
             }
          },
          "parser" : {
-            "filePath" : "C:/Users/iclosure/Desktop/test1/untitled2.json",
+            "filePath" : "C:/Users/iclosure/Desktop/22131231.json",
             "sourceType" : "file"
          }
       },
@@ -82,7 +82,7 @@
             }
          },
          "parser" : {
-            "filePath" : "@ConfigDir@/protocol.json",
+            "filePath" : "@ConfigDir@/protocol.xml",
             "sourceType" : "file"
          }
       },

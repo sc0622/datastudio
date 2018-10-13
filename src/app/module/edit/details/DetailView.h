@@ -41,7 +41,7 @@ signals:
 public slots:
     void setModified(bool modified);
 
-    void onCurrentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
+    void onSelectedChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
     void onRowMoved(int previousRow, int currentRow, bool restore);
     void onRequestInsert(int row, const QVariant &data);
     void onRequestPast(int row, const Icd::ObjectPtr &object, bool clone);
@@ -58,6 +58,8 @@ private:
     void setDownEnabled(bool enabled);
     void setActionEnabled(const QString &action, bool enabled);
     void updateMoveActionState();
+
+    void cancelInsert(int row);
 
 private:
     JSplitter *splitterMain_;

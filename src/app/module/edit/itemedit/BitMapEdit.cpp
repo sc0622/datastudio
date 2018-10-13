@@ -62,7 +62,7 @@ void BitMapEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool BitMapEdit::validate()
+bool BitMapEdit::validate() const
 {
     if (!BitEdit::validate()) {
         return false;

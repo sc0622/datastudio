@@ -22,7 +22,7 @@ class NumericEdit : public ItemEdit
     Q_OBJECT
 public:
     explicit NumericEdit(const Icd::NumericItemPtr &numeric, QWidget *parent = nullptr);
-    ~NumericEdit();
+    ~NumericEdit() override;
 
     Icd::NumericItemPtr numeric() const;
 
@@ -34,7 +34,7 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
     void saveContent() override;
 
 private:

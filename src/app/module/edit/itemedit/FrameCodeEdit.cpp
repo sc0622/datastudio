@@ -77,11 +77,13 @@ void FrameCodeEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool FrameCodeEdit::validate()
+bool FrameCodeEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;
     }
+
+    //
 
     return true;
 }

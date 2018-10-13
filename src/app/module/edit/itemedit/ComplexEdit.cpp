@@ -48,11 +48,13 @@ void ComplexEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool ComplexEdit::validate()
+bool ComplexEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;
     }
+
+    //
 
     return true;
 }

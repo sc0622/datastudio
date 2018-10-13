@@ -120,7 +120,7 @@ void TableEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool TableEdit::validate()
+bool TableEdit::validate() const
 {
     if (!ObjectEdit::validate()) {
         return false;

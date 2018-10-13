@@ -286,6 +286,30 @@ ObjectPtr Root::replaceChild(icd_uint64 index, ObjectPtr &other)
     return old;
 }
 
+ObjectPtr Root::replaceChild(const std::string &id, ObjectPtr &other)
+{
+    if (!other || other->objectType() != Icd::ObjectVehicle) {
+        return ObjectPtr();
+    }
+
+    const Icd::VehiclePtr otherVehicle = JHandlePtrCast<Icd::Vehicle>(other);
+    if (!otherVehicle) {
+        return ObjectPtr();
+    }
+
+    for (VehiclePtrArray::iterator iter = d->vehicles.begin();
+         iter != d->vehicles.end(); ++iter) {
+        const VehiclePtr &vehicle = *iter;
+        if (vehicle->id() != id) {
+            continue;
+        }
+        *iter = otherVehicle;
+        return vehicle;
+    }
+
+    return ObjectPtr();
+}
+
 void Root::moveChild(int sourceIndex, int targetIndex)
 {
     if (sourceIndex == targetIndex) {

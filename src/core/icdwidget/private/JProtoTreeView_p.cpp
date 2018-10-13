@@ -1014,16 +1014,20 @@ void JProtoTreeViewPrivate::onTreeItemPressed(QStandardItem *item)
 
 void JProtoTreeViewPrivate::onCurrentItemChanged(QStandardItem *current, QStandardItem *previous)
 {
-    if (treeModes_ != JProtoTreeView::TreeModeEdit || !parser_) {
-        return;
-    }
-
     Q_UNUSED(previous);
-    if (!current || current->hasChildren()) {
+    if (!current || !parser_) {
         return;
     }
 
-    if (isEditMode() && isItemLoaded(current)) {
+    if (!isEditMode()) {
+        return;
+    }
+
+    if (newItem_ && newObject_ && newItem_ != current) {
+        cancelInsert();
+    }
+
+    if (current->hasChildren() || isItemLoaded(current)) {
         return;
     }
 
@@ -4703,6 +4707,8 @@ void JProtoTreeViewPrivate::cancelInsert()
     newItem_->setData(QVariant::Invalid, Icd::TreeItemNewRole);
 
     if (newItem_->parent()) {
+        Q_Q(JProtoTreeView);
+        emit q->canceledInsert(newItem_);
         newItem_->parent()->removeRow(newItem_->row());
     }
 

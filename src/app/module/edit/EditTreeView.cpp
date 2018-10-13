@@ -166,7 +166,7 @@ TreeView::TreeView(QWidget *parent)
         //
         QVariant data;
         if (currentItem->type() == Icd::TreeItemTypeTable) {
-            data = Icd::NumericI8;
+            data = Icd::ItemNumeric;
         }
         //
         QVariantList args;

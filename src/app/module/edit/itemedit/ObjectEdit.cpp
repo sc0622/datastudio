@@ -202,7 +202,7 @@ void ObjectEdit::addWidget(QWidget *widget)
     splitter_->addWidget(widget);
 }
 
-bool ObjectEdit::validate()
+bool ObjectEdit::validate() const
 {
     auto parentObject = object_->parent();
 
@@ -222,6 +222,16 @@ bool ObjectEdit::validate()
         return false;
     }
     // mark [unique check]
+    if (!validateMark()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool ObjectEdit::validateMark() const
+{
+    auto parentObject = object_->parent();
     const QString mark = editMark_->text().trimmed();
     if (!mark.isEmpty()
             && parentObject

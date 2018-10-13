@@ -223,7 +223,7 @@ void NumericEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool NumericEdit::validate()
+bool NumericEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;

@@ -21,7 +21,7 @@ class BitEdit : public ItemEdit
     Q_OBJECT
 public:
     explicit BitEdit(const Icd::BitItemPtr &bit, QWidget *parent = nullptr);
-    virtual ~BitEdit();
+    virtual ~BitEdit() override;
 
     Icd::BitItemPtr bit() const;
 
@@ -37,7 +37,7 @@ public slots:
 
 protected:
     virtual void restoreContent(bool recursive = true) override;
-    virtual bool validate() override;
+    virtual bool validate() const override;
     virtual void saveContent() override;
 
     int bitStart() const;

@@ -17,7 +17,7 @@ class ComplexEdit : public ItemEdit
     Q_OBJECT
 public:
     explicit ComplexEdit(const Icd::ComplexItemPtr &complex, QWidget *parent = nullptr);
-    ~ComplexEdit();
+    ~ComplexEdit() override;
 
     Icd::ComplexItemPtr complex() const;
 
@@ -29,7 +29,7 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
     void saveContent() override;
 
 private:

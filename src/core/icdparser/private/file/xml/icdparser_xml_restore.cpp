@@ -571,13 +571,14 @@ bool XmlParser::parseItemFrame(const TiXmlElement *emFrame, const Icd::FrameItem
         return false;
     }
 
-    double dVal = 0.0;
     int iVal = 0;
-
+    double dVal = 0.0;
+#if 1   // will remove in the future
     // bufferSize
-    if (emFrame->QueryDoubleAttribute("size", &dVal) == TIXML_SUCCESS) {
+    if (emFrame->QueryDoubleAttribute("bufferSize", &dVal) == TIXML_SUCCESS) {
         frame->setBufferSize(dVal);
     }
+#endif
     // sequenceCount
     if (emFrame->QueryIntAttribute("sequenceCount", &iVal) == TIXML_SUCCESS) {
         frame->setSequenceCount(iVal);
@@ -631,10 +632,37 @@ bool XmlParser::parseTable(const TiXmlElement *emTable, const Icd::TablePtr &tab
         if (emItem->QueryStringAttribute("type", &sVal) != TIXML_SUCCESS) {
             continue;
         }
-        const std::string sType = sVal;
-        Icd::ItemPtr item = Icd::Item::create(Icd::Item::stringType(sType), table.get());
-        if (!parseItem(emItem, item, deep)) {
-            continue;   // parse failure
+        Icd::ItemType itemType = Item::stringType(sVal);
+        TiXmlElement *emNew = nullptr;
+        const TiXmlElement *emChildTable = nullptr;
+        if (itemType == Icd::ItemComplex
+                && (emItem->QueryIntAttribute("size", &iVal) == TIXML_SUCCESS)
+                && (emItem->NoChildren() || !(emChildTable = emItem->FirstChildElement("table"))
+                    || emChildTable->NoChildren())) {
+            itemType = Icd::ItemArray;
+            emNew = emItem->Clone()->ToElement();
+            emNew->RemoveChild(emNew->FirstChildElement("table"));
+            emNew->SetAttribute("count", iVal);
+            emNew->RemoveAttribute("size");
+            emNew->SetAttribute("type", "array");
+            emNew->SetAttribute("arrayType", "i8");
+        }
+        //
+        Icd::ItemPtr item = Icd::Item::create(itemType, table.get());
+        if (!item) {
+            continue;
+        }
+        if (emNew) {
+            const bool result = parseItem(emNew, item, deep);
+            delete emNew;
+            emNew = nullptr;
+            if (!result) {
+                continue;   // parse failure
+            }
+        } else {
+            if (!parseItem(emItem, item, deep)) {
+                continue;   // parse failure
+            }
         }
         //
         table->appendItem(item);

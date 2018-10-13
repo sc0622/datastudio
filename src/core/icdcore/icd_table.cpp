@@ -7,6 +7,7 @@
 #include "icd_item_framecode.h"
 #include "icd_item_frame.h"
 #include "icd_item_bit.h"
+#include "icd_item_array.h"
 #include <assert.h>
 #include <deque>
 #include "private/jprecitimer.h"
@@ -908,6 +909,30 @@ ObjectPtr Table::replaceChild(icd_uint64 index, ObjectPtr &other)
     return old;
 }
 
+ObjectPtr Table::replaceChild(const std::string &id, ObjectPtr &other)
+{
+    if (!other || other->objectType() != Icd::ObjectItem) {
+        return ObjectPtr();
+    }
+
+    const Icd::ItemPtr otherItem = JHandlePtrCast<Icd::Item>(other);
+    if (!otherItem) {
+        return ObjectPtr();
+    }
+
+    for (ItemPtrArray::iterator iter = d->items.begin();
+         iter != d->items.end(); ++iter) {
+        const ItemPtr &item = *iter;
+        if (item->id() != id) {
+            continue;
+        }
+        *iter = otherItem;
+        return item;
+    }
+
+    return ObjectPtr();
+}
+
 void Table::moveChild(int sourceIndex, int targetIndex)
 {
     if (sourceIndex == targetIndex) {
@@ -1303,16 +1328,35 @@ bool Table::restore(const Json::Value &json, int deep)
     }
 
     if (json.isMember("items")) {
-        Json::Value itemsJson = json["items"];
+        const Json::Value &itemsJson = json["items"];
         for (Json::ValueConstIterator citer = itemsJson.begin();
              citer != itemsJson.end(); ++citer) {
             const Json::Value &itemJson = *citer;
-            Icd::ItemPtr item = Item::create(Item::stringType(itemJson["type"].asString()), this);
+            ItemType itemType = Item::stringType(itemJson["type"].asString());
+            Json::Value newJson;
+            if (itemType == Icd::ItemComplex && itemJson.isMember("size")
+                    && (itemJson.size() == 0 || !itemJson.isMember("table")
+                        || !itemJson["table"].isMember("items"))) {
+                itemType = Icd::ItemArray;
+                newJson = itemJson;
+                newJson.removeMember("table");
+                newJson["count"] = itemJson["size"];
+                newJson.removeMember("size");
+                newJson["type"] = "array";
+                newJson["arrayType"] = "i8";
+            }
+            Icd::ItemPtr item = Item::create(itemType, this);
             if (!item) {
                 continue;
             }
-            if (!item->restore(itemJson, deep)) {
-                continue;
+            if (newJson.isNull()) {
+                if (!item->restore(itemJson, deep)) {
+                    continue;
+                }
+            } else {
+                if (!item->restore(newJson, deep)) {
+                    continue;
+                }
             }
             appendItem(item);
         }

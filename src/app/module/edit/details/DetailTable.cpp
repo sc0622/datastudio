@@ -117,8 +117,10 @@ void DetailTableView::dropEvent(QDropEvent *event)
 DetailTable::DetailTable(QWidget *parent)
     : QWidget(parent)
     , object_(nullptr)
+    , previousRow_(-1)
     , moving_(false)
     , originalRow_(-1)
+    , targetRow_(-1)
 {
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
     vertLayoutMain->setContentsMargins(0, 0, 0, 0);
@@ -146,27 +148,62 @@ DetailTable::DetailTable(QWidget *parent)
         tableView_->enableDragAndDrop(!tableView_->isMultiRowSelected());
         //
         if (!object_) {
-            emit currentItemChanged(QVariant::Invalid, newObject_);
+            emit selectedChanged(QVariant::Invalid, newObject_);
             return;
         }
-        if (object_->rtti() == Icd::ObjectFrame) {
-            emit currentItemChanged(tableView_->itemData(currentRow(), 0, Qt::UserRole + 1), newObject_);
+        //
+        int index = selectedRow();
+        bool cancel = false;
+        Icd::ObjectPtr object = newObject_;
+        if (index >= 0 && newObject_ && previousRow_ >= 0) {
+            const QString id = tableView_->itemData(index, 0, Qt::UserRole).toString();
+            if (newObject_->id() != id.toStdString()) {
+                object.reset();
+                index = previousRow_;
+                previousRow_ = -1;
+                cancel = true;
+            }
+        }
+        //
+        if (cancel) {
+            emit selectedChanged(index, object);
         } else {
-            emit currentItemChanged(currentRow(), newObject_);
+            if (object_->rtti() == Icd::ObjectFrame) {
+                emit selectedChanged(tableView_->itemData(index, 0, Qt::UserRole + 1), object);
+            } else {
+                emit selectedChanged(index, object);
+            }
         }
     });
-    connect(tableView_, &DetailTableView::movingDropped, this, &DetailTable::moveRow);
+    connect(tableView_, &JTableView::currentCellChanged, this, [=](int currentRow, int, int previousRow, int){
+        previousRow_ = -1;
+        if (currentRow < 0 || previousRow < 0 || currentRow == previousRow) {
+            return;
+        }
+        if (currentRow >= 0 && newObject_) {
+            const QString id = tableView_->itemData(currentRow, 0, Qt::UserRole).toString();
+            if (newObject_->id() != id.toStdString()) {
+                previousRow_ = previousRow;
+            }
+        }
+    });
+
+    connect(tableView_, &DetailTableView::movingDropped, this, [=](int sourceRow, int targetRow){
+        moveRow(sourceRow, targetRow, false);
+    });
 }
 
 void DetailTable::resetView()
 {
-    cancel();
+    cancel(-1);
     tableView_->clearSelection();
+    tableView_->setCurrentCell(-1, -1);
     tableView_->clear();
     object_.reset();
     newObject_.reset();
     originalRow_ = -1;
-    setTip(QString());
+    targetRow_ = -1;
+    setBottomTip(QString());
 }
 
 void DetailTable::updateView(const Icd::ObjectPtr &object)
@@ -206,10 +243,21 @@ Icd::ObjectPtr DetailTable::object() const
     return object_;
 }
 
-void DetailTable::setTip(const QString &text) const
+void DetailTable::setBottomTip(const QString &text) const
 {
     labelTip_->setText(text);
     labelTip_->setVisible(!text.isEmpty());
+}
+
+void DetailTable::setBottomTip(const Icd::TablePtr &table) const
+{
+    const double realSize = table->bufferSize();
+    const double size = std::ceil(realSize);
+    if (qFuzzyCompare(size, realSize)) {
+        setBottomTip(tr("Size: %1").arg(size));
+    } else {
+        setBottomTip(tr("Size: %1 (Real: %2)").arg(size).arg(realSize));
+    }
 }
 
 bool DetailTable::isModified() const
@@ -229,7 +277,7 @@ bool DetailTable::isMoving() const
 
 bool DetailTable::isMoved() const
 {
-    return (originalRow_ != -1);
+    return (originalRow_ != -1 && targetRow_ != -1);
 }
 
 int DetailTable::rowCount() const
@@ -238,6 +286,11 @@ int DetailTable::rowCount() const
 }
 
 int DetailTable::currentRow() const
+{
+    return tableView_->currentRow();
+}
+
+int DetailTable::selectedRow() const
 {
     const QList<JTableViewSelectionRange> selected = tableView_->selectRanges();
     if (selected.isEmpty()) {
@@ -254,15 +307,15 @@ int DetailTable::currentRow() const
     }
 }
 
-Icd::icd_uint64 DetailTable::currentIndex() const
+Icd::icd_uint64 DetailTable::selectedIndex() const
 {
-    const int currentRow = this->currentRow();
+    const int selectedRow = this->selectedRow();
 
     if (object_ && object_->rtti() == Icd::ObjectFrame) {
-        return tableView_->itemData(currentRow, 0, Qt::UserRole + 1).toULongLong();
+        return tableView_->itemData(selectedRow, 0, Qt::UserRole + 1).toULongLong();
     }
 
-    return Icd::icd_uint64(currentRow);
+    return Icd::icd_uint64(selectedRow);
 }
 
 int DetailTable::originalRow() const
@@ -290,7 +343,7 @@ void DetailTable::insertRow(int row, const Icd::VehiclePtr &vehicle)
 
     setRowData(row, vehicle);
 
-    tableView_->selectRow(row);
+    tableView_->setCurrentCell(row, 0);
 }
 
 void DetailTable::insertRow(int row, const Icd::SystemPtr &system)
@@ -303,7 +356,7 @@ void DetailTable::insertRow(int row, const Icd::SystemPtr &system)
 
     setRowData(row, system);
 
-    tableView_->selectRow(row);
+    tableView_->setCurrentCell(row, 0);
 }
 
 void DetailTable::insertRow(int row, const Icd::TablePtr &table)
@@ -316,7 +369,7 @@ void DetailTable::insertRow(int row, const Icd::TablePtr &table)
 
     setRowData(row, table);
 
-    tableView_->selectRow(row);
+    tableView_->setCurrentCell(row, 0);
 }
 
 void DetailTable::insertRow(int row, const Icd::ItemPtr &item)
@@ -338,7 +391,7 @@ void DetailTable::insertRow(int row, const Icd::ItemPtr &item)
 
     setRowData(row, item, offset);
 
-    tableView_->selectRow(row);
+    tableView_->setCurrentCell(row, 0);
 }
 
 void DetailTable::removeRow(int row)
@@ -358,7 +411,7 @@ void DetailTable::moveCurrentRow(bool up)
         return;
     }
 
-    moveRow(currentRow, currentRow + (up ? -1 : 1));
+    moveRow(currentRow, currentRow + (up ? -1 : 1), false);
 }
 
 void DetailTable::updateRow(int row, const QVariant &data)
@@ -494,10 +547,6 @@ bool DetailTable::apply(const Icd::ObjectPtr &target, int row)
         newObject_.reset();
     }
 
-    if (object_ == target) {
-        return true;
-    }
-
     switch (object_->objectType()) {
     case Icd::ObjectItem:
     {
@@ -542,21 +591,28 @@ bool DetailTable::apply(const Icd::ObjectPtr &target, int row)
 
     //
     originalRow_ = -1;
+    targetRow_ = -1;
 
     return true;
 }
 
-void DetailTable::cancel()
+void DetailTable::cancel(int row)
 {
     if (newObject_) {               // just remove addded row
-        tableView_->clearSelection();
-        tableView_->removeRow(currentRow());
+        if (row >= 0) {
+            tableView_->removeRow(row);
+        } else {
+            const int currentRow = this->currentRow();
+            tableView_->setCurrentCell(-1, -1);
+            tableView_->removeRow(currentRow);
+        }
         newObject_.reset();
-    } else if (originalRow_ >= 0) { // restore original row of moved row
-        moveRow(currentRow(), originalRow_);
+    } else if (isMoved()) {         // restore original row of moved row
+        moveRow(targetRow_, originalRow_, true);
     }
 
     originalRow_ = -1;
+    targetRow_ = -1;
 }
 
 bool DetailTable::isSameType(const Icd::ObjectPtr &object) const
@@ -610,9 +666,7 @@ void DetailTable::showContextMenu(const QPoint &pos)
         return;
     }
 
-    if (object_->objectType() == Icd::ObjectItem
-            && (object_->rtti() != Icd::ObjectFrame
-                && object_->rtti() != Icd::ObjectComplex)) {
+    if (object_->isSimpleItem()) {
         return;
     }
 
@@ -759,6 +813,8 @@ void DetailTable::showContextMenu(const QPoint &pos)
                 return first.topRow() > second.topRow();    // reverse sorted
             });
             //
+            tableView_->clearSelection();
+            //
             if (ranges.size() == 1) {
                 const JTableViewSelectionRange &range = ranges.first();
                 tableView_->removeRow(range.topRow(), range.rowCount());
@@ -776,8 +832,6 @@ void DetailTable::showContextMenu(const QPoint &pos)
                                   QVariantList() << qVariantFromValue(static_cast<void*>(&rows)));
                 }
             }
-            //
-            tableView_->clearSelection();
         });
     }
     // clean
@@ -786,7 +840,7 @@ void DetailTable::showContextMenu(const QPoint &pos)
                                               tr("Clean"));
         connect(actionClean, &QAction::triggered, this, [=](){
             tableView_->clearContents();
-            jnotify->post("edit.detail.clean");
+            jnotify->send("edit.detail.clean");
         });
     }
 
@@ -936,7 +990,7 @@ bool DetailTable::updateTable(const Icd::TablePtr &table)
         setRowData(row, items.at(size_t(row)), table->bufferOffset());
     }
 
-    setTip(tr("Size: %1").arg(table->bufferSize()));
+    setBottomTip(table);
 
     return true;
 }
@@ -1250,8 +1304,9 @@ bool DetailTable::updateFrame(const Icd::FrameItemPtr &frame)
 
     // header
     QStringList labels;
-    labels << tr("Name") << tr("Frame code") << tr("Sequence") << tr("Describe");
+    labels << tr("Name") << tr("Frame code (Hex)") << tr("Sequence") << tr("Describe");
     tableView_->setHorizontalHeaderLabels(labels);
+    tableView_->setColumnWidth(2, 80);
     tableView_->horizontalHeaderItem(0)->setData("name");
     tableView_->horizontalHeaderItem(1)->setData("code");
     tableView_->horizontalHeaderItem(2)->setData("sequence");
@@ -1267,7 +1322,7 @@ bool DetailTable::updateFrame(const Icd::FrameItemPtr &frame)
         if (table) {
             tableView_->setItemData(row, 0, QString::fromStdString(table->name()));
             tableView_->setItemData(row, 0, item.first, Qt::UserRole + 1);
-            tableView_->setItemData(row, 1, "0x" + QString::fromStdString(table->mark()).toUpper());
+            tableView_->setItemData(row, 1, QString::fromStdString(table->mark()).toUpper());
             tableView_->setItemData(row, 2, QString::number(table->sequence()));
             tableView_->setItemData(row, 3, QString::fromStdString(table->desc()));
         }
@@ -1308,9 +1363,17 @@ void DetailTable::moveEnd()
     moving_ = false;
 }
 
-void DetailTable::moveRow(int sourceRow, int targetRow)
+void DetailTable::moveRow(int sourceRow, int targetRow, bool restore)
 {
+    if (!object_) {
+        return;
+    }
+
     if (sourceRow < 0 || targetRow < 0) {
+        return;
+    }
+
+    if (object_->rtti() == Icd::ObjectFrame) {
         return;
     }
 
@@ -1318,20 +1381,26 @@ void DetailTable::moveRow(int sourceRow, int targetRow)
 
     const QList<QStandardItem*> items = tableView_->takeRow(sourceRow);
     tableView_->insertRow(targetRow, items);
-    tableView_->selectRow(targetRow);
+    tableView_->setCurrentCell(targetRow, 0);
 
-    bool restore = false;
+    targetRow_ = targetRow;
+    bool _restore = false;
 
-    if (originalRow_ == targetRow) {  // back to original status
-        originalRow_ = -1;
-        restore = true;
-    } else if (originalRow_ == -1) {  // first moving
-        originalRow_ = sourceRow;
+    if (restore) {
+        _restore = restore;
+    } else {
+        if (originalRow_ == targetRow) {  // back to original status
+            originalRow_ = -1;
+            targetRow_ = -1;
+            _restore = true;
+        } else if (originalRow_ == -1) {  // first moving
+            originalRow_ = sourceRow;
+        }
     }
 
     moveEnd();
 
-    emit rowMoved(sourceRow, targetRow, restore);
+    emit rowMoved(sourceRow, targetRow, _restore);
 }
 
 void DetailTable::updateOffsetAndSize()
@@ -1372,7 +1441,7 @@ void DetailTable::updateOffsetAndSize(const Icd::TablePtr &table)
         setRowOffsetAndSize(row, items[size_t(row)], table->bufferOffset());
     }
 
-    setTip(tr("Size: %1").arg(table->bufferSize()));
+    setBottomTip(table);
 }
 
 bool DetailTable::calcVerticalRange(const QList<JTableViewSelectionRange> &ranges,
@@ -1464,7 +1533,12 @@ void DetailTable::setRowData(int row, const Icd::TablePtr &table)
     tableView_->setItemData(row, 0, QString::fromStdString(table->id()), Qt::UserRole);
     tableView_->setItemData(row, 0, QString::fromStdString(table->name()));
     tableView_->setItemData(row, 1, QString::fromStdString(table->mark()));
-    tableView_->setItemData(row, 2, QString::number(table->bufferSize()));
+    if (table->isSubFrameTable()) {
+        tableView_->setItemData(row, 0, table->frameCode(), Qt::UserRole + 1);
+        tableView_->setItemData(row, 2, QString::number(table->sequence()));
+    } else {
+        tableView_->setItemData(row, 2, QString::number(table->bufferSize()));
+    }
     tableView_->setItemData(row, 3, QString::fromStdString(table->desc()));
 }
 

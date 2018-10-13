@@ -183,13 +183,13 @@ void BitValueEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool BitValueEdit::validate()
+bool BitValueEdit::validate() const
 {
     if (!BitEdit::validate()) {
         return false;
     }
 
-    //TODO
+    //
 
     return true;
 }

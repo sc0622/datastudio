@@ -113,7 +113,7 @@ void BitEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool BitEdit::validate()
+bool BitEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;

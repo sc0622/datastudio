@@ -53,6 +53,7 @@ public:
     virtual ~Object() override;
 
     virtual int rtti() const;
+    virtual bool isSimpleItem() const;
 
     ObjectType objectType() const;
 
@@ -88,6 +89,7 @@ public:
     virtual bool hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude = Icd::ObjectPtr()) const;
     virtual ObjectPtr childAt(icd_uint64 index) const;
     virtual ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other);
+    virtual ObjectPtr replaceChild(const std::string &id, ObjectPtr &other);
     virtual void moveChild(int sourceIndex, int targetIndex);
     virtual void removeChild(icd_uint64 beginIndex, int endIndex = -1);
     virtual void removeChild(const std::list<icd_uint64> &indexes);

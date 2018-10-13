@@ -143,6 +143,11 @@ ObjectType Object::objectType() const
     return d->objectType;
 }
 
+bool Object::isSimpleItem() const
+{
+    return false;
+}
+
 std::string Object::id() const
 {
     return d->id;
@@ -305,6 +310,13 @@ ObjectPtr Object::childAt(icd_uint64 index) const
 ObjectPtr Object::replaceChild(icd_uint64 index, ObjectPtr &other)
 {
     (void)index;
+    (void)other;
+    return ObjectPtr();
+}
+
+ObjectPtr Object::replaceChild(const std::string &id, ObjectPtr &other)
+{
+    (void)id;
     (void)other;
     return ObjectPtr();
 }

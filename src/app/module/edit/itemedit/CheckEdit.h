@@ -19,7 +19,7 @@ class CheckEdit : public ItemEdit
     Q_OBJECT
 public:
     explicit CheckEdit(const Icd::CheckItemPtr &check, QWidget *parent = nullptr);
-    ~CheckEdit();
+    ~CheckEdit() override;
 
     Icd::CheckItemPtr check() const;
 
@@ -31,7 +31,7 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
     void saveContent() override;
 
 private:

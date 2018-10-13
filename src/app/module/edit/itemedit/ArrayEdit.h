@@ -19,7 +19,7 @@ class ArrayEdit : public ItemEdit
     Q_OBJECT
 public:
     explicit ArrayEdit(const Icd::ArrayItemPtr &array, QWidget *parent = nullptr);
-    ~ArrayEdit();
+    ~ArrayEdit() override;
 
     Icd::ArrayItemPtr array() const;
 
@@ -31,7 +31,7 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
     void saveContent() override;
 
 private:

@@ -319,7 +319,7 @@ void ArrayItem::setData(const char *buffer, int size)
     if (size > bufferSize) {
         size = bufferSize;
     } else {
-        memset(_buffer + size, 0, bufferSize - size);
+        memset(_buffer + size, 0, size_t(bufferSize - size));
     }
 
     memcpy(_buffer, buffer, size_t(size));

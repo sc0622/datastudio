@@ -286,6 +286,30 @@ ObjectPtr System::replaceChild(icd_uint64 index, ObjectPtr &other)
     return old;
 }
 
+ObjectPtr System::replaceChild(const std::string &id, ObjectPtr &other)
+{
+    if (!other || other->objectType() != Icd::ObjectTable) {
+        return ObjectPtr();
+    }
+
+    const Icd::TablePtr otherTable = JHandlePtrCast<Icd::Table>(other);
+    if (!otherTable) {
+        return ObjectPtr();
+    }
+
+    for (TablePtrArray::iterator iter = d->tables.begin();
+         iter != d->tables.end(); ++iter) {
+        const TablePtr &table = *iter;
+        if (table->id() != id) {
+            continue;
+        }
+        *iter = otherTable;
+        return table;
+    }
+
+    return ObjectPtr();
+}
+
 void System::moveChild(int sourceIndex, int targetIndex)
 {
     if (sourceIndex == targetIndex) {

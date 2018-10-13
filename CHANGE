@@ -4,9 +4,13 @@
     depends:
         1) jframework: v2.7.4
     fixed:
-        1) 升级core、parser、widget核心部件，完善部分编辑系统功能
+        1) 升级core、parser、widget核心部件;
+        2) 完善全新编辑系统功能
     next:
-        <inherit to v4.5.0>
+        1) 优化分析模块的数据导入（校验）、数据项内存重组的解析速度
+        2) 优化图表的大数据显示效率，离散化、分片发处理
+        3) 修复监控模块图表水平放缩问题
+        4) 支持bitmap类型数据单个比特位图表视图功能（拖放）
 
 -- V4.5.4
     tools: VS2015，Qt5.11.1，Qbs>=1.9.1

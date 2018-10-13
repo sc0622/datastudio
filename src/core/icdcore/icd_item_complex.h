@@ -22,6 +22,7 @@ public:
     ~ComplexItem() override;
 
     int rtti() const override;
+    bool isSimpleItem() const override;
 
     bool isEmpty() const;
     TablePtr table() const;
@@ -52,6 +53,7 @@ public:
     ObjectPtr findByDomain(const std::string &domain, int domainType = Icd::DomainId,
                            bool ignoreComplex = true) const override;
     ObjectPtr replaceChild(icd_uint64 index, ObjectPtr &other) override;
+    ObjectPtr replaceChild(const std::string &id, ObjectPtr &other) override;
     void moveChild(int sourceIndex, int targetIndex) override;
     void removeChild(icd_uint64 beginIndex, int endIndex = -1) override;
     void removeChild(const std::list<icd_uint64> &indexes) override;

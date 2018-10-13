@@ -24,7 +24,7 @@ DetailView::DetailView(QWidget *parent)
     detailEdit_ = new DetailEdit(this);
     splitterMain_->addWidget(detailEdit_);
 
-    connect(detailTable_, &DetailTable::currentItemChanged, this, &DetailView::onCurrentItemChanged);
+    connect(detailTable_, &DetailTable::selectedChanged, this, &DetailView::onSelectedChanged);
     connect(detailTable_, &DetailTable::rowMoved, this, &DetailView::onRowMoved);
     connect(detailTable_, &DetailTable::requestInsert, this, &DetailView::onRequestInsert);
     connect(detailTable_, &DetailTable::requestPast, this, &DetailView::onRequestPast);
@@ -101,12 +101,8 @@ void DetailView::updateView(QStandardItem *item)
 
     //
     bool addFlag = false;
-    if (object_) {
-        if (object_->objectType() != Icd::ObjectItem
-                || (object_->rtti() == Icd::ObjectFrame
-                    || object_->rtti() == Icd::ObjectComplex)) {
-            addFlag = true;
-        }
+    if (object_ && !object_->isSimpleItem()) {
+        addFlag = true;
     }
 
     setAddEnabled(addFlag);
@@ -118,9 +114,7 @@ void DetailView::removeRow(QStandardItem *item)
         return;
     }
 
-    if (object_->objectType() == Icd::ObjectItem
-            && (object_->rtti() != Icd::ObjectFrame
-                && object_->rtti() != Icd::ObjectComplex)) {
+    if (object_->isSimpleItem()) {
         return;
     }
 
@@ -135,9 +129,7 @@ void DetailView::cleanItem(QStandardItem *item)
         return;
     }
 
-    if (object_->objectType() == Icd::ObjectItem
-            && (object_->rtti() != Icd::ObjectFrame
-                && object_->rtti() != Icd::ObjectComplex)) {
+    if (object_->isSimpleItem()) {
         return;
     }
 
@@ -156,14 +148,22 @@ void DetailView::setModified(bool modified)
     }
 }
 
-void DetailView::onCurrentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject)
+void DetailView::onSelectedChanged(const QVariant &index, const Icd::ObjectPtr &newObject)
 {
     const bool isMultiRowSelected = detailTable_->isMultiRowSelected();
     if (isMultiRowSelected) {
         detailEdit_->resetView();
     } else {
-        if (newObject && newObject == newObject_) {
-            detailEdit_->updateView(newObject, false, true);
+        if (!index.isValid() || index.toInt() == -1) {
+            cancelInsert(-1);
+        } else if (newObject) {
+            if (newObject == newObject_) {
+                detailEdit_->updateView(newObject, false, true);
+            } else {
+                detailEdit_->updateView(detailTable_->object(), index);
+            }
+        } else if (newObject_) {
+            cancelInsert(index.toInt());
         } else {
             detailEdit_->updateView(detailTable_->object(), index);
         }
@@ -200,8 +200,8 @@ void DetailView::onApplied()
         return;
     }
 
-    const int currentRow = detailTable_->currentRow();
-    const Icd::icd_uint64 currentIndex = detailTable_->currentIndex();
+    const int selectedRow = detailTable_->selectedRow();
+    const Icd::icd_uint64 selectedIndex = detailTable_->selectedIndex();
     const int originalRow = detailTable_->originalRow();
     QString action;
     if (newObject_) {
@@ -224,7 +224,7 @@ void DetailView::onApplied()
     Icd::ObjectPtr target = detailEdit_->target();
 
     // update tableview
-    if (!detailTable_->apply(target, currentRow)) {
+    if (!detailTable_->apply(target, selectedRow)) {
         return;
     }
 
@@ -233,13 +233,13 @@ void DetailView::onApplied()
     // action
     args.append(action);
     // sourceRow
-    args.append(originalRow == -1 ? currentRow : originalRow);
+    args.append(originalRow == -1 ? selectedRow : originalRow);
     // targetRow
-    args.append(originalRow == -1 ? -1 : currentRow);
+    args.append(originalRow == -1 ? -1 : selectedRow);
     // object handle
     args.append(qVariantFromValue(static_cast<void*>(&target)));
     // currentIndex
-    args.append(currentIndex);
+    args.append(selectedIndex);
     // send
     jnotify->send("edit.detail.apply", args);
 
@@ -248,21 +248,7 @@ void DetailView::onApplied()
 
 void DetailView::onCanceled()
 {
-    if (!treeItem_ || !object_) {
-        return;
-    }
-
-    detailTable_->cancel();
-    detailEdit_->resetView();
-    newObject_.reset();
-
-    // notify treeview
-    if (treeItem_->data(Icd::TreeItemNewRole).toBool()) {
-        // update treeview
-        jnotify->send("edit.detail.cancel");
-    }
-
-    setModified(false);
+    cancelInsert(-1);
 }
 
 void DetailView::insertRow(int row, const QVariant &data)
@@ -271,7 +257,7 @@ void DetailView::insertRow(int row, const QVariant &data)
         return;
     }
 
-    detailTable_->cancel();
+    detailTable_->cancel(-1);
     detailTable_->clearSelection();
     newObject_.reset();
 
@@ -328,7 +314,7 @@ void DetailView::insertRow(int row, const Icd::ObjectPtr &object, bool clone)
         return;
     }
 
-    detailTable_->cancel();
+    detailTable_->cancel(-1);
     detailTable_->clearSelection();
     newObject_.reset();
 
@@ -415,7 +401,7 @@ bool DetailView::saveObject()
         if (treeItem_->data(Icd::TreeItemNewRole).toBool()) {
             currentRow = treeItem_->row();
         } else {
-            currentRow = detailTable_->currentRow();
+            currentRow = detailTable_->selectedRow();
         }
 
         Icd::ObjectPtr target = detailEdit_->target();
@@ -506,7 +492,8 @@ bool DetailView::saveObject()
         }
 
         Icd::icd_uint64 currentIndex = 0;
-        int currentRow = detailTable_->currentRow();
+        std::string tableId;
+        int currentRow = detailTable_->selectedRow();
         if (currentRow == -1) {
             if (!treeItem_) {
                 return false;
@@ -526,29 +513,49 @@ bool DetailView::saveObject()
                     return false;
                 }
                 currentIndex = table->frameCode();
+                tableId = table->id();
             } else {
                 currentIndex = Icd::icd_uint64(currentRow);
             }
         } else {
             const int originalRow = detailTable_->originalRow();
             if (originalRow == -1) {
-                currentIndex = detailTable_->currentIndex();
+                currentIndex = detailTable_->selectedIndex();
+                if (parent->rtti() == Icd::ObjectFrame) {
+                    if (target->rtti() != Icd::ObjectTable) {
+                        return false;
+                    }
+                    auto table = JHandlePtrCast<Icd::Table>(target);
+                    if (!table) {
+                        return false;
+                    }
+                    currentIndex = table->frameCode();
+                    tableId = table->id();
+                }
             } else {
                 currentIndex = Icd::icd_uint64(originalRow);
             }
         }
 
-        if (currentRow == -1) {
+        if (currentRow == -1 && tableId.empty()) {
             return false;
         }
 
+        //
         if (detailTable_->isMoved()) {
             parent->moveChild(int(currentIndex), currentRow);
         } else {
-            parent->replaceChild(currentIndex, target);
+            if (tableId.empty()) {
+                parent->replaceChild(currentIndex, target);
+            } else {
+                parent->replaceChild(tableId, target);
+            }
         }
 
-        object_ = target;
+        //
+        if (detailTable_->selectedRow() == -1 || object_->isSimpleItem()) {
+            object_ = target;
+        }
     }
 
     return true;
@@ -578,7 +585,7 @@ void DetailView::updateMoveActionState()
 {
     bool upFlag(false), downFlag(false);
     const int rowCount = detailTable_->rowCount();
-    const int currentRow = detailTable_->currentRow();
+    const int currentRow = detailTable_->selectedRow();
 
     if (rowCount > 1 && currentRow >= 0) {
         if (currentRow == 0) {
@@ -593,6 +600,34 @@ void DetailView::updateMoveActionState()
 
     setUpEnabled(upFlag);
     setDownEnabled(downFlag);
+}
+
+void DetailView::cancelInsert(int row)
+{
+    if (!treeItem_ || !object_) {
+        return;
+    }
+
+    //
+    detailTable_->cancel(row);
+    //
+    if (detailTable_->selectedRow() == -1) {
+        detailEdit_->updateView(object_, false, false);
+    } else if (newObject_) {
+        const Icd::icd_uint64 selectedIndex = detailTable_->selectedIndex();
+        detailEdit_->updateView(object_, QVariant(selectedIndex));
+    } else {
+        detailEdit_->restoreContent();
+    }
+
+    newObject_.reset();
+
+    // update treeview
+    if (treeItem_->data(Icd::TreeItemNewRole).toBool()) {
+        jnotify->send("edit.detail.cancel");
+    }
+
+    setModified(false);
 }
 
 }

@@ -40,7 +40,7 @@ DetailEdit::DetailEdit(QWidget *parent)
     layoutButton->addStretch();
 
     connect(buttonApply_, &QPushButton::clicked, this, [=](){
-        if (!objectEdit_ || isHidden()) {
+        if (!object_ || !objectEdit_ || isHidden()) {
             return;
         }
         if (!objectEdit_->trySaveContent()) {
@@ -48,30 +48,33 @@ DetailEdit::DetailEdit(QWidget *parent)
         }
         setButtonsEnabled(false);
         //
+        if (object_->isSimpleItem()) {
+            object_ = objectEdit_->object();
+        }
+        //
         emit applied();
         //
         newObject_.reset();
     });
     connect(buttonCancel_, &QPushButton::clicked, this, [=](){
-        if (!objectEdit_ || isHidden()) {
+        if (!object_ || !objectEdit_ || isHidden()) {
             return;
         }
         if (newObject_) {
             resetView();
-            newObject_.reset();
-            //
-            emit canceled();
         } else {
-            objectEdit_->restoreContent();
+            restoreContent();
         }
-        setButtonsEnabled(false);
+        //
+        emit canceled();
     });
 }
 
 void DetailEdit::resetView()
 {
     removeEdit();
-    object_ = nullptr;
+    object_.reset();
+    newObject_.reset();
     hide();
 }
 
@@ -162,7 +165,9 @@ void DetailEdit::updateView(const Icd::ObjectPtr &object, const QVariant &index)
 
 void DetailEdit::updateView(const Icd::ObjectPtr &object, bool sub, bool add)
 {
-    if (!sub) {
+    if (sub) {
+        removeEdit();
+    } else {
         resetView();
     }
 
@@ -239,7 +244,9 @@ void DetailEdit::restoreContent()
         return;
     }
 
-    return objectEdit_->restoreContent();
+    objectEdit_->restoreContent();
+
+    setButtonsEnabled(false);
 }
 
 void DetailEdit::removeEdit()

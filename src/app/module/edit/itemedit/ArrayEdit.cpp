@@ -82,7 +82,7 @@ void ArrayEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool ArrayEdit::validate()
+bool ArrayEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;

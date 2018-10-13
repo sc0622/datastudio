@@ -15,7 +15,7 @@ class BitValueEdit : public BitEdit
     Q_OBJECT
 public:
     explicit BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent = nullptr);
-    ~BitValueEdit();
+    ~BitValueEdit() override;
 
     bool init() override;
 
@@ -25,7 +25,7 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
     void saveContent() override;
 
 private:

@@ -211,7 +211,10 @@ void BitItem::setBitStart(int bitStart)
     } else {
         d->bitStart = bitStart;
     }
-    d->typeSize = calcSize();
+    // update typeSize
+    if (d->bitStart == 0) {
+        d->typeSize = int(std::ceil(d->bitCount / 8.0));
+    }
 }
 
 int BitItem::bitCount() const
@@ -226,7 +229,12 @@ void BitItem::setBitCount(int count)
         setBufferSize(0);
     } else {
         d->bitCount = count;
-        setBufferSize(count / 8.0);
+        const double bufferSize = count / 8.0;
+        setBufferSize(bufferSize);
+        // update typeSize
+        if (d->bitStart == 0) {
+            d->typeSize = int(std::ceil(bufferSize));
+        }
     }
 }
 

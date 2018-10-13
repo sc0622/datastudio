@@ -48,13 +48,13 @@ void SystemEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool SystemEdit::validate()
+bool SystemEdit::validate() const
 {
     if (!ObjectEdit::validate()) {
         return false;
     }
 
-    //TODO
+    //
 
     return true;
 }

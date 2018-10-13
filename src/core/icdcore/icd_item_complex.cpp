@@ -41,6 +41,11 @@ int ComplexItem::rtti() const
     return ObjectComplex;
 }
 
+bool ComplexItem::isSimpleItem() const
+{
+    return false;
+}
+
 bool ComplexItem::isEmpty() const
 {
     return (d->table->itemCount() == 0);
@@ -178,9 +183,12 @@ ObjectPtr ComplexItem::findByDomain(const std::string &domain, int domainType,
 
 ObjectPtr ComplexItem::replaceChild(icd_uint64 index, ObjectPtr &other)
 {
-    (void)index;
-    (void)other;
-    return ObjectPtr();
+    return d->table->replaceChild(index, other);
+}
+
+ObjectPtr ComplexItem::replaceChild(const std::string &id, ObjectPtr &other)
+{
+    return d->table->replaceChild(id, other);
 }
 
 void ComplexItem::moveChild(int sourceIndex, int targetIndex)

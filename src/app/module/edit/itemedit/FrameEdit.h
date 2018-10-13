@@ -19,7 +19,7 @@ class FrameEdit : public ItemEdit
     Q_OBJECT
 public:
     explicit FrameEdit(const Icd::FrameItemPtr &frame, QWidget *parent = nullptr);
-    ~FrameEdit();
+    ~FrameEdit() override;
 
     Icd::FrameItemPtr frame() const;
 
@@ -31,7 +31,8 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
+    bool validateMark() const override;
     void saveContent() override;
 
 private:

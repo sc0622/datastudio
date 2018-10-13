@@ -158,6 +158,7 @@ signals:
     // {{ for editor
     void requestAdd(QStandardItem *item, const QVariant &data = QVariant());
     void itemUpdated(QStandardItem *item, bool unloaded, bool removed);
+    void canceledInsert(QStandardItem *item);
     // }}
 
 public slots:

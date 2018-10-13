@@ -93,7 +93,8 @@ public:
 
     Icd::ObjectPtr object() const;
 
-    void setTip(const QString &text) const;
+    void setBottomTip(const QString &text) const;
+    void setBottomTip(const Icd::TablePtr &table) const;
 
     bool isModified() const;
     bool isMoving() const;
@@ -101,7 +102,8 @@ public:
 
     int rowCount() const;
     int currentRow() const;
-    Icd::icd_uint64 currentIndex() const;
+    int selectedRow() const;
+    Icd::icd_uint64 selectedIndex() const;
     int originalRow() const;
     bool isMultiRowSelected() const;
     void clearSelection();
@@ -115,13 +117,13 @@ public:
     void cleanItem();
     void moveCurrentRow(bool up);
     bool apply(const Icd::ObjectPtr &target, int row);
-    void cancel();
+    void cancel(int row);
 
     bool isSameType(const Icd::ObjectPtr &object) const;
 
 signals:
-    void currentItemChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
-    void rowMoved(int previousRow, int currentRow, bool restore);
+    void selectedChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
+    void rowMoved(int previousRow, int selectedRow, bool restore);
     void requestInsert(int row, const QVariant &data);
     void requestPast(int row, const Icd::ObjectPtr &object, bool clone);
 
@@ -161,7 +163,7 @@ private:
 
     void moveBegin();
     void moveEnd();
-    void moveRow(int sourceRow, int targetRow);
+    void moveRow(int sourceRow, int targetRow, bool restore = false);
 
     void updateOffsetAndSize();
     void updateOffsetAndSize(const Icd::TablePtr &table);
@@ -176,8 +178,10 @@ private:
     ViewDelegate *delegate_;
     Icd::ObjectPtr object_;
     Icd::ObjectPtr newObject_;
+    int previousRow_;
     bool moving_;
     int originalRow_;
+    int targetRow_;
 };
 
 //// private

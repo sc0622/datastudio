@@ -61,11 +61,13 @@ void HeaderEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool HeaderEdit::validate()
+bool HeaderEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;
     }
+
+    //
 
     return true;
 }

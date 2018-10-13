@@ -121,6 +121,11 @@ int FrameItem::rtti() const
     return ObjectFrame;
 }
 
+bool FrameItem::isSimpleItem() const
+{
+    return false;
+}
+
 void FrameItem::addTable(const TablePtr &table)
 {
     if (!table) {
@@ -495,7 +500,7 @@ ObjectPtr FrameItem::findByDomain(const std::string &domain, int domainType,
 bool FrameItem::hasChildByName(const std::string &name, const Icd::ObjectPtr &exclude) const
 {
     for (TablePtrMap::const_iterator citer = d->tables.cbegin();
-         citer != d->tables.end(); ++citer) {
+         citer != d->tables.cend(); ++citer) {
         const TablePtr &table = citer->second;
         if (exclude && table->id() == exclude->id()) {
             continue;
@@ -511,7 +516,7 @@ bool FrameItem::hasChildByName(const std::string &name, const Icd::ObjectPtr &ex
 bool FrameItem::hasChildByMark(const std::string &mark, const Icd::ObjectPtr &exclude) const
 {
     for (TablePtrMap::const_iterator citer = d->tables.cbegin();
-         citer != d->tables.end(); ++citer) {
+         citer != d->tables.cend(); ++citer) {
         const TablePtr &table = citer->second;
         if (exclude && table->id() == exclude->id()) {
             continue;
@@ -553,6 +558,37 @@ ObjectPtr FrameItem::replaceChild(icd_uint64 index, ObjectPtr &other)
     }
 
     return old;
+}
+
+ObjectPtr FrameItem::replaceChild(const std::string &id, ObjectPtr &other)
+{
+    if (!other || other->objectType() != Icd::ObjectTable) {
+        return ObjectPtr();
+    }
+
+    const Icd::TablePtr otherTable = JHandlePtrCast<Icd::Table>(other);
+    if (!otherTable) {
+        return ObjectPtr();
+    }
+
+    const Icd::icd_uint64 frameCode = otherTable->frameCode();
+
+    for (TablePtrMap::iterator iter = d->tables.begin();
+         iter != d->tables.end(); ++iter) {
+        const TablePtr &table = iter->second;
+        if (table->id() != id) {
+            continue;
+        }
+        if (iter->first != frameCode) {
+            d->tables.erase(iter);
+            d->tables[frameCode] = otherTable;
+        } else {
+            iter->second = otherTable;
+        }
+        return table;
+    }
+
+    return ObjectPtr();
 }
 
 void FrameItem::removeChild(icd_uint64 beginIndex, int endIndex)

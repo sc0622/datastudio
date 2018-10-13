@@ -19,7 +19,7 @@ class HeaderEdit : public ItemEdit
     Q_OBJECT
 public:
     explicit HeaderEdit(const Icd::HeaderItemPtr &header, QWidget *parent = nullptr);
-    ~HeaderEdit();
+    ~HeaderEdit() override;
 
     Icd::HeaderItemPtr header() const;
 
@@ -31,7 +31,7 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
     void saveContent() override;
 
 private:

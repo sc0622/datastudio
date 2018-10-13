@@ -34,7 +34,7 @@ public slots:
 
 protected:
     virtual void restoreContent(bool recursive = true) override;
-    virtual bool validate() override;
+    virtual bool validate() const override;
     virtual void saveContent() override;
 
 private:

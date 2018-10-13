@@ -332,8 +332,6 @@ bool XmlParser::saveItemFrame(TiXmlElement *emItem, const Icd::FrameItemPtr &fra
     if (!saveObject(emItem, frame)) {
         return false;
     }
-    // bufferSize
-    emItem->SetDoubleAttribute("size", frame->bufferSize());
     // sequenceCount
     emItem->SetAttribute("sequenceCount", frame->sequenceCount());
     // tables

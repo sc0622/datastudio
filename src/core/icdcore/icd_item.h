@@ -39,6 +39,7 @@ public:
     virtual ~Item() override;
 
     virtual int rtti() const override;
+    virtual bool isSimpleItem() const override;
 
     ItemType type() const;
 

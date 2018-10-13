@@ -17,7 +17,7 @@ class SystemEdit : public ObjectEdit
     Q_OBJECT
 public:
     explicit SystemEdit(const Icd::SystemPtr &system, QWidget *parent = nullptr);
-    ~SystemEdit();
+    ~SystemEdit() override;
 
     Icd::SystemPtr system() const;
 
@@ -29,7 +29,7 @@ public slots:
 
 protected:
     void restoreContent(bool recursive = true) override;
-    bool validate() override;
+    bool validate() const override;
     void saveContent() override;
 
 private:

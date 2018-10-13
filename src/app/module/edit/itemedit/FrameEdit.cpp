@@ -59,13 +59,20 @@ void FrameEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool FrameEdit::validate()
+bool FrameEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;
     }
 
+    //
+
     return true;
+}
+
+bool FrameEdit::validateMark() const
+{
+    return true;    // not validate
 }
 
 void FrameEdit::saveContent()

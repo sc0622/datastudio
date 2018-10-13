@@ -64,13 +64,13 @@ void CounterEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool CounterEdit::validate()
+bool CounterEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;
     }
 
-    //TODO
+    //
 
     return true;
 }

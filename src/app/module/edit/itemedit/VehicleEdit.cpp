@@ -48,7 +48,7 @@ void VehicleEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool VehicleEdit::validate()
+bool VehicleEdit::validate() const
 {
     if (!ObjectEdit::validate()) {
         return false;

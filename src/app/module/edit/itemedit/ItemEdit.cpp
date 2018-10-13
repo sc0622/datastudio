@@ -115,13 +115,13 @@ void ItemEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool ItemEdit::validate()
+bool ItemEdit::validate() const
 {
     if (!ObjectEdit::validate()) {
         return false;
     }
 
-    //TODO
+    //
 
     return true;
 }

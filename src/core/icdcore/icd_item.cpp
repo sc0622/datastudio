@@ -66,6 +66,11 @@ int Item::rtti() const
     return ObjectItem;
 }
 
+bool Item::isSimpleItem() const
+{
+    return true;
+}
+
 ItemType Item::type() const
 {
     return static_cast<ItemType>(d->type);

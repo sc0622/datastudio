@@ -89,11 +89,13 @@ void CheckEdit::restoreContent(bool recursive)
     unlock();
 }
 
-bool CheckEdit::validate()
+bool CheckEdit::validate() const
 {
     if (!ItemEdit::validate()) {
         return false;
     }
+
+    //
 
     return true;
 }
