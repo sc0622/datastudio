@@ -13,7 +13,7 @@ Project {
         modulePlugins: base.concat([ 'sqldrivers' ])
     }
 
-    JFrameWorkInstall {
+    JFrameworkInstall {
         condition: !project.buildQuote
         id: setenv_jframework
         name: 'setenv-jframework'
