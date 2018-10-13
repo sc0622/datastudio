@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "jnotify.h"
+#include "JNotify.h"
 
 namespace Icd {
 

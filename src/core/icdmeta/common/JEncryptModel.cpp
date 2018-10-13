@@ -31,8 +31,8 @@ private:
 
 void JEncryptModelPrivate::init()
 {
+#ifdef JENCRYPT_LIB
     Q_Q(JEncryptModel);
-
     // CPU ID
     jencrypt::JCpuId _cpuId;
     while (_cpuId.hasNext()) {
@@ -62,7 +62,6 @@ void JEncryptModelPrivate::init()
             break;
         }
     }
-
     //
     if (!cpuId.isEmpty()/* && !hdSeries.isEmpty()*/ && !macAddress.isEmpty()) {
         //
@@ -93,6 +92,9 @@ void JEncryptModelPrivate::init()
             }
         }
     }
+#else
+    return;
+#endif
 }
 
 QString JEncryptModelPrivate::querySN()
@@ -116,7 +118,7 @@ QString JEncryptModelPrivate::generateSN()
     if (input.isEmpty()) {
         return QString();
     }
-
+#ifdef JENCRYPT_LIB
     jencrypt::JMd5 md5;
     md5.update(input.toStdString());
 
@@ -124,7 +126,6 @@ QString JEncryptModelPrivate::generateSN()
     if (_output.empty()) {
         return QString();
     }
-
     // »°≈º–Ú¡–
     std::string output;
     for (size_t i = 0; i < _output.size() / 2; ++i) {
@@ -137,6 +138,9 @@ QString JEncryptModelPrivate::generateSN()
     }
 
     return QString::fromStdString(output);
+#else
+    return QString();
+#endif
 }
 
 QString JEncryptModelPrivate::generateSN(const QString &input)
@@ -144,7 +148,7 @@ QString JEncryptModelPrivate::generateSN(const QString &input)
     if (input.isEmpty()) {
         return QString();
     }
-
+#ifdef JENCRYPT_LIB
     jencrypt::JMd5 md5;
     md5.update(input.toStdString());
 
@@ -165,6 +169,9 @@ QString JEncryptModelPrivate::generateSN(const QString &input)
     }
 
     return QString::fromStdString(output);
+#else
+    return QString();
+#endif
 }
 
 // class JEncryptModel

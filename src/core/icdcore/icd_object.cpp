@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "icd_object.h"
 #include <algorithm>
+#include <stdlib.h>
 #include "icd_item.h"
 
 namespace Icd {
@@ -55,11 +56,7 @@ void ObjectData::generateId()
 {
     if (objectType == Icd::ObjectItem) {
         char c[8];
-#ifdef _MSC_VER
-        _ultoa_s(uid, c, 16);
-#else
-        _ultoa_(uid, c, 16);
-#endif
+        sprintf(c, "%lu", uid);
         id = std::string(c);
         uid++;
     } else {

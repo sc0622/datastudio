@@ -24,21 +24,21 @@ public:
     explicit UdpChannel(std::string localIP, int localPort,
                         std::string remoteIP, int remotePort,
                         OpenMode openMode = ReadWrite);
-    virtual ~UdpChannel();
+    virtual ~UdpChannel() override;
 
 public:
-    bool isOpen() const;
+    bool isOpen() const override;
 
     /**
      * @brief 打开数据通道
      * @return true:打开成功,false打开失败
      */
-    bool open();
+    bool open() override;
 
     /**
      * @brief 关闭数据通道
      */
-    void close();
+    void close() override;
 
     /**
      * @brief 读取数据
@@ -46,7 +46,7 @@ public:
      * @param [in] size，缓冲区大小
      * @return 实际读取数据值,如果读取错误则返回-1
      */
-    int read(char* buffer, int size);
+    int read(char* buffer, int size) override;
 
     /**
      * @brief 写入数据
@@ -54,43 +54,43 @@ public:
      * @param [in] size : 缓冲区大小
      * @return 实际写入数据长度，写入错误返回-1
      */
-    int write(const char* buffer, int size);
+    int write(const char* buffer, int size) override;
 
     /**
      * @brief sizeOfIn
      * @return
      */
-    int sizeOfIn() const;
+    int sizeOfIn() const override;
 
     /**
      * @brief sizeOfOut
      * @return
      */
-    int sizeOfOut() const;
+    int sizeOfOut() const override;
 
     /**
      * @brief flush
      */
-    void flush();
+    void flush() override;
 
     /**
      * @brief config
      * @return "udp: -local [ip]:[port] -remote [ip]:[port]"
      */
-    std::string config() const;
+    std::string config() const override;
 
     /**
      * @brief setConfig
      * @param config : "udp: -local [ip]:[port] -remote [ip]:[port]"
      * @return
      */
-    bool setConfig(const std::string &config);
+    bool setConfig(const std::string &config) override;
 
     /**
      * @brief desc
      * @return
      */
-    std::string desc() const;
+    std::string desc() const override;
 
     /**
      * @brief openMode
@@ -174,13 +174,13 @@ public:
      * @brief lastErrorCode
      * @return
      */
-    int lastErrorCode() const;
+    int lastErrorCode() const override;
 
     /**
      * @brief lastError
      * @return
      */
-    std::string lastError() const;
+    std::string lastError() const override;
 
 private:
     std::shared_ptr<UdpChannelData> d;

@@ -27,6 +27,7 @@ class ICDMETA_EXPORT JIcdObject : public QObject
     Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY checkedChanged)
 public:
     explicit JIcdObject(const Icd::ObjectPtr &data, QObject *parent = nullptr);
+    ~JIcdObject() override;
 
     static void registerQmlType();
 

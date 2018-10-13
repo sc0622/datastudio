@@ -184,7 +184,7 @@ void IcdListWidget::onDropEvent(QDropEvent *event)
     }
 
     if (!d_table) {
-        qWarning(tr("Worker didn't binding protocol").toLocal8Bit());
+        qWarning() << tr("Worker didn't binding protocol");
         return;
     }
 

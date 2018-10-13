@@ -6,7 +6,6 @@
 #include <QObject>
 
 namespace Icd {
-template<typename T> class std::shared_ptr;
 class Channel;
 typedef std::shared_ptr<Channel> ChannelPtr;
 }
@@ -37,7 +36,7 @@ public:
     Q_ENUM(ChannelType)
 
     explicit JSuperChannel(QObject *parent = nullptr);
-    virtual ~JSuperChannel();
+    virtual ~JSuperChannel() override;
 
     static void registerQmlType();
 

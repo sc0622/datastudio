@@ -126,7 +126,7 @@ bool SqlParser::save(const Icd::RootPtr &root) const
     return false;
 }
 
-bool SqlParser::save(Icd::VehiclePtrArray &vehicles) const
+bool SqlParser::save(const Icd::VehiclePtrArray &vehicles) const
 {
     Q_UNUSED(vehicles);
     return false;
@@ -184,18 +184,6 @@ bool SqlParser::save(const std::string &vehicleId, const std::string &systemId,
     return false;
 }
 
-bool SqlParser::save(const std::string &vehicleId, const std::string &systemId,
-                     const std::string &tableId, const std::string &itemId,
-                     const Icd::ItemPtr &item) const
-{
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tableId);
-    Q_UNUSED(itemId);
-    Q_UNUSED(item);
-    return false;
-}
-
 bool SqlParser::save(const Icd::TablePtrArray &tables) const
 {
     Q_UNUSED(tables);
@@ -206,16 +194,6 @@ bool SqlParser::save(const std::string &tableId, const Icd::TablePtr &table) con
 {
     Q_UNUSED(tableId);
     Q_UNUSED(table);
-    return false;
-}
-
-bool SqlParser::save(const std::string &domain, const Icd::ObjectPtr &object, bool merge,
-                     bool fast) const
-{
-    Q_UNUSED(domain);
-    Q_UNUSED(object);
-    Q_UNUSED(merge);
-    Q_UNUSED(fast);
     return false;
 }
 

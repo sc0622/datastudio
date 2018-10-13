@@ -60,7 +60,7 @@ public:
     Q_ENUM(Parity)
 
     explicit JSerialChannel(QObject *parent = nullptr);
-    ~JSerialChannel();
+    ~JSerialChannel() override;
 
     /**
      * @brief registerQmlType
@@ -71,7 +71,7 @@ public:
      * @brief channelType
      * @return
      */
-    virtual ChannelType channelType() const;
+    ChannelType channelType() const override;
 
     /**
      * @brief portNames

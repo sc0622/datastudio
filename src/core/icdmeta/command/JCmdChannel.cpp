@@ -20,7 +20,7 @@ public:
         , workState(JCmdChannel::WorkStateIdle)
         , workResult(JCmdChannel::WorkResultInvalid)
     {
-        QMessageBox;
+
     }
 
     void init();

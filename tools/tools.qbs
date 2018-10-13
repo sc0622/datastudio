@@ -12,7 +12,7 @@ Product {
     }
 
     Group {
-        condition: !project.projectInstallRoot
+        condition: !project.projectInstallRoot && qbs.targetOS.contains('windows')
         name: 'setenv-tools'
         prefix: './'
         files: [
@@ -23,6 +23,7 @@ Product {
     }
 
     Rule {
+        condition: qbs.targetOS.contains('windows')
         inputs: [ 'tools.exe.in' ]
         Artifact {
             fileTags: [ 'tools.exe.out' ]

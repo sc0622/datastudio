@@ -420,7 +420,7 @@ void ChartView::dropEvent(QDropEvent *event)
         case Qt::ShiftModifier:
             chart = d->chartView->model()->chartAt(event->pos());
             if (chart && (chart->chartType() == JChart::ChartTypeBitMap
-                    || chart->chartType() == JChart::ChartTypeBuffer)) {
+                          || chart->chartType() == JChart::ChartTypeBuffer)) {
                 chart = nullptr;
             }
             break;
@@ -462,8 +462,8 @@ void ChartView::dropEvent(QDropEvent *event)
     const Icd::TablePtr tableRecv = worker->workerRecv()->table();
     //
     if (!tableRecv) {
-        qWarning(QString("Worker has no binding channel [channel: %1]!")
-                 .arg(channelId).toLocal8Bit());
+        qWarning() << QStringLiteral("Worker has no binding channel [channel: %1]!")
+                      .arg(channelId);
         return;
     }
     //

@@ -14,52 +14,47 @@ class SqlParser : public Parser
 {
 public:
     explicit SqlParser(const Json::Value &config);
-    virtual ~SqlParser();
+    virtual ~SqlParser() override;
 
     static SqlParserPtr create(const Json::Value &config);
 
-    bool parse(RootPtr &root, int deep) const;
-    bool parse(Icd::VehiclePtrArray &vehicles, int deep, Icd::Object *parent) const;
+    bool parse(RootPtr &root, int deep) const override;
+    bool parse(Icd::VehiclePtrArray &vehicles, int deep, Icd::Object *parent) const override;
     bool parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep,
-               Icd::Object *parent) const;
+               Icd::Object *parent) const override;
     bool parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep,
-               Icd::Object *parent) const;
+               Icd::Object *parent) const override;
     bool parse(const std::string &vehicleId, const std::string &systemId,
-               Icd::SystemPtr &system, int deep, Icd::Object *parent) const;
+               Icd::SystemPtr &system, int deep, Icd::Object *parent) const override;
     bool parse(const std::string &vehicleId, const std::string &systemId,
-               Icd::TablePtrArray &tables, int deep, Icd::Object *parent) const;
+               Icd::TablePtrArray &tables, int deep, Icd::Object *parent) const override;
     bool parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
-               Icd::TablePtr &table, int deep, Icd::Object *parent) const;
+               Icd::TablePtr &table, int deep, Icd::Object *parent) const override;
     bool parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
-               Icd::ItemPtrArray &items, int deep, Icd::Object *parent) const;
-    bool parse(Icd::TablePtrArray &tables) const;
-    bool parse(const std::string &tableId, Icd::TablePtr &table) const;
+               Icd::ItemPtrArray &items, int deep, Icd::Object *parent) const override;
+    bool parse(Icd::TablePtrArray &tables) const override;
+    bool parse(const std::string &tableId, Icd::TablePtr &table) const override;
 
-    bool save(const RootPtr &root) const;
-    bool save(Icd::VehiclePtrArray &vehicles) const;
-    bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const;
-    bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const;
+    bool save(const RootPtr &root) const override;
+    bool save(const Icd::VehiclePtrArray &vehicles) const override;
+    bool save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const override;
+    bool save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const override;
     bool save(const std::string &vehicleId, const std::string &systemId,
-              const Icd::SystemPtr &system) const;
+              const Icd::SystemPtr &system) const override;
     bool save(const std::string &vehicleId, const std::string &systemId,
-              const Icd::TablePtrArray &tables) const;
+              const Icd::TablePtrArray &tables) const override;
     bool save(const std::string &vehicleId, const std::string &systemId,
-              const std::string &tableId, const Icd::TablePtr &table) const;
+              const std::string &tableId, const Icd::TablePtr &table) const override;
     bool save(const std::string &vehicleId, const std::string &systemId,
-              const std::string &tableId, const Icd::ItemPtrArray &items) const;
-    bool save(const std::string &vehicleId, const std::string &systemId,
-              const std::string &tableId, const std::string &itemId,
-              const Icd::ItemPtr &item) const;
-    bool save(const Icd::TablePtrArray &tables) const;
-    bool save(const std::string &tableId, const Icd::TablePtr &table) const;
-    bool save(const std::string &domain, const Icd::ObjectPtr &object,
-              bool merge = false, bool fast = false) const;
-    bool save(const Icd::TablePtr &table) const;
+              const std::string &tableId, const Icd::ItemPtrArray &items) const override;
+    bool save(const Icd::TablePtrArray &tables) const override;
+    bool save(const std::string &tableId, const Icd::TablePtr &table) const override;
+    bool save(const Icd::TablePtr &table) const override;
 
-    bool beginModify();
-    bool commitModify();
-    bool cancelModify();
-    bool endModify();
+    bool beginModify() override;
+    bool commitModify() override;
+    bool cancelModify() override;
+    bool endModify() override;
 
 private:
     SqlParserData *d;

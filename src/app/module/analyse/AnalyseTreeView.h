@@ -2,6 +2,7 @@
 #define ANALYSETREEVIEW_H
 
 #include <QWidget>
+#include <QMap>
 
 class QTemporaryFile;
 
@@ -9,11 +10,10 @@ namespace Icd {
 
 class JProtoTreeView;
 
-template<typename T> class std::shared_ptr;
-
+class Object;
+typedef std::shared_ptr<Object> ObjectPtr;
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
-
 class Item;
 typedef std::shared_ptr<Item> ItemPtr;
 

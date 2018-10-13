@@ -145,7 +145,8 @@ public:
 
     void execute()
     {
-        callback(JNEvent(channel, argument));
+        JNEvent event = JNEvent(channel, argument);
+        callback(event);
     }
 
 private:
@@ -336,7 +337,8 @@ void JNotify::on(const QString &channel, QObject *receiver, JNotifyCallback call
             const QVariant argument = event->argument();
             d->mutex.unlock();
             if (sync) {
-                callback(JNEvent(channel, argument));
+                JNEvent event(channel, argument);
+                callback(event);
             } else {
                 QCoreApplication::postEvent(this, new JPostMsgEvent(callback, channel, argument));
             }
@@ -377,8 +379,6 @@ QVariant JNotify::send(const QString &channel, QObject *receiver, const QVariant
         d->pendings.append(JNEventPtr(new JNEvent(channel, argument)));
         return QVariant();
     }
-
-    return QVariant();
 }
 
 void JNotify::post(const QString &channel, const QVariant &data)
@@ -530,7 +530,7 @@ QJSValue JNotify::jsSend(const QString &channel, const QJSValue &argument)
 
 void JNotify::customEvent(QEvent *event)
 {
-    switch (event->type()) {
+    switch (InternalEvent(event->type())) {
     case Evt_PostMsg:
     {
         JPostMsgEvent *pmEvent = reinterpret_cast<JPostMsgEvent *>(event);
@@ -540,8 +540,8 @@ void JNotify::customEvent(QEvent *event)
         pmEvent->execute();
         break;
     }
-    default:
-        break;
+//    default:
+//        break;
     }
 }
 

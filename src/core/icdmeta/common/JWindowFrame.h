@@ -19,7 +19,7 @@ class ICDMETA_EXPORT JWindowFrame
     Q_PROPERTY(bool resizable READ resizable WRITE setResizable NOTIFY resizableChanged)
 public:
     explicit JWindowFrame(QQuickWindow *window, QObject *parent = nullptr);
-    ~JWindowFrame();
+    ~JWindowFrame() override;
 
     bool resizable() const;
 

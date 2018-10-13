@@ -1,6 +1,7 @@
 ﻿#include "precomp.h"
 #include "icd_item_bit.h"
 #include <sstream>
+#include <float.h>
 #include <assert.h>
 
 namespace Icd {
@@ -15,9 +16,9 @@ public:
         : bitStart(0)
         , bitCount(8)
         , typeSize(1)
+        , decimals(0)
         , offset(0.0)
         , scale(1.0)
-        , decimals(0)
         , limit(new LimitItem())
     {
 
@@ -30,9 +31,9 @@ private:
     int bitStart;               // 起始比特位,从0开始
     int bitCount;               // 比特长度
     int typeSize;               // 数据类型字节数
+    int decimals;               // 小数有效个数
     double offset;              // 偏置
     double scale;               // 比例尺
-    int decimals;               // 小数有效个数
     LimitItemPtr limit;         // 范围
     std::string unit;           // 单位
     std::map<icd_uint64, std::string> specs;    // 特征点

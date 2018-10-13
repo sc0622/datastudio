@@ -17,7 +17,7 @@ class ICDMETA_EXPORT JIcdDateTimeItem : public JIcdItem
     Q_OBJECT
 public:
     explicit JIcdDateTimeItem(const Icd::DateTimeItemPtr &data, QObject *parent = nullptr);
-    ~JIcdDateTimeItem();
+    ~JIcdDateTimeItem() override;
 
     static void registerQmlType();
     Icd::DateTimeItemPtr metaData() const;

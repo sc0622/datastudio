@@ -21,7 +21,7 @@ class ICDMETA_EXPORT JIcdFrameItem : public JIcdItem
     Q_PROPERTY(QQmlListProperty<icdmeta::JIcdTable> tables READ tables NOTIFY tablesChanged)
 public:
     explicit JIcdFrameItem(const Icd::FrameItemPtr &data, QObject *parent = nullptr);
-    ~JIcdFrameItem();
+    ~JIcdFrameItem() override;
 
     static void registerQmlType();
     Icd::FrameItemPtr metaData() const;

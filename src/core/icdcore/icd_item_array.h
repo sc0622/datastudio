@@ -65,11 +65,11 @@ public:
     float32_t *f32() const;
     float64_t *f64() const;
 
-    double_t valueOf(int index) const;
+    float64_t valueOf(int index) const;
 
     void resetData() override;
     void clearData() override;
-    void setData(const char *buffer, int size);
+    void setValue(const char *buffer, int size);
 
     // Serializable interface
 public:

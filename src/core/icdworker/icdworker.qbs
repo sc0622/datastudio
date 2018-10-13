@@ -25,5 +25,8 @@ CoreDyLibrary {
         files: [ '**/*.cpp' ]
     }
 
-    cpp.cxxStandardLibrary: 'c++98'
+    Depends {
+        condition: qbs.targetOS.contains('windows')
+        cpp.cxxStandardLibrary: 'c++98'
+    }
 }

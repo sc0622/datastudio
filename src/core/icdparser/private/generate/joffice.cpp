@@ -1,7 +1,9 @@
 ﻿#include "precomp.h"
 #include "joffice.h"
+#ifdef QT_AXCONTAINER_LIB
 #include <ActiveQt/QAxWidget>
 #include <QAxObject>
+#endif
 
 #define J_AXBASE_GENERATE_DOCUMENT 0
 
@@ -12,16 +14,20 @@ namespace Icd {
 class JOfficePrivate
 {
 public:
-    JOfficePrivate(JOffice::OfficeType officeType, JOffice *q) :
-        J_QPTR(q),
-        application(nullptr),
-        workbooks(nullptr),
-        workbook(nullptr),
-        officeType(officeType)
+    JOfficePrivate(JOffice::OfficeType officeType, JOffice *q)
+        : J_QPTR(q)
+    #ifdef QT_AXCONTAINER_LIB
+        , application(nullptr)
+        , workbooks(nullptr)
+        , workbook(nullptr)
+    #endif
+        , officeType(officeType)
     {
         //
+#ifdef _MSC_VER
         ::OleInitialize(nullptr);
-
+#endif
+#ifdef QT_AXCONTAINER_LIB
         application = new QAxObject("Excel.Application");
 
         switch (officeType) {
@@ -50,37 +56,48 @@ public:
         generateDocumentFile(application);
         generateDocumentFile(workbooks);
 #endif
+#endif  // QT_AXCONTAINER_LIB
     }
 
     ~JOfficePrivate()
     {
+#ifdef QT_AXCONTAINER_LIB
         Q_Q(JOffice);
         q->close();
 
         delete application;
         application = nullptr;
-
-        //
+#endif
+#ifdef _MSC_VER
         ::OleUninitialize();
+#endif
     }
 
     bool isValid() const;
-
+#ifdef QT_AXCONTAINER_LIB
     static bool generateDocumentation(QAxBase *axBase, const QString &filePath = QString::null);
-
+#else
+#endif
 private:
     J_DECLARE_PUBLIC(JOffice)
+#ifdef QT_AXCONTAINER_LIB
     QAxObject *application;
     QAxObject *workbooks;
     QAxObject *workbook;
+#else
+#endif
     JOffice::OfficeType officeType;
 };
 
 bool JOfficePrivate::isValid() const
 {
+#ifdef QT_AXCONTAINER_LIB
     return (application && !application->isNull());
+#else
+    return false;
+#endif
 }
-
+#ifdef QT_AXCONTAINER_LIB
 bool JOfficePrivate::generateDocumentation(QAxBase *axBase, const QString &filePath)
 {
     //
@@ -118,7 +135,7 @@ bool JOfficePrivate::generateDocumentation(QAxBase *axBase, const QString &fileP
 
     return true;
 }
-
+#endif
 // - class JOffice -
 
 JOffice::JOffice(OfficeType officeType, QObject *parent) :
@@ -145,7 +162,7 @@ JOffice::OfficeType JOffice::officeType() const
     Q_D(const JOffice);
     return d->officeType;
 }
-
+#ifdef QT_AXCONTAINER_LIB
 QAxObject *JOffice::application()
 {
     Q_D(JOffice);
@@ -405,5 +422,5 @@ bool JOffice::show(bool enabled)
     d->application->setProperty("ShowWindowsInTaskbar", enabled);
     return true;
 }
-
+#endif // QT_AXCONTAINER_LIB
 } // end of namespace Icd

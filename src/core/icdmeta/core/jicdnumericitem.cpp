@@ -27,7 +27,6 @@ private:
 
 void JIcdNumericItemPrivate::init()
 {
-    Q_Q(JIcdNumericItem);
     limit = QSharedPointer<JIcdLimitItem>(new JIcdLimitItem(data->limit()), jdelete_qobject);
 }
 

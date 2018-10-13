@@ -384,7 +384,7 @@ void ChartFileView::dropEvent(QDropEvent *event)
 
     const Icd::TablePtr table = tableByFilePath(filePath);
     if (!table) {
-        qWarning(QString("Worker has no binding recv-channel!").toLocal8Bit());
+        qWarning("Worker has no binding recv-channel!");
         return;
     }
 

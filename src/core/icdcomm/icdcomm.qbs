@@ -5,6 +5,7 @@ CoreDyLibrary {
     Depends { name: 'Qt.core' }
     Depends { name: 'Qt.gui' }
     Depends { name: 'Qt.network' }
+    Depends { name: 'Qt.serialport'; condition: !qbs.targetOS.contains('windows') }
 
     Group {
         name: 'Headers'
@@ -24,7 +25,11 @@ CoreDyLibrary {
     }
 
     //cpp.cxxStandardLibrary: 'c++98'
-    cpp.libraryPaths: base.concat([ sourceDirectory + '/private/moxa' ])
-    cpp.dynamicLibraries: base.concat([ 'pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') ])
-    cpp.defines: base.concat([ 'SERIAL_USE_PCOMM' ])
+
+    Properties {
+        condition: qbs.targetOS.contains('windows')
+        cpp.libraryPaths: base.concat([ sourceDirectory + '/private/moxa' ])
+        cpp.dynamicLibraries: base.concat([ 'pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') ])
+        cpp.defines: base.concat([ 'SERIAL_USE_PCOMM' ])
+    }
 }

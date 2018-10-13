@@ -177,8 +177,8 @@ void SetView::onDropTriggled(QStandardItem *itemTable, QStandardItem *item,
     //
     const Icd::TablePtr &tableSend = worker->workerSend()->table();
     if (!tableSend) {
-        qWarning(QStringLiteral("工作组没有绑定发送端协议表 [通道：%1]！")
-                 .arg(channelId).toLocal8Bit());
+        qWarning() << tr("WorkGroup was not binding protocol of sending [channel: %1]！")
+                      .arg(channelId);
         return;
     }
     //
@@ -274,7 +274,7 @@ IcdTabWidget *SetView::findTabSystem(const QString &vehicleId, const QString &sy
     //
     IcdTabWidget *tabVehicle = findTabVehicle(vehicleId);
     if (!tabVehicle) {
-        return 0;
+        return nullptr;
     }
 
     //
@@ -287,7 +287,7 @@ DataTableWidget *SetView::findTabTable(const QString &vehicleId, const QString &
     //
     IcdTabWidget *tabSystem = findTabSystem(vehicleId, systemId);
     if (!tabSystem) {
-        return 0;
+        return nullptr;
     }
 
     //
@@ -315,7 +315,7 @@ IcdTabWidget *SetView::addTabVehicle(const QString &domain)
 
     //
     if (tabVehicle) {
-        d_tabVehicles->setTabText(d_tabVehicles->indexOf(tabVehicle), QStringLiteral("分机：")
+        d_tabVehicles->setTabText(d_tabVehicles->indexOf(tabVehicle), tr("Vehicle:")
                                   + QString::fromStdString(vehicle->name()));
     } else {
         // create
@@ -323,7 +323,7 @@ IcdTabWidget *SetView::addTabVehicle(const QString &domain)
         tabVehicle->setTabPosition(QTabWidget::South);
         tabVehicle->setTabsClosable(true);
         // add
-        d_tabVehicles->addTab(tabVehicle, QStringLiteral("分机：")
+        d_tabVehicles->addTab(tabVehicle, tr("Vehicle:")
                               + QString::fromStdString(vehicle->name()));
         d_tabVehicles->tabBar()->setTabData(d_tabVehicles->count() - 1, domain);
     }
@@ -341,7 +341,7 @@ IcdTabWidget *SetView::addTabSystem(const QString &domain)
 
     //
     IcdTabWidget *tabVehicle = addTabVehicle(vehicleId);
-    if (tabVehicle == 0) {
+    if (tabVehicle == nullptr) {
         return nullptr;
     }
 
@@ -366,13 +366,13 @@ IcdTabWidget *SetView::addTabSystem(const QString &domain)
 
     //
     if (tabSystem) {
-        tabVehicle->setTabText(tabVehicle->indexOf(tabSystem), QStringLiteral("系统：")
+        tabVehicle->setTabText(tabVehicle->indexOf(tabSystem), tr("System: ")
                                + QString::fromStdString(system->name()));
     } else {
         // create
         tabSystem = new IcdTabWidget(tabVehicle);
         // add
-        tabVehicle->addTab(tabSystem, QStringLiteral("系统：")
+        tabVehicle->addTab(tabSystem, QStringLiteral("System: ")
                            + QString::fromStdString(system->name()));
         tabVehicle->tabBar()->setTabData(tabVehicle->count() - 1, systemId);
     }

@@ -25,10 +25,10 @@ class JWindowFramePrivate
 public:
     JWindowFramePrivate(JWindowFrame *q)
         : J_QPTR(q)
-        , shadowSize(8)
-        , resizable(true)
         , window(nullptr)
         , header(nullptr)
+        , shadowSize(8)
+        , resizable(true)
     {
 
     }
@@ -39,16 +39,18 @@ public:
     int hitFromRegion(RegionTypes regionTypes) const;
 #ifdef _MSC_VER
     void doNCPaint(const MSG *msg);
-#else
+#elif defined(__linux__)
+    //
+#elif defined(__APPLE__)
     //
 #endif
 
 private:
     J_DECLARE_PUBLIC(JWindowFrame)
-    int shadowSize;
-    bool resizable;
     QQuickWindow *window;
     QQuickItem *header;
+    int shadowSize;
+    bool resizable;
 };
 
 void JWindowFramePrivate::init()
@@ -60,9 +62,9 @@ RegionTypes JWindowFramePrivate::testHit(const QPoint &pos) const
 {
     const int width = window->width();
     const int height = window->height();
-    int captionHeight = header ? header->height() : 0;
+    int captionHeight = header ? int(header->height()) : 0;
     const int shadowSize2 = shadowSize;// * 2
-    RegionTypes regionTypes = 0;
+    RegionTypes regionTypes = RegionType(0);
     // caption
     if (shadowSize2 < pos.x() && pos.x() < width - shadowSize2
             && shadowSize < pos.y() && pos.y() < captionHeight) {
@@ -99,7 +101,7 @@ RegionTypes JWindowFramePrivate::testHit(const QPoint &pos) const
 
 int JWindowFramePrivate::hitFromRegion(RegionTypes regionTypes) const
 {
-#ifdef _WIN32
+#ifdef _MSC_VER
     switch (regionTypes) {
     case RegionLeft: return HTLEFT;
     case RegionRight: return HTRIGHT;
@@ -117,12 +119,14 @@ int JWindowFramePrivate::hitFromRegion(RegionTypes regionTypes) const
     return 0;
 #endif
 }
-
+#ifdef _MSC_VER
 void JWindowFramePrivate::doNCPaint(const MSG *msg)
 {
     Q_UNUSED(msg);
 }
-
+#elif defined(__linux__)
+#elif defined(__APPLE__)
+#endif
 // class JWindowFrame
 
 JWindowFrame::JWindowFrame(QQuickWindow *window, QObject *parent)
@@ -178,7 +182,7 @@ bool JWindowFrame::nativeEventFilter(const QByteArray &eventType, void *message,
 
 bool JWindowFrame::winEventFilter(void *message, long *result)
 {
-#ifdef _WIN32
+#ifdef _MSC_VE
     Q_D(JWindowFrame);
     if (!d->window) {
         return false;
@@ -355,8 +359,12 @@ bool JWindowFrame::winEventFilter(void *message, long *result)
     default:
         break;
     }
-#else
-    //
+#elif defined(__linux__)
+    (void)message;
+    (void)result;
+#elif defined(__APPLE__)
+    (void)message;
+    (void)result;
 #endif
 
     return false;

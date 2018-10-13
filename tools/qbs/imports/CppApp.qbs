@@ -14,7 +14,7 @@ CppApplication {
     Depends { name: 'desc'; required: false }
     Depends { name: 'setenv'; required: false; cpp.link: false }
 
-    targetName: name + (qbs.buildVariant == 'debug' ? 'd' : '')
+    targetName: name
     destinationDirectory: {
         if (project.workDirectory) {
             return FileInfo.joinPaths(project.workDirectory, 'bin');
@@ -39,7 +39,8 @@ CppApplication {
         return defines;
     }
     cpp.includePaths: base.concat([precompPath])
-    //cpp.variantSuffix: project.variantSuffix
+    cpp.variantSuffix: project.variantSuffix
+    cpp.separateDebugInformation: qbs.debugInformation
 
     Properties {
         condition: qbs.targetOS.contains('linux')

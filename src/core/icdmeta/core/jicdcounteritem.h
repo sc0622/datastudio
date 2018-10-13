@@ -19,7 +19,7 @@ class ICDMETA_EXPORT JIcdCounterItem : public JIcdItem
     Q_PROPERTY(uchar value READ value NOTIFY valueChanged)
 public:
     explicit JIcdCounterItem(const Icd::CounterItemPtr &data, QObject *parent = nullptr);
-    ~JIcdCounterItem();
+    ~JIcdCounterItem() override;
 
     static void registerQmlType();
     Icd::CounterItemPtr metaData() const;

@@ -265,7 +265,7 @@ float64_t *ArrayItem::f64() const
     return reinterpret_cast<float64_t*>(buffer());
 }
 
-double_t ArrayItem::valueOf(int index) const
+float64_t ArrayItem::valueOf(int index) const
 {
     if (index < 0 || index >= d->count) {
         return 0.0;
@@ -301,11 +301,11 @@ void ArrayItem::clearData()
     const int bufferSize = int(this->bufferSize());
 
     if (bufferSize > 0) {
-        memset(_buffer, 0, bufferSize);
+        memset(_buffer, 0, size_t(bufferSize));
     }
 }
 
-void ArrayItem::setData(const char *buffer, int size)
+void ArrayItem::setValue(const char *buffer, int size)
 {
     if (!buffer || size <= 0) {
         clearData();

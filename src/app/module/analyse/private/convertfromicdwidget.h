@@ -10,9 +10,6 @@ class QCheckBox;
 class QFile;
 
 namespace Icd {
-
-template<typename T> class std::shared_ptr;
-
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
 
@@ -22,8 +19,8 @@ class ConvertFromIcdWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ConvertFromIcdWidget(QWidget *parent = 0);
-    ~ConvertFromIcdWidget();
+    explicit ConvertFromIcdWidget(QWidget *parent = nullptr);
+    ~ConvertFromIcdWidget() override;
 
 signals:
     void rejected();

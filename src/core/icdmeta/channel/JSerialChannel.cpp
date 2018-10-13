@@ -141,19 +141,19 @@ int JSerialChannel::baudRate() const
 JSerialChannel::DataBits JSerialChannel::dataBits() const
 {
     Q_D(const JSerialChannel);
-    return (JSerialChannel::DataBits)d->channel()->dataBits();
+    return JSerialChannel::DataBits(d->channel()->dataBits());
 }
 
 JSerialChannel::StopBits JSerialChannel::stopBits() const
 {
     Q_D(const JSerialChannel);
-    return (JSerialChannel::StopBits)d->channel()->stopBits();
+    return JSerialChannel::StopBits(d->channel()->stopBits());
 }
 
 JSerialChannel::Parity JSerialChannel::parity() const
 {
     Q_D(const JSerialChannel);
-    return (JSerialChannel::Parity)d->channel()->parity();
+    return JSerialChannel::Parity(d->channel()->parity());
 }
 
 void JSerialChannel::setPortName(const QString &portName)
@@ -181,8 +181,8 @@ void JSerialChannel::setDataBits(JSerialChannel::DataBits dataBits)
 {
     Q_D(JSerialChannel);
     Icd::SerialChannelPtr channel = d->channel();
-    if (dataBits != channel->dataBits()) {
-        channel->setDataBits((Icd::SerialChannel::DataBits)dataBits);
+    if (dataBits != JSerialChannel::DataBits(channel->dataBits())) {
+        channel->setDataBits(Icd::SerialChannel::DataBits(dataBits));
         emit dataBitsChanged(dataBits);
     }
 }
@@ -191,8 +191,8 @@ void JSerialChannel::setStopBits(JSerialChannel::StopBits stopBits)
 {
     Q_D(JSerialChannel);
     Icd::SerialChannelPtr channel = d->channel();
-    if (stopBits != channel->stopBits()) {
-        channel->setStopBits((Icd::SerialChannel::StopBits)stopBits);
+    if (stopBits != JSerialChannel::StopBits(channel->stopBits())) {
+        channel->setStopBits(Icd::SerialChannel::StopBits(stopBits));
         emit stopBitsChanged(stopBits);
     }
 }
@@ -201,8 +201,8 @@ void JSerialChannel::setParity(JSerialChannel::Parity parity)
 {
     Q_D(JSerialChannel);
     Icd::SerialChannelPtr channel = d->channel();
-    if (parity != channel->parity()) {
-        channel->setParity((Icd::SerialChannel::Parity)parity);
+    if (parity != JSerialChannel::Parity(channel->parity())) {
+        channel->setParity(Icd::SerialChannel::Parity(parity));
         emit parityChanged(parity);
     }
 }

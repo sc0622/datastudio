@@ -193,7 +193,7 @@ void JFtpTableModel::clearContents()
     removeRows(0, d->items.count());
 }
 
-void JFtpTableModel::sort(bool isRootDir)
+void JFtpTableModel::setSort(bool isRootDir)
 {
     Q_D(JFtpTableModel);
     qSort(d->items.begin() + (isRootDir ? 0 : 1), d->items.end(),

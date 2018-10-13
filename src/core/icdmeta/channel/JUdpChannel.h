@@ -27,11 +27,11 @@ public:
     Q_ENUM(OpenMode)
 
     explicit JUdpChannel(QObject *parent = nullptr);
-    ~JUdpChannel();
+    ~JUdpChannel() override;
 
     static void registerQmlType();
 
-    virtual ChannelType channelType() const;
+    ChannelType channelType() const override;
     QString localAddress() const;
     int localPort() const;
     QString remoteAddress() const;

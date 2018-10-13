@@ -7,15 +7,16 @@ import qbs.Environment
 Project {
 
     QtInstall {
+        condition: false    //TODO
         name: 'setenv-qt'
         moduleGeneral: base.concat([ 'Qml', 'SerialPort', 'Sql' ])
         modulePlugins: base.concat([ 'sqldrivers' ])
     }
 
-    JFrameworkInstall {
+    JFrameWorkInstall {
+        condition: !project.buildQuote
         id: setenv_jframework
         name: 'setenv-jframework'
-        condition: !project.buildQuote
         module3rdpart: [
             'jchart', 'jencrypt', 'jutraledit', 'jwt', 'log4cpp', 'qwt',
             'tinyxml', 'qtftp', 'qttelnet'
@@ -23,8 +24,9 @@ Project {
     }
 
     DataStudioInstall {
+        condition: false    //TODO
+        //condition: !project.buildQuote
         name: 'setenv-datastudio'
-        condition: !project.buildQuote
         moduleCore: [
             'icdcomm', 'icdcore', 'icdparser', 'icdwidget', 'icdworker'
         ]
@@ -34,8 +36,8 @@ Project {
 
     Product {
         name: 'setenv'
-        Depends { name: 'setenv-qt' }
+        //Depends { name: 'setenv-qt' }
         Depends { name: 'setenv-jframework'; required: false }
-        Depends { name: 'setenv-datastudio'; required: false }
+        //Depends { name: 'setenv-datastudio'; required: false }
     }
 }

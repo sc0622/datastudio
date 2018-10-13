@@ -5,6 +5,7 @@
 #include "icdtab_widget.h"
 #include "datatable_widget.h"
 #include "jutraledit/jutraledit_view.h"
+#include <float.h>
 
 namespace Simulate {
 
@@ -53,6 +54,7 @@ DataItemWidget::DataItemWidget(ItemType itemType, QWidget *parent)
         if (complex->childCount() > 0) {
             break;
         }
+        break;
     }
     case ItemTypeFrame:
         break;
@@ -848,14 +850,16 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         case Icd::NumericF32:
         {
             float _data = float(data);
-            qint32 iData = *(qint32*)&_data;
+            qint32 iData;
+            memcpy(&iData, &_data, 4);
             suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
                                           16, QChar('0')).toUpper();
             break;
         }
         case Icd::NumericF64:
         {
-            qlonglong iData = *(qlonglong*)&data;
+            qint64 iData;
+            memcpy(&iData, &data, 8);
             suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
                                           16, QChar('0')).toUpper();
             break;
@@ -863,7 +867,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         default:
         {
             qulonglong uData = qulonglong(data);
-            uData &= (1ui64 << (int(itemNumeric->bufferSize()) << 3)) - 1;
+            uData &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
             suffix = QString(" (%1)").arg(uData, int(itemNumeric->bufferSize() * 2),
                                           16, QChar('0')).toUpper();
             break;
@@ -1042,13 +1046,13 @@ ItemWidgetArray::ItemWidgetArray(QWidget *parent)
         case JUtralEdit::JView::ShowAsHexData:
         {
             const QByteArray hexData = dataView_->hexData();
-            arrayItem->setData(hexData.constData(), hexData.size());
+            arrayItem->setValue(hexData.constData(), hexData.size());
             break;
         }
         case JUtralEdit::JView::ShowAsString:
         {
             const QByteArray text = dataView_->text().toLocal8Bit();
-            arrayItem->setData(text.constData(), text.size());
+            arrayItem->setValue(text.constData(), text.size());
             break;
         }
         default:
@@ -1158,11 +1162,11 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
     };
     connect(spinData_, static_cast<void(QDoubleSpinBox::*)(double)>
             (&QDoubleSpinBox::valueChanged), this, [=](double value){
-        updateValue(value);
+        updateValue(int(value));
     });
     connect(spinData_, &QDoubleSpinBox::editingFinished, this, [=](){
         if (!autoUpdate()) {
-            updateValue(spinData_->value());
+            updateValue(int(spinData_->value()));
         }
         if (!autoSend()) {
             emit send();
@@ -1305,11 +1309,11 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
         if (!autoUpdate()) {
             return;
         }
-        updateValue(value);
+        updateValue(int(value));
     });
     connect(spinData_, &JSpinBox::editingFinished, this, [=](){
         if (!autoUpdate()) {
-            updateValue(spinData_->value());
+            updateValue(int(spinData_->value()));
         }
         if (!autoSend()) {
             emit send();

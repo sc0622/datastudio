@@ -5,8 +5,6 @@
 
 namespace Icd {
 
-template<typename T> class std::shared_ptr;
-
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
 
@@ -31,9 +29,9 @@ class IcdTabWidget : public QTabWidget
 {
     Q_OBJECT
 public:
-    explicit IcdTabWidget(QWidget *parent = 0);
+    explicit IcdTabWidget(QWidget *parent = nullptr);
 
-    ~IcdTabWidget();
+    ~IcdTabWidget() override;
 
     /**
      * @brief findTab
@@ -87,7 +85,7 @@ public slots:
     void onTabCloseRequested(int index);
 
 protected:
-    void tabRemoved(int index);
+    void tabRemoved(int index) override;
 
 private:
 };

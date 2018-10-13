@@ -88,6 +88,7 @@ SetViewSettings::SetViewSettings(QWidget *parent)
     }
 
     connect(checkBoxImmUpdate_, &QCheckBox::stateChanged, this, [=](int state){
+        Q_UNUSED(state);
         modifyFlags_.setBit(0, true);
         emit contentChanged();
     });

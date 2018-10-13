@@ -4,8 +4,11 @@
 #include "../../icdparser_global.h"
 #include <QIODevice>
 
+#ifdef QT_AXCONTAINER_LIB
 class QAxBase;
 class QAxObject;
+#else
+#endif
 
 namespace Icd {
 
@@ -24,12 +27,13 @@ public:
         OfficeWord,
     };
 
-    explicit JOffice(OfficeType officeType, QObject *parent = 0);
-    virtual ~JOffice();
+    explicit JOffice(OfficeType officeType, QObject *parent = nullptr);
+    virtual ~JOffice() override;
 
     bool isValid() const;
 
     OfficeType officeType() const;
+#ifdef QT_AXCONTAINER_LIB
     QAxObject *application();
     QAxObject *workbooks();
     QAxObject *workbook(int index);
@@ -40,6 +44,7 @@ public:
     QAxObject *prependSheet(const QString &sheetName);
     QAxObject *appendSheet(const QString &sheetName);
     QAxObject *insertSheet(int index, const QString &sheetName);
+
     bool setSheetCount(int count);
     bool clearSheet();
 
@@ -49,9 +54,10 @@ public:
     bool close();
     bool show(bool enabled = true);
 
-    static bool generateDocumentFile(QAxBase *axBase,
-                                     const QString &filePath = QString::null);
-
+    static bool generateDocumentFile(QAxBase *axBase, const QString &filePath = QString::null);
+#else
+    //TODO
+#endif
 Q_SIGNALS:
 
 public Q_SLOTS:

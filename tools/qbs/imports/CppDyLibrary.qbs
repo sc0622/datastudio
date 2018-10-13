@@ -41,7 +41,7 @@ DynamicLibrary {
     // export
     property bool defaultExport: true
 
-    targetName: name + (qbs.buildVariant == 'debug' ? 'd' : '')
+    targetName: name
     desc.condition: true
     desc.fileDesc: 'Smartsoft® Runtime Library'
     desc.version: version
@@ -55,7 +55,11 @@ DynamicLibrary {
         defines.push(upperName + '_BUILD');
         return defines;
     }
-    //cpp.variantSuffix: project.variantSuffix
+    cpp.variantSuffix: project.variantSuffix
+
+    // for apple
+    bundle.isBundle: false
+    cpp.separateDebugInformation: qbs.debugInformation
 
     Group {
         fileTagsFilter: installFileTags
@@ -137,9 +141,12 @@ DynamicLibrary {
         Depends { name: 'cpp' }
         cpp.defines: [ product.name.toUpperCase() + '_LIB' ]
         cpp.includePaths: [ FileInfo.joinPaths(project.sourceDirectory, 'include', product.module) ]
-        cpp.dynamicLibraries: [
-            FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
-        ]
+        Properties {
+            condition: !qbs.targetOS.contains('darwin')
+            cpp.dynamicLibraries: [
+                FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
+            ]
+        }
     }
 
     // rc

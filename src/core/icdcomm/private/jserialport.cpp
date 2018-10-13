@@ -5,10 +5,12 @@
 #ifdef SERIAL_USE_PCOMM
 #include "moxa/pcomm.h"
 #else
-#include <QtSeriaPort>
+#include <QSerialPort>
 #endif
 
+#ifdef _MSC_VER
 //#pragma comment(lib, "pcomm.lib")
+#endif
 
 namespace Icd {
 
@@ -146,7 +148,7 @@ std::string JSerialPort::portName() const
     os << "COM" << d->portNumber;
     return os.str();
 #else
-    d->serialPort->portName()->toStdString();
+    return d->serialPort->portName().toStdString();
 #endif
 }
 
@@ -201,7 +203,7 @@ int JSerialPort::baudRate() const
     default: return d->baudRate;
     }
 #else
-    d->serialPort->baudRate();
+    return d->serialPort->baudRate();
 #endif
 }
 
@@ -250,7 +252,7 @@ JSerialPort::DataBits JSerialPort::dataBits() const
     case BIT_8: return JSerialPort::Data8;
     }
 #else
-    return (SerialChannel::DataBites)d->serialPort->dataBits();
+    return JSerialPort::DataBits(d->serialPort->dataBits());
 #endif
 }
 
@@ -269,7 +271,7 @@ void JSerialPort::setDataBits(JSerialPort::DataBits value)
         d->setIoCtrl();
     }
 #else
-    d->serialPort->setDataBits((QSerialPort::DataBites)value);
+    d->serialPort->setDataBits(QSerialPort::DataBits(value));
 #endif
 }
 
@@ -282,7 +284,7 @@ JSerialPort::StopBits JSerialPort::stopBits() const
     case STOP_2: return JSerialPort::TwoStop;
     }
 #else
-    return (SerialChannel::StopBits)d->serialPort->stopBits();
+    return JSerialPort::StopBits(d->serialPort->stopBits());
 #endif
 }
 
@@ -299,7 +301,7 @@ void JSerialPort::setStopBits(JSerialPort::StopBits value)
         d->setIoCtrl();
     }
 #else
-    d->serialPort->setStopBits((QSerialPort::StopBits)value);
+    d->serialPort->setStopBits(QSerialPort::StopBits(value));
 #endif
 }
 
@@ -315,7 +317,7 @@ JSerialPort::Parity JSerialPort::parity() const
     default: return JSerialPort::UnknownParity;
     }
 #else
-    return (SerialChannel::Parity)d->serialPort->parity();
+    return JSerialPort::Parity(d->serialPort->parity());
 #endif
 }
 
@@ -335,7 +337,7 @@ void JSerialPort::setParity(JSerialPort::Parity parity)
         d->setIoCtrl();
     }
 #else
-    d->serialPort->setStopBits((QSerialPort::Parity)parity);
+    d->serialPort->setParity(QSerialPort::Parity(parity));
 #endif
 }
 
@@ -409,7 +411,7 @@ int JSerialPort::read(char *buffer, int size)
     }
 #else
     if (d->serialPort->isOpen()) {
-        return d->serialPort->read(buffer, size);
+        return int(d->serialPort->read(buffer, size));
     } else {
         return -1;
     }
@@ -426,7 +428,7 @@ int JSerialPort::write(const char *buffer, int size)
     }
 #else
     if (d->serialPort->isOpen()) {
-        return d->serialPort->write(buffer, size);
+        return int(d->serialPort->write(buffer, size));
     } else {
         return -1;
     }
@@ -435,17 +437,29 @@ int JSerialPort::write(const char *buffer, int size)
 
 long JSerialPort::sizeOfIn() const
 {
+#ifdef SERIAL_USE_PCOMM
     return sio_iqueue(d->portNumber);
+#else
+    return int(d->serialPort->bytesAvailable());
+#endif
 }
 
 long JSerialPort::sizeOfOut() const
 {
+#ifdef SERIAL_USE_PCOMM
     return sio_oqueue(d->portNumber);
+#else
+    return int(d->serialPort->bytesToWrite());
+#endif
 }
 
 void JSerialPort::flush()
 {
+#ifdef SERIAL_USE_PCOMM
     sio_flush(d->portNumber, 1);    // 0,clear input; 1,clear output; 2,clear input and output
+#else
+    d->serialPort->flush();
+#endif
 }
 
 int JSerialPort::lastErrorCode() const
@@ -453,7 +467,7 @@ int JSerialPort::lastErrorCode() const
 #ifdef SERIAL_USE_PCOMM
     return d->errorCode;
 #else
-    return (int)d->serialPort->error();
+    return int(d->serialPort->error());
 #endif
 }
 
@@ -476,7 +490,7 @@ std::string JSerialPort::lastError() const
     default: return "";
     }
 #else
-    return (int)d->serialPort->errorString().toStdString();
+    return d->serialPort->errorString().toStdString();
 #endif
 }
 

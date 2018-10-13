@@ -20,7 +20,7 @@ class ICDMETA_EXPORT JIcdFrameCodeItem : public JIcdItem
     Q_PROPERTY(icdmeta::JIcdFrameItem* frame READ metaFrame NOTIFY frameChanged)
 public:
     explicit JIcdFrameCodeItem(const Icd::FrameCodeItemPtr &data, QObject *parent = nullptr);
-    ~JIcdFrameCodeItem();
+    ~JIcdFrameCodeItem() override;
 
     static void registerQmlType();
     Icd::FrameCodeItemPtr metaData() const;

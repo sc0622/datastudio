@@ -2,7 +2,6 @@
 #include "icdgenerator_word.h"
 #include "icdgenerator_word_p.h"
 #include "../html/icdgenerator_html.h"
-#include <QAxObject>
 #include "../../../icdparser.h"
 
 namespace Icd {
@@ -59,10 +58,6 @@ bool WordGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
         d->shutdown();
         return false;
     }
-
-    shutdown();
-
-    return true;
 }
 
 bool WordGenerator::generate(const TablePtr &table, const std::string &filePath)
@@ -101,10 +96,6 @@ bool WordGenerator::generate(const TablePtr &table, const std::string &filePath,
         d->shutdown();
         return false;
     }
-
-    shutdown();
-
-    return true;
 }
 
 bool WordGenerator::startup()

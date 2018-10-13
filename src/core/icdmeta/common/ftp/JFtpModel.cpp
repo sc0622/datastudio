@@ -928,7 +928,7 @@ void JFtpModel::onListInfo(const QUrlInfo &item)
     model->setData(rowIndex, item.isReadable(), JFtpTableModel::IsReadableRole);
     model->setData(rowIndex, item.isExecutable(), JFtpTableModel::IsExcutableRole);
     //
-    d->ftpTableModel->sort(isRootDir());
+    d->ftpTableModel->setSort(isRootDir());
 }
 
 void JFtpModel::onDataTransferProgress(qint64 readBytes, qint64 totalBytes)

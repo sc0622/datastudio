@@ -38,11 +38,11 @@ public:
 
     explicit JFileChannel(QObject *parent = nullptr);
     JFileChannel(const QString &filePath, QObject *parent = nullptr);
-    ~JFileChannel();
+    ~JFileChannel() override;
 
     static void registerQmlType();
 
-    virtual ChannelType channelType() const;
+    ChannelType channelType() const override;
 
     QString filePath() const;
     int openMode() const;

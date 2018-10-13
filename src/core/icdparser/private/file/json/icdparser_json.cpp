@@ -1,17 +1,13 @@
 #include "precomp.h"
 #include "icdparser_json.h"
 #include "icdcore/3rdpart/jsoncpp/json/json.h"
-#if defined(_MSC_VER)
 #include "../../../../icdwidget/icdwidget_global.h"
-#endif
 
 namespace Icd {
 
 JsonParser::JsonParser(const Json::Value &config)
     : FileParser(config)
-    #if defined(_MSC_VER)
     , Generator(Generator::GeneratorTypeJson)
-    #endif
 {
 
 }
@@ -695,7 +691,6 @@ Json::Value JsonParser::queryTable(const std::string &tableId) const
     return tableJson;
 }
 
-#if defined(_MSC_VER)
 bool JsonParser::startup()
 {
     if (!Generator::startup()) {
@@ -995,9 +990,6 @@ bool JsonParser::generateDataItem(const QStandardItem *itemDataItem, bool export
                          item, Icd::ObjectItem)) {
         return false;
     }
-#else
-    return false;
-#endif
     Json::Value itemJson = item->save();
 
     const Json::Value rootJson = generateJson(itemDataItem, itemJson);
@@ -1006,6 +998,10 @@ bool JsonParser::generateDataItem(const QStandardItem *itemDataItem, bool export
     }
 
     return Json::make(filePath, rootJson, true, true);
+#else
+    (void)filePath;
+    return false;
+#endif
 }
 
 bool JsonParser::generateVehicle(const QStandardItem *itemVehicle, Json::Value &vehicleJson,
@@ -1256,13 +1252,10 @@ Json::Value JsonParser::generateJson(const QStandardItem *item, Json::Value &jso
         return rootJson;
     }
     default:
-        return Json::Value();
+        break;
     }
 
     return Json::Value();
 }
-#else
-
-#endif
 
 } // end of namespace Icd

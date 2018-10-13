@@ -22,7 +22,7 @@ public:
     void shutdown(const QString &filePath = QString::null, int saveAsType = 0);
     bool generateDocument(const QStandardItem *item, bool exportAll, bool rt);
     bool generateDocument(const Icd::TablePtr &table);
-
+#ifdef QT_AXCONTAINER_LIB
 private:
     bool generateType();
     bool generateRoot(const QStandardItem *itemRoot, bool exportAll, bool rt, int level);
@@ -54,16 +54,18 @@ private:
 
 private:
     bool setCellText(QAxObject *axTable, int row, int column, const QVariant &text);
-
+#endif
 private:
     friend class WordGenerator;
     WordGenerator *q_ptr_;
+#ifdef QT_AXCONTAINER_LIB
     QAxObject *word_;
     QAxObject *document_;
     QAxObject *tableCaption_;
     QAxObject *listTemplate_;
     QAxObject *tables_;
     QAxObject *selection_;
+#endif
 };
 
 } // end of namespace Icd

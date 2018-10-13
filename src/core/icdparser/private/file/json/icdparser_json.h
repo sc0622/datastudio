@@ -4,9 +4,7 @@
 #include "../../../icdparser.h"
 #include "icdcore/icdcore_inc.h"
 #include "../icdparser_file.h"
-#if defined(_MSC_VER)
 #include "../../generate/icdgenerate.h"
-#endif
 
 class QJsonObject;
 class QJsonArray;
@@ -16,11 +14,7 @@ namespace Icd {
 class JsonParser;
 typedef std::shared_ptr<JsonParser> JsonParserPtr;
 
-class JsonParser : public FileParser
-        #if defined(_MSC_VER)
-        , public Generator
-        #else
-        #endif
+class JsonParser : public FileParser, public Generator
 {
 public:
     explicit JsonParser(const Json::Value &config);
@@ -91,7 +85,6 @@ public:
     Json::Value queryTables() const;
     Json::Value queryTable(const std::string &tableId) const;
 
-#if defined(_MSC_VER)
     // Generator interface
 public:
     bool startup() override;
@@ -120,8 +113,6 @@ private:
                        bool exportAll, bool rt);
 
     Json::Value generateJson(const QStandardItem *item, Json::Value &json);
-#else
-#endif
 
 private:
 };

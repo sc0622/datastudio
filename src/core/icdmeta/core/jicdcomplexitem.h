@@ -20,7 +20,7 @@ class ICDMETA_EXPORT JIcdComplexItem : public JIcdItem
     Q_PROPERTY(icdmeta::JIcdTable *table READ table NOTIFY tableChanged)
 public:
     explicit JIcdComplexItem(const Icd::ComplexItemPtr &data, QObject *parent = nullptr);
-    ~JIcdComplexItem();
+    ~JIcdComplexItem() override;
 
     static void registerQmlType();
     Icd::ComplexItemPtr metaData() const;

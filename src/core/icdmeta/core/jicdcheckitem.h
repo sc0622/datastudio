@@ -22,7 +22,7 @@ class ICDMETA_EXPORT JIcdCheckItem : public JIcdItem
     Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
 public:
     explicit JIcdCheckItem(const Icd::CheckItemPtr &data, QObject *parent = nullptr);
-    ~JIcdCheckItem();
+    ~JIcdCheckItem() override;
 
     static void registerQmlType();
     Icd::CheckItemPtr metaData() const;

@@ -5,8 +5,6 @@
 
 namespace Icd {
 
-template<typename T> class std::shared_ptr;
-
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
 

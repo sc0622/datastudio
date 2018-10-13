@@ -83,8 +83,8 @@ void JMainPrivate::init()
     notify = Icd::JNotifyPtr(Icd::JNotify::inst(QCoreApplication::applicationName(), q));
     Q_ASSERT(notify != nullptr);
     //
-    JUtralEdit::JUtralEditCore::instance()->setLanguage("zh_CN");
-    JChart::JChartCore::instance()->setLanguage("zh_CN");
+    JUtralEditCore::instance()->setLanguage("zh_CN");
+    JChartCore::instance()->setLanguage("zh_CN");
     //
     notify->on("app.theme", q, [=](JNEvent &event){
         q->setTheme(event.argument().toString());

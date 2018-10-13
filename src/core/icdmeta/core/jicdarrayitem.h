@@ -19,7 +19,7 @@ class ICDMETA_EXPORT JIcdArrayItem : public JIcdItem
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     explicit JIcdArrayItem(const Icd::ArrayItemPtr &data, QObject *parent = nullptr);
-    ~JIcdArrayItem();
+    ~JIcdArrayItem() override;
 
     static void registerQmlType();
     Icd::ArrayItemPtr metaData() const;

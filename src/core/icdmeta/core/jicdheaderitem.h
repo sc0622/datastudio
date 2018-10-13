@@ -18,7 +18,7 @@ class ICDMETA_EXPORT JIcdHeaderItem : public JIcdItem
     Q_PROPERTY(uchar value READ value NOTIFY valueChanged)
 public:
     explicit JIcdHeaderItem(const Icd::HeaderItemPtr &data, QObject *parent = nullptr);
-    ~JIcdHeaderItem();
+    ~JIcdHeaderItem() override;
 
     static void registerQmlType();
     Icd::HeaderItemPtr metaData() const;

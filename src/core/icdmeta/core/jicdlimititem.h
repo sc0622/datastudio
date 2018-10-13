@@ -22,7 +22,7 @@ class ICDMETA_EXPORT JIcdLimitItem : public QObject
     Q_PROPERTY(bool rightInf READ rightInf NOTIFY rightInfChanged)
 public:
     explicit JIcdLimitItem(const Icd::LimitItemPtr &data, QObject *parent = nullptr);
-    ~JIcdLimitItem();
+    ~JIcdLimitItem() override;
 
     static void registerQmlType();
     Icd::LimitItemPtr metaData() const;

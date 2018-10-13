@@ -28,6 +28,7 @@ class ICDMETA_EXPORT JIcdItem : public JIcdObject
     Q_PROPERTY(QString typeName READ typeName NOTIFY typeNameChanged)
 public:
     explicit JIcdItem(const Icd::ItemPtr &data, QObject *parent = nullptr);
+    ~JIcdItem() override;
 
     static void registerQmlType();
     Icd::ItemPtr metaData() const;

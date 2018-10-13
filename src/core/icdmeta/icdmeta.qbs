@@ -14,7 +14,7 @@ CoreDyLibrary {
     Depends { name: 'Qt.quickcontrols2' }
     Depends { name: 'Qt.serialport' }
     Depends { name: 'Qt.concurrent' }
-    Depends { name: '3rdpart.jencrypt' }
+    Depends { name: '3rdpart.jencrypt'; condition: qbs.targetOS.contains('windows') }   //TODO
     Depends { name: '3rdpart.jchart' }
     Depends { name: '3rdpart.log4cpp' }
     Depends { name: '3rdpart.qtftp' }
@@ -46,5 +46,8 @@ CoreDyLibrary {
         files: [ 'resource/*.qrc' ]
     }
 
-    cpp.dynamicLibraries: base.concat([ 'ws2_32', 'advapi32', 'user32', 'gdi32' ])
+    Properties {
+        condition: qbs.targetOS.contains('windows')
+        cpp.dynamicLibraries: base.concat([ 'ws2_32', 'advapi32', 'user32', 'gdi32' ])
+    }
 }

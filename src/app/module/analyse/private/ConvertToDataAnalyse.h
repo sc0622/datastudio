@@ -19,8 +19,6 @@ class IcdListWidget;
 
 namespace Icd {
 
-template<typename T> class std::shared_ptr;
-
 class Object;
 typedef std::shared_ptr<Object> ObjectPtr;
 

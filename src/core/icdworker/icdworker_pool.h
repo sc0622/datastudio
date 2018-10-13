@@ -11,8 +11,8 @@ class WorkerPool;
 class WorkerPoolData;
 typedef std::shared_ptr<WorkerPool> WorkerPoolPtr;
 
-class ::Icd::Channel;
-typedef std::shared_ptr<::Icd::Channel> ChannelPtr;
+class Channel;
+typedef std::shared_ptr<Channel> ChannelPtr;
 
 class ICDWORKER_EXPORT WorkerPool : public QObject
 {

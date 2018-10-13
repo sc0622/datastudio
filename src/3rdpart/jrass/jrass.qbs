@@ -4,7 +4,8 @@ import qbs.Utilities
 
 ThirdDyLibrary {
     version: '1.0.0'
-    condition: Utilities.versionCompare(Qt.core.version, '5.5.1') == 0
+    condition: qbs.targetOS.contains('windows')
+               && Utilities.versionCompare(Qt.core.version, '5.5.1') == 0
 
     Depends { name: '3rdpart.rass' }
 

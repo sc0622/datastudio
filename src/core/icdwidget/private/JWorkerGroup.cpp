@@ -568,7 +568,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
                 }
                 case Icd::NumericF64:
                 {
-                    qint64 iOriginalData = static_cast<qint64>(originalData);
+                    qint64 iOriginalData;
                     memcpy(&iOriginalData, &originalData, 8);
                     values.append(QString("%1").arg(iOriginalData, asciiCount, dataFormat_, QChar('0')).toUpper());
                     break;

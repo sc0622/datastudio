@@ -24,7 +24,10 @@ CoreDyLibrary {
         files: [ '**/*.cpp' ]
     }
 
-    cpp.cxxStandardLibrary: 'c++98'
+    Properties {
+        condition: qbs.targetOS.contains('windows')
+        cpp.cxxStandardLibrary: 'c++98'
+    }
     cpp.includePaths: base.concat(['3rdpart/jsoncpp'])
     cpp.defines: base.concat([ 'JSON_DLL_BUILD', 'USE_QFILE' ])
 
@@ -39,8 +42,12 @@ CoreDyLibrary {
             return defines;
         }
         cpp.includePaths: [ FileInfo.joinPaths(project.sourceDirectory, 'include', product.module) ]
-        cpp.dynamicLibraries: [
-            FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
-        ]
+
+        Properties {
+            condition: qbs.targetOS.contains('windows')
+            cpp.dynamicLibraries: [
+                FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
+            ]
+        }
     }
 }

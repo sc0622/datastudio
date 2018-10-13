@@ -6,7 +6,7 @@
 #include "JSearchEdit.h"
 #include "JProtoTreeView.h"
 #include "JGroupChannelPane.h"
-#include "JprogressDialog.h"
+#include "JProgressDialog.h"
 #include "JNotify.h"
 
 #endif // ICDWIDGET_INC_H

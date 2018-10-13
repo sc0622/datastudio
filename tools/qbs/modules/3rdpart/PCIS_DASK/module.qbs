@@ -7,5 +7,9 @@ _3rdpart {
     cpp.defines: [ 'PCIS_DASK_LIB' ]
     cpp.includePaths: [ project.sourceDirectory + '/lib/3rdpart/PCIS-DASK/Include' ]
     cpp.libraryPaths: [ project.sourceDirectory + '/lib/3rdpart/PCIS-DASK/Lib' ]
-    cpp.dynamicLibraries: [ moduleName ]
+
+    Properties {
+        condition: qbs.targetOS.contains('windows')
+        cpp.dynamicLibraries: [ moduleName ]
+    }
 }

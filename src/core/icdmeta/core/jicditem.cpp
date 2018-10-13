@@ -49,6 +49,12 @@ JIcdItem::JIcdItem(const Icd::ItemPtr &data, QObject *parent)
     d->init();
 }
 
+JIcdItem::~JIcdItem()
+{
+    Q_D(JIcdItem);
+    delete d;
+}
+
 void JIcdItem::registerQmlType()
 {
     IcdMetaRegisterUncreatableType2(JIcdItem);

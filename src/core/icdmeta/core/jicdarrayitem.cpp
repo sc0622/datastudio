@@ -189,13 +189,13 @@ double JIcdArrayItem::valueOf(int index) const
 void JIcdArrayItem::setData(const char *buffer, int size)
 {
     Q_D(JIcdArrayItem);
-    d->data->setData(buffer, size);
+    d->data->setValue(buffer, size);
 }
 
 void JIcdArrayItem::setData(const QByteArray &data)
 {
     Q_D(JIcdArrayItem);
-    d->data->setData(data.constData(), data.size());
+    d->data->setValue(data.constData(), data.size());
 }
 
 void JIcdArrayItem::setData(const QString &text)

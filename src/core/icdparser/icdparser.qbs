@@ -48,6 +48,9 @@ CoreDyLibrary {
         files: [ '*.h', '*.cpp' ]
     }
 
-    cpp.cxxStandardLibrary: 'c++98'
-        cpp.includePaths: base.concat([FileInfo.joinPaths('..'), tinyxml.prefix + '/..'])
+    Depends {
+        condition: qbs.targetOS.contains('windows')
+        cpp.cxxStandardLibrary: 'c++98'
+    }
+    cpp.includePaths: base.concat([FileInfo.joinPaths('..'), tinyxml.prefix + '/..'])
 }

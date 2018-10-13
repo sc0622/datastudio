@@ -2335,17 +2335,17 @@
 <context>
     <name>Simulate::DataItemWidget</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="66"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="68"/>
         <source>Send</source>
         <translation>发送</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="72"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="74"/>
         <source>Reset</source>
         <translation>复位</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="78"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="80"/>
         <source>Remove</source>
         <translation>删除</translation>
     </message>
@@ -2353,17 +2353,17 @@
 <context>
     <name>Simulate::ItemWidgetArray</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1033"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1037"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1087"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1091"/>
         <source>Size: </source>
         <translation>大小：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1091"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1095"/>
         <source>, Describe: </source>
         <translation>，描述信息：</translation>
     </message>
@@ -2371,22 +2371,22 @@
 <context>
     <name>Simulate::ItemWidgetBitMap</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1110"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1114"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1113"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1117"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1228"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1232"/>
         <source>BIT%1: </source>
         <translation>BIT%1：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1245"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1249"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -2394,17 +2394,17 @@
 <context>
     <name>Simulate::ItemWidgetBitValue</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1267"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1271"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1270"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1274"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1358"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1362"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -2412,70 +2412,70 @@
 <context>
     <name>Simulate::ItemWidgetCheck</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="517"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="519"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="521"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="523"/>
         <source>Parity:</source>
         <translation>校验位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="526"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="532"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="576"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="682"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="528"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="534"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="578"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="684"/>
         <source> B</source>
         <translation> 字节</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="527"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="529"/>
         <source>Start offset:</source>
         <translation>起始位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="533"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="535"/>
         <source>Stop offset:</source>
         <translation>终止位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="536"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="538"/>
         <source>Length:</source>
         <translation>位长度：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="538"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="540"/>
         <source>No parity</source>
         <translation>无校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="539"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="541"/>
         <source>8 bits sum-parity</source>
         <translation>8位和校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="540"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="542"/>
         <source>16 bits sum-parity</source>
         <translation>16位和校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="541"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="543"/>
         <source>8 bits xor-parity</source>
         <translation>8位异或校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="542"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="544"/>
         <source>16 bits xor-parity</source>
         <translation>16位异或校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="543"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="545"/>
         <source>CRC8 parity</source>
         <translation>CRC8校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="544"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="546"/>
         <source>CRC16 parity</source>
         <translation>CRC16校验</translation>
     </message>
@@ -2483,7 +2483,7 @@
 <context>
     <name>Simulate::ItemWidgetCounter</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="445"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="447"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
@@ -2491,7 +2491,7 @@
 <context>
     <name>Simulate::ItemWidgetFrameCode</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="699"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="701"/>
         <source>Current frame code:</source>
         <translation>当前帧码：</translation>
     </message>
@@ -2499,7 +2499,7 @@
 <context>
     <name>Simulate::ItemWidgetHead</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="373"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="375"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
@@ -2507,33 +2507,33 @@
 <context>
     <name>Simulate::ItemWidgetNumeric</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="797"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="799"/>
         <source>(Linkage original and value)</source>
         <translation>（原始数值和输出数值联动）</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="801"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="803"/>
         <source>Relative data:</source>
         <translation>关联数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="806"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="811"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="808"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="813"/>
         <source>Original data:</source>
         <translation>原始数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="817"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="819"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="820"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="822"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1006"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1010"/>
         <source>Scale: %1, Offset: %2, Range: %3, Unit: %4, size: %5.</source>
         <translation>比例：%1，偏移：%2，范围：%3，单位：%4，大小：%5。</translation>
     </message>
@@ -2541,9 +2541,25 @@
 <context>
     <name>Simulate::SetView</name>
     <message>
+        <location filename="../../module/simulate/SimulateSetView.cpp" line="180"/>
+        <source>WorkGroup was not binding protocol of sending [channel: %1]！</source>
+        <translation>工作组未绑定发送端协议 [通道：%1]！</translation>
+    </message>
+    <message>
         <location filename="../../module/simulate/SimulateSetView.cpp" line="214"/>
         <source>Drag and drog left tree node to here</source>
         <translation>拖放左边树节点到这里</translation>
+    </message>
+    <message>
+        <location filename="../../module/simulate/SimulateSetView.cpp" line="318"/>
+        <location filename="../../module/simulate/SimulateSetView.cpp" line="326"/>
+        <source>Vehicle:</source>
+        <translation>分机：</translation>
+    </message>
+    <message>
+        <location filename="../../module/simulate/SimulateSetView.cpp" line="369"/>
+        <source>System: </source>
+        <translation>系统：</translation>
     </message>
 </context>
 <context>
@@ -2562,27 +2578,27 @@
 <context>
     <name>Simulate::SettingsDlg</name>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="132"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="133"/>
         <source>Other settings for simulate module</source>
         <translation>仿真模块其他配置</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="142"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="143"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="146"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="147"/>
         <source>Set view</source>
         <translation>设置视图</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="155"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="156"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="159"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="160"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>

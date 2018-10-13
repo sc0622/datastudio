@@ -66,7 +66,7 @@ Product {
         files: {
             var files = [];
             module3rdpart.forEach(function(item){
-                files.push(item + EnvUtils.dylibSuffix(qbs) + '*');
+                files.push(EnvUtils.dylibPrefix(qbs) + item + EnvUtils.dylibSuffix(qbs) + '*');
             })
             return files;
         }

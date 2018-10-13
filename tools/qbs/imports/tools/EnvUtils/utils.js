@@ -84,16 +84,55 @@ function datastudioCorePrefix(project) {
     return datastudioCoreVisible(project) ? '' : 'core';
 }
 
-function dylibSuffix(qbs) {
-    if (qbs.buildVariant === 'debug') {
-        return 'd.dll';
+function dylibPrefix(qbs) {
+    var targetOS = qbs.targetOS
+    if (targetOS.contains('windows')) {
+        return ''
+    } else if (targetOS.contains('darwin')) {
+        return 'lib'
+    } else if (targetOS.contains('linux')) {
+        return 'lib'
     } else {
-        return '.dll';
+        return ''
     }
 }
 
+function dylibExtension(qbs) {
+    var targetOS = qbs.targetOS
+    if (targetOS.contains('windows')) {
+        return '.dll'
+    } else if (targetOS.contains('darwin')) {
+        return '.dylib'
+    } else if (targetOS.contains('linux')) {
+        return '.so'
+    } else {
+        return ''
+    }
+}
+
+function dylibExtensionFuzzy(qbs) {
+    var targetOS = qbs.targetOS
+    if (targetOS.contains('windows')) {
+        return '.dll'
+    } else if (targetOS.contains('darwin')) {
+        return '.*dylib'
+    } else if (targetOS.contains('linux')) {
+        return '.*so'
+    } else {
+        return ''
+    }
+}
+
+function dylibSuffix(qbs) {
+    var suffix = dylibExtensionFuzzy(qbs);
+    if (qbs.buildVariant === 'debug') {
+        suffix = 'd' + suffix;
+    }
+    return suffix;
+}
+
 function incDylibFuzzy(qbs, recursive, name) {
-    var suffix = '.dll';
+    var suffix = dylibExtensionFuzzy(qbs);
     if (qbs.buildVariant === 'debug') {
         suffix = '*d' + suffix;
     } else {
@@ -110,7 +149,7 @@ function incDylibFuzzy(qbs, recursive, name) {
 }
 
 function excDylibFuzzy(qbs, recursive, name) {
-    var suffix = '.dll';
+    var suffix = dylibExtensionFuzzy(qbs);
     if (qbs.buildVariant === 'debug') {
         suffix = '*[^d]' + suffix;
     } else {
@@ -124,4 +163,8 @@ function excDylibFuzzy(qbs, recursive, name) {
     } else {
         return suffix;
     }
+}
+
+function frameworkSuffix(qbs) {
+    return '.framework';
 }

@@ -40,6 +40,12 @@ JIcdObject::JIcdObject(const Icd::ObjectPtr &data, QObject *parent)
     d->init();
 }
 
+JIcdObject::~JIcdObject()
+{
+    Q_D(JIcdObject);
+    delete d;
+}
+
 void JIcdObject::registerQmlType()
 {
     IcdMetaRegisterUncreatableType2(JIcdObject);

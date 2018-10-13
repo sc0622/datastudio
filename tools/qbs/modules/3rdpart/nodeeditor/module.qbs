@@ -13,5 +13,5 @@ _3rdpart {
         return paths;
     }
     cpp.libraryPaths: [ project.sourceDirectory + '/lib/3rdpart' ]
-    cpp.dynamicLibraries: [ moduleName + (qbs.buildVariant == 'debug' ? 'd' : '') ]
+    cpp.dynamicLibraries: [ moduleName + variantSuffix ]
 }

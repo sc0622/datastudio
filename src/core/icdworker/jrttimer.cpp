@@ -1,10 +1,14 @@
 #include "precomp.h"
 #include "jrttimer.h"
 
-//
+#ifdef _MSC_VER
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
-
+#elif defined(__linux__)
+//TODO
+#elif defined(__APPLE__)
+//TODO
+#endif
 namespace Icd {
 
 // JRTTimerData
@@ -15,11 +19,11 @@ class JRTTimerData
 public:
     JRTTimerData()
         : runnable(nullptr)
+        , timeEvent(JRTTimer::TimeOneShot)
         , timerId(0)
-        , isRunning(false)
         , wAccuracy(1)
         , wInterval(100)
-        , timeEvent(JRTTimer::TimeOneShot)
+        , isRunning(false)
     {
 
     }
@@ -27,21 +31,31 @@ public:
     ~JRTTimerData();
 
     void init();
-
     bool start();
-
     void stop();
-
+#ifdef _MSC_VER
     static void WINAPI onTimeCallback(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser,
                                       DWORD_PTR dw1, DWORD_PTR dw2);
+#else
+#endif
 
 private:
     Icd::Runnable *runnable;
+    JRTTimer::TimeEvent timeEvent;
+#ifdef _MSC_VER
     MMRESULT timerId;
-    bool isRunning;
     UINT wAccuracy;
     UINT wInterval;
-    JRTTimer::TimeEvent timeEvent;
+#elif defined(__linux__)
+    unsigned int timerId;
+    unsigned int wAccuracy;
+    unsigned int wInterval;
+#elif defined(__APPLE__)
+    unsigned int timerId;
+    unsigned int wAccuracy;
+    unsigned int wInterval;
+#endif
+    bool isRunning;
 };
 
 JRTTimerData::~JRTTimerData()
@@ -59,7 +73,7 @@ bool JRTTimerData::start()
 {
     //
     stop();
-
+#ifdef _MSC_VER
     // 利用函数timeGetDevCaps取出系统分辨率的取值范围，如果正确则继续
     TIMECAPS tcaps;
     if (::timeGetDevCaps(&tcaps, sizeof(TIMECAPS)) == TIMERR_NOERROR) {
@@ -80,7 +94,11 @@ bool JRTTimerData::start()
         Q_ASSERT(false);
         return false;
     }
-
+#elif defined(__linux__)
+    //TODO
+#elif defined(__APPLE__)
+    //TODO
+#endif
     //
     isRunning = true;
 
@@ -91,18 +109,20 @@ void JRTTimerData::stop()
 {
     if (isRunning) {
         // 释放定时器
+#ifdef _MSC_VER
         if (timerId != NULL) {
             ::timeKillEvent(timerId);
         }
-
         // 删除设置的定时器分辨率
         //::timeEndPeriod(wAccuracy);
-
+#elif defined(__linux__)
+#elif defined(__APPLE__)
+#endif
         //
         isRunning = false;
     }
 }
-
+#ifdef _MSC_VER
 void WINAPI JRTTimerData::onTimeCallback(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser,
                                          DWORD_PTR dw1, DWORD_PTR dw2)
 {
@@ -123,7 +143,11 @@ void WINAPI JRTTimerData::onTimeCallback(UINT uTimerID, UINT uMsg, DWORD_PTR dwU
         _this->runnable->run();    //
     }
 }
-
+#elif defined(__linux__)
+//TODO
+#elif defined(__APPLE__)
+//TODO
+#endif
 // class JRTTimer
 
 JRTTimer::JRTTimer()
@@ -137,7 +161,7 @@ JRTTimer::JRTTimer(JRTTimer::TimeEvent timeEvent, int interval)
 {
     d->init();
     d->timeEvent = timeEvent;
-    d->wInterval = UINT(interval);
+    d->wInterval = static_cast<unsigned int>(interval);
 }
 
 JRTTimer::~JRTTimer()
@@ -169,7 +193,7 @@ void JRTTimer::setAccuracy(unsigned int value)
 {
     //
     d->stop();
-
+#ifdef _MSC_VER
     //
     if (value != d->wAccuracy) {
         //
@@ -183,6 +207,13 @@ void JRTTimer::setAccuracy(unsigned int value)
             }
         }
     }
+#elif defined(__linux__)
+    (void)value;
+    //TODO
+#elif defined(__APPLE__)
+    (void)value;
+    //TODO
+#endif
 }
 
 unsigned int JRTTimer::interval() const
@@ -194,15 +225,12 @@ void JRTTimer::setInterval(unsigned int value)
 {
     bool isRunning = d->isRunning;
 
-    //
     if (isRunning) {
         stop();
     }
 
-    //
     d->wInterval = value;
 
-    //
     if (isRunning) {
         start();
     }
@@ -217,15 +245,12 @@ void JRTTimer::setTimeEvent(JRTTimer::TimeEvent value)
 {
     bool isRunning = d->isRunning;
 
-    //
     if (isRunning) {
         stop();
     }
 
-    //
     d->timeEvent = value;
 
-    //
     if (isRunning) {
         start();
     }
@@ -238,10 +263,7 @@ Runnable *JRTTimer::task() const
 
 void JRTTimer::setTask(Runnable *task)
 {
-    //
     d->stop();
-
-    //
     d->runnable = task;
 }
 

@@ -1,24 +1,28 @@
 #include "precomp.h"
 #include "icdgenerator_word_p.h"
-#include <QAxObject>
 #include <QStandardItem>
 #include "icdcore/icdcore_inc.h"
-#if defined(ICDWORKER_LIB)
+#ifdef ICDWORKER_LIB
 #include "icdworker/icdworker_inc.h"
 #endif
 #include "../../../../icdwidget/icdwidget_global.h"
 #include "../../../icdparser.h"
+#ifdef QT_AXCONTAINER_LIB
+#include <QAxObject>
+#endif
 
 namespace Icd {
 
 WordGeneratorData::WordGeneratorData(WordGenerator *q)
     : J_QPTR(q)
+    #ifdef QT_AXCONTAINER_LIB
     , word_(nullptr)
     , document_(nullptr)
     , tableCaption_(nullptr)
     , listTemplate_(nullptr)
     , tables_(nullptr)
     , selection_(nullptr)
+    #endif
 {
 
 }
@@ -30,6 +34,7 @@ WordGeneratorData::~WordGeneratorData()
 
 bool WordGeneratorData::startup()
 {
+#ifdef QT_AXCONTAINER_LIB
     if (word_) {
         word_->deleteLater();
     }
@@ -97,12 +102,15 @@ bool WordGeneratorData::startup()
         QAxObject *paragraphFormat = style->querySubObject("ParagraphFormat");
         paragraphFormat->setProperty("LineSpacingRule", 1);
     }
-
     return true;
+#else
+    return false;
+#endif
 }
 
 void WordGeneratorData::shutdown(const QString &filePath, int saveAsType)
 {
+#ifdef QT_AXCONTAINER_LIB
     if (!word_) {
         return;
     }
@@ -136,14 +144,21 @@ void WordGeneratorData::shutdown(const QString &filePath, int saveAsType)
 #ifdef _MSC_VER
     ::OleUninitialize();
 #endif // _MSC_VER
+#else
+    (void)filePath;
+    (void)saveAsType;
+#endif
 }
 
 bool WordGeneratorData::generateDocument(const QStandardItem *item, bool exportAll, bool rt)
 {
-    if (!item || !document_) {
+    if (!item) {
         return false;
     }
-
+#ifdef QT_AXCONTAINER_LIB
+    if (!document_) {
+        return false;
+    }
     //
     bool result = false;
     const int itemType = item->type();
@@ -177,14 +192,22 @@ bool WordGeneratorData::generateDocument(const QStandardItem *item, bool exportA
     }
 
     return true;
+#else
+    (void)exportAll;
+    (void)rt;
+    return false;
+#endif
 }
 
 bool WordGeneratorData::generateDocument(const TablePtr &table)
 {
-    if (!table || !document_) {
+    if (!table) {
         return false;
     }
-
+#ifdef QT_AXCONTAINER_LIB
+    if (!document_) {
+        return false;
+    }
     if (!generateTable(table, 1)) {
         return false;
     }
@@ -194,8 +217,11 @@ bool WordGeneratorData::generateDocument(const TablePtr &table)
     }
 
     return true;
+#else
+    return false;
+#endif
 }
-
+#ifdef QT_AXCONTAINER_LIB
 bool WordGeneratorData::generateType()
 {
     return true;
@@ -1269,5 +1295,5 @@ bool WordGeneratorData::setCellText(QAxObject *axTable, int row, int column, con
 
     return true;
 }
-
+#endif
 } // end of namespace Icd

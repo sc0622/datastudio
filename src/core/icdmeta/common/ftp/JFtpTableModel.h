@@ -78,7 +78,7 @@ public:
     Q_INVOKABLE bool setData(int row, const QVariant &value, int role = Qt::EditRole);
     Q_INVOKABLE void clearContents();
 
-    Q_INVOKABLE void sort(bool isRootDir);
+    Q_INVOKABLE void setSort(bool isRootDir);
 
 signals:
 

@@ -99,7 +99,7 @@ private:
 private:
     Q_DISABLE_COPY(JNotify)
     J_DECLARE_PRIVATE(JNotify)
-    J_FRIEND_HANDLEPTR()
+    //J_FRIEND_HANDLEPTR()
 };
 
 }

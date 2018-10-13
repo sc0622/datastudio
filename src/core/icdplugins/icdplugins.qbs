@@ -9,7 +9,11 @@ QmlPluginLibrary {
     uri: 'Icd.Core'
     type: base.concat([ 'customfile.out' ])
 
-    dynamicLibraryPaths: base.concat([project.sourceDirectory + '/lib/3rdpart/moxa'])
+    Properties {
+        condition: qbs.targetOS.contains('windows')
+        cdynamicLibraryPaths: base.concat([project.sourceDirectory + '/lib/3rdpart/moxa'])
+    }
+
     Qt.core.resourceFileBaseName: name
     langPath: sourceDirectory + '/imports/lang'
     translationFileTags: base.concat([ 'qml', 'js' ])

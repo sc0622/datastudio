@@ -28,7 +28,6 @@ private:
 
 void JIcdComplexItemPrivate::init()
 {
-    Q_Q(JIcdComplexItem);
     table = QSharedPointer<JIcdTable>(new JIcdTable(data->table()), jdelete_qobject);
     QQmlEngine::setObjectOwnership(table.data(), QQmlEngine::CppOwnership);
 }

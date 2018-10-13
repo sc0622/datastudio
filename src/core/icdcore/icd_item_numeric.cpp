@@ -2,6 +2,7 @@
 #include "icd_item_numeric.h"
 #include <sstream>
 #include <limits.h>
+#include <float.h>
 #include <unordered_map>
 
 namespace Icd {
@@ -15,8 +16,8 @@ public:
     NumericItemData()
         : numericType(NumericI8)
         , scale(1.0)
-        , decimals(0)
         , offset(0.0)
+        , decimals(0)
         , limit(new LimitItem())
     {
 
@@ -25,8 +26,8 @@ public:
 private:
     NumericType numericType;    // 数据项类型
     double scale;               // 比例尺
-    int decimals;               // 小数有效个数
     double offset;              // 偏置
+    int decimals;               // 小数有效个数
     LimitItemPtr limit;         // 范围
     std::string unit;           // 单位
     std::map<double, std::string> specs;  // 特征点,画图或显示使用

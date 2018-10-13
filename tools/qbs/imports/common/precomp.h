@@ -181,16 +181,15 @@
 
 #ifdef QT_CORE_LIB
 //
-static void jdelete_qobject(QObject *object)
+inline void jdelete_qobject(QObject *object)
 {
     delete object;
 }
+#endif
 
 // nodejs
 #ifdef BUILDING_NODE_EXTENSION
 #include <napi.h>
-#endif
-
 #endif
 
 #endif // PRECOMP_H

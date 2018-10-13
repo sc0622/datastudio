@@ -7,7 +7,7 @@ import qbs.TextFile
 Project {
     id: root
     name: projectDisplayName
-    minimumQbsVersion: '1.9.1'
+    minimumQbsVersion: '1.10.0'
     qbsSearchPaths: [ '../' ]
 
     property string projectName: 'app'

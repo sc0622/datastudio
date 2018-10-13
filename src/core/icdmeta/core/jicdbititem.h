@@ -22,7 +22,7 @@ class ICDMETA_EXPORT JIcdBitItem : public JIcdItem
     Q_PROPERTY(QString currentSpec READ currentSpec NOTIFY currentSpecChanged)
 public:
     explicit JIcdBitItem(const Icd::BitItemPtr &data, QObject *parent = nullptr);
-    ~JIcdBitItem();
+    ~JIcdBitItem() override;
 
     static void registerQmlType();
     Icd::BitItemPtr metaData() const;
