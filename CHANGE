@@ -1,4 +1,13 @@
 
+-- V4.6.1
+    tools: VS2015，Qt5.11.1，Qbs>=1.10.0
+    depends:
+        1) jframework: v2.8.0
+    fixed:
+        1) 支持MacOS、Linux平台
+    next:
+        <inherit to v4.6.0>
+
 -- V4.6.0
     tools: VS2015，Qt5.11.1，Qbs>=1.9.1
     depends:
