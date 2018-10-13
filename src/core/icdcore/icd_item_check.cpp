@@ -210,12 +210,14 @@ std::string CheckItem::typeString() const
 
 ObjectPtr CheckItem::copy() const
 {
-    return std::make_shared<CheckItem>(*this);
+    CheckItemPtr newCheck = std::make_shared<CheckItem>(*this);
+    return newCheck;
 }
 
 ObjectPtr CheckItem::clone() const
 {
-    return std::make_shared<CheckItem>(*this);
+    CheckItemPtr newCheck = std::make_shared<CheckItem>(*this);
+    return newCheck;
 }
 
 CheckItem &CheckItem::operator =(const CheckItem &other)

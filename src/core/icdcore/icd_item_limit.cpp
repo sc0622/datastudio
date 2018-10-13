@@ -90,12 +90,14 @@ void LimitItem::setMaximumInf(bool inf)
 
 ObjectPtr LimitItem::copy() const
 {
-    return std::make_shared<LimitItem>(*this);
+    LimitItemPtr newLimit = std::make_shared<LimitItem>(*this);
+    return newLimit;
 }
 
 ObjectPtr LimitItem::clone() const
 {
-    return std::make_shared<LimitItem>(*this);
+    LimitItemPtr newLimit = std::make_shared<LimitItem>(*this);
+    return newLimit;
 }
 
 LimitItem &LimitItem::operator =(const LimitItem &other)

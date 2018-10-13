@@ -227,7 +227,8 @@ std::string FrameCodeItem::typeString() const
 
 ObjectPtr FrameCodeItem::copy() const
 {
-    return std::make_shared<FrameCodeItem>(*this);
+    FrameCodeItemPtr newFrameCode = std::make_shared<FrameCodeItem>(*this);
+    return newFrameCode;
 }
 
 ObjectPtr FrameCodeItem::clone() const

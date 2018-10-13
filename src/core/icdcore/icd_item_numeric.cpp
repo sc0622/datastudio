@@ -462,7 +462,8 @@ bool NumericItem::outOfLimit() const
 
 ObjectPtr NumericItem::copy() const
 {
-    return std::make_shared<NumericItem>(*this);
+    NumericItemPtr newNumeric = std::make_shared<NumericItem>(*this);
+    return newNumeric;
 }
 
 ObjectPtr NumericItem::clone() const

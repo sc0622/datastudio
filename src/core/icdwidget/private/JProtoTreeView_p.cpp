@@ -2260,6 +2260,7 @@ void JProtoTreeViewPrivate::triggerCopyItem(QStandardItem *item)
         mimeData->setData("icd-edit/domain-list", domainList);
         // action
         mimeData->setData("icd-edit/action", "copy");
+        clipboard->clear();
         clipboard->setMimeData(mimeData);
     }
 }
@@ -2279,6 +2280,7 @@ void JProtoTreeViewPrivate::triggerCloneItem(QStandardItem *item)
         mimeData->setData("icd-edit/domain-list", domainList);
         // action
         mimeData->setData("icd-edit/action", "clone");
+        clipboard->clear();
         clipboard->setMimeData(mimeData);
     }
 }

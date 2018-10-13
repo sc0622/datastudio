@@ -171,7 +171,8 @@ void Vehicle::clearData()
 
 ObjectPtr Vehicle::copy() const
 {
-    return std::make_shared<Vehicle>(*this);
+    VehiclePtr newVehicle = std::make_shared<Vehicle>(*this);
+    return newVehicle;
 }
 
 ObjectPtr Vehicle::clone() const

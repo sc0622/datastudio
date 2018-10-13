@@ -719,16 +719,54 @@ void DetailTable::showContextMenu(const QPoint &pos)
             });
         }
     }
+    //
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    // copy
+    if (clipboard && selected.size() == 1) {
+        //
+        const QString domain = jnotify->send("edit.tree.row.domain",
+                                             QVariant(tableView_->currentRow())).toString();
+        if (!domain.isEmpty()) {
+            //
+            // copy
+            QAction *actionCopy = menu.addAction(QIcon(":icdwidget/image/tree/copy.png"),
+                                                 tr("Copy"));
+            connect(actionCopy, &QAction::triggered, this, [=](){
+                QMimeData *mimeData = new QMimeData();
+                // domain-list
+                QByteArray domainList;
+                domainList.append(domain);
+                mimeData->setData("icd-edit/domain-list", domainList);
+                // action
+                mimeData->setData("icd-edit/action", "copy");
+                clipboard->clear();
+                clipboard->setMimeData(mimeData);
+            });
+            // clone
+            QAction *actionClone = menu.addAction(QIcon(":icdwidget/image/tree/clone.png"),
+                                                  tr("Clone"));
+            connect(actionClone, &QAction::triggered, this, [=](){
+                QMimeData *mimeData = new QMimeData();
+                // domain-list
+                QByteArray domainList;
+                domainList.append(domain);
+                mimeData->setData("icd-edit/domain-list", domainList);
+                // action
+                mimeData->setData("icd-edit/action", "clone");
+                clipboard->clear();
+                clipboard->setMimeData(mimeData);
+            });
+        }
+    }
     // past
     bool hasPast = false;
-    QClipboard *clipboard = QGuiApplication::clipboard();
     if (clipboard && clipboard->ownsClipboard()) {
         const QMimeData *mimeData = clipboard->mimeData();
         if (mimeData) {
             if (mimeData->hasFormat("icd-edit/domain-list")) {
                 const QString domainList = mimeData->data("icd-edit/domain-list");
                 // find object
-                QList<Icd::ObjectPtr> objects;
+                QList<Icd::ObjectPtr> copiedObjects;
                 const QStringList domains = domainList.split(';');
                 foreach (auto &domain, domains) {
                     Icd::ObjectPtr object;
@@ -736,11 +774,11 @@ void DetailTable::showContextMenu(const QPoint &pos)
                     args.append(qVariantFromValue(static_cast<void*>(&object)));
                     args.append(domain);
                     if (jnotify->send("edit.tree.find.object", args).toBool() && object) {
-                        objects.append(object);
+                        copiedObjects.append(object);
                     }
                 }
                 //
-                if (objects.size() == 1 && isSameType(objects.first())) {   // Now only supports copying one
+                if (copiedObjects.size() == 1 && isSameType(copiedObjects.first())) {   // Now only supports copying one
                     //
                     hasPast = true;
                     //
@@ -749,53 +787,33 @@ void DetailTable::showContextMenu(const QPoint &pos)
                     QAction *actionPastAbove = menu.addAction(QIcon(":icdwidget/image/tree/past-above.png"),
                                                               tr("Past above"));
                     connect(actionPastAbove, &QAction::triggered, this, [=](){
-                        emit requestPast(topRow, objects.first(), clone);
+                        if (copiedObjects.isEmpty()) {
+                            return;
+                        }
+                        emit requestPast(topRow, copiedObjects.first(), clone);
+                        clipboard->clear();
                     });
                     // past - below
                     QAction *actionPastBelow = menu.addAction(QIcon(":icdwidget/image/tree/past-below.png"),
                                                               tr("Past below"));
                     connect(actionPastBelow, &QAction::triggered, this, [=](){
-                        emit requestPast(bottomRow + 1, objects.first(), clone);
+                        if (copiedObjects.isEmpty()) {
+                            return;
+                        }
+                        emit requestPast(bottomRow + 1, copiedObjects.first(), clone);
+                        clipboard->clear();
                     });
                     // past - append
                     QAction *actionPast = menu.addAction(QIcon(":icdwidget/image/tree/past.png"),
                                                          tr("Past"));
                     connect(actionPast, &QAction::triggered, this, [=](){
-                        emit requestPast(tableView_->rowCount(), objects.first(), clone);
+                        if (copiedObjects.isEmpty()) {
+                            return;
+                        }
+                        emit requestPast(tableView_->rowCount(), copiedObjects.first(), clone);
+                        clipboard->clear();
                     });
                 }
-            }
-        }
-    }
-    // copy
-    if (!hasPast && selected.size() == 1) {
-        //
-        QClipboard *clipboard = QGuiApplication::clipboard();
-        if (clipboard) {
-            //
-            const QString domain = jnotify->send("edit.tree.row.domain",
-                                                 QVariant(tableView_->currentRow())).toString();
-            if (!domain.isEmpty()) {
-                //
-                QMimeData *mimeData = new QMimeData();
-                // domain-list
-                QByteArray domainList;
-                domainList.append(domain);
-                mimeData->setData("icd-edit/domain-list", domainList);
-                // action
-                clipboard->setMimeData(mimeData);
-                // copy
-                QAction *actionCopy = menu.addAction(QIcon(":icdwidget/image/tree/copy.png"),
-                                                     tr("Copy"));
-                connect(actionCopy, &QAction::triggered, this, [=](){
-                    mimeData->setData("icd-edit/action", "copy");
-                });
-                // clone
-                QAction *actionClone = menu.addAction(QIcon(":icdwidget/image/tree/clone.png"),
-                                                      tr("Clone"));
-                connect(actionClone, &QAction::triggered, this, [=](){
-                    mimeData->setData("icd-edit/action", "clone");
-                });
             }
         }
     }

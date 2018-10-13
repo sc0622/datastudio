@@ -171,7 +171,8 @@ void Root::clearData()
 
 ObjectPtr Root::copy() const
 {
-    return std::make_shared<Root>(*this);
+    RootPtr newRoot = std::make_shared<Root>(*this);
+    return newRoot;
 }
 
 ObjectPtr Root::clone() const

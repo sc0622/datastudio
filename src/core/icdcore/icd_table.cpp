@@ -1239,7 +1239,8 @@ void Table::clearData()
 
 ObjectPtr Table::copy() const
 {
-    return std::make_shared<Table>(*this);
+    TablePtr newTable = std::make_shared<Table>(*this);
+    return newTable;
 }
 
 ObjectPtr Table::clone() const

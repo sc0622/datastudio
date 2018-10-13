@@ -171,7 +171,8 @@ void System::clearData()
 
 ObjectPtr System::copy() const
 {
-    return std::make_shared<System>(*this);
+    SystemPtr newSystem = std::make_shared<System>(*this);
+    return newSystem;
 }
 
 ObjectPtr System::clone() const

@@ -61,6 +61,9 @@ private:
 
     void cancelInsert(int row);
 
+    Icd::ObjectPtr createNew(const Icd::ObjectPtr &copied, bool clone,
+                             const Icd::ObjectPtr &parent = Icd::ObjectPtr());
+
 private:
     JSplitter *splitterMain_;
     DetailTable *detailTable_;

@@ -385,7 +385,8 @@ std::string BitItem::typeName() const
 
 ObjectPtr BitItem::copy() const
 {
-    return std::make_shared<BitItem>(*this);
+    BitItemPtr newBit = std::make_shared<BitItem>(*this);
+    return newBit;
 }
 
 ObjectPtr BitItem::clone() const

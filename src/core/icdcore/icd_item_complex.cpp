@@ -104,7 +104,8 @@ void ComplexItem::clearData()
 
 ObjectPtr ComplexItem::copy() const
 {
-    return std::make_shared<ComplexItem>(*this);
+    ComplexItemPtr newComplex = std::make_shared<ComplexItem>(*this);
+    return newComplex;
 }
 
 ObjectPtr ComplexItem::clone() const

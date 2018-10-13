@@ -59,12 +59,14 @@ std::string DateTimeItem::typeName() const
 
 ObjectPtr DateTimeItem::copy() const
 {
-    return std::make_shared<DateTimeItem>(*this);
+    DateTimeItemPtr newDateTime = std::make_shared<DateTimeItem>(*this);
+    return newDateTime;
 }
 
 ObjectPtr DateTimeItem::clone() const
 {
-    return std::make_shared<DateTimeItem>(*this);
+    DateTimeItemPtr newDateTime = std::make_shared<DateTimeItem>(*this);
+    return newDateTime;
 }
 
 DateTimeItem &DateTimeItem::operator =(const DateTimeItem &other)

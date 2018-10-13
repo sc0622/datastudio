@@ -207,12 +207,14 @@ void Item::clearData()
 
 ObjectPtr Item::copy() const
 {
-    return std::make_shared<Item>(*this);
+    ItemPtr newItem = std::make_shared<Item>(*this);
+    return newItem;
 }
 
 ObjectPtr Item::clone() const
 {
-    return std::make_shared<Item>(*this);
+    ItemPtr newItem = std::make_shared<Item>(*this);
+    return newItem;
 }
 
 Item &Item::operator =(const Item &other)

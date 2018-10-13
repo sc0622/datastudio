@@ -178,12 +178,14 @@ int ArrayItem::typeSize() const
 
 ObjectPtr ArrayItem::copy() const
 {
-    return std::make_shared<ArrayItem>(*this);
+    ArrayItemPtr newArray = std::make_shared<ArrayItem>(*this);
+    return newArray;
 }
 
 ObjectPtr ArrayItem::clone() const
 {
-    return std::make_shared<ArrayItem>(*this);
+    ArrayItemPtr newArray = std::make_shared<ArrayItem>(*this);
+    return newArray;
 }
 
 ArrayItem &ArrayItem::operator =(const ArrayItem &other)

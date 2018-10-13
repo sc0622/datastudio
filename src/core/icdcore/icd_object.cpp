@@ -258,12 +258,14 @@ void Object::clearData()
 
 ObjectPtr Object::copy() const
 {
-    return std::make_shared<Object>(*this);
+    ObjectPtr newObject = std::make_shared<Object>(*this);
+    return newObject;
 }
 
 ObjectPtr Object::clone() const
 {
-    return std::make_shared<Object>(*this);
+    ObjectPtr newObject = std::make_shared<Object>(*this);
+    return newObject;
 }
 
 Object &Object::operator =(const Object &other)

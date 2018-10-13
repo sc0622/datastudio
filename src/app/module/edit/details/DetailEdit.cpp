@@ -244,7 +244,11 @@ void DetailEdit::restoreContent()
         return;
     }
 
-    objectEdit_->restoreContent();
+    if (object_ != objectEdit_->object()) {
+        updateView(object_, true, (newObject_ != nullptr));
+    } else {
+        objectEdit_->restoreContent();
+    }
 
     setButtonsEnabled(false);
 }

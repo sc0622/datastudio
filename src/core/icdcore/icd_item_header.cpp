@@ -95,12 +95,14 @@ std::string HeaderItem::typeName() const
 
 ObjectPtr HeaderItem::copy() const
 {
-    return std::make_shared<HeaderItem>(*this);
+    HeaderItemPtr newHeader = std::make_shared<HeaderItem>(*this);
+    return newHeader;
 }
 
 ObjectPtr HeaderItem::clone() const
 {
-    return std::make_shared<HeaderItem>(*this);
+    HeaderItemPtr newHeader = std::make_shared<HeaderItem>(*this);
+    return newHeader;
 }
 
 HeaderItem &HeaderItem::operator =(const HeaderItem &other)

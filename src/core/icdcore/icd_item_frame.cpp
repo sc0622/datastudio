@@ -309,7 +309,8 @@ void FrameItem::clearData()
 
 ObjectPtr FrameItem::copy() const
 {
-    return std::make_shared<FrameItem>(*this);
+    FrameItemPtr newFrame = std::make_shared<FrameItem>(*this);
+    return newFrame;
 }
 
 ObjectPtr FrameItem::clone() const

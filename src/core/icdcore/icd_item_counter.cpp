@@ -161,12 +161,14 @@ std::string CounterItem::typeString() const
 
 ObjectPtr CounterItem::copy() const
 {
-    return std::make_shared<CounterItem>(*this);
+    CounterItemPtr newCounter = std::make_shared<CounterItem>(*this);
+    return newCounter;
 }
 
 ObjectPtr CounterItem::clone() const
 {
-    return std::make_shared<CounterItem>(*this);
+    CounterItemPtr newCounter = std::make_shared<CounterItem>(*this);
+    return newCounter;
 }
 
 CounterItem &CounterItem::operator =(const CounterItem &other)

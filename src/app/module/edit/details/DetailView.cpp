@@ -325,10 +325,8 @@ void DetailView::insertRow(int row, const Icd::ObjectPtr &object, bool clone)
             return;
         }
 
-        auto newVehicle = JHandlePtrCast<Icd::Vehicle>(clone ? object->clone() : object->copy());
-        newVehicle->setParent(object_.get());
-        newObject_ = newVehicle;
-        detailTable_->insertRow(row, newVehicle);
+        newObject_ = createNew(object, clone, object_);
+        detailTable_->insertRow(row, JHandlePtrCast<Icd::Vehicle>(newObject_));
         break;
     }
     case Icd::ObjectVehicle:
@@ -337,10 +335,8 @@ void DetailView::insertRow(int row, const Icd::ObjectPtr &object, bool clone)
             return;
         }
 
-        auto newSystem = JHandlePtrCast<Icd::System>(clone ? object->clone() : object->copy());
-        newSystem->setParent(object_.get());
-        newObject_ = newSystem;
-        detailTable_->insertRow(row, newSystem);
+        newObject_ = createNew(object, clone, object_);
+        detailTable_->insertRow(row, JHandlePtrCast<Icd::System>(newObject_));
         break;
     }
     case Icd::ObjectSystem:
@@ -350,10 +346,8 @@ void DetailView::insertRow(int row, const Icd::ObjectPtr &object, bool clone)
             return;
         }
 
-        auto newTable = JHandlePtrCast<Icd::Table>(clone ? object->clone() : object->copy());
-        newTable->setParent(object_.get());
-        newObject_ = newTable;
-        detailTable_->insertRow(row, newTable);
+        newObject_ = createNew(object, clone, object_);
+        detailTable_->insertRow(row, JHandlePtrCast<Icd::Table>(newObject_));
         break;
     }
     case Icd::ObjectComplex:
@@ -367,10 +361,8 @@ void DetailView::insertRow(int row, const Icd::ObjectPtr &object, bool clone)
             return;
         }
 
-        auto newItem = JHandlePtrCast<Icd::Table>(clone ? object->clone() : object->copy());
-        newItem->setParent(complex->table().get());
-        newObject_ = newItem;
-        detailTable_->insertRow(row, newItem);
+        newObject_ = createNew(object, clone, object_);
+        detailTable_->insertRow(row, JHandlePtrCast<Icd::Item>(newObject_));
         break;
     }
     case Icd::ObjectTable:
@@ -380,10 +372,8 @@ void DetailView::insertRow(int row, const Icd::ObjectPtr &object, bool clone)
             return;
         }
 
-        auto newItem = JHandlePtrCast<Icd::Table>(clone ? object->clone() : object->copy());
-        newItem->setParent(object_.get());
-        newObject_ = newItem;
-        detailTable_->insertRow(row, newItem);
+        newObject_ = createNew(object, clone, object_);
+        detailTable_->insertRow(row, JHandlePtrCast<Icd::Item>(newObject_));
         break;
     }}
 
@@ -628,6 +618,20 @@ void DetailView::cancelInsert(int row)
     }
 
     setModified(false);
+}
+
+Icd::ObjectPtr DetailView::createNew(const Icd::ObjectPtr &copied, bool clone, const Icd::ObjectPtr &parent)
+{
+    if (!copied) {
+        return Icd::ObjectPtr();
+    }
+
+    Icd::ObjectPtr newObject = clone ? copied->clone() : copied->copy();
+    newObject->setParent(parent.get());
+    newObject->setName(std::string());
+    newObject->setMark(std::string());
+
+    return newObject;
 }
 
 }

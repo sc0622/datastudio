@@ -155,7 +155,7 @@ TreeView::TreeView(QWidget *parent)
         if (!childItem) {
             return;
         }
-        const QString domain = currentItem->data(Icd::TreeItemDomainRole).toString();
+        const QString domain = childItem->data(Icd::TreeItemDomainRole).toString();
         event.setReturnValue(domain);
     });
     jnotify->on("edit.toolbar.item.add", this, [=](JNEvent &){
