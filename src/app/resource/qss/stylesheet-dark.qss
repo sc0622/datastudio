@@ -197,7 +197,7 @@ QDockWidget::float-button {
     subcontrol-position: center right;
     subcontrol-origin: margin;
     position: absolute;
-    right: 33px;
+    right: 33px;Q
     width: 26px;
     min-height: 21px;
 }

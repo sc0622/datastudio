@@ -983,7 +983,7 @@
 <context>
     <name>Edit::ItemEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/ItemEdit.cpp" line="21"/>
+        <location filename="../../module/edit/itemedit/ItemEdit.cpp" line="22"/>
         <source>Type:</source>
         <translation>数据类型:</translation>
     </message>
@@ -1034,27 +1034,27 @@
         <translation>基本信息</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="33"/>
+        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="35"/>
         <source>Name:</source>
         <translation>名称:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="37"/>
+        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="39"/>
         <source>Mark:</source>
         <translation>标识:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="40"/>
+        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="42"/>
         <source>Describe:</source>
         <translation>描述:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="221"/>
+        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="223"/>
         <source>There is already a name called %1</source>
         <translation>名称“%1”已存在</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="242"/>
+        <location filename="../../module/edit/itemedit/ObjectEdit.cpp" line="244"/>
         <source>There is already a mark called %1</source>
         <translation>标识“%1”已存在</translation>
     </message>
@@ -2163,7 +2163,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="46"/>
+        <location filename="../../main.cpp" line="50"/>
         <source>Data Studio</source>
         <translation>Data Studio</translation>
     </message>

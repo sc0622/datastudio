@@ -8,14 +8,18 @@
 int main(int argc, char **argv)
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB2312"));
+#ifdef _MSC_VER
 #if QT_VERSION >= 0x050600
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
 #endif
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     //QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
 
     QApplication app(argc, argv);
+#ifdef _MSC_VER
     QApplication::setFont(QFont("Microsoft YaHei", 9));
+#endif
     QApplication::setWindowIcon(QIcon(":/datastudio/image/app.png"));
     QCoreApplication::setOrganizationName("Smartsoft");
     QCoreApplication::setApplicationName("Data Studio");

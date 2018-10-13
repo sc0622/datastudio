@@ -172,7 +172,7 @@ void SpecsTable::restoreContent()
             }
             // specs
             const auto &specs = numeric->specs();
-            tableView_->setRowCount(specs.size());
+            tableView_->setRowCount(int(specs.size()));
             int rowIndex = 0;
             for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer, ++rowIndex) {
                 tableView_->setItemData(rowIndex, 0, IcdWidget::prettyValue(citer->first));
@@ -195,7 +195,7 @@ void SpecsTable::restoreContent()
             const auto &specs = bit->specs();
             for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
                 const quint32 index = quint32(citer->first);
-                if (index >= bit->bitCount()) {
+                if (index >= quint32(bit->bitCount())) {
                     continue;
                 }
                 const QString spec = QString::fromStdString(citer->second).trimmed();
@@ -217,7 +217,7 @@ void SpecsTable::restoreContent()
             }
             // specs
             const auto &specs = bit->specs();
-            tableView_->setRowCount(specs.size());
+            tableView_->setRowCount(int(specs.size()));
             int rowIndex = 0;
             for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer, ++rowIndex) {
                 tableView_->setItemData(rowIndex, 0, QString::number(citer->first));
@@ -281,10 +281,10 @@ void SpecsTable::saveContent()
             const QString desc0 = tableView_->itemData(i, 2).toString().trimmed();
             const QString desc1 = tableView_->itemData(i, 3).toString().trimmed();
             if (desc0.isEmpty() && desc1.isEmpty()) {
-                bit->addSpec(varKey.toDouble(), name.toStdString());
+                bit->addSpec(Icd::icd_uint64(varKey.toDouble()), name.toStdString());
             } else {
                 const QString spec = QString("%1:%2;%3").arg(desc0).arg(desc1);
-                bit->addSpec(varKey.toDouble(), spec.toStdString());
+                bit->addSpec(Icd::icd_uint64(varKey.toDouble()), spec.toStdString());
             }
         }
         break;
@@ -337,7 +337,7 @@ void SpecsTable::updateContent(int bitStart, int bitCount)
     const auto &specs = bit->specs();
     for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
         const quint32 index = quint32(citer->first);
-        if (index >= bitCount) {
+        if (index >= quint32(bitCount)) {
             continue;
         }
         const QString spec = QString::fromStdString(citer->second).trimmed();
@@ -447,7 +447,7 @@ QWidget *JULongLongItemDelegate::createEditor(QWidget *parent, const QStyleOptio
             break;
         }
         const auto valueRange = bit->valueRange();
-        spin->setRange(valueRange.first, valueRange.second);
+        spin->setRange(qulonglong(valueRange.first), qulonglong(valueRange.second));
         return spin;
     }
     default:

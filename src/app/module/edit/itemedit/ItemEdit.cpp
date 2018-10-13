@@ -18,6 +18,7 @@ ItemEdit::ItemEdit(const Icd::ItemPtr &item, QWidget *parent)
     : ObjectEdit(item, parent)
 {
     comboType_ = new QComboBox(this);
+    comboType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     insertRow(0, "<font color=red>*</font>" + tr("Type:"), comboType_);
 
     // types

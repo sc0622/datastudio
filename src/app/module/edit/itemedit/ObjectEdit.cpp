@@ -28,6 +28,8 @@ ObjectEdit::ObjectEdit(const Icd::ObjectPtr &object, QWidget *parent)
     formLayout_ = new QFormLayout(groupBase);
     formLayout_->setContentsMargins(3, 0, 3, 3);
     formLayout_->setLabelAlignment(Qt::AlignRight);
+    formLayout_->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    formLayout_->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     editName_ = new QLineEdit(this);
     formLayout_->addRow("<font color=red>*</font>" + tr("Name:"), editName_);
