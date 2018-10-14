@@ -121,35 +121,27 @@ bool WorkerSendPrivate::doCheck()
         return true;
     }
 
-    //
     Icd::CheckItemPtr checkItem = table->checkItem();
 
-    //
     switch (checkItem->checkType()) {
     case Icd::CheckSum8:
     {
-        //
         icd_uint8 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
             sum += *(reinterpret_cast<icd_uint8*>(tableBuffer) + i);
         }
 
-        //
         checkItem->setData(sum);
-
         break;
     }
     case Icd::CheckSum16:
     {
-        //
         icd_uint16 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
             sum += *(reinterpret_cast<icd_uint16*>(tableBuffer) + i);
         }
 
-        //
         checkItem->setData(sum);
-
         break;
     }
     case Icd::CheckCrc8:
@@ -170,25 +162,23 @@ bool WorkerSendPrivate::doCheck()
     }
     case Icd::CheckXor8:
     {
-        //
         icd_uint8 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
             sum ^= *(reinterpret_cast<icd_uint8*>(tableBuffer) + i);
         }
 
-        //
         checkItem->setData(sum);
+        break;
     }
     case Icd::CheckXor16:
     {
-        //
         icd_uint16 sum = 0;
         for (int i = checkItem->startPos(); i <= checkItem->endPos(); ++i) {
             sum ^= *(reinterpret_cast<icd_uint16*>(tableBuffer) + i);
         }
 
-        //
         checkItem->setData(sum);
+        break;
     }
     default:
         break;

@@ -227,6 +227,10 @@ bool LanguageMgr::installTranslators(const QString &language)
         result = false;
     }
 
+    if (!result) {
+        //
+    }
+
     return true;
 }
 

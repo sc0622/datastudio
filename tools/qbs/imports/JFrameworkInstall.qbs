@@ -66,10 +66,11 @@ Product {
         files: {
             var files = [];
             module3rdpart.forEach(function(item){
-                files.push(EnvUtils.dylibPrefix(qbs) + item + EnvUtils.dylibSuffix(qbs) + '*');
+                files.push(EnvUtils.libPrefix(qbs) + item + EnvUtils.dylibSuffix(qbs) + '*');
             })
             return files;
         }
+        excludeFiles: [ '*.so' ]
         fileTags: [ name + '.in' ]
         qbs.install: true
         qbs.installPrefix: project.projectName
@@ -83,10 +84,16 @@ Product {
         prefix: _3rdpart_dynamic.prefix
         files: {
             var files = [];
-            module3rdpart.forEach(function(item){
-                files.push(item + '*.lib');
-                files.push(item + '*.dll');
-            })
+            if (qbs.targetOS.contains('windows')) {
+                module3rdpart.forEach(function(item){
+                    files.push(item + '*.lib');
+                    files.push(item + '*.dll');
+                })
+            } else {
+                module3rdpart.forEach(function(item){
+                    files.push(EnvUtils.libPrefix(qbs) + item + '*' + EnvUtils.dylibExtension(qbs));
+                })
+            }
             return files;
         }
         excludeFiles: [ EnvUtils.incDylibFuzzy(qbs) ]
@@ -157,10 +164,11 @@ Product {
         files: {
             var files = [];
             moduleCore.forEach(function(item){
-                files.push(item + EnvUtils.dylibSuffix(qbs));
+                files.push(EnvUtils.libPrefix(qbs) + item + EnvUtils.dylibSuffix(qbs) + '*');
             })
             return files;
         }
+        excludeFiles: [ '*.so' ]
         fileTags: [ name + '.in' ]
         qbs.install: true
         qbs.installPrefix: project.projectName
@@ -174,10 +182,16 @@ Product {
         prefix: core_dynamic.prefix
         files: {
             var files = [];
-            moduleCore.forEach(function(item){
-                files.push(item + '*.lib');
-                files.push(item + '*.dll');
-            })
+            if (qbs.targetOS.contains('windows')) {
+                moduleCore.forEach(function(item){
+                    files.push(item + '*.lib');
+                    files.push(item + '*.dll');
+                })
+            } else {
+                moduleCore.forEach(function(item){
+                    files.push(EnvUtils.libPrefix(qbs) + item + '*' + EnvUtils.dylibExtension(qbs));
+                })
+            }
             return files;
         }
         excludeFiles: [ EnvUtils.incDylibFuzzy(qbs) ]

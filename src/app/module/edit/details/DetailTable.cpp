@@ -236,6 +236,10 @@ void DetailTable::updateView(const Icd::ObjectPtr &object)
         result = updateItem();
         break;
     }
+
+    if (!result) {
+        //
+    }
 }
 
 Icd::ObjectPtr DetailTable::object() const
@@ -817,6 +821,7 @@ void DetailTable::showContextMenu(const QPoint &pos)
             }
         }
     }
+    Q_UNUSED(hasPast);
     // remove
     if (!selected.isEmpty()) {
         QAction *actionRemove = menu.addAction(QIcon(":icdwidget/image/tree/remove.png"),

@@ -47,14 +47,15 @@ PluginLibrary {
         Artifact { fileTags: [ 'qmltype.out' ] }
         prepare: {
             var envs = ['PATH='
-                        + Environment.getEnv('PATH') + ';'
-                        + product.Qt.core.binPath + ';'
-                        + product.dynamicLibraryPaths.join(';')];
+                        + product.Qt.core.binPath
+                        + product.qbs.pathListSeparator + product.Qt.core.libPath
+                        + product.qbs.pathListSeparator + product.dynamicLibraryPaths.join(product.qbs.pathListSeparator)
+                        + product.qbs.pathListSeparator + Environment.getEnv('PATH')];
             // generate
             var cmd = new Command(FileInfo.joinPaths(product.Qt.core.binPath, 'qmlplugindump'),
-                              ['-defaultplatform', '-nonrelocatable', product.uri, product.pluginVersion,
-                               product.destinationRoot, '-output', FileInfo.joinPaths(
-                                   product.destinationDirectory, product.name + '.qmltypes')]);
+                                  ['-defaultplatform', '-nonrelocatable', product.uri, product.pluginVersion,
+                                   product.destinationRoot, '-output', FileInfo.joinPaths(
+                                       product.destinationDirectory, product.name + '.qmltypes')]);
             cmd.description = 'generating qmltypes...';
             cmd.workingDirectory = product.Qt.core.binPath;
             cmd.environment = envs;

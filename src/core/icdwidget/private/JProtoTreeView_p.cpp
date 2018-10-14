@@ -2216,12 +2216,13 @@ void JProtoTreeViewPrivate::itemItemBitMapRightClicked(QStandardItem *item, int 
     }
 
     // bound
+#if 0
     bool bound = false;
     const QVariant varBound = item->data(Icd::TreeBoundRole);
     if (varBound.isValid()) {
         bound = varBound.toBool();
     }
-
+#endif
     //
     QMenu menu(this);
     menu.setProperty("item", qVariantFromValue(static_cast<void*>(item)));

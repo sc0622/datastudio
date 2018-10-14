@@ -28,7 +28,7 @@ class ICDMETA_EXPORT JCmdObject : public QObject, public Json::Serializable
     Q_PROPERTY(int acceptCount READ acceptCount WRITE setAcceptCount NOTIFY acceptCountChanged)
 public:
     explicit JCmdObject(QObject *parent = nullptr);
-    ~JCmdObject();
+    ~JCmdObject() override;
 
     static void registerQmlType();
 

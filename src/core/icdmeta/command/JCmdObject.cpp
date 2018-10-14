@@ -259,7 +259,8 @@ void JCmdObject::clearCallback(const QString &guid)
 }
 
 JCmdObject::JCmdObject(const JCmdObject &other)
-    : J_DPTR(new JCmdObjectPrivate(this))
+    : QObject(other.parent())
+    , J_DPTR(new JCmdObjectPrivate(this))
 {
     operator =(other);
 }

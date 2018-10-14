@@ -249,7 +249,7 @@ Product {
     Group {
         id: dynamic_moxa
         name: 'dynamic_moxa'
-        condition: installMoxa
+        condition: installMoxa && qbs.targetOS.contains('windows')
         prefix: datastudioDir + '/lib/3rdpart/moxa/'
         files: [ 'pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') + '.dll' ]
         qbs.install: true

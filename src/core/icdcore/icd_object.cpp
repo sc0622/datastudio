@@ -56,7 +56,11 @@ void ObjectData::generateId()
 {
     if (objectType == Icd::ObjectItem) {
         char c[64];
-        sprintf(c, "%llX", uid);
+#ifdef __linux__
+        sprintf(c, "%luX", uid);
+#else
+        sprintf(c, "%lluX", uid);
+#endif
         id = std::string(c);
         uid++;
     } else {

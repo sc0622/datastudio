@@ -33,7 +33,7 @@ DynamicLibrary {
     property bool defaultCopyDynamic: true
 
     // install
-    property stringList installFileTags: [ 'dynamiclibrary' ]
+    property stringList installFileTags: [ 'dynamiclibrary', "dynamiclibrary_symlink" ]
     property bool defaultInstall: true
     property string installPrefix: 'bin'
     property string installDir: ''
@@ -142,7 +142,7 @@ DynamicLibrary {
         cpp.defines: [ product.name.toUpperCase() + '_LIB' ]
         cpp.includePaths: [ FileInfo.joinPaths(project.sourceDirectory, 'include', product.module) ]
         Properties {
-            condition: !qbs.targetOS.contains('darwin')
+            condition: qbs.targetOS.contains('windows')
             cpp.dynamicLibraries: [
                 FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
             ]

@@ -8,6 +8,8 @@ WidgetApp {
     targetName: project.projectName
     version: project.version
 
+    Depends { name: '3rdpart.qwt' }
+
     translations: [ 'app_zh_CN.ts' ]
     defaultTranslation: true
     desc.iconName: sourceDirectory + '/resource/image/app.ico'
@@ -22,6 +24,11 @@ WidgetApp {
         return defines;
     }
     cpp.includePaths: base.concat([ '.' ])
+
+    //TEST
+    cpp.rpaths: base.concat([project.sourceDirectory + '/lib/3rdpart',
+                             project.sourceDirectory + '/lib/core'
+                            ])
 
     Depends { name: 'Qt.concurrent' }
     Depends { name: 'Qt.network' }

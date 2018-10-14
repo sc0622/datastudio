@@ -5,12 +5,18 @@ import qbs.Utilities
 
 QmlPluginLibrary {
 
-    condition: qbs.targetOS.contains('windows') // TODO [fix other platform]
+    condition: qbs.targetOS.contains('windows')     //TODO [fix other platform]
         && Utilities.versionCompare(Qt.core.version, '5.6.0') >= 0
     uri: 'Icd.Core'
     type: base.concat([ 'customfile.out' ])
 
-    dynamicLibraryPaths: base.concat([project.sourceDirectory + '/lib/3rdpart/moxa'])   //TODO
+    dynamicLibraryPaths: {
+        var items = base
+        if (qbs.targetOS.contains('windows')) {
+            items = items.concat([project.sourceDirectory + '/lib/3rdpart/moxa'])
+        }
+        return items
+    }
     Qt.core.resourceFileBaseName: name
     langPath: sourceDirectory + '/imports/lang'
     translationFileTags: base.concat([ 'qml', 'js' ])

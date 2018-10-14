@@ -7,7 +7,7 @@ import qbs.Environment
 Project {
 
     QtInstall {
-        condition: qbs.targetOS.contains('windows') //TODO [fix other platform]
+        condition: qbs.targetOS.contains('window') //TODO [fix other platform]
         name: 'setenv-qt'
         moduleGeneral: base.concat([ 'Qml', 'SerialPort', 'Sql' ])
         modulePlugins: base.concat([ 'sqldrivers' ])
@@ -24,7 +24,7 @@ Project {
     }
 
     DataStudioInstall {
-        condition: !project.buildQuote && qbs.targetOS.contains('windows') //TODO [fix other platform]
+        condition: !project.buildQuote && !qbs.targetOS.contains('darwin') //TODO [fix other platform]
         name: 'setenv-datastudio'
         moduleCore: [
             'icdcomm', 'icdcore', 'icdparser', 'icdwidget', 'icdworker'

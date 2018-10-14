@@ -159,13 +159,13 @@ quint32 *JIcdArrayItem::u32() const
 qint64 *JIcdArrayItem::i64() const
 {
     Q_D(const JIcdArrayItem);
-    return  d->data->i64();
+    return reinterpret_cast<qint64*>(d->data->i64());
 }
 
 quint64 *JIcdArrayItem::u64() const
 {
     Q_D(const JIcdArrayItem);
-    return  d->data->u64();
+    return reinterpret_cast<quint64*>(d->data->u64());
 }
 
 float *JIcdArrayItem::f32() const

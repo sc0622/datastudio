@@ -130,6 +130,8 @@ void ExportOrgDataWidget::exportData(const QString &target, bool exportTime)
         return;
     }
 
+    Q_UNUSED(bufferSize);
+
     Icd::JProgressDialog *progressDialog = new Icd::JProgressDialog(this);
     progressDialog->setWindowTitle(tr("Export data"));
     progressDialog->setProgressValue(100);

@@ -84,7 +84,7 @@ function datastudioCorePrefix(project) {
     return datastudioCoreVisible(project) ? '' : 'core';
 }
 
-function dylibPrefix(qbs) {
+function libPrefix(qbs) {
     var targetOS = qbs.targetOS
     if (targetOS.contains('windows')) {
         return ''
@@ -117,7 +117,7 @@ function dylibExtensionFuzzy(qbs) {
     } else if (targetOS.contains('darwin')) {
         return '.*dylib'
     } else if (targetOS.contains('linux')) {
-        return '.*so'
+        return '.so*'
     } else {
         return ''
     }

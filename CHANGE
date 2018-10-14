@@ -1,10 +1,10 @@
 
 -- V4.6.1
-    tools: VS2015，Qt5.11.1，Qbs>=1.10.0
+    tools: VS2015，Qt5.11.2，Qbs>=1.10.0
     depends:
         1) jframework: v2.8.0
     fixed:
-        1) 支持MacOS、Linux平台
+        1) 支持darwin、linux平台
         2) 修复数据项标识生成错误，只在编辑增加或修改类型时才随机生成
     next:
         <inherit to v4.6.0>

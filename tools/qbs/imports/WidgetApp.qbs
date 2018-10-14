@@ -6,6 +6,7 @@ CppApp {
     type: base.concat([ 'translation' ])
     consoleApplication: false
 
+    Depends { name: "Qt.core" }
     Depends { name: "Qt.gui" }
     Depends { name: 'Qt.widgets' }
     Depends {
