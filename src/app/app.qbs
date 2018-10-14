@@ -5,7 +5,7 @@ import qbs.Environment
 import qbs.ModUtils
 
 WidgetApp {
-    targetName: project.projectName + project.variantSuffix
+    targetName: project.projectName
     version: project.version
 
     translations: [ 'app_zh_CN.ts' ]

@@ -13,7 +13,7 @@ class TabWidget : public QTabWidget
     Q_OBJECT
 public:
     explicit TabWidget(QWidget *parent = nullptr);
-    ~TabWidget();
+    ~TabWidget() override;
 
     bool init();
 

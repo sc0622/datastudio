@@ -35,7 +35,7 @@ Project {
 
     Product {
         name: 'setenv'
-        Depends { name: 'setenv-qt' }
+        Depends { name: 'setenv-qt'; required: false }
         Depends { name: 'setenv-jframework'; required: false }
         Depends { name: 'setenv-datastudio'; required: false }
     }
