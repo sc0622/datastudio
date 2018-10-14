@@ -12,12 +12,12 @@
 <context>
     <name>Analyse::ChartViewSettings</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="87"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="88"/>
         <source>Column count:</source>
         <translation>图表列数：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="92"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="93"/>
         <source>Y-label width:</source>
         <translation>纵轴标签字符宽度：</translation>
     </message>
@@ -25,27 +25,27 @@
 <context>
     <name>Analyse::SettingsDlg</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="157"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="158"/>
         <source>Other settings for analyse module</source>
         <translation>分析图模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="167"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="168"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="171"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="172"/>
         <source>Chart view</source>
         <translation>图表视图</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="180"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="181"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="184"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="185"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -107,37 +107,37 @@
 <context>
     <name>Analyse::TreeViewSettings</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="17"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="18"/>
         <source>Vehicle</source>
         <translation>机型级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="18"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="19"/>
         <source>System</source>
         <translation>系统级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="19"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="20"/>
         <source>Table</source>
         <translation>表级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="20"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="21"/>
         <source>Item</source>
         <translation>数据项级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="22"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="23"/>
         <source>Loading deep:</source>
         <translation>加载深度：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="45"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="46"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="45"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="46"/>
         <source>Deep cannot be empty!</source>
         <translation>加载深度值无效！</translation>
     </message>

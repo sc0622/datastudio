@@ -14,6 +14,7 @@ TreeViewSettings::TreeViewSettings(QWidget *parent)
     formLayoutMain->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     d_comboBoxDeep = new QComboBox(this);
+    d_comboBoxDeep->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_comboBoxDeep->addItem(tr("Vehicle"), Icd::ObjectVehicle);
     d_comboBoxDeep->addItem(tr("System"), Icd::ObjectSystem);
     d_comboBoxDeep->addItem(tr("Table"), Icd::ObjectTable);
