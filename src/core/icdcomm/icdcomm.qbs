@@ -24,10 +24,9 @@ CoreDyLibrary {
         files: [ '**/*.cpp' ]
     }
 
-    //cpp.cxxStandardLibrary: 'c++98'
-
     Properties {
         condition: qbs.targetOS.contains('windows')
+        cpp.cxxStandardLibrary: 'c++98'
         cpp.libraryPaths: base.concat([ sourceDirectory + '/private/moxa' ])
         cpp.dynamicLibraries: base.concat([ 'pcomm' + (qbs.architecture == 'x86_64' ? '_x86_64' : '') ])
         cpp.defines: base.concat([ 'SERIAL_USE_PCOMM' ])

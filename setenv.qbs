@@ -7,7 +7,7 @@ import qbs.Environment
 Project {
 
     QtInstall {
-        condition: false    //TODO
+        condition: qbs.targetOS.contains('windows') //TODO [fix other platform]
         name: 'setenv-qt'
         moduleGeneral: base.concat([ 'Qml', 'SerialPort', 'Sql' ])
         modulePlugins: base.concat([ 'sqldrivers' ])
@@ -24,8 +24,7 @@ Project {
     }
 
     DataStudioInstall {
-        condition: false    //TODO
-        //condition: !project.buildQuote
+        condition: !project.buildQuote && qbs.targetOS.contains('windows') //TODO [fix other platform]
         name: 'setenv-datastudio'
         moduleCore: [
             'icdcomm', 'icdcore', 'icdparser', 'icdwidget', 'icdworker'
@@ -36,8 +35,8 @@ Project {
 
     Product {
         name: 'setenv'
-        //Depends { name: 'setenv-qt' }
+        Depends { name: 'setenv-qt' }
         Depends { name: 'setenv-jframework'; required: false }
-        //Depends { name: 'setenv-datastudio'; required: false }
+        Depends { name: 'setenv-datastudio'; required: false }
     }
 }

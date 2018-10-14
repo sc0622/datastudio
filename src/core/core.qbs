@@ -7,7 +7,7 @@ Project {
         'icdcomm/icdcomm.qbs',
         'icdcore/icdcore.qbs',
         'icdmeta/icdmeta.qbs',
-        //'icdplugins/icdplugins.qbs',
+        'icdplugins/icdplugins.qbs',
         'icdwidget/icdwidget.qbs',
         'icdparser/icdparser.qbs',
         'icdworker/icdworker.qbs'
