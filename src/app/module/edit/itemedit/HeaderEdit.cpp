@@ -9,6 +9,7 @@ HeaderEdit::HeaderEdit(const Icd::HeaderItemPtr &header, QWidget *parent)
     : ItemEdit(header, parent)
 {
     spinDefaultValue_ = new JSpinBox(this);
+    spinDefaultValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinDefaultValue_->setPrefix("0x");
     spinDefaultValue_->setRadix(16);
     spinDefaultValue_->setFillChar(QChar('0'));

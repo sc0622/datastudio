@@ -10,6 +10,7 @@ FileSourceWidget::FileSourceWidget(QWidget *parent)
 
     QFormLayout *formLayoutTop = new QFormLayout();
     formLayoutTop->setLabelAlignment(Qt::AlignRight);
+    formLayoutTop->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutMain->addLayout(formLayoutTop);
 
     QHBoxLayout *horiLayoutFilePath = new QHBoxLayout();
@@ -61,11 +62,13 @@ SqlSourceWidget::SqlSourceWidget(QWidget *parent)
 
     QFormLayout *formLayoutTop = new QFormLayout();
     formLayoutTop->setLabelAlignment(Qt::AlignRight);
+    formLayoutTop->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutMain->addLayout(formLayoutTop);
 
     comboBoxSqlType_ = new QComboBox(this);
     comboBoxSqlType_->addItem("SQL Server", "SQL Server");
     comboBoxSqlType_->addItem("Oracle", "Oracle");
+    comboBoxSqlType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     formLayoutTop->addRow(tr("SQL type:"), comboBoxSqlType_);
 
     editServerName_ = new QLineEdit(this);

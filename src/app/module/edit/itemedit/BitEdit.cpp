@@ -12,10 +12,12 @@ BitEdit::BitEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     : ItemEdit(bit, parent)
 {
     spinBitStart_ = new QSpinBox(this);
+    spinBitStart_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinBitStart_->setRange(0, 63);
     addRow("<font color=red>*</font>" + tr("Start of bit:"), spinBitStart_);
 
     spinBitCount_ = new QSpinBox(this);
+    spinBitCount_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinBitCount_->setRange(1, 64);
     addRow("<font color=red>*</font>" + tr("Count of bit:"), spinBitCount_);
 

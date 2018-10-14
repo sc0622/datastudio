@@ -10,6 +10,7 @@ FrameEdit::FrameEdit(const Icd::FrameItemPtr &frame, QWidget *parent)
 {
     // sequence
     spinBoxSequence_ = new QSpinBox(this);
+    spinBoxSequence_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinBoxSequence_->setRange(0, INT_MAX);
     addRow(tr("Sequence:"), spinBoxSequence_);
 

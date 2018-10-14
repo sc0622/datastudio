@@ -9,6 +9,7 @@ BitMapEdit::BitMapEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     : BitEdit(bit, parent)
 {
     spinDefaultValue_ = new JLargeSpinBox(this);
+    spinDefaultValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinDefaultValue_->setPrefix("0x");
     spinDefaultValue_->setRadix(16);
     spinDefaultValue_->setFillChar(QChar('0'));

@@ -9,9 +9,11 @@ FrameCodeEdit::FrameCodeEdit(const Icd::FrameCodeItemPtr &frameCode, QWidget *pa
     : ItemEdit(frameCode, parent)
 {
     comboFrameCodeType_ = new QComboBox(this);
+    comboFrameCodeType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow("<font color=red>*</font>" + tr("FrameCode type:"), comboFrameCodeType_);
 
     comboBinding_ = new QComboBox(this);
+    comboBinding_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow(tr("Binding:"), comboBinding_);
 
     // framecode-typs

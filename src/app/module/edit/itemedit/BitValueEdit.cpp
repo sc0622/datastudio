@@ -9,9 +9,11 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     : BitEdit(bit, parent)
 {
     spinOffset_ = new JDoubleSpinBox(this);
+    spinOffset_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow(tr("Offset:"), spinOffset_);
 
     spinScale_ = new JDoubleSpinBox(this);
+    spinScale_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow(tr("Scale:"), spinScale_);
 
     editUnit_ = new QLineEdit(this);
@@ -19,26 +21,31 @@ BitValueEdit::BitValueEdit(const Icd::BitItemPtr &bit, QWidget *parent)
     addRow(tr("Unit:"), editUnit_);
 
     QHBoxLayout *layoutMinimum = new QHBoxLayout();
+    layoutMinimum->setContentsMargins(0, 0, 12, 0);
+    layoutMinimum->setSpacing(8);
     spinMinimum_ = new JDoubleSpinBox(this);
+    spinMinimum_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinMinimum_->setReadOnly(true);
     layoutMinimum->addWidget(spinMinimum_);
     checkMinimum_ = new QCheckBox(this);
     checkMinimum_->setMaximumWidth(checkMinimum_->sizeHint().height());
     layoutMinimum->addWidget(checkMinimum_);
-    layoutMinimum->addSpacing(3);
     addRow(tr("Minimum:"), layoutMinimum);
 
     QHBoxLayout *layoutMaximum = new QHBoxLayout();
+    layoutMaximum->setContentsMargins(0, 0, 12, 0);
+    layoutMaximum->setSpacing(8);
     spinMaximum_ = new JDoubleSpinBox(this);
+    spinMaximum_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinMaximum_->setReadOnly(true);
     layoutMaximum->addWidget(spinMaximum_);
     checkMaximum_ = new QCheckBox(this);
     checkMaximum_->setMaximumWidth(checkMaximum_->sizeHint().height());
     layoutMaximum->addWidget(checkMaximum_);
-    layoutMaximum->addSpacing(3);
     addRow(tr("Maximum:"), layoutMaximum);
 
     spinDefaultValue_ = new JDoubleSpinBox(this);
+    spinDefaultValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow(tr("Default value:"), spinDefaultValue_);
 
     connect(spinOffset_, static_cast<void(JDoubleSpinBox::*)(double)>(&JDoubleSpinBox::valueChanged),

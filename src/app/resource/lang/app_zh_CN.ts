@@ -474,7 +474,7 @@
 <context>
     <name>DataSourceDlg</name>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="457"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="460"/>
         <source>Data source settings</source>
         <translation>数据源设置</translation>
     </message>
@@ -482,90 +482,90 @@
 <context>
     <name>DataSourceWidget</name>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="195"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="198"/>
         <source>Data source configuration</source>
         <translation>数据来源配置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="205"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="208"/>
         <source>File source</source>
         <translation>文件类数据源</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="209"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="212"/>
         <source>SQL source</source>
         <translation>数据库类数据源</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="217"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="220"/>
         <source>Apply to all</source>
         <translation>应用到其他系统</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="223"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="226"/>
         <source>Connect</source>
         <translation>连接</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="229"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="232"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="229"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="232"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="236"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="239"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="327"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="343"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="351"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="359"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="367"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="375"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="389"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="395"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="330"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="346"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="354"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="362"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="370"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="378"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="392"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="398"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="328"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="331"/>
         <source>File &quot;%1&quot; is not exists!</source>
         <translation>文件“%1”不存在！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="343"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="346"/>
         <source>SQL type cannot be empty!</source>
         <translation>数据库类型不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="351"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="354"/>
         <source>Server&apos;s name cannot be empty!</source>
         <translation>服务器名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="359"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="362"/>
         <source>Database&apos;s name cannot be empty!</source>
         <translation>数据库名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="367"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="370"/>
         <source>User&apos;s name cannot be empty!</source>
         <translation>用户名称不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="375"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="378"/>
         <source>User&apos;s password cannot be empty!</source>
         <translation>用户密码不能为空！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="389"/>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="395"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="392"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="398"/>
         <source>Save config failure!</source>
         <translation>保存配置信息失败！</translation>
     </message>
@@ -573,12 +573,12 @@
 <context>
     <name>Edit::ArrayEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/ArrayEdit.cpp" line="12"/>
+        <location filename="../../module/edit/itemedit/ArrayEdit.cpp" line="13"/>
         <source>Array type:</source>
         <translation>数组类型:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/ArrayEdit.cpp" line="16"/>
+        <location filename="../../module/edit/itemedit/ArrayEdit.cpp" line="18"/>
         <source>Count:</source>
         <translation>长度:</translation>
     </message>
@@ -586,12 +586,12 @@
 <context>
     <name>Edit::BitEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/BitEdit.cpp" line="16"/>
+        <location filename="../../module/edit/itemedit/BitEdit.cpp" line="17"/>
         <source>Start of bit:</source>
         <translation>起始位:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitEdit.cpp" line="20"/>
+        <location filename="../../module/edit/itemedit/BitEdit.cpp" line="22"/>
         <source>Count of bit:</source>
         <translation>位长度:</translation>
     </message>
@@ -599,7 +599,7 @@
 <context>
     <name>Edit::BitMapEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/BitMapEdit.cpp" line="15"/>
+        <location filename="../../module/edit/itemedit/BitMapEdit.cpp" line="16"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>
@@ -607,32 +607,32 @@
 <context>
     <name>Edit::BitValueEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="12"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="13"/>
         <source>Offset:</source>
         <translation>偏移量:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="15"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="17"/>
         <source>Scale:</source>
         <translation>比例:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="19"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="21"/>
         <source>Unit:</source>
         <translation>单位:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="29"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="33"/>
         <source>Minimum:</source>
         <translation>下限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="39"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="45"/>
         <source>Maximum:</source>
         <translation>上限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="42"/>
+        <location filename="../../module/edit/itemedit/BitValueEdit.cpp" line="49"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>
@@ -640,17 +640,17 @@
 <context>
     <name>Edit::CheckEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/CheckEdit.cpp" line="12"/>
+        <location filename="../../module/edit/itemedit/CheckEdit.cpp" line="13"/>
         <source>Check type:</source>
         <translation>校验类型:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/CheckEdit.cpp" line="15"/>
+        <location filename="../../module/edit/itemedit/CheckEdit.cpp" line="17"/>
         <source>Start pos:</source>
         <translation>起始字节:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/CheckEdit.cpp" line="18"/>
+        <location filename="../../module/edit/itemedit/CheckEdit.cpp" line="21"/>
         <source>End pos:</source>
         <translation>终止字节:</translation>
     </message>
@@ -658,7 +658,7 @@
 <context>
     <name>Edit::CounterEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/CounterEdit.cpp" line="12"/>
+        <location filename="../../module/edit/itemedit/CounterEdit.cpp" line="13"/>
         <source>Counter type:</source>
         <translation>计数类型:</translation>
     </message>
@@ -944,22 +944,22 @@
 <context>
     <name>Edit::FrameCodeEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="12"/>
+        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="13"/>
         <source>FrameCode type:</source>
         <translation>帧码类型:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="15"/>
+        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="17"/>
         <source>Binding:</source>
         <translation>帧数据:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="118"/>
+        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="120"/>
         <source>No binding</source>
         <translation>不绑定</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="140"/>
+        <location filename="../../module/edit/itemedit/FrameCodeEdit.cpp" line="142"/>
         <source>Binding&lt;</source>
         <translation>绑定&lt;</translation>
     </message>
@@ -967,7 +967,7 @@
 <context>
     <name>Edit::FrameEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/FrameEdit.cpp" line="14"/>
+        <location filename="../../module/edit/itemedit/FrameEdit.cpp" line="15"/>
         <source>Sequence:</source>
         <translation>时序:</translation>
     </message>
@@ -975,7 +975,7 @@
 <context>
     <name>Edit::HeaderEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/HeaderEdit.cpp" line="16"/>
+        <location filename="../../module/edit/itemedit/HeaderEdit.cpp" line="17"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>
@@ -991,37 +991,37 @@
 <context>
     <name>Edit::NumericEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="13"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="14"/>
         <source>Numeric type:</source>
         <translation>数值类型:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="16"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="18"/>
         <source>Offset:</source>
         <translation>偏移量:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="19"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="22"/>
         <source>Scale:</source>
         <translation>比例:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="23"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="26"/>
         <source>Unit:</source>
         <translation>单位:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="33"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="38"/>
         <source>Minimum:</source>
         <translation>下限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="43"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="50"/>
         <source>Maximum:</source>
         <translation>上限:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="46"/>
+        <location filename="../../module/edit/itemedit/NumericEdit.cpp" line="54"/>
         <source>Default value:</source>
         <translation>默认值:</translation>
     </message>
@@ -1142,22 +1142,22 @@
 <context>
     <name>Edit::TableEdit</name>
     <message>
-        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="20"/>
+        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="21"/>
         <source>Code Type:</source>
         <translation>帧码长度:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="26"/>
+        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="28"/>
         <source>Code:</source>
         <translation>帧码:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="30"/>
+        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="33"/>
         <source>Sequence:</source>
         <translation>时序:</translation>
     </message>
     <message>
-        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="144"/>
+        <location filename="../../module/edit/itemedit/TableEdit.cpp" line="147"/>
         <source>There is already a code with %1</source>
         <translation>子帧“%1”已存在</translation>
     </message>
@@ -1486,12 +1486,12 @@
 <context>
     <name>FileSourceWidget</name>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="17"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="18"/>
         <source>File path:</source>
         <translation>文件路径：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="30"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="31"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>
@@ -2838,27 +2838,27 @@
 <context>
     <name>SqlSourceWidget</name>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="69"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="72"/>
         <source>SQL type:</source>
         <translation>数据库类型：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="72"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="75"/>
         <source>Server name:</source>
         <translation>服务器名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="75"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="78"/>
         <source>Database name:</source>
         <translation>数据库名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="78"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="81"/>
         <source>User name:</source>
         <translation>用户名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/DataSourceDlg.cpp" line="82"/>
+        <location filename="../../module/prefer/DataSourceDlg.cpp" line="85"/>
         <source>Password:</source>
         <translation>用户密码：</translation>
     </message>

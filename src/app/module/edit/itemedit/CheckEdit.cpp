@@ -9,12 +9,15 @@ CheckEdit::CheckEdit(const Icd::CheckItemPtr &check, QWidget *parent)
     : ItemEdit(check, parent)
 {
     comboCheckType_ = new QComboBox(this);
+    comboCheckType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow("<font color=red>*</font>" + tr("Check type:"), comboCheckType_);
 
     spinStartPos_ = new QSpinBox(this);
+    spinStartPos_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow(tr("Start pos:"), spinStartPos_);
 
     spinEndPos_ = new QSpinBox(this);
+    spinEndPos_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow(tr("End pos:"), spinEndPos_);
 
     // check-typs

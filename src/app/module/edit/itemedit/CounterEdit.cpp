@@ -9,6 +9,7 @@ CounterEdit::CounterEdit(const Icd::CounterItemPtr &counter, QWidget *parent)
     : ItemEdit(counter, parent)
 {
     comboCounterType_ = new QComboBox(this);
+    comboCounterType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow("<font color=red>*</font>" + tr("Counter type:"), comboCounterType_);
 
     // countertypes

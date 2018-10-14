@@ -9,9 +9,11 @@ ArrayEdit::ArrayEdit(const Icd::ArrayItemPtr &array, QWidget *parent)
     : ItemEdit(array, parent)
 {
     comboArrayType_ = new QComboBox(this);
+    comboArrayType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     addRow("<font color=red>*</font>" + tr("Array type:"), comboArrayType_);
 
     spinCount_ = new QSpinBox(this);
+    spinCount_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinCount_->setRange(1, INT_MAX);
     addRow(tr("Count:"), spinCount_);
 

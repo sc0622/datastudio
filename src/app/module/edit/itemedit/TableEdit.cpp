@@ -17,15 +17,18 @@ TableEdit::TableEdit(const Icd::TablePtr &table, QWidget *parent)
         setMarkValidator(new QRegExpValidator(QRegExp("^[0-9]{0,16}$")));
         // codeType
         comboCodeType_ = new QComboBox(this);
+        comboCodeType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         addRow(tr("Code Type:"), comboCodeType_);
         // code
         spinCode_ = new JLargeSpinBox(this);
+        spinCode_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         spinCode_->setPrefix("0x");
         spinCode_->setRadix(16);
         spinCode_->setFillChar(QChar('0'));
         addRow(tr("Code:"), spinCode_);
         // sequence
         spinSequence_ = new QSpinBox(this);
+        spinSequence_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         spinSequence_->setRange(0, INT_MAX);
         addRow(tr("Sequence:"), spinSequence_);
 
