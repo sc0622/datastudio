@@ -116,6 +116,14 @@ QString IcdWidget::typeString(const Icd::ItemPtr &item)
         }
         return numericTypeString(numericItem->numericType());
     }
+    case Icd::ItemArray:
+    {
+        const Icd::ArrayItemPtr arrayItem = JHandlePtrCast<Icd::ArrayItem>(item);
+        if (!arrayItem) {
+            break;
+        }
+        return arrayTypeString(arrayItem->arrayType()) + tr(" array");
+    }
     case Icd::ItemBitMap: return tr("BitMap");
     case Icd::ItemBitValue: return tr("BitValue");
     case Icd::ItemComplex: return tr("Complex");

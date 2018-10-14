@@ -484,5 +484,9 @@
         <source>Unknown</source>
         <translation>未知类型</translation>
     </message>
+    <message>
+        <source> array</source>
+        <translation>数组</translation>
+    </message>
 </context>
 </TS>
