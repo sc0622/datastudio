@@ -11,6 +11,7 @@ TreeViewSettings::TreeViewSettings(QWidget *parent)
 {
     QFormLayout *formLayoutMain = new QFormLayout(this);
     formLayoutMain->setLabelAlignment(Qt::AlignRight);
+    formLayoutMain->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     d_comboBoxDeep = new QComboBox(this);
     d_comboBoxDeep->addItem(tr("Vehicle"), Icd::ObjectVehicle);

@@ -14,6 +14,7 @@ ParityDataDlg::ParityDataDlg(QWidget *parent)
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
 
     QFormLayout *formLayoutTop = new QFormLayout();
+    formLayoutTop->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutMain->addLayout(formLayoutTop);
 
     d_editSource = new QLineEdit(this);

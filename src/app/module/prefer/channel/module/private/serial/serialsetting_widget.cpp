@@ -19,26 +19,32 @@ SerialSettingWidget::SerialSettingWidget(QWidget *parent)
 
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutGroupBox->addLayout(formLayout);
 
     d_comboBoxPortName = new QComboBox(this);
+    d_comboBoxPortName->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_comboBoxPortName->setEditable(true);
     d_comboBoxPortName->lineEdit()->setValidator(new QRegExpValidator(QRegExp("COM[\\d]{1,3}")));
     formLayout->addRow(tr("Port name:"), d_comboBoxPortName);
 
     d_comboBoxBaudRate = new QComboBox(this);
+    d_comboBoxBaudRate->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_comboBoxBaudRate->setEditable(true);
     d_comboBoxBaudRate->setAutoCompletion(false);
     d_comboBoxBaudRate->setValidator(new QIntValidator(d_comboBoxBaudRate));
     formLayout->addRow(tr("Baud rate:"), d_comboBoxBaudRate);
 
     d_comboBoxDataBits = new QComboBox(this);
+    d_comboBoxDataBits->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     formLayout->addRow(tr("Data bits:"), d_comboBoxDataBits);
 
     d_comboBoxStopBits = new QComboBox(this);
+    d_comboBoxStopBits->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     formLayout->addRow(tr("Stop bits:"), d_comboBoxStopBits);
 
     d_comboBoxParity = new QComboBox(this);
+    d_comboBoxParity->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     formLayout->addRow(tr("Parity:"), d_comboBoxParity);
 
     d_editName = new QLineEdit(this);

@@ -633,6 +633,7 @@ bool ConvertToDataAnalyse::parseValue(QTextStream &ts, const Icd::ItemPtr &item)
             ts << QString("%1").arg(item->data(), 0, 'g', 10) << ' ';
             return true;
         }
+        break;
     }
     default:
         break;
@@ -791,11 +792,16 @@ void ConvertToDataAnalyse::init()
 
     QFormLayout *formLayoutDataType = new QFormLayout(groupBoxDataType);
     formLayoutDataType->setLabelAlignment(Qt::AlignRight);
+    formLayoutDataType->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     d_radioATX = new QRadioButton(tr("Text data (ATX, ATXEX)"));
     d_radioGBR = new QRadioButton(tr("Universal binary data (BGR)"));
     d_radioRAW = new QRadioButton(tr("Universal original data (RAW)"));
     d_radioMRD = new QRadioButton(tr("RASS reatime data (MRD)"));
+    d_radioATX->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    d_radioGBR->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    d_radioRAW->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    d_radioMRD->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     formLayoutDataType->addRow(" ", d_radioATX);
     formLayoutDataType->addRow(" ", d_radioGBR);
     formLayoutDataType->addRow(" ", d_radioRAW);
@@ -806,6 +812,7 @@ void ConvertToDataAnalyse::init()
 
     QFormLayout *formLayoutFilePath = new QFormLayout(groupBoxFilePath);
     formLayoutFilePath->setLabelAlignment(Qt::AlignRight);
+    formLayoutFilePath->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     d_editHeader = new QLineEdit();
     QPushButton *buttonHeaderView = new QPushButton("...");
@@ -839,14 +846,17 @@ void ConvertToDataAnalyse::init()
 
     QFormLayout *formLayoutExt = new QFormLayout(groupOther);
     formLayoutExt->setLabelAlignment(Qt::AlignRight);
+    formLayoutExt->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     d_spinPkgCntScale = new QDoubleSpinBox(groupOther);
+    d_spinPkgCntScale->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_spinPkgCntScale->setDecimals(3);
     d_spinPkgCntScale->setRange(0, 100000000000);
     d_spinPkgCntScale->setValue(0.02);
     formLayoutExt->addRow(tr("Scale of package counter:"), d_spinPkgCntScale);
 
     d_checkSplitBit = new QCheckBox(" ", groupOther);
+    d_checkSplitBit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     formLayoutExt->addRow(tr("Bit of splitting:"), d_checkSplitBit);
 
     vertLayoutRight->addStretch();

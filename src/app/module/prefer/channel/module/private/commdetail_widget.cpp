@@ -33,9 +33,9 @@ void CommDetailWidget::updateUi(const Icd::WorkerPtr &worker)
 {
     if (!worker) {
         d_stackedWidget->setCurrentIndex(-1);
-        d_serialDetailWidget->updateUi(Icd::WorkerPtr(0));
-        d_udpDetailWidget->updateUi(Icd::WorkerPtr(0));
-        d_fileDetailWidget->updateUi(Icd::WorkerPtr(0));
+        d_serialDetailWidget->updateUi(Icd::WorkerPtr());
+        d_udpDetailWidget->updateUi(Icd::WorkerPtr());
+        d_fileDetailWidget->updateUi(Icd::WorkerPtr());
     } else {
         //
         switch (worker->channel()->channelType()) {

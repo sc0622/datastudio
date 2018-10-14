@@ -11,8 +11,10 @@ GeneralWidget::GeneralWidget(QWidget *parent)
     vertLayoutMain->addWidget(groupBoxTheme);
 
     QFormLayout *formLayoutTheme = new QFormLayout(groupBoxTheme);
+    formLayoutTheme->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     comboBoxColorTheme_ = new QComboBox(groupBoxTheme);
+    comboBoxColorTheme_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     formLayoutTheme->addRow(tr("Color theme:"), comboBoxColorTheme_);
 
     vertLayoutMain->addStretch();

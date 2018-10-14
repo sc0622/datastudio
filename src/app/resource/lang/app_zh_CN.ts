@@ -12,12 +12,12 @@
 <context>
     <name>Analyse::ChartViewSettings</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="86"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="87"/>
         <source>Column count:</source>
         <translation>图表列数：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="91"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="92"/>
         <source>Y-label width:</source>
         <translation>纵轴标签字符宽度：</translation>
     </message>
@@ -25,27 +25,27 @@
 <context>
     <name>Analyse::SettingsDlg</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="156"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="157"/>
         <source>Other settings for analyse module</source>
         <translation>分析图模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="166"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="167"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="170"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="171"/>
         <source>Chart view</source>
         <translation>图表视图</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="179"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="180"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="183"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="184"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -107,37 +107,37 @@
 <context>
     <name>Analyse::TreeViewSettings</name>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="16"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="17"/>
         <source>Vehicle</source>
         <translation>机型级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="17"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="18"/>
         <source>System</source>
         <translation>系统级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="18"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="19"/>
         <source>Table</source>
         <translation>表级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="19"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="20"/>
         <source>Item</source>
         <translation>数据项级</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="21"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="22"/>
         <source>Loading deep:</source>
         <translation>加载深度：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="45"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/analyse/AnalyseSettingsDlg.cpp" line="45"/>
         <source>Deep cannot be empty!</source>
         <translation>加载深度值无效！</translation>
     </message>
@@ -150,37 +150,37 @@
         <translation>坐标设置</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/axissel_widget.cpp" line="131"/>
+        <location filename="../../module/analyse/axissel_widget.cpp" line="132"/>
         <source>Horizontal coordinate (X):</source>
         <translation>横坐标（X）：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/axissel_widget.cpp" line="134"/>
+        <location filename="../../module/analyse/axissel_widget.cpp" line="135"/>
         <source>Drag data item to here</source>
         <translation>拖放数据项到这里</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/axissel_widget.cpp" line="139"/>
+        <location filename="../../module/analyse/axissel_widget.cpp" line="141"/>
         <source>Time</source>
         <translation>时间</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/axissel_widget.cpp" line="140"/>
+        <location filename="../../module/analyse/axissel_widget.cpp" line="142"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/axissel_widget.cpp" line="143"/>
+        <location filename="../../module/analyse/axissel_widget.cpp" line="145"/>
         <source>Vertical coordinate(Y)</source>
         <translation>纵坐标（Y）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/axissel_widget.cpp" line="156"/>
+        <location filename="../../module/analyse/axissel_widget.cpp" line="158"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/axissel_widget.cpp" line="157"/>
+        <location filename="../../module/analyse/axissel_widget.cpp" line="159"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -239,88 +239,88 @@
 <context>
     <name>ConvertFromIcdWidget</name>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="26"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="27"/>
         <source>Source file:</source>
         <translation>原始文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="35"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="36"/>
         <source>Target file:</source>
         <translation>目标文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="38"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="39"/>
         <source>Data Verification:</source>
         <translation>数据校验：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="49"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="50"/>
         <source>Convert</source>
         <translation>转换</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="50"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="51"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="58"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="59"/>
         <source>ICD file (*.icd)</source>
         <translation>ICD file (*.icd)</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="60"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="61"/>
         <source>Find source file</source>
         <translation>查找原始文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="80"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="81"/>
         <source>Dat file (*.dat)</source>
         <translation>Dat file (*.dat)</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="82"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="83"/>
         <source>Find target file</source>
         <translation>查找目标文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="156"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="157"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="159"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="160"/>
         <source>Parsing source file...</source>
         <translation>正在解析数据文件……</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="207"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="208"/>
         <source>Converting source file...</source>
         <translation>正在转换数据文件……</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="212"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="213"/>
         <source>Convert success!</source>
         <translation>转换成功！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="213"/>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="221"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="214"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="222"/>
         <source>Converting result</source>
         <translation>转换结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="221"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="222"/>
         <source>Parsing result</source>
         <translation>解析结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="222"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="223"/>
         <source>Parse failure!</source>
         <translation>解析失败！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="222"/>
+        <location filename="../../module/analyse/private/convertfromicdwidget.cpp" line="223"/>
         <source>Convert failure!</source>
         <translation>转换失败！</translation>
     </message>
@@ -375,98 +375,98 @@
         <translation>转换失败！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="789"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="790"/>
         <source>Type of generated file</source>
         <translation>生成文件类型</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="795"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="797"/>
         <source>Text data (ATX, ATXEX)</source>
         <translation>文本类型数据（ATX，ATXEX）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="796"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="798"/>
         <source>Universal binary data (BGR)</source>
         <translation>通用二进制数据（BGR）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="797"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="799"/>
         <source>Universal original data (RAW)</source>
         <translation>通用原始数据（RAW）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="798"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="800"/>
         <source>RASS reatime data (MRD)</source>
         <translation>RASS实时仿真数据（MRD）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="804"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="810"/>
         <source>File path</source>
         <translation>文件路径</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="817"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="824"/>
         <source>Header file:</source>
         <translation>头文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="826"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="833"/>
         <source>Source file:</source>
         <translation>原始文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="835"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="842"/>
         <source>Target file:</source>
         <translation>目标文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="837"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="844"/>
         <source>Other</source>
         <translation>其他</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="847"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="856"/>
         <source>Scale of package counter:</source>
         <translation>包计数比例尺：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="850"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="860"/>
         <source>Bit of splitting:</source>
         <translation>拆分比特位：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="857"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="867"/>
         <source>Start converting</source>
         <translation>开始转换</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="858"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="868"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="866"/>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="880"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="876"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="890"/>
         <source>Any file (*.*)</source>
         <translation>Any file (*.*)</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="868"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="878"/>
         <source>Select header file</source>
         <translation>选择头文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="882"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="892"/>
         <source>Select source file</source>
         <translation>选择原始文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="903"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="913"/>
         <source>Data file (*%1)</source>
         <translation>Data file (*%1)</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="906"/>
+        <location filename="../../module/analyse/private/ConvertToDataAnalyse.cpp" line="916"/>
         <source>Select target file</source>
         <translation>选择目标文件</translation>
     </message>
@@ -911,32 +911,32 @@
         <translation>创建数据源</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditCreateDlg.cpp" line="21"/>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="22"/>
         <source>File path:</source>
         <translation>文件路径：</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditCreateDlg.cpp" line="38"/>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="39"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditCreateDlg.cpp" line="42"/>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="43"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditCreateDlg.cpp" line="50"/>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="51"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditCreateDlg.cpp" line="115"/>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="116"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditCreateDlg.cpp" line="116"/>
+        <location filename="../../module/edit/EditCreateDlg.cpp" line="117"/>
         <source>File &quot;%1&quot; is not exists!</source>
         <translation>文件“%1”不存在！</translation>
     </message>
@@ -1062,27 +1062,27 @@
 <context>
     <name>Edit::SettingsDlg</name>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="113"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="115"/>
         <source>Other settings for edition module</source>
         <translation>编辑图模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="123"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="125"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="127"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="129"/>
         <source>Edition view</source>
         <translation>编辑视图</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="136"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="138"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="140"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="142"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -1203,37 +1203,37 @@
 <context>
     <name>Edit::TreeViewSettings</name>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="16"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="18"/>
         <source>Vehicle</source>
         <translation>机型级</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="17"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="19"/>
         <source>System</source>
         <translation>系统级</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="18"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="20"/>
         <source>Table</source>
         <translation>表级</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="19"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="21"/>
         <source>Item</source>
         <translation>数据项级</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="21"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="23"/>
         <source>Loading deep:</source>
         <translation>加载深度：</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="46"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/edit/EditSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/edit/EditSettingsDlg.cpp" line="46"/>
         <source>Deep cannot be empty!</source>
         <translation>加载深度值无效！</translation>
     </message>
@@ -1259,57 +1259,57 @@
 <context>
     <name>ExportOrgDataWidget</name>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="22"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="25"/>
         <source>Path of export:</source>
         <translation>导出路径：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="31"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="37"/>
         <source>Export package time</source>
         <translation>导出包时间</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="39"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="45"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="46"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="52"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="60"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="66"/>
         <source>Data file (*.dat)</source>
         <translation>Data file (*.dat)</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="62"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="68"/>
         <source>Save as</source>
         <translation>另存数据</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="128"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="134"/>
         <source>Export data</source>
         <translation>导出数据</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="131"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="137"/>
         <source>Exporting data...</source>
         <translation>正在导出数据……</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="168"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="174"/>
         <source>Export success!</source>
         <translation>导出成功！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="168"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="174"/>
         <source>Export failure!</source>
         <translation>导出失败！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="169"/>
+        <location filename="../../module/analyse/private/ExportOrgDataWidget.cpp" line="175"/>
         <source>Result of export</source>
         <translation>导出结果</translation>
     </message>
@@ -1322,27 +1322,27 @@
         <translation>接收设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="23"/>
+        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="25"/>
         <source>Period of receiving</source>
         <translation>接收周期</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="28"/>
+        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="30"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="34"/>
+        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="36"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="38"/>
+        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="40"/>
         <source>Status of receiving</source>
         <translation>接收状态</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="49"/>
+        <location filename="../../module/prefer/channel/module/private/file/filerecv_widget.cpp" line="51"/>
         <source>Sequence of receiving</source>
         <translation>接收时序</translation>
     </message>
@@ -1355,37 +1355,37 @@
         <translation>发送设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="21"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="22"/>
         <source>Auto-sending:</source>
         <translation>自动发送：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="26"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="28"/>
         <source>Peroid of sending:</source>
         <translation>发送周期：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="33"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="129"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="145"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="164"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="174"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="35"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="131"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="147"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="166"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="176"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="39"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="41"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="45"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="47"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="143"/>
-        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="169"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="145"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesend_widget.cpp" line="171"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -1398,87 +1398,87 @@
         <translation>文件设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="26"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="27"/>
         <source>File path:</source>
         <translation>文件路径：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="36"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="37"/>
         <source>Read Only</source>
         <translation>只读</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="37"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="38"/>
         <source>Open Mode:</source>
         <translation>打开模式：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="39"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="40"/>
         <source>Write Only</source>
         <translation>只写</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="42"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="43"/>
         <source>Append</source>
         <translation>追加写入</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="45"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="46"/>
         <source>Truncate</source>
         <translation>覆盖写入</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="48"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="49"/>
         <source>Text</source>
         <translation>文本存储模式</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="52"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="53"/>
         <source>Name of channel:</source>
         <translation>通道名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="54"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="55"/>
         <source>Domain of table (Query Id)</source>
         <translation>表域名（表协议查询ID）</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="55"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="56"/>
         <source>Save format:</source>
         <translation>存储格式：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="57"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="58"/>
         <source>Timestamp</source>
         <translation>时间戳</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="62"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="63"/>
         <source>Relayer channel:</source>
         <translation>转发通道：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="80"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="81"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="86"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="87"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="113"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="114"/>
         <source>Select file</source>
         <translation>选择文件</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="184"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="185"/>
         <source>Channel &quot;%1&quot; has been opened, can&apos;t modify!</source>
         <translation>通道“%1”已打开，不能修改属性！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="185"/>
+        <location filename="../../module/prefer/channel/module/private/file/filesetting_widget.cpp" line="186"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -1504,37 +1504,37 @@
         <translation>视觉体验</translation>
     </message>
     <message>
-        <location filename="../../mainview/settings/GeneralWidget.cpp" line="16"/>
+        <location filename="../../mainview/settings/GeneralWidget.cpp" line="18"/>
         <source>Color theme:</source>
         <translation>颜色主题：</translation>
     </message>
     <message>
-        <location filename="../../mainview/settings/GeneralWidget.cpp" line="20"/>
+        <location filename="../../mainview/settings/GeneralWidget.cpp" line="22"/>
         <source>None</source>
         <translation>无</translation>
     </message>
     <message>
-        <location filename="../../mainview/settings/GeneralWidget.cpp" line="21"/>
+        <location filename="../../mainview/settings/GeneralWidget.cpp" line="23"/>
         <source>Blue</source>
         <translation>蓝色</translation>
     </message>
     <message>
-        <location filename="../../mainview/settings/GeneralWidget.cpp" line="22"/>
+        <location filename="../../mainview/settings/GeneralWidget.cpp" line="24"/>
         <source>Dark</source>
         <translation>深色</translation>
     </message>
     <message>
-        <location filename="../../mainview/settings/GeneralWidget.cpp" line="23"/>
+        <location filename="../../mainview/settings/GeneralWidget.cpp" line="25"/>
         <source>Light</source>
         <translation>浅色</translation>
     </message>
     <message>
-        <location filename="../../mainview/settings/GeneralWidget.cpp" line="42"/>
+        <location filename="../../mainview/settings/GeneralWidget.cpp" line="44"/>
         <source>Notice</source>
         <translation>注意</translation>
     </message>
     <message>
-        <location filename="../../mainview/settings/GeneralWidget.cpp" line="43"/>
+        <location filename="../../mainview/settings/GeneralWidget.cpp" line="45"/>
         <source>You must restart your application to apply selected theme!</source>
         <translation>你需要重启软件来启用新的主题！</translation>
     </message>
@@ -1964,12 +1964,12 @@
 <context>
     <name>Monitor::ChartViewSettings</name>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="85"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="89"/>
         <source>Column count:</source>
         <translation>图表列数：</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="90"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="95"/>
         <source>Y-label width:</source>
         <translation>纵轴标签字符宽度：</translation>
     </message>
@@ -1977,27 +1977,27 @@
 <context>
     <name>Monitor::SettingsDlg</name>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="155"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="160"/>
         <source>Other settings for monitor module</source>
         <translation>监测模块其他设置</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="165"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="170"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="169"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="174"/>
         <source>Chart view</source>
         <translation>图表视图</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="178"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="183"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="182"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="187"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2038,37 +2038,37 @@
 <context>
     <name>Monitor::TreeViewSettings</name>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="16"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="18"/>
         <source>Vehicle</source>
         <translation>机型级</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="17"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="19"/>
         <source>System</source>
         <translation>系统级</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="18"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="20"/>
         <source>Table</source>
         <translation>表级</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="19"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="21"/>
         <source>Item</source>
         <translation>数据项级</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="21"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="23"/>
         <source>Loading deep:</source>
         <translation>加载深度：</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="46"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/monitor/MonitorSettingsDlg.cpp" line="46"/>
         <source>Deep cannot be empty!</source>
         <translation>加载深度值无效！</translation>
     </message>
@@ -2076,73 +2076,73 @@
 <context>
     <name>ParityDataDlg</name>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="26"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="27"/>
         <source>Source file:</source>
         <translation>原始文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="35"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="36"/>
         <source>Target file:</source>
         <translation>目标文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="46"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="47"/>
         <source>Start converting</source>
         <translation>开始转换</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="47"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="48"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="57"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="58"/>
         <source>Select source file</source>
         <translation>选择原始文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="78"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="79"/>
         <source>Select target file</source>
         <translation>选择目标文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="165"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="166"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="168"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="169"/>
         <source>Parsing data file...</source>
         <translation>正在解析数据文件…</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="222"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="223"/>
         <source>Converting data file...</source>
         <translation>正在转换数据文件……</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="227"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="228"/>
         <source>Convert success!</source>
         <translation>转换成功！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="228"/>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="236"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="229"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="237"/>
         <source>Result of converting</source>
         <translation>转换结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="236"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="237"/>
         <source>Result of parsing</source>
         <translation>解析结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="237"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="238"/>
         <source>Parse failure!</source>
         <translation>解析失败！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="237"/>
+        <location filename="../../module/analyse/private/paritydatadlg.cpp" line="238"/>
         <source>Convert failure!</source>
         <translation>转换失败！</translation>
     </message>
@@ -2176,27 +2176,27 @@
         <translation>接收设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="23"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="25"/>
         <source>Peroid of receiving:</source>
         <translation>接收周期：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="28"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="30"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="34"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="36"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="38"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="40"/>
         <source>Status of receiving</source>
         <translation>接收状态</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="49"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialrecv_widget.cpp" line="52"/>
         <source>Sequence of reciving:</source>
         <translation>接收时序：</translation>
     </message>
@@ -2209,37 +2209,37 @@
         <translation>发送设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="20"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="21"/>
         <source>Auto-sending:</source>
         <translation>自动发送：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="25"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="27"/>
         <source>Peroid of sending:</source>
         <translation>发送周期：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="32"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="128"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="144"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="163"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="173"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="34"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="130"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="146"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="165"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="175"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="38"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="40"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="44"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="46"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="142"/>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="168"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="144"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsend_widget.cpp" line="170"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -2252,82 +2252,82 @@
         <translation>串口设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="27"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="29"/>
         <source>Port name:</source>
         <translation>端口名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="33"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="36"/>
         <source>Baud rate:</source>
         <translation>波特率：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="36"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="40"/>
         <source>Data bits:</source>
         <translation>数据位：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="39"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="44"/>
         <source>Stop bits:</source>
         <translation>停止位：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="42"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="48"/>
         <source>Parity:</source>
         <translation>校验位：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="45"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="51"/>
         <source>Name of channel:</source>
         <translation>通道名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="49"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="55"/>
         <source>Relayer channel:</source>
         <translation>转发通道：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="66"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="72"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="72"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="78"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="118"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="124"/>
         <source>None</source>
         <translation>无</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="120"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="126"/>
         <source>Odd</source>
         <translation>Odd（奇校验）</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="119"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="125"/>
         <source>Even</source>
         <translation>Even（偶校验）</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="121"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="127"/>
         <source>Space</source>
         <translation>Space</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="122"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="128"/>
         <source>Mark</source>
         <translation>Mark</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="183"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="189"/>
         <source>Channel &quot;%1&quot; has been opened, can&apos;t modify!</source>
         <translation>通道“%1”已打开，不能修改属性！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="184"/>
+        <location filename="../../module/prefer/channel/module/private/serial/serialsetting_widget.cpp" line="190"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -2353,17 +2353,17 @@
 <context>
     <name>Simulate::ItemWidgetArray</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1037"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1053"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1091"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1107"/>
         <source>Size: </source>
         <translation>大小：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1095"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1111"/>
         <source>, Describe: </source>
         <translation>，描述信息：</translation>
     </message>
@@ -2371,22 +2371,22 @@
 <context>
     <name>Simulate::ItemWidgetBitMap</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1114"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1132"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1117"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1135"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1232"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1250"/>
         <source>BIT%1: </source>
         <translation>BIT%1：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1249"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1267"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -2394,17 +2394,17 @@
 <context>
     <name>Simulate::ItemWidgetBitValue</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1271"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1291"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1274"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1294"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1362"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1382"/>
         <source>Start bit: %1, stop bit: %2, bits: %3, size: %4.</source>
         <translation>起始位：%1，终止位：%2，位域：%3，大小：%4字节。</translation>
     </message>
@@ -2412,70 +2412,70 @@
 <context>
     <name>Simulate::ItemWidgetCheck</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="519"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="525"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="523"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="530"/>
         <source>Parity:</source>
         <translation>校验位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="528"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="534"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="578"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="684"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="536"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="543"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="587"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="693"/>
         <source> B</source>
         <translation> 字节</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="529"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="537"/>
         <source>Start offset:</source>
         <translation>起始位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="535"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="544"/>
         <source>Stop offset:</source>
         <translation>终止位：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="538"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="547"/>
         <source>Length:</source>
         <translation>位长度：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="540"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="549"/>
         <source>No parity</source>
         <translation>无校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="541"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="550"/>
         <source>8 bits sum-parity</source>
         <translation>8位和校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="542"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="551"/>
         <source>16 bits sum-parity</source>
         <translation>16位和校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="543"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="552"/>
         <source>8 bits xor-parity</source>
         <translation>8位异或校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="544"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="553"/>
         <source>16 bits xor-parity</source>
         <translation>16位异或校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="545"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="554"/>
         <source>CRC8 parity</source>
         <translation>CRC8校验</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="546"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="555"/>
         <source>CRC16 parity</source>
         <translation>CRC16校验</translation>
     </message>
@@ -2483,7 +2483,7 @@
 <context>
     <name>Simulate::ItemWidgetCounter</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="447"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="451"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
@@ -2491,7 +2491,7 @@
 <context>
     <name>Simulate::ItemWidgetFrameCode</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="701"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="712"/>
         <source>Current frame code:</source>
         <translation>当前帧码：</translation>
     </message>
@@ -2499,7 +2499,7 @@
 <context>
     <name>Simulate::ItemWidgetHead</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="375"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="377"/>
         <source>Current value:</source>
         <translation>当前数值：</translation>
     </message>
@@ -2507,33 +2507,33 @@
 <context>
     <name>Simulate::ItemWidgetNumeric</name>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="799"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="811"/>
         <source>(Linkage original and value)</source>
         <translation>（原始数值和输出数值联动）</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="803"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="815"/>
         <source>Relative data:</source>
         <translation>关联数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="808"/>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="813"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="821"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="827"/>
         <source>Original data:</source>
         <translation>原始数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="819"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="834"/>
         <source>Output data:</source>
         <translation>输出数值：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="822"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="837"/>
         <source>Describe:</source>
         <translation>描述：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1010"/>
+        <location filename="../../module/simulate/module/dataitem_widget.cpp" line="1025"/>
         <source>Scale: %1, Offset: %2, Range: %3, Unit: %4, size: %5.</source>
         <translation>比例：%1，偏移：%2，范围：%3，单位：%4，大小：%5。</translation>
     </message>
@@ -2565,12 +2565,12 @@
 <context>
     <name>Simulate::SetViewSettings</name>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="83"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="86"/>
         <source>Update memory data once value changed</source>
         <translation>一旦值改变立即刷新发送缓存</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="84"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="88"/>
         <source>Realtime update:</source>
         <translation>实时更新：</translation>
     </message>
@@ -2578,27 +2578,27 @@
 <context>
     <name>Simulate::SettingsDlg</name>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="133"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="137"/>
         <source>Other settings for simulate module</source>
         <translation>仿真模块其他配置</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="143"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="147"/>
         <source>Tree view</source>
         <translation>协议视图</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="147"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="151"/>
         <source>Set view</source>
         <translation>设置视图</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="156"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="160"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="160"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="164"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2639,37 +2639,37 @@
 <context>
     <name>Simulate::TreeViewSettings</name>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="16"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="18"/>
         <source>Vehicle</source>
         <translation>机型级</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="17"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="19"/>
         <source>System</source>
         <translation>系统级</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="18"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="20"/>
         <source>Table</source>
         <translation>表级</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="19"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="21"/>
         <source>Item</source>
         <translation>数据项级</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="21"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="23"/>
         <source>Loading deep:</source>
         <translation>加载深度：</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="46"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="44"/>
+        <location filename="../../module/simulate/SimulateSettingsDlg.cpp" line="46"/>
         <source>Deep cannot be empty!</source>
         <translation>加载深度值无效！</translation>
     </message>
@@ -2685,152 +2685,152 @@
 <context>
     <name>SplitFileDlg</name>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="22"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="24"/>
         <source>Pure data file</source>
         <translation>纯数据文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="23"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="25"/>
         <source>ICD data file</source>
         <translation>ICD数据文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="24"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="26"/>
         <source>Text file (ATX,ATXEX)</source>
         <translation>文本文件（ATX，ATXEX）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="25"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="27"/>
         <source>Universal binary file (GBR)</source>
         <translation>通用二进制文件（GBR）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="26"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="28"/>
         <source>Universal original data file (RAW)</source>
         <translation>通用原始数据文件（RAW）</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="27"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="29"/>
         <source>RASS realtime data file (MRD)</source>
         <translation>RASS实时数据文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="28"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="30"/>
         <source>File type:</source>
         <translation>文件类型：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="39"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="42"/>
         <source>Volume size:</source>
         <translation>分卷大小：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="48"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="51"/>
         <source>Source file:</source>
         <translation>原始文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="57"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="60"/>
         <source>Target file:</source>
         <translation>目标文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="59"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="62"/>
         <source>Split file when system counter is equal to zero</source>
         <translation>当系统计数器位零时拆分</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="61"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="64"/>
         <source>Split file with FTI protocol:</source>
         <translation>按FTI协议拆分文件：</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="68"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="71"/>
         <source>Start split</source>
         <translation>开始拆分</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="69"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="72"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="96"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="99"/>
         <source>Select source file</source>
         <translation>选择原始文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="145"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="148"/>
         <source>Select target file</source>
         <translation>选择目标文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="161"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="164"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="162"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="165"/>
         <source>Size of source file is less than 50MB, not need to split!</source>
         <translation>原始文件大小少于50MB，不需要拆分！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="317"/>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="639"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="320"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="642"/>
         <source>Split file</source>
         <translation>拆分文件</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="318"/>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="640"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="321"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="643"/>
         <source>Splitting file...</source>
         <translation>正在拆分文件……</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="382"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="385"/>
         <source>System counter</source>
         <translation>系统计数器</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="475"/>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="645"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="478"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="648"/>
         <source>Split success!</source>
         <translation>拆分成功！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="476"/>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="655"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="479"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="658"/>
         <source>Split failure!</source>
         <translation>拆分失败！</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="477"/>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="646"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="480"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="649"/>
         <source>Result of split</source>
         <translation>拆分结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="561"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="564"/>
         <source>Load data</source>
         <translation>加载数据</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="564"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="567"/>
         <source>Parsing file...</source>
         <translation>正在解析文件……</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="654"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="657"/>
         <source>Result of parsing</source>
         <translation>解析结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="654"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="657"/>
         <source>Result of splitting</source>
         <translation>拆分结果</translation>
     </message>
     <message>
-        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="655"/>
+        <location filename="../../module/analyse/private/SplitFileDlg.cpp" line="658"/>
         <source>Parse failure!</source>
         <translation>解析失败！</translation>
     </message>
@@ -2899,27 +2899,27 @@
         <translation>接收设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="23"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="25"/>
         <source>Period of receiving</source>
         <translation>接收周期</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="28"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="30"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="34"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="36"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="38"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="40"/>
         <source>Status of receiving</source>
         <translation>接收状态</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="49"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udprecv_widget.cpp" line="52"/>
         <source>Sequence of receiving</source>
         <translation>接收时序</translation>
     </message>
@@ -2932,37 +2932,37 @@
         <translation>发送设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="21"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="22"/>
         <source>Auto-sending:</source>
         <translation>自动发送：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="26"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="28"/>
         <source>Peroid of sending:</source>
         <translation>发送周期：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="33"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="129"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="145"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="163"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="182"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="35"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="131"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="147"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="165"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="184"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="39"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="41"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="45"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="47"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="143"/>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="177"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="145"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsend_widget.cpp" line="179"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -2975,67 +2975,67 @@
         <translation>网络设置</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="24"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="25"/>
         <source>Local address:</source>
         <translation>本地地址：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="28"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="30"/>
         <source>Local port:</source>
         <translation>本地端口：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="31"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="33"/>
         <source>Remove address:</source>
         <translation>目的地址：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="35"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="38"/>
         <source>Remote port:</source>
         <translation>目的端口：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="37"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="40"/>
         <source>Read Only</source>
         <translation>只读</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="39"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="42"/>
         <source>Open Mode:</source>
         <translation>打开模式：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="41"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="44"/>
         <source>Write Only</source>
         <translation>只写</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="46"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="49"/>
         <source>Name of channel:</source>
         <translation>通道名称：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="50"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="53"/>
         <source>Relayer channel:</source>
         <translation>转发通道：</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="67"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="70"/>
         <source>Restore</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="73"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="76"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="152"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="155"/>
         <source>Channel &quot;%1&quot; has been opened and cannot modify!</source>
         <translation>通道“%1”已经打开，不允许修改！</translation>
     </message>
     <message>
-        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="153"/>
+        <location filename="../../module/prefer/channel/module/private/udp/udpsetting_widget.cpp" line="156"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>

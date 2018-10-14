@@ -16,16 +16,22 @@ ExportOrgDataWidget::ExportOrgDataWidget(const QString &filePath,
     , d_bitOffset(bitOffset)
 {
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
+
     QFormLayout *formLayout = new QFormLayout();
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     layoutMain->addLayout(formLayout);
+
     QHBoxLayout *layoutPath = new QHBoxLayout();
     formLayout->addRow(tr("Path of export:"), layoutPath);
+
     QLineEdit *editPath = new QLineEdit(this);
     QPushButton *buttonView = new QPushButton("...", this);
+
     buttonView->setFixedWidth(60);
     layoutPath->addWidget(editPath);
     layoutPath->addWidget(buttonView);
     QCheckBox *checkBox = nullptr;
+
     if (hasTimeFormat) {
         checkBox = new QCheckBox(this);
         formLayout->addRow(tr("Export package time"), checkBox);

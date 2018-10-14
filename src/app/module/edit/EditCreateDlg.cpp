@@ -14,6 +14,7 @@ EditCreateDlg::EditCreateDlg(QWidget *parent)
 
     QFormLayout *formLayoutTop = new QFormLayout();
     formLayoutTop->setLabelAlignment(Qt::AlignRight);
+    formLayoutTop->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutMain->addLayout(formLayoutTop);
 
     QHBoxLayout *horiLayoutFilePath = new QHBoxLayout();

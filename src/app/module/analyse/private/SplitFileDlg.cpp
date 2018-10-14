@@ -15,10 +15,12 @@ SplitFileDlg::SplitFileDlg(QWidget *parent)
     QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
 
     QFormLayout *formLayoutTop = new QFormLayout();
-    vertLayoutMain->addLayout(formLayoutTop);
     formLayoutTop->setLabelAlignment(Qt::AlignRight);
+    formLayoutTop->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    vertLayoutMain->addLayout(formLayoutTop);
 
     d_comboFileType = new QComboBox(this);
+    d_comboFileType->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_comboFileType->addItem(tr("Pure data file"));
     d_comboFileType->addItem(tr("ICD data file"));
     d_comboFileType->addItem(tr("Text file (ATX,ATXEX)"));
@@ -28,6 +30,7 @@ SplitFileDlg::SplitFileDlg(QWidget *parent)
     formLayoutTop->addRow(tr("File type:"), d_comboFileType);
 
     d_comboSplitSize = new QComboBox(this);
+    d_comboSplitSize->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_comboSplitSize->addItem("50 MB", 50);
     d_comboSplitSize->addItem("100 MB", 100);
     d_comboSplitSize->addItem("200 MB", 200);

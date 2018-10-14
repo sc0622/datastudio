@@ -17,6 +17,7 @@ FileSettingWidget::FileSettingWidget(QWidget *parent)
 
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutGroupBox->addLayout(formLayout);
 
     d_editFilePath = new QLineEdit(this);

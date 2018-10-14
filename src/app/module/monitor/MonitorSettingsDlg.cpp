@@ -11,8 +11,10 @@ TreeViewSettings::TreeViewSettings(QWidget *parent)
 {
     QFormLayout *formLayoutMain = new QFormLayout(this);
     formLayoutMain->setLabelAlignment(Qt::AlignRight);
+    formLayoutMain->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     d_comboBoxDeep = new QComboBox(this);
+    d_comboBoxDeep->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_comboBoxDeep->addItem(tr("Vehicle"), Icd::ObjectVehicle);
     d_comboBoxDeep->addItem(tr("System"), Icd::ObjectSystem);
     d_comboBoxDeep->addItem(tr("Table"), Icd::ObjectTable);
@@ -78,13 +80,16 @@ ChartViewSettings::ChartViewSettings(QWidget *parent)
 {
     QFormLayout *formLayoutMain = new QFormLayout(this);
     formLayoutMain->setLabelAlignment(Qt::AlignRight);
+    formLayoutMain->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     d_spinBoxColumnCount = new QSpinBox(this);
+    d_spinBoxColumnCount->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_spinBoxColumnCount->setRange(1, 10);
     d_spinBoxColumnCount->setValue(1);
     formLayoutMain->addRow(tr("Column count:"), d_spinBoxColumnCount);
 
     d_spinBoxYLabelWidth = new QSpinBox(this);
+    d_spinBoxYLabelWidth->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_spinBoxYLabelWidth->setRange(1, 20);
     d_spinBoxYLabelWidth->setValue(10);
     formLayoutMain->addRow(tr("Y-label width:"), d_spinBoxYLabelWidth);

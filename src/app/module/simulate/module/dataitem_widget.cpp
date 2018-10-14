@@ -365,10 +365,12 @@ ItemWidgetHead::ItemWidgetHead(QWidget *parent)
 {
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
     spinValue_ = new JSpinBox(this);
+    spinValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinValue_->setFillChar(QChar('0'));
     spinValue_->setRadix(16);
     spinValue_->setFixedWidth(300);
@@ -439,10 +441,12 @@ ItemWidgetCounter::ItemWidgetCounter(QWidget *parent)
 {
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
     spinValue_ = new QSpinBox(this);
+    spinValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinValue_->setFixedWidth(300);
     formLayout->addRow(tr("Current value:"), spinValue_);
 
@@ -511,24 +515,29 @@ ItemWidgetCheck::ItemWidgetCheck(QWidget *parent)
 {
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
     spinValue_ = new QSpinBox(this);
+    spinValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinValue_->setFixedWidth(300);
     formLayout->addRow(tr("Current value:"), spinValue_);
 
     comboBoxCheckType_ = new QComboBox(this);
+    comboBoxCheckType_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     comboBoxCheckType_->setFixedWidth(300);
     formLayout->addRow(tr("Parity:"), comboBoxCheckType_);
 
     spinStartPos_ = new QSpinBox(this);
+    spinStartPos_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinStartPos_->setFixedWidth(300);
     spinStartPos_->setRange(0, 65535);
     spinStartPos_->setSuffix(tr(" B"));
     formLayout->addRow(tr("Start offset:"), spinStartPos_);
 
     spinEndPos_ = new QSpinBox(this);
+    spinEndPos_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinEndPos_->setFixedWidth(300);
     spinEndPos_->setRange(0, 65535);
     spinEndPos_->setSuffix(tr(" B"));
@@ -693,10 +702,12 @@ ItemWidgetFrameCode::ItemWidgetFrameCode(QWidget *parent)
 {
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
     comboBoxCode_ = new QComboBox(this);
+    comboBoxCode_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     comboBoxCode_->setFixedWidth(300);
     formLayout->addRow(tr("Current frame code:"), comboBoxCode_);
     //
@@ -793,6 +804,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
 {
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
@@ -803,16 +815,19 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
     formLayout->addRow(tr("Relative data:"), checkBoxLink_);
 
     sliderValue_ = new QSlider(this);
+    sliderValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     sliderValue_->setFixedWidth(300);
     sliderValue_->setOrientation(Qt::Horizontal);
     formLayout->addRow(tr("Original data:"), sliderValue_);
 
     spinValue_ = new QDoubleSpinBox(this);
+    spinValue_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinValue_->setFixedWidth(300);
     spinValue_->setDecimals(DBL_DIG);
     formLayout->addRow(tr("Original data:"), spinValue_);
 
     spinData_ = new QDoubleSpinBox(this);
+    spinData_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinData_->setFixedWidth(300);
     spinData_->setDecimals(DBL_DIG);
     spinData_->setEnabled(false);
@@ -1029,6 +1044,7 @@ ItemWidgetArray::ItemWidgetArray(QWidget *parent)
 
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout);
 
     clientLayout()->setStretch(0, 0);
@@ -1105,10 +1121,12 @@ ItemWidgetBitMap::ItemWidgetBitMap(QWidget *parent)
 {
     formLayout_ = new QFormLayout();
     formLayout_->setLabelAlignment(Qt::AlignRight);
+    formLayout_->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout_);
     itemLayout()->addStretch();
 
     spinData_ = new QDoubleSpinBox(this);
+    spinData_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinData_->setFixedWidth(300);
     spinData_->setDecimals(0);
     formLayout_->addRow(tr("Output data:"), spinData_);
@@ -1262,10 +1280,12 @@ ItemWidgetBitValue::ItemWidgetBitValue(QWidget *parent)
 {
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     itemLayout()->addLayout(formLayout);
     itemLayout()->addStretch();
 
     spinData_ = new QDoubleSpinBox(this);
+    spinData_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     spinData_->setFixedWidth(300);
     spinData_->setDecimals(0);
     formLayout->addRow(tr("Output data:"), spinData_);

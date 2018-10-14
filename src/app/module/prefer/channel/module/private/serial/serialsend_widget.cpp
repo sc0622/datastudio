@@ -14,12 +14,14 @@ SerialSendWidget::SerialSendWidget(QWidget *parent)
     QVBoxLayout *vertLayoutGroupBox = new QVBoxLayout(groupBox);
 
     d_formLayout = new QFormLayout();
+    d_formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutGroupBox->addLayout(d_formLayout);
 
     d_checkBoxPeriodic = new QCheckBox(" ", this);
     d_formLayout->addRow(tr("Auto-sending:"), d_checkBoxPeriodic);
 
     d_spinBoxInterval = new QSpinBox(this);
+    d_spinBoxInterval->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_spinBoxInterval->setRange(1, INT_MAX);
     d_spinBoxInterval->setSuffix(" ms");
     d_formLayout->addRow(tr("Peroid of sending:"), d_spinBoxInterval);

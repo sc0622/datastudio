@@ -18,12 +18,14 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
 
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutGroupBox->addLayout(formLayout);
 
     d_editLocalIP = new JIPAddressEdit(this);
     formLayout->addRow(tr("Local address:"), d_editLocalIP);
 
     d_spinBoxLocalPort = new QSpinBox(this);
+    d_spinBoxLocalPort->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_spinBoxLocalPort->setRange(1, 65535);
     formLayout->addRow(tr("Local port:"), d_spinBoxLocalPort);
 
@@ -31,6 +33,7 @@ UdpSettingWidget::UdpSettingWidget(QWidget *parent)
     formLayout->addRow(tr("Remove address:"), d_editRemoteIP);
 
     d_spinBoxRemotePort = new QSpinBox(this);
+    d_spinBoxRemotePort->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_spinBoxRemotePort->setRange(1, 65535);
     formLayout->addRow(tr("Remote port:"), d_spinBoxRemotePort);
 

@@ -125,6 +125,7 @@ AxisSelWidget::AxisSelWidget(QWidget *parent)
 
     QFormLayout *formLayout = new QFormLayout();
     formLayout->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    formLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutMain->addLayout(formLayout);
 
     QHBoxLayout *horiLayoutAxisX = new QHBoxLayout();
@@ -135,6 +136,7 @@ AxisSelWidget::AxisSelWidget(QWidget *parent)
     horiLayoutAxisX->addWidget(d_editAxisX);
 
     d_comboBoxAxisX = new QComboBox(this);
+    d_comboBoxAxisX->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_comboBoxAxisX->setMinimumWidth(80);
     d_comboBoxAxisX->addItem(tr("Time"));
     d_comboBoxAxisX->addItem(tr("Custom"));

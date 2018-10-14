@@ -15,9 +15,11 @@ UdpRecvWidget::UdpRecvWidget(QWidget *parent)
 
     QFormLayout *formLayoutSettings = new QFormLayout();
     formLayoutSettings->setLabelAlignment(Qt::AlignRight);
+    formLayoutSettings->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutSettings->addLayout(formLayoutSettings);
 
     d_spinBoxInterval = new QSpinBox(this);
+    d_spinBoxInterval->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d_spinBoxInterval->setRange(1, INT_MAX);
     d_spinBoxInterval->setSuffix(" ms");
     formLayoutSettings->addRow(tr("Period of receiving"), d_spinBoxInterval);
@@ -42,6 +44,7 @@ UdpRecvWidget::UdpRecvWidget(QWidget *parent)
 
     QFormLayout *formLayoutStatus = new QFormLayout();
     formLayoutStatus->setLabelAlignment(Qt::AlignRight);
+    formLayoutStatus->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     vertLayoutStatus->addLayout(formLayoutStatus);
 
     d_editSequence = new QLineEdit(this);
