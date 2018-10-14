@@ -117,7 +117,7 @@ public:
     void cleanItem();
     void moveCurrentRow(bool up);
     bool apply(const Icd::ObjectPtr &target, int row);
-    void cancel(int row);
+    void cancel(int row, bool select = true);
 
     bool isSameType(const Icd::ObjectPtr &object) const;
 
@@ -163,7 +163,7 @@ private:
 
     void moveBegin();
     void moveEnd();
-    void moveRow(int sourceRow, int targetRow, bool restore = false);
+    void moveRow(int sourceRow, int targetRow, bool restore = false, bool select = true);
 
     void updateOffsetAndSize();
     void updateOffsetAndSize(const Icd::TablePtr &table);

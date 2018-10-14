@@ -70,6 +70,9 @@ private:
     TiXmlElement *findTableElement(const std::string &tableId) const;
 
     // for parse
+    Icd::ItemPtr createItem(int index, const TiXmlElement *element, int deep = -1,
+                                   Object *parent = nullptr) const;
+
     bool parseObject(const TiXmlElement *emObject, const Icd::ObjectPtr &object) const;
     bool parseItem(const TiXmlElement *emItem, Icd::ItemPtr &item, int deep) const;
     bool parseItemHead(const TiXmlElement *emItem, const Icd::HeaderItemPtr &head) const;

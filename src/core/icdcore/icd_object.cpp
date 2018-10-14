@@ -40,7 +40,7 @@ public:
     bool endsWith(const std::string &str, const std::string &suffix, bool caseSensitivity = true);
 
 private:
-    static unsigned long uid;
+    static uint64_t uid;
     Object *parent;
     ObjectType objectType;
     std::string id;
@@ -50,13 +50,13 @@ private:
     std::string desc;
 };
 
-unsigned long ObjectData::uid = 1;
+uint64_t ObjectData::uid = 0xffffffff;
 
 void ObjectData::generateId()
 {
     if (objectType == Icd::ObjectItem) {
-        char c[8];
-        sprintf(c, "%lu", uid);
+        char c[64];
+        sprintf(c, "%llX", uid);
         id = std::string(c);
         uid++;
     } else {
@@ -121,8 +121,8 @@ Object::Object(const std::string &id, ObjectType type, Object *parent)
 Object::Object(const Object &other)
     : d(new ObjectData(nullptr))
 {
-    d->generateId();
     *this = other;
+    d->generateId();
 }
 
 Object::~Object()
@@ -271,6 +271,7 @@ Object &Object::operator =(const Object &other)
         return *this;
     }
     d->objectType  = other.d->objectType;
+    d->id = other.d->id;
     d->name = other.d->name;
     d->mark = other.d->mark;
     d->desc = other.d->desc;

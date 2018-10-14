@@ -270,6 +270,41 @@ ItemPtr Item::create(ItemType type, Object *parent)
     }
 }
 
+ItemPtr Item::create(int index, const Json::Value &json, int deep, Object *parent)
+{
+    ItemType itemType = Item::stringType(json["type"].asString());
+
+    Json::Value newJson;
+    if (itemType == Icd::ItemComplex && json.isMember("size")
+            && (json.size() == 0 || !json.isMember("table")
+                || !json["table"].isMember("items"))) {
+        itemType = Icd::ItemArray;
+        newJson = json;
+        newJson.removeMember("table");
+        newJson["count"] = json["size"];
+        newJson.removeMember("size");
+        newJson["type"] = "array";
+        newJson["arrayType"] = "i8";
+    }
+
+    Icd::ItemPtr newItem = Item::create(Icd::itoa(index), itemType, parent);
+    if (!newItem) {
+        return Icd::ItemPtr();
+    }
+
+    if (newJson.isNull()) {
+        if (!newItem->restore(json, deep)) {
+            return Icd::ItemPtr();
+        }
+    } else {
+        if (!newItem->restore(newJson, deep)) {
+            return Icd::ItemPtr();
+        }
+    }
+
+    return newItem;
+}
+
 bool Item::isSubFrameItem() const
 {
     Icd::Object *object = parent();

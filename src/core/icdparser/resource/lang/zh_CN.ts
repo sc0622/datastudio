@@ -47,7 +47,7 @@ Table: %1</source>
         <translation>释放文档临时资源</translation>
     </message>
     <message>
-        <location filename="../../private/file/json/icdparser_json.cpp" line="785"/>
+        <location filename="../../private/file/json/icdparser_json.cpp" line="763"/>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="239"/>
         <source>Query all vehicles
 %1</source>
@@ -55,8 +55,8 @@ Table: %1</source>
 %1</translation>
     </message>
     <message>
-        <location filename="../../private/file/json/icdparser_json.cpp" line="832"/>
-        <location filename="../../private/file/json/icdparser_json.cpp" line="1015"/>
+        <location filename="../../private/file/json/icdparser_json.cpp" line="810"/>
+        <location filename="../../private/file/json/icdparser_json.cpp" line="993"/>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="278"/>
         <source>Query vehicle
 Vehicle: %1</source>
@@ -94,8 +94,8 @@ Vehicle: %1</source>
         <translation>。</translation>
     </message>
     <message>
-        <location filename="../../private/file/json/icdparser_json.cpp" line="879"/>
-        <location filename="../../private/file/json/icdparser_json.cpp" line="1056"/>
+        <location filename="../../private/file/json/icdparser_json.cpp" line="857"/>
+        <location filename="../../private/file/json/icdparser_json.cpp" line="1034"/>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="373"/>
         <source>Query system
 System: %1</source>
@@ -117,8 +117,8 @@ System: %1</source>
 系统：%1</translation>
     </message>
     <message>
-        <location filename="../../private/file/json/icdparser_json.cpp" line="949"/>
-        <location filename="../../private/file/json/icdparser_json.cpp" line="1121"/>
+        <location filename="../../private/file/json/icdparser_json.cpp" line="927"/>
+        <location filename="../../private/file/json/icdparser_json.cpp" line="1099"/>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="497"/>
         <location filename="../../private/generate/word/icdgenerator_word_p.cpp" line="672"/>
         <source>Query table

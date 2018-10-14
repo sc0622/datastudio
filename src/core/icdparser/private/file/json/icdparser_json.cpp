@@ -186,36 +186,14 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
     for (Json::ValueConstIterator citer = itemsJson.begin();
          citer != itemsJson.end(); ++citer) {
         const Json::Value &itemJson = *citer;
-        Icd::ItemPtr item = Icd::Item::create(Icd::Item::stringType(itemJson["type"].asString()), parent);
-        if (!item) {
+        Icd::ItemPtr newItem = Icd::Item::create(int(items.size() + 1), itemJson, deep, parent);
+        if (!newItem) {
             continue;
         }
-        //
-        if (!item->restore(itemJson, deep)) {
-            continue;
-        }
-        // offset
-        if (!items.empty()) {
-            //
-            const Icd::ItemPtr &last = *items.crbegin();
-            item->setItemOffset(last->itemOffset() + 1);
-            //
-            double offset = 0;
-            const Icd::ItemType itemType = item->type();
-            if (itemType == Icd::ItemBitMap || itemType == Icd::ItemBitValue) {
-                offset = Icd::Table::recalcBitBufferOffset(JHandlePtrCast<Icd::BitItem>(item),
-                                                           items, items.crbegin());
-                if (offset < 0) {
-                    offset = last->bufferOffset() + last->bufferSize();
-                }
-            } else {
-                offset = last->bufferOffset() + last->bufferSize();
-            }
-            item->setBufferOffset(offset);
-        }
-
-        items.push_back(item);
+        items.push_back(newItem);
     }
+
+    Icd::Table::adjustBufferOffset(items);
 
     return true;
 }

@@ -47,7 +47,8 @@ public:
     static double recalcBitBufferOffset(const Icd::BitItemPtr &bitItem, const ItemPtrArray &items,
                                         ItemPtrArray::const_reverse_iterator citer);
 
-    bool adjustBufferOffset(const ItemPtr &item, ItemPtrArray::const_iterator citer);
+    static bool adjustBufferOffset(const ItemPtrArray &items, int itemOffset, double bufferOffset,
+                                   double &bufferSize, const ItemPtr &item, ItemPtrArray::const_iterator citer);
 
 private:
     int sequence;
@@ -223,8 +224,7 @@ icd_int64 TableData::currentMillisecond() const
     return preciTimer.mscount();
 }
 
-double TableData::recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
-                                        const ItemPtrArray &items,
+double TableData::recalcBitBufferOffset(const Icd::BitItemPtr &bitItem, const ItemPtrArray &items,
                                         ItemPtrArray::const_reverse_iterator citer)
 {
     if (!bitItem || citer == items.crend()) {
@@ -277,7 +277,8 @@ double TableData::recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
     return offset;
 }
 
-bool TableData::adjustBufferOffset(const ItemPtr &item, ItemPtrArray::const_iterator citer)
+bool TableData::adjustBufferOffset(const ItemPtrArray &items, int itemOffset, double bufferOffset,
+                                   double &bufferSize, const ItemPtr &item, ItemPtrArray::const_iterator citer)
 {
     if (!item) {
         return false;
@@ -444,8 +445,22 @@ void Table::adjustBufferOffset()
     for (ItemPtrArray::const_iterator citer = d->items.cbegin();
          citer != d->items.cend(); ++citer) {
         const ItemPtr &item = *citer;
-        d->adjustBufferOffset(item, citer);
+        TableData::adjustBufferOffset(d->items, d->itemOffset, d->bufferOffset, d->bufferSize,
+                                      item, citer);
     }
+}
+
+double Table::adjustBufferOffset(const ItemPtrArray &items)
+{
+    double bufferSize = 0.0;
+
+    for (ItemPtrArray::const_iterator citer = items.cbegin();
+         citer != items.cend(); ++citer) {
+        const ItemPtr &item = *citer;
+        TableData::adjustBufferOffset(items, 0, 0.0, bufferSize, item, citer);
+    }
+
+    return bufferSize;
 }
 
 ItemPtrArray Table::allItem()
@@ -460,7 +475,8 @@ const ItemPtrArray &Table::allItem() const
 
 void Table::appendItem(const ItemPtr &item)
 {
-    d->adjustBufferOffset(item, d->items.cend());
+    TableData::adjustBufferOffset(d->items, d->itemOffset, d->bufferOffset,
+                                  d->bufferSize, item, d->items.cend());
     d->items.push_back(item);
     d->saveItem(item);
 }
@@ -1333,31 +1349,9 @@ bool Table::restore(const Json::Value &json, int deep)
         for (Json::ValueConstIterator citer = itemsJson.begin();
              citer != itemsJson.end(); ++citer) {
             const Json::Value &itemJson = *citer;
-            ItemType itemType = Item::stringType(itemJson["type"].asString());
-            Json::Value newJson;
-            if (itemType == Icd::ItemComplex && itemJson.isMember("size")
-                    && (itemJson.size() == 0 || !itemJson.isMember("table")
-                        || !itemJson["table"].isMember("items"))) {
-                itemType = Icd::ItemArray;
-                newJson = itemJson;
-                newJson.removeMember("table");
-                newJson["count"] = itemJson["size"];
-                newJson.removeMember("size");
-                newJson["type"] = "array";
-                newJson["arrayType"] = "i8";
-            }
-            Icd::ItemPtr item = Item::create(itemType, this);
+            Icd::ItemPtr item = Item::create(itemCount() + 1, itemJson, deep, this);
             if (!item) {
                 continue;
-            }
-            if (newJson.isNull()) {
-                if (!item->restore(itemJson, deep)) {
-                    continue;
-                }
-            } else {
-                if (!item->restore(newJson, deep)) {
-                    continue;
-                }
             }
             appendItem(item);
         }

@@ -165,6 +165,11 @@ void DetailView::onSelectedChanged(const QVariant &index, const Icd::ObjectPtr &
         } else if (newObject_) {
             cancelInsert(index.toInt());
         } else {
+            //
+            if (detailTable_->isMoved()) {
+                detailTable_->cancel(index.toInt(), false);
+            }
+            //
             detailEdit_->updateView(detailTable_->object(), index);
         }
     }

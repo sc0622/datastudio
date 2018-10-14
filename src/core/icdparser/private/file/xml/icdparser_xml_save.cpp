@@ -197,8 +197,7 @@ bool XmlParser::saveItemFrameCode(TiXmlElement *emItem,
     return true;
 }
 
-bool XmlParser::saveItemNumeric(TiXmlElement *emItem,
-                                const Icd::NumericItemPtr &numeric) const
+bool XmlParser::saveItemNumeric(TiXmlElement *emItem, const Icd::NumericItemPtr &numeric) const
 {
     if (!emItem || numeric == nullptr) {
         return false;

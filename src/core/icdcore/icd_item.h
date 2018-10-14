@@ -72,6 +72,8 @@ public:
     Item &operator =(const Item &other);
     static ItemPtr create(const std::string &id, ItemType type, Object *parent = nullptr);
     static ItemPtr create(ItemType type, Object *parent = nullptr);
+    static ItemPtr create(int index, const Json::Value &json, int deep = -1,
+                          Object *parent = nullptr);
 
     bool isSubFrameItem() const;
     Icd::Table *subFrameTable() const;

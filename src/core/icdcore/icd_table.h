@@ -41,6 +41,7 @@ public:
     char *buffer() const;
     void setBuffer(char *buffer);
     void adjustBufferOffset();
+    static double adjustBufferOffset(const ItemPtrArray &items);
 
     ItemPtrArray allItem();
     const ItemPtrArray &allItem() const;
@@ -108,8 +109,6 @@ public:
     static double recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
                                         const Icd::ItemPtrArray &items,
                                         Icd::ItemPtrArray::const_reverse_iterator citer);
-
-
 
     // Serializable interface
 public:

@@ -596,7 +596,7 @@ bool DetailTable::apply(const Icd::ObjectPtr &target, int row)
     return true;
 }
 
-void DetailTable::cancel(int row)
+void DetailTable::cancel(int row, bool select)
 {
     if (newObject_) {               // just remove addded row
         if (row >= 0) {
@@ -608,7 +608,7 @@ void DetailTable::cancel(int row)
         }
         newObject_.reset();
     } else if (isMoved()) {         // restore original row of moved row
-        moveRow(targetRow_, originalRow_, true);
+        moveRow(targetRow_, originalRow_, true, select);
     }
 
     originalRow_ = -1;
@@ -1381,7 +1381,7 @@ void DetailTable::moveEnd()
     moving_ = false;
 }
 
-void DetailTable::moveRow(int sourceRow, int targetRow, bool restore)
+void DetailTable::moveRow(int sourceRow, int targetRow, bool restore, bool select)
 {
     if (!object_) {
         return;
@@ -1399,7 +1399,10 @@ void DetailTable::moveRow(int sourceRow, int targetRow, bool restore)
 
     const QList<QStandardItem*> items = tableView_->takeRow(sourceRow);
     tableView_->insertRow(targetRow, items);
-    tableView_->setCurrentCell(targetRow, 0);
+
+    if (select) {
+        tableView_->setCurrentCell(targetRow, 0);
+    }
 
     targetRow_ = targetRow;
     bool _restore = false;
