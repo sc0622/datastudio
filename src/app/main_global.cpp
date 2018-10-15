@@ -15,6 +15,7 @@ class JMainPrivate
 public:
     JMainPrivate(JMain *q)
         : J_QPTR(q)
+        , sharedMemory(QString("datastudio-%1").arg(JMain::appVersion()))
         , notify(nullptr)
         , neeedToRestart(false)
     {
@@ -25,51 +26,64 @@ public:
         configFile = configDir + "/~" + fileName;
         settings.setValue("CONFIG_FILE", configFile);
         settings.endGroup();
-        QFile::remove(configFile);
-        QFile::copy(configDir + "/" + fileName, configFile);
-        // replace config
-        QFile file(configFile);
-        if (file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-            QByteArray content = file.readAll();
-            if (!content.isEmpty()) {
-                content = replaceConfig(content, false);
-                file.resize(0);
-                file.write(content);
+        // create temporary config
+        if (!isRunning()) {
+            QFile::remove(configFile);
+            QFile::copy(configDir + "/" + fileName, configFile);
+            // replace config
+            QFile file(configFile);
+            if (file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+                QByteArray content = file.readAll();
+                if (!content.isEmpty()) {
+                    content = replaceConfig(content, false);
+                    file.resize(0);
+                    file.write(content);
+                }
+                file.close();
+            } else {
+                qCritical().noquote() << QString("File \"%1\" open failure!").arg(configFile);
             }
-            file.close();
         } else {
-            qDebug().noquote() << QString("File \"%1\" open failure!").arg(configFile);
+            qWarning().noquote() << QString("Another %1 is running!").arg(sharedMemory.key());
         }
     }
 
     ~JMainPrivate()
     {
-        const QString oldConfigFile = configDir + "/main.json";
-        if (QFile::exists(configFile)) {
-            QFile file(configFile);
-            if (file.open(QIODevice::ReadWrite | QIODevice::Text)) {
-                QByteArray content = file.readAll();
-                if (!content.isEmpty()) {
-                    content = replaceConfig(content, true);
-                    file.resize(0);
-                    file.write(content);
+        // save config
+        if (!isRunning()) {
+            const QString oldConfigFile = configDir + "/main.json";
+            if (QFile::exists(configFile)) {
+                QFile file(configFile);
+                if (file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+                    QByteArray content = file.readAll();
+                    if (!content.isEmpty()) {
+                        content = replaceConfig(content, true);
+                        file.resize(0);
+                        file.write(content);
+                    }
+                    file.close();
+                    QFile::remove(oldConfigFile);
+                    QFile::rename(configFile, oldConfigFile);
                 }
-                file.close();
-                QFile::remove(oldConfigFile);
-                QFile::rename(configFile, oldConfigFile);
             }
-        } else {
-            QFile::remove(configFile);
         }
     }
 
     void init();
+
+    bool isRunning();
+
     QByteArray &replaceConfig(QByteArray &content, bool reverse) const;
     QString &replaceConfig(QString &content, bool reverse) const;
     static bool setStyleSheet(const QString &filePath);
 
+    void clearFiles(const QString &path);
+    void clearPath(const QString &path);
+
 private:
     J_DECLARE_PUBLIC(JMain)
+    QSharedMemory sharedMemory;
     Icd::JNotifyPtr notify;
     QList<SingletonReleaseCallback> callbacks;
     QString configDir;
@@ -89,6 +103,19 @@ void JMainPrivate::init()
     notify->on("app.theme", q, [=](JNEvent &event){
         q->setTheme(event.argument().toString());
     });
+}
+
+bool JMainPrivate::isRunning()
+{
+    if (sharedMemory.attach(QSharedMemory::ReadOnly)) {
+        sharedMemory.detach();
+    }
+
+    if (!sharedMemory.create(1, QSharedMemory::ReadOnly)) {
+        return true;
+    }
+
+    return false;
 }
 
 QByteArray &JMainPrivate::replaceConfig(QByteArray &content, bool reverse) const
@@ -142,6 +169,34 @@ bool JMainPrivate::setStyleSheet(const QString &filePath)
     qApp->setStyleSheet(file.readAll());
 
     return true;
+}
+
+void JMainPrivate::clearFiles(const QString &path)
+{
+    QDir dir(path);
+    dir.setFilter(QDir::Files);
+    const int fileCount = int(dir.count());
+    for (int i = 0; i < fileCount; i++) {
+        dir.remove(dir[i]);
+    }
+}
+
+void JMainPrivate::clearPath(const QString &path)
+{
+    QDir dir(path);
+    QFileInfoList fileInfos = dir.entryInfoList(QDir::Dirs | QDir::Files
+                                                | QDir::Readable | QDir::Writable
+                                                | QDir::Hidden | QDir::NoDotAndDotDot);
+    foreach (const auto &fileInfo, fileInfos) {
+        if(fileInfo.isFile()) {
+            QFile fileTemp(fileInfo.filePath());
+            fileTemp.remove();
+        } if (fileInfo.isDir()) {
+            clearPath(fileInfo.filePath());
+        }
+    }
+
+    dir.rmdir(".");
 }
 
 // class JMain
