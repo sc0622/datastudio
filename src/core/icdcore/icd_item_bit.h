@@ -51,6 +51,7 @@ public:
     std::string descAt(int offset) const;
 
     std::string typeName() const override;
+    std::string typeString() const override;
 
     ObjectPtr copy() const override;
     ObjectPtr clone() const override;

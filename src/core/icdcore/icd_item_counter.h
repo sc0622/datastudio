@@ -46,7 +46,7 @@ public:
     double dataFromBuffer(const char *buffer) const override;
 
     std::string typeName() const override;
-    virtual std::string typeString() const override;
+    std::string typeString() const override;
 
     ObjectPtr copy() const override;
     ObjectPtr clone() const override;

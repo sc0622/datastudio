@@ -351,6 +351,13 @@ std::string BitItem::typeName() const
     return "icd_uint" + os.str();
 }
 
+std::string BitItem::typeString() const
+{
+    std::ostringstream os;
+    os << Item::typeString() << '#' << d->bitCount;
+    return os.str();
+}
+
 ObjectPtr BitItem::copy() const
 {
     BitItemPtr newBit = std::make_shared<BitItem>(*this);
