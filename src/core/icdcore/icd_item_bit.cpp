@@ -354,7 +354,7 @@ std::string BitItem::typeName() const
 std::string BitItem::typeString() const
 {
     std::ostringstream os;
-    os << Item::typeString() << '#' << d->bitCount;
+    os << Item::typeString() << '#' << int(d->bitCount);
     return os.str();
 }
 
