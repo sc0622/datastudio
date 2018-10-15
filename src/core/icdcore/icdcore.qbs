@@ -46,7 +46,8 @@ CoreDyLibrary {
         Properties {
             condition: qbs.targetOS.contains('windows')
             cpp.dynamicLibraries: [
-                FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module, product.targetName)
+                FileInfo.joinPaths(project.sourceDirectory, 'lib', product.module,
+                                   product.targetName + product.cpp.variantSuffix)
             ]
         }
     }

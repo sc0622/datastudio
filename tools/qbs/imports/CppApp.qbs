@@ -9,8 +9,8 @@ CppApplication {
     // module
     readonly property path precompPath: path + '/common'
 
-    Depends { name: 'Qt.qminimal'; condition: Qt.core.staticBuild }
     Depends { name: 'Qt.core'; cpp.link: false }
+    Depends { name: 'Qt.qminimal'; condition: Qt.core.staticBuild }
     Depends { name: 'desc'; required: false }
     Depends { name: 'setenv'; required: false; cpp.link: false }
 
