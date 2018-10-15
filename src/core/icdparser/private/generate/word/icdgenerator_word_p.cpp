@@ -874,8 +874,8 @@ bool WordGeneratorData::generateItem(const Icd::ItemPtr &item, QAxObject *axTabl
 
 bool WordGeneratorData::generateHeaderItem(const HeaderItemPtr &headerItem, QAxObject *axTable, int row)
 {
-    int offset = static_cast<int>(headerItem->bufferOffset());
-    int size = qCeil(headerItem->bufferSize());
+    const int offset = headerItem->bufferOffset();
+    const int size = headerItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -896,8 +896,8 @@ bool WordGeneratorData::generateHeaderItem(const HeaderItemPtr &headerItem, QAxO
 
 bool WordGeneratorData::generateCounterItem(const CounterItemPtr &counterItem, QAxObject *axTable, int row)
 {
-    int offset = static_cast<int>(counterItem->bufferOffset());
-    int size = qCeil(counterItem->bufferSize());
+    const int offset = counterItem->bufferOffset();
+    const int size = counterItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -918,8 +918,8 @@ bool WordGeneratorData::generateCounterItem(const CounterItemPtr &counterItem, Q
 
 bool WordGeneratorData::generateCheckItem(const CheckItemPtr &checkItem, QAxObject *axTable, int row)
 {
-    int offset = static_cast<int>(checkItem->bufferOffset());
-    int size = qCeil(checkItem->bufferSize());
+    const int offset = checkItem->bufferOffset();
+    const int size = checkItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -940,8 +940,8 @@ bool WordGeneratorData::generateCheckItem(const CheckItemPtr &checkItem, QAxObje
 
 bool WordGeneratorData::generateFrameCodeItem(const FrameCodeItemPtr &frameCodeItem, QAxObject *axTable, int row)
 {
-    int offset = static_cast<int>(frameCodeItem->bufferOffset());
-    int size = qCeil(frameCodeItem->bufferSize());
+    const int offset = frameCodeItem->bufferOffset();
+    const int size = frameCodeItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -962,8 +962,8 @@ bool WordGeneratorData::generateFrameCodeItem(const FrameCodeItemPtr &frameCodeI
 
 bool WordGeneratorData::generateNumericItem(const NumericItemPtr &numericItem, QAxObject *axTable, int row)
 {
-    int offset = static_cast<int>(numericItem->bufferOffset());
-    int size = qCeil(numericItem->bufferSize());
+    const int offset = numericItem->bufferOffset();
+    const int size = numericItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -990,8 +990,8 @@ bool WordGeneratorData::generateNumericItem(const NumericItemPtr &numericItem, Q
 
 bool WordGeneratorData::generateBitItem(const BitItemPtr &bitItem, QAxObject *axTable, int row)
 {
-    int offset = static_cast<int>(bitItem->bufferOffset());
-    int size = qCeil(bitItem->typeSize());
+    const int offset = bitItem->bufferOffset();
+    const int size = bitItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -1062,8 +1062,8 @@ bool WordGeneratorData::generateComplexItem(const ComplexItemPtr &complexItem, Q
         return false;
     }
 
-    int offset = static_cast<int>(complexItem->bufferOffset());
-    int size = qCeil(complexItem->bufferSize());
+    const int offset = complexItem->bufferOffset();
+    const int size = complexItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -1178,8 +1178,8 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
         }
     }
 
-    int offset = static_cast<int>(frameItem->bufferOffset());
-    int size = qCeil(frameItem->bufferSize());
+    const int offset = frameItem->bufferOffset();
+    const int size = frameItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));
@@ -1267,8 +1267,8 @@ bool WordGeneratorData::generateArrayItem(const ArrayItemPtr &arrayItem,
         return false;
     }
 
-    int offset = static_cast<int>(arrayItem->bufferOffset());
-    int size = qCeil(arrayItem->bufferSize());
+    const int offset = arrayItem->bufferOffset();
+    const int size = arrayItem->bufferSize();
     // column 1 - offset
     if (size > 1) {
         setCellText(axTable, row, 1, QString("%1 ~ %2").arg(offset).arg(offset + size - 1));

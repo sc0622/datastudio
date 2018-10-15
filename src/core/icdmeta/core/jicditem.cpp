@@ -103,19 +103,19 @@ int JIcdItem::itemOffset() const
     return d->data->itemOffset();
 }
 
-qreal JIcdItem::bufferSize() const
+int JIcdItem::bufferSize() const
 {
     Q_D(const JIcdItem);
     return d->data->bufferSize();
 }
 
-qreal JIcdItem::bufferOffset() const
+int JIcdItem::bufferOffset() const
 {
     Q_D(const JIcdItem);
     return d->data->bufferOffset();
 }
 
-qreal JIcdItem::localOffset() const
+int JIcdItem::localOffset() const
 {
     Q_D(const JIcdItem);
     return d->data->localOffset();

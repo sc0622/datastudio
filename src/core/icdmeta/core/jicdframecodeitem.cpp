@@ -12,8 +12,8 @@ class JIcdFrameCodeItemPrivate
 public:
     JIcdFrameCodeItemPrivate(JIcdFrameCodeItem *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
-        , frame(Q_NULLPTR)
+        , data(nullptr)
+        , frame(nullptr)
     {
 
     }
@@ -106,7 +106,7 @@ QString JIcdFrameCodeItem::text() const
     // data
     info.append(QString("%1")
                 .arg((ushort)(uchar)(d->data->data()),
-                     int(d->data->bufferSize() * 2), 16, QChar('0'))
+                     d->data->bufferSize() * 2, 16, QChar('0'))
                 .toUpper());
     // value
     info.append(", ");

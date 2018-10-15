@@ -17,7 +17,6 @@ class ICDMETA_EXPORT JIcdBitItem : public JIcdItem
     Q_OBJECT
     Q_PROPERTY(int bitStart READ bitStart NOTIFY bitStartChanged)
     Q_PROPERTY(int bitCount READ bitCount NOTIFY bitCountChanged)
-    Q_PROPERTY(int typeSize READ typeSize NOTIFY typeSizeChanged)
     Q_PROPERTY(int specCount READ specCount NOTIFY specCountChanged)
     Q_PROPERTY(QString currentSpec READ currentSpec NOTIFY currentSpecChanged)
 public:
@@ -29,7 +28,6 @@ public:
 
     int bitStart() const;
     int bitCount() const;
-    int typeSize() const;
     int specCount() const;
     QString currentSpec() const;
 
@@ -47,7 +45,6 @@ public:
 signals:
     void bitStartChanged();
     void bitCountChanged();
-    void typeSizeChanged();
     void specCountChanged();
     void currentSpecChanged(const QString &spec);
 

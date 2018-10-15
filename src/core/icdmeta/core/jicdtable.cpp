@@ -184,13 +184,13 @@ int JIcdTable::itemOffset() const
     return d->data->itemOffset();
 }
 
-qreal JIcdTable::bufferSize() const
+int JIcdTable::bufferSize() const
 {
     Q_D(const JIcdTable);
     return d->data->bufferSize();
 }
 
-qreal JIcdTable::bufferOffset() const
+int JIcdTable::bufferOffset() const
 {
     Q_D(const JIcdTable);
     return d->data->bufferOffset();

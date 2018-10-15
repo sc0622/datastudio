@@ -36,12 +36,12 @@ public:
     int rtti() const override;
 
     int itemOffset() const;
-    double bufferSize() const;
-    double bufferOffset() const;
+    int bufferSize() const;
+    int bufferOffset() const;
     char *buffer() const;
     void setBuffer(char *buffer);
-    void adjustBufferOffset();
-    static double adjustBufferOffset(const ItemPtrArray &items);
+    void adjustOffset();
+    static int adjustOffset(const ItemPtrArray &items);
 
     ItemPtrArray allItem();
     const ItemPtrArray &allItem() const;
@@ -106,10 +106,6 @@ public:
     ObjectPtr clone() const override;
     Table &operator =(const Table &other);
 
-    static double recalcBitBufferOffset(const Icd::BitItemPtr &bitItem,
-                                        const Icd::ItemPtrArray &items,
-                                        Icd::ItemPtrArray::const_reverse_iterator citer);
-
     // Serializable interface
 public:
     Json::Value save() const override;
@@ -117,7 +113,7 @@ public:
 
 private:
     void setItemOffset(int offset);
-    void setBufferOffset(double offset);
+    void setBufferOffset(int offset);
 
 private:
     TableData *d;

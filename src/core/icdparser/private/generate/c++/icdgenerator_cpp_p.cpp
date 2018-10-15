@@ -124,8 +124,8 @@ bool CppGeneratorData::generateTable(const TablePtr &table,
     int tableSize = 0;
     Icd::Item *parentItem = dynamic_cast<Icd::Item *>(table->parent());
     if (parentItem) {
-        tableSize = static_cast<int>(std::ceil(parentItem->bufferSize()));
-        int unusedSize = tableSize - static_cast<int>(std::ceil(table->bufferSize()));
+        tableSize = parentItem->bufferSize();
+        int unusedSize = tableSize - table->bufferSize();
         if (unusedSize > 0) {
             QString line;
             QTextStream lineStream(&line);
@@ -140,7 +140,7 @@ bool CppGeneratorData::generateTable(const TablePtr &table,
             memberStream << "/* unused */" << endl;
         }
     } else {
-        tableSize = static_cast<int>(std::ceil(table->bufferSize()));
+        tableSize = table->bufferSize();
     }
 
     const QString tableName = QString::fromStdString(table->typeName());

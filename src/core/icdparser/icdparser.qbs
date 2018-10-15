@@ -5,6 +5,11 @@ CoreDyLibrary {
     translations: [ 'zh_CN.ts' ]
     defaultTranslation: true
 
+    Properties {
+        condition: qbs.targetOS.contains('windows')
+        cpp.cxxStandardLibrary: 'c++98'
+    }
+
     Depends { name: 'Qt.printsupport' }
     Depends {
         condition: qbs.targetOS.contains('windows')
@@ -48,9 +53,5 @@ CoreDyLibrary {
         files: [ '*.h', '*.cpp' ]
     }
 
-    Properties {
-        condition: qbs.targetOS.contains('windows')
-        cpp.cxxStandardLibrary: 'c++98'
-    }
     cpp.includePaths: base.concat([FileInfo.joinPaths('..'), tinyxml.prefix + '/..'])
 }

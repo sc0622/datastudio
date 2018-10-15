@@ -17,9 +17,9 @@ class ICDMETA_EXPORT JIcdItem : public JIcdObject
     Q_OBJECT
     Q_PROPERTY(IcdCore::ItemType itemType READ itemType NOTIFY itemTypeChanged)
     Q_PROPERTY(int itemOffset READ itemOffset NOTIFY itemOffsetChanged)
-    Q_PROPERTY(qreal bufferSize READ bufferSize NOTIFY bufferSizeChanged)
-    Q_PROPERTY(qreal bufferOffset READ bufferOffset NOTIFY bufferOffsetChanged)
-    Q_PROPERTY(qreal localOffset READ localOffset NOTIFY localOffsetChanged)
+    Q_PROPERTY(int bufferSize READ bufferSize NOTIFY bufferSizeChanged)
+    Q_PROPERTY(int bufferOffset READ bufferOffset NOTIFY bufferOffsetChanged)
+    Q_PROPERTY(int localOffset READ localOffset NOTIFY localOffsetChanged)
     Q_PROPERTY(qreal data READ data WRITE setData NOTIFY dataChanged)
     Q_PROPERTY(double defaultValue READ defaultValue WRITE setDefaultValue NOTIFY defaultValueChanged)
     Q_PROPERTY(QString fullValue READ fullValue NOTIFY fullValueChanged)
@@ -35,9 +35,9 @@ public:
 
     IcdCore::ItemType itemType() const;
     int itemOffset() const;
-    qreal bufferSize() const;
-    qreal bufferOffset() const;
-    qreal localOffset() const;
+    int bufferSize() const;
+    int bufferOffset() const;
+    int localOffset() const;
 
     qreal data() const;
     double defaultValue() const;
@@ -61,9 +61,9 @@ public:
 signals:
     void itemTypeChanged(IcdCore::ItemType value);
     void itemOffsetChanged(int value);
-    void bufferSizeChanged(qreal value);
-    void bufferOffsetChanged(qreal value);
-    void localOffsetChanged(qreal value);
+    void bufferSizeChanged(int value);
+    void bufferOffsetChanged(int value);
+    void localOffsetChanged(int value);
     void dataChanged(qreal value);
     void defaultValueChanged(qreal value);
     void fullValueChanged();

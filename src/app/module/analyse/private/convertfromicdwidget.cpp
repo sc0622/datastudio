@@ -187,7 +187,7 @@ bool ConvertFromIcdWidget::loadData(const QString &domain, int headerSize,
                 if (hasTimeFormat) {
                     while (!sourceFile.atEnd()) {
                         sourceFile.seek(sourceFile.pos() + 8); // read time data
-                        targetFile.write(sourceFile.read(int(d_table->bufferSize())));
+                        targetFile.write(sourceFile.read(d_table->bufferSize()));
                     }
                 } else {
                     while (!sourceFile.atEnd()) {

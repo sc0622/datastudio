@@ -289,7 +289,7 @@ bool ConvertToDataAnalyse::convertToATX(QFile *sourceFile, QSaveFile *targetFile
     // data
     const double pkgCntScale = d_spinPkgCntScale->value();
     const qint64 dataSize = sourceFile->size() - headerSize;
-    const int tableSize = int(table->bufferSize());
+    const int tableSize = table->bufferSize();
     const int bufferSize = tableSize + (hasTimeFormat ? 8 : 0);
     const qint64 bufferCount = dataSize / bufferSize;
     uchar *buffer = Q_NULLPTR;

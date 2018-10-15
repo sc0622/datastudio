@@ -11,7 +11,7 @@ class JIcdCounterItemPrivate
 public:
     JIcdCounterItemPrivate(JIcdCounterItem *q)
         : J_QPTR(q)
-        , data(Q_NULLPTR)
+        , data(nullptr)
     {
 
     }
@@ -103,7 +103,7 @@ QString JIcdCounterItem::text() const
     // data
     info.append(QString("%1")
                 .arg((uint)d->data->data(),
-                     int(d->data->bufferSize() * 2), 16, QChar('0'))
+                     d->data->bufferSize() * 2, 16, QChar('0'))
                 .toUpper());
     // value
     info.append(", ");
@@ -124,7 +124,7 @@ QString JIcdCounterItem::fullValue() const
     Q_D(const JIcdCounterItem);
     return QString("%1")
             .arg((uint)d->data->data(),
-                 int(d->data->bufferSize() * 2), 16, QChar('0'))
+                 d->data->bufferSize() * 2, 16, QChar('0'))
             .toUpper();
 }
 

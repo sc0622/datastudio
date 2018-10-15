@@ -19,8 +19,8 @@ class ICDMETA_EXPORT JIcdTable : public JIcdObject
 {
     Q_OBJECT
     Q_PROPERTY(int itemOffset READ itemOffset NOTIFY itemOffsetChanged)
-    Q_PROPERTY(qreal bufferSize READ bufferSize NOTIFY bufferSizeChanged)
-    Q_PROPERTY(qreal bufferOffset READ bufferOffset NOTIFY bufferOffsetChanged)
+    Q_PROPERTY(int bufferSize READ bufferSize NOTIFY bufferSizeChanged)
+    Q_PROPERTY(int bufferOffset READ bufferOffset NOTIFY bufferOffsetChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(int sequence READ sequence WRITE setSequence NOTIFY sequenceChanged)
     Q_PROPERTY(QByteArray headers READ metaHeaders NOTIFY headersChanged)
@@ -35,8 +35,8 @@ public:
     Icd::TablePtr metaData() const;
 
     int itemOffset() const;
-    qreal bufferSize() const;
-    qreal bufferOffset() const;
+    int bufferSize() const;
+    int bufferOffset() const;
     int count() const;
     int sequence() const;
 

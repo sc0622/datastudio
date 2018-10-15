@@ -193,7 +193,7 @@ bool JsonParser::parse(const std::string &vehicleId, const std::string &systemId
         items.push_back(newItem);
     }
 
-    Icd::Table::adjustBufferOffset(items);
+    Icd::Table::adjustOffset(items);
 
     return true;
 }

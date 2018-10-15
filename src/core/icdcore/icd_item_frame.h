@@ -41,7 +41,7 @@ public:
     std::string dataString() const override;
 
     void setBuffer(char *buffer) override;
-    void setBufferSize(double size) override;
+    void setBufferSize(int size) override;
 
     int sequenceCount() const;
     void setSequenceCount(int count);
@@ -84,7 +84,7 @@ public:
     bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
-    void setBufferOffset(double offset) override;
+    void setBufferOffset(int offset) override;
     void adjustBufferOffset() override;
 
 private:

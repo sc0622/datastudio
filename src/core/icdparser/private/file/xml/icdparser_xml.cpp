@@ -253,7 +253,7 @@ bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
          emItem = emItem->NextSiblingElement("item")) {
         // parse item informations
         if (emItem->QueryStringAttribute("type", &sVal) != TIXML_SUCCESS) {
-            //
+            continue;
         }
         const std::string sType = sVal;
         Icd::ItemPtr item = Icd::Item::create(Icd::Item::stringType(sType), parent);
@@ -263,17 +263,13 @@ bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
         if (!parseItem(emItem, item, deep)) {
             continue;   // parse failure
         }
-        // offset
-        if (!items.empty()) {
-            const Icd::ItemPtr &last = *items.crbegin();
-            item->setItemOffset(last->itemOffset() + 1);
-            item->setBufferOffset(last->bufferOffset() + last->bufferSize());
-        }
         // save
         items.push_back(item);
     }
 
     delete emTable->GetDocument();
+
+    Icd::Table::adjustOffset(items);
 
     return true;
 }

@@ -123,7 +123,7 @@ QString JIcdCheckItem::text() const
     // data
     info.append(QString("%1")
                 .arg((uint)d->data->data(),
-                     int(d->data->bufferSize() * 2), 16, QChar('0'))
+                     d->data->bufferSize() * 2, 16, QChar('0'))
                 .toUpper());
     // value
     info.append(", ");
@@ -144,7 +144,7 @@ QString JIcdCheckItem::fullValue() const
     Q_D(const JIcdCheckItem);
     return QString("%1")
             .arg((uint)d->data->data(),
-                 int(d->data->bufferSize() * 2), 16, QChar('0'))
+                 d->data->bufferSize() * 2, 16, QChar('0'))
             .toUpper();
 }
 

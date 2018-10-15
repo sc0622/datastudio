@@ -27,7 +27,7 @@ private:
     NumericType numericType;    // 数据项类型
     double scale;               // 比例尺
     double offset;              // 偏置
-    int decimals;               // 小数有效个数
+    char decimals;              // 小数有效个数
     LimitItemPtr limit;         // 范围
     std::string unit;           // 单位
     std::map<double, std::string> specs;  // 特征点,画图或显示使用
@@ -270,7 +270,7 @@ int NumericItem::decimals() const
 
 void NumericItem::setDecimals(int value)
 {
-    d->decimals = value;
+    d->decimals = char(value);
 }
 
 LimitItemPtr NumericItem::limit() const
@@ -517,7 +517,7 @@ Json::Value NumericItem::save() const
     json["scale"] = d->scale;
     // decimals
     if (d->decimals > 0) {
-        json["decimals"] = d->decimals;
+        json["decimals"] = int(d->decimals);
     }
     // limit
     Json::Value limitJson = d->limit->save();
@@ -557,7 +557,7 @@ bool NumericItem::restore(const Json::Value &json, int deep)
         setScale(json["scale"].asDouble());
     }
     // decimals
-    setDecimals(json["decimals"].asInt());
+    setDecimals(char(json["decimals"].asInt()));
     // limit
     if (!d->limit->restore(json["limit"], deep)) {
         return false;

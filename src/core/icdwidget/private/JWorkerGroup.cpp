@@ -327,24 +327,24 @@ QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
             break;
         }
 
-        qreal itemOffset = -1;
+        int bufferOffset = -1;
         Icd::Object *parentObject = table->parent();
         if (parentObject && parentObject->objectType() == Icd::ObjectItem
                 && parentObject->rtti() != Icd::ObjectFrame) {
             Icd::Item *item = dynamic_cast<Icd::Item*>(parentObject);
             if (item && item->parent()) {
-                itemOffset = item->bufferOffset();
+                bufferOffset = item->bufferOffset();
             }
         }
-        if (itemOffset >= 0) {
+        if (bufferOffset >= 0) {
             text.append(QString("<font color=green size=2>[%1:%2:%3]</font> ")
                         .arg(table->itemOffset(), 4, 10, QChar('0'))
-                        .arg(int(table->bufferOffset()), 4, 10, QChar('0'))
-                        .arg(int(table->bufferOffset() - itemOffset), 4, 10, QChar('0')));
+                        .arg(table->bufferOffset(), 4, 10, QChar('0'))
+                        .arg(table->bufferOffset() - bufferOffset, 4, 10, QChar('0')));
         } else {
             text.append(QString("<font color=green size=2>[%1:%2]</font> ")
                         .arg(table->itemOffset() + offset, 4, 10, QChar('0'))
-                        .arg(int(table->bufferOffset()), 4, 10, QChar('0')));
+                        .arg(table->bufferOffset(), 4, 10, QChar('0')));
         }
 
         break;
@@ -356,7 +356,7 @@ QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
             break;
         }
 
-        qreal tableOffset = -1;
+        int tableOffset = -1;
         Icd::Object *parentObject = item->parent();
         if (parentObject && parentObject->objectType() == Icd::ObjectTable) {
             Icd::Table *table = dynamic_cast<Icd::Table *>(parentObject);
@@ -375,16 +375,16 @@ QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
                 }
                 text.append(QString("<font color=green size=2>[%1:%2:%3.%4]</font> ")
                             .arg(item->itemOffset(), 4, 10, QChar('0'))
-                            .arg(int(item->bufferOffset()), 4, 10, QChar('0'))
-                            .arg(int(item->bufferOffset() - tableOffset), 4, 10, QChar('0'))
+                            .arg(item->bufferOffset(), 4, 10, QChar('0'))
+                            .arg(item->bufferOffset() - tableOffset, 4, 10, QChar('0'))
                             .arg(itemBit->bitStart(), 2, 10, QChar('0')));
                 break;
             }
             default:
                 text.append(QString("<font color=green size=2>[%1:%2:%3]</font> ")
                             .arg(item->itemOffset(), 4, 10, QChar('0'))
-                            .arg(int(item->bufferOffset()), 4, 10, QChar('0'))
-                            .arg(int(item->bufferOffset() - tableOffset), 4, 10, QChar('0')));
+                            .arg(item->bufferOffset(), 4, 10, QChar('0'))
+                            .arg(item->bufferOffset() - tableOffset, 4, 10, QChar('0')));
                 break;
             }
         } else {
@@ -398,14 +398,14 @@ QString JWorkerGroup::generateItemOffset(Icd::Object *object, int offset)
                 }
                 text.append(QString("<font color=green size=2>[%1:%2.%3]</font> ")
                             .arg(item->itemOffset(), 4, 10, QChar('0'))
-                            .arg(int(item->bufferOffset()), 4, 10, QChar('0'))
+                            .arg(item->bufferOffset(), 4, 10, QChar('0'))
                             .arg(itemBit->bitStart(), 2, 10, QChar('0')));
                 break;
             }
             default:
                 text.append(QString("<font color=green size=2>[%1:%2]</font> ")
                             .arg(item->itemOffset(), 4, 10, QChar('0'))
-                            .arg(int(item->bufferOffset()), 4, 10, QChar('0')));
+                            .arg(item->bufferOffset(), 4, 10, QChar('0')));
                 break;
             }
         }
@@ -455,7 +455,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
     const QString suffix("</font>");
 
     QString info;
-    int asciiCount = Icd::asciiCountOfSize(dataFormat_, int(dataItem->bufferSize()));
+    const int asciiCount = Icd::asciiCountOfSize(dataFormat_, dataItem->bufferSize());
     const bool _showValue = [=]() -> bool {
         //
         if (!showValue) {
@@ -576,7 +576,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
                 default:
                 {
                     qulonglong data = qulonglong(itemNumeric->originalData());
-                    data &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
+                    data &= (1ull << (itemNumeric->bufferSize() << 3)) - 1;
                     values.append(QString("%1").arg(data, asciiCount, dataFormat_, QChar('0')).toUpper());
                     break;
                 }}
@@ -611,7 +611,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
             // value
             if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(uint(dataItem->data()),
-                                                int(dataItem->bufferSize() * 8), 2, QChar('0')));
+                                                dataItem->bufferSize() * 8, 2, QChar('0')));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             break;
@@ -628,7 +628,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
             // value
             if (showAttris_ & JProtoTreeView::ShowValue) {
                 values.append(QString("%1").arg(uint(dataItem->data()),
-                                                int(dataItem->bufferSize() * 8), 2, QChar('0')));
+                                                dataItem->bufferSize() * 8, 2, QChar('0')));
             }
             info.append(dataPrefix).append(values.join(", ")).append(suffix);
             // spec
@@ -658,7 +658,7 @@ void JWorkerGroup::updateItemData(QStandardItem *item, const ItemPtr &dataItem,
             Icd::TablePtr table = itemComplex->table();
             if (table->itemCount() == 0) {
                 const char *buffer = itemComplex->buffer();
-                int bufferSize = int(itemComplex->bufferSize());
+                const int bufferSize = itemComplex->bufferSize();
                 if (bufferSize <= 16) {
                     info.append(dataPrefix);
                     for (int i = 0; i < bufferSize; ++i) {

@@ -62,7 +62,7 @@ void ComplexItem::setBuffer(char *buffer)
     d->table->setBuffer(buffer);
 }
 
-void ComplexItem::setBufferSize(double size)
+void ComplexItem::setBufferSize(int size)
 {
     Item::setBufferSize(size);
 }
@@ -239,7 +239,7 @@ bool ComplexItem::restore(const Json::Value &json, int deep)
     d->table->setDesc(desc());
     // size
     if (!d->table->isEmpty()) {
-        setBufferSize(std::ceil(d->table->bufferSize()));
+        setBufferSize(d->table->bufferSize());
     }
 
     return true;
@@ -252,7 +252,7 @@ ComplexItem::ComplexItem(const ComplexItem &other)
     operator =(other);
 }
 
-void ComplexItem::setBufferOffset(double offset)
+void ComplexItem::setBufferOffset(int offset)
 {
     Item::setBufferOffset(offset);
     d->table->setBufferOffset(offset);

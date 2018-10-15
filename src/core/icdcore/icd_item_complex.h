@@ -28,7 +28,7 @@ public:
     TablePtr table() const;
 
     void setBuffer(char *buffer) override;
-    void setBufferSize(double size) override;
+    void setBufferSize(int size) override;
 
     std::string typeName() const override;
 
@@ -65,7 +65,7 @@ public:
     bool restore(const Json::Value &json, int deep = -1) override;
 
 protected:
-    void setBufferOffset(double offset) override;
+    void setBufferOffset(int offset) override;
     void adjustBufferOffset() override;
 
 private:

@@ -363,7 +363,7 @@ GroupSeries *ChartFileViewPrivate::createGroupSeries(int chartType, const FileBa
             }
             seriesInfo->bitStart = bitItem->bitStart();
             seriesInfo->bitCount = bitItem->bitCount();
-            seriesInfo->ySize = static_cast<uchar>(std::ceil(dataItem->bufferSize()));
+            seriesInfo->ySize = static_cast<uchar>(dataItem->bufferSize());
             break;
         }
         case Icd::ItemNumeric:
@@ -375,12 +375,12 @@ GroupSeries *ChartFileViewPrivate::createGroupSeries(int chartType, const FileBa
             seriesInfo->valueScale = numericItem->scale();
             seriesInfo->valueOffset = numericItem->offset();
             seriesInfo->numericTypeY = numericItem->numericType();
-            seriesInfo->ySize = static_cast<uchar>(std::ceil(dataItem->bufferSize()));
+            seriesInfo->ySize = static_cast<uchar>(dataItem->bufferSize());
             break;
         }
         default:
         {
-            seriesInfo->ySize = static_cast<uchar>(std::ceil(dataItem->bufferSize()));
+            seriesInfo->ySize = static_cast<uchar>(dataItem->bufferSize());
             break;
         }}
 
@@ -394,7 +394,7 @@ GroupSeries *ChartFileViewPrivate::createGroupSeries(int chartType, const FileBa
         case Icd::ItemBitMap:
         {
             Icd::BitItemPtr itemBit = JHandlePtrCast<Icd::BitItem>(dataItem);
-            seriesInfo->ySize = static_cast<uchar>(itemBit->typeSize());
+            seriesInfo->ySize = static_cast<uchar>(itemBit->bufferSize());
             break;
         }
         default:
@@ -450,7 +450,7 @@ bool ChartFileViewPrivate::createBuffer(const GroupSeries *seriesData, QFile &fi
     const SeriesInfoPtr seriesInfo = seriesData->seriesInfo;
     const FileBaseInfo &baseInfo = seriesInfo->baseInfo;
 
-    int tableStep = int(std::ceil(baseInfo.table->bufferSize()));
+    int tableStep = baseInfo.table->bufferSize();
     if (baseInfo.hasTimeFormat) {
         tableStep += 8;
     }
@@ -781,7 +781,7 @@ void ChartFileViewPrivate::startReplay()
     }
 #if 0   //TODO
     //
-    int bufferStep = (int)std::ceil(table->bufferSize());
+    int bufferStep = table->bufferSize();
     if (hasTimeFormat) {
         bufferStep += 8;
     } else {

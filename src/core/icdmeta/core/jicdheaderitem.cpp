@@ -75,7 +75,7 @@ QString JIcdHeaderItem::text() const
     // data
     info.append(QString("%1")
                 .arg((uint)d->data->data(),
-                     int(d->data->bufferSize() * 2), 16, QChar('0'))
+                     d->data->bufferSize() * 2, 16, QChar('0'))
                 .toUpper());
     // value
     info.append(", ");
@@ -96,7 +96,7 @@ QString JIcdHeaderItem::fullValue() const
     Q_D(const JIcdHeaderItem);
     return QString("%1")
             .arg((uint)d->data->data(),
-                 int(d->data->bufferSize() * 2), 16, QChar('0'))
+                 d->data->bufferSize() * 2, 16, QChar('0'))
             .toUpper();
 }
 

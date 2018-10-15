@@ -15,7 +15,6 @@ public:
     BitItemData()
         : bitStart(0)
         , bitCount(8)
-        , typeSize(1)
         , decimals(0)
         , offset(0.0)
         , scale(1.0)
@@ -28,10 +27,9 @@ public:
     static std::string trim(const std::string &str);
 
 private:
-    int bitStart;               // 起始比特位,从0开始
-    int bitCount;               // 比特长度
-    int typeSize;               // 数据类型字节数
-    int decimals;               // 小数有效个数
+    char bitStart;              // 起始比特位,从0开始
+    char bitCount;              // 比特长度
+    char decimals;              // 小数有效个数
     double offset;              // 偏置
     double scale;               // 比例尺
     LimitItemPtr limit;         // 范围
@@ -107,68 +105,37 @@ double BitItem::data() const
 
 void BitItem::setData(double data)
 {
-    //
+    const int _bufferSize = bufferSize();
+    if (_bufferSize <= 0) {
+        return;
+    }
+
     char *buffer = this->buffer();
     if (!buffer) {
         return;
     }
 
-    //
-    int bitEnd = d->bitStart + d->bitCount;
     icd_uint64 value = 0;
 
-    //
-    if (bitEnd <= 8) {
-        value = *reinterpret_cast<icd_uint8*>(buffer);
-    } else if (bitEnd <= 16) {
-        value = *reinterpret_cast<icd_uint16*>(buffer);
-    } else if (bitEnd <= 32) {
-        value = *reinterpret_cast<icd_uint32*>(buffer);
-    } else if (bitEnd <= 64) {
-        value = *reinterpret_cast<icd_uint64*>(buffer);
-    } else  {
-        // 不支持超过32位长度的bit类型
-    }
+    memcpy(&value, buffer, size_t(_bufferSize));
 
-    //
-    const icd_uint64 mask = (((1ull << d->bitCount) - 1) << d->bitStart);
-    value = (value & (~mask)) | ((static_cast<icd_uint64>(data) << d->bitStart) & mask);
+    const icd_uint64 _mask = mask();
+    value = (value & (~_mask)) | ((icd_uint64(data) << d->bitStart) & _mask);
 
-    //
-    if (bitEnd <= 8) {
-        *reinterpret_cast<icd_uint8*>(buffer) = static_cast<icd_uint8>(value);
-    } else if (bitEnd <= 16) {
-        *reinterpret_cast<icd_uint16*>(buffer) = static_cast<icd_uint16>(value);
-    } else if (bitEnd <= 32) {
-        *reinterpret_cast<icd_uint32*>(buffer) = static_cast<icd_uint32>(value);
-    } else if (bitEnd <= 64) {
-        *reinterpret_cast<icd_uint64*>(buffer) = static_cast<icd_uint64>(value);
-    } else {
-        // 不支持超过64位长度的bit类型
-    }
+    memcpy(buffer, &value, size_t(_bufferSize));
 }
 
 bool BitItem::testBit(int offset) const
 {
-    const uint32_t data = uint32_t(this->data());
-    return ((data & (1ull << offset)) != 0);
+    const uint32_t _data = uint32_t(data());
+    return ((_data & (1ull << offset)) != 0);
 }
 
 std::string BitItem::dataString() const
 {
-    unsigned int data = static_cast<unsigned int>(this->data());
-    switch (type()) {
-    case ItemBitValue:
-    {
-        std::map<icd_uint64, std::string>::const_iterator citer = d->specs.find(data);
-        if (citer != d->specs.end()) {
-            return citer->second;
-        } else {
-            return "Invalid status";
-        }
-    }
-    case ItemBitMap:
-    {
+    const unsigned int data = static_cast<unsigned int>(this->data());
+    const ItemType itemType = type();
+    if (itemType == ItemBitMap) {
         std::string str;
         std::map<icd_uint64,  std::string>::const_iterator citer = d->specs.begin();
         for (citer = d->specs.begin(); citer != d->specs.end(); ++citer) {
@@ -177,8 +144,14 @@ std::string BitItem::dataString() const
             }
         }
         return str.substr(0, str.size() - 3);
-    }
-    default:
+    } else if (itemType == ItemBitValue) {
+        std::map<icd_uint64, std::string>::const_iterator citer = d->specs.find(data);
+        if (citer != d->specs.end()) {
+            return citer->second;
+        } else {
+            return "Invalid status";
+        }
+    } else {
         return "Invalid status";
     }
 }
@@ -207,15 +180,13 @@ int BitItem::bitStart() const
 
 void BitItem::setBitStart(int bitStart)
 {
-    if (bitStart < 0) {
+    if (bitStart < 0 || bitStart > 63) {
         d->bitStart = 0;
     } else {
-        d->bitStart = bitStart;
+        d->bitStart = char(bitStart);
     }
-    // update typeSize
-    if (d->bitStart == 0) {
-        d->typeSize = int(std::ceil(d->bitCount / 8.0));
-    }
+
+    setBufferSize(calcSize());
 }
 
 int BitItem::bitCount() const
@@ -229,29 +200,27 @@ void BitItem::setBitCount(int count)
         d->bitCount = 0;
         setBufferSize(0);
     } else {
-        d->bitCount = count;
-        const double bufferSize = count / 8.0;
-        setBufferSize(bufferSize);
-        // update typeSize
-        if (d->bitStart == 0) {
-            d->typeSize = int(std::ceil(bufferSize));
-        }
+        d->bitCount = char(count);
+        setBufferSize(calcSize());
     }
-}
-
-int BitItem::typeSize() const
-{
-    return d->typeSize;
-}
-
-void BitItem::setTypeSize(int size)
-{
-    d->typeSize = size;
 }
 
 int BitItem::calcSize() const
 {
-    return int(std::ceil((d->bitStart + 1) / 8.0));
+    const char bitEnd = d->bitStart + d->bitCount;
+    if (bitEnd <= 0) {
+        return 0;
+    } else if (bitEnd <= 8) {
+        return 1;
+    } else if (bitEnd <= 16) {
+        return 2;
+    } else if (bitEnd <= 32) {
+        return 4;
+    } else if (bitEnd <= 64) {
+        return 8;
+    } else {
+        return 8;   //
+    }
 }
 
 icd_uint64 BitItem::mask() const
@@ -316,11 +285,9 @@ icd_uint64 BitItem::keyOf(const std::string &info, bool *ok)
 std::string BitItem::nameAt(int offset) const
 {
     const std::string spec = BitItem::nameOf(specAt(icd_uint64(offset)));
-    switch (type()) {
-    case Icd::ItemBitMap:
-        return BitItem::nameOf(spec);
-    case Icd::ItemBitValue:
-    default:
+    if (type() == Icd::ItemBitMap) {
+        return nameOf(spec);
+    } else {
         return spec;
     }
 }
@@ -380,7 +347,7 @@ std::string BitItem::descAt(int offset) const
 std::string BitItem::typeName() const
 {
     std::ostringstream os;
-    os << (typeSize() << 3);
+    os << (bufferSize() << 3);
     return "icd_uint" + os.str();
 }
 
@@ -406,7 +373,6 @@ BitItem &BitItem::operator =(const BitItem &other)
     Item::operator =(other);
     d->bitStart = other.d->bitStart;
     d->bitCount = other.d->bitCount;
-    d->typeSize = other.d->typeSize;
     d->offset = other.d->offset;
     d->scale = other.d->scale;
     d->decimals = other.d->decimals;
@@ -422,27 +388,18 @@ double BitItem::originalData() const
 
 double BitItem::originalDataFromBuffer(const char *buffer) const
 {
+    const int _bufferSize = bufferSize();
+    if (_bufferSize <= 0) {
+        return 0.0;
+    }
+
     if (!buffer) {
         return 0.0;
     }
 
-    //
-    int bitEnd = d->bitStart + d->bitCount;
     icd_uint64 value = 0;
+    memcpy(&value, buffer, size_t(_bufferSize));
 
-    //
-    if (bitEnd <= 8) {
-        value = *reinterpret_cast<const icd_uint8*>(buffer);
-    } else if (bitEnd <= 16) {
-        value = *reinterpret_cast<const icd_uint16*>(buffer);
-    } else if (bitEnd <= 32) {
-        value = *reinterpret_cast<const icd_uint32*>(buffer);
-    } else if (bitEnd <= 64) {
-        value = *reinterpret_cast<const icd_uint64*>(buffer);
-    } else {
-        //assert(false);
-    }
-    //
     value = (value << (64 - d->bitStart - d->bitCount)) >> (64 - d->bitCount);
 
     return double(value);
@@ -475,7 +432,7 @@ int BitItem::decimals() const
 
 void BitItem::setDecimals(int value)
 {
-    d->decimals = value;
+    d->decimals = char(value);
 }
 
 LimitItemPtr BitItem::limit() const
@@ -619,7 +576,7 @@ bool BitItem::restore(const Json::Value &json, int deep)
     }
     // unit
     setUnit(json["unit"].asString());
-
+    // specs
     clearSpec();
     if (json.isMember("specs")) {
         Json::Value specsJson = json["specs"];

@@ -255,13 +255,7 @@ void DetailTable::setBottomTip(const QString &text) const
 
 void DetailTable::setBottomTip(const Icd::TablePtr &table) const
 {
-    const double realSize = table->bufferSize();
-    const double size = std::ceil(realSize);
-    if (qFuzzyCompare(size, realSize)) {
-        setBottomTip(tr("Size: %1").arg(size));
-    } else {
-        setBottomTip(tr("Size: %1 (Real: %2)").arg(size).arg(realSize));
-    }
+    setBottomTip(tr("Size: %1").arg(table->bufferSize()));
 }
 
 bool DetailTable::isModified() const
@@ -384,7 +378,7 @@ void DetailTable::insertRow(int row, const Icd::ItemPtr &item)
 
     row = insertRow(row, JHandlePtrCast<Icd::Object>(item));
 
-    double offset = 0;
+    int offset = 0;
     Icd::Object *parent = item->parent();
     if (parent && parent->objectType() == Icd::ObjectTable) {
         Icd::Table *table = dynamic_cast<Icd::Table*>(parent);
@@ -1024,7 +1018,7 @@ bool DetailTable::updateItem(const Icd::ItemPtr &item)
         return false;
     }
 
-    double bufferOffset = item->bufferOffset();
+    int bufferOffset = item->bufferOffset();
     Icd::Table *table = dynamic_cast<Icd::Table*>(item->parent());
     if (table) {
         bufferOffset -= table->bufferOffset();
@@ -1219,7 +1213,7 @@ bool DetailTable::updateBit(const Icd::BitItemPtr &bit)
 
     // Length of data
     tableView_->setItemData(rowIndex, 1, QString("%1/%2")
-                            .arg(bit->bitCount()).arg(bit->typeSize() * 8));
+                            .arg(bit->bitCount()).arg(bit->bufferSize() * 8));
     // range of bit
     tableView_->insertRow(++rowIndex);
     tableView_->setItemData(rowIndex, 0, tr("Range of bit"));
@@ -1568,7 +1562,7 @@ void DetailTable::setRowData(int row, const Icd::TablePtr &table)
     tableView_->setItemData(row, 3, QString::fromStdString(table->desc()));
 }
 
-void DetailTable::setRowData(int row, const Icd::ItemPtr &item, double offset)
+void DetailTable::setRowData(int row, const Icd::ItemPtr &item, int offset)
 {
     if (!item) {
         return;
@@ -1582,13 +1576,13 @@ void DetailTable::setRowData(int row, const Icd::ItemPtr &item, double offset)
     tableView_->setItemData(row, 5, QString::fromStdString(item->desc()));
 }
 
-void DetailTable::setRowOffsetAndSize(int row, const Icd::ItemPtr &item, double offset)
+void DetailTable::setRowOffsetAndSize(int row, const Icd::ItemPtr &item, int offset)
 {
     if (!item) {
         return;
     }
 
-    const double bufferOffset = item->bufferOffset() - offset;
+    const int bufferOffset = item->bufferOffset() - offset;
 
     // offset and size
     switch (item->type()) {
@@ -1602,7 +1596,7 @@ void DetailTable::setRowOffsetAndSize(int row, const Icd::ItemPtr &item, double 
         tableView_->setItemData(row, 2, QString("%1 (%2)").arg(bufferOffset)
                                 .arg(bit->bitStart(), 2, 10, QChar('0')));
         tableView_->setItemData(row, 3, QString("%1/%2").arg(bit->bitCount())
-                                .arg(bit->typeSize() * 8));
+                                .arg(bit->bufferSize() * 8));
         break;
     }
     default:

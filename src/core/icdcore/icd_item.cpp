@@ -16,10 +16,10 @@ public:
     ItemData()
         : type(ItemInvalid)
         , itemOffset(1)
-        , buffer(nullptr)
-        , bufferSize(0.0)
-        , bufferOffset(0.0)
+        , bufferSize(0)
+        , bufferOffset(0)
         , defaultValue(0.0)
+        , buffer(nullptr)
     {
 
     }
@@ -27,10 +27,10 @@ public:
 private:
     ItemType type;
     int itemOffset;
-    char *buffer;
-    double bufferSize;
-    double bufferOffset;
+    int bufferSize;
+    int bufferOffset;
     double defaultValue;
+    char *buffer;
 };
 
 // class Item
@@ -91,28 +91,28 @@ void Item::setBuffer(char *buffer)
     d->buffer = buffer;
 }
 
-double Item::bufferSize() const
+int Item::bufferSize() const
 {
     return d->bufferSize;
 }
 
-double Item::bufferOffset() const
+int Item::bufferOffset() const
 {
     return d->bufferOffset;
 }
 
-double Item::localOffset() const
+int Item::localOffset() const
 {
-    Object *parent = this->parent();
-    if (!parent) {
+    Object *_parent = parent();
+    if (!_parent) {
         return bufferOffset();
     }
 
-    if (parent->objectType() != Icd::ObjectTable) {
+    if (_parent->objectType() != Icd::ObjectTable) {
         return bufferOffset();
     }
 
-    const Icd::Table *table = dynamic_cast<Icd::Table *>(parent);
+    const Icd::Table *table = dynamic_cast<Icd::Table *>(_parent);
     if (!table || !table->parent()) {
         return bufferOffset();
     }
@@ -386,7 +386,7 @@ void Item::setType(ItemType type)
     d->type = type;
 }
 
-void Item::setBufferSize(double size)
+void Item::setBufferSize(int size)
 {
     d->bufferSize = size;
 }
@@ -396,7 +396,7 @@ void Item::setItemOffset(int offset)
     d->itemOffset = offset;
 }
 
-void Item::setBufferOffset(double offset)
+void Item::setBufferOffset(int offset)
 {
     d->bufferOffset = offset;
 }

@@ -47,7 +47,7 @@ void WorkerSendPrivate::updateBind(bool valid)
 
     if (table && table->bufferSize() > 0) {
         if (valid) {
-            tableSize = int(std::ceil(table->bufferSize()));
+            tableSize = table->bufferSize();
             tableBuffer = new char[size_t(tableSize)];
             memset(tableBuffer, 0, size_t(tableSize));
             table->setBuffer(tableBuffer);
@@ -72,7 +72,7 @@ bool WorkerSendPrivate::sendData(bool counterLoop, bool frameLoop)
     doCheck();
 
     //
-    int size = channel->write(table->buffer(), int(table->bufferSize()));
+    const int size = channel->write(table->buffer(), table->bufferSize());
     if (size <= 0) {
         return false;
     }
@@ -270,7 +270,7 @@ void WorkerSendPrivate::run()
         return;
     }
 
-    if (!channel || !channel->isOpen() || !table || table->bufferSize() <= 0) {
+    if (!channel || !channel->isOpen() || !table || tableSize <= 0) {
         return;
     }
 

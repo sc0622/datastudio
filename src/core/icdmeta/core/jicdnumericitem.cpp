@@ -165,9 +165,9 @@ QString JIcdNumericItem::text() const
     // data
     qulonglong data = qulonglong(((d->data->data() - d->data->offset())
                                    / d->data->scale()));
-    data &= (1ull << (int(d->data->bufferSize()) << 3)) - 1;
+    data &= (1ull << (d->data->bufferSize() << 3)) - 1;
     info.append(QString("%1")
-                .arg(data, int(d->data->bufferSize() * 2), 16, QChar('0'))
+                .arg(data, d->data->bufferSize() * 2, 16, QChar('0'))
                 .toUpper());
     // value
     info.append(", ");

@@ -57,12 +57,12 @@ void FrameItemData::updateSend(FrameItem *frame, const TablePtr &table, bool per
     char* frameBuffer = frame->buffer();
     char* tableBuffer = table->buffer();
     if (frameBuffer && tableBuffer) {
-        int frameSize = static_cast<int>(std::ceil(frame->bufferSize()));
-        int tableSize = static_cast<int>(std::ceil(table->bufferSize()));
-        int size = std::min(frameSize, tableSize);
-        memcpy(frameBuffer, tableBuffer, static_cast<size_t>(size));
+        const int frameSize = frame->bufferSize();
+        const int tableSize = table->bufferSize();
+        const int size = std::min(frameSize, tableSize);
+        memcpy(frameBuffer, tableBuffer, size_t(size));
         if (frameSize > tableSize) {
-            memset(frameBuffer + tableSize, 0, static_cast<size_t>(frameSize - tableSize));
+            memset(frameBuffer + tableSize, 0, size_t(frameSize - tableSize));
         }
     }
 }
@@ -90,7 +90,7 @@ FrameItem::FrameItem(const FrameItem &other)
     operator =(other);
 }
 
-void FrameItem::setBufferOffset(double offset)
+void FrameItem::setBufferOffset(int offset)
 {
     Item::setBufferOffset(offset);
 
@@ -102,7 +102,7 @@ void FrameItem::setBufferOffset(double offset)
 
 void FrameItem::adjustBufferOffset()
 {
-    const double offset = bufferOffset();
+    const int offset = bufferOffset();
     for (Icd::TablePtrMap::const_iterator citer = d->tables.cbegin();
          citer != d->tables.cend(); ++citer) {
         citer->second->setBufferOffset(offset);
@@ -246,7 +246,7 @@ void FrameItem::setBuffer(char *buffer)
         TablePtrMap::iterator iter = d->tables.begin();
         for (; iter != d->tables.end(); ++iter) {
             TablePtr &table = iter->second;
-            size_t tableSize = static_cast<size_t>(std::ceil(table->bufferSize()));
+            size_t tableSize = size_t(table->bufferSize());
             if (!table->buffer() && tableSize > 0) {
                 char *tableBuffer = new char[tableSize];
                 memset(tableBuffer, 0, tableSize);
@@ -258,7 +258,7 @@ void FrameItem::setBuffer(char *buffer)
     }
 }
 
-void FrameItem::setBufferSize(double size)
+void FrameItem::setBufferSize(int size)
 {
     Item::setBufferSize(size);
 }
@@ -630,10 +630,10 @@ void FrameItem::updateRecv(icd_uint64 code)
         char* frameBuffer = buffer();
         char* tableBuffer = table->buffer();
         if (frameBuffer && tableBuffer) {
-            int frameSize = static_cast<int>(std::ceil(bufferSize()));
-            int tableSize = static_cast<int>(std::ceil(table->bufferSize()));
-            int size = std::min(frameSize, tableSize);
-            memcpy(tableBuffer, frameBuffer, static_cast<size_t>(size));
+            const int frameSize = bufferSize();
+            const int tableSize = table->bufferSize();
+            const int size = std::min(frameSize, tableSize);
+            memcpy(tableBuffer, frameBuffer, size_t(size));
         }
         //
         table->updateRecv();

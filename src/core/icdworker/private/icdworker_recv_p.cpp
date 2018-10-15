@@ -57,7 +57,7 @@ void WorkerRecvPrivate::updateBind(bool valid)
 
     if (table && table->bufferSize() > 0) {
         if (valid) {
-            tableSize = static_cast<int>(std::ceil(table->bufferSize()));
+            tableSize = table->bufferSize();
             tableBuffer = new char[size_t(tableSize)];
             parseBuffer = new char[size_t(tableSize)];
             memset(tableBuffer, 0, size_t(tableSize));

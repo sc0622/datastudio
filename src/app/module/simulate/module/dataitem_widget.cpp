@@ -414,7 +414,7 @@ void ItemWidgetHead::restoreUi(const Icd::ItemPtr &data)
         return;
     }
     //
-    spinValue_->setValue(int(itemHead->defaultValue()));
+    spinValue_->setValue(int(uchar((itemHead->defaultValue()))));
 }
 
 bool ItemWidgetHead::updateUi(const Icd::ItemPtr &data)
@@ -428,7 +428,7 @@ bool ItemWidgetHead::updateUi(const Icd::ItemPtr &data)
         return false;
     }
 
-    spinValue_->setRange(0, int((0x1U << (int(itemHead->bufferSize()) * 8)) - 1));
+    spinValue_->setRange(0, int((0x1U << (itemHead->bufferSize() * 8)) - 1));
     spinValue_->setValue(int(itemHead->data()));
 
     return true;
@@ -502,7 +502,7 @@ bool ItemWidgetCounter::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    spinValue_->setRange(0, int((0x1U << (int(itemCounter->bufferSize()) * 8)) - 1));
+    spinValue_->setRange(0, int((0x1U << (itemCounter->bufferSize() * 8)) - 1));
     spinValue_->setValue(int(itemCounter->data()));
 
     return true;
@@ -656,8 +656,8 @@ bool ItemWidgetCheck::updateUi(const Icd::ItemPtr &data)
         return false;
     }
     //
-    spinStartPos_->setRange(0, qCeil(tableSend->bufferSize()) - 1);
-    spinEndPos_->setRange(0, qCeil(tableSend->bufferSize()) - 1);
+    spinStartPos_->setRange(0, tableSend->bufferSize() - 1);
+    spinEndPos_->setRange(0, tableSend->bufferSize() - 1);
     //
     const Icd::CheckItemPtr checkItem = JHandlePtrCast<Icd::CheckItem>(data);
     if (!checkItem) {
@@ -846,8 +846,8 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         case Icd::NumericI64:
         {
             qlonglong iData = qlonglong(data);
-            iData &= (1ll << (int(itemNumeric->bufferSize()) << 3)) - 1;
-            suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
+            iData &= (1ll << (itemNumeric->bufferSize() << 3)) - 1;
+            suffix = QString(" (%1)").arg(iData, itemNumeric->bufferSize() * 2,
                                           16, QChar('0')).toUpper();
             break;
         }
@@ -857,8 +857,8 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         case Icd::NumericU64:
         {
             qulonglong uData = qulonglong(data);
-            uData &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
-            suffix = QString(" (%1)").arg(uData, int(itemNumeric->bufferSize() * 2),
+            uData &= (1ull << (itemNumeric->bufferSize() << 3)) - 1;
+            suffix = QString(" (%1)").arg(uData, itemNumeric->bufferSize() * 2,
                                           16, QChar('0')).toUpper();
             break;
         }
@@ -867,7 +867,7 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
             float _data = float(data);
             qint32 iData;
             memcpy(&iData, &_data, 4);
-            suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
+            suffix = QString(" (%1)").arg(iData, itemNumeric->bufferSize() * 2,
                                           16, QChar('0')).toUpper();
             break;
         }
@@ -875,15 +875,15 @@ ItemWidgetNumeric::ItemWidgetNumeric(QWidget *parent)
         {
             qint64 iData;
             memcpy(&iData, &data, 8);
-            suffix = QString(" (%1)").arg(iData, int(itemNumeric->bufferSize() * 2),
+            suffix = QString(" (%1)").arg(iData, itemNumeric->bufferSize() * 2,
                                           16, QChar('0')).toUpper();
             break;
         }
         default:
         {
             qulonglong uData = qulonglong(data);
-            uData &= (1ull << (int(itemNumeric->bufferSize()) << 3)) - 1;
-            suffix = QString(" (%1)").arg(uData, int(itemNumeric->bufferSize() * 2),
+            uData &= (1ull << (itemNumeric->bufferSize() << 3)) - 1;
+            suffix = QString(" (%1)").arg(uData, itemNumeric->bufferSize() * 2,
                                           16, QChar('0')).toUpper();
             break;
         }}
@@ -1105,7 +1105,7 @@ bool ItemWidgetArray::updateUi(const Icd::ItemPtr &data)
     }
     //
     QString text(tr("Size: "));
-    text.append(QString::number(int(arrayItem->bufferSize())));
+    text.append(QString::number(arrayItem->bufferSize()));
     const QString desc = QString::fromStdString(arrayItem->desc()).trimmed();
     if (!desc.isEmpty()) {
         text.append(tr(", Describe: ")).append(desc);

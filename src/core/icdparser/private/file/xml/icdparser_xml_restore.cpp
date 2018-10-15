@@ -604,7 +604,7 @@ bool XmlParser::parseItemComplex(const TiXmlElement *emItem, const Icd::ComplexI
     table->setDesc(complex->desc());
     // size
     if (!table->isEmpty()) {
-        complex->setBufferSize(std::ceil(table->bufferSize()));
+        complex->setBufferSize(table->bufferSize());
     }
 
     return true;
