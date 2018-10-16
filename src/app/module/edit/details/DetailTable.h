@@ -121,6 +121,9 @@ public:
 
     bool isSameType(const Icd::ObjectPtr &object) const;
 
+    bool contextMenuEnabled() const;
+    void setContextMenuEnabled(bool enabled);
+
 signals:
     void selectedChanged(const QVariant &index, const Icd::ObjectPtr &newObject);
     void rowMoved(int previousRow, int selectedRow, bool restore);
@@ -131,8 +134,6 @@ public slots:
     void showContextMenu(const QPoint &pos);
 
 private:
-    void setContextMenuEnabled(bool enabled);
-
     bool updateRoot();
     bool updateVehicle();
     bool updateSystem();
@@ -156,8 +157,8 @@ private:
     void setRowData(int row, const Icd::VehiclePtr &vehicle);
     void setRowData(int row, const Icd::SystemPtr &system);
     void setRowData(int row, const Icd::TablePtr &table);
-    void setRowData(int row, const Icd::ItemPtr &item, int offset);
-    void setRowOffsetAndSize(int row, const Icd::ItemPtr &item, int offset);
+    void setRowData(int row, const Icd::ItemPtr &item, int bufferOffset);
+    void setRowOffsetAndSize(int row, const Icd::ItemPtr &item, int bufferOffset);
 
     int insertRow(int row, const Icd::ObjectPtr &object);
 

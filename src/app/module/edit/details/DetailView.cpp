@@ -67,7 +67,7 @@ void DetailView::moveCurrentRow(bool up)
     detailTable_->moveCurrentRow(up);
 }
 
-void DetailView::updateView(QStandardItem *item)
+void DetailView::updateView(QStandardItem *item, bool unloaded)
 {
     detailTable_->resetView();
     detailEdit_->resetView();
@@ -78,6 +78,7 @@ void DetailView::updateView(QStandardItem *item)
     newObject_.reset();
 
     if (!item) {
+        setAddEnabled(false);
         return;
     }
 
@@ -99,13 +100,16 @@ void DetailView::updateView(QStandardItem *item)
     detailTable_->updateView(object_);
     detailEdit_->updateView(object_, false, isNew);
 
-    //
     bool addFlag = false;
-    if (object_ && !object_->isSimpleItem()) {
-        addFlag = true;
+    if (unloaded) {
+        detailTable_->setContextMenuEnabled(false);
+    } else {
+        if (object_ && !object_->isSimpleItem()) {
+            addFlag = true;
+        }
     }
 
-    setAddEnabled(addFlag);
+    setAddEnabled(!modified_ && addFlag);
 }
 
 void DetailView::removeRow(QStandardItem *item)
@@ -123,7 +127,7 @@ void DetailView::removeRow(QStandardItem *item)
     setModified(false);
 }
 
-void DetailView::cleanItem(QStandardItem *item)
+void DetailView::clearItem(QStandardItem *item)
 {
     if (!item || !object_) {
         return;
@@ -143,9 +147,9 @@ void DetailView::setModified(bool modified)
     if (modified != modified_) {
         modified_ = modified;
         emit modifiedChanged(modified);
-        //
-        setAddEnabled(!modified);
     }
+
+    setAddEnabled(!modified && detailTable_->contextMenuEnabled());
 }
 
 void DetailView::onSelectedChanged(const QVariant &index, const Icd::ObjectPtr &newObject)
@@ -175,7 +179,7 @@ void DetailView::onSelectedChanged(const QVariant &index, const Icd::ObjectPtr &
     }
 
     // update status of toolbar
-    setAddEnabled(!isMultiRowSelected);
+    setAddEnabled(!modified_ && !isMultiRowSelected);
     updateMoveActionState();
 }
 

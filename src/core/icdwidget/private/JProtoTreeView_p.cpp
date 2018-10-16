@@ -1589,7 +1589,7 @@ void JProtoTreeViewPrivate::itemSystemRightClicked(QStandardItem *item, int deep
         auto unloadTableFunc = [=](){
             unbindChannelItem(item);
             emit itemUnloaded(item, nullptr);
-            clearChildren(item);
+            clearItemChildren(item);
             //
             if (isEditMode()) {
                 setItemLoadStatus(item, false);
@@ -1769,7 +1769,7 @@ void JProtoTreeViewPrivate::itemTableRightClicked(QStandardItem *item, int deep)
         auto unloadItemFunc = [=](){
             unbindChannel(item);
             emit itemUnloaded(item, item);
-            clearChildren(item);
+            clearItemChildren(item);
             //
             if (isEditMode()) {
                 setItemLoadStatus(item, false);
@@ -3597,10 +3597,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *itemDataItem, const Ic
 
         updateBitItemData(itemDataItem, itemBit);
 
-        //
-        if (itemDataItem->hasChildren()) {
-            clearChildren(itemDataItem);
-        }
+        clearItemChildren(itemDataItem);
 
         break;
     }
@@ -3627,9 +3624,7 @@ void JProtoTreeViewPrivate::updateItemData(QStandardItem *itemDataItem, const Ic
         break;
     }
     default:
-        if (itemDataItem->hasChildren()) {
-            clearChildren(itemDataItem);
-        }
+        clearItemChildren(itemDataItem);
         break;
     }
 }
@@ -3826,15 +3821,14 @@ void JProtoTreeViewPrivate::clearItemBoundRole(QStandardItem *item, bool bEmit)
 
 void JProtoTreeViewPrivate::clearItemChildren(QStandardItem *item)
 {
-    if (!item) {
+    if (!item || !item->hasChildren()) {
         return;
     }
 
     clearChildren(item);
 
-    const QVariant varDomain = item->data(Icd::TreeItemDomainRole);
-    if (varDomain.isValid()) {
-        Icd::ObjectPtr object = findByDomain(varDomain.toString());
+    if (isEditMode()) {
+        const Icd::ObjectPtr object = findObject(item, false);
         if (object) {
             object->clearChildren();
         }

@@ -564,7 +564,7 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
                 "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                 ->asVariant(), 1 + table->itemCount(), 5, 1, 2);
     axTable->setProperty("Style", QObject::tr("Grid Table 1 Light"));
-    int tableSize = qCeil(table->bufferSize());
+    int tableSize = table->bufferSize();
 #if 1
     if (table->itemCount() == 0) {
         Icd::Object *parentObject = table->parent();
@@ -573,7 +573,7 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
             if (parentItem && parentItem->type() == Icd::ItemComplex) {
                 Icd::ComplexItem *complexItem = dynamic_cast<Icd::ComplexItem*>(parentItem);
                 if (complexItem) {
-                    tableSize = qCeil(complexItem->bufferSize());
+                    tableSize = complexItem->bufferSize();
                 }
             }
         }
@@ -742,7 +742,7 @@ bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, int level)
     QAxObject *axTable = tables_->querySubObject(
                 "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                 ->asVariant(), 2, 5, 1, 2);
-    int itemSize = qCeil(item->bufferSize());
+    const int itemSize = item->bufferSize();
     generateTableCaption(QString(" %1").arg(QString::fromStdString(item->name()))
                          .append(QObject::tr(" ("))
                          .append(QString::number(itemSize))
@@ -1135,7 +1135,7 @@ bool WordGeneratorData::generateFrameItem(const FrameItemPtr &frameItem, QAxObje
                     "Add(QVariant,int,int,int,int)",  selection_->querySubObject("Range")
                     ->asVariant(), 1 + tables.size(), 5, 1, 2);
         axSubTable->setProperty("Style", QObject::tr("Grid Table 1 Light"));
-        int frameSize = qCeil(frameItem->bufferSize());
+        const int frameSize = frameItem->bufferSize();
         generateTableCaption(QString(" %1").arg(QString::fromStdString(frameItem->name()))
                              .append(QObject::tr(" ("))
                              .append(QString::number(frameSize))

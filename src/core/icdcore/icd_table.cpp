@@ -44,7 +44,7 @@ public:
 
     icd_int64 currentMillisecond() const;
 
-    static int recalcOffset(const Icd::BitItemPtr &currentBit, const ItemPtrArray &items,
+    static int recalcOffset(const BitItemPtr &currentBit, const ItemPtrArray &items,
                             ItemPtrArray::const_iterator previousCiter);
 
     static bool adjustOffset(const ItemPtrArray &items, int itemOffset, int bufferOffset,
@@ -224,7 +224,7 @@ icd_int64 TableData::currentMillisecond() const
     return preciTimer.mscount();
 }
 
-int TableData::recalcOffset(const Icd::BitItemPtr &currentBit, const ItemPtrArray &items,
+int TableData::recalcOffset(const BitItemPtr &currentBit, const ItemPtrArray &items,
                             ItemPtrArray::const_iterator previousCiter)
 {
     if (!currentBit || previousCiter == items.cend()) {
@@ -237,11 +237,11 @@ int TableData::recalcOffset(const Icd::BitItemPtr &currentBit, const ItemPtrArra
     }
 
     const ItemType itemType = previousItem->type();
-    if (itemType != Icd::ItemBitMap && itemType != Icd::ItemBitValue) {
+    if (itemType != ItemBitMap && itemType != ItemBitValue) {
         return -1;
     }
 
-    const Icd::BitItemPtr previousBit = JHandlePtrCast<Icd::BitItem>(previousItem);
+    const BitItemPtr previousBit = JHandlePtrCast<BitItem>(previousItem);
     if (!previousBit) {
         return -1;
     }

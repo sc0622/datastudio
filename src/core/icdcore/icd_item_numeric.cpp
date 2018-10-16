@@ -513,11 +513,11 @@ Json::Value NumericItem::save() const
     Json::Value json = Item::save();
 
     json["numericType"] = numericTypeString();
-    json["offset"] = d->offset;
-    json["scale"] = d->scale;
+    json["offset"] = offset();
+    json["scale"] = scale();
     // decimals
     if (d->decimals > 0) {
-        json["decimals"] = int(d->decimals);
+        json["decimals"] = decimals();
     }
     // limit
     Json::Value limitJson = d->limit->save();

@@ -386,14 +386,14 @@ void Item::setType(ItemType type)
     d->type = type;
 }
 
-void Item::setBufferSize(int size)
-{
-    d->bufferSize = size;
-}
-
 void Item::setItemOffset(int offset)
 {
     d->itemOffset = offset;
+}
+
+void Item::setBufferSize(int size)
+{
+    d->bufferSize = size;
 }
 
 void Item::setBufferOffset(int offset)

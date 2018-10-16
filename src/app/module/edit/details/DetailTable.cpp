@@ -657,6 +657,20 @@ bool DetailTable::isSameType(const Icd::ObjectPtr &object) const
     return false;
 }
 
+bool DetailTable::contextMenuEnabled() const
+{
+    return tableView_->contextMenuPolicy() != Qt::NoContextMenu;
+}
+
+void DetailTable::setContextMenuEnabled(bool enabled)
+{
+    if (enabled) {
+        tableView_->setContextMenuPolicy(Qt::CustomContextMenu);
+    } else {
+        tableView_->setContextMenuPolicy(Qt::NoContextMenu);
+    }
+}
+
 void DetailTable::showContextMenu(const QPoint &pos)
 {
     Q_UNUSED(pos);
@@ -866,15 +880,6 @@ void DetailTable::showContextMenu(const QPoint &pos)
     }
 
     menu.exec(QCursor::pos());
-}
-
-void DetailTable::setContextMenuEnabled(bool enabled)
-{
-    if (enabled) {
-        tableView_->setContextMenuPolicy(Qt::CustomContextMenu);
-    } else {
-        tableView_->setContextMenuPolicy(Qt::NoContextMenu);
-    }
 }
 
 bool DetailTable::updateRoot()
@@ -1236,7 +1241,7 @@ bool DetailTable::updateBit(const Icd::BitItemPtr &bit)
     for (auto citer = specs.cbegin(); citer != specs.cend(); ++citer) {
         if (bit->type() == Icd::ItemBitMap) {
             sections.append(tr("%1: %2").arg(QString("%1")
-                                             .arg(uint(citer->first), bit->calcSize() * 2,
+                                             .arg(uint(citer->first), bit->bufferSize() * 2,
                                                   16, QChar('0')).toUpper())
                             .arg(QString::fromStdString(citer->second)));
         } else {
@@ -1263,7 +1268,7 @@ bool DetailTable::updateBitMap(const Icd::BitItemPtr &bit)
     tableView_->setItemData(rowIndex, 0, tr("Default value"));
     tableView_->setItemData(rowIndex, 1, "0x" + QString("%1 (%2)")
                             .arg(uint(bit->defaultValue()),
-                                 bit->calcSize() * 2, 16, QChar('0')).toUpper()
+                                 bit->bufferSize() * 2, 16, QChar('0')).toUpper()
                             .arg(uint(bit->defaultValue())));
 
     return true;
@@ -1562,7 +1567,7 @@ void DetailTable::setRowData(int row, const Icd::TablePtr &table)
     tableView_->setItemData(row, 3, QString::fromStdString(table->desc()));
 }
 
-void DetailTable::setRowData(int row, const Icd::ItemPtr &item, int offset)
+void DetailTable::setRowData(int row, const Icd::ItemPtr &item, int bufferOffset)
 {
     if (!item) {
         return;
@@ -1571,18 +1576,18 @@ void DetailTable::setRowData(int row, const Icd::ItemPtr &item, int offset)
     tableView_->setItemData(row, 0, QString::fromStdString(item->id()), Qt::UserRole);
     tableView_->setItemData(row, 0, QString::fromStdString(item->name()));
     tableView_->setItemData(row, 1, QString::fromStdString(item->mark()));
-    setRowOffsetAndSize(row, item, offset);
+    setRowOffsetAndSize(row, item, bufferOffset);
     tableView_->setItemData(row, 4, IcdWidget::typeString(item));
     tableView_->setItemData(row, 5, QString::fromStdString(item->desc()));
 }
 
-void DetailTable::setRowOffsetAndSize(int row, const Icd::ItemPtr &item, int offset)
+void DetailTable::setRowOffsetAndSize(int row, const Icd::ItemPtr &item, int bufferOffset)
 {
     if (!item) {
         return;
     }
 
-    const int bufferOffset = item->bufferOffset() - offset;
+    const int _bufferOffset = item->bufferOffset() - bufferOffset;
 
     // offset and size
     switch (item->type()) {
@@ -1593,7 +1598,7 @@ void DetailTable::setRowOffsetAndSize(int row, const Icd::ItemPtr &item, int off
         if (!bit) {
             break;
         }
-        tableView_->setItemData(row, 2, QString("%1 (%2)").arg(bufferOffset)
+        tableView_->setItemData(row, 2, QString("%1 (%2)").arg(_bufferOffset)
                                 .arg(bit->bitStart(), 2, 10, QChar('0')));
         tableView_->setItemData(row, 3, QString("%1/%2").arg(bit->bitCount())
                                 .arg(bit->bufferSize() * 8));

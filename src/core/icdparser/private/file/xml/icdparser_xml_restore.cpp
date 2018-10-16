@@ -623,13 +623,7 @@ bool XmlParser::parseItemFrame(const TiXmlElement *emFrame, const Icd::FrameItem
     }
 
     int iVal = 0;
-    double dVal = 0.0;
-#if 1   // will remove in the future
-    // bufferSize
-    if (emFrame->QueryDoubleAttribute("bufferSize", &dVal) == TIXML_SUCCESS) {
-        frame->setBufferSize(dVal);
-    }
-#endif
+
     // sequenceCount
     if (emFrame->QueryIntAttribute("sequenceCount", &iVal) == TIXML_SUCCESS) {
         frame->setSequenceCount(iVal);

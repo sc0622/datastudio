@@ -23,6 +23,7 @@ public:
 
     }
 
+    int calcSize() const;
     static std::string &trim(std::string &str);
     static std::string trim(const std::string &str);
 
@@ -36,6 +37,24 @@ private:
     std::string unit;           // 单位
     std::map<icd_uint64, std::string> specs;    // 特征点
 };
+
+int BitItemData::calcSize() const
+{
+    const char bitEnd = bitStart + bitCount;
+    if (bitEnd <= 0) {
+        return 0;
+    } else if (bitEnd <= 8) {
+        return 1;
+    } else if (bitEnd <= 16) {
+        return 2;
+    } else if (bitEnd <= 32) {
+        return 4;
+    } else if (bitEnd <= 64) {
+        return 8;
+    } else {
+        return 8;   //
+    }
+}
 
 std::string &BitItemData::trim(std::string &str)
 {
@@ -186,7 +205,7 @@ void BitItem::setBitStart(int bitStart)
         d->bitStart = char(bitStart);
     }
 
-    setBufferSize(calcSize());
+    setBufferSize(d->calcSize());
 }
 
 int BitItem::bitCount() const
@@ -201,25 +220,7 @@ void BitItem::setBitCount(int count)
         setBufferSize(0);
     } else {
         d->bitCount = char(count);
-        setBufferSize(calcSize());
-    }
-}
-
-int BitItem::calcSize() const
-{
-    const char bitEnd = d->bitStart + d->bitCount;
-    if (bitEnd <= 0) {
-        return 0;
-    } else if (bitEnd <= 8) {
-        return 1;
-    } else if (bitEnd <= 16) {
-        return 2;
-    } else if (bitEnd <= 32) {
-        return 4;
-    } else if (bitEnd <= 64) {
-        return 8;
-    } else {
-        return 8;   //
+        setBufferSize(d->calcSize());
     }
 }
 
@@ -528,13 +529,13 @@ Json::Value BitItem::save() const
 {
     Json::Value json = Item::save();
 
-    json["start"] = d->bitStart;
-    json["count"] = d->bitCount;
-    json["offset"] = d->offset;
-    json["scale"] = d->scale;
+    json["start"] = bitStart();
+    json["count"] = bitCount();
+    json["offset"] = offset();
+    json["scale"] = scale();
     // decimals
     if (d->decimals > 0) {
-        json["decimals"] = d->decimals;
+        json["decimals"] = decimals();
     }
     // limit
     Json::Value limitJson = d->limit->save();

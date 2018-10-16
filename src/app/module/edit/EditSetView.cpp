@@ -75,12 +75,11 @@ void SetView::onTreeCurrentChanged(QStandardItem *current, QStandardItem *previo
 
 void SetView::onTreeItemUpdated(QStandardItem *item, bool unloaded, bool removed, QStandardItem *current)
 {
-    Q_UNUSED(unloaded);
     if (current) {
         if (removed) {
             detailView_->removeRow(item);
         } else {
-            detailView_->updateView(item);
+            detailView_->updateView(item, unloaded);
         }
     }
 }

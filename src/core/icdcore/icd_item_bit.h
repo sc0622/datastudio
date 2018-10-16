@@ -35,8 +35,6 @@ public:
     int bitCount() const;
     void setBitCount(int count);
 
-    int calcSize() const;
-
     icd_uint64 mask() const;
 
     std::map<icd_uint64, std::string> specs();
