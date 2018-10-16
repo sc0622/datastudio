@@ -6,9 +6,6 @@
 #include "../icdparser_file.h"
 #include "../../generate/icdgenerate.h"
 
-class QJsonObject;
-class QJsonArray;
-
 namespace Icd {
 
 class JsonParser;
@@ -89,12 +86,15 @@ public:
 public:
     bool startup() override;
     void shutdown() override;
+#ifndef J_NO_QT
     bool generate(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath) override;
+#endif
     bool generate(const TablePtr &table, const std::string &filePath) override;
     Icd::Parser *parser() override;
     const Icd::Parser *parser() const override;
 
 private:
+#ifndef J_NO_QT
     bool generateRoot(const QStandardItem *itemRoot, bool exportAll, bool rt,
                       const std::string &filePath);
     bool generateVehicle(const QStandardItem *itemVehicle, bool exportAll, bool rt,
@@ -113,7 +113,7 @@ private:
                        bool exportAll, bool rt);
 
     Json::Value generateJson(const QStandardItem *item, Json::Value &json);
-
+#endif
 private:
 };
 

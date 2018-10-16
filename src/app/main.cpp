@@ -45,12 +45,16 @@ int main(int argc, char **argv)
     settings.setValue("WORKSPACE_DIR", QDir(projectDir + "/example").canonicalPath());
     settings.endGroup();
 
+    Icd::initialize();
+
     JMain::initTranslators();
 
     QApplication::setApplicationDisplayName(QObject::tr("Data Studio")
                                             + ' ' + QCoreApplication::applicationVersion());
 
     int ret = JMain::execApp(&app);
+
+    Icd::uninitialize();
 
     return ret;
 }

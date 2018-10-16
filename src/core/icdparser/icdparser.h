@@ -4,8 +4,9 @@
 #include "icdparser_global.h"
 #include <string>
 #include "icdcore/icd_object.h"
-
+#ifndef J_NO_QT
 class QStandardItem;
+#endif
 namespace Json { class Value; }
 
 namespace Icd {
@@ -98,8 +99,9 @@ public:
     virtual bool cancelModify();
     virtual bool endModify();
     bool isBeginModify() const;
-
+#ifndef J_NO_QT
     bool saveAs(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath);
+#endif
     bool saveAs(const Icd::TablePtr &table, const std::string &filePath);
 
     std::string message() const;

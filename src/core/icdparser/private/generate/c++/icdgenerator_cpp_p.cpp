@@ -14,7 +14,7 @@ CppGeneratorData::~CppGeneratorData()
 {
 
 }
-
+#ifndef J_NO_QT
 bool CppGeneratorData::generateHeader(QTextStream &stream)
 {
     QFile *file = qobject_cast<QFile *>(stream.device());
@@ -516,5 +516,5 @@ QString CppGeneratorData::headerName(const QString &fileName)
     }
     return name.toUpper();
 }
-
+#endif
 } // end of namespace Icd

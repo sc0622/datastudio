@@ -33,35 +33,35 @@
 #ifndef J_DECLARE_SINGLE_INSTANCE
 #define J_DECLARE_SINGLE_INSTANCE(Class) \
     public: \
-        static Class *instance(); \
-        static void releaseInstance(); \
+    static Class *instance(); \
+    static void releaseInstance(); \
     private: \
-        static Class *_instance;
+    static Class *_instance;
 #endif
 
 #ifndef J_IMPLEMENT_SINGLE_INSTANCE
 #define J_IMPLEMENT_SINGLE_INSTANCE(Class, GlobalClass) \
     \
     static void __ ## Class ## _releaseInstance() { \
-        Class::releaseInstance(); \
+    Class::releaseInstance(); \
     } \
     Class *Class::_instance = nullptr; \
     \
     Class *Class::instance() { \
-        if (Class::_instance == nullptr) { \
-            Class::_instance = new Class; \
-        } \
-        if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
-            GlobalClass::instance()->registerSingletonRelease(__ ## Class ## _releaseInstance); \
-        } \
-        return Class::_instance; \
+    if (Class::_instance == nullptr) { \
+    Class::_instance = new Class; \
+    } \
+    if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
+    GlobalClass::instance()->registerSingletonRelease(__ ## Class ## _releaseInstance); \
+    } \
+    return Class::_instance; \
     } \
     \
     void Class::releaseInstance() { \
-        if (Class::_instance != nullptr) { \
-            delete Class::_instance; \
-            Class::_instance = nullptr; \
-        } \
+    if (Class::_instance != nullptr) { \
+    delete Class::_instance; \
+    Class::_instance = nullptr; \
+    } \
     }
 #endif
 
@@ -69,6 +69,8 @@
 #define J_SINGLE_RELEASE_CALLBACK
 typedef void(*SingletonReleaseCallback)();
 #endif
+
+#ifndef J_NO_QT
 
 #ifndef J_TYPEDEF_QT_SHAREDPTR
 #define J_TYPEDEF_QT_SHAREDPTR(_class_) \
@@ -85,14 +87,20 @@ T *jVariantFromVoid(const QVariant &value)
 { return reinterpret_cast<T *>(value.value<void *>()); }
 #endif
 
+#endif
+
 ////////////////////////////////
 
 namespace Icd {
-
+#ifndef J_NO_QT
 #include <QStandardItem>
-
+#endif
 enum TreeItemType {
+#ifndef J_NO_QT
     TreeItemTypeUserRole = QStandardItem::UserType + 1,
+#else
+    TreeItemTypeUserRole = 1001,
+#endif
     TreeItemTypeRoot,
     TreeItemTypeVehicle,
     TreeItemTypeSystem,
@@ -118,7 +126,7 @@ enum TreeItemDataRole {
     TreeHeaderSizeRole,
     TreeLoadStatusRole
 };
-
+#ifndef J_NO_QT
 template<typename T>
 inline ::std::shared_ptr<T> handlescope_cast(const QVariant &variant)
 {
@@ -138,7 +146,7 @@ inline ::std::weak_ptr<T> weakscope_cast(const QVariant &variant)
     }
     return nullptr;
 }
-
+#endif
 //
 class Item;
 typedef ::std::shared_ptr<Item> ItemPtr;
@@ -148,7 +156,7 @@ typedef ::std::shared_ptr<Item> ItemPtr;
 // class IcdWidget
 
 class IcdWidgetPrivate;
-
+#ifndef J_NO_QT
 class ICDWIDGET_EXPORT IcdWidget : public QObject
 {
     Q_OBJECT
@@ -184,5 +192,5 @@ private:
     J_DECLARE_PRIVATE(IcdWidget)
     J_DECLARE_SINGLE_INSTANCE(IcdWidget)
 };
-
+#endif
 #endif // ICDWIDGET_GLOBAL_H

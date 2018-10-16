@@ -2,9 +2,6 @@
 #include "icdgenerator_pdf.h"
 #include "icdgenerator_pdf_p.h"
 #include "../word/icdgenerator_word.h"
-#include <QTextDocument>
-#include <QPrinter>
-#include <QPdfWriter>
 
 namespace Icd {
 
@@ -21,7 +18,7 @@ PdfGenerator::~PdfGenerator()
 {
 
 }
-
+#ifndef J_NO_QT
 bool PdfGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
                             const std::string &filePath)
 {
@@ -36,7 +33,7 @@ bool PdfGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
 
     return true;
 }
-
+#endif
 bool PdfGenerator::generate(const TablePtr &table, const std::string &filePath)
 {
     if (!table) {

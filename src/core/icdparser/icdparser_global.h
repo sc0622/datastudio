@@ -45,10 +45,10 @@
     static void __ ## Class ## _releaseInstance() { \
         Class::releaseInstance(); \
     } \
-    Class *Class::_instance = 0; \
+    Class *Class::_instance = nullptr; \
     \
     Class *Class::instance() { \
-        if (Class::_instance == 0) { \
+        if (Class::_instance == nullptr) { \
             Class::_instance = new Class; \
         } \
         if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
@@ -58,9 +58,9 @@
     } \
     \
     void Class::releaseInstance() { \
-        if (Class::_instance != 0) { \
+        if (Class::_instance != nullptr) { \
             delete Class::_instance; \
-            Class::_instance = 0; \
+            Class::_instance = nullptr; \
         } \
     }
 #endif

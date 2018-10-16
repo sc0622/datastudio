@@ -2,7 +2,6 @@ import qbs
 
 CoreDyLibrary {
 
-    Depends { name: 'Qt.core' }
     Depends { name: 'Qt.gui' }
     Depends { name: 'Qt.network' }
     Depends { name: 'Qt.serialport'; condition: !qbs.targetOS.contains('windows') }

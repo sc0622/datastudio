@@ -2,9 +2,11 @@
 #include "icdparser.h"
 #include "icdcore/icd_root.h"
 #include "icdcore/icd_vehicle.h"
+#ifndef J_NO_QT
 #include <QMutexLocker>
+#endif
 #include "private/file/icdparser_file.h"
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #include "private/generate/icdgenerate.h"
 #include "private/sql/icdparser_sql.h"
 #endif
@@ -20,7 +22,9 @@ public:
         : progressValue(0)
         , canceledSaveAs(true)
         , isBeginModify(false)
+    #ifndef J_NO_QT
         , mutex(QMutex::Recursive)
+    #endif
     {
 
     }
@@ -30,7 +34,9 @@ private:
     qreal progressValue;
     bool canceledSaveAs;
     bool isBeginModify;
+#ifndef J_NO_QT
     QMutex mutex;
+#endif
 };
 
 Parser::Parser(const Json::Value &config)
@@ -59,9 +65,7 @@ ParserPtr Parser::create(const Json::Value &config)
     if (sourceType == "file") {
         return FileParser::create(config);
     } else if (sourceType == "sql") {
-#if defined(_MSC_VER)
         return SqlParser::create(config);
-#endif
     }
 
     return ParserPtr();
@@ -215,7 +219,7 @@ bool Parser::isBeginModify() const
 {
     return d->isBeginModify;
 }
-
+#ifndef J_NO_QT
 bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,
                     const std::string &filePath)
 {
@@ -241,7 +245,7 @@ bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,
     return false;
 #endif
 }
-
+#endif
 bool Parser::saveAs(const TablePtr &table, const std::string &filePath)
 {
     setProgressValue(0);
@@ -263,37 +267,49 @@ bool Parser::saveAs(const TablePtr &table, const std::string &filePath)
 
 std::string Parser::message() const
 {
+#ifndef J_NO_QT
     QMutexLocker locker(&d->mutex);
+#endif
     return d->message;
 }
 
 void Parser::setMessage(const std::string &message)
 {
+#ifndef J_NO_QT
     QMutexLocker locker(&d->mutex);
+#endif
     d->message = message;
 }
 
 double Parser::progressValue() const
 {
+#ifndef J_NO_QT
     QMutexLocker locker(&d->mutex);
+#endif
     return d->progressValue;
 }
 
 void Parser::setProgressValue(double value)
 {
+#ifndef J_NO_QT
     QMutexLocker locker(&d->mutex);
+#endif
     d->progressValue = value;
 }
 
 bool Parser::canceledSaveAs() const
 {
+#ifndef J_NO_QT
     QMutexLocker locker(&d->mutex);
+#endif
     return d->canceledSaveAs;
 }
 
 void Parser::cancelSaveAs(bool cancel)
 {
+#ifndef J_NO_QT
     QMutexLocker locker(&d->mutex);
+#endif
     d->canceledSaveAs = cancel;
 }
 

@@ -536,7 +536,7 @@ void XmlParser::shutdown()
 {
     Generator::shutdown();
 }
-
+#ifndef J_NO_QT
 bool XmlParser::generate(const QStandardItem *item, bool exportAll, bool rt,
                          const std::string &filePath)
 {
@@ -546,7 +546,7 @@ bool XmlParser::generate(const QStandardItem *item, bool exportAll, bool rt,
     Q_UNUSED(filePath);
     return true;
 }
-
+#endif
 bool XmlParser::generate(const TablePtr &table, const std::string &filePath)
 {
     Q_UNUSED(table);

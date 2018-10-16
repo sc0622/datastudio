@@ -682,7 +682,7 @@ void JsonParser::shutdown()
 {
     Generator::shutdown();
 }
-
+#ifndef J_NO_QT
 bool JsonParser::generate(const QStandardItem *item, bool exportAll, bool rt,
                           const std::string &filePath)
 {
@@ -730,7 +730,7 @@ bool JsonParser::generate(const QStandardItem *item, bool exportAll, bool rt,
 
     return result;
 }
-
+#endif
 bool JsonParser::generate(const TablePtr &table, const std::string &filePath)
 {
     if (!table || filePath.empty()) {
@@ -749,7 +749,7 @@ const Parser *JsonParser::parser() const
 {
     return dynamic_cast<const Icd::Parser *>(this);
 }
-
+#ifndef J_NO_QT
 bool JsonParser::generateRoot(const QStandardItem *itemRoot, bool exportAll, bool rt,
                               const std::string &filePath)
 {
@@ -1235,5 +1235,5 @@ Json::Value JsonParser::generateJson(const QStandardItem *item, Json::Value &jso
 
     return Json::Value();
 }
-
+#endif
 } // end of namespace Icd

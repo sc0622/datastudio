@@ -7,8 +7,10 @@ namespace Icd {
 
 TiXmlElement *XmlParser::readElementRoot() const
 {
+    const std::string filePath = this->filePath();
+#ifndef J_NO_QT
     //
-    QFile file(QString::fromStdString(filePath()));
+    QFile file(QString::fromStdString(filePath));
     if (!file.exists()) {
         qWarning() << QString("File \"%1\" is not exists!").arg(file.fileName());
         return nullptr;
@@ -22,7 +24,7 @@ TiXmlElement *XmlParser::readElementRoot() const
     file.close();
 
     TiXmlDocument *document = new TiXmlDocument();
-    if (!document->LoadFile(QString::fromStdString(filePath()).toLocal8Bit(),
+    if (!document->LoadFile(QString::fromStdString(filePath).toLocal8Bit(),
                             TIXML_ENCODING_UTF8)) {
         const QString text =
                 QStringLiteral("File \"%1\" parse failure!\ndesc：%2\npos：（line: %3，column: %4）")
@@ -33,7 +35,22 @@ TiXmlElement *XmlParser::readElementRoot() const
         delete document;
         return nullptr;
     }
+#else
+    std::ifstream ifs(filePath);
+    if (!ifs) {
+        printf("File \"%s\" open failure!\n", filePath.c_str());
+        return nullptr;
+    }
+    ifs.close();
 
+    TiXmlDocument *document = new TiXmlDocument();
+    if (!document->LoadFile(filePath, TIXML_ENCODING_UTF8)) {
+        printf("File \"%s\" parse failure!\ndesc：%s\npos：（line: %d，column: %d）",
+               filePath.c_str(), document->ErrorDesc(), document->ErrorRow(), document->ErrorCol());
+        delete document;
+        return nullptr;
+    }
+#endif
     return document->RootElement();
 }
 
@@ -322,12 +339,8 @@ bool XmlParser::parseItemHead(const TiXmlElement *emItem, const Icd::HeaderItemP
 
     // defaultValue attribute
     if (emItem->QueryStringAttribute("defaultValue", &sVal) == TIXML_SUCCESS) {
-        const QString text = QString::fromStdString(sVal).trimmed();
-        if (text.startsWith("0x", Qt::CaseInsensitive)) {
-            head->setDefaultValue(static_cast<unsigned char>((text.toUInt(nullptr, 16) & 0xFF)));
-        } else {
-            head->setDefaultValue(static_cast<unsigned char>(text.toUInt() & 0xFF));
-        }
+        const std::string text = Icd::tolowered(Icd::trimString(sVal));
+        head->setDefaultValue(static_cast<unsigned char>((Icd::atou(text) & 0xFF)));
     }
 
     return true;
@@ -345,8 +358,7 @@ bool XmlParser::parseItemCounter(const TiXmlElement *emItem, const Icd::CounterI
     if (emItem->QueryStringAttribute("counterType", &sVal) != TIXML_SUCCESS) {
         return false;
     }
-    const Icd::CounterType counterType = Icd::CounterItem::stringCounterType(
-                QString::fromStdString(sVal).toStdString());
+    const Icd::CounterType counterType = Icd::CounterItem::stringCounterType(sVal);
     if (counterType == Icd::CounterInvalid) {
         return false;
     }
@@ -368,8 +380,7 @@ bool XmlParser::parseItemCheck(const TiXmlElement *emItem, const Icd::CheckItemP
     if (emItem->QueryStringAttribute("checkType", &sVal) != TIXML_SUCCESS) {
         return false;
     }
-    const Icd::CheckType checkType = Icd::CheckItem::stringCheckType(
-                QString::fromStdString(sVal).toStdString());
+    const Icd::CheckType checkType = Icd::CheckItem::stringCheckType(sVal);
     check->setCheckType(checkType);
     // startPos attribute
     if (emItem->QueryIntAttribute("startPos", &iVal) == TIXML_SUCCESS) {
@@ -396,12 +407,11 @@ bool XmlParser::parseItemFrameCode(const TiXmlElement *emItem, const Icd::FrameC
     if (emItem->QueryStringAttribute("frameCodeType", &sVal) != TIXML_SUCCESS) {
         return false;
     }
-    const Icd::FrameCodeType frameCodeType = Icd::FrameCodeItem::stringFrameCodeType(
-                QString::fromStdString(sVal).toStdString());
+    const Icd::FrameCodeType frameCodeType = Icd::FrameCodeItem::stringFrameCodeType(sVal);
     frameCode->setFrameCodeType(frameCodeType);
     // frameId attribute
     if (emItem->QueryStringAttribute("frameId", &sVal) == TIXML_SUCCESS) {
-        frameCode->setFrameId(QString::fromStdString(sVal).toStdString());
+        frameCode->setFrameId(sVal);
     }
 
     return true;
@@ -421,8 +431,7 @@ bool XmlParser::parseItemNumeric(const TiXmlElement *emItem, const Icd::NumericI
     if (emItem->QueryStringAttribute("numericType", &sVal) != TIXML_SUCCESS) {
         return false;
     }
-    const Icd::NumericType numericType = Icd::NumericItem::stringNumericType(
-                QString::fromStdString(sVal).toStdString());
+    const Icd::NumericType numericType = Icd::NumericItem::stringNumericType(sVal);
     numeric->setNumericType(numericType);
     // scale attribute
     if (emItem->QueryDoubleAttribute("scale", &dVal) == TIXML_SUCCESS) {

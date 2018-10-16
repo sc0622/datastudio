@@ -28,7 +28,7 @@ bool HtmlGenerator::generate(const TablePtr &table, const std::string &filePath)
     if (!file.open(QIODevice::Text | QIODevice::WriteOnly)) {
         return false;
     }
-
+#ifndef J_NO_QT
     QTextStream tableStream(&file);
     tableStream.setCodec(QTextCodec::codecForName("GB2312"));
 
@@ -58,6 +58,9 @@ bool HtmlGenerator::generate(const TablePtr &table, const std::string &filePath)
     }
 
     return true;
+#else
+    return false;
+#endif
 }
 
 } // end of namespace Icd

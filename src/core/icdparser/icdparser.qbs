@@ -2,21 +2,17 @@ import qbs
 import qbs.FileInfo
 
 CoreDyLibrary {
+    useQt: false
+
     translations: [ 'zh_CN.ts' ]
     defaultTranslation: true
 
-    Properties {
-        condition: qbs.targetOS.contains('windows')
-        cpp.cxxStandardLibrary: 'c++98'
-    }
-
-    Depends { name: 'Qt.printsupport' }
     Depends {
-        condition: qbs.targetOS.contains('windows')
+        condition: useQt && qbs.targetOS.contains('windows')
         name: 'Qt.axcontainer'
     }
     Depends { name: 'icdcore' }
-    Depends { name: 'icdworker' }
+    Depends { name: 'icdworker'; cpp.link: false }
 
     Group {
         name: 'Headers'
@@ -53,5 +49,14 @@ CoreDyLibrary {
         files: [ '*.h', '*.cpp' ]
     }
 
+    Properties {
+        condition: qbs.targetOS.contains('windows')
+        cpp.cxxStandardLibrary: 'c++98'
+    }
     cpp.includePaths: base.concat([FileInfo.joinPaths('..'), tinyxml.prefix + '/..'])
+
+    Properties {
+        condition: !useQt
+        cpp.defines: [ 'J_NO_QT' ]
+    }
 }

@@ -77,10 +77,12 @@ bool ObjectData::startsWith(const std::string &str, const std::string &prefix, b
     if (caseSensitivity) {
         return (str.compare(0, prefix.size(), prefix) == 0);
     } else {
-        std::string _str = str;
-        std::string _prefix = prefix;
-        std::transform(_str.cbegin(), _str.cend(), _str.begin(), tolower);
-        std::transform(_prefix.cbegin(), _prefix.cend(), _prefix.begin(), tolower);
+        std::string _str;
+        _str.resize(str.size());
+        std::string _prefix;
+        _prefix.resize(prefix.size());
+        std::transform(str.cbegin(), str.cend(), _str.begin(), ::tolower);
+        std::transform(prefix.cbegin(), prefix.cend(), _prefix.begin(), ::tolower);
         return (_str.compare(0, _prefix.size(), _prefix) == 0);
     }
 }
@@ -94,10 +96,12 @@ bool ObjectData::endsWith(const std::string &str, const std::string &suffix, boo
     if (caseSensitivity) {
         return (str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0);
     } else {
-        std::string _str = str;
-        std::string _suffix = suffix;
-        std::transform(_str.cbegin(), _str.cend(), _str.begin(), tolower);
-        std::transform(_suffix.cbegin(), _suffix.cend(), _suffix.begin(), tolower);
+        std::string _str;
+        _str.resize(str.size());
+        std::string _suffix;
+        _suffix.resize(suffix.size());
+        std::transform(str.cbegin(), str.cend(), _str.begin(), ::tolower);
+        std::transform(suffix.cbegin(), suffix.cend(), _suffix.begin(), ::tolower);
         return (_str.compare(_str.size() - suffix.size(), _suffix.size(), _suffix) == 0);
     }
 }

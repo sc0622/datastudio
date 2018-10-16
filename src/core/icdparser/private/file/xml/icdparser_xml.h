@@ -108,7 +108,9 @@ private:
 public:
     bool startup() override;
     void shutdown() override;
+#ifndef J_NO_QT
     bool generate(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath) override;
+#endif
     bool generate(const TablePtr &table, const std::string &filePath) override;
     Parser *parser() override;
     const Parser *parser() const override;

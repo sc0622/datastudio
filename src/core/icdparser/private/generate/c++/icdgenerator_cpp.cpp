@@ -19,7 +19,7 @@ CppGenerator::~CppGenerator()
 {
 
 }
-
+#ifndef J_NO_QT
 bool CppGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
                             const std::string &filePath)
 {
@@ -50,13 +50,13 @@ bool CppGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
 
     return generate(table, filePath);
 }
-
+#endif
 bool CppGenerator::generate(const TablePtr &table, const std::string &filePath)
 {
     if (!table) {
         return false;
     }
-
+#ifndef J_NO_QT
     QFile file(QString::fromStdString(filePath));
     if (!file.open(QIODevice::Text | QIODevice::WriteOnly)) {
         return false;
@@ -102,6 +102,10 @@ bool CppGenerator::generate(const TablePtr &table, const std::string &filePath)
     shutdown();
 
     return true;
+#else
+    (void)filePath;
+    return false;
+#endif
 }
 
 bool CppGenerator::startup()

@@ -50,12 +50,16 @@ FileParser::FileParser(const Json::Value &config)
     : Parser(config)
     , d(new FileParserData())
 {
+#ifndef J_NO_QT
     const QString filePath = QString::fromStdString(config["filePath"].asString());
     if (filePath.toLower().trimmed().endsWith(".json")) {
         d->filePath = filePath.toLocal8Bit().data();
     } else {
         d->filePath = filePath.toStdString();
     }
+#else
+    d->filePath = config["filePath"].asString();
+#endif
 }
 
 FileParser::~FileParser()

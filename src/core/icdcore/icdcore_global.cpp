@@ -5,12 +5,14 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <assert.h>
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #include <io.h>
 #include <direct.h>
 #include <stdint.h>
+#include <objbase.h>
 #elif defined(__unix__)
 #include <unistd.h>
 #include <sys/stat.h>
@@ -60,6 +62,17 @@ int atoi(const std::string &str)
     return value;
 }
 
+unsigned int atou(const std::string &str)
+{
+    std::istringstream iss(str);
+    if (startsWith(str, "0x")) {
+        iss >> std::hex;
+    }
+    unsigned int value = 0;
+    iss >> value;
+    return value;
+}
+
 icd_uint64 strtou64(const std::string &str, int radix)
 {
 #if defined(_MSC_VER)
@@ -80,21 +93,40 @@ icd_uint64 atou64(const std::string &str)
     return value;
 }
 
-std::string itoa(int value, bool hex)
+std::string itoa(int value, bool hex, int field)
 {
     std::ostringstream oss;
     if (hex) {
         oss << "0x" << std::hex;
     }
+    if (field > 0) {
+        oss << std::setw(field) << std::setfill('0');
+    }
     oss << value;
     return oss.str();
 }
 
-std::string u64toa(icd_uint64 value, bool hex)
+std::string utoa(unsigned int value, bool hex, int field)
 {
     std::ostringstream oss;
     if (hex) {
         oss << "0x" << std::hex;
+    }
+    if (field > 0) {
+        oss << std::setw(field) << std::setfill('0');
+    }
+    oss << value;
+    return oss.str();
+}
+
+std::string u64toa(icd_uint64 value, bool hex, int field)
+{
+    std::ostringstream oss;
+    if (hex) {
+        oss << "0x" << std::hex;
+    }
+    if (field > 0) {
+        oss << std::setw(field) << std::setfill('0');
     }
     oss << value;
     return oss.str();
@@ -116,6 +148,32 @@ std::string dtoa(double value)
     std::ostringstream oss;
     oss << value;
     return oss.str();
+}
+
+void tolower(std::string &str)
+{
+    std::transform(str.cbegin(), str.cend(), str.begin(), ::tolower);
+}
+
+void toupper(std::string &str)
+{
+    std::transform(str.cbegin(), str.cend(), str.begin(), ::toupper);
+}
+
+std::string tolowered(const std::string &str)
+{
+    std::string _str;
+    _str.resize(str.size());
+    std::transform(str.cbegin(), str.cend(), _str.begin(), ::tolower);
+    return _str;
+}
+
+std::string touppered(const std::string &str)
+{
+    std::string _str;
+    _str.resize(str.size());
+    std::transform(str.cbegin(), str.cend(), _str.begin(), ::toupper);
+    return _str;
 }
 
 std::string stringSection(const char *ch, char sep, int start, int end)
@@ -277,18 +335,40 @@ std::string createUuid()
 
 void createUuid(std::string &uuid)
 {
-#ifdef QT_CORE_LIB
-    uuid = QUuid::createUuid().toString().remove(QRegExp("[-]")).toStdString();
-#else
 #ifdef _MSC_VER
-    //GUID guid;
-    //::CoCreateGuid(&guid);
-#error "not implement"
+    GUID guid;
+    ::CoCreateGuid(&guid);
+
+    char buf[40] = {0};         //   8  4   4   2   2   2   2   2   2   2   2
+    sprintf_s(buf, sizeof(buf), "{%08X%04X%04X%02X%02X%02X%02X%02X%02X%02X%02X}",
+        guid.Data1, guid.Data2, guid.Data3,
+        guid.Data4[0], guid.Data4[1],
+        guid.Data4[2], guid.Data4[3],
+        guid.Data4[4], guid.Data4[5],
+        guid.Data4[6], guid.Data4[7]);
+    uuid = std::string(buf);
+
 #elif defined(__unix__)
 #error "not implement"
 #elif defined(__APPLE__)
 #error "not implement"
 #endif
+}
+
+bool initialize()
+{
+#ifdef _MSC_VER
+    ::CoInitialize(nullptr);
+#else
+#endif
+    return true;
+}
+
+void uninitialize()
+{
+#ifdef _MSC_VER
+    ::CoUninitialize();
+#else
 #endif
 }
 

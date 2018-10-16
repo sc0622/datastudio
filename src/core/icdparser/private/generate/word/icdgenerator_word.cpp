@@ -19,7 +19,7 @@ WordGenerator::~WordGenerator()
 {
 
 }
-
+#ifndef J_NO_QT
 bool WordGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
                              const std::string &filePath)
 {
@@ -59,7 +59,7 @@ bool WordGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
         return false;
     }
 }
-
+#endif
 bool WordGenerator::generate(const TablePtr &table, const std::string &filePath)
 {
     return generate(table, filePath, 0);
@@ -71,7 +71,7 @@ bool WordGenerator::generate(const TablePtr &table, const std::string &filePath,
     if (!table) {
         return false;
     }
-
+#ifndef J_NO_QT
     QFileInfo fileInfo(QString::fromStdString(filePath));
     QDir dir = QDir(fileInfo.absolutePath());
     if (!dir.exists()) {
@@ -96,6 +96,9 @@ bool WordGenerator::generate(const TablePtr &table, const std::string &filePath,
         d->shutdown();
         return false;
     }
+#else
+    return false;
+#endif
 }
 
 bool WordGenerator::startup()

@@ -5,11 +5,13 @@ import tools.EnvUtils
 
 DynamicLibrary {
     version: '1.0.0'
+    property bool useQt: true
+    property bool useQtCore: true
 
     type: base.concat([ 'translation' ])
 
     Depends { name: 'cpp' }
-    Depends { name: 'Qt.core' }
+    Depends { name: 'Qt.core'; cpp.link: useQt && useQtCore }
     Depends { name: 'desc'; cpp.link: false }
     Depends { name: 'setenv'; required: false; cpp.link: false }
 

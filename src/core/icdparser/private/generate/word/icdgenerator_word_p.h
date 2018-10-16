@@ -2,8 +2,10 @@
 #define ICDGENERATOR_WORD_P_H
 
 #include "icdgenerator_word.h"
+#ifndef J_NO_QT
 #include <QString>
 #include <QVariant>
+#endif
 #include "icdcore/icdcore_inc.h"
 
 class QAxObject;
@@ -17,8 +19,8 @@ class WordGeneratorData
 public:
     explicit WordGeneratorData(WordGenerator *q);
     ~WordGeneratorData();
-
     bool startup();
+#ifndef J_NO_QT
     void shutdown(const QString &filePath = QString::null, int saveAsType = 0);
     bool generateDocument(const QStandardItem *item, bool exportAll, bool rt);
     bool generateDocument(const Icd::TablePtr &table);
@@ -55,9 +57,11 @@ private:
 private:
     bool setCellText(QAxObject *axTable, int row, int column, const QVariant &text);
 #endif
+#endif
 private:
     friend class WordGenerator;
     WordGenerator *q_ptr_;
+#ifndef J_NO_QT
 #ifdef QT_AXCONTAINER_LIB
     QAxObject *word_;
     QAxObject *document_;
@@ -65,6 +69,7 @@ private:
     QAxObject *listTemplate_;
     QAxObject *tables_;
     QAxObject *selection_;
+#endif
 #endif
 };
 

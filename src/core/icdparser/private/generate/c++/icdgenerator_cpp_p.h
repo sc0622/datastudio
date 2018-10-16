@@ -2,7 +2,9 @@
 #define ICDGENERATOR_CPP_P_H
 
 #include "icdgenerator_cpp.h"
+#ifndef J_NO_QT
 #include <QTextStream>
+#endif
 #include "icdcore/icdcore_inc.h"
 
 namespace Icd {
@@ -14,7 +16,7 @@ class CppGeneratorData
 public:
     CppGeneratorData(CppGenerator *q);
     ~CppGeneratorData();
-
+#ifndef J_NO_QT
     bool generateHeader(QTextStream &stream);
     bool generateTypes(QTextStream &stream);
     bool generateFooter(QTextStream &stream);
@@ -63,11 +65,13 @@ public:
 
 private:
     QString headerName(const QString &fileName);
-
+#endif
 private:
     friend class CppGenerator;
     CppGenerator *J_QPTR;
+#ifndef J_NO_QT
     QList<QString> d_variables;
+#endif
 };
 
 } // end of namespace Icd

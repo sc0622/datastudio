@@ -1,10 +1,9 @@
 #include "precomp.h"
 #include "icdgenerator_word_p.h"
+#ifndef J_NO_QT
 #include <QStandardItem>
-#include "icdcore/icdcore_inc.h"
-#ifdef ICDWORKER_LIB
-#include "icdworker/icdworker_inc.h"
 #endif
+#include "icdcore/icdcore_inc.h"
 #include "../../../../icdwidget/icdwidget_global.h"
 #include "../../../icdparser.h"
 #ifdef QT_AXCONTAINER_LIB
@@ -34,6 +33,7 @@ WordGeneratorData::~WordGeneratorData()
 
 bool WordGeneratorData::startup()
 {
+#ifndef J_NO_QT
 #ifdef QT_AXCONTAINER_LIB
     if (word_) {
         word_->deleteLater();
@@ -106,8 +106,12 @@ bool WordGeneratorData::startup()
 #else
     return false;
 #endif
-}
 
+#else
+    return false;
+#endif
+}
+#ifndef J_NO_QT
 void WordGeneratorData::shutdown(const QString &filePath, int saveAsType)
 {
 #ifdef QT_AXCONTAINER_LIB
@@ -1296,4 +1300,7 @@ bool WordGeneratorData::setCellText(QAxObject *axTable, int row, int column, con
     return true;
 }
 #endif
+
+#endif
+
 } // end of namespace Icd

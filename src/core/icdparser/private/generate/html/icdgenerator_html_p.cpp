@@ -7,7 +7,7 @@ HtmlGeneratorData::HtmlGeneratorData()
 {
 
 }
-
+#ifndef J_NO_QT
 bool HtmlGeneratorData::generateTitle(const TablePtr &table, QTextStream &tableStream)
 {
     Q_UNUSED(table);
@@ -247,5 +247,5 @@ bool HtmlGeneratorData::generateFrameItem(const FrameItemPtr &frameItem,
 
     return true;
 }
-
+#endif
 } // end of namespace Icd

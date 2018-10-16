@@ -1,7 +1,4 @@
 #include "json_tool.h"
-#if defined(QT_CORE_LIB) && defined(USE_QFILE)
-#include <QFile>
-#endif
 
 #ifndef JSON_MAX_PATH_LEN
 #define JSON_MAX_PATH_LEN 256
@@ -85,35 +82,28 @@ bool resolve(const std::string &filePath, Value &root)
         return false;
     }
 
+    if (filePath.at(0) == ':') {
+        printf("File \"%s\" open failure! (cannot starts with ':')\n", filePath.c_str());
+        //assert(false);
+        return false;
+    }
+#if 0
     const std::string path = pathOfFile(filePath);
     if (!path.empty()) {
         //return false;
     }
-#if defined(QT_CORE_LIB) && defined(USE_QFILE)
-    QFile file(QString::fromLocal8Bit(filePath.c_str()));
-    if (!file.open(QIODevice::ReadOnly)) {
-        return false;
-    }
-    try {
-        root.clear();
-        Json::Reader reader;
-        if (!reader.parse(file.readAll().constData(), root, true)) {
-            return false;
-        }
-    } catch (RuntimeError msg) {
-        printf("Parse json file \"%s\":\n%s\n", filePath.c_str(), msg.what());
-        return false;
-    }
-#else
+#endif
     std::ifstream ifs(filePath);
     if (!ifs) {
         printf("File \"%s\" open failure!\n", filePath.c_str());
         return false;
     }
 
+    root.clear();
+
+    Json::Reader reader;
+
     try {
-        root.clear();
-        Json::Reader reader;
         if (!reader.parse(ifs, root, true)) {
             return false;
         }
@@ -123,7 +113,29 @@ bool resolve(const std::string &filePath, Value &root)
     }
 
     ifs.close();
-#endif
+
+    return true;
+}
+
+bool parse(const char *content, Value &root)
+{
+    return parse(std::string(content), root);
+}
+
+bool parse(const std::string &content, Value &root)
+{
+    root.clear();
+
+    Json::Reader reader;
+
+    try {
+        if (!reader.parse(content, root, true)) {
+            return false;
+        }
+    } catch (RuntimeError msg) {
+        printf("Parse json content failure:\n%s\n", msg.what());
+        return false;
+    }
 
     return true;
 }
@@ -137,6 +149,21 @@ Value resolve(const std::string &filePath, const std::string &path)
 {
     Value root;
     if (!resolve(filePath, path, root)) {
+        return Value::nullSingleton();
+    }
+
+    return root;
+}
+
+Value parse(const char *content, const std::string &path)
+{
+    return parse(std::string(content), path);
+}
+
+Value parse(const std::string &content, const std::string &path)
+{
+    Value root;
+    if (!parse(content, path, root)) {
         return Value::nullSingleton();
     }
 
@@ -166,34 +193,9 @@ bool resolve(const std::string &filePath, const std::string &path, Value &value)
     return true;
 }
 
-Value resolve(const Value &root, const std::string &path)
+bool parse(const char *content, const std::string &path, Value &value)
 {
-    try {
-        return Path(path).resolve(root);
-    } catch (RuntimeError msg) {
-        printf("Parse json value with path \"%s\":\n%s\n", path.c_str(), msg.what());
-        return Value::null;
-    }
-}
-
-bool parse(const std::string &document, Value &root)
-{
-    return Reader().parse(document, root);
-}
-
-Value parse(const std::string &document, const std::string &path)
-{
-    Value root;
-    if (!parse(document, root)) {
-        return Value::nullSingleton();
-    }
-
-    try {
-        return Path(path).resolve(root);
-    } catch (RuntimeError msg) {
-        printf("Parse json document with path \"%s\":\n%s\n", path.c_str(), msg.what());
-        return Value::null;
-    }
+    return parse(std::string(content), path, value);
 }
 
 bool parse(const std::string &content, const std::string &path, Value &value)
@@ -204,13 +206,24 @@ bool parse(const std::string &content, const std::string &path, Value &value)
     }
 
     try {
-        value = Path(path).resolve(root);
+        Value _value = Path(path).resolve(root);
+        value = _value;
     } catch (RuntimeError msg) {
-        printf("Parse json :\n%s\n", msg.what());
+        printf("Parse json document with path \"%s\":\n%s\n", path.c_str(), msg.what());
         return false;
     }
 
     return true;
+}
+
+Value resolve(const Value &root, const std::string &path)
+{
+    try {
+        return Path(path).resolve(root);
+    } catch (RuntimeError msg) {
+        printf("Parse json value with path \"%s\":\n%s\n", path.c_str(), msg.what());
+        return Value::null;
+    }
 }
 
 bool make(const char *filePath, bool fast)

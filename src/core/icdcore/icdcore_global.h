@@ -146,13 +146,19 @@ inline const T &jBound(const T &min, const T &val, const T &max)
 bool ICDCORE_EXPORT startsWith(const std::string &str, const std::string &header);
 bool ICDCORE_EXPORT endsWith(const std::string &str, const std::string &tail);
 int ICDCORE_EXPORT atoi(const std::string &str);
+unsigned int ICDCORE_EXPORT atou(const std::string &str);
 icd_uint64 ICDCORE_EXPORT strtou64(const std::string &str, int radix);
 icd_uint64 ICDCORE_EXPORT atou64(const std::string &str);
-std::string ICDCORE_EXPORT itoa(int value, bool hex = false);
-std::string ICDCORE_EXPORT u64toa(icd_uint64 value, bool hex = false);
+std::string ICDCORE_EXPORT itoa(int value, bool hex = false, int field = -1);
+std::string ICDCORE_EXPORT utoa(unsigned int value, bool hex = false, int field = -1);
+std::string ICDCORE_EXPORT u64toa(icd_uint64 value, bool hex = false, int field = -1);
 double ICDCORE_EXPORT atod(const std::string &str);
 std::string ICDCORE_EXPORT dtoa(double value);
 
+void ICDCORE_EXPORT tolower(std::string &str);
+void ICDCORE_EXPORT toupper(std::string &str);
+std::string ICDCORE_EXPORT tolowered(const std::string &str);
+std::string ICDCORE_EXPORT touppered(const std::string &str);
 std::string ICDCORE_EXPORT stringSection(const char *ch, char sep, int start = 0, int end = -1);
 std::string ICDCORE_EXPORT stringSection(const std::string &str, char sep, int start = 0, int end = -1);
 std::string ICDCORE_EXPORT stringSection(const char *ch, const std::string &sep,
@@ -171,6 +177,9 @@ int ICDCORE_EXPORT asciiCountOfSize(int format, int size);
 
 std::string ICDCORE_EXPORT createUuid();
 void ICDCORE_EXPORT createUuid(std::string &uuid);
+
+bool ICDCORE_EXPORT initialize();
+void ICDCORE_EXPORT uninitialize();
 
 } // end of namespace Icd
 

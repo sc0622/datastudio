@@ -25,8 +25,12 @@ bool XmlParser::saveDocument(TiXmlDocument *document) const
     if (!document) {
         return false;
     }
-
-    return document->SaveFile(QString::fromStdString(filePath()).toLocal8Bit());
+#ifndef J_NO_QT
+    const std::string filePath = QString::fromStdString(this->filePath()).toLocal8Bit();
+#else
+    const std::string filePath = this->filePath();
+#endif
+    return document->SaveFile(filePath);
 }
 
 bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object) const
@@ -142,8 +146,8 @@ bool XmlParser::saveItemHead(TiXmlElement *emItem,
     }
 
     // defaultValue
-    emItem->SetAttribute("defaultValue", QString("0x%1")
-                         .arg(static_cast<uint>(head->defaultValue()), 2, 16, QChar('0')).toStdString());
+    emItem->SetAttribute("defaultValue",
+                         Icd::utoa(static_cast<unsigned int>(head->defaultValue()), true, 2));
 
     return true;
 }
@@ -206,8 +210,7 @@ bool XmlParser::saveItemNumeric(TiXmlElement *emItem, const Icd::NumericItemPtr 
     // numericType
     emItem->SetAttribute("numericType", numeric->numericTypeString());
     // scale
-    QString sValue = QString::number(numeric->scale(), 'g', 16);
-    emItem->SetAttribute("scale", sValue.toStdString());
+    emItem->SetAttribute("scale", Icd::dtoa(numeric->scale()));
     // offset
     emItem->SetDoubleAttribute("offset", numeric->offset());
     // decimals
@@ -271,8 +274,7 @@ bool XmlParser::saveItemBit(TiXmlElement *emItem,
     // for bitvalue
     if (bit->type() == Icd::ItemBitValue) {
         // scale
-        QString sValue = QString::number(bit->scale(), 'g', 16);
-        emItem->SetAttribute("scale", sValue.toStdString());
+        emItem->SetAttribute("scale", Icd::dtoa(bit->scale()));
         // offset
         emItem->SetDoubleAttribute("offset", bit->offset());
         // decimals
@@ -296,7 +298,7 @@ bool XmlParser::saveItemBit(TiXmlElement *emItem,
         TiXmlElement *emSpec = new TiXmlElement("spec");
         emItem->LinkEndChild(emSpec);
         // key
-        emSpec->SetAttribute("key", "0x" + QString::number(citer->first, 16).toUpper().toStdString());
+        emSpec->SetAttribute("key", Icd::touppered(Icd::u64toa(citer->first, true)));
         // info
         emSpec->SetAttribute("info", citer->second);
     }

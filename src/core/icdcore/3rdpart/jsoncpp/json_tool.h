@@ -143,18 +143,20 @@ std::string JSON_API pathOfFile(const std::string &filePath);
 
 bool JSON_API resolve(const char *filePath, Value &root);
 bool JSON_API resolve(const std::string &filePath, Value &root);
+bool JSON_API parse(const char *content, Value &root);
+bool JSON_API parse(const std::string &content, Value &root);
 
 Value JSON_API resolve(const char *filePath, const std::string &path);
 Value JSON_API resolve(const std::string &filePath, const std::string &path);
+Value JSON_API parse(const char *content, const std::string &path);
+Value JSON_API parse(const std::string &content, const std::string &path);
 
 bool JSON_API resolve(const char *filePath, const std::string &path, Value &value);
 bool JSON_API resolve(const std::string &filePath, const std::string &path, Value &value);
+bool JSON_API parse(const char *content, const std::string &path, Value &value);
+bool JSON_API parse(const std::string &content, const std::string &path, Value &value);
 
 Value JSON_API resolve(const Value &root, const std::string &path);
-
-bool JSON_API parse(const std::string &content, Value &root);
-Value JSON_API parse(const std::string &content, const std::string &path);
-bool JSON_API parse(const std::string &content, const std::string &path, Value &value);
 
 bool JSON_API make(const char *filePath, bool fast);
 bool JSON_API make(const std::string &filePath, bool fast);

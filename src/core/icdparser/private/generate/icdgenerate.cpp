@@ -140,7 +140,7 @@ void Generator::shutdown()
 {
 
 }
-
+#ifndef J_NO_QT
 bool Generator::generate(const QStandardItem *item, bool exportAll, bool rt,
                          const std::string &filePath)
 {
@@ -150,7 +150,7 @@ bool Generator::generate(const QStandardItem *item, bool exportAll, bool rt,
     Q_UNUSED(filePath);
     return false;
 }
-
+#endif
 Icd::Parser *Generator::parser()
 {
     return d->parser;
