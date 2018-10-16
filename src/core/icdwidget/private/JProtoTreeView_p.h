@@ -256,7 +256,7 @@ private:
     QStandardItem *findItemTable(QStandardItem *item, const QString &filePath) const;
     QStandardItem *findItemTable(QStandardItem *item) const;
 
-    bool exportData(const QStandardItem *item, bool exportAll);
+    bool exportData(QStandardItem *item, bool exportAll);
 
     // batch
     QStandardItem *findTableItem(QStandardItem *itemParent, const QString &domain);

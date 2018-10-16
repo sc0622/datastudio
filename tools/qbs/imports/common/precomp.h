@@ -1,7 +1,7 @@
 ﻿#ifndef PRECOMP_H
 #define PRECOMP_H
 
-#ifdef QT_CORE_LIB
+#if (defined(QT_CORE_LIB) && !defined(J_NO_QT))
 #include <qglobal.h>
 #include <QString>
 #include <QtCore>
@@ -14,7 +14,7 @@
 #include <Windows.h>
 #endif
 
-#ifdef QT_GUI_LIB
+#if defined(QT_GUI_LIB) && !defined(J_NO_QT)
 #include <QtGui>
 #endif
 
@@ -50,6 +50,8 @@
 #include <QtSerialPort>
 #endif
 
+#if defined(QT_VERSION)
+
 #if (QT_VERSION < 0x050000)
 
 #ifdef QT_DECLARATIVE_LIB
@@ -60,6 +62,8 @@
 
 #ifdef QT_QUICK_LIB
 #include <QtQuick>
+#endif
+
 #endif
 
 #endif
@@ -179,7 +183,7 @@
 #include "main_global.h"
 #endif
 
-#ifdef QT_CORE_LIB
+#if defined(QT_CORE_LIB) && !defined(J_NO_QT)
 //
 inline void jdelete_qobject(QObject *object)
 {

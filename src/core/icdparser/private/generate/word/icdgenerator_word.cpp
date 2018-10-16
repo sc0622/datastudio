@@ -19,27 +19,27 @@ WordGenerator::~WordGenerator()
 {
 
 }
-#ifndef J_NO_QT
-bool WordGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
+
+bool WordGenerator::generate(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                              const std::string &filePath)
 {
-    return generate(item, exportAll, rt, filePath, 0);
+    return generate(object, exportAll, rt, filePath, 0);
 }
 
-bool WordGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
+bool WordGenerator::generate(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                              const std::string &filePath, int saveAsType)
 {
-    if (!item) {
+    if (!object) {
         return false;
     }
 
-    QFileInfo fileInfo(QString::fromStdString(filePath));
-    QDir dir = QDir(fileInfo.absolutePath());
-    if (!dir.exists()) {
-        dir.mkpath(dir.path());
-        if (!dir.exists()) {
-            return false;
-        }
+    const std::string path = Icd::pathOfFile(filePath);
+    if (path.empty()) {
+        return false;
+    }
+
+    if (Icd::createPath(path) != 0) {
+        return false;
     }
 
     //
@@ -51,15 +51,15 @@ bool WordGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
         return false;
     }
 
-    if (d->generateDocument(item, exportAll, rt)) {
-        d->shutdown(fileInfo.absoluteFilePath(), saveAsType);
+    if (d->generateDocument(object, exportAll, rt)) {
+        d->shutdown(filePath, saveAsType);
         return true;
     } else {
         d->shutdown();
         return false;
     }
 }
-#endif
+
 bool WordGenerator::generate(const TablePtr &table, const std::string &filePath)
 {
     return generate(table, filePath, 0);
@@ -71,14 +71,14 @@ bool WordGenerator::generate(const TablePtr &table, const std::string &filePath,
     if (!table) {
         return false;
     }
-#ifndef J_NO_QT
-    QFileInfo fileInfo(QString::fromStdString(filePath));
-    QDir dir = QDir(fileInfo.absolutePath());
-    if (!dir.exists()) {
-        dir.mkpath(dir.path());
-        if (!dir.exists()) {
-            return false;
-        }
+
+    const std::string path = Icd::pathOfFile(filePath);
+    if (path.empty()) {
+        return false;
+    }
+
+    if (Icd::createPath(path) != 0) {
+        return false;
     }
 
     if (!startup()) {
@@ -90,15 +90,12 @@ bool WordGenerator::generate(const TablePtr &table, const std::string &filePath,
     }
 
     if (d->generateDocument(table)) {
-        d->shutdown(fileInfo.absoluteFilePath(), saveAsType);
+        d->shutdown(filePath, saveAsType);
         return true;
     } else {
         d->shutdown();
         return false;
     }
-#else
-    return false;
-#endif
 }
 
 bool WordGenerator::startup()

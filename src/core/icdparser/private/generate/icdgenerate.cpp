@@ -8,6 +8,7 @@
 #include "../file/json/icdparser_json.h"
 #include "../file/xml/icdparser_xml.h"
 #include "../../icdparser.h"
+#include <algorithm>
 
 namespace Icd {
 
@@ -140,17 +141,17 @@ void Generator::shutdown()
 {
 
 }
-#ifndef J_NO_QT
-bool Generator::generate(const QStandardItem *item, bool exportAll, bool rt,
+
+bool Generator::generate(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                          const std::string &filePath)
 {
-    Q_UNUSED(item);
-    Q_UNUSED(exportAll);
-    Q_UNUSED(rt);
-    Q_UNUSED(filePath);
+    (void)(object);
+    (void)(exportAll);
+    (void)(rt);
+    (void)(filePath);
     return false;
 }
-#endif
+
 Icd::Parser *Generator::parser()
 {
     return d->parser;

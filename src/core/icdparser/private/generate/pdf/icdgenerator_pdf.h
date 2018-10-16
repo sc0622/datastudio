@@ -14,10 +14,8 @@ class PdfGenerator : public Generator
 public:
     explicit PdfGenerator(Icd::Parser *parser);
     ~PdfGenerator();
-#ifndef J_NO_QT
-    bool generate(const QStandardItem *item, bool exportAll, bool rt,
+    bool generate(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                   const std::string &filePath);
-#endif
     bool generate(const TablePtr &table, const std::string &filePath);
 
 private:

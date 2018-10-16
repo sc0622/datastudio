@@ -99,7 +99,7 @@ enum TreeItemType {
 #ifndef J_NO_QT
     TreeItemTypeUserRole = QStandardItem::UserType + 1,
 #else
-    TreeItemTypeUserRole = 1001,
+    TreeItemTypeUserRole = 1000 + 1,
 #endif
     TreeItemTypeRoot,
     TreeItemTypeVehicle,
@@ -111,7 +111,11 @@ enum TreeItemType {
 };
 
 enum TreeItemDataRole {
+#ifndef J_NO_QT
     TreeItemUserRole = Qt::UserRole + 1,
+#else
+    TreeItemUserRole = 0x0100 + 1,
+#endif
     TreeItemIdRole,
     TreeItemDomainRole,
     TreeItemPathRole,

@@ -2,6 +2,7 @@
 #include "icd_item.h"
 #include "icdcore_inc.h"
 #include <unordered_map>
+#include <algorithm>
 #include <limits>
 #include <assert.h>
 

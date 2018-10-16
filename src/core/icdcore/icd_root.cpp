@@ -1,5 +1,6 @@
 ﻿#include "precomp.h"
 #include "icd_root.h"
+#include <functional>
 #include <assert.h>
 
 namespace Icd {

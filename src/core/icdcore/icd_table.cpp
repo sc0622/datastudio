@@ -8,9 +8,10 @@
 #include "icd_item_frame.h"
 #include "icd_item_bit.h"
 #include "icd_item_array.h"
-#include <assert.h>
-#include <deque>
 #include "private/jprecitimer.h"
+#include <functional>
+#include <deque>
+#include <assert.h>
 
 namespace Icd {
 

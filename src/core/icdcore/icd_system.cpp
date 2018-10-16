@@ -1,6 +1,7 @@
 ﻿#include "precomp.h"
 #include "icd_system.h"
 #include "icd_vehicle.h"
+#include <functional>
 #include <assert.h>
 
 namespace Icd {

@@ -16,7 +16,7 @@ public:
 
 private:
     friend class IcdParser;
-#ifndef J_NO_Qt
+#ifndef J_NO_QT
     QTranslator *translator;
 #endif
     std::list<SingletonReleaseCallback> callbacks;

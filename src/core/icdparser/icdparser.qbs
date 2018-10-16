@@ -5,14 +5,13 @@ CoreDyLibrary {
     useQt: false
 
     translations: [ 'zh_CN.ts' ]
-    defaultTranslation: true
+    defaultTranslation: useQt
 
     Depends {
         condition: useQt && qbs.targetOS.contains('windows')
         name: 'Qt.axcontainer'
     }
     Depends { name: 'icdcore' }
-    Depends { name: 'icdworker'; cpp.link: false }
 
     Group {
         name: 'Headers'
@@ -38,6 +37,7 @@ CoreDyLibrary {
     }
 
     Group {
+        condition: useQt
         name: 'Resources'
         files: [ 'resource/*.qrc' ]
     }
@@ -54,9 +54,4 @@ CoreDyLibrary {
         cpp.cxxStandardLibrary: 'c++98'
     }
     cpp.includePaths: base.concat([FileInfo.joinPaths('..'), tinyxml.prefix + '/..'])
-
-    Properties {
-        condition: !useQt
-        cpp.defines: [ 'J_NO_QT' ]
-    }
 }

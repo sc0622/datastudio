@@ -24,43 +24,44 @@ bool HtmlGenerator::generate(const TablePtr &table, const std::string &filePath)
         return false;
     }
 
-    QFile file(QString::fromStdString(filePath));
-    if (!file.open(QIODevice::Text | QIODevice::WriteOnly)) {
+    std::ofstream ofs(filePath);
+    if (!ofs) {
+        printf("File \"%s\" create failure!", filePath.c_str());
         return false;
     }
-#ifndef J_NO_QT
-    QTextStream tableStream(&file);
-    tableStream.setCodec(QTextCodec::codecForName("GB2312"));
+
+    if (!startup()) {
+        return false;
+    }
 
     // generate prefix
-    if (!d->generatePrefix(table, tableStream)) {
+    if (!d->generatePrefix(table, ofs)) {
         return false;
     }
 
     // generate title
-    if (!d->generateTitle(table, tableStream)) {
+    if (!d->generateTitle(table, ofs, filePath)) {
         return false;
     }
 
     // generate types
-    if (!d->generateTypes(tableStream)) {
+    if (!d->generateTypes(ofs)) {
         return false;
     }
 
     // generate table information
-    if (!d->generateTable(table, tableStream)) {
+    if (!d->generateTable(table, ofs)) {
         return false;
     }
 
     // generate suffix
-    if (!d->generateSuffix(table, tableStream)) {
+    if (!d->generateSuffix(table, ofs)) {
         return false;
     }
 
+    shutdown();
+
     return true;
-#else
-    return false;
-#endif
 }
 
 } // end of namespace Icd

@@ -2,15 +2,12 @@
 #include "icdparser.h"
 #include "icdcore/icd_root.h"
 #include "icdcore/icd_vehicle.h"
-#ifndef J_NO_QT
-#include <QMutexLocker>
-#endif
 #include "private/file/icdparser_file.h"
-#ifdef _MSC_VER
 #include "private/generate/icdgenerate.h"
 #include "private/sql/icdparser_sql.h"
-#endif
 #include "private/file/xml/icdparser_xml.h"
+#include <algorithm>
+#include <mutex>
 
 namespace Icd {
 
@@ -19,30 +16,25 @@ class ParserData
     friend class Parser;
 public:
     ParserData()
-        : progressValue(0)
+        : progressValue(0.0)
         , canceledSaveAs(true)
         , isBeginModify(false)
-    #ifndef J_NO_QT
-        , mutex(QMutex::Recursive)
-    #endif
     {
 
     }
 
 private:
     std::string message;
-    qreal progressValue;
+    double progressValue;
     bool canceledSaveAs;
     bool isBeginModify;
-#ifndef J_NO_QT
-    QMutex mutex;
-#endif
+    std::mutex mutex;
 };
 
 Parser::Parser(const Json::Value &config)
     : d(new ParserData())
 {
-    Q_UNUSED(config);
+    (void)config;
 }
 
 Parser::~Parser()
@@ -134,9 +126,9 @@ ObjectPtr Parser::parse(const std::string &domain, int objectType, int deep, Icd
 bool Parser::save(const std::string &domain, const ObjectPtr &object,
                   bool merge, bool fast) const
 {
-    Q_UNUSED(domain);
-    Q_UNUSED(merge);
-    Q_UNUSED(fast);
+    (void)(domain);
+    (void)(merge);
+    (void)(fast);
     if (!object) {
         return false;
     }
@@ -147,47 +139,47 @@ bool Parser::save(const std::string &domain, const ObjectPtr &object,
 bool Icd::Parser::saveJsonObject(const std::string &path, const Json::Value &value,
                                  bool fast) const
 {
-    Q_UNUSED(path);
-    Q_UNUSED(value);
-    Q_UNUSED(fast);
+    (void)(path);
+    (void)(value);
+    (void)(fast);
     return false;
 }
 
 bool Icd::Parser::saveJsonArray(const std::string &path, const Json::Value &value,
                                 bool unique, bool fast) const
 {
-    Q_UNUSED(path);
-    Q_UNUSED(value);
-    Q_UNUSED(unique);
-    Q_UNUSED(fast);
+    (void)(path);
+    (void)(value);
+    (void)(unique);
+    (void)(fast);
     return false;
 }
 
 bool Icd::Parser::replaceJson(const std::string &path, const Json::Value &oldValue,
                               const Json::Value &newValue, bool fast) const
 {
-    Q_UNUSED(path);
-    Q_UNUSED(oldValue);
-    Q_UNUSED(newValue);
-    Q_UNUSED(fast);
+    (void)(path);
+    (void)(oldValue);
+    (void)(newValue);
+    (void)(fast);
     return false;
 }
 
 bool Icd::Parser::removeJson(const std::string &path, const std::string &key,
                              const Json::Value &value, bool fast) const
 {
-    Q_UNUSED(path);
-    Q_UNUSED(key);
-    Q_UNUSED(value);
-    Q_UNUSED(fast);
+    (void)(path);
+    (void)(key);
+    (void)(value);
+    (void)(fast);
     return false;
 }
 
 bool Icd::Parser::mergeJson(const std::string &path, const Json::Value &value, bool fast) const
 {
-    Q_UNUSED(path);
-    Q_UNUSED(value);
-    Q_UNUSED(fast);
+    (void)(path);
+    (void)(value);
+    (void)(fast);
     return false;
 }
 
@@ -219,16 +211,16 @@ bool Parser::isBeginModify() const
 {
     return d->isBeginModify;
 }
-#ifndef J_NO_QT
-bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,
+
+bool Parser::saveAs(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                     const std::string &filePath)
 {
     setProgressValue(0);
 
-    if (!item) {
+    if (!object) {
         return false;
     }
-#if defined(_MSC_VER)
+
     Json::Value config;
     config["filePath"] = filePath;
     GeneratorPtr generator = Generator::create(config, this);
@@ -236,20 +228,13 @@ bool Parser::saveAs(const QStandardItem *item, bool exportAll, bool rt,
         return false;
     }
 
-    return generator->generate(item, exportAll, rt, filePath);
-#else
-    Q_UNUSED(item);
-    Q_UNUSED(exportAll);
-    Q_UNUSED(rt);
-    Q_UNUSED(filePath);
-    return false;
-#endif
+    return generator->generate(object, exportAll, rt, filePath);
 }
-#endif
+
 bool Parser::saveAs(const TablePtr &table, const std::string &filePath)
 {
     setProgressValue(0);
-#if defined(_MSC_VER)
+
     Json::Value config;
     config["filePath"] = filePath;
     GeneratorPtr generator = Generator::create(config, this);
@@ -258,59 +243,51 @@ bool Parser::saveAs(const TablePtr &table, const std::string &filePath)
     }
 
     return generator->generate(table, filePath);
-#else
-    Q_UNUSED(table);
-    Q_UNUSED(filePath);
-    return false;
-#endif
 }
 
 std::string Parser::message() const
 {
-#ifndef J_NO_QT
-    QMutexLocker locker(&d->mutex);
-#endif
-    return d->message;
+    d->mutex.lock();
+    const std::string message = d->message;
+    d->mutex.unlock();
+    return message;
 }
 
 void Parser::setMessage(const std::string &message)
 {
-#ifndef J_NO_QT
-    QMutexLocker locker(&d->mutex);
-#endif
+    d->mutex.lock();
     d->message = message;
+    d->mutex.unlock();
 }
 
 double Parser::progressValue() const
 {
-#ifndef J_NO_QT
-    QMutexLocker locker(&d->mutex);
-#endif
-    return d->progressValue;
+    d->mutex.lock();
+    const double value = d->progressValue;
+    d->mutex.unlock();
+    return value;
 }
 
 void Parser::setProgressValue(double value)
 {
-#ifndef J_NO_QT
-    QMutexLocker locker(&d->mutex);
-#endif
+    d->mutex.lock();
     d->progressValue = value;
+    d->mutex.unlock();
 }
 
 bool Parser::canceledSaveAs() const
 {
-#ifndef J_NO_QT
-    QMutexLocker locker(&d->mutex);
-#endif
-    return d->canceledSaveAs;
+    d->mutex.lock();
+    const bool flag = d->canceledSaveAs;
+    d->mutex.unlock();
+    return flag;
 }
 
 void Parser::cancelSaveAs(bool cancel)
 {
-#ifndef J_NO_QT
-    QMutexLocker locker(&d->mutex);
-#endif
+    d->mutex.lock();
     d->canceledSaveAs = cancel;
+    d->mutex.unlock();
 }
 
 bool Parser::createXmlFile(const std::string &filePath)

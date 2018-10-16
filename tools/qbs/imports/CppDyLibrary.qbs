@@ -55,6 +55,9 @@ DynamicLibrary {
         var upperName = product.name.toUpperCase();
         defines.push(upperName + '_LIB');
         defines.push(upperName + '_BUILD');
+        if (!useQt) {
+            defines.push('J_NO_QT')
+        }
         return defines;
     }
     cpp.variantSuffix: project.variantSuffix

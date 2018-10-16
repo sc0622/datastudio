@@ -3,7 +3,6 @@
 
 #include "icdcore_global.h"
 #include "icd_item.h"
-#include <vector>
 
 namespace Icd {
 

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 #include <assert.h>
 
 #ifdef _MSC_VER
@@ -53,7 +54,7 @@ bool endsWith(const std::string &str, const std::string &tail)
 
 int atoi(const std::string &str)
 {
-    std::istringstream iss(str);
+    std::istringstream iss(trimString(str));
     if (startsWith(str, "0x")) {
         iss >> std::hex;
     }
@@ -64,7 +65,7 @@ int atoi(const std::string &str)
 
 unsigned int atou(const std::string &str)
 {
-    std::istringstream iss(str);
+    std::istringstream iss(trimString(str));
     if (startsWith(str, "0x")) {
         iss >> std::hex;
     }
@@ -84,7 +85,7 @@ icd_uint64 strtou64(const std::string &str, int radix)
 
 icd_uint64 atou64(const std::string &str)
 {
-    std::istringstream iss(str);
+    std::istringstream iss(trimString(str));
     if (startsWith(str, "0x")) {
         iss >> std::hex;
     }
@@ -134,7 +135,7 @@ std::string u64toa(icd_uint64 value, bool hex, int field)
 
 double atod(const std::string &str)
 {
-    std::istringstream iss(str);
+    std::istringstream iss(trimString(str));
     if (startsWith(str, "0x")) {
         iss >> std::hex;
     }

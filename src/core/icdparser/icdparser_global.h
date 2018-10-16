@@ -24,10 +24,6 @@
 #include "icdcore/icdcore_global.h"
 #endif
 
-#if defined(ICDWORKER_LIB) || defined(BUILDING_NODE_EXTENSION) || defined(BUILDING_APP)
-//#include "icdworker/icdworker_global.h"
-#endif
-
 ////////////////////////////////
 
 #ifndef J_DECLARE_SINGLE_INSTANCE
@@ -51,7 +47,7 @@
         if (Class::_instance == nullptr) { \
             Class::_instance = new Class; \
         } \
-        if (QLatin1String(QT_STRINGIFY(Class)) != #GlobalClass) { \
+        if (std::string(J_STRINGIFY(Class)) != #GlobalClass) { \
             GlobalClass::instance()->registerSingletonRelease(__ ## Class ## _releaseInstance); \
         } \
         return Class::_instance; \

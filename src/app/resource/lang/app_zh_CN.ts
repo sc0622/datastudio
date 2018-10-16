@@ -2162,7 +2162,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../main.cpp" line="50"/>
+        <location filename="../../main.cpp" line="52"/>
         <source>Data Studio</source>
         <translation>Data Studio</translation>
     </message>

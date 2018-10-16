@@ -2,43 +2,36 @@
 #define ICDPARSER_H
 
 #include "icdparser_global.h"
-#include <string>
 #include "icdcore/icd_object.h"
-#ifndef J_NO_QT
-class QStandardItem;
-#endif
+
 namespace Json { class Value; }
 
 namespace Icd {
 
-//
 class Root;
 typedef std::shared_ptr<Root> RootPtr;
 
-//
 class Vehicle;
 typedef std::shared_ptr<Vehicle> VehiclePtr;
 typedef std::vector<VehiclePtr> VehiclePtrArray;
 
-//
 class System;
 typedef std::shared_ptr<System> SystemPtr;
 typedef std::vector<SystemPtr> SystemPtrArray;
 
-//
 class Table;
 typedef std::shared_ptr<Table> TablePtr;
 typedef std::vector<TablePtr> TablePtrArray;
 
-//
 class Item;
 typedef std::shared_ptr<Item> ItemPtr;
 typedef std::vector<ItemPtr> ItemPtrArray;
 
-//
 class Parser;
 class ParserData;
 typedef std::shared_ptr<Parser> ParserPtr;
+
+// class Parser
 
 class ICDPARSER_EXPORT Parser
 {
@@ -99,9 +92,7 @@ public:
     virtual bool cancelModify();
     virtual bool endModify();
     bool isBeginModify() const;
-#ifndef J_NO_QT
-    bool saveAs(const QStandardItem *item, bool exportAll, bool rt, const std::string &filePath);
-#endif
+    bool saveAs(const Icd::ObjectPtr &object, bool exportAll, bool rt, const std::string &filePath);
     bool saveAs(const Icd::TablePtr &table, const std::string &filePath);
 
     std::string message() const;

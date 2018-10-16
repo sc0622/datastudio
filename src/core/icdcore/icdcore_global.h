@@ -58,6 +58,16 @@ typedef float float_t;
 typedef double double_t;
 #endif
 
+/* These two macros makes it possible to turn the builtin line expander into a
+ * string literal. */
+#ifndef J_STRINGIFY2
+#define J_STRINGIFY2(x) #x
+#endif
+
+#ifndef J_STRINGIFY
+#define J_STRINGIFY(x) J_STRINGIFY2(x)
+#endif
+
 // for shared_ptr, unique_ptr
 #include <memory>
 //template<class T> using JHandlePtr = std::shared_ptr<T>;

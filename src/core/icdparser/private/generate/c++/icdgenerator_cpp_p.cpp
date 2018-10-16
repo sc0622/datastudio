@@ -1,11 +1,13 @@
 #include "precomp.h"
 #include "icdgenerator_cpp_p.h"
 #include "../../../icdparser.h"
+#include <iomanip>
+#include <algorithm>
 
 namespace Icd {
 
 CppGeneratorData::CppGeneratorData(CppGenerator *q)
-    : J_QPTR(q)
+    : q_ptr_(q)
 {
 
 }
@@ -14,108 +16,94 @@ CppGeneratorData::~CppGeneratorData()
 {
 
 }
-#ifndef J_NO_QT
-bool CppGeneratorData::generateHeader(QTextStream &stream)
-{
-    QFile *file = qobject_cast<QFile *>(stream.device());
-    if (!file) {
-        return false;
-    }
 
-    QFileInfo fileInfo(*file);
-    QString header = headerName(fileInfo.fileName());
-    stream << "#ifndef " << header << endl
-           << "#define " << header << endl;
+bool CppGeneratorData::generateHeader(std::ostream &stream, const std::string &filePath)
+{
+    const std::string header = headerName(filePath);
+    stream << "#ifndef " << header << std::endl
+           << "#define " << header << std::endl;
 
     return true;
 }
 
-bool CppGeneratorData::generateTypes(QTextStream &stream)
+bool CppGeneratorData::generateTypes(std::ostream &stream)
 {
-    stream << endl
-           << "/* basic types definition */" << endl
-           << "#ifndef DEF_ICD_TYPE" << endl
-           << "#define DEF_ICD_TYPE" << endl
-           << "typedef char icd_int8;" << endl
-           << "typedef unsigned char icd_uint8;" << endl
-           << "typedef short icd_int16;" << endl
-           << "typedef unsigned short icd_uint16;" << endl
-           << "typedef int icd_int32;" << endl
-           << "typedef unsigned int icd_uint32;" << endl
+    stream << std::endl
+           << "/* basic types definition */" << std::endl
+           << "#ifndef DEF_ICD_TYPE" << std::endl
+           << "#define DEF_ICD_TYPE" << std::endl
+           << "typedef char icd_int8;" << std::endl
+           << "typedef unsigned char icd_uint8;" << std::endl
+           << "typedef short icd_int16;" << std::endl
+           << "typedef unsigned short icd_uint16;" << std::endl
+           << "typedef int icd_int32;" << std::endl
+           << "typedef unsigned int icd_uint32;" << std::endl
           #ifdef _MSC_VER
-           << "typedef __int64 icd_int64;" << endl
-           << "typedef unsigned __int64 icd_uint64;" << endl
+           << "typedef __int64 icd_int64;" << std::endl
+           << "typedef unsigned __int64 icd_uint64;" << std::endl
           #else
               //
           #endif
-           << "typedef float icd_float;" << endl
-           << "typedef double icd_double;" << endl
-           << "typedef float icd_float32;" << endl
-           << "typedef double icd_float64;" << endl
-           << "#endif // DEF_ICD_TYPE" << endl;
+           << "typedef float icd_float;" << std::endl
+           << "typedef double icd_double;" << std::endl
+           << "typedef float icd_float32;" << std::endl
+           << "typedef double icd_float64;" << std::endl
+           << "#endif // DEF_ICD_TYPE" << std::endl;
 
     return true;
 }
 
-bool CppGeneratorData::generateFooter(QTextStream &stream)
+bool CppGeneratorData::generateFooter(std::ostream &stream, const std::string &filePath)
 {
-    QFile *file = qobject_cast<QFile *>(stream.device());
-    if (!file) {
+    const std::string header = headerName(filePath);
+    stream << std::endl
+           << "#endif // " << header << std::endl;
+
+    return true;
+}
+
+bool CppGeneratorData::generateNamespacePrefix(std::ostream &stream)
+{
+    stream << std::endl
+           << "#ifdef __cplusplus" << std::endl
+           << "namespace Icd {" << std::endl
+           << "#endif" << std::endl
+           << std::endl
+           << "#pragma pack(push)" << std::endl
+           << "#pragma pack(1)" << std::endl;
+
+    return true;
+}
+
+bool CppGeneratorData::generateNamespaceSuffix(std::ostream &stream)
+{
+    stream << std::endl
+           << "#pragma pack(pop)" << std::endl
+           << std::endl
+           << "#ifdef __cplusplus" << std::endl
+           << "} // end of namespace Icd" << std::endl
+           << "#endif" << std::endl;
+
+    return true;
+}
+
+bool CppGeneratorData::generateTable(const TablePtr &table, std::ostream &tableStream)
+{
+    if (q_ptr_->parser()->canceledSaveAs()) {
         return false;
     }
 
-    QFileInfo fileInfo(*file);
-    QString header = headerName(fileInfo.fileName());
-    stream << endl
-           << "#endif // " << header << endl;
+    std::ostringstream oss;
+    oss << "Generate table document\nTable: " << table->name();
+    q_ptr_->parser()->setMessage(oss.str());
+    oss.str("");
 
-    return true;
-}
-
-bool CppGeneratorData::generateNamespacePrefix(QTextStream &stream)
-{
-    stream << endl
-           << "#ifdef __cplusplus" << endl
-           << "namespace Icd {" << endl
-           << "#endif" << endl
-           << endl
-           << "#pragma pack(push)" << endl
-           << "#pragma pack(1)" << endl;
-
-    return true;
-}
-
-bool CppGeneratorData::generateNamespaceSuffix(QTextStream &stream)
-{
-    stream << endl
-           << "#pragma pack(pop)" << endl
-           << endl
-           << "#ifdef __cplusplus" << endl
-           << "} // end of namespace Icd" << endl
-           << "#endif" << endl;
-
-    return true;
-}
-
-bool CppGeneratorData::generateTable(const TablePtr &table,
-                                     QTextStream &tableStream)
-{
-    if (J_QPTR->parser()->canceledSaveAs()) {
-        return false;
-    }
-
-    //
-    J_QPTR->parser()->setMessage(QObject::tr("Generate table document\nTable: %1")
-                                 .arg(QString::fromStdString(table->name()))
-                                 .toStdString());
-
-    QString member;
-    QTextStream memberStream(&member);
+    std::ostringstream member;
     const Icd::ItemPtrArray &items = table->allItem();
     Icd::ItemPtrArray::const_iterator citer = items.cbegin();
     for (; citer != items.cend(); ++citer) {
         const Icd::ItemPtr &item = *citer;
-        if (!generateDataItem(item, tableStream, memberStream)) {
+        if (!generateDataItem(item, tableStream, member)) {
             return false;
         }
     }
@@ -127,45 +115,51 @@ bool CppGeneratorData::generateTable(const TablePtr &table,
         tableSize = parentItem->bufferSize();
         const int unusedSize = tableSize - table->bufferSize();
         if (unusedSize > 0) {
-            QString line;
-            QTextStream lineStream(&line);
-            lineStream << "icd_uint8 unused[" << unusedSize << "];";
-            memberStream << "    ";
-            memberStream.setFieldWidth(30);
-            memberStream << left << line;
-            memberStream.reset();
-            if (line.size() >= 30) {
-                memberStream << "  ";
+            // line
+            std::ostringstream line;
+            line << "icd_uint8 unused[" << unusedSize << "];";
+            const std::string lineStr = line.str();
+            line.str("");
+            //
+            member << "    ";
+            const std::ios::fmtflags flags(member.flags());
+            member << std::setw(30) << std::left << lineStr;
+            member.setf(flags);
+            if (lineStr.size() >= 30) {
+                member << "  ";
             }
-            memberStream << "/* unused */" << endl;
+            member << "/* unused */" << std::endl;
         }
     } else {
         tableSize = table->bufferSize();
     }
 
-    const QString tableName = QString::fromStdString(table->typeName());
+    const std::string memberStr = member.str();
+    member.str("");
 
-    tableStream << endl << "/* " << tableName << " (size: " << tableSize << " byte(s), "
-                << QString::fromStdString(table->name()) << ")";
+    const std::string tableName = table->typeName();
+
+    tableStream << std::endl << "/* " << tableName << " (size: " << tableSize << " byte(s), "
+                << table->name() << ")";
     if (!table->desc().empty()) {
-        tableStream << ": " << QString::fromStdString(table->desc());
+        tableStream << ": " << table->desc();
     }
-    tableStream << " */" << endl << "typedef struct _" << tableName << endl << "{" << endl;
-    if (member.isEmpty()) {
-        tableStream << "    icd_uint8 unused;" << endl;
+    tableStream << " */" << std::endl << "typedef struct _" << tableName << std::endl
+                << "{" << std::endl;
+    if (memberStr.empty()) {
+        tableStream << "    icd_uint8 unused;" << std::endl;
     } else {
-        tableStream << member;
+        tableStream << memberStr;
     }
-    tableStream << "} " << tableName << ";" << endl;
+    tableStream << "} " << tableName << ";" << std::endl;
 
     return true;
 }
 
-bool CppGeneratorData::generateDataItem(const ItemPtr &item,
-                                        QTextStream &tableStream,
-                                        QTextStream &itemsStream)
+bool CppGeneratorData::generateDataItem(const ItemPtr &item, std::ostream &tableStream,
+                                        std::ostream &itemsStream)
 {
-    if (J_QPTR->parser()->canceledSaveAs()) {
+    if (q_ptr_->parser()->canceledSaveAs()) {
         return false;
     }
 
@@ -202,225 +196,218 @@ bool CppGeneratorData::generateDataItem(const ItemPtr &item,
         return generateArrayItem(JHandlePtrCast<Icd::ArrayItem>(item),
                                  tableStream, itemsStream);
     default:
-        return false;
-    }
-
-    if (J_QPTR->parser()->canceledSaveAs()) {
-        return false;
+        break;
     }
 
     return true;
 }
 
-bool CppGeneratorData::generateHeaderItem(const Icd::HeaderItemPtr &headItem,
-                                          QTextStream &tableStream,
-                                          QTextStream &itemsStream)
+bool CppGeneratorData::generateHeaderItem(const Icd::HeaderItemPtr &headItem, std::ostream &tableStream,
+                                          std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
-    // format -> [    type id;    /* name (desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(headItem->typeName())
-               << " " << QString::fromStdString(headItem->codeName()) << ";";
+    (void)(tableStream);
+    // line - format -> [    type id;    /* name (desc) */]
+    std::ostringstream line;
+    line << headItem->typeName() << " " << headItem->codeName() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
     itemsStream << "    ";
-    itemsStream.setFieldWidth(30);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
-    itemsStream << "/* " << QString::fromStdString(headItem->name());
+    itemsStream << "/* " << headItem->name();
     if (!headItem->desc().empty()) {
-        itemsStream << " (" << QString::fromStdString(headItem->desc()) << ")";
+        itemsStream << " (" << headItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateCounterItem(const Icd::CounterItemPtr &counterItem,
-                                           QTextStream &tableStream,
-                                           QTextStream &itemsStream)
+                                           std::ostream &tableStream, std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
-    // format -> [    type id;    /* name (desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(counterItem->typeName())
-               << " " << QString::fromStdString(counterItem->codeName()) << ";";
+    (void)(tableStream);
+    // line - format -> [    type id;    /* name (desc) */]
+    std::ostringstream line;
+    line << counterItem->typeName() << " " << counterItem->codeName() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
     itemsStream << "    ";
-    itemsStream.setFieldWidth(30);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
-    itemsStream << "/* " << QString::fromStdString(counterItem->name());
+    itemsStream << "/* " << counterItem->name();
     if (!counterItem->desc().empty()) {
-        itemsStream << " (" << QString::fromStdString(counterItem->desc()) << ")";
+        itemsStream << " (" << counterItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateCheckItem(const Icd::CheckItemPtr &checkItem,
-                                         QTextStream &tableStream,
-                                         QTextStream &itemsStream)
+                                         std::ostream &tableStream, std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
-    // format -> [    type id;    /* name (desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(checkItem->typeName())
-               << " " << QString::fromStdString(checkItem->codeName()) << ";";
+    (void)(tableStream);
+    // line - format -> [    type id;    /* name (desc) */]
+    std::ostringstream line;
+    line << checkItem->typeName() << " " << checkItem->codeName() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
     itemsStream << "    ";
-    itemsStream.setFieldWidth(30);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
-    itemsStream << "/* " << QString::fromStdString(checkItem->name());
+    itemsStream << "/* " << checkItem->name();
     if (!checkItem->desc().empty()) {
-        itemsStream << " (" << QString::fromStdString(checkItem->desc()) << ")";
+        itemsStream << " (" << checkItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateFrameCodeItem(const Icd::FrameCodeItemPtr &frameCodeItem,
-                                             QTextStream &tableStream,
-                                             QTextStream &itemsStream)
+                                             std::ostream &tableStream, std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
-    // format -> [    type id;    /* name (desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(frameCodeItem->typeName())
-               << " " << QString::fromStdString(frameCodeItem->codeName()) << ";";
+    (void)(tableStream);
+    // line - format -> [    type id;    /* name (desc) */]
+    std::ostringstream line;
+    line << frameCodeItem->typeName() << " " << frameCodeItem->codeName() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
     itemsStream << "    ";
-    itemsStream.setFieldWidth(30);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
-    itemsStream << "/* " << QString::fromStdString(frameCodeItem->name());
+    itemsStream << "/* " << frameCodeItem->name();
     if (!frameCodeItem->desc().empty()) {
-        itemsStream << " (" << QString::fromStdString(frameCodeItem->desc()) << ")";
+        itemsStream << " (" << frameCodeItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateNumericItem(const Icd::NumericItemPtr &numericItem,
-                                           QTextStream &tableStream,
-                                           QTextStream &itemsStream)
+                                           std::ostream &tableStream, std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
-    // format -> [    type id;    /* name [scale:x, offset:x, range:(), unit:x](desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(numericItem->typeName())
-               << " " << QString::fromStdString(numericItem->codeName()) << ";";
+    (void)(tableStream);
+    // line - format -> [    type id;    /* name [scale:x, offset:x, range:(), unit:x](desc) */]
+    std::ostringstream line;
+    line << numericItem->typeName() << " " << numericItem->codeName() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
     itemsStream << "    ";
-    itemsStream.setFieldWidth(30);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
     itemsStream << "/* "
-                << QString::fromStdString(numericItem->name()) << " [scale:"
-                << QString::number(numericItem->scale()) << ", offset:"
-                << QString::number(numericItem->offset()) << ", range:"
-                << QString::fromStdString(numericItem->limit()->toString()) << ", unix:"
-                << QString::fromStdString(numericItem->unit()) << "]";
+                << numericItem->name() << " [scale:"
+                << numericItem->scale() << ", offset:"
+                << numericItem->offset() << ", range:"
+                << numericItem->limit()->toString() << ", unix:"
+                << numericItem->unit() << "]";
     if (!numericItem->desc().empty()) {
-        itemsStream << "(" << QString::fromStdString(numericItem->desc()) << ")";
+        itemsStream << "(" << numericItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateBitItem(const Icd::BitItemPtr &bitItem,
-                                       QTextStream &tableStream,
-                                       QTextStream &itemsStream)
+                                       std::ostream &tableStream, std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
-    // format -> [    type id;    /* name [start:x, count:x](desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(bitItem->typeName())
-               << " " << QString::fromStdString(bitItem->codeName())
-               << " : " << bitItem->bitCount() << ";";
+    (void)(tableStream);
+    // line - format -> [    type id;    /* name [start:x, count:x](desc) */]
+    std::ostringstream line;
+    line << bitItem->typeName() << " " << bitItem->codeName() << " : " << bitItem->bitCount() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
     itemsStream << "    ";
-    itemsStream.setFieldWidth(30);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
     itemsStream << "/* "
-                << QString::fromStdString(bitItem->name()) << " [start:"
-                << QString::number(bitItem->bitStart()) << ", count:"
-                << QString::number(bitItem->bitCount()) << "]";
+                << bitItem->name() << " [start:"
+                << bitItem->bitStart() << ", count:"
+                << bitItem->bitCount() << "]";
     if (!bitItem->desc().empty()) {
-        itemsStream << "(" << QString::fromStdString(bitItem->desc()) << ")";
+        itemsStream << "(" << bitItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateComplexItem(const Icd::ComplexItemPtr &complexItem,
-                                           QTextStream &stream,
-                                           QTextStream &tableStream)
+                                           std::ostream &tableStream, std::ostream &itemsStream)
 {
     const Icd::TablePtr table = complexItem->table();
     if (!table) {
         return true;    // FIXME
     }
 
-    if (!generateTable(table, stream)) {
+    if (!generateTable(table, tableStream)) {
         return false;
     }
 
-    // format -> [    type id;    /* name (desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(complexItem->typeName())
-               << " " << QString::fromStdString(complexItem->codeName()) << ";";
-    tableStream << "    ";
-    tableStream.setFieldWidth(30);
-    tableStream << left << line;
-    tableStream.reset();
-    if (line.size() >= 30) {
-        tableStream << "  ";
+    // line - format -> [    type id;    /* name (desc) */]
+    std::ostringstream line;
+    line << complexItem->typeName() << " " << complexItem->codeName() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
+    itemsStream << "    ";
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
+        itemsStream << "  ";
     }
-    tableStream << "/* " << QString::fromStdString(complexItem->name());
+    tableStream << "/* " << complexItem->name();
     if (!complexItem->desc().empty()) {
-        tableStream << " (" << QString::fromStdString(complexItem->desc()) << ")";
+        tableStream << " (" << complexItem->desc() << ")";
     }
-    tableStream << " */" << endl;
+    tableStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateFrameItem(const Icd::FrameItemPtr &frameItem,
-                                         QTextStream &tableStream,
-                                         QTextStream &itemsStream)
+                                         std::ostream &tableStream, std::ostream &itemsStream)
 {
     if (!frameItem) {
         return false;
     }
 
-    QString member;
-    QTextStream memberStream(&member);
+    std::ostringstream member;
     const Icd::TablePtrMap &tables = frameItem->allTable();
     Icd::TablePtrMap::const_iterator citer = tables.cbegin();
     for (; citer != tables.cend(); ++citer) {
@@ -428,93 +415,124 @@ bool CppGeneratorData::generateFrameItem(const Icd::FrameItemPtr &frameItem,
         if (!generateTable(table, tableStream)) {
             return false;
         }
-        // format -> [    type id;    /* name (desc) */]
-        QString line;
-        QTextStream lineStream(&line);
-        lineStream << "        "
-                   << QString::fromStdString(table->typeName()) << " "
-                   << QString::fromStdString(table->codeName()) << ";";
-        memberStream.setFieldWidth(50);
-        memberStream << left << line;
-        memberStream.reset();
-        if (line.size() >= 50) {
-            memberStream << "  ";
+        // line - format -> [    type id;    /* name (desc) */]
+        std::ostringstream line;
+        line << "        " << table->typeName() << " " << table->codeName() << ";";
+        const std::string lineStr = line.str();
+        line.str("");
+        //
+        member << "    ";
+        const std::ios::fmtflags flags(member.flags());
+        member << std::setw(30) << std::left << lineStr;
+        member.setf(flags);
+        if (lineStr.size() >= 30) {
+            member << "  ";
         }
-        memberStream << "/* " << QString::fromStdString(table->name());
+        member << "/* " << table->name();
         if (!table->desc().empty()) {
-            memberStream << " (" << QString::fromStdString(table->desc()) << ")";
+            member << " (" << table->desc() << ")";
         }
-        memberStream << " */" << endl;
+        member << " */" << std::endl;
     }
 
-    // format -> [    type id;    /* name (desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << "} " << QString::fromStdString(frameItem->codeName()) << ";";
-    itemsStream << "    union " << QString::fromStdString(frameItem->typeName())
-                << " {" << endl << member << "    ";
-    itemsStream.setFieldWidth(25);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::string memberStr = member.str();
+    member.str("");
+
+    // line - format -> [    type id;    /* name (desc) */]
+    std::ostringstream line;
+    line << "} " << frameItem->codeName() << ";";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
+    itemsStream << "    union " << frameItem->typeName()
+                << " {" << std::endl << memberStr << "    ";
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(25) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
-    itemsStream << "/* " << QString::fromStdString(frameItem->name());
+    itemsStream << "/* " << frameItem->name();
     if (!frameItem->desc().empty()) {
-        itemsStream << " (" << QString::fromStdString(frameItem->desc()) << ")";
+        itemsStream << " (" << frameItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
 bool CppGeneratorData::generateDateTimeItem(const DateTimeItemPtr &dateTimeItem,
-                                            QTextStream &tableStream, QTextStream &itemsStream)
+                                            std::ostream &tableStream, std::ostream &itemsStream)
 {
-    Q_UNUSED(dateTimeItem);
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
-    Q_ASSERT(false);        //TODO [not supported]
+    (void)(dateTimeItem);
+    (void)(tableStream);
+    (void)(itemsStream);
+    //TODO
     return false;
 }
 
 bool CppGeneratorData::generateArrayItem(const ArrayItemPtr &arrayItem,
-                                         QTextStream &tableStream, QTextStream &itemsStream)
+                                         std::ostream &tableStream, std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
+    (void)(tableStream);
     if (!arrayItem) {
         return false;
     }
 
-    // format -> [    type id[size];    /* name (desc) */]
-    QString line;
-    QTextStream lineStream(&line);
-    lineStream << QString::fromStdString(arrayItem->typeName())
-               << " " << QString::fromStdString(arrayItem->codeName())
-               << "[" << arrayItem->count() << "];";
+    // line - format -> [    type id[size];    /* name (desc) */]
+    std::ostringstream line;
+    line << arrayItem->typeName() << " " << arrayItem->codeName()
+         << "[" << arrayItem->count() << "];";
+    const std::string lineStr = line.str();
+    line.str("");
+    //
     itemsStream << "    ";
-    itemsStream.setFieldWidth(30);
-    itemsStream << left << line;
-    itemsStream.reset();
-    if (line.size() >= 30) {
+    const std::ios::fmtflags flags(itemsStream.flags());
+    itemsStream << std::setw(30) << std::left << lineStr;
+    itemsStream.setf(flags);
+    if (lineStr.size() >= 30) {
         itemsStream << "  ";
     }
-    itemsStream << "/* " << QString::fromStdString(arrayItem->name());
+    itemsStream << "/* " << arrayItem->name();
     if (!arrayItem->desc().empty()) {
-        itemsStream << " (" << QString::fromStdString(arrayItem->desc()) << ")";
+        itemsStream << " (" << arrayItem->desc() << ")";
     }
-    itemsStream << " */" << endl;
+    itemsStream << " */" << std::endl;
 
     return true;
 }
 
-QString CppGeneratorData::headerName(const QString &fileName)
+std::string CppGeneratorData::headerName(const std::string &filePath)
 {
-    QString name = QString(fileName).replace(QRegExp("[^0-9a-zA-z]"), "_");
-    if (name.count() > 0 && name.at(0).isDigit()) {
-        name.prepend('_');
+    std::string::size_type index = std::max(filePath.find_last_of('/'),
+                                            filePath.find_last_of('\\'));
+    std::string name;
+    if (index != std::string::npos) {
+        name = filePath.substr(index + 1);
+    } else {
+        name = filePath;
     }
-    return name.toUpper();
+
+    for (std::string::iterator iter = name.begin();
+         iter != name.end(); ++iter) {
+        char ch = *iter;
+        if ('a' <= ch && ch <= 'z') {
+            ch += 0x20;
+        }
+        if ((ch < '0' || ch > '9') && (ch < 'A' || ch > 'Z')) {
+            ch = '_';
+        }
+        *iter = ch;
+    }
+
+    if (name.size() > 0) {
+        const char ch = name.at(0);
+        if ('0' <= ch && ch <= '9') {
+            name = '_' + name;
+        }
+    }
+
+    return name;
 }
-#endif
+
 } // end of namespace Icd

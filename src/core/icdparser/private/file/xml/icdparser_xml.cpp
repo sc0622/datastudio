@@ -237,7 +237,7 @@ bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId,
 bool XmlParser::parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
                       Icd::ItemPtrArray &items, int deep, Icd::Object *parent) const
 {
-    Q_UNUSED(deep);
+    (void)deep;
     TiXmlElement *emTable = findTableElement(vehicleId, systemId, tableId);
     if (!emTable) {
         return false;   //
@@ -375,53 +375,53 @@ bool XmlParser::save(const Icd::VehiclePtrArray &vehicles) const
 
 bool XmlParser::save(const std::string &vehicleId, const VehiclePtr &vehicle) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(vehicle);
+    (void)(vehicleId);
+    (void)(vehicle);
     return false;
 }
 
 bool XmlParser::save(const std::string &vehicleId, const SystemPtrArray &systems) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systems);
+    (void)(vehicleId);
+    (void)(systems);
     return false;
 }
 
 bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const SystemPtr &system) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(system);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(system);
     return false;
 }
 
 bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const TablePtrArray &tables) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tables);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tables);
     return false;
 }
 
 bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const std::string &tableId, const TablePtr &table) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tableId);
-    Q_UNUSED(table);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tableId);
+    (void)(table);
     return false;
 }
 
 bool XmlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const std::string &tableId, const ItemPtrArray &items) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tableId);
-    Q_UNUSED(items);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tableId);
+    (void)(items);
     return false;
 }
 
@@ -464,8 +464,8 @@ bool XmlParser::save(const TablePtrArray &tables) const
 
 bool XmlParser::save(const std::string &tableId, const TablePtr &table) const
 {
-    Q_UNUSED(tableId);
-    Q_UNUSED(table);
+    (void)(tableId);
+    (void)(table);
     return false;
 }
 
@@ -540,17 +540,17 @@ void XmlParser::shutdown()
 bool XmlParser::generate(const QStandardItem *item, bool exportAll, bool rt,
                          const std::string &filePath)
 {
-    Q_UNUSED(item);
-    Q_UNUSED(exportAll);
-    Q_UNUSED(rt);
-    Q_UNUSED(filePath);
+    (void)(item);
+    (void)(exportAll);
+    (void)(rt);
+    (void)(filePath);
     return true;
 }
 #endif
 bool XmlParser::generate(const TablePtr &table, const std::string &filePath)
 {
-    Q_UNUSED(table);
-    Q_UNUSED(filePath);
+    (void)(table);
+    (void)(filePath);
 
     return true;
 }

@@ -1,10 +1,5 @@
 #include "precomp.h"
 #include "icdgenerator_word_p.h"
-#ifndef J_NO_QT
-#include <QStandardItem>
-#endif
-#include "icdcore/icdcore_inc.h"
-#include "../../../../icdwidget/icdwidget_global.h"
 #include "../../../icdparser.h"
 #ifdef QT_AXCONTAINER_LIB
 #include <QAxObject>
@@ -13,7 +8,7 @@
 namespace Icd {
 
 WordGeneratorData::WordGeneratorData(WordGenerator *q)
-    : J_QPTR(q)
+    : q_ptr_(q)
     #ifdef QT_AXCONTAINER_LIB
     , word_(nullptr)
     , document_(nullptr)
@@ -33,7 +28,6 @@ WordGeneratorData::~WordGeneratorData()
 
 bool WordGeneratorData::startup()
 {
-#ifndef J_NO_QT
 #ifdef QT_AXCONTAINER_LIB
     if (word_) {
         word_->deleteLater();
@@ -106,13 +100,9 @@ bool WordGeneratorData::startup()
 #else
     return false;
 #endif
-
-#else
-    return false;
-#endif
 }
-#ifndef J_NO_QT
-void WordGeneratorData::shutdown(const QString &filePath, int saveAsType)
+
+void WordGeneratorData::shutdown(const std::string &filePath, int saveAsType)
 {
 #ifdef QT_AXCONTAINER_LIB
     if (!word_) {
@@ -154,9 +144,9 @@ void WordGeneratorData::shutdown(const QString &filePath, int saveAsType)
 #endif
 }
 
-bool WordGeneratorData::generateDocument(const QStandardItem *item, bool exportAll, bool rt)
+bool WordGeneratorData::generateDocument(const Icd::ObjectPtr &object, bool exportAll, bool rt)
 {
-    if (!item) {
+    if (!object) {
         return false;
     }
 #ifdef QT_AXCONTAINER_LIB
@@ -165,23 +155,21 @@ bool WordGeneratorData::generateDocument(const QStandardItem *item, bool exportA
     }
     //
     bool result = false;
-    const int itemType = item->type();
-    switch (itemType) {
-    case TreeItemTypeRoot:
-        result = generateRoot(item, exportAll, rt, 1);
+    switch (object->objectType()) {
+    case Icd::OjectRoot:
+        result = generateRoot(JHandlePtrCast<Icd::Root>(object), exportAll, rt, 1);
         break;
-    case TreeItemTypeVehicle:
-        result = generateVehicle(item, exportAll, rt, 1);
+    case Icd::ObjectVehicle:
+        result = generateVehicle(JHandlePtrCast<Icd::Vehicle>(object), exportAll, rt, 1);
         break;
-    case TreeItemTypeSystem:
-        result = generateSystem(item, exportAll, rt, 1);
+    case Icd::ObjectSystem:
+        result = generateSystem(JHandlePtrCast<Icd::System>(oject), exportAll, rt, 1);
         break;
-    case TreeItemTypeTable:
-    case TreeItemTypeItemTable:
-        result = generateTable(item, exportAll, rt, 1);
+    case Icd::ObjectTable:
+        result = generateTable(JHandlePtrCast<Icd::Table>(object), exportAll, rt, 1);
         break;
-    case TreeItemTypeDataItem:
-        result = generateDataItem(item, exportAll, rt, 1);
+    case Icd::ObjectItem:
+        result = generateDataItem(JHandlePtrCast<Icd::Item>(object), exportAll, rt, 1);
         break;
     default:
         return false;
@@ -231,7 +219,7 @@ bool WordGeneratorData::generateType()
     return true;
 }
 
-bool WordGeneratorData::generateRoot(const QStandardItem *itemRoot, bool exportAll,
+bool WordGeneratorData::generateRoot(const Icd::RootPtr &root, bool exportAll,
                                      bool rt, int level)
 {
     if (!itemRoot) {
@@ -271,7 +259,7 @@ bool WordGeneratorData::generateRoot(const QStandardItem *itemRoot, bool exportA
     return true;
 }
 
-bool WordGeneratorData::generateVehicle(const QStandardItem *itemVehicle, bool exportAll,
+bool WordGeneratorData::generateVehicle(const Icd::VehiclePtr &vehicle, bool exportAll,
                                         bool rt, int level)
 {
     if (!itemVehicle) {
@@ -366,7 +354,7 @@ bool WordGeneratorData::generateVehicle(const VehiclePtr &vehicle, bool exportAl
     return true;
 }
 
-bool WordGeneratorData::generateSystem(const QStandardItem *itemSystem, bool exportAll,
+bool WordGeneratorData::generateSystem(const Icd::SystemPtr &system, bool exportAll,
                                        bool rt, int level)
 {
     if (!itemSystem) {
@@ -468,7 +456,7 @@ bool WordGeneratorData::generateSystem(const std::string &vehicleId, const Syste
     return true;
 }
 
-bool WordGeneratorData::generateTable(const QStandardItem *itemTable, bool exportAll,
+bool WordGeneratorData::generateTable(const Icd::TablePtr &table, bool exportAll,
                                       bool rt, int level)
 {
     if (!itemTable) {
@@ -627,7 +615,7 @@ bool WordGeneratorData::generateTable(const Icd::TablePtr &table, int level)
     return true;
 }
 
-bool WordGeneratorData::generateDataItem(const QStandardItem *itemData, bool exportAll,
+bool WordGeneratorData::generateDataItem(const Icd::ItemPtr &item, bool exportAll,
                                          bool rt, int level)
 {
     if (!itemData) {
@@ -1299,8 +1287,6 @@ bool WordGeneratorData::setCellText(QAxObject *axTable, int row, int column, con
 
     return true;
 }
-#endif
-
 #endif
 
 } // end of namespace Icd

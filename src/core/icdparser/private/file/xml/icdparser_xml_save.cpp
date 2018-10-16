@@ -69,7 +69,7 @@ bool XmlParser::saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object)
 
 bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
 {
-    if (!emItem || item == nullptr) {
+    if (!emItem || !item) {
         return false;
     }
 
@@ -84,7 +84,7 @@ bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
     //
     switch (item->type()) {
     case Icd::ItemHeader:
-        if (!saveItemHead(emItem, JHandlePtrCast<Icd::HeaderItem>(item))) {
+        if (!saveItemHeader(emItem, JHandlePtrCast<Icd::HeaderItem>(item))) {
             return false;
         }
         break;
@@ -130,33 +130,28 @@ bool XmlParser::saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const
         }
         break;
     default:
-        Q_ASSERT(false);
         return false;   // not supported data type
     }
 
     return true;
 }
 
-bool XmlParser::saveItemHead(TiXmlElement *emItem,
-                             const Icd::HeaderItemPtr &head) const
+bool XmlParser::saveItemHeader(TiXmlElement *emItem, const Icd::HeaderItemPtr &header) const
 {
-    //
-    if (!emItem || head == nullptr) {
-        return false;       //
+    if (!emItem || !header) {
+        return false;
     }
 
     // defaultValue
     emItem->SetAttribute("defaultValue",
-                         Icd::utoa(static_cast<unsigned int>(head->defaultValue()), true, 2));
+                         Icd::utoa(static_cast<unsigned int>(header->defaultValue()), true, 2));
 
     return true;
 }
 
-bool XmlParser::saveItemCounter(TiXmlElement *emItem,
-                                const Icd::CounterItemPtr &counter) const
+bool XmlParser::saveItemCounter(TiXmlElement *emItem, const Icd::CounterItemPtr &counter) const
 {
-    //
-    if (!emItem || counter == nullptr) {
+    if (!emItem || !counter) {
         return false;
     }
 
@@ -168,9 +163,8 @@ bool XmlParser::saveItemCounter(TiXmlElement *emItem,
 
 bool XmlParser::saveItemCheck(TiXmlElement *emItem, const Icd::CheckItemPtr &check) const
 {
-    //
-    if (!emItem || check == nullptr) {
-        return false;       //
+    if (!emItem || !check) {
+        return false;
     }
 
     // checkType
@@ -183,10 +177,9 @@ bool XmlParser::saveItemCheck(TiXmlElement *emItem, const Icd::CheckItemPtr &che
     return true;
 }
 
-bool XmlParser::saveItemFrameCode(TiXmlElement *emItem,
-                                  const Icd::FrameCodeItemPtr &frameCode) const
+bool XmlParser::saveItemFrameCode(TiXmlElement *emItem, const Icd::FrameCodeItemPtr &frameCode) const
 {
-    if (!emItem || frameCode == nullptr) {
+    if (!emItem || !frameCode) {
         return false;
     }
 
@@ -203,7 +196,7 @@ bool XmlParser::saveItemFrameCode(TiXmlElement *emItem,
 
 bool XmlParser::saveItemNumeric(TiXmlElement *emItem, const Icd::NumericItemPtr &numeric) const
 {
-    if (!emItem || numeric == nullptr) {
+    if (!emItem || !numeric) {
         return false;
     }
 
@@ -260,10 +253,9 @@ bool XmlParser::saveItemArray(TiXmlElement *emItem, const ArrayItemPtr &array) c
     return true;
 }
 
-bool XmlParser::saveItemBit(TiXmlElement *emItem,
-                            const Icd::BitItemPtr &bit) const
+bool XmlParser::saveItemBit(TiXmlElement *emItem, const Icd::BitItemPtr &bit) const
 {
-    if (!emItem || bit == nullptr) {
+    if (!emItem || !bit) {
         return false;
     }
 
@@ -306,10 +298,9 @@ bool XmlParser::saveItemBit(TiXmlElement *emItem,
     return true;
 }
 
-bool XmlParser::saveItemComplex(TiXmlElement *emItem,
-                                const Icd::ComplexItemPtr &complex) const
+bool XmlParser::saveItemComplex(TiXmlElement *emItem, const Icd::ComplexItemPtr &complex) const
 {
-    if (!emItem || complex == nullptr) {
+    if (!emItem || !complex) {
         return false;
     }
 
@@ -325,7 +316,7 @@ bool XmlParser::saveItemComplex(TiXmlElement *emItem,
 
 bool XmlParser::saveItemFrame(TiXmlElement *emItem, const Icd::FrameItemPtr &frame) const
 {
-    if (!emItem || frame == nullptr) {
+    if (!emItem || !frame) {
         return false;
     }
 
@@ -354,7 +345,7 @@ bool XmlParser::saveItemFrame(TiXmlElement *emItem, const Icd::FrameItemPtr &fra
 
 bool XmlParser::saveTable(TiXmlElement *emTable, const Icd::TablePtr &table) const
 {
-    if (!emTable || table == nullptr) {
+    if (!emTable || !table) {
         return false;
     }
 
@@ -381,7 +372,7 @@ bool XmlParser::saveTable(TiXmlElement *emTable, const Icd::TablePtr &table) con
 
 bool XmlParser::saveSystem(TiXmlElement *emSystem, const Icd::SystemPtr &system) const
 {
-    if (!emSystem || system == nullptr) {
+    if (!emSystem || !system) {
         return false;
     }
 
@@ -406,7 +397,7 @@ bool XmlParser::saveSystem(TiXmlElement *emSystem, const Icd::SystemPtr &system)
 
 bool XmlParser::saveVehicle(TiXmlElement *emVehicle, const Icd::VehiclePtr &vehicle) const
 {
-    if (!emVehicle || vehicle == nullptr) {
+    if (!emVehicle || !vehicle) {
         return false;
     }
 

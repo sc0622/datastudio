@@ -21,185 +21,185 @@ SqlParser::~SqlParser()
 
 SqlParserPtr SqlParser::create(const Json::Value &config)
 {
-    Q_UNUSED(config);
+    (void)(config);
 
     return SqlParserPtr();
 }
 
 bool SqlParser::parse(Icd::RootPtr &root, int deep) const
 {
-    Q_UNUSED(root);
-    Q_UNUSED(deep);
+    (void)(root);
+    (void)(deep);
     return false;
 }
 
 bool SqlParser::parse(Icd::VehiclePtrArray &vehicles, int deep, Icd::Object *parent) const
 {
-    Q_UNUSED(vehicles);
-    Q_UNUSED(deep);
-    Q_UNUSED(parent);
+    (void)(vehicles);
+    (void)(deep);
+    (void)(parent);
     return false;
 }
 
 bool SqlParser::parse(const std::string &vehicleId, Icd::VehiclePtr &vehicle, int deep,
                       Icd::Object *parent) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(vehicle);
-    Q_UNUSED(deep);
-    Q_UNUSED(parent);
+    (void)(vehicleId);
+    (void)(vehicle);
+    (void)(deep);
+    (void)(parent);
     return false;
 }
 
 bool SqlParser::parse(const std::string &vehicleId, Icd::SystemPtrArray &systems, int deep,
                       Icd::Object *parent) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systems);
-    Q_UNUSED(deep);
-    Q_UNUSED(parent);
+    (void)(vehicleId);
+    (void)(systems);
+    (void)(deep);
+    (void)(parent);
     return false;
 }
 
 bool SqlParser::parse(const std::string &vehicleId, const std::string &systemId,
                       Icd::SystemPtr &system, int deep, Icd::Object *parent) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(system);
-    Q_UNUSED(deep);
-    Q_UNUSED(parent);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(system);
+    (void)(deep);
+    (void)(parent);
     return false;
 }
 
 bool SqlParser::parse(const std::string &vehicleId, const std::string &systemId,
                       Icd::TablePtrArray &tables, int deep, Icd::Object *parent) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tables);
-    Q_UNUSED(deep);
-    Q_UNUSED(parent);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tables);
+    (void)(deep);
+    (void)(parent);
     return false;
 }
 
 bool SqlParser::parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
                       Icd::TablePtr &table, int deep, Icd::Object *parent) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tableId);
-    Q_UNUSED(table);
-    Q_UNUSED(deep);
-    Q_UNUSED(parent);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tableId);
+    (void)(table);
+    (void)(deep);
+    (void)(parent);
     return false;
 }
 
 bool SqlParser::parse(const std::string &vehicleId, const std::string &systemId, const std::string &tableId,
                       Icd::ItemPtrArray &items, int deep, Icd::Object *parent) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tableId);
-    Q_UNUSED(items);
-    Q_UNUSED(deep);
-    Q_UNUSED(parent);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tableId);
+    (void)(items);
+    (void)(deep);
+    (void)(parent);
     return false;
 }
 
 bool SqlParser::parse(Icd::TablePtrArray &tables) const
 {
-    Q_UNUSED(tables);
+    (void)(tables);
     return false;
 }
 
 bool SqlParser::parse(const std::string &tableId, Icd::TablePtr &table) const
 {
-    Q_UNUSED(tableId);
-    Q_UNUSED(table);
+    (void)(tableId);
+    (void)(table);
     return false;
 }
 
 bool SqlParser::save(const Icd::RootPtr &root) const
 {
-    Q_UNUSED(root);
+    (void)(root);
     return false;
 }
 
 bool SqlParser::save(const Icd::VehiclePtrArray &vehicles) const
 {
-    Q_UNUSED(vehicles);
+    (void)(vehicles);
     return false;
 }
 
 bool SqlParser::save(const std::string &vehicleId, const Icd::VehiclePtr &vehicle) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(vehicle);
+    (void)(vehicleId);
+    (void)(vehicle);
     return false;
 }
 
 bool SqlParser::save(const std::string &vehicleId, const Icd::SystemPtrArray &systems) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systems);
+    (void)(vehicleId);
+    (void)(systems);
     return false;
 }
 
 bool SqlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const Icd::SystemPtr &system) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(system);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(system);
     return false;
 }
 
 bool SqlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const TablePtrArray &tables) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tables);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tables);
     return false;
 }
 
 bool SqlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const std::string &tableId, const Icd::TablePtr &table) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tableId);
-    Q_UNUSED(table);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tableId);
+    (void)(table);
     return false;
 }
 
 bool SqlParser::save(const std::string &vehicleId, const std::string &systemId,
                      const std::string &tableId, const Icd::ItemPtrArray &items) const
 {
-    Q_UNUSED(vehicleId);
-    Q_UNUSED(systemId);
-    Q_UNUSED(tableId);
-    Q_UNUSED(items);
+    (void)(vehicleId);
+    (void)(systemId);
+    (void)(tableId);
+    (void)(items);
     return false;
 }
 
 bool SqlParser::save(const Icd::TablePtrArray &tables) const
 {
-    Q_UNUSED(tables);
+    (void)(tables);
     return false;
 }
 
 bool SqlParser::save(const std::string &tableId, const Icd::TablePtr &table) const
 {
-    Q_UNUSED(tableId);
-    Q_UNUSED(table);
+    (void)(tableId);
+    (void)(table);
     return false;
 }
 
 bool SqlParser::save(const Icd::TablePtr &table) const
 {
-    Q_UNUSED(table);
+    (void)(table);
     return false;
 }
 

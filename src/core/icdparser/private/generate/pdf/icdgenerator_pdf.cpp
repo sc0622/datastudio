@@ -18,22 +18,22 @@ PdfGenerator::~PdfGenerator()
 {
 
 }
-#ifndef J_NO_QT
-bool PdfGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
+
+bool PdfGenerator::generate(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                             const std::string &filePath)
 {
-    if (!item) {
+    if (!object) {
         return false;
     }
 
     // generate
-    if (!WordGenerator(parser()).generate(item, exportAll, rt, filePath, 17)) {
+    if (!WordGenerator(parser()).generate(object, exportAll, rt, filePath, 17)) {
         return false;
     }
 
     return true;
 }
-#endif
+
 bool PdfGenerator::generate(const TablePtr &table, const std::string &filePath)
 {
     if (!table) {

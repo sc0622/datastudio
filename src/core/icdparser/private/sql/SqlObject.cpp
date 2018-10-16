@@ -5,7 +5,7 @@ namespace Icd {
 
 SqlObject::SqlObject(const Json::Value &config)
 {
-    Q_UNUSED(config);
+    (void)(config);
 }
 
 SqlObject::~SqlObject()
@@ -15,7 +15,7 @@ SqlObject::~SqlObject()
 
 SqlObjectPtr SqlObject::create(const Json::Value &config)
 {
-    Q_UNUSED(config);
+    (void)(config);
     return SqlObjectPtr();
 }
 

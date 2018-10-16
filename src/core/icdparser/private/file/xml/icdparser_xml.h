@@ -91,7 +91,7 @@ private:
     // for save
     bool saveObject(TiXmlElement *emObject, const Icd::ObjectPtr &object) const;
     bool saveItem(TiXmlElement *emItem, const Icd::ItemPtr &item) const;
-    bool saveItemHead(TiXmlElement *emItem, const Icd::HeaderItemPtr &head) const;
+    bool saveItemHeader(TiXmlElement *emItem, const Icd::HeaderItemPtr &header) const;
     bool saveItemCounter(TiXmlElement *emItem, const Icd::CounterItemPtr &counter) const;
     bool saveItemCheck(TiXmlElement *emItem, const Icd::CheckItemPtr &check) const;
     bool saveItemFrameCode(TiXmlElement *emItem, const Icd::FrameCodeItemPtr &frameCode) const;

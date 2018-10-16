@@ -7,23 +7,22 @@ HtmlGeneratorData::HtmlGeneratorData()
 {
 
 }
-#ifndef J_NO_QT
-bool HtmlGeneratorData::generateTitle(const TablePtr &table, QTextStream &tableStream)
+
+bool HtmlGeneratorData::generateTitle(const TablePtr &table, std::ostream &tableStream,
+                                      const std::string &filePath)
 {
-    Q_UNUSED(table);
-    QFile *file = qobject_cast<QFile *>(tableStream.device());
-    if (!file) {
-        return false;
-    }
+    (void)(table);
+    (void)(tableStream);
+    (void)(filePath);
 
     return true;
 }
 
-bool HtmlGeneratorData::generateTypes(QTextStream &tableStream)
+bool HtmlGeneratorData::generateTypes(std::ostream &tableStream)
 {
     tableStream << "<p></p>"
                    "<h2 align='center'>"
-                << QObject::tr("Base data type definitions")
+                << "Base data type definitions"
                 << "</h2>";
     tableStream << "<p></p>"
                 << "<table class='gridtable' align='center' border='1' summary='Desc'"
@@ -57,22 +56,22 @@ bool HtmlGeneratorData::generateTypes(QTextStream &tableStream)
     return true;
 }
 
-bool HtmlGeneratorData::generatePrefix(const TablePtr &table, QTextStream &tableStream)
+bool HtmlGeneratorData::generatePrefix(const TablePtr &table, std::ostream &tableStream)
 {
     tableStream << "<!doctype html>"
                    "<html>"
                    "<meta charset='GB2312' />"
                    "<style>";
-
+#ifndef J_NO_QT
     QFile fileCss(":/icdparser/css/generate_html.css");
     if (fileCss.open(QFile::ReadOnly | QFile::Text)) {
         tableStream << fileCss.readAll();
     }
-
+#endif
     tableStream << "</style>"
                    "<head>"
                 << "<title>"
-                << QString::fromStdString(table->name())
+                << table->name()
                 << "</title>"
                 << "</head>"
                    "<body>";
@@ -80,9 +79,9 @@ bool HtmlGeneratorData::generatePrefix(const TablePtr &table, QTextStream &table
     return true;
 }
 
-bool HtmlGeneratorData::generateSuffix(const TablePtr &table, QTextStream &tableStream)
+bool HtmlGeneratorData::generateSuffix(const TablePtr &table, std::ostream &tableStream)
 {
-    Q_UNUSED(table);
+    (void)(table);
     tableStream << "</body>"
                    "</html>";
 
@@ -90,10 +89,9 @@ bool HtmlGeneratorData::generateSuffix(const TablePtr &table, QTextStream &table
 }
 
 bool HtmlGeneratorData::generateTable(const TablePtr &table,
-                                      QTextStream &tableStream)
+                                      std::ostream &tableStream)
 {
-    QString member;
-    QTextStream memberStream(&member);
+    std::ostringstream memberStream;
     const Icd::ItemPtrArray &items = table->allItem();
     Icd::ItemPtrArray::const_iterator citer = items.cbegin();
     for (; citer != items.cend(); ++citer) {
@@ -107,8 +105,8 @@ bool HtmlGeneratorData::generateTable(const TablePtr &table,
 }
 
 bool HtmlGeneratorData::generateItem(const Icd::ItemPtr &item,
-                                         QTextStream &tableStream,
-                                         QTextStream &itemsStream)
+                                         std::ostream &tableStream,
+                                         std::ostream &itemsStream)
 {
     switch (item->type()) {
     case Icd::ItemHeader:
@@ -137,78 +135,78 @@ bool HtmlGeneratorData::generateItem(const Icd::ItemPtr &item,
         return generateFrameItem(JHandlePtrCast<Icd::FrameItem>(item),
                                  tableStream, itemsStream);
     default:
-        return false;
+        break;
     }
 
     return true;
 }
 
 bool HtmlGeneratorData::generateHeaderItem(const HeaderItemPtr &headItem,
-                                           QTextStream &tableStream,
-                                           QTextStream &itemsStream)
+                                           std::ostream &tableStream,
+                                           std::ostream &itemsStream)
 {
-    Q_UNUSED(headItem);
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
+    (void)(headItem);
+    (void)(tableStream);
+    (void)(itemsStream);
     return true;
 }
 
 bool HtmlGeneratorData::generateCounterItem(const CounterItemPtr &counterItem,
-                                            QTextStream &tableStream,
-                                            QTextStream &itemsStream)
+                                            std::ostream &tableStream,
+                                            std::ostream &itemsStream)
 {
-    Q_UNUSED(counterItem);
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
+    (void)(counterItem);
+    (void)(tableStream);
+    (void)(itemsStream);
     return true;
 }
 
 bool HtmlGeneratorData::generateCheckItem(const CheckItemPtr &checkItem,
-                                          QTextStream &tableStream,
-                                          QTextStream &itemsStream)
+                                          std::ostream &tableStream,
+                                          std::ostream &itemsStream)
 {
-    Q_UNUSED(checkItem);
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
+    (void)(checkItem);
+    (void)(tableStream);
+    (void)(itemsStream);
     return true;
 }
 
 bool HtmlGeneratorData::generateFrameCodeItem(const FrameCodeItemPtr &frameCodeItem,
-                                              QTextStream &tableStream,
-                                              QTextStream &itemsStream)
+                                              std::ostream &tableStream,
+                                              std::ostream &itemsStream)
 {
-    Q_UNUSED(frameCodeItem);
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
+    (void)(frameCodeItem);
+    (void)(tableStream);
+    (void)(itemsStream);
     return true;
 }
 
 bool HtmlGeneratorData::generateNumericItem(const NumericItemPtr &numericItem,
-                                            QTextStream &tableStream,
-                                            QTextStream &itemsStream)
+                                            std::ostream &tableStream,
+                                            std::ostream &itemsStream)
 {
-    Q_UNUSED(numericItem);
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
+    (void)(numericItem);
+    (void)(tableStream);
+    (void)(itemsStream);
     return true;
 }
 
 bool HtmlGeneratorData::generateBitItem(const BitItemPtr &bitItem,
-                                        QTextStream &tableStream,
-                                        QTextStream &itemsStream)
+                                        std::ostream &tableStream,
+                                        std::ostream &itemsStream)
 {
-    Q_UNUSED(bitItem);
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
+    (void)(bitItem);
+    (void)(tableStream);
+    (void)(itemsStream);
     return true;
 }
 
 bool HtmlGeneratorData::generateComplexItem(const ComplexItemPtr &complexItem,
-                                            QTextStream &tableStream,
-                                            QTextStream &itemsStream)
+                                            std::ostream &tableStream,
+                                            std::ostream &itemsStream)
 {
-    Q_UNUSED(tableStream);
-    Q_UNUSED(itemsStream);
+    (void)(tableStream);
+    (void)(itemsStream);
     const Icd::TablePtr table = complexItem->table();
     if (!table) {
         return true;    // FIXME
@@ -218,21 +216,17 @@ bool HtmlGeneratorData::generateComplexItem(const ComplexItemPtr &complexItem,
         return false;
     }
 
-    QString complexName = QString::fromStdString(complexItem->mark());
-    Q_UNUSED(complexName);
-
     return true;
 }
 
 bool HtmlGeneratorData::generateFrameItem(const FrameItemPtr &frameItem,
-                                          QTextStream &tableStream,
-                                          QTextStream &itemsStream)
+                                          std::ostream &tableStream,
+                                          std::ostream &itemsStream)
 {
-    Q_UNUSED(itemsStream);
+    (void)(itemsStream);
 
-    QString member;
-    QTextStream memberStream(&member);
-    Q_UNUSED(memberStream);
+    std::ostringstream memberStream;
+    (void)(memberStream);
     const Icd::TablePtrMap &tables = frameItem->allTable();
     Icd::TablePtrMap::const_iterator citer = tables.cbegin();
     for (; citer != tables.cend(); ++citer) {
@@ -242,10 +236,7 @@ bool HtmlGeneratorData::generateFrameItem(const FrameItemPtr &frameItem,
         }
     }
 
-    QString frameName = QString::fromStdString(frameItem->mark());
-    Q_UNUSED(frameName);
-
     return true;
 }
-#endif
+
 } // end of namespace Icd

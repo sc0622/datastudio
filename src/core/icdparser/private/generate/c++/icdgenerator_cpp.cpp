@@ -2,7 +2,6 @@
 #include "icdgenerator_cpp.h"
 #include "icdgenerator_cpp_p.h"
 #include "../../../icdparser.h"
-#include "../../../../icdwidget/icdwidget_global.h"
 
 namespace Icd {
 
@@ -19,46 +18,32 @@ CppGenerator::~CppGenerator()
 {
 
 }
-#ifndef J_NO_QT
-bool CppGenerator::generate(const QStandardItem *item, bool exportAll, bool rt,
+
+bool CppGenerator::generate(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                             const std::string &filePath)
 {
-    Q_UNUSED(exportAll);
-    Q_UNUSED(rt);
-    if (!item) {
+    (void)(exportAll);
+    (void)(rt);
+    if (!object) {
         return false;
     }
 
-    const int itemType = item->type();
-    if (itemType != Icd::TreeItemTypeTable) {
+    if (object->objectType() != Icd::ObjectTable) {
         return false;
     }
 
-    //
-    parser()->setMessage(QObject::tr("Query Table\nTable: %1")
-                         .arg(item->text())
-                         .toStdString());
-
-    const QString domain = item->data(Icd::TreeItemDomainRole).toString();
-    Icd::TablePtr table;
-    if (!parser()->parse(domain.section('/', 0, 0).toStdString(),
-                         domain.section('/', 1, 1).toStdString(),
-                         domain.section('/', 2).toStdString(),
-                         table, Icd::ObjectItem)) {
-        return false;
-    }
-
-    return generate(table, filePath);
+    return generate(JHandlePtrCast<Icd::Table>(object), filePath);
 }
-#endif
+
 bool CppGenerator::generate(const TablePtr &table, const std::string &filePath)
 {
     if (!table) {
         return false;
     }
-#ifndef J_NO_QT
-    QFile file(QString::fromStdString(filePath));
-    if (!file.open(QIODevice::Text | QIODevice::WriteOnly)) {
+
+    std::ofstream ofs(filePath);
+    if (!ofs) {
+        printf("File \"%s\" create failure!", filePath.c_str());
         return false;
     }
 
@@ -66,46 +51,39 @@ bool CppGenerator::generate(const TablePtr &table, const std::string &filePath)
         return false;
     }
 
-    QTextStream tableStream(&file);
-    //tableStream.setCodec("GB2312");
-
     // generate header
-    if (!d->generateHeader(tableStream)) {
+    if (!d->generateHeader(ofs, filePath)) {
         return false;
     }
 
     // generate types
-    if (!d->generateTypes(tableStream)) {
+    if (!d->generateTypes(ofs)) {
         return false;
     }
 
     // generate namespace prefix
-    if (!d->generateNamespacePrefix(tableStream)) {
+    if (!d->generateNamespacePrefix(ofs)) {
         return false;
     }
 
     // generate table information
-    if (!d->generateTable(table, tableStream)) {
+    if (!d->generateTable(table, ofs)) {
         return false;
     }
 
     // generate namespace suffix
-    if (!d->generateNamespaceSuffix(tableStream)) {
+    if (!d->generateNamespaceSuffix(ofs)) {
         return false;
     }
 
     // generate footer
-    if (!d->generateFooter(tableStream)) {
+    if (!d->generateFooter(ofs, filePath)) {
         return false;
     }
 
     shutdown();
 
     return true;
-#else
-    (void)filePath;
-    return false;
-#endif
 }
 
 bool CppGenerator::startup()

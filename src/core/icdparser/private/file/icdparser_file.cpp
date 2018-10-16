@@ -2,10 +2,7 @@
 #include "icdparser_file.h"
 #include "icdparser_file_p.h"
 #include "json/icdparser_json.h"
-#if defined(_MSC_VER)
-#include "../../../icdwidget/icdwidget_global.h"
 #include "xml/icdparser_xml.h"
-#endif
 #include <fstream>
 #if defined(_MSC_VER)
 #include <io.h>

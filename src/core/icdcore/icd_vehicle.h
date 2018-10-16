@@ -2,8 +2,6 @@
 #define ICD_VEHICLE_H
 
 #include "icdcore_global.h"
-#include <string>
-#include <vector>
 #include "icd_system.h"
 
 namespace Icd {

@@ -134,7 +134,7 @@ bool LimitItem::restore(const Json::Value &json, int)
         setMinimum(json["min"].asDouble());
     } else {
         setMinimumInf(true);
-        setMinimum(0);
+        setMinimum(0.0);
     }
 
     if (json.isMember("max")) {
@@ -142,7 +142,7 @@ bool LimitItem::restore(const Json::Value &json, int)
         setMaximum(json["max"].asDouble());
     } else {
         setMaximumInf(true);
-        setMaximum(0);
+        setMaximum(0.0);
     }
 
     return true;

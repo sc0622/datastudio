@@ -2,8 +2,6 @@
 #define ICD_SYSTEM_H
 
 #include "icdcore_global.h"
-#include <string>
-#include <vector>
 #include "icd_table.h"
 
 namespace Icd {

@@ -1363,18 +1363,20 @@ void JProtoTreeViewPrivate::itemRootRightClicked(QStandardItem *item, int deep)
                 loadVehicleFunc();
             });
         }
-        // exprot all
-        QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  tr("Export all protocol"));
-        connect(actionExportAll, &QAction::triggered, this, [=](){
-            exportData(item, true);
-        });
-        // export exists
-        QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     tr("Export loaded protocol"));
-        connect(actionExportExists, &QAction::triggered, this, [=](){
-            exportData(item, false);
-        });
+        if (isEditMode()) {
+            // exprot all
+            QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                                                      tr("Export all protocol"));
+            connect(actionExportAll, &QAction::triggered, this, [=](){
+                exportData(item, true);
+            });
+            // export exists
+            QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                                                         tr("Export loaded protocol"));
+            connect(actionExportExists, &QAction::triggered, this, [=](){
+                exportData(item, false);
+            });
+        }
         break;
     }}
 
@@ -1524,18 +1526,20 @@ void JProtoTreeViewPrivate::itemVehicleRightClicked(QStandardItem *item, int dee
                 loadSystemFunc();
             });
         }
-        // export all
-        QAction *exportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                            tr("Export all protocol"));
-        connect(exportAll, &QAction::triggered, this, [=](){
-            exportData(item, true);
-        });
-        // export exists
-        QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     tr("Export loaded protocol"));
-        connect(actionExportExists, &QAction::triggered, this, [=](){
-            exportData(item, false);
-        });
+        if (isEditMode()) {
+            // export all
+            QAction *exportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                                                tr("Export all protocol"));
+            connect(exportAll, &QAction::triggered, this, [=](){
+                exportData(item, true);
+            });
+            // export exists
+            QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                                                         tr("Export loaded protocol"));
+            connect(actionExportExists, &QAction::triggered, this, [=](){
+                exportData(item, false);
+            });
+        }
         break;
     }}
 
@@ -1684,18 +1688,20 @@ void JProtoTreeViewPrivate::itemSystemRightClicked(QStandardItem *item, int deep
                 loadTableFunc();
             });
         }
-        // export all
-        QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  tr("Export all protocol"));
-        connect(actionExportAll, &QAction::triggered, this, [=](){
-            exportData(item, true);
-        });
-        // export exists
-        QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     tr("Export loaded protocol"));
-        connect(actionExportExists, &QAction::triggered, this, [=](){
-            exportData(item, false);
-        });
+        if (isEditMode()) {
+            // export all
+            QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                                                      tr("Export all protocol"));
+            connect(actionExportAll, &QAction::triggered, this, [=](){
+                exportData(item, true);
+            });
+            // export exists
+            QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                                                         tr("Export loaded protocol"));
+            connect(actionExportExists, &QAction::triggered, this, [=](){
+                exportData(item, false);
+            });
+        }
         break;
     }}
 
@@ -1924,18 +1930,20 @@ void JProtoTreeViewPrivate::itemTableRightClicked(QStandardItem *item, int deep)
                 });
             }
         }
-        // export all
-        QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                                  tr("Export all protocol"));
-        connect(actionExportAll, &QAction::triggered, this, [=](){
-            exportData(item, true);
-        });
-        // export exists
-        QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                     tr("Export loaded protocol"));
-        connect(actionExportExists, &QAction::triggered, this, [=](){
-            exportData(item, false);
-        });
+        if (isEditMode()) {
+            // export all
+            QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                                                      tr("Export all protocol"));
+            connect(actionExportAll, &QAction::triggered, this, [=](){
+                exportData(item, true);
+            });
+            // export exists
+            QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                                                         tr("Export loaded protocol"));
+            connect(actionExportExists, &QAction::triggered, this, [=](){
+                exportData(item, false);
+            });
+        }
         break;
     }}
 
@@ -2071,18 +2079,20 @@ void JProtoTreeViewPrivate::itemDataItemRightClicked(QStandardItem *item, int de
             break;
         }
     }
-    // export all
-    QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                              tr("Export all protocol"));
-    connect(actionExportAll, &QAction::triggered, this, [=](){
-        exportData(item, true);
-    });
-    // export exists
-    QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                 tr("Export loaded protocol"));
-    connect(actionExportExists, &QAction::triggered, this, [=](){
-        exportData(item, false);
-    });
+    if (isEditMode()) {
+        // export all
+        QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                                                  tr("Export all protocol"));
+        connect(actionExportAll, &QAction::triggered, this, [=](){
+            exportData(item, true);
+        });
+        // export exists
+        QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                                                     tr("Export loaded protocol"));
+        connect(actionExportExists, &QAction::triggered, this, [=](){
+            exportData(item, false);
+        });
+    }
 
     menu.exec(QCursor::pos());
 }
@@ -2191,18 +2201,20 @@ void JProtoTreeViewPrivate::itemItemTableRightClicked(QStandardItem *item, int d
             expandItem(item, true, -1);
         });
     }
-    // export all
-    QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
-                                              tr("Export all protocol"));
-    connect(actionExportAll, &QAction::triggered, this, [=](){
-        exportData(item, true);
-    });
-    // export exists
-    QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
-                                                 tr("Export loaded protocol"));
-    connect(actionExportExists, &QAction::triggered, this, [=](){
-        exportData(item, false);
-    });
+    if (isEditMode()) {
+        // export all
+        QAction *actionExportAll = menu.addAction(QIcon(":/icdwidget/image/tree/export_all.png"),
+                                                  tr("Export all protocol"));
+        connect(actionExportAll, &QAction::triggered, this, [=](){
+            exportData(item, true);
+        });
+        // export exists
+        QAction *actionExportExists = menu.addAction(QIcon(":/icdwidget/image/tree/export_exists.png"),
+                                                     tr("Export loaded protocol"));
+        connect(actionExportExists, &QAction::triggered, this, [=](){
+            exportData(item, false);
+        });
+    }
 
     //
     menu.exec(QCursor::pos());
@@ -3893,9 +3905,14 @@ QStandardItem *JProtoTreeViewPrivate::findItemTable(QStandardItem *item) const
     return nullptr;
 }
 
-bool JProtoTreeViewPrivate::exportData(const QStandardItem *item, bool exportAll)
+bool JProtoTreeViewPrivate::exportData(QStandardItem *item, bool exportAll)
 {
     if (!item || !parser_) {
+        return false;
+    }
+
+    const Icd::ObjectPtr object = findObject(item, false);
+    if (!object) {
         return false;
     }
 
@@ -3955,8 +3972,7 @@ bool JProtoTreeViewPrivate::exportData(const QStandardItem *item, bool exportAll
 
     //
     QFuture<bool> future = QtConcurrent::run([=](){
-        return parser_->saveAs(item, exportAll,
-                               (bindTableTypes_ & JProtoTreeView::BindOnlyRecv),
+        return parser_->saveAs(object, exportAll, (bindTableTypes_ & JProtoTreeView::BindOnlyRecv),
                                filePath.toStdString());
     });
 

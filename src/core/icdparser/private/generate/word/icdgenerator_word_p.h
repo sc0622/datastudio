@@ -2,7 +2,7 @@
 #define ICDGENERATOR_WORD_P_H
 
 #include "icdgenerator_word.h"
-#ifndef J_NO_QT
+#ifdef QT_AXCONTAINER_LIB
 #include <QString>
 #include <QVariant>
 #endif
@@ -20,21 +20,20 @@ public:
     explicit WordGeneratorData(WordGenerator *q);
     ~WordGeneratorData();
     bool startup();
-#ifndef J_NO_QT
-    void shutdown(const QString &filePath = QString::null, int saveAsType = 0);
-    bool generateDocument(const QStandardItem *item, bool exportAll, bool rt);
+    void shutdown(const std::string &filePath = std::string(), int saveAsType = 0);
+    bool generateDocument(const Icd::ObjectPtr &object, bool exportAll, bool rt);
     bool generateDocument(const Icd::TablePtr &table);
 #ifdef QT_AXCONTAINER_LIB
 private:
     bool generateType();
-    bool generateRoot(const QStandardItem *itemRoot, bool exportAll, bool rt, int level);
-    bool generateVehicle(const QStandardItem *itemVehicle, bool exportAll, bool rt, int level);
+    bool generateRoot(const Icd::RootPtr &root, bool exportAll, bool rt, int level);
+    bool generateVehicle(const Icd::VehiclePtr &vehicle, bool exportAll, bool rt, int level);
     bool generateVehicle(const Icd::VehiclePtr &vehicle, bool exportAll, int level);
-    bool generateSystem(const QStandardItem *itemSystem, bool exportAll, bool rt, int level);
+    bool generateSystem(const Icd::SystemPtr &system, bool exportAll, bool rt, int level);
     bool generateSystem(const std::string &vehicleId, const Icd::SystemPtr &system, bool exportAll, int level);
-    bool generateTable(const QStandardItem *itemTable, bool exportAll, bool rt, int level);
+    bool generateTable(const Icd::TablePtr &table, bool exportAll, bool rt, int level);
     bool generateTable(const TablePtr &table, int level);
-    bool generateDataItem(const QStandardItem *itemData, bool exportAll, bool rt, int level);
+    bool generateDataItem(const Icd::ItemPtr &item, bool exportAll, bool rt, int level);
     bool generateDataItem(const Icd::ItemPtr &item, int level);
 
 private:
@@ -57,11 +56,9 @@ private:
 private:
     bool setCellText(QAxObject *axTable, int row, int column, const QVariant &text);
 #endif
-#endif
 private:
     friend class WordGenerator;
     WordGenerator *q_ptr_;
-#ifndef J_NO_QT
 #ifdef QT_AXCONTAINER_LIB
     QAxObject *word_;
     QAxObject *document_;
@@ -69,7 +66,6 @@ private:
     QAxObject *listTemplate_;
     QAxObject *tables_;
     QAxObject *selection_;
-#endif
 #endif
 };
 

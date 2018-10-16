@@ -14,10 +14,9 @@ class CppGenerator : public Generator
 public:
     explicit CppGenerator(Icd::Parser *parser);
     ~CppGenerator();
-#ifndef J_NO_QT
-    bool generate(const QStandardItem *item, bool exportAll, bool rt,
+
+    bool generate(const Icd::ObjectPtr &object, bool exportAll, bool rt,
                   const std::string &filePath);
-#endif
     bool generate(const TablePtr &table, const std::string &filePath);
     bool startup();
     void shutdown();

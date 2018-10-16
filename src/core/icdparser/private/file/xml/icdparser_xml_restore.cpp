@@ -322,7 +322,6 @@ bool XmlParser::parseItem(const TiXmlElement *emItem, Icd::ItemPtr &item, int de
         }
         break;
     default:
-        Q_ASSERT(false);
         return false;   // not supported data type
     }
 
@@ -339,8 +338,7 @@ bool XmlParser::parseItemHead(const TiXmlElement *emItem, const Icd::HeaderItemP
 
     // defaultValue attribute
     if (emItem->QueryStringAttribute("defaultValue", &sVal) == TIXML_SUCCESS) {
-        const std::string text = Icd::tolowered(Icd::trimString(sVal));
-        head->setDefaultValue(static_cast<unsigned char>((Icd::atou(text) & 0xFF)));
+        head->setDefaultValue(static_cast<unsigned char>((Icd::atou(sVal) & 0xFF)));
     }
 
     return true;
@@ -446,26 +444,18 @@ bool XmlParser::parseItemNumeric(const TiXmlElement *emItem, const Icd::NumericI
         numeric->setDecimals(iVal);
     }
     // min attribute
-    if (emItem->QueryStringAttribute("min", &sVal) == TIXML_SUCCESS) {
-        if (sVal.empty()) {
-            numeric->limit()->setMinimumInf(true);
-        } else {
-            numeric->limit()->setMinimum(QString::fromStdString(sVal).toDouble());
-            numeric->limit()->setMinimumInf(false);
-        }
+    if (emItem->QueryDoubleAttribute("min", &dVal) == TIXML_SUCCESS) {
+        numeric->limit()->setMinimumInf(false);
+        numeric->limit()->setMinimum(dVal);
     }
     // max attribute
-    if (emItem->QueryStringAttribute("max", &sVal) == TIXML_SUCCESS) {
-        if (sVal.empty()) {
-            numeric->limit()->setMaximumInf(true);
-        } else {
-            numeric->limit()->setMaximum(QString::fromStdString(sVal).toDouble());
-            numeric->limit()->setMaximumInf(false);
-        }
+    if (emItem->QueryDoubleAttribute("max", &dVal) == TIXML_SUCCESS) {
+        numeric->limit()->setMaximumInf(false);
+        numeric->limit()->setMaximum(dVal);
     }
     // unit attribute
     if (emItem->QueryStringAttribute("unit", &sVal) == TIXML_SUCCESS) {
-        numeric->setUnit(QString::fromStdString(sVal).trimmed().toStdString());
+        numeric->setUnit(sVal);
     }
     // spec
     for (const TiXmlElement *emSpec = emItem->FirstChildElement("spec");
@@ -478,11 +468,11 @@ bool XmlParser::parseItemNumeric(const TiXmlElement *emItem, const Icd::NumericI
         }
         // info attribute
         if (emSpec->QueryStringAttribute("info", &sVal) == TIXML_SUCCESS) {
-            QString info = QString::fromStdString(sVal).trimmed();
-            if (info.isEmpty()) {
+            const std::string info = Icd::trimString(sVal);
+            if (info.empty()) {
                 continue;
             }
-            numeric->addSpec(key, info.toStdString());
+            numeric->addSpec(key, info);
         }
     }
 
@@ -502,8 +492,7 @@ bool XmlParser::parseItemArray(const TiXmlElement *emItem, const ArrayItemPtr &a
     if (emItem->QueryStringAttribute("arrayType", &sVal) != TIXML_SUCCESS) {
         return false;
     }
-    const Icd::ArrayType arrayType = Icd::ArrayItem::stringArrayType(
-                QString::fromStdString(sVal).toStdString());
+    const Icd::ArrayType arrayType = Icd::ArrayItem::stringArrayType(sVal);
     if (arrayType == Icd::ArrayInvalid) {
         return false;
     }
@@ -550,26 +539,18 @@ bool XmlParser::parseItemBit(const TiXmlElement *emItem, const Icd::BitItemPtr &
             bit->setDecimals(iVal);
         }
         // min attribute
-        if (emItem->QueryStringAttribute("min", &sVal) == TIXML_SUCCESS) {
-            if (sVal.empty()) {
-                bit->limit()->setMinimumInf(true);
-            } else {
-                bit->limit()->setMinimum(QString::fromStdString(sVal).toDouble());
-                bit->limit()->setMinimumInf(false);
-            }
+        if (emItem->QueryDoubleAttribute("min", &dVal) == TIXML_SUCCESS) {
+            bit->limit()->setMinimumInf(false);
+            bit->limit()->setMinimum(dVal);
         }
         // max attribute
-        if (emItem->QueryStringAttribute("max", &sVal) == TIXML_SUCCESS) {
-            if (sVal.empty()) {
-                bit->limit()->setMaximumInf(true);
-            } else {
-                bit->limit()->setMaximum(QString::fromStdString(sVal).toDouble());
-                bit->limit()->setMaximumInf(false);
-            }
+        if (emItem->QueryDoubleAttribute("max", &dVal) == TIXML_SUCCESS) {
+            bit->limit()->setMaximumInf(false);
+            bit->limit()->setMaximum(dVal);
         }
         // unit attribute
         if (emItem->QueryStringAttribute("unit", &sVal) == TIXML_SUCCESS) {
-            bit->setUnit(QString::fromStdString(sVal).trimmed().toStdString());
+            bit->setUnit(Icd::trimString(sVal));
         }
     }
     // spec
@@ -577,17 +558,17 @@ bool XmlParser::parseItemBit(const TiXmlElement *emItem, const Icd::BitItemPtr &
          emSpec != nullptr;
          emSpec = emSpec->NextSiblingElement("spec")) {
         // key attribute
-        int key = 0;
+        icd_uint64 key = 0;
         if (emSpec->QueryStringAttribute("key", &sVal) == TIXML_SUCCESS) {
-            key = QString::fromStdString(sVal).toInt(nullptr, 16);
+            key = Icd::atou64(sVal);
         }
         // info attribute
         if (emSpec->QueryStringAttribute("info", &sVal) == TIXML_SUCCESS) {
-            const QString info = QString::fromStdString(sVal).trimmed();
-            if (info.isEmpty()) {
+            const std::string info = Icd::trimString(sVal);
+            if (info.empty()) {
                 continue;
             }
-            bit->addSpec(static_cast<icd_uint64>(key), info.toStdString());
+            bit->addSpec(key, info);
         }
     }
 
@@ -657,7 +638,6 @@ bool XmlParser::parseItemFrame(const TiXmlElement *emFrame, const Icd::FrameItem
 
 bool XmlParser::parseTable(const TiXmlElement *emTable, const Icd::TablePtr &table, int deep) const
 {
-    Q_ASSERT(deep <= Icd::ObjectItem);
     if (!emTable || !table) {
         return false;
     }
@@ -715,7 +695,6 @@ bool XmlParser::parseTable(const TiXmlElement *emTable, const Icd::TablePtr &tab
 
 bool XmlParser::parseSystem(const TiXmlElement *emSystem, const Icd::SystemPtr &system, int deep) const
 {
-    Q_ASSERT(deep <= Icd::ObjectItem);
     if (!emSystem || !system) {
         return false;
     }
@@ -749,7 +728,6 @@ bool XmlParser::parseSystem(const TiXmlElement *emSystem, const Icd::SystemPtr &
 
 bool XmlParser::parseVehicle(const TiXmlElement *emVehicle, const Icd::VehiclePtr &vehicle, int deep) const
 {
-    Q_ASSERT(deep <= Icd::ObjectItem);
     if (!emVehicle || !vehicle) {
         return false;
     }
